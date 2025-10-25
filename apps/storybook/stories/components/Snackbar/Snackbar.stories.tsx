@@ -24,13 +24,11 @@ import {
 const meta: Meta<typeof Snackbar> = {
     title: 'Components/Snackbar',
     component: Snackbar,
-
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
                 component: `
-
 A toast notification component for displaying temporary messages, alerts, and feedback to users with various styles and optional actions.
 
 ## Features
@@ -41,6 +39,7 @@ A toast notification component for displaying temporary messages, alerts, and fe
 - Customizable header and description
 - Smooth animations
 - Stacked notifications support
+- Configurable duration
 
 ## Usage
 
@@ -57,11 +56,89 @@ addSnackbar({
   variant: SnackbarVariant.SUCCESS,
   actionButton: {
     label: "Undo",
-    onClick: () => console.log('Undo clicked')
-  }
+    onClick: () => console.log('Undo clicked'),
+    autoDismiss: true
+  },
+  duration: 5000,
+  onClose: () => console.log('Snackbar closed')
 });
 \`\`\`
         `,
+            },
+        },
+    },
+    argTypes: {
+        // Note: These argTypes document the addSnackbar function parameters
+        // since the Snackbar component itself is just a container
+        header: {
+            control: { type: 'text' },
+            description: 'Required header text for the snackbar notification',
+            table: {
+                type: { summary: 'string' },
+                category: 'addSnackbar Options',
+            },
+        },
+        description: {
+            control: { type: 'text' },
+            description: 'Optional description text providing more details',
+            table: {
+                type: { summary: 'string' },
+                category: 'addSnackbar Options',
+            },
+        },
+        variant: {
+            control: { type: 'select' },
+            options: Object.values(SnackbarVariant),
+            description:
+                'Visual variant of the snackbar (info, success, warning, error)',
+            table: {
+                type: { summary: 'SnackbarVariant' },
+                defaultValue: { summary: 'SnackbarVariant.INFO' },
+                category: 'addSnackbar Options',
+            },
+        },
+        duration: {
+            control: { type: 'number', min: 1000, max: 30000, step: 1000 },
+            description:
+                'Duration in milliseconds before auto-dismiss (default: 4000)',
+            table: {
+                type: { summary: 'number' },
+                defaultValue: { summary: '4000' },
+                category: 'addSnackbar Options',
+            },
+        },
+        onClose: {
+            action: 'closed',
+            description: 'Callback fired when the snackbar is closed',
+            table: {
+                type: { summary: '() => void' },
+                category: 'addSnackbar Options',
+            },
+        },
+        'actionButton.label': {
+            control: { type: 'text' },
+            description: 'Label text for the action button',
+            table: {
+                type: { summary: 'string' },
+                category: 'Action Button',
+            },
+        },
+        'actionButton.onClick': {
+            action: 'action-clicked',
+            description: 'Callback fired when the action button is clicked',
+            table: {
+                type: { summary: '() => void' },
+                category: 'Action Button',
+            },
+        },
+        'actionButton.autoDismiss': {
+            control: { type: 'boolean' },
+            description:
+                'Whether the snackbar should auto-dismiss when action is clicked (default: true)',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Action Button',
             },
         },
     },
@@ -89,19 +166,41 @@ type Story = StoryObj<typeof Snackbar>
 
 // Default story
 export const Default: Story = {
-    render: () => (
+    render: (args) => (
         <div style={{ position: 'relative' }}>
             <Button
-                text="Show Basic Snackbar"
+                text="Show Configured Snackbar"
                 onClick={() =>
                     addSnackbar({
-                        header: 'Default Snackbar',
-                        description: 'This is a default snackbar notification.',
+                        header: args.header || 'Default Snackbar',
+                        description:
+                            args.description ||
+                            'This is a default snackbar notification.',
+                        variant: args.variant || SnackbarVariant.INFO,
+                        duration: args.duration || 4000,
+                        onClose: args.onClose,
+                        actionButton: args['actionButton.label']
+                            ? {
+                                  label: args['actionButton.label'],
+                                  onClick: args['actionButton.onClick'],
+                                  autoDismiss:
+                                      args['actionButton.autoDismiss'] !==
+                                      false,
+                              }
+                            : undefined,
                     })
                 }
             />
         </div>
     ),
+    args: {
+        header: 'Default Snackbar',
+        description: 'This is a default snackbar notification.',
+        variant: SnackbarVariant.INFO,
+        duration: 4000,
+        'actionButton.label': '',
+        'actionButton.autoDismiss': true,
+    },
 }
 
 // Snackbar variants
@@ -464,10 +563,89 @@ export const CustomDurationToast: Story = {
                 onClick={() =>
                     addSnackbar({
                         header: 'Custom duration Snackbar',
+                        description:
+                            'This snackbar will stay visible for 15 seconds',
                         duration: 15000, // duration in ms, defaults to 4000
+                        variant: SnackbarVariant.INFO,
                     })
                 }
             />
         </div>
     ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Snackbar with custom duration - this example shows for 15 seconds instead of the default 4 seconds.',
+            },
+        },
+    },
+}
+
+// Action button autoDismiss behavior
+export const ActionButtonBehavior: Story = {
+    render: () => (
+        <div
+            style={{
+                position: 'relative',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '16px',
+                alignContent: 'start',
+            }}
+        >
+            <Button
+                text="Action with Auto-Dismiss"
+                onClick={() =>
+                    addSnackbar({
+                        header: 'Auto-Dismiss Action',
+                        description:
+                            'This snackbar will close when action is clicked',
+                        variant: SnackbarVariant.INFO,
+                        actionButton: {
+                            label: 'Confirm',
+                            onClick: () => {
+                                console.log(
+                                    'Action clicked - snackbar will auto-dismiss'
+                                )
+                            },
+                            autoDismiss: true, // Default behavior
+                        },
+                    })
+                }
+            />
+            <Button
+                text="Action without Auto-Dismiss"
+                onClick={() =>
+                    addSnackbar({
+                        header: 'Persistent Action',
+                        description:
+                            'This snackbar stays open after action is clicked',
+                        variant: SnackbarVariant.WARNING,
+                        actionButton: {
+                            label: 'Keep Open',
+                            onClick: () => {
+                                console.log(
+                                    'Action clicked - snackbar remains open'
+                                )
+                                addSnackbar({
+                                    header: 'Action Executed',
+                                    description:
+                                        'Previous snackbar is still visible',
+                                    variant: SnackbarVariant.SUCCESS,
+                                })
+                            },
+                            autoDismiss: false, // Prevents auto-dismiss
+                        },
+                    })
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates the autoDismiss property of action buttons - controls whether the snackbar closes when the action is clicked.',
+            },
+        },
+    },
 }

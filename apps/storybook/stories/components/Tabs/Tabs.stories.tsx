@@ -17,6 +17,13 @@ import {
     Shield,
     CreditCard,
     HelpCircle,
+    FileText,
+    Archive,
+    Send,
+    ShoppingCart,
+    Package,
+    Users,
+    BarChart3,
 } from 'lucide-react'
 
 const meta: Meta<typeof Tabs> = {
@@ -2011,6 +2018,1009 @@ export const ComplexExample: Story = {
         docs: {
             description: {
                 story: 'A complex example showcasing tabs with icons, badges, and rich content areas.',
+            },
+        },
+    },
+}
+
+// Enhanced closable tabs with individual controls
+export const ClosableTabs: Story = {
+    render: () => {
+        const [tabs, setTabs] = useState<TabItem[]>([
+            {
+                value: 'home',
+                label: 'Home',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#f0f9ff',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Home Dashboard
+                        </h3>
+                        <p style={{ margin: 0, color: '#0369a1' }}>
+                            Welcome! This is a default tab that cannot be
+                            closed. It serves as your home base.
+                        </p>
+                    </div>
+                ),
+                isDefault: true,
+            },
+            {
+                value: 'analytics',
+                label: 'Analytics',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#f0fdf4',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Analytics Dashboard
+                        </h3>
+                        <p style={{ margin: 0, color: '#166534' }}>
+                            View comprehensive analytics and insights. This tab
+                            can be closed using the X button.
+                        </p>
+                    </div>
+                ),
+                closable: true,
+            },
+            {
+                value: 'reports',
+                label: 'Reports',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#fef3c7',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Reports Center
+                        </h3>
+                        <p style={{ margin: 0, color: '#92400e' }}>
+                            Generate and export reports. This tab is also
+                            closable for a cleaner interface.
+                        </p>
+                    </div>
+                ),
+                closable: true,
+            },
+            {
+                value: 'settings',
+                label: 'Settings',
+                content: (
+                    <div
+                        style={{
+                            padding: '16px',
+                            backgroundColor: '#faf5ff',
+                            borderRadius: '8px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Configuration Settings
+                        </h3>
+                        <p style={{ margin: 0, color: '#7c3aed' }}>
+                            Customize your experience. Close this tab when
+                            configuration is complete.
+                        </p>
+                    </div>
+                ),
+                closable: true,
+            },
+        ])
+
+        const [activeTab, setActiveTab] = useState('home')
+
+        const handleTabClose = (value: string) => {
+            const filteredTabs = tabs.filter((tab) => tab.value !== value)
+            setTabs(filteredTabs)
+
+            // Switch to home if closing active tab
+            if (value === activeTab) {
+                setActiveTab('home')
+            }
+        }
+
+        return (
+            <div style={{ width: '700px', maxWidth: '90vw' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Closable Tabs Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            color: '#64748b',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Try closing different tabs using the X button. Notice
+                        that the Home tab cannot be closed as it's marked as
+                        default.
+                    </p>
+                </div>
+
+                <Tabs
+                    items={tabs}
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    onTabClose={handleTabClose}
+                    variant={TabsVariant.BOXED}
+                    size={TabsSize.MD}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates closable tabs with default tabs that cannot be closed. Shows how tab closing affects active tab selection.',
+            },
+        },
+    },
+}
+
+// Advanced slot usage with badges, icons, and status indicators
+export const AdvancedSlotUsage: Story = {
+    render: () => (
+        <div style={{ width: '800px', maxWidth: '90vw' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '32px',
+                }}
+            >
+                {/* Notification badges and status indicators */}
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 16px 0',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#374151',
+                        }}
+                    >
+                        Notification Badges & Status Indicators
+                    </h4>
+                    <Tabs
+                        defaultValue="inbox"
+                        variant={TabsVariant.FLOATING}
+                        size={TabsSize.MD}
+                    >
+                        <TabsList>
+                            <TabsTrigger
+                                value="inbox"
+                                variant={TabsVariant.FLOATING}
+                                size={TabsSize.MD}
+                                leftSlot={<Bell size={16} />}
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            backgroundColor: '#ef4444',
+                                            color: 'white',
+                                            borderRadius: '10px',
+                                            padding: '2px 6px',
+                                            fontSize: '10px',
+                                            fontWeight: '600',
+                                        }}
+                                    >
+                                        5
+                                    </span>
+                                }
+                            >
+                                Inbox
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="drafts"
+                                variant={TabsVariant.FLOATING}
+                                size={TabsSize.MD}
+                                leftSlot={<FileText size={16} />}
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            backgroundColor: '#f59e0b',
+                                            color: 'white',
+                                            borderRadius: '10px',
+                                            padding: '2px 6px',
+                                            fontSize: '10px',
+                                            fontWeight: '600',
+                                        }}
+                                    >
+                                        3
+                                    </span>
+                                }
+                            >
+                                Drafts
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="archive"
+                                variant={TabsVariant.FLOATING}
+                                size={TabsSize.MD}
+                                leftSlot={<Archive size={16} />}
+                            >
+                                Archive
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="sent"
+                                variant={TabsVariant.FLOATING}
+                                size={TabsSize.MD}
+                                leftSlot={<Send size={16} />}
+                                rightSlot={
+                                    <div
+                                        style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            backgroundColor: '#10b981',
+                                            borderRadius: '50%',
+                                        }}
+                                    />
+                                }
+                            >
+                                Sent
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value="inbox"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                You have 5 unread messages in your inbox.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="drafts"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                3 draft messages are waiting to be completed.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="archive"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Your archived messages are stored here.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="sent"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Successfully sent messages with online status
+                                indicator.
+                            </p>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+
+                {/* Project status with emoji and progress */}
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 16px 0',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#374151',
+                        }}
+                    >
+                        Project Status with Progress Indicators
+                    </h4>
+                    <Tabs
+                        defaultValue="frontend"
+                        variant={TabsVariant.PILLS}
+                        size={TabsSize.LG}
+                    >
+                        <TabsList>
+                            <TabsTrigger
+                                value="frontend"
+                                variant={TabsVariant.PILLS}
+                                size={TabsSize.LG}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>⚛️</span>
+                                }
+                                rightSlot={
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            fontSize: '12px',
+                                            color: '#10b981',
+                                        }}
+                                    >
+                                        <span>85%</span>
+                                        <div
+                                            style={{
+                                                width: '20px',
+                                                height: '4px',
+                                                backgroundColor: '#e5e7eb',
+                                                borderRadius: '2px',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: '85%',
+                                                    height: '100%',
+                                                    backgroundColor: '#10b981',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                Frontend
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="backend"
+                                variant={TabsVariant.PILLS}
+                                size={TabsSize.LG}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>🔧</span>
+                                }
+                                rightSlot={
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            fontSize: '12px',
+                                            color: '#f59e0b',
+                                        }}
+                                    >
+                                        <span>62%</span>
+                                        <div
+                                            style={{
+                                                width: '20px',
+                                                height: '4px',
+                                                backgroundColor: '#e5e7eb',
+                                                borderRadius: '2px',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: '62%',
+                                                    height: '100%',
+                                                    backgroundColor: '#f59e0b',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                Backend
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="testing"
+                                variant={TabsVariant.PILLS}
+                                size={TabsSize.LG}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>🧪</span>
+                                }
+                                rightSlot={
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            fontSize: '12px',
+                                            color: '#ef4444',
+                                        }}
+                                    >
+                                        <span>28%</span>
+                                        <div
+                                            style={{
+                                                width: '20px',
+                                                height: '4px',
+                                                backgroundColor: '#e5e7eb',
+                                                borderRadius: '2px',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    width: '28%',
+                                                    height: '100%',
+                                                    backgroundColor: '#ef4444',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                Testing
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value="frontend"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Frontend development is 85% complete. React
+                                components and styling are nearly finished.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="backend"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Backend APIs are 62% implemented. Core
+                                functionality is working, authentication
+                                pending.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="testing"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Testing coverage is at 28%. Unit tests started,
+                                integration tests are next priority.
+                            </p>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Advanced slot usage showcasing notification badges, status indicators, progress bars, and emoji icons.',
+            },
+        },
+    },
+}
+
+// Real-world application scenarios
+export const RealWorldScenarios: Story = {
+    render: () => (
+        <div style={{ width: '900px', maxWidth: '95vw' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '40px',
+                }}
+            >
+                {/* E-commerce admin panel */}
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 16px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: '#374151',
+                        }}
+                    >
+                        E-commerce Admin Panel
+                    </h4>
+                    <Tabs
+                        defaultValue="orders"
+                        variant={TabsVariant.UNDERLINE}
+                        size={TabsSize.MD}
+                    >
+                        <TabsList>
+                            <TabsTrigger
+                                value="orders"
+                                variant={TabsVariant.UNDERLINE}
+                                size={TabsSize.MD}
+                                leftSlot={<ShoppingCart size={16} />}
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            backgroundColor: '#dc2626',
+                                            color: 'white',
+                                            borderRadius: '10px',
+                                            padding: '2px 6px',
+                                            fontSize: '10px',
+                                            fontWeight: '600',
+                                        }}
+                                    >
+                                        23
+                                    </span>
+                                }
+                            >
+                                Orders
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="products"
+                                variant={TabsVariant.UNDERLINE}
+                                size={TabsSize.MD}
+                                leftSlot={<Package size={16} />}
+                            >
+                                Products
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="customers"
+                                variant={TabsVariant.UNDERLINE}
+                                size={TabsSize.MD}
+                                leftSlot={<Users size={16} />}
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            width: '6px',
+                                            height: '6px',
+                                            backgroundColor: '#10b981',
+                                            borderRadius: '50%',
+                                            display: 'block',
+                                        }}
+                                    />
+                                }
+                            >
+                                Customers
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="analytics"
+                                variant={TabsVariant.UNDERLINE}
+                                size={TabsSize.MD}
+                                leftSlot={<BarChart3 size={16} />}
+                            >
+                                Analytics
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value="orders"
+                            style={{
+                                padding: '20px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '12px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: '16px',
+                                }}
+                            >
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        fontSize: '18px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Recent Orders
+                                </h3>
+                                <span
+                                    style={{
+                                        color: '#dc2626',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    23 pending orders
+                                </span>
+                            </div>
+                            <div style={{ display: 'grid', gap: '12px' }}>
+                                <div
+                                    style={{
+                                        padding: '12px',
+                                        backgroundColor: '#fef2f2',
+                                        border: '1px solid #fecaca',
+                                        borderRadius: '6px',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span style={{ fontWeight: '500' }}>
+                                            Order #1234
+                                        </span>
+                                        <span
+                                            style={{
+                                                color: '#dc2626',
+                                                fontSize: '12px',
+                                                backgroundColor: '#fee2e2',
+                                                padding: '2px 8px',
+                                                borderRadius: '4px',
+                                            }}
+                                        >
+                                            Pending
+                                        </span>
+                                    </div>
+                                    <p
+                                        style={{
+                                            margin: '4px 0 0 0',
+                                            fontSize: '14px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        $299.99 • John Doe • 2 items
+                                    </p>
+                                </div>
+                                <div
+                                    style={{
+                                        padding: '12px',
+                                        backgroundColor: '#f0fdf4',
+                                        border: '1px solid #bbf7d0',
+                                        borderRadius: '6px',
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span style={{ fontWeight: '500' }}>
+                                            Order #1235
+                                        </span>
+                                        <span
+                                            style={{
+                                                color: '#059669',
+                                                fontSize: '12px',
+                                                backgroundColor: '#d1fae5',
+                                                padding: '2px 8px',
+                                                borderRadius: '4px',
+                                            }}
+                                        >
+                                            Completed
+                                        </span>
+                                    </div>
+                                    <p
+                                        style={{
+                                            margin: '4px 0 0 0',
+                                            fontSize: '14px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        $149.50 • Jane Smith • 1 item
+                                    </p>
+                                </div>
+                            </div>
+                        </TabsContent>
+                        <TabsContent
+                            value="products"
+                            style={{
+                                padding: '20px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '12px',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0 0 16px 0',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Product Catalog
+                            </h3>
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Manage your product inventory, pricing, and
+                                descriptions. Add new products or update
+                                existing ones.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="customers"
+                            style={{
+                                padding: '20px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '12px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: '16px',
+                                }}
+                            >
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        fontSize: '18px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Customer Management
+                                </h3>
+                                <span
+                                    style={{
+                                        color: '#10b981',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    Online now
+                                </span>
+                            </div>
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                View customer profiles, order history, and
+                                support tickets. The green indicator shows
+                                you're connected to real-time customer data.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="analytics"
+                            style={{
+                                padding: '20px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '12px',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0 0 16px 0',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Sales Analytics
+                            </h3>
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                Track sales performance, revenue trends, and
+                                customer behavior patterns with detailed charts
+                                and reports.
+                            </p>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+
+                {/* File browser with different file types */}
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 16px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: '#374151',
+                        }}
+                    >
+                        File Browser with Type Indicators
+                    </h4>
+                    <Tabs
+                        defaultValue="documents"
+                        variant={TabsVariant.BOXED}
+                        size={TabsSize.MD}
+                    >
+                        <TabsList fitContent>
+                            <TabsTrigger
+                                value="documents"
+                                variant={TabsVariant.BOXED}
+                                size={TabsSize.MD}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>📄</span>
+                                }
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        24
+                                    </span>
+                                }
+                            >
+                                Documents
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="images"
+                                variant={TabsVariant.BOXED}
+                                size={TabsSize.MD}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>🖼️</span>
+                                }
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        156
+                                    </span>
+                                }
+                            >
+                                Images
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="videos"
+                                variant={TabsVariant.BOXED}
+                                size={TabsSize.MD}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>🎥</span>
+                                }
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        8
+                                    </span>
+                                }
+                            >
+                                Videos
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="code"
+                                variant={TabsVariant.BOXED}
+                                size={TabsSize.MD}
+                                leftSlot={
+                                    <span style={{ fontSize: '16px' }}>💻</span>
+                                }
+                                rightSlot={
+                                    <span
+                                        style={{
+                                            fontSize: '12px',
+                                            color: '#6b7280',
+                                        }}
+                                    >
+                                        42
+                                    </span>
+                                }
+                            >
+                                Code
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent
+                            value="documents"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                24 documents including PDFs, Word files, and
+                                spreadsheets. Recent files are shown first.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="images"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                156 images in various formats (JPG, PNG, SVG).
+                                Organized by upload date and project folders.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="videos"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                8 video files including MP4 and MOV formats.
+                                Thumbnails and duration shown for each file.
+                            </p>
+                        </TabsContent>
+                        <TabsContent
+                            value="code"
+                            style={{
+                                padding: '16px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                marginTop: '8px',
+                            }}
+                        >
+                            <p style={{ margin: 0, color: '#64748b' }}>
+                                42 code files across multiple programming
+                                languages. Syntax highlighting available for
+                                preview.
+                            </p>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Real-world application scenarios including e-commerce admin panels and file browsers with contextual information.',
             },
         },
     },

@@ -16,7 +16,7 @@ export const TabsList = [
         text: 'Playground',
     },
     {
-        label: 'changelog',
-        text: 'Changelog',
+        label: 'docs',
+        text: 'Dev Docs',
     },
 ]

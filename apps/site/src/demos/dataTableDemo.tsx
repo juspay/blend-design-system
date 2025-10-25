@@ -175,7 +175,7 @@ const SimpleDataTableExample = () => {
         },
         {
             id: 3,
-            name: 'iPad Air',
+            name: '', // Empty name to show hyphen
             category: {
                 options: [
                     {
@@ -203,12 +203,12 @@ const SimpleDataTableExample = () => {
                         icon: <Smartphone size={16} />,
                     },
                 ],
-                selectedValue: 'tablet',
+                selectedValue: '', // Empty selection to show hyphen
                 placeholder: 'Select category...',
             },
-            price: 799.99,
+            price: 0, // Zero price to show hyphen (will be handled as empty)
             launchDate: {
-                date: '2023-08-15',
+                date: '', // Empty date to show hyphen
                 format: 'MMM dd, yyyy',
             },
             status: {
@@ -223,7 +223,7 @@ const SimpleDataTableExample = () => {
                 sublabel: 'SVP Hardware Engineering',
                 imageUrl: 'https://randomuser.me/api/portraits/men/3.jpg',
             },
-            rating: 4.3,
+            rating: 0, // Zero rating to show hyphen (will be handled as empty)
             tags: {
                 values: ['tablet', 'creative'],
                 labels: ['Tablet', 'Creative'],
@@ -349,7 +349,7 @@ const SimpleDataTableExample = () => {
         },
         {
             id: 6,
-            name: 'MacBook Air M3 with Revolutionary Performance and All-Day Battery Life',
+            name: '', // Empty name to show hyphen
             category: {
                 options: [
                     {
@@ -377,12 +377,12 @@ const SimpleDataTableExample = () => {
                         icon: <Smartphone size={16} />,
                     },
                 ],
-                selectedValue: 'laptop',
+                selectedValue: '', // Empty selection to show hyphen
                 placeholder: 'Select category...',
             },
             price: 1299.99,
             launchDate: {
-                date: '2024-03-15',
+                date: 'invalid-date', // Invalid date to show hyphen
                 format: 'MMM dd, yyyy',
             },
             status: {
@@ -732,17 +732,20 @@ const SimpleDataTableExample = () => {
                     📦 Product Inventory - Simple DataTable Example
                 </h3>
                 <p style={{ margin: 0, fontSize: '14px', color: '#166534' }}>
-                    🎯 <strong>NEW COLUMN TYPES DEMO:</strong> This table
-                    showcases <strong>DROPDOWN</strong> and{' '}
-                    <strong>DATE</strong> column types! The Category column is a
-                    dropdown menu using the SingleSelect component with{' '}
-                    <strong>icons</strong> - click on any category to see the
-                    dropdown options with category icons. The Launch Date column
-                    displays formatted dates. Both columns support sorting and
-                    can be used for filtering. Try editing the rows to see how
-                    dropdown selections work in edit mode. This is a simpler
-                    example focused on the new column types without the
-                    complexity of the main user management table above.
+                    🎯 <strong>NEW FEATURES DEMO:</strong> This table showcases{' '}
+                    <strong>DROPDOWN</strong> and <strong>DATE</strong> column
+                    types, plus <strong>EMPTY VALUE HANDLING</strong>! The
+                    Category column is a dropdown menu using the SingleSelect
+                    component with <strong>icons</strong> - click on any
+                    category to see the dropdown options with category icons.
+                    The Launch Date column displays formatted dates.{' '}
+                    <strong>🎯 HYPHEN DISPLAY:</strong> Notice that{' '}
+                    <strong>Row #3 (iPad Air)</strong> and{' '}
+                    <strong>Row #6</strong> have empty/null values in various
+                    columns that now display <strong>"-" (hyphens)</strong>{' '}
+                    instead of blank cells. This includes empty text fields,
+                    null prices, missing dates, invalid dates, and empty
+                    dropdown selections. This improves table readability!
                 </p>
             </div>
 
