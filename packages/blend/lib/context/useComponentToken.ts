@@ -28,6 +28,7 @@ import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
 import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveStepperTokens } from '../components/Stepper/stepper.tokens'
 import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
@@ -36,6 +37,7 @@ import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 export const useComponentToken = (
@@ -71,6 +73,7 @@ export const useComponentToken = (
     | ResponsiveDrawerTokens
     | ResponsiveChartTokens
     | ResponsiveSnackbarTokens
+    | ResponsiveStepperTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
     | ResponsiveSkeletonTokens
@@ -78,6 +81,7 @@ export const useComponentToken = (
     | ResponsiveAvatarTokens
     | ResponsiveAvatarGroupTokens
     | ResponsiveSidebarTokens
+    | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -142,6 +146,8 @@ export const useComponentToken = (
             return componentTokens.CHARTS
         case 'SNACKBAR':
             return componentTokens.SNACKBAR
+        case 'STEPPER':
+            return componentTokens.STEPPER
         case 'KEYVALUEPAIR':
             return componentTokens.KEYVALUEPAIR
         case 'CARD':
@@ -156,6 +162,8 @@ export const useComponentToken = (
             return componentTokens.AVATAR_GROUP
         case 'SIDEBAR':
             return componentTokens.SIDEBAR
+        case 'UPLOAD':
+            return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
         default:
