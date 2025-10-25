@@ -5,7 +5,7 @@ import Text from '../../Text/Text'
 /**
  * Props for the NodeContent component
  */
-export interface NodeContentProps {
+export type NodeContentProps = {
     /** Icon to display at the top of the node */
     icon?: ReactNode
     /** Primary label text */

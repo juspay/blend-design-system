@@ -21,8 +21,8 @@ export enum EdgeType {
     SIMPLEBEZIER = 'simplebezier',
 }
 
-// Custom node data interface
-export interface BaseNodeData {
+// Custom node data type
+export type BaseNodeData = {
     label?: string
     description?: string
     icon?: ReactNode
@@ -30,8 +30,8 @@ export interface BaseNodeData {
     [key: string]: unknown
 }
 
-// Custom edge data interface
-export interface BaseEdgeData {
+// Custom edge data type
+export type BaseEdgeData = {
     label?: string
     animated?: boolean
     [key: string]: unknown
@@ -42,7 +42,7 @@ export type BlendNode = Node<BaseNodeData>
 export type BlendEdge = Edge<BaseEdgeData>
 
 // WorkflowCanvas component props
-export interface WorkflowCanvasProps {
+export type WorkflowCanvasProps = {
     nodes: BlendNode[]
     edges: BlendEdge[]
     onNodesChange?: (nodes: BlendNode[]) => void
@@ -72,12 +72,12 @@ export interface WorkflowCanvasProps {
 }
 
 // Custom node component props
-export interface CustomNodeProps extends NodeProps<BaseNodeData> {
+export type CustomNodeProps = NodeProps<BaseNodeData> & {
     selected: boolean
 }
 
 // Custom edge component props
-export interface CustomEdgeProps extends EdgeProps<BaseEdgeData> {
+export type CustomEdgeProps = EdgeProps<BaseEdgeData> & {
     selected?: boolean
 }
 
@@ -91,7 +91,7 @@ export enum ControlButton {
 }
 
 // Workflow controls props
-export interface WorkflowControlsProps {
+export type WorkflowControlsProps = {
     showZoom?: boolean
     showFitView?: boolean
     showInteractive?: boolean
