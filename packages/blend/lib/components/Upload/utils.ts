@@ -77,7 +77,6 @@ export const processFiles =
     (
         disabled: boolean,
         validateFileFn: (file: File) => FileRejection['errors'],
-        maxFiles?: number,
         onDrop?: (
             acceptedFiles: File[],
             rejectedFiles: FileRejection[]
@@ -89,11 +88,7 @@ export const processFiles =
         if (disabled) return
 
         const fileArray = Array.from(files)
-        let filesToProcess = fileArray
-
-        if (maxFiles && fileArray.length > maxFiles) {
-            filesToProcess = fileArray.slice(0, maxFiles)
-        }
+        const filesToProcess = fileArray
 
         const acceptedFiles: File[] = []
         const rejectedFiles: FileRejection[] = []
@@ -594,3 +589,334 @@ export const createEnhancedProcessFilesFn =
             }
         }
     }
+
+// Advanced upload simulation and state management
+export const createUploadManager = () => {
+    const runningUploads = new Map<string, () => void>()
+
+    const startUpload = (
+        uploadFile: UploadFile,
+        onProgress: (id: string, progress: number) => void,
+        onComplete: (id: string) => void,
+        progressInterval: number = 200
+    ): (() => void) => {
+        let currentProgress = uploadFile.progress || 0
+
+        const interval = setInterval(() => {
+            if (currentProgress >= 100) {
+                clearInterval(interval)
+                runningUploads.delete(uploadFile.id)
+                setTimeout(() => onComplete(uploadFile.id), 500)
+                return
+            }
+
+            const increment = Math.random() * 15
+            currentProgress = Math.min(100, currentProgress + increment)
+            onProgress(uploadFile.id, currentProgress)
+        }, progressInterval)
+
+        const cleanup = () => {
+            clearInterval(interval)
+            runningUploads.delete(uploadFile.id)
+        }
+
+        runningUploads.set(uploadFile.id, cleanup)
+        return cleanup
+    }
+
+    const cancelUpload = (uploadId: string) => {
+        const cleanup = runningUploads.get(uploadId)
+        if (cleanup) {
+            cleanup()
+        }
+    }
+
+    const cancelAllUploads = () => {
+        runningUploads.forEach((cleanup) => cleanup())
+        runningUploads.clear()
+    }
+
+    return {
+        startUpload,
+        cancelUpload,
+        cancelAllUploads,
+        hasActiveUploads: () => runningUploads.size > 0,
+    }
+}
+
+// Enhanced file drop handler with complex state management
+export const createComplexDropHandler = (
+    multiple: boolean,
+    maxFiles: number | undefined,
+    disabled: boolean,
+    uploadingFiles: UploadFile[],
+    uploadedFiles: UploadedFileWithStatus[],
+    failedFiles: UploadedFileWithStatus[],
+    setInternalState: (state: UploadState) => void,
+    setInternalUploadingFiles: React.Dispatch<
+        React.SetStateAction<UploadFile[]>
+    >,
+    setInternalUploadedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >,
+    setInternalFailedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >,
+    uploadManager: ReturnType<typeof createUploadManager>
+) => {
+    return (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+        if (disabled) return
+
+        if (acceptedFiles.length > 0) {
+            setInternalState(UploadState.UPLOADING)
+
+            const existingFileKeys = multiple
+                ? new Set([
+                      ...uploadingFiles.map((f) => createFileKey(f.file)),
+                      ...uploadedFiles.map((f) => createFileKey(f.file)),
+                      ...failedFiles.map((f) => createFileKey(f.file)),
+                  ])
+                : new Set()
+
+            const currentTotalFiles =
+                uploadingFiles.length + uploadedFiles.length
+
+            const filesToUpload: File[] = []
+            const filesToReject: File[] = []
+
+            acceptedFiles.forEach((file) => {
+                const fileKey = createFileKey(file)
+                if (multiple && existingFileKeys.has(fileKey)) {
+                    // Duplicate file - add to rejections
+                    rejectedFiles.push({
+                        file,
+                        errors: [
+                            {
+                                code: 'file-duplicate',
+                                message: `File "${file.name}" is already uploaded or being processed`,
+                            },
+                        ],
+                    })
+                } else {
+                    // Check if adding this file would exceed maxFiles
+                    const wouldExceedLimit =
+                        multiple &&
+                        maxFiles &&
+                        currentTotalFiles + filesToUpload.length >= maxFiles
+
+                    if (wouldExceedLimit) {
+                        rejectedFiles.push({
+                            file,
+                            errors: [
+                                {
+                                    code: 'file-too-many',
+                                    message: `Maximum ${maxFiles} files allowed. Cannot add "${file.name}".`,
+                                },
+                            ],
+                        })
+                        filesToReject.push(file)
+                    } else {
+                        filesToUpload.push(file)
+                    }
+                    existingFileKeys.add(fileKey)
+                }
+            })
+
+            if (filesToReject.length > 0) {
+                const rejectedFilesWithStatus = filesToReject.map((file) => ({
+                    id: generateFileId(),
+                    file,
+                    status: 'error' as const,
+                    error: `Maximum ${maxFiles} files allowed. Cannot add "${file.name}".`,
+                }))
+
+                setInternalFailedFiles((prev) => {
+                    const updatedFailedFiles = [...prev]
+
+                    rejectedFilesWithStatus.forEach((newFile) => {
+                        const fileKey = createFileKey(newFile.file)
+                        const alreadyExists = updatedFailedFiles.some(
+                            (f) => createFileKey(f.file) === fileKey
+                        )
+
+                        if (!alreadyExists) {
+                            updatedFailedFiles.push(newFile)
+                        }
+                    })
+
+                    return updatedFailedFiles
+                })
+            }
+
+            if (filesToUpload.length > 0) {
+                const newUploadingFiles = filesToUpload.map((file) => ({
+                    id: generateFileId(),
+                    file,
+                    progress: 0,
+                    status: UploadState.UPLOADING,
+                }))
+
+                // For single files, replace all existing files; for multiple, add to existing
+                if (multiple) {
+                    setInternalUploadingFiles((prev) => [
+                        ...prev,
+                        ...newUploadingFiles,
+                    ])
+                } else {
+                    setInternalUploadingFiles(newUploadingFiles)
+                    setInternalUploadedFiles([])
+                    setInternalFailedFiles([])
+                }
+
+                newUploadingFiles.forEach((uploadFile) => {
+                    uploadManager.startUpload(
+                        uploadFile,
+                        (id, progress) => {
+                            setInternalUploadingFiles((prev) =>
+                                prev.map((f) =>
+                                    f.id === id ? { ...f, progress } : f
+                                )
+                            )
+                        },
+                        (id) => {
+                            // Remove from uploading
+                            setInternalUploadingFiles((prev) =>
+                                prev.filter((f) => f.id !== id)
+                            )
+
+                            // Add to uploaded
+                            setInternalUploadedFiles((prev) => {
+                                const fileKey = createFileKey(uploadFile.file)
+                                const alreadyExists = prev.some(
+                                    (f) => createFileKey(f.file) === fileKey
+                                )
+
+                                if (alreadyExists) {
+                                    return prev // Don't add duplicate
+                                }
+
+                                return [
+                                    ...prev,
+                                    {
+                                        id: uploadFile.id,
+                                        file: uploadFile.file,
+                                        status: 'success',
+                                    },
+                                ]
+                            })
+
+                            // Update state when all uploads are complete
+                            setInternalUploadingFiles((current) => {
+                                const remaining = current.filter(
+                                    (f) => f.id !== id
+                                )
+                                if (remaining.length === 0) {
+                                    setTimeout(() => {
+                                        setInternalFailedFiles(
+                                            (failedFiles) => {
+                                                if (failedFiles.length > 0) {
+                                                    setInternalState(
+                                                        UploadState.ERROR
+                                                    )
+                                                } else {
+                                                    setInternalState(
+                                                        UploadState.SUCCESS
+                                                    )
+                                                }
+                                                return failedFiles
+                                            }
+                                        )
+                                    }, 100)
+                                }
+                                return remaining
+                            })
+                        }
+                    )
+                })
+            }
+        }
+
+        if (rejectedFiles.length > 0) {
+            const rejectedFilesWithStatus = rejectedFiles.map((rejection) => ({
+                id: generateFileId(),
+                file: rejection.file,
+                status: 'error' as const,
+                error: rejection.errors[0]?.message || 'File rejected',
+            }))
+
+            setInternalFailedFiles((prev) => {
+                const updatedFailedFiles = [...prev]
+
+                rejectedFilesWithStatus.forEach((newFile) => {
+                    const fileKey = createFileKey(newFile.file)
+                    const alreadyExists = updatedFailedFiles.some(
+                        (f) => createFileKey(f.file) === fileKey
+                    )
+
+                    if (!alreadyExists) {
+                        updatedFailedFiles.push(newFile)
+                    }
+                })
+
+                return updatedFailedFiles
+            })
+            setInternalState(UploadState.ERROR)
+        }
+    }
+}
+
+// Enhanced file removal handler
+export const createFileRemovalHandler = (
+    setInternalUploadedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >,
+    setInternalFailedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >,
+    setInternalState: (state: UploadState) => void
+) => {
+    return (fileId: string) => {
+        setInternalUploadedFiles((prev) => prev.filter((f) => f.id !== fileId))
+        setInternalFailedFiles((prev) => {
+            const updatedFailedFiles = prev.filter((f) => f.id !== fileId)
+
+            setTimeout(() => {
+                setInternalUploadedFiles((currentUploaded) => {
+                    if (
+                        currentUploaded.length > 0 &&
+                        updatedFailedFiles.length === 0
+                    ) {
+                        setInternalState(UploadState.SUCCESS)
+                    } else if (
+                        currentUploaded.length === 0 &&
+                        updatedFailedFiles.length === 0
+                    ) {
+                        setInternalState(UploadState.IDLE)
+                    } else if (updatedFailedFiles.length > 0) {
+                        setInternalState(UploadState.ERROR)
+                    }
+                    return currentUploaded
+                })
+            }, 0)
+
+            return updatedFailedFiles
+        })
+    }
+}
+
+// File replacement handler
+export const createFileReplacementHandler = (
+    setInternalState: (state: UploadState) => void,
+    setInternalUploadedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >,
+    setInternalFailedFiles: React.Dispatch<
+        React.SetStateAction<UploadedFileWithStatus[]>
+    >
+) => {
+    return () => {
+        setInternalState(UploadState.IDLE)
+        setInternalUploadedFiles([])
+        setInternalFailedFiles([])
+    }
+}
