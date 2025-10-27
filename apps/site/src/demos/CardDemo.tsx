@@ -1123,7 +1123,7 @@ const CardDemo = () => {
                 >
                     {/* Fixed Height Card */}
                     <Card
-                        height="250px"
+                        maxHeight="250px"
                         headerTitle="Fixed Height"
                         headerTag={
                             <Tag
@@ -1191,7 +1191,7 @@ const CardDemo = () => {
                     {/* Percentage Height Card */}
                     <div style={{ height: '300px' }}>
                         <Card
-                            height="100%"
+                            minHeight="100%"
                             variant={CardVariant.ALIGNED}
                             alignment={CardAlignment.VERTICAL}
                             centerAlign={true}

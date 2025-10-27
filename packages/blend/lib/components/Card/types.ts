@@ -57,7 +57,7 @@ export type CardProps = {
      * Examples: "200px", "100%", "50vh", "auto"
      * Note: For percentage heights to work, parent container must have a defined height.
      */
-    height?: string
+    maxHeight?: string
     /**
      * Minimum height of the card. Accepts any valid CSS height value.
      * Useful when you want the card to grow with content but maintain a minimum height.
