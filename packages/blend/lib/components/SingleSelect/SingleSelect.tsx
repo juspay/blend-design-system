@@ -219,6 +219,13 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    data-selectbox-value={placeholder}
+                                    data-dropdown-for={placeholder}
+                                    data-value={selected || placeholder}
+                                    data-custom-value={selected || placeholder}
+                                    data-button-status={
+                                        disabled ? 'disabled' : 'enabled'
+                                    }
                                     type="button"
                                     name={name}
                                     position="relative"
@@ -381,6 +388,11 @@ const SingleSelect = ({
                                                             whiteSpace:
                                                                 'nowrap',
                                                         }}
+                                                        data-button-text={
+                                                            valueLabelMap[
+                                                                selected
+                                                            ]
+                                                        }
                                                     >
                                                         {
                                                             valueLabelMap[
@@ -406,6 +418,13 @@ const SingleSelect = ({
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
+                                                data-button-text={
+                                                    selected
+                                                        ? valueLabelMap[
+                                                              selected
+                                                          ]
+                                                        : placeholder
+                                                }
                                             >
                                                 {selected
                                                     ? valueLabelMap[selected]
