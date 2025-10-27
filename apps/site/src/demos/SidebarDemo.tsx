@@ -31,6 +31,7 @@ import {
     Shield,
     Settings,
     TrendingUp,
+    Upload,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -89,6 +90,7 @@ import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
+import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 
 const SidebarDemo = () => {
@@ -144,6 +146,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'upload'
         | 'codeBlock'
     >('dataRangePicker')
 
@@ -399,6 +402,8 @@ const SidebarDemo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'upload':
+                return <UploadDemo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             default:
@@ -516,6 +521,13 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'virtualList',
                     onClick: () => setActiveComponent('virtualList'),
+                },
+                {
+                    label: 'File Upload',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('upload'),
                 },
             ],
         },
