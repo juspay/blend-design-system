@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
@@ -16,7 +16,7 @@ import { ChevronDown } from 'lucide-react'
 import type { SingleSelectProps } from './types'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
-import { SingleSelectTokensType } from './singleSelect.tokens'
+import type { SingleSelectTokensType } from './singleSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
@@ -109,6 +109,11 @@ const SingleSelect = ({
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
+    const handleOnSelect = useCallback(
+        (val: string) => onSelect(selected === val ? '' : val),
+        [onSelect, selected]
+    )
+
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobileSingleSelect
@@ -126,7 +131,7 @@ const SingleSelect = ({
                 variant={variant}
                 disabled={disabled}
                 selected={selected}
-                onSelect={onSelect}
+                onSelect={handleOnSelect}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
                 slot={slot}
@@ -191,7 +196,7 @@ const SingleSelect = ({
                         items={items}
                         selected={selected}
                         onSelect={(value) => {
-                            onSelect(value)
+                            handleOnSelect(value)
                             setOpen(false)
                         }}
                         disabled={disabled}
