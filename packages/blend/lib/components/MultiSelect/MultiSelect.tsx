@@ -284,6 +284,13 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
+                                        data-selectbox-value={placeholder}
+                                        data-dropdown-for={placeholder}
+                                        data-value={placeholder}
+                                        data-custom-value={placeholder}
+                                        data-button-status={
+                                            disabled ? 'disabled' : 'enabled'
+                                        }
                                         type="button"
                                         position="relative"
                                         width={

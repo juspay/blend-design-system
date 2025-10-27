@@ -244,6 +244,7 @@ const MultiSelectMenu = ({
                 {trigger}
             </RadixMenu.Trigger>
             <Content
+                data-dropdown="dropdown"
                 ref={contentRef}
                 align={alignment}
                 sideOffset={sideOffset}
@@ -399,6 +400,22 @@ const MultiSelectMenu = ({
                                     }
 
                                     if (typed.type === 'item' && typed.item) {
+                                        const itemIndex = (() => {
+                                            let idx = 0
+                                            for (const item of flattenedItems) {
+                                                if (item.id === flatItem.id) {
+                                                    break
+                                                }
+                                                if (
+                                                    (
+                                                        item as FlattenedMultiSelectItem
+                                                    ).type === 'item'
+                                                ) {
+                                                    idx++
+                                                }
+                                            }
+                                            return idx
+                                        })()
                                         return (
                                             <MultiSelectMenuItem
                                                 selected={selected}
@@ -408,6 +425,7 @@ const MultiSelectMenu = ({
                                                 allItems={filteredItems.flatMap(
                                                     (g) => g.items
                                                 )}
+                                                index={itemIndex}
                                             />
                                         )
                                     }
@@ -451,18 +469,31 @@ const MultiSelectMenu = ({
                                         (
                                             item: MultiSelectMenuItemType,
                                             itemIndex: number
-                                        ) => (
-                                            <MultiSelectMenuItem
-                                                key={`${groupId}-${itemIndex}`}
-                                                selected={selected}
-                                                item={item}
-                                                onSelect={onSelect}
-                                                maxSelections={maxSelections}
-                                                allItems={filteredItems.flatMap(
-                                                    (g) => g.items
-                                                )}
-                                            />
-                                        )
+                                        ) => {
+                                            let itemIdx = 0
+                                            // Count items in previous groups
+                                            for (let i = 0; i < groupId; i++) {
+                                                itemIdx +=
+                                                    filteredItems[i].items
+                                                        .length
+                                            }
+                                            itemIdx += itemIndex
+                                            return (
+                                                <MultiSelectMenuItem
+                                                    key={`${groupId}-${itemIndex}`}
+                                                    selected={selected}
+                                                    item={item}
+                                                    onSelect={onSelect}
+                                                    maxSelections={
+                                                        maxSelections
+                                                    }
+                                                    allItems={filteredItems.flatMap(
+                                                        (g) => g.items
+                                                    )}
+                                                    index={itemIdx}
+                                                />
+                                            )
+                                        }
                                     )}
                                     {groupId !== filteredItems.length - 1 &&
                                         group.showSeparator && (
