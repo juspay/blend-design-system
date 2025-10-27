@@ -216,7 +216,9 @@ type CalendarSectionProps = {
     showDateTimePicker: boolean
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({
+const CalendarSection: React.FC<
+    CalendarSectionProps & { resetScrollPosition?: number }
+> = ({
     selectedRange,
     today,
     allowSingleDateSelection,
@@ -228,6 +230,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     customRangeConfig,
     onDateSelect,
     showDateTimePicker,
+    resetScrollPosition,
 }) => (
     <Block>
         <CalendarGrid
@@ -242,6 +245,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             customDisableDates={customDisableDates}
             customRangeConfig={customRangeConfig}
             showDateTimePicker={showDateTimePicker}
+            resetScrollPosition={resetScrollPosition}
         />
     </Block>
 )
@@ -787,6 +791,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
                     className={triggerConfig?.className}
+                    data-component-field-wrapper=""
+                    data-date-picker="dateRangePicker-Filter"
+                    data-button-for={displayText
+                        .replace(/\s/g, '')
+                        .replace(/-/g, '➟')}
+                    data-custom-value="calendar_button"
+                    data-button-status={isDisabled ? 'disabled' : 'enabled'}
+                    data-dynamic-button="dynamicButton"
+                    type="button"
                 >
                     <Block
                         flexGrow={1}
@@ -992,6 +1005,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             customRangeConfig={customRangeConfig}
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
+                            resetScrollPosition={popoverKey}
                         />
 
                         <FooterControls

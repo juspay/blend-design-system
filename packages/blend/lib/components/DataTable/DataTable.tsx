@@ -113,6 +113,7 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             mobileColumnsToShow,
+            ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
@@ -700,6 +701,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
+                data-loaded-table={title}
             >
                 <DataTableHeader
                     title={title}
@@ -744,6 +746,7 @@ const DataTable = forwardRef(
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}
+                    {...rest}
                 />
 
                 <Block
@@ -886,6 +889,7 @@ const DataTable = forwardRef(
                                             handleMobileOverflowClick(row as T)
                                         }
                                         idField={String(idField)}
+                                        tableTitle={title}
                                         selectedRows={selectedRows}
                                         editingRows={editingRows}
                                         editValues={editValues}

@@ -173,6 +173,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={handleMouseLeave}
+                    data-is-sidebar-expanded={isExpanded}
                 >
                     {!isMobile && (
                         <>
