@@ -40,6 +40,7 @@ export const Tooltip = ({
                 {content && (
                     <RadixTooltip.Portal>
                         <RadixTooltip.Content
+                            data-tooltip={'tooltip'}
                             side={side}
                             align={align}
                             sideOffset={offset}
