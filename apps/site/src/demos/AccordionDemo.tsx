@@ -157,6 +157,7 @@ const AccordionDemo = () => {
                             onValueChange={handleValueChange}
                         >
                             <AccordionItem
+                                data-accordion={'General Information'}
                                 value="item1"
                                 title="General Information"
                                 subtext={

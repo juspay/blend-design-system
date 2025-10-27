@@ -200,6 +200,7 @@ const AccordionItem = forwardRef<
         isFirst?: boolean
         isLast?: boolean
         isIntermediate?: boolean
+        currentValue?: string | string[]
     }
 >(
     (
@@ -218,6 +219,8 @@ const AccordionItem = forwardRef<
             isFirst,
             isLast,
             isIntermediate,
+            currentValue,
+            ...props
         },
         ref
     ) => {
@@ -225,6 +228,11 @@ const AccordionItem = forwardRef<
             useResponsiveTokens<AccordionTokenType>('ACCORDION')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
+
+        // Determine if this item is expanded
+        const isExpanded = Array.isArray(currentValue)
+            ? currentValue.includes(value)
+            : currentValue === value
 
         const getChevronIcon = () => {
             const iconStyles = {
@@ -263,6 +271,7 @@ const AccordionItem = forwardRef<
                 $accordionType={accordionType}
                 $isDisabled={isDisabled}
                 $accordionToken={accordionToken}
+                {...props}
             >
                 <StyledAccordionHeader>
                     <StyledAccordionTrigger
@@ -272,6 +281,7 @@ const AccordionItem = forwardRef<
                         disabled={isDisabled}
                         data-type={accordionType}
                         data-disabled={isDisabled || undefined}
+                        data-accordion-expanded={isExpanded ? 'true' : 'false'}
                         $isSmallScreen={isSmallScreen}
                         $isFirst={isFirst}
                         $isLast={isLast}
@@ -344,6 +354,7 @@ const AccordionItem = forwardRef<
                                                           .text.title.color
                                                           .default
                                             }
+                                            data-header-text={title}
                                         >
                                             {title}
                                         </PrimitiveText>
