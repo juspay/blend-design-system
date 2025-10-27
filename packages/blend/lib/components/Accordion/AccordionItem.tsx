@@ -213,7 +213,6 @@ const AccordionItem = forwardRef<
             subtextSlot,
             isDisabled = false,
             chevronPosition = AccordionChevronPosition.RIGHT,
-            className,
             accordionType = AccordionType.NO_BORDER,
             // Position props
             isFirst,
@@ -258,7 +257,6 @@ const AccordionItem = forwardRef<
             <StyledAccordionItem
                 value={value}
                 disabled={isDisabled}
-                className={className}
                 ref={ref}
                 data-disabled={isDisabled || undefined}
                 $isSmallScreen={isSmallScreen}

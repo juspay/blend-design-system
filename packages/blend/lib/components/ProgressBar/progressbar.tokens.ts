@@ -115,10 +115,10 @@ export const getProgressBarTokens = (
                 fill: {
                     backgroundColor: {
                         [ProgressBarVariant.SOLID]: String(
-                            foundationToken.colors.primary[500]
+                            foundationToken.colors.primary[600]
                         ),
                         [ProgressBarVariant.SEGMENTED]: String(
-                            foundationToken.colors.primary[500]
+                            foundationToken.colors.primary[600]
                         ),
                     },
                     borderRadius: {
@@ -174,10 +174,10 @@ export const getProgressBarTokens = (
                 },
                 stroke: {
                     [ProgressBarType.SOLID]: String(
-                        foundationToken.colors.primary[500]
+                        foundationToken.colors.primary[600]
                     ),
                     [ProgressBarType.SEGMENTED]: String(
-                        foundationToken.colors.primary[500]
+                        foundationToken.colors.primary[600]
                     ),
                 },
                 background: {
@@ -219,10 +219,10 @@ export const getProgressBarTokens = (
                 fill: {
                     backgroundColor: {
                         [ProgressBarVariant.SOLID]: String(
-                            foundationToken.colors.primary[500]
+                            foundationToken.colors.primary[600]
                         ),
                         [ProgressBarVariant.SEGMENTED]: String(
-                            foundationToken.colors.primary[500]
+                            foundationToken.colors.primary[600]
                         ),
                     },
                     borderRadius: {
@@ -278,10 +278,10 @@ export const getProgressBarTokens = (
                 },
                 stroke: {
                     [ProgressBarType.SOLID]: String(
-                        foundationToken.colors.primary[500]
+                        foundationToken.colors.primary[600]
                     ),
                     [ProgressBarType.SEGMENTED]: String(
-                        foundationToken.colors.primary[500]
+                        foundationToken.colors.primary[600]
                     ),
                 },
                 background: {
