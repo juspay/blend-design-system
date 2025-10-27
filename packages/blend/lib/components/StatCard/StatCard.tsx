@@ -57,6 +57,7 @@ const StatCard = ({
     valueFormatter,
     height = 'auto',
     direction = StatCardDirection.VERTICAL,
+    ...props
 }: StatCardProps) => {
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
 
@@ -187,6 +188,7 @@ const StatCard = ({
                     statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
+                data-ss-delta={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
             >
                 {change.value >= 0 ? '+' : ''}
                 {change.value.toFixed(2)}%
@@ -290,6 +292,7 @@ const StatCard = ({
                 justifyContent="space-between"
                 data-statcard-variant={normalizedVariant}
                 maxWidth={maxWidth}
+                {...props}
             >
                 <Block
                     display="flex"
@@ -345,6 +348,7 @@ const StatCard = ({
                                         textOverflow: 'ellipsis',
                                         wordBreak: 'break-word',
                                     }}
+                                    data-ss-text={title}
                                 >
                                     {title}
                                 </Text>
@@ -431,6 +435,7 @@ const StatCard = ({
                                     statCardToken.textContainer.stats.subtitle
                                         .fontWeight
                                 }
+                                data-ss-subtitle={subtitle}
                             >
                                 {subtitle}
                             </Text>
@@ -546,6 +551,7 @@ const StatCard = ({
                                                 textOverflow: 'ellipsis',
                                                 wordBreak: 'break-word',
                                             }}
+                                            data-ss-text={title}
                                         >
                                             {title}
                                         </Text>
@@ -657,6 +663,7 @@ const StatCard = ({
                                                     textOverflow: 'ellipsis',
                                                     wordBreak: 'break-word',
                                                 }}
+                                                data-ss-text={title}
                                             >
                                                 {title}
                                             </Text>
@@ -718,14 +725,22 @@ const StatCard = ({
                                         style={{
                                             cursor: 'pointer',
                                         }}
+                                        data-ss-numeric={formatMainValue(
+                                            value || '--'
+                                        )}
                                     >
-                                        {formatMainValue(value) || '--'}
+                                        {formatMainValue(value || '--')}
                                     </Text>
                                 </Tooltip>
 
                                 {formattedChange && (
                                     <Tooltip content={change?.tooltip || ''}>
-                                        <Block cursor="pointer">
+                                        <Block
+                                            cursor="pointer"
+                                            data-ss-delta={`${change?.valueType === ChangeType.INCREASE ? '+' : ''}${change?.value.toFixed(
+                                                2
+                                            )}%`}
+                                        >
                                             {formattedChange}
                                         </Block>
                                     </Tooltip>
@@ -746,6 +761,7 @@ const StatCard = ({
                                         statCardToken.textContainer.stats
                                             .subtitle.fontWeight
                                     }
+                                    data-ss-subtitle={subtitle}
                                 >
                                     {subtitle}
                                 </Text>
@@ -841,6 +857,7 @@ const StatCard = ({
                                         textOverflow: 'ellipsis',
                                         wordBreak: 'break-word',
                                     }}
+                                    data-ss-text={title}
                                 >
                                     {title}
                                 </Text>
@@ -910,6 +927,9 @@ const StatCard = ({
                                         style={{
                                             cursor: 'pointer',
                                         }}
+                                        data-ss-numeric={formatMainValue(
+                                            value || '--'
+                                        )}
                                     >
                                         {formatMainValue(value || '--')}
                                     </Text>
@@ -957,6 +977,7 @@ const StatCard = ({
                                     statCardToken.textContainer.stats.subtitle
                                         .fontWeight
                                 }
+                                data-ss-subtitle={subtitle}
                             >
                                 {subtitle}
                             </Text>
@@ -985,6 +1006,7 @@ const StatCard = ({
                         (indexedChartData && indexedChartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart
+                                    data-single-stat-graph={title}
                                     data={indexedChartData}
                                     margin={{
                                         top: 5,
@@ -1092,6 +1114,7 @@ const StatCard = ({
                         (indexedChartData && indexedChartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
+                                    data-single-stat-graph={title}
                                     data={indexedChartData}
                                     margin={{
                                         top: 0,
@@ -1177,6 +1200,7 @@ const StatCard = ({
                                 size={ProgressBarSize.SMALL}
                                 variant={ProgressBarVariant.SEGMENTED}
                                 showLabel={true}
+                                data-single-stat-progress={title}
                             />
                         ) : (
                             <Text
