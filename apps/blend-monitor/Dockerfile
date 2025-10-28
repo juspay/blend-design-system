@@ -49,18 +49,16 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files from builder
-COPY --from=builder /app/apps/blend-monitor/public ./public
-COPY --from=builder /app/apps/blend-monitor/.next/standalone ./
-COPY --from=builder /app/apps/blend-monitor/.next/static ./.next/static
-
-# Set correct permissions
-RUN chown -R nextjs:nodejs /app
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blend-monitor/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blend-monitor/.next/static ./apps/blend-monitor/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/blend-monitor/public ./apps/blend-monitor/public
 
 USER nextjs
 
 # Expose port
 EXPOSE 8080
 ENV PORT 8080
+ENV HOSTNAME="0.0.0.0"
 
 # Start the application
-CMD ["node", "server.js"]
+CMD ["node", "apps/blend-monitor/server.js"]
