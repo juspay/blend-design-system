@@ -155,6 +155,8 @@ coverage/
 # Firebase
 .firebase/
 .firebaserc.local
+firebase-*-key*.json
+firebase-*-private-key.txt
 
 # Build outputs
 dist/
