@@ -438,6 +438,17 @@ If issues occur:
 
 ## Rotation History
 
-| Date       | Rotated By  | Reason       | Status  |
-| ---------- | ----------- | ------------ | ------- |
-| 2025-01-XX | [Your Name] | Git exposure | Pending |
+| Date       | Rotated By      | Reason                                                    | Status    |
+| ---------- | --------------- | --------------------------------------------------------- | --------- |
+| 2025-10-28 | Deepanshu Kumar | Firebase credentials exposed in DEPLOYMENT.md git history | Completed |
+
+**Details:**
+
+- **Old Service Account:** firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com (DELETED)
+- **New Service Account:** blend-firebase-10281134@storybook-452807.iam.gserviceaccount.com
+- **Old App ID:** 1:567047894553:web:1cd999e1c9bf9b81ff5c88
+- **New App ID:** 1:567047894553:web:f2e38d23fbc9bdbbff5c88
+- **Deployment:** blend-monitor-00007-pml (Cloud Run)
+- **Downtime:** 0 minutes
+- **Old Secret Version:** Disabled (version 1)
+- **Active Secret Version:** Version 2
