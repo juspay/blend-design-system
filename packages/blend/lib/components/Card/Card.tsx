@@ -85,6 +85,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 flexDirection="column"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                data-card="true"
             >
                 {renderCardContent()}
             </Block>

@@ -71,7 +71,10 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
     return (
         <>
             {hasHeader && (
-                <Block style={getHeaderBoxStyles(cardToken)}>
+                <Block
+                    style={getHeaderBoxStyles(cardToken)}
+                    data-card-header="true"
+                >
                     <Block
                         display="flex"
                         justifyContent="space-between"
@@ -109,6 +112,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                             style={getHeaderTitleStyles(
                                                 cardToken
                                             )}
+                                            data-card-title={headerTitle}
                                         >
                                             {headerTitle}
                                         </Text>
@@ -135,7 +139,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                 </Block>
             )}
 
-            <Block style={getBodyStyles(cardToken)}>
+            <Block style={getBodyStyles(cardToken)} data-card-body="true">
                 {hasBodySlot1 && (
                     <Block
                         style={{
@@ -174,6 +178,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                 variant
                             ),
                         }}
+                        data-card-content="true"
                     >
                         <Text style={getBodyContentStyles(cardToken)}>
                             {content}
@@ -197,7 +202,11 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                 )}
 
                 {hasActionButton && (
-                    <Block display="flex" justifyContent="flex-start">
+                    <Block
+                        display="flex"
+                        justifyContent="flex-start"
+                        data-card-action="true"
+                    >
                         <Button
                             {...actionButton}
                             subType={

@@ -220,9 +220,6 @@ const TableCell = forwardRef<
             } else if (typeof valueToCheck === 'boolean') {
                 attrs['data-cell-type'] = 'boolean'
                 attrs['data-boolean'] = String(valueToCheck)
-            } else if (typeof valueToCheck === 'number') {
-                attrs['data-cell-type'] = 'numeric'
-                attrs['data-numeric'] = String(valueToCheck)
             }
 
             if (row.id) {
