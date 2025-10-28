@@ -31,6 +31,7 @@ import {
     Shield,
     Settings,
     TrendingUp,
+    Upload,
     Workflow,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
@@ -90,6 +91,7 @@ import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
+import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 
@@ -146,6 +148,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
     >('dataRangePicker')
@@ -402,6 +405,8 @@ const SidebarDemo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'upload':
+                return <UploadDemo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'workflowCanvas':
@@ -521,6 +526,13 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'virtualList',
                     onClick: () => setActiveComponent('virtualList'),
+                },
+                {
+                    label: 'File Upload',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('upload'),
                 },
             ],
         },

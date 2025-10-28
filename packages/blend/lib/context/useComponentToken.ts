@@ -37,6 +37,7 @@ import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { ResponsiveWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
@@ -81,6 +82,7 @@ export const useComponentToken = (
     | ResponsiveAvatarTokens
     | ResponsiveAvatarGroupTokens
     | ResponsiveSidebarTokens
+    | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
     | ResponsiveWorkflowTokens => {
     const { componentTokens } = useTheme()
@@ -162,6 +164,8 @@ export const useComponentToken = (
             return componentTokens.AVATAR_GROUP
         case 'SIDEBAR':
             return componentTokens.SIDEBAR
+        case 'UPLOAD':
+            return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
         case 'WORKFLOW_CANVAS':
