@@ -27,6 +27,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant?: undefined }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -38,6 +39,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant: 'aligned' }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -49,6 +51,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant: 'custom' }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -76,8 +79,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         ? toPixels(maxWidth)
                         : cardToken.maxWidth
                 }
-                maxHeight={maxHeight}
-                minHeight={minHeight}
+                maxHeight={maxHeight ? toPixels(maxHeight) : undefined}
+                minHeight={minHeight ? toPixels(minHeight) : undefined}
                 outline={cardToken.border}
                 borderRadius={cardToken.borderRadius}
                 backgroundColor={cardToken.backgroundColor}

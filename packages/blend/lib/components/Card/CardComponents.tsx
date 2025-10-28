@@ -27,21 +27,25 @@ import {
 type CardComponentProps = {
     props: Extract<CardProps, { variant?: CardVariant.DEFAULT }>
     cardToken: CardTokenType
+    maxHeight?: string
 }
 
 type AlignedCardComponentProps = {
     props: Extract<CardProps, { variant: CardVariant.ALIGNED }>
     cardToken: CardTokenType
+    maxHeight?: string
 }
 
 type CustomCardComponentProps = {
     props: Extract<CardProps, { variant: CardVariant.CUSTOM }>
     cardToken: CardTokenType
+    maxHeight?: string
 }
 
 export const DefaultCard: React.FC<CardComponentProps> = ({
     props,
     cardToken,
+    maxHeight,
 }) => {
     const {
         headerSlot1,
@@ -66,7 +70,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
     const hasContent = Boolean(content)
     const hasBodySlot2 = Boolean(bodySlot2)
     const hasActionButton = Boolean(actionButton)
-    const isInlineButton = isInlineActionButton(actionButton, false) // Default cards are never center-aligned
+    const isInlineButton = isInlineActionButton(actionButton, false)
 
     return (
         <>
@@ -139,7 +143,17 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                 </Block>
             )}
 
-            <Block style={getBodyStyles(cardToken)} data-card-body="true">
+            <Block
+                style={{
+                    ...getBodyStyles(cardToken),
+                    ...(maxHeight && {
+                        flex: 1,
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                    }),
+                }}
+                data-card-body="true"
+            >
                 {hasBodySlot1 && (
                     <Block
                         style={{
@@ -246,7 +260,7 @@ const CardContent: React.FC<{
     const hasBodyTitle = Boolean(bodyTitle)
     const hasContent = Boolean(content)
     const hasActionButton = Boolean(actionButton)
-    const isInlineButton = isInlineActionButton(actionButton, centerAlign) // Pass centerAlign parameter
+    const isInlineButton = isInlineActionButton(actionButton, centerAlign)
 
     return (
         <Block
@@ -354,15 +368,14 @@ const CardContent: React.FC<{
                 </Block>
             )}
 
-            {/* Wrap content and action button with proper gap */}
             <Block
                 display="flex"
                 flexDirection="column"
                 style={{
                     gap: hasActionButton
                         ? centerAlign
-                            ? String(cardToken.body.actions.centerAlignGap) // 24px for center-aligned cards
-                            : String(cardToken.body.actions.gap) // 14px for all other cases
+                            ? String(cardToken.body.actions.centerAlignGap)
+                            : String(cardToken.body.actions.gap)
                         : '0',
                 }}
             >
@@ -395,6 +408,7 @@ const CardContent: React.FC<{
 export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
     props,
     cardToken,
+    maxHeight,
 }) => {
     const { alignment, centerAlign = false, cardSlot } = props
     const variant = CardVariant.ALIGNED
@@ -453,6 +467,11 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                     <Block
                         style={{
                             padding: `0 ${String(cardToken.padding[variant].x)} ${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
+                            ...(maxHeight && {
+                                flex: 1,
+                                overflowY: 'auto',
+                                overflowX: 'hidden',
+                            }),
                         }}
                     >
                         <CardContent
@@ -470,6 +489,10 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
             <Block
                 style={{
                     padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
+                    ...(maxHeight && {
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                    }),
                 }}
             >
                 <CardContent
@@ -486,8 +509,21 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 export const CustomCard: React.FC<CustomCardComponentProps> = ({
     props,
     cardToken,
+    maxHeight,
 }) => {
     const { children } = props
 
-    return <Block style={getCustomCardStyles(cardToken)}>{children}</Block>
+    return (
+        <Block
+            style={{
+                ...getCustomCardStyles(cardToken),
+                ...(maxHeight && {
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                }),
+            }}
+        >
+            {children}
+        </Block>
+    )
 }
