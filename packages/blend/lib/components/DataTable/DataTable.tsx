@@ -164,6 +164,23 @@ const DataTable = forwardRef(
             pagination?.pageSize || 10
         )
 
+        useEffect(() => {
+            if (serverSidePagination && pagination) {
+                if (pagination.currentPage !== currentPage) {
+                    setCurrentPage(pagination.currentPage)
+                }
+                if (pagination.pageSize !== pageSize) {
+                    setPageSize(pagination.pageSize)
+                }
+            }
+        }, [
+            serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
+            currentPage,
+            pageSize,
+        ])
+
         const [selectedRows, setSelectedRows] = useState<
             Record<string, boolean>
         >({})
@@ -336,8 +353,19 @@ const DataTable = forwardRef(
                 return processedData
             }
 
-            const startIndex = (currentPage - 1) * pageSize
-            return processedData.slice(startIndex, startIndex + pageSize)
+            const effectiveCurrentPage =
+                serverSidePagination && pagination
+                    ? pagination.currentPage
+                    : currentPage
+            const effectivePageSize =
+                serverSidePagination && pagination
+                    ? pagination.pageSize
+                    : pageSize
+            const startIndex = (effectiveCurrentPage - 1) * effectivePageSize
+            return processedData.slice(
+                startIndex,
+                startIndex + effectivePageSize
+            )
         }, [
             processedData,
             currentPage,
@@ -345,6 +373,8 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
             serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
         ])
 
         const updateSelectAllState = (
