@@ -786,6 +786,11 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
+                        maxHeight:
+                            currentData.length > 0
+                                ? tableToken.dataTable.maxHeight
+                                : 'none',
+                        overflow: 'hidden',
                     }}
                 >
                     <BulkActionBar
@@ -801,17 +806,17 @@ const DataTable = forwardRef(
                             position: 'relative',
                             minHeight: 0,
                             overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                height: '100%',
-                                maxHeight:
-                                    currentData.length > 0
-                                        ? tableToken.dataTable.maxHeight
-                                        : 'none',
+                                flex: 1,
                                 position: 'relative',
+                                minHeight:
+                                    currentData.length > 0 ? '0' : 'auto',
                             }}
                         >
                             <table
@@ -1056,6 +1061,7 @@ const DataTable = forwardRef(
                         pageSize={pageSize}
                         totalRows={totalRows}
                         isLoading={isLoading}
+                        hasData={currentData.length > 0}
                         onPageChange={handlePageChange}
                         onPageSizeChange={handlePageSizeChange}
                     />

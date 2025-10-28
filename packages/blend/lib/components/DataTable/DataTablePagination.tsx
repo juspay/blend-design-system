@@ -16,6 +16,7 @@ type DataTablePaginationProps = {
     totalRows: number
     pageSizeOptions: number[]
     isLoading?: boolean
+    hasData?: boolean
     onPageChange: (page: number) => void
     onPageSizeChange: (pageSize: number) => void
 }
@@ -26,6 +27,7 @@ export function DataTablePagination({
     totalRows,
     pageSizeOptions,
     isLoading = false,
+    hasData = true,
     onPageChange,
     onPageSizeChange,
 }: DataTablePaginationProps) {
@@ -127,7 +129,7 @@ export function DataTablePagination({
                     items={pageSizeMenuItems}
                     selected={String(pageSize)}
                     onSelect={(value) => {
-                        if (typeof value === 'string') {
+                        if (typeof value === 'string' && hasData) {
                             onPageSizeChange(Number(value))
                         }
                     }}
@@ -136,6 +138,7 @@ export function DataTablePagination({
                     variant={SelectMenuVariant.NO_CONTAINER}
                     placeholder=""
                     minMenuWidth={80}
+                    disabled={!hasData}
                 />
 
                 {isLoading && (
@@ -168,6 +171,10 @@ export function DataTablePagination({
                     tableToken.dataTable.table.footer.pagination.pageNavigation
                         .gap
                 }
+                style={{
+                    opacity: hasData ? 1 : 0.5,
+                    pointerEvents: hasData ? 'auto' : 'none',
+                }}
             >
                 <PrimitiveButton
                     contentCentered
@@ -185,16 +192,16 @@ export function DataTablePagination({
                             : FOUNDATION_THEME.border.radius[2]
                     }
                     color={
-                        currentPage === 1
+                        currentPage === 1 || !hasData
                             ? FOUNDATION_THEME.colors.gray[300]
                             : FOUNDATION_THEME.colors.gray[600]
                     }
-                    disabled={currentPage === 1 || isLoading}
-                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1 || isLoading || !hasData}
+                    onClick={() => hasData && onPageChange(currentPage - 1)}
                     aria-label="Previous page"
                     _hover={{
                         backgroundColor:
-                            currentPage === 1
+                            currentPage === 1 || !hasData
                                 ? 'transparent'
                                 : FOUNDATION_THEME.colors.gray[50],
                     }}
@@ -228,8 +235,10 @@ export function DataTablePagination({
                                     borderRadius={
                                         FOUNDATION_THEME.border.radius[8]
                                     }
-                                    disabled={isLoading}
-                                    onClick={() => onPageChange(page)}
+                                    disabled={isLoading || !hasData}
+                                    onClick={() =>
+                                        hasData && onPageChange(page)
+                                    }
                                     _hover={{
                                         backgroundColor:
                                             currentPage === page
@@ -280,16 +289,18 @@ export function DataTablePagination({
                             : FOUNDATION_THEME.border.radius[2]
                     }
                     color={
-                        currentPage === totalPages
+                        currentPage === totalPages || !hasData
                             ? FOUNDATION_THEME.colors.gray[300]
                             : FOUNDATION_THEME.colors.gray[600]
                     }
-                    disabled={currentPage === totalPages || isLoading}
-                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={
+                        currentPage === totalPages || isLoading || !hasData
+                    }
+                    onClick={() => hasData && onPageChange(currentPage + 1)}
                     aria-label="Next page"
                     _hover={{
                         backgroundColor:
-                            currentPage === totalPages
+                            currentPage === totalPages || !hasData
                                 ? 'transparent'
                                 : FOUNDATION_THEME.colors.gray[50],
                     }}
