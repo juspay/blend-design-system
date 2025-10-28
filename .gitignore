@@ -41,12 +41,19 @@ next-env.d.ts
 !.env.example
 !.env.template
 .env.local
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
 .env.staging
 .env.dev
 .env.prod
+
+# Sensitive credentials (extra safety)
+**/.env.local
+**/.env.production
+**/firebase-*.json
+**/credentials*.json
 
 # OS files
 .DS_Store
@@ -155,6 +162,12 @@ coverage/
 # Firebase
 .firebase/
 .firebaserc.local
+firebase-*-key*.json
+firebase-*-private-key.txt
+
+# Cloud SQL Proxy binary
+**/cloud_sql_proxy
+cloud_sql_proxy
 
 # Build outputs
 dist/
