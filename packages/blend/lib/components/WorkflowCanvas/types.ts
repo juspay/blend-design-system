@@ -67,7 +67,6 @@ export type WorkflowCanvasProps = {
     minZoom?: number
     maxZoom?: number
     defaultZoom?: number
-    className?: string
     children?: ReactNode
 }
 

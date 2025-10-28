@@ -10,27 +10,8 @@ import { createTokenStyledHandle, getBoxShadow } from '../utils'
 import { TRANSITIONS } from '../constants'
 import NodeContent from '../components/NodeContent'
 
-/**
- * Styled handle component for node connections
- * Uses token-based styling for consistency
- */
 const StyledHandle = createTokenStyledHandle()
 
-/**
- * DefaultNode component for workflow canvas
- *
- * @component
- * @param {CustomNodeProps} props - Node properties including data and selected state
- * @returns {JSX.Element} Default workflow node with handles on both sides
- *
- * @example
- * ```tsx
- * <DefaultNode
- *   data={{ label: 'Process', icon: <Icon />, description: 'Process data' }}
- *   selected={false}
- * />
- * ```
- */
 const DefaultNode = ({ data, selected }: CustomNodeProps) => {
     const tokens = useResponsiveTokens<WorkflowTokensType>('WORKFLOW_CANVAS')
 

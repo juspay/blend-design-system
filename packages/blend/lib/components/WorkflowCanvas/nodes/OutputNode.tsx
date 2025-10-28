@@ -15,10 +15,6 @@ import {
 import { TRANSITIONS } from '../constants'
 import NodeContent from '../components/NodeContent'
 
-/**
- * Styled handle component for output node connections
- * Purple-themed handle for workflow end points
- */
 const StyledHandle = createStyledHandle(
     FOUNDATION_THEME.colors.purple[500],
     FOUNDATION_THEME.colors.purple[600],
@@ -26,31 +22,12 @@ const StyledHandle = createStyledHandle(
     FOUNDATION_THEME.colors.purple[700]
 )
 
-/**
- * Styled wrapper for output node gradient background
- * Purple gradient for visual distinction of output nodes
- */
 const GradientWrapper = createGradientWrapper(
     FOUNDATION_THEME.colors.purple[50],
     FOUNDATION_THEME.colors.purple[100],
     FOUNDATION_THEME.colors.purple[300]
 )
 
-/**
- * OutputNode component for workflow canvas end points
- *
- * @component
- * @param {CustomNodeProps} props - Node properties including data and selected state
- * @returns {JSX.Element} Output workflow node with purple gradient and target handle
- *
- * @example
- * ```tsx
- * <OutputNode
- *   data={{ label: 'Complete', icon: <CheckIcon />, description: 'Workflow complete' }}
- *   selected={false}
- * />
- * ```
- */
 const OutputNode = ({ data, selected }: CustomNodeProps) => {
     const tokens = useResponsiveTokens<WorkflowTokensType>('WORKFLOW_CANVAS')
 

@@ -19,11 +19,8 @@ import InputNode from './nodes/InputNode'
 import OutputNode from './nodes/OutputNode'
 import DefaultEdge from './edges/DefaultEdge'
 import WorkflowControls from './WorkflowControls'
+import './WorkflowCanvas.css'
 
-/**
- * Styled container for the workflow canvas
- * Uses styled-components for ReactFlow-specific styling requirements
- */
 const WorkflowContainer = styled.div<{
     $tokens: WorkflowTokensType
     $height: string | number
@@ -39,59 +36,8 @@ const WorkflowContainer = styled.div<{
     border-radius: ${(props) => props.$tokens.node.default.borderRadius};
     overflow: hidden;
     position: relative;
-
-    /* Override React Flow default node styles */
-    .react-flow__node {
-        cursor: pointer;
-        padding: 0 !important;
-        border: none !important;
-        background: transparent !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    /* Override hover state */
-    .react-flow__node:hover {
-        padding: 0 !important;
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    /* Override selected state */
-    .react-flow__node.selected {
-        padding: 0 !important;
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    /* Override selectable state */
-    .react-flow__node.selectable:hover {
-        padding: 0 !important;
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-
-    .react-flow__edge {
-        cursor: pointer;
-    }
-
-    .react-flow__attribution {
-        display: none;
-    }
 `
 
-/**
- * Inner WorkflowCanvas component that renders the ReactFlow instance
- *
- * @component
- * @param {WorkflowCanvasProps} props - All canvas configuration props
- * @returns {JSX.Element} The rendered workflow canvas
- *
- * @internal This component should not be used directly. Use WorkflowCanvas instead.
- */
 const WorkflowCanvasInner = ({
     nodes,
     edges,
@@ -117,15 +63,10 @@ const WorkflowCanvasInner = ({
     minZoom = 0.1,
     maxZoom = 2,
     defaultZoom = 1,
-    className,
     children,
 }: WorkflowCanvasProps) => {
     const tokens = useResponsiveTokens<WorkflowTokensType>('WORKFLOW_CANVAS')
 
-    /**
-     * Memoized node types configuration
-     * Prevents unnecessary re-renders when props change
-     */
     const nodeTypes = useMemo(
         () => ({
             default: DefaultNode,
@@ -135,10 +76,6 @@ const WorkflowCanvasInner = ({
         []
     )
 
-    /**
-     * Memoized edge types configuration
-     * Prevents unnecessary re-renders when props change
-     */
     const edgeTypes = useMemo(
         () => ({
             default: DefaultEdge,
@@ -146,10 +83,6 @@ const WorkflowCanvasInner = ({
         []
     )
 
-    /**
-     * Handle node changes with controlled state
-     * Applies ReactFlow changes and notifies parent component
-     */
     const handleNodesChange = useCallback(
         (changes: NodeChange[]) => {
             if (onNodesChange) {
@@ -160,10 +93,6 @@ const WorkflowCanvasInner = ({
         [nodes, onNodesChange]
     )
 
-    /**
-     * Handle edge changes with controlled state
-     * Applies ReactFlow changes and notifies parent component
-     */
     const handleEdgesChange = useCallback(
         (changes: EdgeChange[]) => {
             if (onEdgesChange) {
@@ -176,10 +105,10 @@ const WorkflowCanvasInner = ({
 
     return (
         <WorkflowContainer
+            className="blend-workflow-canvas"
             $tokens={tokens}
             $height={height}
             $width={width}
-            className={className}
         >
             <ReactFlow
                 nodes={nodes}
@@ -257,28 +186,7 @@ const WorkflowCanvasInner = ({
  * @returns {JSX.Element} The workflow canvas wrapped in ReactFlowProvider
  *
  * @example
- * ```tsx
- * import { WorkflowCanvas, type BlendNode, type BlendEdge } from '@blend/ui'
- *
- * function MyWorkflow() {
- *   const [nodes, setNodes] = useState<BlendNode[]>([
- *     { id: '1', type: 'input', position: { x: 0, y: 0 }, data: { label: 'Start' } }
- *   ])
- *   const [edges, setEdges] = useState<BlendEdge[]>([])
- *
- *   return (
- *     <WorkflowCanvas
- *       nodes={nodes}
- *       edges={edges}
- *       onNodesChange={setNodes}
- *       onEdgesChange={setEdges}
- *       height={600}
- *       showControls={true}
- *       showMinimap={true}
- *     />
- *   )
- * }
- * ```
+ * See the full demo at `apps/site/src/demos/WorkflowCanvasDemo.tsx`
  *
  * @public
  */

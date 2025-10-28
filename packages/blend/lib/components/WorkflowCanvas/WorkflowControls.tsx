@@ -9,22 +9,6 @@ import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
 import { TRANSITIONS } from './constants'
 
-/**
- * WorkflowControls component for zoom and view controls
- *
- * @component
- * @param {WorkflowControlsProps} props - Control options and positioning
- * @returns {JSX.Element} Control buttons for zooming and fitting view
- *
- * @example
- * ```tsx
- * <WorkflowControls
- *   showZoom={true}
- *   showFitView={true}
- *   position="bottom-right"
- * />
- * ```
- */
 const WorkflowControls = ({
     showZoom = true,
     showFitView = true,
@@ -33,7 +17,6 @@ const WorkflowControls = ({
     const tokens = useResponsiveTokens<WorkflowTokensType>('WORKFLOW_CANVAS')
     const { zoomIn, zoomOut, fitView } = useReactFlow()
 
-    // Calculate positioning from position prop
     const positionStyles = useMemo(() => {
         const [vertical, horizontal] = position.split('-')
         return {

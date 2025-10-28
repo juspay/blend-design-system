@@ -1,62 +1,32 @@
 import { memo, type ReactNode } from 'react'
 import Block from '../../Primitives/Block/Block'
 import Text from '../../Text/Text'
+import { FOUNDATION_THEME } from '../../../tokens'
 
-/**
- * Props for the NodeContent component
- */
 export type NodeContentProps = {
-    /** Icon to display at the top of the node */
     icon?: ReactNode
-    /** Primary label text */
     label?: string
-    /** Secondary description text */
     description?: string
-    /** Icon container background color */
     iconBackgroundColor?: string
-    /** Icon container padding */
     iconPadding?: string | number
-    /** Icon container border radius */
     iconBorderRadius?: string | number
-    /** Label text color */
     labelColor?: string
-    /** Label font weight */
     labelFontWeight?: number
-    /** Description text color */
     descriptionColor?: string
-    /** Description opacity */
     descriptionOpacity?: number
 }
 
-/**
- * Shared NodeContent component for rendering consistent node content
- *
- * @component
- * @param {NodeContentProps} props - Content configuration
- * @returns {JSX.Element} Rendered node content with icon, label, and description
- *
- * @example
- * ```tsx
- * <NodeContent
- *   icon={<PlayIcon />}
- *   label="Start Process"
- *   description="Initialize workflow"
- *   iconBackgroundColor="rgba(0, 128, 0, 0.1)"
- *   labelColor="#006400"
- * />
- * ```
- */
 const NodeContent = ({
     icon,
     label,
     description,
-    iconBackgroundColor = 'rgba(0, 0, 0, 0.04)',
-    iconPadding = '8px',
-    iconBorderRadius = '8px',
+    iconBackgroundColor = FOUNDATION_THEME.colors.gray[100],
+    iconPadding = FOUNDATION_THEME.unit[8],
+    iconBorderRadius = FOUNDATION_THEME.border.radius[8],
     labelColor,
-    labelFontWeight = 600,
+    labelFontWeight = Number(FOUNDATION_THEME.font.weight[600]),
     descriptionColor,
-    descriptionOpacity = 0.7,
+    descriptionOpacity = Number(FOUNDATION_THEME.opacity[70]),
 }: NodeContentProps) => {
     return (
         <>

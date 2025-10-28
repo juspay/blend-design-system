@@ -9,28 +9,6 @@ import { TagVariant, TagColor, TagSize, TagShape } from '../../Tags/types'
 import { getEdgeStroke, getEdgeStrokeWidth } from '../utils'
 import { TRANSITIONS, REACTFLOW_CLASSES, TRANSFORMS } from '../constants'
 
-/**
- * DefaultEdge component for connecting workflow nodes
- *
- * @component
- * @param {CustomEdgeProps} props - Edge properties including positions, selection state, and data
- * @returns {JSX.Element} Smooth step edge with optional label
- *
- * @example
- * ```tsx
- * <DefaultEdge
- *   id="e1-2"
- *   sourceX={100}
- *   sourceY={50}
- *   targetX={300}
- *   targetY={150}
- *   sourcePosition={Position.Right}
- *   targetPosition={Position.Left}
- *   data={{ label: 'Next', animated: false }}
- *   selected={false}
- * />
- * ```
- */
 const DefaultEdge = ({
     id,
     sourceX,

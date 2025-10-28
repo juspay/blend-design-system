@@ -15,10 +15,6 @@ import {
 import { TRANSITIONS } from '../constants'
 import NodeContent from '../components/NodeContent'
 
-/**
- * Styled handle component for input node connections
- * Green-themed handle for workflow start points
- */
 const StyledHandle = createStyledHandle(
     FOUNDATION_THEME.colors.green[500],
     FOUNDATION_THEME.colors.green[600],
@@ -26,31 +22,12 @@ const StyledHandle = createStyledHandle(
     FOUNDATION_THEME.colors.green[700]
 )
 
-/**
- * Styled wrapper for input node gradient background
- * Green gradient for visual distinction of input nodes
- */
 const GradientWrapper = createGradientWrapper(
     FOUNDATION_THEME.colors.green[50],
     FOUNDATION_THEME.colors.green[100],
     FOUNDATION_THEME.colors.green[300]
 )
 
-/**
- * InputNode component for workflow canvas start points
- *
- * @component
- * @param {CustomNodeProps} props - Node properties including data and selected state
- * @returns {JSX.Element} Input workflow node with green gradient and source handle
- *
- * @example
- * ```tsx
- * <InputNode
- *   data={{ label: 'Start', icon: <PlayIcon />, description: 'Workflow start' }}
- *   selected={false}
- * />
- * ```
- */
 const InputNode = ({ data, selected }: CustomNodeProps) => {
     const tokens = useResponsiveTokens<WorkflowTokensType>('WORKFLOW_CANVAS')
 
