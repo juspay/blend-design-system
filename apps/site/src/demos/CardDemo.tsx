@@ -1086,6 +1086,172 @@ const CardDemo = () => {
                 </div>
             </div>
 
+            {/* Height Control Examples */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Height Control Examples
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Cards support <strong>height</strong> and{' '}
+                    <strong>minHeight</strong> props for flexible sizing:
+                    <br />• Accepts any CSS height value: pixels, percentages,
+                    viewport units
+                    <br />• <strong>Note:</strong> For percentage heights,
+                    parent container must have a defined height
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Fixed Height Card */}
+                    <Card
+                        maxHeight="250px"
+                        headerTitle="Fixed Height"
+                        headerTag={
+                            <Tag
+                                text="250px"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.PRIMARY}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="height='250px'"
+                        bodyTitle="Fixed Dimensions"
+                        content="This card has a fixed height of 250px, useful for grid layouts where uniform card heights are needed."
+                        actionButton={{
+                            text: 'Learn More',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Min Height Card */}
+                    <Card
+                        minHeight="250px"
+                        headerTitle="Minimum Height"
+                        headerTag={
+                            <Tag
+                                text="minHeight: 250px"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="minHeight='250px'"
+                        bodyTitle="Flexible Growth"
+                        content="This card has a minimum height of 250px but can grow with content. Perfect when you want a baseline height but need flexibility."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Tag
+                                    text="Flexible"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PRIMARY}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Grows with content"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'Explore',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Percentage Height Card */}
+                    <div style={{ height: '300px' }}>
+                        <Card
+                            minHeight="100%"
+                            variant={CardVariant.ALIGNED}
+                            alignment={CardAlignment.VERTICAL}
+                            centerAlign={true}
+                            cardSlot={
+                                <div
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '50%',
+                                        background:
+                                            'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: 'white',
+                                        fontSize: '20px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    100%
+                                </div>
+                            }
+                            headerTitle="Full Height"
+                            headerTag={
+                                <Tag
+                                    text="100%"
+                                    variant={TagVariant.ATTENTIVE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                            }
+                            subHeader="height='100%' (fills 300px parent)"
+                            content="This card fills 100% of its parent container's height (300px). Perfect for responsive layouts."
+                            actionButton={{
+                                text: 'View More',
+                                buttonType: ButtonType.SECONDARY,
+                                subType: ButtonSubType.INLINE,
+                                size: ButtonSize.SMALL,
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        padding: '16px',
+                        backgroundColor: '#fef3c7',
+                        borderRadius: '8px',
+                        border: '1px solid #fbbf24',
+                        fontSize: '14px',
+                        color: '#92400e',
+                        marginBottom: '32px',
+                    }}
+                >
+                    <strong>Tip:</strong> The percentage height example (100%)
+                    is wrapped in a div with height: 300px. Without a parent
+                    height, percentage heights will collapse to auto.
+                </div>
+            </div>
+
             {/* Usage Guidelines */}
             <div
                 style={{
