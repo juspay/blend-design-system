@@ -444,11 +444,12 @@ If issues occur:
 
 **Details:**
 
-- **Old Service Account:** firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com (DELETED)
-- **New Service Account:** blend-firebase-10281134@storybook-452807.iam.gserviceaccount.com
-- **Old App ID:** 1:567047894553:web:1cd999e1c9bf9b81ff5c88
-- **New App ID:** 1:567047894553:web:f2e38d23fbc9bdbbff5c88
+- **Old Service Account:** firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com (DELETED ✅)
+- **New Service Account:** blend-firebase-10281134@storybook-452807.iam.gserviceaccount.com (ACTIVE ✅)
+- **Old Firebase Web App:** 1:567047894553:web:1cd999e1c9bf9b81ff5c88 (DELETED ✅)
+- **New Firebase Web App:** 1:567047894553:web:f2e38d23fbc9bdbbff5c88 (ACTIVE ✅)
 - **Deployment:** blend-monitor-00007-pml (Cloud Run)
 - **Downtime:** 0 minutes
-- **Old Secret Version:** Disabled (version 1)
-- **Active Secret Version:** Version 2
+- **Old Secret Version:** Disabled (version 1) ✅
+- **Active Secret Version:** Version 2 ✅
+- **Cleanup Completed:** 2025-10-28
