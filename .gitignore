@@ -165,6 +165,10 @@ coverage/
 firebase-*-key*.json
 firebase-*-private-key.txt
 
+# Cloud SQL Proxy binary
+**/cloud_sql_proxy
+cloud_sql_proxy
+
 # Build outputs
 dist/
 apps/ascent/out/
