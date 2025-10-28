@@ -1,32 +1,40 @@
 # Build stage
 FROM node:20-alpine AS builder
 
-# Install dependencies for native modules
+# Install dependencies for native modules and pnpm
 RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copy package file
+# Copy monorepo files
+COPY pnpm-workspace.yaml ./
+COPY pnpm-lock.yaml ./
 COPY package.json ./
+COPY turbo.json ./
 
-# Install dependencies (without lock file since it's in the monorepo root)
-RUN npm install
+# Copy blend-monitor app
+COPY apps/blend-monitor ./apps/blend-monitor
 
-# Copy source files
-COPY . .
+# Copy shared packages if needed
+COPY packages ./packages
 
-# Set build-time environment variables (actual values for build)
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Set build-time environment variables (NEW rotated credentials)
 ENV NEXT_PUBLIC_FIREBASE_API_KEY="AIzaSyD2aRkOI4iCwiZOW5kEejrL9jv9JvytKpo"
 ENV NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="storybook-452807.firebaseapp.com"
 ENV NEXT_PUBLIC_FIREBASE_PROJECT_ID="storybook-452807"
 ENV NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="storybook-452807.firebasestorage.app"
 ENV NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="567047894553"
-ENV NEXT_PUBLIC_FIREBASE_APP_ID="1:567047894553:web:1cd999e1c9bf9b81ff5c88"
+ENV NEXT_PUBLIC_FIREBASE_APP_ID="1:567047894553:web:f2e38d23fbc9bdbbff5c88"
 ENV NEXT_PUBLIC_FIREBASE_DATABASE_URL="https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app"
 
 # Build the application
 ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+WORKDIR /app/apps/blend-monitor
+RUN pnpm run build
 
 # Production stage
 FROM node:20-alpine AS runner
@@ -41,9 +49,9 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/apps/blend-monitor/public ./public
+COPY --from=builder /app/apps/blend-monitor/.next/standalone ./
+COPY --from=builder /app/apps/blend-monitor/.next/static ./.next/static
 
 # Set correct permissions
 RUN chown -R nextjs:nodejs /app
