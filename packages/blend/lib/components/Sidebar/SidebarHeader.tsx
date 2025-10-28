@@ -11,7 +11,9 @@ import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
 
-const ToggleButton = styled.button<{ tokens: SidebarTokenType }>`
+const ToggleButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'tokens',
+})<{ tokens: SidebarTokenType }>`
     display: flex;
     align-items: center;
     justify-content: center;
