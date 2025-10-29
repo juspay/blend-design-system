@@ -686,7 +686,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             cursor: isDisabled ? 'not-allowed' : 'pointer',
                             ...triggerConfig?.style,
                         }}
-                        className={triggerConfig?.className}
                     >
                         {triggerConfig?.element || triggerElement}
                     </Block>
@@ -790,7 +789,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
-                    className={triggerConfig?.className}
                     data-component-field-wrapper=""
                     data-date-picker="dateRangePicker-Filter"
                     data-button-for={displayText

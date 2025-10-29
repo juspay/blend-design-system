@@ -179,14 +179,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     variant = ProgressBarVariant.SOLID,
     type = ProgressBarType.SOLID,
     showLabel = false,
-    className,
 }) => {
     const progressBarToken =
         useResponsiveTokens<ProgressBarTokenType>('PROGRESS_BAR')
 
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (
-            <Block className={className}>
+            <Block>
                 <CircularProgressBar
                     value={value}
                     size={size}
@@ -199,7 +198,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     }
 
     return (
-        <Block className={className}>
+        <Block>
             <LinearProgressBar
                 value={value}
                 size={size}
