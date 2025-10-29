@@ -6,6 +6,7 @@ export type TableFooterProps = {
     pageSize: number
     totalRows: number
     isLoading?: boolean
+    hasData?: boolean
     onPageChange: (page: number) => void
     onPageSizeChange: (size: number) => void
 }

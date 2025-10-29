@@ -32,6 +32,7 @@ import {
     Settings,
     TrendingUp,
     Upload,
+    Workflow,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -92,6 +93,7 @@ import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
+import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -148,6 +150,7 @@ const SidebarDemo = () => {
         | 'virtualList'
         | 'upload'
         | 'codeBlock'
+        | 'workflowCanvas'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -406,6 +409,8 @@ const SidebarDemo = () => {
                 return <UploadDemo />
             case 'codeBlock':
                 return <CodeBlockDemo />
+            case 'workflowCanvas':
+                return <WorkflowCanvasDemo />
             default:
                 return (
                     <div className="p-8">
@@ -835,6 +840,14 @@ const SidebarDemo = () => {
                         <Code style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('codeBlock'),
+                },
+                {
+                    label: 'Workflow Canvas',
+                    leftSlot: (
+                        <Workflow style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'workflowCanvas',
+                    onClick: () => setActiveComponent('workflowCanvas'),
                 },
             ],
         },
