@@ -1,0 +1,50 @@
+/**
+ * WorkflowCanvas Styles
+ *
+ * Scoped styles for the Blend WorkflowCanvas component.
+ * These styles only affect nodes/edges within .blend-workflow-canvas containers.
+ */
+
+/* Override React Flow default node styles within our canvas */
+.blend-workflow-canvas .react-flow__node {
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Override hover state */
+.blend-workflow-canvas .react-flow__node:hover {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Override selected state */
+.blend-workflow-canvas .react-flow__node.selected {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Override selectable state */
+.blend-workflow-canvas .react-flow__node.selectable:hover {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Edge styles */
+.blend-workflow-canvas .react-flow__edge {
+    cursor: pointer;
+}
+
+/* Hide ReactFlow attribution */
+.blend-workflow-canvas .react-flow__attribution {
+    display: none;
+}
