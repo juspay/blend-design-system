@@ -388,6 +388,7 @@ const TableHeader = forwardRef<
                                             tableToken.dataTable.borderRadius,
                                     }),
                                 }}
+                                data-table-column-heading={column.header}
                             >
                                 <Block
                                     display="flex"

@@ -125,7 +125,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             <Tooltip
                 content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
             >
-                <ToggleButton tokens={tokens} onClick={onToggle}>
+                <ToggleButton
+                    tokens={tokens}
+                    onClick={onToggle}
+                    data-icon="sidebar-hamburger"
+                >
                     <PanelsTopLeft
                         color={FOUNDATION_THEME.colors.gray[600]}
                         size={14}
