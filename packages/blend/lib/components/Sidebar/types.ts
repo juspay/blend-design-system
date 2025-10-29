@@ -42,4 +42,7 @@ export type SidebarProps = {
     merchantInfo?: MerchantInfo
     rightActions?: ReactNode
     enableTopbarAutoHide?: boolean
+    isExpanded?: boolean
+    onExpandedChange?: (isExpanded: boolean) => void
+    defaultIsExpanded?: boolean
 }
