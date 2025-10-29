@@ -2919,8 +2919,12 @@ const DataTableDemo = () => {
                 serverSidePagination={isServerSideMode}
                 isLoading={isLoading}
                 pagination={{
-                    currentPage,
-                    pageSize,
+                    currentPage: isServerSideMode
+                        ? serverState.currentPage
+                        : currentPage,
+                    pageSize: isServerSideMode
+                        ? serverState.pageSize
+                        : pageSize,
                     totalRows: isServerSideMode
                         ? serverState.totalRecords
                         : data.length,
