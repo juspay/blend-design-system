@@ -491,6 +491,7 @@ const TableBody = forwardRef<
             currentData,
             visibleColumns,
             idField,
+            tableTitle,
             selectedRows,
             editingRows,
             editValues,
@@ -826,6 +827,8 @@ const TableBody = forwardRef<
                                                               : row
                                                       }
                                                       rowIndex={index}
+                                                      colIndex={colIndex}
+                                                      tableTitle={tableTitle}
                                                       isEditing={isEditing}
                                                       currentValue={
                                                           currentValue

@@ -223,7 +223,13 @@ export type CalendarTokenType = {
                 // Today indicator dot
                 todayIndicator: {
                     width: CSSObject['width'] // Indicator width
+                    height: CSSObject['height'] // Indicator height
                     backgroundColor: CSSObject['backgroundColor'] // Indicator background
+                    borderRadius: CSSObject['borderRadius'] // Indicator border radius
+                    position: CSSObject['position'] // Indicator position
+                    bottom: CSSObject['bottom'] // Indicator bottom position
+                    left: CSSObject['left'] // Indicator left position
+                    transform: CSSObject['transform'] // Indicator transform for centering
                 }
             }
         }
@@ -471,7 +477,13 @@ export const getCalendarToken = (
                     },
                     todayIndicator: {
                         width: foundationToken.unit[4],
+                        height: foundationToken.unit[4],
                         backgroundColor: foundationToken.colors.primary[500],
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        bottom: foundationToken.unit[2],
+                        left: '50%',
+                        transform: 'translateX(-50%)',
                     },
                 },
             },

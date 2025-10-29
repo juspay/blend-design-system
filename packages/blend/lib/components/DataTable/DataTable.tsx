@@ -113,6 +113,7 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             mobileColumnsToShow,
+            ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
@@ -162,6 +163,23 @@ const DataTable = forwardRef(
         const [pageSize, setPageSize] = useState<number>(
             pagination?.pageSize || 10
         )
+
+        useEffect(() => {
+            if (serverSidePagination && pagination) {
+                if (pagination.currentPage !== currentPage) {
+                    setCurrentPage(pagination.currentPage)
+                }
+                if (pagination.pageSize !== pageSize) {
+                    setPageSize(pagination.pageSize)
+                }
+            }
+        }, [
+            serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
+            currentPage,
+            pageSize,
+        ])
 
         const [selectedRows, setSelectedRows] = useState<
             Record<string, boolean>
@@ -335,8 +353,19 @@ const DataTable = forwardRef(
                 return processedData
             }
 
-            const startIndex = (currentPage - 1) * pageSize
-            return processedData.slice(startIndex, startIndex + pageSize)
+            const effectiveCurrentPage =
+                serverSidePagination && pagination
+                    ? pagination.currentPage
+                    : currentPage
+            const effectivePageSize =
+                serverSidePagination && pagination
+                    ? pagination.pageSize
+                    : pageSize
+            const startIndex = (effectiveCurrentPage - 1) * effectivePageSize
+            return processedData.slice(
+                startIndex,
+                startIndex + effectivePageSize
+            )
         }, [
             processedData,
             currentPage,
@@ -344,6 +373,8 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
             serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
         ])
 
         const updateSelectAllState = (
@@ -700,6 +731,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
+                data-loaded-table={title}
             >
                 <DataTableHeader
                     title={title}
@@ -744,6 +776,7 @@ const DataTable = forwardRef(
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}
+                    {...rest}
                 />
 
                 <Block
@@ -753,6 +786,11 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
+                        maxHeight:
+                            currentData.length > 0
+                                ? tableToken.dataTable.maxHeight
+                                : 'none',
+                        overflow: 'hidden',
                     }}
                 >
                     <BulkActionBar
@@ -768,17 +806,17 @@ const DataTable = forwardRef(
                             position: 'relative',
                             minHeight: 0,
                             overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                height: '100%',
-                                maxHeight:
-                                    currentData.length > 0
-                                        ? tableToken.dataTable.maxHeight
-                                        : 'none',
+                                flex: 1,
                                 position: 'relative',
+                                minHeight:
+                                    currentData.length > 0 ? '0' : 'auto',
                             }}
                         >
                             <table
@@ -886,6 +924,7 @@ const DataTable = forwardRef(
                                             handleMobileOverflowClick(row as T)
                                         }
                                         idField={String(idField)}
+                                        tableTitle={title}
                                         selectedRows={selectedRows}
                                         editingRows={editingRows}
                                         editValues={editValues}
@@ -1022,6 +1061,7 @@ const DataTable = forwardRef(
                         pageSize={pageSize}
                         totalRows={totalRows}
                         isLoading={isLoading}
+                        hasData={currentData.length > 0}
                         onPageChange={handlePageChange}
                         onPageSizeChange={handlePageSizeChange}
                     />
