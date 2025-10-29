@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
     BarChart,
     Bar,
@@ -19,7 +19,12 @@ import {
 } from '../ProgressBar'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { ChangeType, StatCardVariant, type StatCardProps } from './types'
+import {
+    ChangeType,
+    StatCardDirection,
+    StatCardVariant,
+    type StatCardProps,
+} from './types'
 import type { StatCardTokenType } from './statcard.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
@@ -30,7 +35,8 @@ import {
     SingleSelect,
 } from '../SingleSelect'
 import { toPixels } from '../../global-utils/GlobalUtils'
-import { getAxisFormatterWithConfig } from '../Charts/ChartUtils'
+import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
+import { AxisType } from '../Charts/types'
 
 const StatCard = ({
     title,
@@ -50,25 +56,68 @@ const StatCard = ({
     yAxis,
     valueFormatter,
     height = 'auto',
+    direction = StatCardDirection.VERTICAL,
 }: StatCardProps) => {
+    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const titleIconRef = useRef<HTMLDivElement>(null)
     const titleIconWidth = titleIconRef.current?.offsetWidth || 0
+    const numberVariantContainerRef = useRef<HTMLDivElement>(null!)
+    const [numberVariantContainerHeight, setNumberVariantContainerHeight] =
+        useState(0)
 
-    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+    const numberVariantTitleContainerRef = useRef<HTMLDivElement>(null!)
+    const [
+        numberVariantTitleContainerHeight,
+        setNumberVariantTitleContainerHeight,
+    ] = useState(0)
+    const numberVariantStatsContainerRef = useRef<HTMLDivElement>(null!)
+    const [
+        numberVariantStatsContainerHeight,
+        setNumberVariantStatsContainerHeight,
+    ] = useState(0)
+
+    const actionIconDynamciPostition =
+        (numberVariantContainerHeight -
+            (numberVariantTitleContainerHeight +
+                numberVariantStatsContainerHeight +
+                toPixels(statCardToken.textContainer.gap))) /
+        2
+
+    useEffect(() => {
+        if (numberVariantContainerRef.current) {
+            setNumberVariantContainerHeight(
+                numberVariantContainerRef.current?.offsetHeight || 0
+            )
+            setNumberVariantTitleContainerHeight(
+                numberVariantTitleContainerRef.current?.offsetHeight || 0
+            )
+            setNumberVariantStatsContainerHeight(
+                numberVariantStatsContainerRef.current?.offsetHeight || 0
+            )
+        }
+    }, [
+        numberVariantContainerRef.current?.offsetHeight,
+        numberVariantTitleContainerRef.current?.offsetHeight,
+        numberVariantStatsContainerRef.current?.offsetHeight,
+    ])
 
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
         if (xAxis.tickFormatter) return xAxis.tickFormatter(label)
+        if (xAxis.type === AxisType.DATE_TIME) {
+            // For tooltips, always show full date/time with year
+            const tooltipFormatter = createDateTimeFormatter({
+                useUTC: true,
+                smartDateTimeFormat: false,
+                showYear: true,
+            })
+            return tooltipFormatter(label)
+        }
         if (xAxis.type) {
-            return getAxisFormatterWithConfig(
-                xAxis.type,
-                xAxis.dateOnly,
-                xAxis.smart,
-                xAxis.timeZone,
-                xAxis.hour12
-            )(label)
+            return getAxisFormatter(xAxis)(label)
         }
         return String(label)
     }
@@ -79,26 +128,14 @@ const StatCard = ({
         }
         if (yAxis.tickFormatter) return yAxis.tickFormatter(val)
         if (yAxis.type) {
-            return getAxisFormatterWithConfig(
-                yAxis.type,
-                yAxis.dateOnly,
-                yAxis.smart,
-                yAxis.timeZone,
-                yAxis.hour12
-            )(val)
+            return getAxisFormatter(yAxis)(val)
         }
         return typeof val === 'number' ? val.toLocaleString() : String(val)
     }
 
     const formatMainValue = (val: string | number): string => {
         if (valueFormatter) {
-            return getAxisFormatterWithConfig(
-                valueFormatter,
-                false,
-                false,
-                undefined,
-                undefined
-            )(val)
+            return getAxisFormatter({ type: valueFormatter })(val)
         }
         return String(val)
     }
@@ -114,50 +151,40 @@ const StatCard = ({
     const normalizedVariant =
         variant === StatCardVariant.PROGRESS_BAR ? 'progress' : variant
 
-    // const variant =
-    //     (variant === StatCardVariant.LINE || variant === StatCardVariant.BAR) && variant
-    // (!chartData || chartData.length === 0)
-    //     ? StatCardVariant.NUMBER
-    //     :
-
     const formattedChange = change ? (
         <Block
             display="flex"
             alignItems="center"
             color={
                 change?.valueType === ChangeType.INCREASE
-                    ? statCardToken.stats.change.text.increase.color
-                    : statCardToken.stats.change.text.decrease.color
+                    ? statCardToken.textContainer.stats.title.change.text.color
+                          .increase
+                    : statCardToken.textContainer.stats.title.change.text.color
+                          .decrease
             }
         >
             {change.valueType === ChangeType.INCREASE ? (
                 <ArrowUp
                     size={parseInt(
-                        statCardToken.stats.change.arrow.width?.toString() ||
+                        statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
                             '14'
                     )}
-                    style={{
-                        margin: statCardToken.stats.change.arrow.margin,
-                    }}
                 />
             ) : (
                 <ArrowDown
                     size={parseInt(
-                        statCardToken.stats.change.arrow.width?.toString() ||
+                        statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
                             '14'
                     )}
-                    style={{
-                        margin: statCardToken.stats.change.arrow.margin,
-                    }}
                 />
             )}
             <Text
                 as="span"
                 fontSize={
-                    statCardToken.stats.change.text[change?.valueType].fontSize
+                    statCardToken.textContainer.stats.title.change.text.fontSize
                 }
                 fontWeight={
-                    statCardToken.stats.change.text[change?.valueType]
+                    statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
             >
@@ -211,28 +238,25 @@ const StatCard = ({
 
         return (
             <Block
-                backgroundColor={
-                    statCardToken.chart.tooltip.container.backgroundColor
-                }
-                padding={statCardToken.chart.tooltip.container.padding}
-                borderRadius={
-                    statCardToken.chart.tooltip.container.borderRadius
-                }
+                backgroundColor={statCardToken.chart.tooltip.backgroundColor}
+                padding={`${statCardToken.chart.tooltip.padding.y} ${statCardToken.chart.tooltip.padding.x}`}
+                borderRadius={statCardToken.chart.tooltip.borderRadius}
             >
                 <Block display="flex" gap={4}>
                     <Text
                         as="span"
-                        color={statCardToken.chart.tooltip.text.color}
-                        variant="body.sm"
-                        fontWeight="medium"
+                        color={statCardToken.chart.tooltip.color}
+                        fontWeight={statCardToken.chart.tooltip.fontWeight}
+                        fontSize={statCardToken.chart.tooltip.fontSize}
                     >
                         {`${formatTooltipLabel(name || '')},`}
                     </Text>
 
                     <Text
                         as="span"
-                        color={statCardToken.chart.tooltip.text.color}
-                        variant="body.sm"
+                        color={statCardToken.chart.tooltip.color}
+                        fontWeight={statCardToken.chart.tooltip.fontWeight}
+                        fontSize={statCardToken.chart.tooltip.fontSize}
                     >
                         {formatTooltipValue(currentValue)}
                     </Text>
@@ -251,13 +275,15 @@ const StatCard = ({
     if (!value && !change && !progressValue && !chartData?.length) {
         return (
             <Block
-                height={statCardToken.height}
-                border={statCardToken.border.default}
+                height={
+                    height && !isSmallScreen ? height : statCardToken.height
+                }
+                border={statCardToken.border}
                 borderRadius={statCardToken.borderRadius}
                 overflow="hidden"
-                backgroundColor={statCardToken.backgroundColor.default}
+                backgroundColor={statCardToken.backgroundColor}
                 boxShadow={statCardToken.boxShadow}
-                padding={statCardToken.padding}
+                padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
                 display="flex"
                 flexDirection="column"
                 // gap={statCardToken.gap}
@@ -271,7 +297,7 @@ const StatCard = ({
                     height="100%"
                     alignItems={isSmallScreen ? 'flex-start' : 'center'}
                     justifyContent="center"
-                    gap={statCardToken.headerStatGap.gap}
+                    gap={statCardToken.textContainer.gap}
                 >
                     <Block
                         display="flex"
@@ -294,21 +320,21 @@ const StatCard = ({
                             display="flex"
                             alignItems="center"
                             flexGrow={1}
-                            gap={statCardToken.header.gap}
+                            gap={statCardToken.textContainer.header.gap}
                         >
                             <Tooltip content={title}>
                                 <Text
                                     as="span"
                                     fontSize={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .fontSize
                                     }
                                     fontWeight={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .fontWeight
                                     }
                                     color={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .color
                                     }
                                     style={{
@@ -332,16 +358,17 @@ const StatCard = ({
                                     <Tooltip content={helpIconText}>
                                         <CircleHelp
                                             width={parseInt(
-                                                statCardToken.header.helpIcon.width?.toString() ||
+                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
                                                     '16'
                                             )}
                                             height={parseInt(
-                                                statCardToken.header.helpIcon.height?.toString() ||
+                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
                                                     '16'
                                             )}
                                             color={
-                                                statCardToken.header.helpIcon
-                                                    .color
+                                                statCardToken.textContainer
+                                                    .header.helpIcon.color
+                                                    .default
                                             }
                                         />
                                     </Tooltip>
@@ -360,7 +387,7 @@ const StatCard = ({
                             width="100%"
                             display="flex"
                             alignItems="center"
-                            gap={statCardToken.stats.gap}
+                            gap={statCardToken.textContainer.stats.gap}
                             justifyContent={
                                 formattedChange || isSmallScreen
                                     ? 'flex-start'
@@ -372,16 +399,16 @@ const StatCard = ({
                                     <Text
                                         as="span"
                                         fontSize={
-                                            statCardToken.stats.value[variant]
-                                                .fontSize
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
                                         }
                                         fontWeight={
-                                            statCardToken.stats.value[variant]
-                                                .fontWeight
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
                                         }
                                         color={
-                                            statCardToken.stats.value[variant]
-                                                .color
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
                                         }
                                         style={{
                                             cursor: 'pointer',
@@ -397,10 +424,11 @@ const StatCard = ({
                                 as="span"
                                 variant="body.sm"
                                 color={
-                                    statCardToken.stats.subtitle[variant].color
+                                    statCardToken.textContainer.stats.subtitle
+                                        .color
                                 }
                                 fontWeight={
-                                    statCardToken.stats.subtitle[variant]
+                                    statCardToken.textContainer.stats.subtitle
                                         .fontWeight
                                 }
                             >
@@ -430,12 +458,12 @@ const StatCard = ({
     return (
         <Block
             height={height && !isSmallScreen ? height : statCardToken.height}
-            border={statCardToken.border.default}
+            border={statCardToken.border}
             borderRadius={statCardToken.borderRadius}
             overflow="hidden"
-            backgroundColor={statCardToken.backgroundColor.default}
+            backgroundColor={statCardToken.backgroundColor}
             boxShadow={statCardToken.boxShadow}
-            padding={statCardToken.padding}
+            padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
             display="flex"
             flexDirection="column"
             // gap={statCardToken.gap}
@@ -444,92 +472,113 @@ const StatCard = ({
             maxWidth={maxWidth}
         >
             {variant !== StatCardVariant.NUMBER && (
-                <Block display="flex" gap={statCardToken.header.gap}>
-                    {titleIcon && !isSmallScreen && (
-                        <Block
-                            width={statCardToken.header.titleIcon.width}
-                            height={statCardToken.header.titleIcon.height}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            flexShrink={0}
-                            ref={titleIconRef}
-                        >
-                            {titleIcon}
-                        </Block>
+                <Block
+                    display="flex"
+                    gap={statCardToken.textContainer.header.gap}
+                >
+                    {direction === StatCardDirection.VERTICAL && (
+                        <>
+                            {titleIcon && !isSmallScreen && (
+                                <Block
+                                    width={
+                                        statCardToken.textContainer.header
+                                            .titleIcon.width
+                                    }
+                                    height={
+                                        statCardToken.textContainer.header
+                                            .titleIcon.width
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    flexShrink={0}
+                                    ref={titleIconRef}
+                                >
+                                    {titleIcon}
+                                </Block>
+                            )}
+                        </>
                     )}
 
                     <Block
                         display="flex"
                         flexDirection="column"
                         width="100%"
-                        gap={statCardToken.headerStatGap.gap}
+                        gap={statCardToken.textContainer.gap}
                     >
                         <Block
                             display="flex"
                             alignItems="center"
-                            justifyContent="space-between"
+                            justifyContent={
+                                direction === StatCardDirection.VERTICAL
+                                    ? 'space-between'
+                                    : 'flex-end'
+                            }
                             width="100%"
-                            gap={statCardToken.header.gap}
+                            gap={statCardToken.textContainer.header.gap}
                         >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap={statCardToken.header.gap}
-                            >
-                                <Tooltip content={title}>
-                                    <Text
-                                        as="span"
-                                        fontSize={
-                                            statCardToken.header.title[variant]
-                                                .fontSize
-                                        }
-                                        fontWeight={
-                                            statCardToken.header.title[variant]
-                                                .fontWeight
-                                        }
-                                        color={
-                                            statCardToken.header.title[variant]
-                                                .color
-                                        }
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 1,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            wordBreak: 'break-word',
-                                        }}
-                                    >
-                                        {title}
-                                    </Text>
-                                </Tooltip>
-                                {helpIconText && (
-                                    <Block
-                                        flexShrink={0}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                    >
-                                        <Tooltip content={helpIconText}>
-                                            <CircleHelp
-                                                width={parseInt(
-                                                    statCardToken.header.helpIcon.width?.toString() ||
-                                                        '16'
-                                                )}
-                                                height={parseInt(
-                                                    statCardToken.header.helpIcon.height?.toString() ||
-                                                        '16'
-                                                )}
-                                                color={
-                                                    statCardToken.header
-                                                        .helpIcon.color
-                                                }
-                                            />
-                                        </Tooltip>
-                                    </Block>
-                                )}
-                            </Block>
+                            {direction === StatCardDirection.VERTICAL && (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={statCardToken.textContainer.header.gap}
+                                >
+                                    <Tooltip content={title}>
+                                        <Text
+                                            as="span"
+                                            fontSize={
+                                                statCardToken.textContainer
+                                                    .header.title.fontSize
+                                            }
+                                            fontWeight={
+                                                statCardToken.textContainer
+                                                    .header.title.fontWeight
+                                            }
+                                            color={
+                                                statCardToken.textContainer
+                                                    .header.title.color
+                                            }
+                                            style={{
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 1,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                wordBreak: 'break-word',
+                                            }}
+                                        >
+                                            {title}
+                                        </Text>
+                                    </Tooltip>
+                                    {helpIconText && (
+                                        <Block
+                                            flexShrink={0}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+                                            <Tooltip content={helpIconText}>
+                                                <CircleHelp
+                                                    width={parseInt(
+                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                            '16'
+                                                    )}
+                                                    height={parseInt(
+                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                            '16'
+                                                    )}
+                                                    color={
+                                                        statCardToken
+                                                            .textContainer
+                                                            .header.helpIcon
+                                                            .color.default
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        </Block>
+                                    )}
+                                </Block>
+                            )}
                             {actionIcon && !isSmallScreen && (
                                 <Block
                                     display="flex"
@@ -545,26 +594,126 @@ const StatCard = ({
                         <Block
                             display="flex"
                             flexDirection="column"
-                            alignItems="flex-start"
-                            gap={8}
+                            alignItems={
+                                direction === StatCardDirection.VERTICAL
+                                    ? 'flex-start'
+                                    : 'center'
+                            }
+                            gap={statCardToken.textContainer.stats.gap}
                         >
+                            {direction === StatCardDirection.HORIZONTAL && (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={8}
+                                >
+                                    {titleIcon && (
+                                        <Block
+                                            width={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            height={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            flexShrink={0}
+                                            ref={titleIconRef}
+                                        >
+                                            {titleIcon}
+                                        </Block>
+                                    )}
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        }
+                                    >
+                                        <Tooltip content={title}>
+                                            <Text
+                                                as="span"
+                                                fontSize={
+                                                    statCardToken.textContainer
+                                                        .header.title.fontSize
+                                                }
+                                                fontWeight={
+                                                    statCardToken.textContainer
+                                                        .header.title.fontWeight
+                                                }
+                                                color={
+                                                    statCardToken.textContainer
+                                                        .header.title.color
+                                                }
+                                                style={{
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 1,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    wordBreak: 'break-word',
+                                                }}
+                                            >
+                                                {title}
+                                            </Text>
+                                        </Tooltip>
+                                        {helpIconText && (
+                                            <Block
+                                                flexShrink={0}
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                            >
+                                                <Tooltip content={helpIconText}>
+                                                    <CircleHelp
+                                                        width={parseInt(
+                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                '16'
+                                                        )}
+                                                        height={parseInt(
+                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                '16'
+                                                        )}
+                                                        color={
+                                                            statCardToken
+                                                                .textContainer
+                                                                .header.helpIcon
+                                                                .color.default
+                                                        }
+                                                    />
+                                                </Tooltip>
+                                            </Block>
+                                        )}
+                                    </Block>
+                                </Block>
+                            )}
+
                             <Block
                                 width="100%"
                                 display="flex"
+                                justifyContent={
+                                    direction === StatCardDirection.VERTICAL
+                                        ? 'flex-start'
+                                        : 'center'
+                                }
                                 alignItems="center"
-                                gap={statCardToken.stats.gap}
+                                gap={4}
                             >
                                 <Tooltip content={valueTooltip || ''}>
                                     <Text
                                         as="span"
                                         variant="heading.lg"
                                         fontWeight={
-                                            statCardToken.stats.value[variant]
-                                                .fontWeight
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
                                         }
                                         color={
-                                            statCardToken.stats.value[variant]
-                                                .color
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
                                         }
                                         style={{
                                             cursor: 'pointer',
@@ -576,13 +725,7 @@ const StatCard = ({
 
                                 {formattedChange && (
                                     <Tooltip content={change?.tooltip || ''}>
-                                        <Block
-                                            margin={
-                                                statCardToken.stats.change
-                                                    .margin
-                                            }
-                                            cursor="pointer"
-                                        >
+                                        <Block cursor="pointer">
                                             {formattedChange}
                                         </Block>
                                     </Tooltip>
@@ -592,16 +735,16 @@ const StatCard = ({
                                 <Text
                                     as="span"
                                     fontSize={
-                                        statCardToken.stats.subtitle[variant]
-                                            .fontSize
+                                        statCardToken.textContainer.stats
+                                            .subtitle.fontSize
                                     }
                                     color={
-                                        statCardToken.stats.subtitle[variant]
-                                            .color
+                                        statCardToken.textContainer.stats
+                                            .subtitle.color
                                     }
                                     fontWeight={
-                                        statCardToken.stats.subtitle[variant]
-                                            .fontWeight
+                                        statCardToken.textContainer.stats
+                                            .subtitle.fontWeight
                                     }
                                 >
                                     {subtitle}
@@ -627,14 +770,31 @@ const StatCard = ({
 
             {variant === StatCardVariant.NUMBER && (
                 <Block
+                    ref={numberVariantContainerRef}
                     display="flex"
                     flexDirection="column"
                     height="100%"
                     alignItems={isSmallScreen ? 'flex-start' : 'center'}
                     justifyContent="center"
-                    gap={statCardToken.headerStatGap.gap}
+                    gap={statCardToken.textContainer.gap}
+                    style={{ flex: 1 }}
+                    position="relative"
                 >
+                    {actionIcon && !isSmallScreen && (
+                        <Block
+                            display="flex"
+                            alignItems="flex-start"
+                            justifyContent="center"
+                            position="absolute"
+                            right={0}
+                            top={actionIconDynamciPostition}
+                            flexShrink={0}
+                        >
+                            {actionIcon}
+                        </Block>
+                    )}
                     <Block
+                        ref={numberVariantTitleContainerRef}
                         display="flex"
                         flexDirection="column"
                         alignItems={'center'}
@@ -650,26 +810,27 @@ const StatCard = ({
                                 {titleIcon}
                             </Block>
                         )}
+
                         <Block
                             width="100%"
                             display="flex"
                             alignItems="center"
                             flexGrow={1}
-                            gap={statCardToken.header.gap}
+                            gap={statCardToken.textContainer.header.gap}
                         >
                             <Tooltip content={title}>
                                 <Text
                                     as="span"
                                     fontSize={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .fontSize
                                     }
                                     fontWeight={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .fontWeight
                                     }
                                     color={
-                                        statCardToken.header.title[variant]
+                                        statCardToken.textContainer.header.title
                                             .color
                                     }
                                     style={{
@@ -693,16 +854,17 @@ const StatCard = ({
                                     <Tooltip content={helpIconText}>
                                         <CircleHelp
                                             width={parseInt(
-                                                statCardToken.header.helpIcon.width?.toString() ||
+                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
                                                     '16'
                                             )}
                                             height={parseInt(
-                                                statCardToken.header.helpIcon.height?.toString() ||
+                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
                                                     '16'
                                             )}
                                             color={
-                                                statCardToken.header.helpIcon
-                                                    .color
+                                                statCardToken.textContainer
+                                                    .header.helpIcon.color
+                                                    .default
                                             }
                                         />
                                     </Tooltip>
@@ -712,16 +874,17 @@ const StatCard = ({
                     </Block>
 
                     <Block
+                        ref={numberVariantStatsContainerRef}
                         display="flex"
                         flexDirection="column"
-                        alignItems="center"
+                        alignItems={isSmallScreen ? 'flex-start' : 'center'}
                         gap={8}
                     >
                         <Block
                             width="100%"
                             display="flex"
                             alignItems="center"
-                            gap={statCardToken.stats.gap}
+                            gap={statCardToken.textContainer.stats.gap}
                             justifyContent={
                                 formattedChange || isSmallScreen
                                     ? 'flex-start'
@@ -733,16 +896,16 @@ const StatCard = ({
                                     <Text
                                         as="span"
                                         fontSize={
-                                            statCardToken.stats.value[variant]
-                                                .fontSize
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
                                         }
                                         fontWeight={
-                                            statCardToken.stats.value[variant]
-                                                .fontWeight
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
                                         }
                                         color={
-                                            statCardToken.stats.value[variant]
-                                                .color
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
                                         }
                                         style={{
                                             cursor: 'pointer',
@@ -754,31 +917,26 @@ const StatCard = ({
                             }
                             {formattedChange && (
                                 <Tooltip content={change?.tooltip || ''}>
-                                    <Block
-                                        margin={
-                                            statCardToken.stats.change.margin
-                                        }
-                                        cursor="pointer"
-                                    >
+                                    <Block cursor="pointer">
                                         <Text
                                             as="span"
                                             color={
-                                                statCardToken.stats.change.text[
+                                                statCardToken.textContainer
+                                                    .stats.title.change.text
+                                                    .color[
                                                     change?.valueType ??
                                                         ChangeType.INCREASE
-                                                ].color
+                                                ]
                                             }
                                             fontSize={
-                                                statCardToken.stats.change.text[
-                                                    change?.valueType ??
-                                                        ChangeType.INCREASE
-                                                ].fontSize
+                                                statCardToken.textContainer
+                                                    .stats.title.change.text
+                                                    .fontSize
                                             }
                                             fontWeight={
-                                                statCardToken.stats.change.text[
-                                                    change?.valueType ??
-                                                        ChangeType.INCREASE
-                                                ].fontWeight
+                                                statCardToken.textContainer
+                                                    .stats.title.change.text
+                                                    .fontWeight
                                             }
                                         >
                                             {formattedChange}
@@ -792,10 +950,11 @@ const StatCard = ({
                                 as="span"
                                 variant="body.sm"
                                 color={
-                                    statCardToken.stats.subtitle[variant].color
+                                    statCardToken.textContainer.stats.subtitle
+                                        .color
                                 }
                                 fontWeight={
-                                    statCardToken.stats.subtitle[variant]
+                                    statCardToken.textContainer.stats.subtitle
                                         .fontWeight
                                 }
                             >
@@ -838,13 +997,13 @@ const StatCard = ({
                                     <YAxis hide />
                                     <RechartsTooltip
                                         content={<CustomTooltip />}
-                                        cursor={{
-                                            strokeDasharray:
-                                                statCardToken.chart.tooltip
-                                                    .cursor.strokeDasharray,
-                                            stroke: statCardToken.chart.tooltip
-                                                .cursor.stroke,
-                                        }}
+                                        // cursor={{
+                                        //     strokeDasharray:
+                                        //         statCardToken.chart.tooltip
+                                        //             .cursor.strokeDasharray,
+                                        //     stroke: statCardToken.chart.tooltip
+                                        //         .cursor.stroke,
+                                        // }}
                                         position={{ y: 0 }}
                                         isAnimationActive={false}
                                         animationDuration={350}
@@ -891,7 +1050,7 @@ const StatCard = ({
                                         activeDot={{
                                             r: toPixels(
                                                 statCardToken.chart.line
-                                                    .activeDot.borderRadius
+                                                    .activeDot.width
                                             ),
                                             fill: statCardToken.chart.line
                                                 .activeDot.fill,
@@ -904,17 +1063,24 @@ const StatCard = ({
                             <Text
                                 as="span"
                                 fontSize={
-                                    statCardToken.stats.value[variant].fontSize
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontSize
                                 }
                                 fontWeight={
-                                    statCardToken.stats.value[variant]
-                                        .fontWeight
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontWeight
                                 }
-                                color={statCardToken.stats.value[variant].color}
+                                color={
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].color
+                                }
                                 style={{
                                     paddingLeft:
                                         titleIconWidth +
-                                        toPixels(statCardToken.header.gap),
+                                        toPixels(
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        ),
                                     width: '100%',
                                 }}
                             >
@@ -939,15 +1105,16 @@ const StatCard = ({
                                     <RechartsTooltip
                                         content={<CustomTooltip />}
                                         cursor={{
-                                            fill: statCardToken.chart.tooltip
-                                                .bar.cursor.fill,
+                                            fill: 'transparent',
                                         }}
                                         position={{ y: 0 }}
                                         isAnimationActive={false}
                                     />
                                     <Bar
                                         dataKey="value"
-                                        fill={statCardToken.chart.bar.fill}
+                                        fill={
+                                            statCardToken.chart.bar.fill.default
+                                        }
                                         radius={[
                                             toPixels(
                                                 statCardToken.chart.bar
@@ -968,8 +1135,8 @@ const StatCard = ({
                                         ]}
                                         isAnimationActive={false}
                                         activeBar={{
-                                            fill: statCardToken.chart.bar
-                                                .activeBar.fill,
+                                            fill: statCardToken.chart.bar.fill
+                                                .hover,
                                         }}
                                     />
                                 </BarChart>
@@ -978,17 +1145,24 @@ const StatCard = ({
                             <Text
                                 as="span"
                                 fontSize={
-                                    statCardToken.stats.value[variant].fontSize
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontSize
                                 }
                                 fontWeight={
-                                    statCardToken.stats.value[variant]
-                                        .fontWeight
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontWeight
                                 }
-                                color={statCardToken.stats.value[variant].color}
+                                color={
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].color
+                                }
                                 style={{
                                     paddingLeft:
                                         titleIconWidth +
-                                        toPixels(statCardToken.header.gap),
+                                        toPixels(
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        ),
                                     width: '100%',
                                 }}
                             >
@@ -1008,17 +1182,24 @@ const StatCard = ({
                             <Text
                                 as="span"
                                 fontSize={
-                                    statCardToken.stats.value[variant].fontSize
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontSize
                                 }
                                 fontWeight={
-                                    statCardToken.stats.value[variant]
-                                        .fontWeight
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].fontWeight
                                 }
-                                color={statCardToken.stats.value[variant].color}
+                                color={
+                                    statCardToken.textContainer.stats.title
+                                        .value[variant].color
+                                }
                                 style={{
                                     paddingLeft:
                                         titleIconWidth +
-                                        toPixels(statCardToken.header.gap),
+                                        toPixels(
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        ),
                                     width: '100%',
                                 }}
                             >

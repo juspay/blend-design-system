@@ -1,13 +1,25 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
-export type ButtonState = 'default' | 'hover' | 'active' | 'disabled'
-
+/**
+ * Button Tokens following the pattern: [target].CSSProp.[size].[variant].[subType].[state]
+ *
+ * Structure:
+ * - target: container | text (defines what element the token applies to)
+ * - CSSProp: backgroundColor | borderRadius | padding | border | shadow | outline | color
+ * - size: sm | md | lg (only for size-dependent properties like padding)
+ * - variant: primary | secondary | danger | success (button type/variant)
+ * - subType: default | iconOnly | inline (button sub-type)
+ * - state: default | hover | active | disabled (interaction state)
+ *
+ * Size-independent properties: backgroundColor, borderRadius, border, shadow, outline, color
+ * Size-dependent properties: padding
+ */
 export type ButtonTokensType = {
     gap: CSSObject['gap']
+    // Pattern: backgroundColor.[variant].[subType].[state]
     backgroundColor: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {
@@ -15,25 +27,25 @@ export type ButtonTokensType = {
             }
         }
     }
-    color: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['color']
-            }
-        }
-    }
+    // Pattern: borderRadius.[size].[variant].[subType].[state]
     borderRadius: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['borderRadius']
+        [key in ButtonSize]: {
+            [key in ButtonType]: {
+                [key in ButtonSubType]: {
+                    [key in ButtonState]: CSSObject['borderRadius']
+                }
             }
         }
     }
+    // Pattern: padding.[size].[variant].[subType] (size-dependent)
     padding: {
         [key in ButtonSize]: {
-            [key in ButtonSubType]: CSSObject['padding']
+            [key in ButtonType]: {
+                [key in ButtonSubType]: CSSObject['padding']
+            }
         }
     }
+    // Pattern: border.[variant].[subType].[state]
     border: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {
@@ -41,6 +53,7 @@ export type ButtonTokensType = {
             }
         }
     }
+    // Pattern: shadow.[size].[variant].[subType].[state]
     shadow: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {
@@ -48,11 +61,30 @@ export type ButtonTokensType = {
             }
         }
     }
+    // Pattern: outline.[variant].[subType].[state]
     outline: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {
                 [key in ButtonState]: CSSObject['outline']
             }
+        }
+    }
+    text: {
+        // Pattern: text.color.[variant].[subType].[state]
+        color: {
+            [key in ButtonType]: {
+                [key in ButtonSubType]: {
+                    [key in ButtonState]: CSSObject['color']
+                }
+            }
+        }
+        // Pattern: text.fontSize.[size] (size-dependent)
+        fontSize: {
+            [key in ButtonSize]: CSSObject['fontSize']
+        }
+        // Pattern: text.fontWeight.[size] (size-dependent)
+        fontWeight: {
+            [key in ButtonSize]: CSSObject['fontWeight']
         }
     }
 }
@@ -66,7 +98,9 @@ export const getButtonTokens = (
 ): ResponsiveButtonTokens => {
     return {
         sm: {
-            gap: FOUNDATION_THEME.unit[6],
+            gap: foundationToken.unit[6],
+            // Pattern: backgroundColor.[variant].[subType].[state]
+            // Example: backgroundColor.primary.default.hover
             backgroundColor: {
                 primary: {
                     default: {
@@ -149,187 +183,328 @@ export const getButtonTokens = (
                     },
                 },
             },
-            color: {
-                primary: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.primary[600],
-                        hover: foundationToken.colors.primary[600],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.primary[300],
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[300],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                    inline: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                },
-                danger: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.red[600],
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[600],
-                        disabled: foundationToken.colors.red[400],
-                    },
-                },
-                success: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.green[600],
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[400],
-                    },
-                },
-            },
+            // Pattern: borderRadius.[size].[variant].[subType].[state]
+            // Example: borderRadius.sm.secondary.iconOnly.active
             borderRadius: {
-                primary: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                danger: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                success: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-            },
-            padding: {
                 sm: {
-                    default: '6px 16px',
-                    iconOnly: '9px 9px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
                 md: {
-                    default: '8px 16px',
-                    iconOnly: '10px 10px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
                 lg: {
-                    default: '14px 16px',
-                    iconOnly: '16px 16px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
             },
+            // Pattern: padding.[size].[variant].[subType] (size-dependent)
+            // Example: padding.lg.primary.inline
+            padding: {
+                sm: {
+                    primary: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+                md: {
+                    primary: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+                lg: {
+                    primary: {
+                        default: '14px 16px',
+                        iconOnly: '16px 16px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '14px 16px',
+                        iconOnly: '16px 16px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '14px 16px',
+                        iconOnly: '16px 16px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '14px 16px',
+                        iconOnly: '16px 16px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+            },
+            // Pattern: border.[variant].[subType].[state]
+            // Example: border.danger.default.disabled
             border: {
                 primary: {
                     default: {
@@ -412,6 +587,8 @@ export const getButtonTokens = (
                     },
                 },
             },
+            // Pattern: shadow.[variant].[subType].[state]
+            // Example: shadow.primary.default.hover
             shadow: {
                 primary: {
                     default: {
@@ -494,6 +671,8 @@ export const getButtonTokens = (
                     },
                 },
             },
+            // Pattern: outline.[variant].[subType].[state]
+            // Example: outline.success.iconOnly.active
             outline: {
                 primary: {
                     default: {
@@ -574,11 +753,109 @@ export const getButtonTokens = (
                         active: `3px solid ${foundationToken.colors.green[200]}`,
                         disabled: `none`,
                     },
+                },
+            },
+            text: {
+                // Pattern: text.color.[variant].[subType].[state]
+                // Example: text.color.primary.inline.hover
+                color: {
+                    primary: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.primary[600],
+                            hover: foundationToken.colors.primary[600],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.primary[300],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[300],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        inline: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.red[600],
+                            hover: foundationToken.colors.red[600],
+                            active: foundationToken.colors.red[600],
+                            disabled: foundationToken.colors.red[400],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.green[600],
+                            hover: foundationToken.colors.green[600],
+                            active: foundationToken.colors.green[600],
+                            disabled: foundationToken.colors.green[400],
+                        },
+                    },
+                },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                fontWeight: {
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
                 },
             },
         },
         lg: {
-            gap: FOUNDATION_THEME.unit[6],
+            gap: foundationToken.unit[6],
             backgroundColor: {
                 primary: {
                     default: {
@@ -661,187 +938,328 @@ export const getButtonTokens = (
                     },
                 },
             },
-            color: {
-                primary: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.primary[600],
-                        hover: foundationToken.colors.primary[600],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.primary[300],
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[300],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                    inline: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[600],
-                        disabled: foundationToken.colors.gray[400],
-                    },
-                },
-                danger: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.red[600],
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[600],
-                        disabled: foundationToken.colors.red[400],
-                    },
-                },
-                success: {
-                    default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[0],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[0],
-                    },
-                    inline: {
-                        default: foundationToken.colors.green[600],
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[400],
-                    },
-                },
-            },
+            // Pattern: borderRadius.[size].[variant].[subType].[state]
+            // Example: borderRadius.sm.secondary.iconOnly.active
             borderRadius: {
-                primary: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                danger: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-                success: {
-                    default: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    iconOnly: {
-                        default: foundationToken.border.radius[10],
-                        hover: foundationToken.border.radius[10],
-                        active: foundationToken.border.radius[10],
-                        disabled: foundationToken.border.radius[10],
-                    },
-                    inline: {
-                        default: foundationToken.border.radius[6],
-                        hover: foundationToken.border.radius[6],
-                        active: foundationToken.border.radius[6],
-                        disabled: foundationToken.border.radius[6],
-                    },
-                },
-            },
-            padding: {
                 sm: {
-                    default: '6px 16px',
-                    iconOnly: '9px 9px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
                 md: {
-                    default: '8px 16px',
-                    iconOnly: '10px 10px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
                 lg: {
-                    default: '10px 16px',
-                    iconOnly: '12px 12px',
-                    inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    primary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        iconOnly: {
+                            default: foundationToken.border.radius[10],
+                            hover: foundationToken.border.radius[10],
+                            active: foundationToken.border.radius[10],
+                            disabled: foundationToken.border.radius[10],
+                        },
+                        inline: {
+                            default: foundationToken.border.radius[6],
+                            hover: foundationToken.border.radius[6],
+                            active: foundationToken.border.radius[6],
+                            disabled: foundationToken.border.radius[6],
+                        },
+                    },
                 },
             },
+            // Pattern: padding.[size].[variant].[subType] (size-dependent)
+            // Example: padding.lg.primary.inline
+            padding: {
+                sm: {
+                    primary: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '6px 16px',
+                        iconOnly: '9px 9px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+                md: {
+                    primary: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '8px 16px',
+                        iconOnly: '10px 10px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+                lg: {
+                    primary: {
+                        default: '10px 16px',
+                        iconOnly: '12px 12px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    secondary: {
+                        default: '10px 16px',
+                        iconOnly: '12px 12px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    danger: {
+                        default: '10px 16px',
+                        iconOnly: '12px 12px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                    success: {
+                        default: '10px 16px',
+                        iconOnly: '12px 12px',
+                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                    },
+                },
+            },
+            // Pattern: border.[variant].[subType].[state]
+            // Example: border.danger.default.disabled
             border: {
                 primary: {
                     default: {
@@ -924,6 +1342,8 @@ export const getButtonTokens = (
                     },
                 },
             },
+            // Pattern: shadow.[variant].[subType].[state]
+            // Example: shadow.primary.default.hover
             shadow: {
                 primary: {
                     default: {
@@ -1006,6 +1426,8 @@ export const getButtonTokens = (
                     },
                 },
             },
+            // Pattern: outline.[variant].[subType].[state]
+            // Example: outline.success.iconOnly.active
             outline: {
                 primary: {
                     default: {
@@ -1086,6 +1508,104 @@ export const getButtonTokens = (
                         active: `3px solid ${foundationToken.colors.green[200]}`,
                         disabled: `none`,
                     },
+                },
+            },
+            text: {
+                // Pattern: text.color.[variant].[subType].[state]
+                // Example: text.color.primary.inline.hover
+                color: {
+                    primary: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.primary[600],
+                            hover: foundationToken.colors.primary[600],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.primary[300],
+                        },
+                    },
+                    secondary: {
+                        default: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[300],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                        inline: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[600],
+                            disabled: foundationToken.colors.gray[400],
+                        },
+                    },
+                    danger: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.red[600],
+                            hover: foundationToken.colors.red[600],
+                            active: foundationToken.colors.red[600],
+                            disabled: foundationToken.colors.red[400],
+                        },
+                    },
+                    success: {
+                        default: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        iconOnly: {
+                            default: foundationToken.colors.gray[0],
+                            hover: foundationToken.colors.gray[0],
+                            active: foundationToken.colors.gray[0],
+                            disabled: foundationToken.colors.gray[0],
+                        },
+                        inline: {
+                            default: foundationToken.colors.green[600],
+                            hover: foundationToken.colors.green[600],
+                            active: foundationToken.colors.green[600],
+                            disabled: foundationToken.colors.green[400],
+                        },
+                    },
+                },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                fontWeight: {
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
                 },
             },
         },

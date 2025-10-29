@@ -6,9 +6,9 @@ import InputLabels from '../utils/InputLabels/InputLabels'
 import { TextInputSize } from '../TextInput/types'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { MultiValueInputProps } from './types'
-import { useComponentToken } from '../../../context/useComponentToken'
 import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 import { X } from 'lucide-react'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const MultiValueInput = ({
     label,
@@ -24,9 +24,8 @@ const MultiValueInput = ({
     size = TextInputSize.MEDIUM,
     ...rest
 }: MultiValueInputProps) => {
-    const multiValueInputTokens = useComponentToken(
-        'MULTI_VALUE_INPUT'
-    ) as MultiValueInputTokensType
+    const multiValueInputTokens =
+        useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const [isFocused, setIsFocused] = useState(false)
     const [inputValue, setInputValue] = useState('')
 
@@ -65,15 +64,21 @@ const MultiValueInput = ({
         inputRef.current?.focus()
     }
 
-    const paddingX = multiValueInputTokens.input.paddingX[size]
-    const paddingY = multiValueInputTokens.input.paddingY[size]
+    const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
+    const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
     return (
-        <Block display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-component-field-wrapper={`field-multi-value-input`}
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             <InputLabels
                 label={label}
                 sublabel={sublabel}
                 disabled={disabled}
                 required={required}
+                tokens={multiValueInputTokens}
             />
             <Block
                 display="flex"
@@ -84,29 +89,31 @@ const MultiValueInput = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                boxShadow={multiValueInputTokens.input.boxShadow.default}
+                boxShadow={
+                    multiValueInputTokens.inputContainer.boxShadow.default
+                }
                 border={
                     error
-                        ? multiValueInputTokens.input.border.error
+                        ? multiValueInputTokens.inputContainer.border.error
                         : isFocused
-                          ? multiValueInputTokens.input.border.focus
-                          : multiValueInputTokens.input.border.default
+                          ? multiValueInputTokens.inputContainer.border.focus
+                          : multiValueInputTokens.inputContainer.border.default
                 }
                 _hover={{
-                    border: multiValueInputTokens.input.border[
+                    border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'hover'
                     ],
                     boxShadow:
-                        multiValueInputTokens.input.boxShadow[
+                        multiValueInputTokens.inputContainer.boxShadow[
                             error ? 'error' : 'hover'
                         ],
                 }}
                 _focus={{
-                    border: multiValueInputTokens.input.border[
+                    border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'focus'
                     ],
                     boxShadow:
-                        multiValueInputTokens.input.boxShadow[
+                        multiValueInputTokens.inputContainer.boxShadow[
                             error ? 'error' : 'focus'
                         ],
                 }}
@@ -127,10 +134,18 @@ const MultiValueInput = ({
                     />
                 ))}
                 <PrimitiveInput
+                    fontSize={
+                        multiValueInputTokens.inputContainer.fontSize[size]
+                    }
+                    fontWeight={
+                        multiValueInputTokens.inputContainer.fontWeight[size]
+                    }
                     ref={inputRef}
                     paddingInlineStart={2}
                     paddingInlineEnd={paddingX}
-                    borderRadius={multiValueInputTokens.input.borderRadius}
+                    borderRadius={
+                        multiValueInputTokens.inputContainer.borderRadius
+                    }
                     outline="none"
                     border="none"
                     value={inputValue}
@@ -146,6 +161,7 @@ const MultiValueInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                tokens={multiValueInputTokens}
             />
         </Block>
     )

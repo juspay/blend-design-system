@@ -32,7 +32,7 @@ import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
 import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
-import { MenuV2GroupType, MenuAlignment } from '../Menu/types'
+import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
 import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
@@ -82,6 +82,7 @@ const DataTable = forwardRef(
             columnManagerPrimaryAction,
             columnManagerSecondaryAction,
             columnManagerWidth,
+            showHeader = true,
             showToolbar = true,
             showSettings = false,
             enableInlineEdit = false,
@@ -112,6 +113,7 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             mobileColumnsToShow,
+            ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
@@ -161,6 +163,23 @@ const DataTable = forwardRef(
         const [pageSize, setPageSize] = useState<number>(
             pagination?.pageSize || 10
         )
+
+        useEffect(() => {
+            if (serverSidePagination && pagination) {
+                if (pagination.currentPage !== currentPage) {
+                    setCurrentPage(pagination.currentPage)
+                }
+                if (pagination.pageSize !== pageSize) {
+                    setPageSize(pagination.pageSize)
+                }
+            }
+        }, [
+            serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
+            currentPage,
+            pageSize,
+        ])
 
         const [selectedRows, setSelectedRows] = useState<
             Record<string, boolean>
@@ -235,7 +254,7 @@ const DataTable = forwardRef(
 
         const totalRows = pagination?.totalRows || data.length
 
-        const formatOptions: MenuV2GroupType[] = [
+        const formatOptions: MenuGroupType[] = [
             {
                 items: [
                     {
@@ -334,8 +353,19 @@ const DataTable = forwardRef(
                 return processedData
             }
 
-            const startIndex = (currentPage - 1) * pageSize
-            return processedData.slice(startIndex, startIndex + pageSize)
+            const effectiveCurrentPage =
+                serverSidePagination && pagination
+                    ? pagination.currentPage
+                    : currentPage
+            const effectivePageSize =
+                serverSidePagination && pagination
+                    ? pagination.pageSize
+                    : pageSize
+            const startIndex = (effectiveCurrentPage - 1) * effectivePageSize
+            return processedData.slice(
+                startIndex,
+                startIndex + effectivePageSize
+            )
         }, [
             processedData,
             currentPage,
@@ -343,6 +373,8 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
             serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
         ])
 
         const updateSelectAllState = (
@@ -696,14 +728,15 @@ const DataTable = forwardRef(
                     position: tableToken.position,
                     padding: tableToken.padding,
                     width: tableToken.width,
-                    height: tableToken.height,
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
+                data-loaded-table={title}
             >
                 <DataTableHeader
                     title={title}
                     description={description}
+                    showHeader={showHeader}
                     showToolbar={showToolbar}
                     enableSearch={enableSearch}
                     searchPlaceholder={searchPlaceholder}
@@ -743,18 +776,21 @@ const DataTable = forwardRef(
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}
+                    {...rest}
                 />
 
                 <Block
                     style={{
                         borderRadius: tableToken.dataTable.borderRadius,
                         border: tableToken.dataTable.border,
-                        maxHeight: tableToken.dataTable.maxHeight,
-                        minHeight: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
-                        overflow: 'hidden',
                         position: 'relative',
+                        maxHeight:
+                            currentData.length > 0
+                                ? tableToken.dataTable.maxHeight
+                                : 'none',
+                        overflow: 'hidden',
                     }}
                 >
                     <BulkActionBar
@@ -769,16 +805,18 @@ const DataTable = forwardRef(
                             flex: 1,
                             position: 'relative',
                             minHeight: 0,
-                            maxHeight: 'calc(100vh - 280px)',
                             overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                height: '100%',
-                                maxHeight: '100%',
+                                flex: 1,
                                 position: 'relative',
+                                minHeight:
+                                    currentData.length > 0 ? '0' : 'auto',
                             }}
                         >
                             <table
@@ -795,7 +833,6 @@ const DataTable = forwardRef(
                                             .borderSpacing,
                                     position:
                                         tableToken.dataTable.table.position,
-                                    overflow: 'auto',
                                 }}
                             >
                                 <TableHeader
@@ -887,6 +924,7 @@ const DataTable = forwardRef(
                                             handleMobileOverflowClick(row as T)
                                         }
                                         idField={String(idField)}
+                                        tableTitle={title}
                                         selectedRows={selectedRows}
                                         editingRows={editingRows}
                                         editValues={editValues}
@@ -1023,6 +1061,7 @@ const DataTable = forwardRef(
                         pageSize={pageSize}
                         totalRows={totalRows}
                         isLoading={isLoading}
+                        hasData={currentData.length > 0}
                         onPageChange={handlePageChange}
                         onPageSizeChange={handlePageSizeChange}
                     />

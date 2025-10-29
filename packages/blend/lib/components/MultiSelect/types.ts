@@ -129,6 +129,18 @@ export type MultiSelectProps = {
     showItemDividers?: boolean
     showHeaderBorder?: boolean
     fullWidth?: boolean
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }
 
 // Multi Select Menu Dropdpown
@@ -173,4 +185,16 @@ export type MultiSelectMenuProps = {
         disabled?: boolean
         loading?: boolean
     }
+
+    // virtualization
+    enableVirtualization?: boolean
+    virtualListItemHeight?: number
+    virtualListOverscan?: number
+    itemsToRender?: number
+
+    // infinite scroll
+    onEndReached?: () => void
+    endReachedThreshold?: number
+    hasMore?: boolean
+    loadingComponent?: React.ReactNode
 }

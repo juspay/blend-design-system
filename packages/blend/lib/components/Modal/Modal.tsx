@@ -8,7 +8,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { ModalTokensType } from './modal.tokens'
 import Text from '../Text/Text'
 import { ButtonSubType, ButtonType, Button } from '../Button'
-import { useComponentToken } from '../../context/useComponentToken'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
 
@@ -51,7 +51,7 @@ const ModalHeader = ({
     headerRightSlot?: React.ReactNode
     showDivider?: boolean
 }) => {
-    const modalTokens = useComponentToken('MODAL') as ModalTokensType
+    const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
     if (!title && !subtitle) return null
 
     return (
@@ -59,15 +59,17 @@ const ModalHeader = ({
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
-            padding={modalTokens.headerContainer.padding}
+            padding={
+                modalTokens.header.padding.x +
+                ' ' +
+                modalTokens.header.padding.y
+            }
             flexShrink={0}
             overflow="auto"
             maxHeight="20vh"
             gap={FOUNDATION_THEME.unit[16]}
             borderBottom={
-                showDivider
-                    ? modalTokens.headerContainer.borderBottom
-                    : undefined
+                showDivider ? modalTokens.header.borderBottom : undefined
             }
         >
             <Block
@@ -85,7 +87,7 @@ const ModalHeader = ({
                         <Text
                             variant="heading.sm"
                             fontWeight={600}
-                            color={modalTokens.headerContainer.header.color}
+                            color={modalTokens.header.text.title.color}
                         >
                             {title}
                         </Text>
@@ -95,7 +97,7 @@ const ModalHeader = ({
                 {subtitle && (
                     <Text
                         variant="code.lg"
-                        color={modalTokens.headerContainer.subtitle.color}
+                        color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
                     >
                         {subtitle}
@@ -124,21 +126,19 @@ const ModalFooter = ({
     secondaryAction?: ModalProps['secondaryAction']
     showDivider?: boolean
 }) => {
-    const modalTokens = useComponentToken('MODAL') as ModalTokensType
+    const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
     if (!primaryAction && !secondaryAction) return null
 
     return (
         <Block
             display="flex"
-            backgroundColor={modalTokens.footerContainer.backgroundColor}
-            justifyContent={modalTokens.footerContainer.alignItems}
-            gap={modalTokens.footerContainer.gap}
-            padding={modalTokens.footerContainer.padding}
+            backgroundColor={modalTokens.footer.backgroundColor}
+            justifyContent="flex-end"
+            gap={modalTokens.footer.gap}
+            padding={modalTokens.footer.padding}
             flexShrink={0}
-            borderTop={
-                showDivider ? modalTokens.footerContainer.borderTop : undefined
-            }
-            borderRadius={modalTokens.footerContainer.borderRadius}
+            borderTop={showDivider ? modalTokens.footer.borderTop : undefined}
+            // borderRadius={modalTokens.borderRadius}
         >
             {secondaryAction && (
                 <Button
@@ -191,7 +191,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         },
         ref
     ) => {
-        const modalTokens = useComponentToken('MODAL') as ModalTokensType
+        const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
         const [isMounted, setIsMounted] = useState(false)
@@ -203,6 +203,22 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         useEffect(() => {
             setIsMounted(true)
         }, [])
+
+        useEffect(() => {
+            const handleEscapeKey = (event: KeyboardEvent) => {
+                if (event.key === 'Escape' && isOpen) {
+                    onClose()
+                }
+            }
+
+            if (isOpen) {
+                document.addEventListener('keydown', handleEscapeKey)
+            }
+
+            return () => {
+                document.removeEventListener('keydown', handleEscapeKey)
+            }
+        }, [isOpen, onClose])
 
         useEffect(() => {
             if (isMounted && isOpen) {
@@ -254,6 +270,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     justifyContent="center"
                     overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
+                    boxShadow={modalTokens.boxShadow}
                 >
                     <Block
                         onClick={handleBackdropClick}
@@ -294,7 +311,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         />
 
                         <Block
-                            padding={modalTokens.bodyContainer.padding}
+                            padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
                         >

@@ -28,6 +28,16 @@ import {
     AxisType,
     AxisIntervalType,
 } from '../../../../packages/blend/lib/components/Charts/types'
+import {
+    last1hour15minsData,
+    last1hour5minsData,
+    last24hours15minsData,
+    last24hours30minsData,
+    last24hoursHourlyData,
+    last30DaysDailyData,
+    last7daysDailyData,
+    last7daysHourlyData,
+} from './ChartsData'
 
 const TimezoneDemo = () => {
     const [selectedTimezone, setSelectedTimezone] = useState('UTC')
@@ -156,9 +166,6 @@ const TimezoneDemo = () => {
                 xAxis={{
                     label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
                     type: AxisType.DATE_TIME,
-                    smart: true,
-                    timeZone: selectedTimezone, // 🌍 Dynamic timezone!
-                    hour12: use12HourFormat, // 🕐 Dynamic hour format!
                 }}
                 yAxis={{
                     label: 'Activity Level',
@@ -805,12 +812,8 @@ const GranularChartsDemo = () => {
                                             selectedKeys={selectedKeys}
                                             enableHover={true}
                                             xAxis={{
-                                                show: true,
-                                                showLabel: false,
                                                 type: AxisType.DATE_TIME,
-                                                smart: true,
-                                                interval:
-                                                    AxisIntervalType.PRESERVE_START,
+                                                maxTicks: 3,
                                             }}
                                             yAxis={{
                                                 show: true,
@@ -2003,10 +2006,275 @@ const ChartDemo = () => {
     ]
 
     return (
-        <div className="p-8 gap-12 flex flex-col max-w-7xl mx-auto">
+        <div className="p-8 gap-12 flex flex-col ">
             <h5 className="text-xl font-bold">
                 Charts Playground - All Variations
             </h5>
+
+            {/* Smart Date/Time Format Feature */}
+            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-emerald-300 rounded-lg shadow-sm mb-6">
+                <h4 className="text-emerald-900 font-bold text-lg mb-3 flex items-center gap-2">
+                    <span className="text-2xl">🎯</span>
+                    Smart Date/Time Format (Like Highcharts!)
+                </h4>
+                <p className="text-emerald-800 text-sm mb-3">
+                    <strong>Enabled by default</strong> - Ticks now
+                    intelligently alternate between showing dates and times:
+                </p>
+                <ul className="ml-6 space-y-2 text-emerald-700 text-sm">
+                    <li>
+                        ✅ Shows <strong>date</strong> (e.g., "1. Oct") when the
+                        day changes
+                    </li>
+                    <li>
+                        ✅ Shows <strong>time</strong> (e.g., "12:00") for
+                        intermediate ticks on the same day
+                    </li>
+                    <li>
+                        ✅ Provides both date and time context without
+                        cluttering the axis
+                    </li>
+                    <li>
+                        ✅ Works automatically with consistent tick intervals
+                    </li>
+                </ul>
+                <div className="mt-4 p-3 bg-white rounded border border-emerald-200">
+                    <p className="text-xs text-emerald-600 font-semibold mb-2">
+                        📊 Example tick pattern:
+                    </p>
+                    <div className="text-sm font-mono text-gray-800">
+                        <span className="text-emerald-700 font-bold">
+                            1. Oct
+                        </span>
+                        {' → '}
+                        <span>08:00</span>
+                        {' → '}
+                        <span>16:00</span>
+                        {' → '}
+                        <span className="text-emerald-700 font-bold">
+                            2. Oct
+                        </span>
+                        {' → '}
+                        <span>08:00</span>
+                        {' → '}
+                        <span>16:00</span>
+                        {' → '}
+                        <span className="text-emerald-700 font-bold">
+                            3. Oct
+                        </span>
+                    </div>
+                </div>
+                <div className="mt-3 text-xs text-emerald-600">
+                    <strong>💡 Tip:</strong> Use{' '}
+                    <code className="bg-emerald-100 px-1.5 py-0.5 rounded">
+                        timeOnly: true
+                    </code>{' '}
+                    or{' '}
+                    <code className="bg-emerald-100 px-1.5 py-0.5 rounded">
+                        dateOnly: true
+                    </code>{' '}
+                    to override this behavior.
+                </div>
+            </div>
+
+            <Charts
+                data={last1hour5minsData}
+                chartType={ChartType.LINE}
+                slot1={<div>Hello</div>}
+                slot2={<div>World</div>}
+                slot3={<div>World</div>}
+                xAxis={{
+                    label: 'Date & Time Together',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                    smartDateTimeFormat: false,
+                    showYear: true,
+                    maxTicks: last1hour5minsData.length / 2,
+                    showLabel: true,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                    showLabel: true,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Smart Date/Time Ticks (Like Highcharts!)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                height={200}
+                data={last1hour15minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    showLabel: true,
+                    type: AxisType.DATE_TIME,
+                    // dateOnly: true,
+                    // timeOnly: true,
+                    // showYear: true,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    showLabel: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 1 Hour 15 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hours15minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours 15 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hours30minsData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours 30 Mins Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last24hoursHourlyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 24 Hours Hourly Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last7daysHourlyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 7 Days Hourly Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last7daysDailyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 7 Days Daily Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
+
+            <Charts
+                data={last30DaysDailyData}
+                chartType={ChartType.LINE}
+                xAxis={{
+                    label: 'Date (Timestamp)',
+                    show: true,
+                    type: AxisType.DATE_TIME,
+                    // maxTicks: 10,
+                }}
+                yAxis={{
+                    label: 'Currency',
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Last 30 Days Daily Data (Euler)
+                        </h4>
+                    </div>
+                }
+            />
 
             {/* Granular Chart Components Demo */}
             <div className="chart-example-container mb-12">
@@ -2121,6 +2389,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
             {/* Main Interactive Chart */}
             <div className="chart-example-container mb-12">
                 <Charts
+                    height={300}
                     stackedLegends={true}
                     stackedLegendsData={stackedLegendsData}
                     data={getCurrentData()}
@@ -2375,6 +2644,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Bar Chart Example */}
 
                     <Charts
+                        height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
                         colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
@@ -2394,6 +2664,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     {/* Pie Chart Example */}
 
                     <Charts
+                        height={200}
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}
@@ -2578,6 +2849,487 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     </p>
                 </div>
                 <TimezoneDemo />
+            </div>
+
+            {/* Date Only & Time Only Formatting Demo */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    📅 Date Only & Time Only Formatting
+                </h3>
+                <div className="mb-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <h4 className="text-indigo-800 font-semibold mb-2">
+                        ✨ New Feature: Flexible DateTime Display Options!
+                    </h4>
+                    <p className="text-indigo-700 text-sm">
+                        Choose exactly what you want to show: dates only, times
+                        only, or full date+time. Perfect for daily reports,
+                        hourly metrics, or any custom visualization needs!
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-8">
+                    {/* Date Only WITHOUT Year */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📅 Date Only (Without Year)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Perfect for current year data or when year context
+                            is clear. Shows: "1. Oct" "2. Oct" "3. Oct"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1696118400000', // Oct 1, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 12500,
+                                            },
+                                            aux: [{ label: 'Orders', val: 45 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696204800000', // Oct 2, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 15300,
+                                            },
+                                            aux: [{ label: 'Orders', val: 52 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696291200000', // Oct 3, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 18750,
+                                            },
+                                            aux: [{ label: 'Orders', val: 63 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696377600000', // Oct 4, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 21200,
+                                            },
+                                            aux: [{ label: 'Orders', val: 71 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696464000000', // Oct 5, 2023
+                                    data: {
+                                        sales: {
+                                            primary: {
+                                                label: 'Sales',
+                                                val: 19800,
+                                            },
+                                            aux: [{ label: 'Orders', val: 67 }],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.BAR}
+                            colors={['#3b82f6']}
+                            xAxis={{
+                                label: 'Date',
+                                type: AxisType.DATE_TIME,
+                                dateOnly: true, // 📅 Date only without year
+                            }}
+                            yAxis={{
+                                label: 'Sales ($)',
+                                type: AxisType.CURRENCY,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <Activity
+                                        size={16}
+                                        className="text-blue-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Daily Sales - October
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-blue-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                dateOnly: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Date Only WITH Year */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📅 Date Only (With Year)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Ideal for historical data or multi-year comparisons.
+                            Shows: "1. Oct 2023" "2. Oct 2023" "3. Oct 2023"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1672531200000', // Jan 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 125000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 15 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1675209600000', // Feb 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 142000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 18 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1677628800000', // Mar 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 138000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 12 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1680307200000', // Apr 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 165000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 22 }],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1682899200000', // May 1, 2023
+                                    data: {
+                                        revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 178000,
+                                            },
+                                            aux: [{ label: 'Growth', val: 25 }],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.LINE}
+                            colors={['#10b981']}
+                            xAxis={{
+                                label: 'Date',
+                                type: AxisType.DATE_TIME,
+                                dateOnly: true, // 📅 Date only
+                                showYear: true, // 📆 Include year
+                            }}
+                            yAxis={{
+                                label: 'Revenue',
+                                type: AxisType.CURRENCY,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <TrendingUp
+                                        size={16}
+                                        className="text-green-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Monthly Revenue - 2023
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-green-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                dateOnly: true, showYear: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Time Only */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            🕐 Time Only (24-Hour Format)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Perfect for intraday metrics or hourly data within a
+                            single day. Shows: "00:00" "06:00" "12:00" "18:00"
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: '1696118400000', // Oct 1, 2023, 00:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 120,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 45 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696140000000', // Oct 1, 2023, 06:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 280,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 92 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696161600000', // Oct 1, 2023, 12:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 450,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 156 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696183200000', // Oct 1, 2023, 18:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 380,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 128 },
+                                            ],
+                                        },
+                                    },
+                                },
+                                {
+                                    name: '1696204800000', // Oct 2, 2023, 00:00
+                                    data: {
+                                        activity: {
+                                            primary: {
+                                                label: 'User Activity',
+                                                val: 95,
+                                            },
+                                            aux: [
+                                                { label: 'Sessions', val: 34 },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.LINE}
+                            colors={['#f59e0b']}
+                            xAxis={{
+                                label: 'Time',
+                                type: AxisType.DATE_TIME,
+                                timeOnly: true, // 🕐 Time only
+                            }}
+                            yAxis={{
+                                label: 'Activity Level',
+                                type: AxisType.NUMBER,
+                            }}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <Activity
+                                        size={16}
+                                        className="text-amber-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Hourly User Activity
+                                    </h4>
+                                </div>
+                            }
+                        />
+                        <div className="mt-2 text-xs text-gray-500 bg-amber-50 p-2 rounded">
+                            <strong>Code:</strong>{' '}
+                            <code>
+                                xAxis=&#123;&#123; type: AxisType.DATE_TIME,
+                                timeOnly: true &#125;&#125;
+                            </code>
+                        </div>
+                    </div>
+
+                    {/* Comparison: Default vs Date Only vs Time Only */}
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <h4 className="text-purple-800 font-semibold mb-3">
+                            🔄 Side-by-Side Comparison
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-purple-700">
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    📅 Date Only
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "1. Oct"</div>
+                                    <div>• "2. Oct"</div>
+                                    <div>• "3. Oct"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        dateOnly: true
+                                    </code>
+                                </div>
+                            </div>
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    🕐 Time Only
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "00:00"</div>
+                                    <div>• "06:00"</div>
+                                    <div>• "12:00"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        timeOnly: true
+                                    </code>
+                                </div>
+                            </div>
+                            <div className="bg-white p-3 rounded border border-purple-200">
+                                <div className="font-semibold mb-2">
+                                    📅🕐 Default (Both)
+                                </div>
+                                <div className="text-xs space-y-1">
+                                    <div>• "1 Oct, 12:00"</div>
+                                    <div>• "2 Oct, 14:30"</div>
+                                    <div>• "3 Oct, 09:15"</div>
+                                </div>
+                                <div className="mt-2 text-xs">
+                                    <code className="bg-purple-100 px-1 rounded">
+                                        Default behavior
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* API Reference */}
+                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 className="font-semibold text-gray-800 mb-3">
+                        📚 API Reference: DateTime Formatting Options
+                    </h4>
+                    <div className="text-sm text-gray-700 space-y-4">
+                        <div>
+                            <strong>Basic Usage:</strong>
+                            <pre className="text-xs mt-1 bg-gray-100 p-3 rounded overflow-x-auto">
+                                {`xAxis={{
+  type: AxisType.DATE_TIME,
+  dateOnly: boolean,    // Show only dates
+  timeOnly: boolean,    // Show only times
+  showYear: boolean,    // Include year (works with dateOnly and default)
+  useUTC: boolean,      // Use UTC timezone (default: true)
+}}`}
+                            </pre>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <strong>📅 Date Only Options:</strong>
+                                <div className="text-xs mt-2 space-y-2">
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>dateOnly: true</code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "1. Oct" "2. Oct"
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>
+                                            dateOnly: true, showYear: true
+                                        </code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "1. Oct 2024"
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <strong>🕐 Time Only Options:</strong>
+                                <div className="text-xs mt-2 space-y-2">
+                                    <div className="bg-white p-2 rounded border">
+                                        <code>timeOnly: true</code>
+                                        <div className="text-gray-600 mt-1">
+                                            → "12:00" "14:30"
+                                        </div>
+                                    </div>
+                                    <div className="bg-white p-2 rounded border">
+                                        <code className="text-gray-500">
+                                            showYear ignored in timeOnly
+                                        </code>
+                                        <div className="text-gray-600 mt-1">
+                                            Time only, no year
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <strong>💡 Use Cases:</strong>
+                            <ul className="ml-4 mt-2 space-y-1 text-xs">
+                                <li>
+                                    • <strong>dateOnly:</strong> Daily reports,
+                                    weekly summaries, monthly trends
+                                </li>
+                                <li>
+                                    • <strong>timeOnly:</strong> Hourly metrics,
+                                    intraday activity, real-time dashboards
+                                </li>
+                                <li>
+                                    • <strong>showYear:</strong> Historical
+                                    data, year-over-year comparisons
+                                </li>
+                                <li>
+                                    • <strong>Default (both):</strong> Full
+                                    timestamp context needed
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* POSIX and UTC Format Support */}
@@ -3859,7 +4611,6 @@ xAxis={{
                             xAxis={{
                                 label: 'Time',
                                 type: AxisType.DATE_TIME,
-                                smart: true, // 🧠 Smart formatting!
                             }}
                             yAxis={{
                                 label: 'Activity Level',
@@ -4044,7 +4795,6 @@ xAxis={{
                                     chartType={ChartType.LINE}
                                     xAxis={{
                                         type: AxisType.DATE_TIME,
-                                        smart: true, // 🧠 Smart formatting
                                     }}
                                     yAxis={{ type: AxisType.NUMBER }}
                                     chartHeaderSlot={<div />}

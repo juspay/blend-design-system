@@ -1,7 +1,5 @@
 import React from 'react'
 import { generatePickerData, createSelectionHandler } from '../utils'
-import { FOUNDATION_THEME } from '../../../tokens'
-import { CalendarTokenType } from '../dateRangePicker.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import {
@@ -12,9 +10,11 @@ import {
     TabsVariant,
     TabsSize,
 } from '../../Tabs'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import ScrollablePicker from './ScrollablePicker'
 import type { DatePickerComponentProps } from '../types'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { getMobileToken } from './mobile.tokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     selectedRange,
@@ -28,8 +28,9 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     setEndDate,
     isDisabled = false,
 }) => {
-    const responsiveTokens = useResponsiveTokens<CalendarTokenType>('CALENDAR')
-    const tokens = responsiveTokens
+    const { innerWidth } = useBreakpoints()
+    const tokens =
+        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
 
     const renderTabContent = (tabType: 'start' | 'end') => {
         const data = generatePickerData(
@@ -43,9 +44,9 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
             <Block>
                 <Block
                     display="flex"
-                    paddingX={tokens.mobileDrawer.datePicker.container.padding}
-                    width="100%"
-                    gap={tokens.mobileDrawer.datePicker.container.gap}
+                    paddingX={tokens.padding.x}
+                    paddingY={tokens.padding.y}
+                    gap={tokens.gap}
                 >
                     <Block
                         flexGrow={1}
@@ -56,24 +57,19 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                         <Block
                             position="sticky"
                             top="0"
-                            zIndex={tokens.mobileDrawer.header.zIndex}
-                            backgroundColor={
-                                tokens.mobileDrawer.header.backgroundColor
-                            }
-                            paddingBottom={tokens.mobileDrawer.header.padding}
+                            zIndex={5}
+                            backgroundColor={tokens.header.backgroundColor}
+                            paddingX={tokens.header.padding.x}
+                            paddingY={tokens.header.padding.y}
                             width="100%"
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
                             <PrimitiveText
-                                fontSize={
-                                    tokens.mobileDrawer.header.text.fontSize
-                                }
-                                fontWeight={
-                                    tokens.mobileDrawer.header.text.fontWeight
-                                }
-                                color={tokens.mobileDrawer.header.text.color}
+                                fontSize={tokens.header.text.fontSize}
+                                fontWeight={tokens.header.text.fontWeight}
+                                color={tokens.header.text.color}
                             >
                                 Year
                             </PrimitiveText>
@@ -107,19 +103,18 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             position="sticky"
                             top="0"
                             zIndex={5}
-                            backgroundColor="white"
-                            paddingBottom="12px"
+                            backgroundColor={tokens.header.backgroundColor}
+                            paddingX={tokens.header.padding.x}
+                            paddingY={tokens.header.padding.y}
                             width="100%"
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
                             <PrimitiveText
-                                fontSize={
-                                    FOUNDATION_THEME.font.size.body.md.fontSize
-                                }
-                                fontWeight={400}
-                                color={FOUNDATION_THEME.colors.gray[500]}
+                                fontSize={tokens.header.text.fontSize}
+                                fontWeight={tokens.header.text.fontWeight}
+                                color={tokens.header.text.color}
                             >
                                 Month
                             </PrimitiveText>
@@ -153,19 +148,18 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             position="sticky"
                             top="0"
                             zIndex={5}
-                            backgroundColor="white"
-                            paddingBottom="12px"
+                            backgroundColor={tokens.header.backgroundColor}
+                            paddingX={tokens.header.padding.x}
+                            paddingY={tokens.header.padding.y}
                             width="100%"
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
                             <PrimitiveText
-                                fontSize={
-                                    FOUNDATION_THEME.font.size.body.md.fontSize
-                                }
-                                fontWeight={400}
-                                color={FOUNDATION_THEME.colors.gray[500]}
+                                fontSize={tokens.header.text.fontSize}
+                                fontWeight={tokens.header.text.fontWeight}
+                                color={tokens.header.text.color}
                             >
                                 Date
                             </PrimitiveText>
@@ -199,19 +193,18 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             position="sticky"
                             top="0"
                             zIndex={5}
-                            backgroundColor="white"
-                            paddingBottom="12px"
+                            backgroundColor={tokens.header.backgroundColor}
+                            paddingX={tokens.header.padding.x}
+                            paddingY={tokens.header.padding.y}
                             width="100%"
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
                             <PrimitiveText
-                                fontSize={
-                                    FOUNDATION_THEME.font.size.body.md.fontSize
-                                }
-                                fontWeight={400}
-                                color={FOUNDATION_THEME.colors.gray[500]}
+                                fontSize={tokens.header.text.fontSize}
+                                fontWeight={tokens.header.text.fontWeight}
+                                color={tokens.header.text.color}
                             >
                                 Time
                             </PrimitiveText>

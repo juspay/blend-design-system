@@ -35,4 +35,5 @@ export type TooltipProps = {
     slotDirection?: TooltipSlotDirection
     delayDuration?: number
     offset?: number
+    maxWidth?: string
 }

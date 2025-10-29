@@ -1,327 +1,247 @@
-import { FOUNDATION_THEME } from '../../tokens'
 import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
+export type CalendarState = 'default' | 'hover' | 'active' | 'disabled'
+export type CalendarSize = 'sm' | 'md' | 'lg'
+
+/**
+ * DateRangePicker Tokens following proper hierarchy pattern
+ *
+ * Structure:
+ * - Base properties (shared across all components)
+ * - Target sections: trigger, calendar, quickRange, mobileDrawer
+ * - Each target has consistent sub-structure with x/y padding and state management
+ *
+ * Pattern:
+ * - target.property.[size].[state] (for size/state-dependent properties)
+ * - target.text.property (for text styling)
+ * - target.padding.x/y (for consistent padding structure)
+ */
 export type CalendarTokenType = {
-    quickRange: {
-        trigger: {
-            borderLeft: CSSObject['borderLeft']
-            borderTop: CSSObject['borderTop']
-            borderBottom: CSSObject['borderBottom']
-            borderTopLeftRadius: CSSObject['borderTopLeftRadius']
-            borderBottomLeftRadius: CSSObject['borderBottomLeftRadius']
-            display: CSSObject['display']
-            justifyContent: CSSObject['justifyContent']
-            alignItems: CSSObject['alignItems']
-            cursor: CSSObject['cursor']
-            width: CSSObject['width']
-            backgroundColor: CSSObject['backgroundColor']
-            iconSize: CSSObject['iconSize']
-            text: CSSObject
-            gap: CSSObject['gap']
-            padding: {
-                sm: CSSObject['padding']
-                md: CSSObject['padding']
-                lg: CSSObject['padding']
-            }
-            fontSize: {
-                sm: CSSObject['fontSize']
-                md: CSSObject['fontSize']
-                lg: CSSObject['fontSize']
-            }
-            disabled: {
-                borderLeft: CSSObject['borderLeft']
-                borderTop: CSSObject['borderTop']
-                borderBottom: CSSObject['borderBottom']
-            }
-        }
-        content: {
-            padding: CSSObject['padding']
-            width: CSSObject['width']
-            maxHeight: CSSObject['maxHeight']
-            zIndex: CSSObject['zIndex']
-            backgroundColor: CSSObject['backgroundColor']
-            borderRadius: CSSObject['borderRadius']
-            boxShadow: CSSObject['boxShadow']
-            overflowY: CSSObject['overflowY']
-            overflowX: CSSObject['overflowX']
-        }
-        item: {
-            width: CSSObject['width']
-            textAlign: CSSObject['textAlign']
-            padding: CSSObject['padding']
-            borderRadius: CSSObject['borderRadius']
-            transition: CSSObject['transition']
-            cursor: CSSObject['cursor']
-            border: CSSObject['border']
-            backgroundColor: CSSObject['backgroundColor']
-            display: CSSObject['display']
-            active: CSSObject
-            text: CSSObject
-            '&:hover': CSSObject
-            '&:focus': CSSObject
-            '&[data-highlighted]': CSSObject
-        }
-    }
-    mobileDrawer: {
-        picker: {
-            itemHeight: CSSObject['height']
-            containerHeight: CSSObject['height']
-            gradients: {
-                top: CSSObject['background']
-                bottom: CSSObject['background']
-            }
-            divider: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-                strokeColor: CSSObject['color']
-                strokeColorEnd: CSSObject['color']
-            }
-            text: {
-                selected: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
-                    opacity: CSSObject['opacity']
-                }
-                unselected: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
-                    opacity: CSSObject['opacity']
-                }
-            }
-            timeInput: {
-                width: CSSObject['width']
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-                color: CSSObject['color']
-                zIndex: CSSObject['zIndex']
-            }
-            scrollArea: {
-                zIndex: CSSObject['zIndex']
-                opacity: CSSObject['opacity']
-            }
-        }
-        header: {
-            padding: CSSObject['padding']
-            backgroundColor: CSSObject['backgroundColor']
-            zIndex: CSSObject['zIndex']
-            text: {
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-                color: CSSObject['color']
-            }
-        }
-        presetItem: {
-            padding: CSSObject['padding']
-            borderBottom: CSSObject['borderBottom']
-            text: {
-                active: {
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
-                }
-                inactive: {
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
-                }
-            }
-            icon: {
-                size: CSSObject['width']
-                color: CSSObject['color']
-            }
-            chevron: {
-                size: CSSObject['width']
-                color: CSSObject['color']
-                transition: CSSObject['transition']
-            }
-        }
-        actionButtons: {
-            container: {
-                gap: CSSObject['gap']
-                padding: CSSObject['padding']
-                marginTop: CSSObject['marginTop']
-                borderTop: CSSObject['borderTop']
-            }
-        }
-        tabs: {
-            marginTop: CSSObject['marginTop']
-            content: {
-                marginTop: CSSObject['marginTop']
-            }
-        }
-        datePicker: {
-            container: {
-                padding: CSSObject['padding']
-                gap: CSSObject['gap']
-            }
-        }
-    }
+    // Trigger elements - both quick selector and date input
     trigger: {
-        display: CSSObject['display']
-        alignItems: CSSObject['alignItems']
-        justifyContent: CSSObject['justifyContent']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        backgroundColor: CSSObject['backgroundColor']
-        color: CSSObject['color']
-        cursor: CSSObject['cursor']
-        disabled: {
-            opacity: CSSObject['opacity']
-            cursor: CSSObject['cursor']
-            border: CSSObject['border']
+        // Quick selector (left side preset dropdown)
+        quickSelector: {
+            // Border radius for individual corners
+            borderRadius: {
+                topLeft: CSSObject['borderTopLeftRadius'] // Top left corner
+                topRight: CSSObject['borderTopRightRadius'] // Top right corner
+                bottomLeft: CSSObject['borderBottomLeftRadius'] // Bottom left corner
+                bottomRight: CSSObject['borderBottomRightRadius'] // Bottom right corner
+            }
+            backgroundColor: CSSObject['backgroundColor'] // Background color
+            gap: CSSObject['gap'] // Gap between elements
+            // Size-dependent padding with x/y axis
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding'] // Horizontal padding
+                    y: CSSObject['padding'] // Vertical padding
+                }
+            }
+            // State-dependent border styling
+            border: {
+                [key in CalendarState]: {
+                    left: CSSObject['borderLeft'] // Left border for each state
+                    top: CSSObject['borderTop'] // Top border for each state
+                    bottom: CSSObject['borderBottom'] // Bottom border for each state
+                    right: CSSObject['borderRight'] // Right border for each state
+                }
+            }
+            // Text styling
+            text: {
+                color: CSSObject['color'] // Text color
+                fontWeight: CSSObject['fontWeight'] // Text font weight
+                // Size-dependent font size
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize'] // Font size for each size
+                }
+            }
+            iconSize: CSSObject['width'] // Icon size
         }
-        borderRadiusWithPresets: CSSObject['borderRadius']
-        borderRadiusWithoutPresets: CSSObject['borderRadius']
-        padding: {
-            sm: CSSObject['padding']
-            md: CSSObject['padding']
-            lg: CSSObject['padding']
-        }
-        fontSize: {
-            sm: CSSObject['fontSize']
-            md: CSSObject['fontSize']
-            lg: CSSObject['fontSize']
+
+        // Date input (right side main input field)
+        dateInput: {
+            // Border radius for different configurations
+            borderRadius: {
+                withQuickSelector: CSSObject['borderRadius'] // Radius when quick selector is shown
+                withoutQuickSelector: CSSObject['borderRadius'] // Radius when no quick selector
+            }
+            // Size-dependent padding broken into x/y axis
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding'] // Horizontal padding
+                    y: CSSObject['padding'] // Vertical padding
+                }
+            }
+            // Text styling
+            text: {
+                color: CSSObject['color'] // Text color
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize'] // Font size for each size
+                }
+                fontWeight: CSSObject['fontWeight'] // Text font weight
+            }
+            // State-dependent border styling
+            border: {
+                [key in CalendarState]: CSSObject['border'] // Border for each state
+            }
+            backgroundColor: CSSObject['backgroundColor'] // Background color
+            iconSize: CSSObject['width'] // Icon size
+            gap: CSSObject['gap'] // Gap between elements
         }
     }
     calendar: {
-        minWidth: CSSObject['minWidth']
-        width: CSSObject['width']
-        backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        zIndex: CSSObject['zIndex']
+        minWidth: CSSObject['minWidth'] // Calendar minimum width
+        width: CSSObject['width'] // Calendar width
+        backgroundColor: CSSObject['backgroundColor'] // Calendar background
+        border: CSSObject['border'] // Calendar border
+        borderRadius: CSSObject['borderRadius'] // Calendar border radius
+        boxShadow: CSSObject['boxShadow'] // Calendar shadow
+
+        // Date input section at top of calendar
         inputs: {
-            padding: CSSObject['padding']
+            padding: {
+                x: CSSObject['padding'] // Input section horizontal padding
+                y: CSSObject['padding'] // Input section vertical padding
+            }
             dateInput: {
-                gap: CSSObject['gap']
+                gap: CSSObject['gap'] // Gap between input elements
                 label: {
-                    color: CSSObject['color']
-                    width: CSSObject['width']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color'] // Input label color
+                    width: CSSObject['width'] // Input label width
+                    fontSize: CSSObject['fontSize'] // Input label font size
+                    fontWeight: CSSObject['fontWeight'] // Input label font weight
                 }
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
+                fontSize: CSSObject['fontSize'] // Input text font size
+                fontWeight: CSSObject['fontWeight'] // Input text font weight
             }
         }
+
+        // Main calendar grid with months and days
         calendarGrid: {
-            container: {
-                maxHeight: CSSObject['maxHeight']
-                overflowY: CSSObject['overflowY']
-                overflow: CSSObject['overflow']
-                position: CSSObject['position']
-            }
+            // Month header styling
             month: {
                 header: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
-                    padding: CSSObject['padding']
-                }
-                container: {
-                    position: CSSObject['position']
-                    height: CSSObject['height']
-                    marginBottom: CSSObject['marginBottom']
+                    fontSize: CSSObject['fontSize'] // Month name font size
+                    fontWeight: CSSObject['fontWeight'] // Month name font weight
+                    color: CSSObject['color'] // Month name color
+                    padding: {
+                        x: CSSObject['padding'] // Month header horizontal padding
+                        y: CSSObject['padding'] // Month header vertical padding
+                    }
+                    gap: CSSObject['gap'] // Gap between month heading and dates
                 }
             }
+
+            // Week layout and day names
             week: {
+                gap: CSSObject['gap'] // Gap between week elements
+                fontSize: CSSObject['fontSize'] // Week header font size
+                fontWeight: CSSObject['fontWeight'] // Week header font weight
+                boxShadow: CSSObject['boxShadow'] // Week header shadow
+                color: CSSObject['color'] // Week header color
+                padding: {
+                    x: CSSObject['padding'] // Week cell horizontal padding
+                    y: CSSObject['padding'] // Week cell vertical padding
+                }
                 row: {
-                    display: CSSObject['display']
-                    gridTemplateColumns: CSSObject['gridTemplateColumns']
-                    padding: CSSObject['padding']
-                    gap: CSSObject['gap']
-                }
-                container: {
-                    display: CSSObject['display']
-                    flexDirection: CSSObject['flexDirection']
-                    gap: CSSObject['gap']
-                }
-                header: {
-                    display: CSSObject['display']
-                    gridTemplateColumns: CSSObject['gridTemplateColumns']
-                    textAlign: CSSObject['textAlign']
-                    color: CSSObject['color']
-                    padding: CSSObject['padding']
-                    position: CSSObject['position']
-                    top: CSSObject['top']
-                    zIndex: CSSObject['zIndex']
-                    backgroundColor: CSSObject['backgroundColor']
-                    boxShadow: CSSObject['boxShadow']
-                }
-                dayName: {
-                    padding: CSSObject['padding']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                    color: CSSObject['color']
+                    gap: CSSObject['gap'] // Gap between days in row
                 }
             }
+
+            // Individual day cells
             day: {
                 cell: {
-                    cursor: CSSObject['cursor']
-                    textAlign: CSSObject['textAlign']
-                    padding: CSSObject['padding']
-                    position: CSSObject['position']
-                    fontWeight: CSSObject['fontWeight']
-                    boxSizing: CSSObject['boxSizing']
-                    outline: CSSObject['outline']
-                    fontSize: CSSObject['fontSize']
-                    lineHeight: CSSObject['lineHeight']
-                    display: CSSObject['display']
-                    alignItems: CSSObject['alignItems']
-                    justifyContent: CSSObject['justifyContent']
-                    width: CSSObject['width']
-                    height: CSSObject['height']
+                    padding: {
+                        x: CSSObject['padding'] // Day cell horizontal padding
+                        y: CSSObject['padding'] // Day cell vertical padding
+                    }
+                    fontWeight: CSSObject['fontWeight'] // Day cell font weight
+                    fontSize: CSSObject['fontSize'] // Day cell font size
+                    lineHeight: CSSObject['lineHeight'] // Day cell line height
+                    // Outline depends on state
+                    outline: {
+                        [key in CalendarState]: CSSObject['outline'] // Outline for each state
+                    }
+                    borderRadius: CSSObject['borderRadius'] // Cell border radius
                 }
-                hover: {
-                    outline: CSSObject['outline']
-                    borderRadius: CSSObject['borderRadius']
-                }
-                empty: {
-                    padding: CSSObject['padding']
-                }
+
+                // Different day states (selected, range, today, etc.)
                 states: {
-                    startDate: CSSObject
-                    endDate: CSSObject
-                    singleDate: CSSObject
-                    rangeDay: CSSObject
-                    todayDay: CSSObject
-                    hoverState: CSSObject
-                    disabledDay: CSSObject
+                    startDate: {
+                        backgroundColor: CSSObject['backgroundColor'] // Start date background
+                        borderRadius: {
+                            topLeft: CSSObject['borderTopLeftRadius'] // Start date top left radius
+                            bottomLeft: CSSObject['borderBottomLeftRadius'] // Start date bottom left radius
+                        }
+                    }
+                    endDate: {
+                        backgroundColor: CSSObject['backgroundColor'] // End date background
+                        borderRadius: {
+                            topRight: CSSObject['borderTopRightRadius'] // End date top right radius
+                            bottomRight: CSSObject['borderBottomRightRadius'] // End date bottom right radius
+                        }
+                    }
+                    singleDate: {
+                        backgroundColor: CSSObject['backgroundColor'] // Single date background
+                        borderRadius: CSSObject['borderRadius'] // Single date border radius
+                    }
+                    rangeDay: {
+                        backgroundColor: CSSObject['backgroundColor'] // Range day background
+                    }
+                    todayDay: {
+                        fontWeight: CSSObject['fontWeight'] // Today font weight
+                    }
+                    hoverState: {
+                        boxShadow: CSSObject['boxShadow'] // Hover box shadow
+                        borderRadius: CSSObject['borderRadius'] // Hover border radius
+                    }
+                    disabledDay: {
+                        opacity: CSSObject['opacity'] // Disabled opacity
+                        cursor: CSSObject['cursor'] // Disabled cursor
+                        pointerEvents: CSSObject['pointerEvents'] // Disabled pointer events
+                    }
                 }
+
+                // Text colors for different day types
                 text: {
-                    dayNumber: CSSObject
-                    selectedDay: CSSObject
-                    rangeDay: CSSObject
-                    todayDay: CSSObject
+                    dayNumber: {
+                        color: CSSObject['color'] // Regular day number color
+                    }
+                    selectedDay: {
+                        color: CSSObject['color'] // Selected day text color
+                    }
+                    rangeDay: {
+                        color: CSSObject['color'] // Range day text color
+                    }
+                    todayDay: {
+                        color: CSSObject['color'] // Today text color
+                    }
                 }
+
+                // Today indicator dot
                 todayIndicator: {
-                    position: CSSObject['position']
-                    width: CSSObject['width']
-                    height: CSSObject['height']
-                    backgroundColor: CSSObject['backgroundColor']
-                    borderRadius: CSSObject['borderRadius']
-                    bottom: CSSObject['bottom']
-                    left: CSSObject['left']
-                    transform: CSSObject['transform']
+                    width: CSSObject['width'] // Indicator width
+                    height: CSSObject['height'] // Indicator height
+                    backgroundColor: CSSObject['backgroundColor'] // Indicator background
+                    borderRadius: CSSObject['borderRadius'] // Indicator border radius
+                    position: CSSObject['position'] // Indicator position
+                    bottom: CSSObject['bottom'] // Indicator bottom position
+                    left: CSSObject['left'] // Indicator left position
+                    transform: CSSObject['transform'] // Indicator transform for centering
                 }
             }
         }
+
+        // Calendar footer with time range and actions
         footer: {
-            padding: CSSObject['padding']
-            borderTop: CSSObject['borderTop']
-            timerange: {
-                gap: CSSObject['gap']
-                color: CSSObject['color']
-                fontWeight: CSSObject['fontWeight']
-                fontSize: CSSObject['fontSize']
+            padding: {
+                x: CSSObject['padding'] // Footer horizontal padding
+                y: CSSObject['padding'] // Footer vertical padding
             }
-            button: {
-                gap: CSSObject['gap']
-            }
+            borderTop: CSSObject['borderTop'] // Footer top border
+            gap: CSSObject['gap'] // Footer gap between elements
         }
     }
 }
@@ -334,204 +254,105 @@ export const getCalendarToken = (
     foundationToken: FoundationTokenType
 ): ResponsiveCalendarTokens => {
     const baseTokens: CalendarTokenType = {
-        mobileDrawer: {
-            picker: {
-                itemHeight: foundationToken.unit[44],
-                containerHeight: '132px', // 44px * 3
-                gradients: {
-                    top: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
-                    bottom: 'linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+        trigger: {
+            quickSelector: {
+                borderRadius: {
+                    topLeft: foundationToken.border.radius[8],
+                    topRight: foundationToken.border.radius[0],
+                    bottomLeft: foundationToken.border.radius[8],
+                    bottomRight: foundationToken.border.radius[0],
                 },
-                divider: {
-                    width: foundationToken.unit[70],
-                    height: foundationToken.unit[2],
-                    strokeColor: foundationToken.colors.gray[500],
-                    strokeColorEnd: foundationToken.colors.gray[0],
-                },
-                text: {
-                    selected: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[900],
-                        opacity: 1,
-                    },
-                    unselected: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
-                        fontWeight: foundationToken.font.weight[400],
-                        color: foundationToken.colors.gray[400],
-                        opacity: 0.6,
-                    },
-                },
-                timeInput: {
-                    width: foundationToken.unit[60],
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
-                    color: foundationToken.colors.gray[900],
-                    zIndex: 10,
-                },
-                scrollArea: {
-                    zIndex: 1,
-                    opacity: 0,
-                },
-            },
-            header: {
-                padding: foundationToken.unit[12],
-                backgroundColor: foundationToken.colors.gray[0],
-                zIndex: 5,
-                text: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[400],
-                    color: foundationToken.colors.gray[500],
-                },
-            },
-            presetItem: {
-                padding: `${foundationToken.unit[16]} ${foundationToken.unit[20]}`,
-                borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[150]}`,
-                text: {
-                    active: {
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[700],
-                    },
-                    inactive: {
-                        fontWeight: foundationToken.font.weight[500],
-                        color: foundationToken.colors.gray[600],
-                    },
-                },
-                icon: {
-                    size: foundationToken.unit[20],
-                    color: foundationToken.colors.gray[700],
-                },
-                chevron: {
-                    size: foundationToken.unit[16],
-                    color: foundationToken.colors.gray[500],
-                    transition: 'transform 0.2s ease',
-                },
-            },
-            actionButtons: {
-                container: {
-                    gap: foundationToken.unit[16],
-                    padding: foundationToken.unit[8],
-                    marginTop: foundationToken.unit[24],
-                    borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                },
-            },
-            tabs: {
-                marginTop: foundationToken.unit[16],
-                content: {
-                    marginTop: foundationToken.unit[32],
-                },
-            },
-            datePicker: {
-                container: {
-                    padding: `0 ${foundationToken.unit[16]}`,
-                    gap: foundationToken.unit[12],
-                },
-            },
-        },
-        quickRange: {
-            trigger: {
-                borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-                borderTopLeftRadius: foundationToken.border.radius[8],
-                borderBottomLeftRadius: foundationToken.border.radius[8],
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                cursor: 'pointer',
-                width: '100%',
                 backgroundColor: 'transparent',
-                iconSize: foundationToken.unit[16],
-                text: {
-                    color: foundationToken.colors.gray[600],
-                    fontWeight: foundationToken.font.weight[500],
-                },
                 gap: foundationToken.unit[8],
                 padding: {
-                    sm: `${foundationToken.unit[6]} ${foundationToken.unit[14]}`,
-                    md: `6.5px ${foundationToken.unit[14]}`,
-                    lg: `8.5px ${foundationToken.unit[14]}`,
+                    sm: {
+                        x: foundationToken.unit[14],
+                        y: foundationToken.unit[6],
+                    },
+                    md: {
+                        x: foundationToken.unit[14],
+                        y: '6.5px',
+                    },
+                    lg: {
+                        x: foundationToken.unit[14],
+                        y: '8.5px',
+                    },
                 },
-                fontSize: {
-                    sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                    md: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lg: `${foundationToken.font.size.body.md.fontSize}px`,
-                },
-                disabled: {
-                    borderLeft: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                    borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                    borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                },
-            },
-            content: {
-                padding: FOUNDATION_THEME.unit[4],
-                width: '100%',
-                maxHeight: '200px',
-                zIndex: 50,
-                backgroundColor: FOUNDATION_THEME.colors.gray[0],
-                borderRadius: FOUNDATION_THEME.border.radius[6],
-                boxShadow: FOUNDATION_THEME.shadows.xs,
-                overflowY: 'auto',
-                overflowX: 'hidden',
-            },
-            item: {
-                width: '100%',
-                textAlign: 'left',
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[12]}`,
-                borderRadius: foundationToken.border.radius[6],
-                transition: 'background-color 0.15s ease-in-out',
-                cursor: 'pointer',
-                border: 'none',
-                backgroundColor: 'transparent',
-                display: 'block',
-                '&:hover': {
-                    backgroundColor: foundationToken.colors.gray[50],
-                },
-                '&:focus': {
-                    outline: 'none',
-                    backgroundColor: foundationToken.colors.gray[50],
-                },
-                '&[data-highlighted]': {
-                    backgroundColor: foundationToken.colors.gray[50],
-                },
-                active: {
-                    backgroundColor: foundationToken.colors.primary[50],
-                    color: foundationToken.colors.primary[700],
-                    fontWeight: foundationToken.font.weight[500],
+                border: {
+                    default: {
+                        left: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        top: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        bottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        right: 'none',
+                    },
+                    hover: {
+                        left: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        top: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        bottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        right: 'none',
+                    },
+                    active: {
+                        left: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        top: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        bottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                        right: 'none',
+                    },
+                    disabled: {
+                        left: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                        top: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                        bottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                        right: 'none',
+                    },
                 },
                 text: {
                     color: foundationToken.colors.gray[600],
                     fontWeight: foundationToken.font.weight[500],
-                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                    fontSize: {
+                        sm: foundationToken.font.size.body.sm.fontSize,
+                        md: foundationToken.font.size.body.md.fontSize,
+                        lg: foundationToken.font.size.body.md.fontSize,
+                    },
                 },
+                iconSize: foundationToken.unit[16],
             },
-        },
-        trigger: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-            borderRadius: foundationToken.border.radius[8],
-            boxShadow: foundationToken.shadows.sm,
-            backgroundColor: foundationToken.colors.gray[0],
-            color: foundationToken.colors.gray[700],
-            cursor: 'pointer',
-            disabled: {
-                opacity: 0.5,
-                cursor: 'not-allowed',
-                border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
-            },
-            borderRadiusWithPresets: '0 8px 8px 0',
-            borderRadiusWithoutPresets: foundationToken.border.radius[8],
-            padding: {
-                sm: `${foundationToken.unit[5]} ${foundationToken.unit[14]}`,
-                md: `4.5px ${foundationToken.unit[14]}`,
-                lg: `8.5px ${foundationToken.unit[14]}`,
-            },
-            fontSize: {
-                sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                md: `${foundationToken.font.size.body.md.fontSize}px`,
-                lg: `${foundationToken.font.size.body.md.fontSize}px`,
+
+            dateInput: {
+                borderRadius: {
+                    withQuickSelector: '0 8px 8px 0',
+                    withoutQuickSelector: foundationToken.border.radius[8],
+                },
+                padding: {
+                    sm: {
+                        x: foundationToken.unit[14],
+                        y: foundationToken.unit[5],
+                    },
+                    md: {
+                        x: foundationToken.unit[14],
+                        y: '4.5px',
+                    },
+                    lg: {
+                        x: foundationToken.unit[14],
+                        y: '8.5px',
+                    },
+                },
+                text: {
+                    color: foundationToken.colors.gray[600],
+                    fontSize: {
+                        sm: foundationToken.font.size.body.sm.fontSize,
+                        md: foundationToken.font.size.body.md.fontSize,
+                        lg: foundationToken.font.size.body.md.fontSize,
+                    },
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                border: {
+                    default: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    hover: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    active: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
+                    disabled: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+                },
+                backgroundColor: foundationToken.colors.gray[0],
+                iconSize: foundationToken.unit[16],
+                gap: foundationToken.unit[8],
             },
         },
         calendar: {
@@ -541,112 +362,83 @@ export const getCalendarToken = (
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: foundationToken.shadows.xs,
-            zIndex: 50,
             inputs: {
-                padding: foundationToken.unit[16],
+                padding: {
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[16],
+                },
                 dateInput: {
                     gap: foundationToken.unit[12],
                     label: {
                         color: foundationToken.colors.gray[500],
                         width: foundationToken.unit[32],
-                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                        fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                     },
-                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },
             },
             calendarGrid: {
-                container: {
-                    maxHeight: '340px',
-                    overflowY: 'auto',
-                    overflow: 'auto',
-                    position: 'relative',
-                },
                 month: {
                     header: {
-                        fontSize: `${foundationToken.font.size.body.lg.fontSize}px`,
+                        fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[600],
                         color: foundationToken.colors.gray[700],
-                        padding: `${foundationToken.unit[0]} ${foundationToken.unit[12]}`,
-                    },
-                    container: {
-                        position: 'absolute',
-                        height: 'auto',
-                        marginBottom: foundationToken.unit[8],
+                        padding: {
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[0],
+                        },
+                        gap: foundationToken.unit[16],
                     },
                 },
                 week: {
+                    gap: foundationToken.unit[4],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[600],
+                    boxShadow: `0 2px 4px -1px ${foundationToken.colors.gray[200]}`,
+                    color: foundationToken.colors.gray[400],
+                    padding: {
+                        x: foundationToken.unit[8],
+                        y: foundationToken.unit[10],
+                    },
                     row: {
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(7, 40px)',
-                        padding: `0 ${foundationToken.unit[18]}`,
-                        gap: '0',
-                    },
-                    container: {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: foundationToken.unit[4],
-                    },
-                    header: {
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(7, 1fr)',
-                        textAlign: 'center',
-                        color: foundationToken.colors.gray[500],
-                        padding: `0 ${foundationToken.unit[16]}`,
-                        position: 'sticky',
-                        top: 0,
-                        zIndex: 10,
-                        backgroundColor: foundationToken.colors.gray[0],
-                        boxShadow: `0 2px 4px -1px ${foundationToken.colors.gray[200]}`,
-                    },
-                    dayName: {
-                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`,
-                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                        fontWeight: foundationToken.font.weight[600],
-                        color: foundationToken.colors.gray[400],
+                        gap: foundationToken.unit[0],
                     },
                 },
                 day: {
                     cell: {
-                        cursor: 'pointer',
-                        textAlign: 'center',
-                        padding: `${foundationToken.unit[10]} ${foundationToken.unit[8]}`, // 10px top/bottom, 8px left/right for 40x40 total
-                        position: 'relative',
+                        padding: {
+                            x: foundationToken.unit[8],
+                            y: foundationToken.unit[10],
+                        },
                         fontWeight: foundationToken.font.weight[500],
-                        boxSizing: 'border-box',
-                        outline: '1px solid transparent',
-                        fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                        lineHeight: `${foundationToken.unit[20]}`, // 20px line height for content
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: foundationToken.unit[40], // Fixed width of 40px
-                        height: foundationToken.unit[40], // Fixed height of 40px
-                    },
-                    hover: {
-                        outline: `1px solid ${foundationToken.colors.primary[500]}`,
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        lineHeight: foundationToken.unit[20],
+                        outline: {
+                            default: '1px solid transparent',
+                            hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                            active: `1px solid ${foundationToken.colors.primary[500]}`,
+                            disabled: '1px solid transparent',
+                        },
                         borderRadius: foundationToken.border.radius[8],
-                    },
-                    empty: {
-                        padding: `${foundationToken.unit[12]} ${foundationToken.unit[8]}`,
                     },
                     states: {
                         startDate: {
                             backgroundColor:
                                 foundationToken.colors.primary[500],
-                            borderTopLeftRadius:
-                                foundationToken.border.radius[8],
-                            borderBottomLeftRadius:
-                                foundationToken.border.radius[8],
+                            borderRadius: {
+                                topLeft: foundationToken.border.radius[8],
+                                bottomLeft: foundationToken.border.radius[8],
+                            },
                         },
                         endDate: {
                             backgroundColor:
                                 foundationToken.colors.primary[500],
-                            borderTopRightRadius:
-                                foundationToken.border.radius[8],
-                            borderBottomRightRadius:
-                                foundationToken.border.radius[8],
+                            borderRadius: {
+                                topRight: foundationToken.border.radius[8],
+                                bottomRight: foundationToken.border.radius[8],
+                            },
                         },
                         singleDate: {
                             backgroundColor:
@@ -660,10 +452,8 @@ export const getCalendarToken = (
                             fontWeight: foundationToken.font.weight[500],
                         },
                         hoverState: {
-                            '&:hover': {
-                                boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
-                                borderRadius: foundationToken.border.radius[8],
-                            },
+                            boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
+                            borderRadius: foundationToken.border.radius[8],
                         },
                         disabledDay: {
                             opacity: 0.4,
@@ -686,29 +476,24 @@ export const getCalendarToken = (
                         },
                     },
                     todayIndicator: {
-                        position: 'absolute',
                         width: foundationToken.unit[4],
                         height: foundationToken.unit[4],
                         backgroundColor: foundationToken.colors.primary[500],
-                        borderRadius: foundationToken.border.radius.full,
-                        bottom: foundationToken.unit[4],
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        bottom: foundationToken.unit[2],
                         left: '50%',
                         transform: 'translateX(-50%)',
                     },
                 },
             },
             footer: {
-                padding: foundationToken.unit[12],
+                padding: {
+                    x: foundationToken.unit[12],
+                    y: foundationToken.unit[12],
+                },
                 borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                timerange: {
-                    gap: foundationToken.unit[8],
-                    color: foundationToken.colors.gray[600],
-                    fontWeight: foundationToken.font.weight[500],
-                    fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                },
-                button: {
-                    gap: foundationToken.unit[12],
-                },
+                gap: foundationToken.unit[12],
             },
         },
     }

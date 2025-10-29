@@ -80,6 +80,7 @@ const DataTableHeader = forwardRef<
         {
             title,
             description,
+            showHeader = true,
             showToolbar = true,
             enableSearch = false,
             searchPlaceholder = 'Search...',
@@ -102,6 +103,12 @@ const DataTableHeader = forwardRef<
         const [isDrawerOpen, setIsDrawerOpen] = useState(false)
         const [isSearchOpen, setIsSearchOpen] = useState(false)
 
+        // Don't render anything if showHeader is false
+        if (!showHeader) {
+            return null
+        }
+
+        // Don't render if no content to show and toolbar is disabled
         if (!title && !description && !showToolbar) {
             return null
         }
@@ -407,13 +414,22 @@ const DataTableHeader = forwardRef<
                 maxWidth={tableToken.header.maxWidth}
                 overflowX={tableToken.header.overflowX}
                 overflowY="hidden"
-                style={{ minWidth: 0, height: 'auto' }}
+                style={{
+                    minWidth: 0,
+                    height: 'auto',
+                    minHeight: FOUNDATION_THEME.unit[48],
+                }}
             >
                 <Block
                     display="flex"
                     flexDirection="column"
                     gap={FOUNDATION_THEME.unit[10]}
-                    style={{ minWidth: 0, flexShrink: 1, maxWidth: '40%' }}
+                    style={{
+                        minWidth: 0,
+                        flexShrink: 1,
+                        maxWidth: '40%',
+                        minHeight: FOUNDATION_THEME.unit[40],
+                    }}
                 >
                     {title && (
                         <PrimitiveText
@@ -514,7 +530,7 @@ const DataTableHeader = forwardRef<
                                                 alignOffset={-20}
                                                 secondaryAction={{
                                                     onClick: onClearAllFilters,
-                                                    isDisabled:
+                                                    disabled:
                                                         !searchConfig.query.trim() &&
                                                         advancedFilters.length ===
                                                             0,

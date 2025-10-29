@@ -124,7 +124,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                 ref={ref}
                 display="flex"
                 flexDirection="column"
-                gap={radioTokens.groupGap}
+                gap={radioTokens.group.gap}
                 role="radiogroup"
                 aria-label={label}
                 onKeyDown={handleKeyDown}
@@ -135,7 +135,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                 <Block
                     display="flex"
                     flexDirection="column"
-                    gap={radioTokens.groupGap}
+                    gap={radioTokens.group.gap}
                 >
                     {enhancedChildren}
                 </Block>
@@ -161,7 +161,7 @@ const GroupLabel: React.FC<{
             fontSize={textProps.fontSize}
             fontWeight={textProps.fontWeight}
             color={textProps.color}
-            style={{ marginBottom: radioTokens.groupGap }}
+            style={{ marginBottom: radioTokens.group.gap }}
         >
             {children}
         </PrimitiveText>

@@ -12,7 +12,6 @@ import {
 } from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import {
     SelectMenuGroupType,
@@ -34,6 +33,7 @@ type QuickRangeSelectorProps = {
     size?: DateRangePickerSize
     maxMenuHeight?: number
     isStandalone?: boolean
+    calendarToken?: CalendarTokenType
 }
 
 const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
@@ -50,13 +50,10 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             size = DateRangePickerSize.MEDIUM,
             maxMenuHeight = 200,
             isStandalone = false,
+            calendarToken,
         },
         ref
     ) => {
-        const responsiveCalendarTokens =
-            useResponsiveTokens<CalendarTokenType>('CALENDAR')
-        const calendarToken = responsiveCalendarTokens
-
         // Use the already processed presets directly
         const presetConfigs = customPresets || []
 
@@ -104,36 +101,45 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         const getContainerStyle = () => {
             const baseStyle = {
                 backgroundColor:
-                    calendarToken.quickRange.trigger.backgroundColor,
+                    calendarToken?.trigger?.quickSelector?.backgroundColor,
             }
 
             if (isStandalone) {
-                const border = isDisabled
-                    ? calendarToken.quickRange.trigger.disabled.borderLeft
-                    : calendarToken.quickRange.trigger.borderLeft
+                const borderColor = isDisabled
+                    ? calendarToken?.trigger?.quickSelector?.border?.disabled
+                          ?.left
+                    : calendarToken?.trigger?.quickSelector?.border?.default
+                          ?.left
 
                 return {
                     ...baseStyle,
-                    border: border,
+                    border: borderColor,
                     borderRadius:
-                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                        calendarToken?.trigger?.quickSelector?.borderRadius
+                            ?.topLeft,
                 }
             } else {
+                const stateKey = isDisabled ? 'disabled' : 'default'
                 return {
                     ...baseStyle,
-                    borderLeft: isDisabled
-                        ? calendarToken.quickRange.trigger.disabled.borderLeft
-                        : calendarToken.quickRange.trigger.borderLeft,
-                    borderTop: isDisabled
-                        ? calendarToken.quickRange.trigger.disabled.borderTop
-                        : calendarToken.quickRange.trigger.borderTop,
-                    borderBottom: isDisabled
-                        ? calendarToken.quickRange.trigger.disabled.borderBottom
-                        : calendarToken.quickRange.trigger.borderBottom,
+                    borderLeft:
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.left,
+                    borderTop:
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.top,
+                    borderBottom:
+                        calendarToken?.trigger?.quickSelector?.border?.[
+                            stateKey
+                        ]?.bottom,
                     borderTopLeftRadius:
-                        calendarToken.quickRange.trigger.borderTopLeftRadius,
+                        calendarToken?.trigger?.quickSelector?.borderRadius
+                            ?.topLeft,
                     borderBottomLeftRadius:
-                        calendarToken.quickRange.trigger.borderBottomLeftRadius,
+                        calendarToken?.trigger?.quickSelector?.borderRadius
+                            ?.bottomLeft,
                 }
             }
         }
@@ -157,25 +163,16 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                     customTrigger={
                         <Block
                             style={{
-                                display:
-                                    calendarToken.quickRange.trigger.display,
-                                justifyContent:
-                                    calendarToken.quickRange.trigger
-                                        .justifyContent,
-                                alignItems:
-                                    calendarToken.quickRange.trigger.alignItems,
-                                cursor: isDisabled
-                                    ? 'not-allowed'
-                                    : calendarToken.quickRange.trigger.cursor,
-                                width: calendarToken.quickRange.trigger.width,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                                width: '100%',
                                 backgroundColor:
-                                    calendarToken.quickRange.trigger
-                                        .backgroundColor,
-                                padding:
-                                    calendarToken.quickRange.trigger.padding[
-                                        size
-                                    ],
-                                gap: calendarToken.quickRange.trigger.gap,
+                                    calendarToken?.trigger?.quickSelector
+                                        ?.backgroundColor,
+                                padding: `${calendarToken?.trigger?.quickSelector?.padding?.[size as keyof CalendarTokenType['trigger']['quickSelector']['padding']]?.y} ${calendarToken?.trigger?.quickSelector?.padding?.[size as keyof CalendarTokenType['trigger']['quickSelector']['padding']]?.x}`,
+                                gap: calendarToken?.trigger?.quickSelector?.gap,
                                 opacity: isDisabled ? 0.5 : 1,
                                 border: 'none',
                                 borderRadius: 0,
@@ -184,16 +181,18 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             <Block
                                 as="span"
                                 color={
-                                    calendarToken.quickRange.trigger.text.color
+                                    calendarToken?.trigger?.quickSelector?.text
+                                        ?.color
                                 }
                                 fontSize={
-                                    calendarToken.quickRange.trigger.fontSize[
-                                        size
+                                    calendarToken?.trigger?.quickSelector?.text
+                                        ?.fontSize?.[
+                                        size as keyof CalendarTokenType['trigger']['quickSelector']['text']['fontSize']
                                     ]
                                 }
                                 fontWeight={
-                                    calendarToken.quickRange.trigger.text
-                                        .fontWeight
+                                    calendarToken?.trigger?.quickSelector?.text
+                                        ?.fontWeight
                                 }
                                 style={{
                                     overflow: 'hidden',
@@ -208,11 +207,12 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             </Block>
                             <ChevronDown
                                 size={
-                                    calendarToken.quickRange.trigger
-                                        .iconSize as number
+                                    calendarToken?.trigger?.quickSelector
+                                        ?.iconSize
                                 }
                                 color={
-                                    calendarToken.quickRange.trigger.text.color
+                                    calendarToken?.trigger?.quickSelector?.text
+                                        ?.color
                                 }
                             />
                         </Block>

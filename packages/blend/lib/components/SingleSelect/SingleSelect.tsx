@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
@@ -16,7 +16,7 @@ import { ChevronDown } from 'lucide-react'
 import type { SingleSelectProps } from './types'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
-import { SingleSelectTokensType } from './singleSelect.tokens'
+import type { SingleSelectTokensType } from './singleSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
@@ -75,6 +75,13 @@ const SingleSelect = ({
     onFocus,
     inline = false,
     fullWidth = false,
+    enableVirtualization,
+    virtualListItemHeight,
+    virtualListOverscan,
+    onEndReached,
+    endReachedThreshold,
+    hasMore,
+    loadingComponent,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -92,11 +99,20 @@ const SingleSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size]
-    const paddingX = toPixels(singleSelectTokens.trigger.paddingX[size])
-    const paddingY = toPixels(singleSelectTokens.trigger.paddingY[size])
+    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const paddingX = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        singleSelectTokens.trigger.padding[size][variant].y
+    )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
+
+    const handleOnSelect = useCallback(
+        (val: string) => onSelect(selected === val ? '' : val),
+        [onSelect, selected]
+    )
 
     if (isMobile && useDrawerOnMobile) {
         return (
@@ -115,7 +131,7 @@ const SingleSelect = ({
                 variant={variant}
                 disabled={disabled}
                 selected={selected}
-                onSelect={onSelect}
+                onSelect={handleOnSelect}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
                 slot={slot}
@@ -123,6 +139,13 @@ const SingleSelect = ({
                 onBlur={onBlur}
                 onFocus={onFocus}
                 inline={inline}
+                enableVirtualization={enableVirtualization}
+                virtualListItemHeight={virtualListItemHeight}
+                virtualListOverscan={virtualListOverscan}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                hasMore={hasMore}
+                loadingComponent={loadingComponent}
             />
         )
     }
@@ -132,7 +155,7 @@ const SingleSelect = ({
             width="100%"
             display="flex"
             flexDirection="column"
-            gap={8}
+            gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
             {variant === SelectMenuVariant.CONTAINER &&
@@ -144,13 +167,14 @@ const SingleSelect = ({
                         helpIconHintText={helpIconText}
                         name={name}
                         required={required}
+                        tokens={singleSelectTokens}
                     />
                 )}
             <Block
                 display="flex"
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
-                    height: singleSelectTokens.trigger.height[size],
-                    maxHeight: singleSelectTokens.trigger.height[size],
+                    height: singleSelectTokens.trigger.height[size][variant],
+                    maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
             >
                 <Block
@@ -172,7 +196,7 @@ const SingleSelect = ({
                         items={items}
                         selected={selected}
                         onSelect={(value) => {
-                            onSelect(value)
+                            handleOnSelect(value)
                             setOpen(false)
                         }}
                         disabled={disabled}
@@ -185,6 +209,13 @@ const SingleSelect = ({
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
                         searchPlaceholder={searchPlaceholder}
+                        enableVirtualization={enableVirtualization}
+                        virtualListItemHeight={virtualListItemHeight}
+                        virtualListOverscan={virtualListOverscan}
+                        onEndReached={onEndReached}
+                        endReachedThreshold={endReachedThreshold}
+                        hasMore={hasMore}
+                        loadingComponent={loadingComponent}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
@@ -228,10 +259,12 @@ const SingleSelect = ({
                                                       ? 'open'
                                                       : 'closed'
                                             ],
+                                        height: singleSelectTokens.trigger
+                                            .height[size][variant],
                                         maxHeight:
                                             singleSelectTokens.trigger.height[
                                                 size
-                                            ],
+                                            ][variant],
                                         _hover: {
                                             outline:
                                                 singleSelectTokens.trigger
@@ -392,6 +425,8 @@ const SingleSelect = ({
                                 </PrimitiveButton>
                             )
                         }
+                        size={size}
+                        variant={variant}
                     />
                 </Block>
             </Block>
@@ -400,6 +435,7 @@ const SingleSelect = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    tokens={singleSelectTokens}
                 />
             )}
         </Block>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ButtonV2Props } from '../Button/types'
+import type { ButtonProps } from '../Button/types'
 
 export type DrawerDirection = 'top' | 'bottom' | 'left' | 'right'
 
@@ -190,11 +190,11 @@ export type StatusDrawerProps = {
     /**
      * Primary action button props (e.g., Delete, OK, Confirm)
      */
-    primaryButtonProps: ButtonV2Props
+    primaryButtonProps: ButtonProps
     /**
      * Secondary action button props (e.g., Cancel) - optional
      */
-    secondaryButtonProps?: ButtonV2Props
+    secondaryButtonProps?: ButtonProps
     /**
      * 56x56px slot for any React element (icon, image, etc.)
      */

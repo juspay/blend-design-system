@@ -52,3 +52,32 @@ p {
     all: unset;
     display: block;
 }
+
+/* Reset input styles to prevent browser defaults */
+input {
+    border: none;
+    outline: none;
+    background: transparent;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove any default input styling */
+input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Remove browser autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    transition: background-color 5000s ease-in-out 0s;
+}

@@ -72,29 +72,37 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     onEndTimeChange,
     calendarToken,
 }) => (
-    <Block padding={calendarToken.calendar.inputs.padding}>
+    <Block
+        paddingX={calendarToken?.calendar?.inputs?.padding?.x}
+        paddingY={calendarToken?.calendar?.inputs?.padding?.y}
+    >
         <Block
             display="flex"
             flexDirection="column"
-            gap={calendarToken.calendar.inputs.dateInput.gap}
+            gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
         >
             <Block
                 display="flex"
-                gap={calendarToken.calendar.inputs.dateInput.gap}
+                gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
                 alignItems="center"
             >
                 <PrimitiveText
                     as="span"
-                    color={calendarToken.calendar.inputs.dateInput.label.color}
+                    color={
+                        calendarToken?.calendar?.inputs?.dateInput?.label?.color
+                    }
                     fontWeight={
-                        calendarToken.calendar.inputs.dateInput.label.fontWeight
+                        calendarToken?.calendar?.inputs?.dateInput?.label
+                            ?.fontWeight
                     }
                     fontSize={
-                        calendarToken.calendar.inputs.dateInput.label.fontSize
+                        calendarToken?.calendar?.inputs?.dateInput?.label
+                            ?.fontSize
                     }
                     style={{
                         minWidth:
-                            calendarToken.calendar.inputs.dateInput.label.width,
+                            calendarToken?.calendar?.inputs?.dateInput?.label
+                                ?.width,
                     }}
                 >
                     Start
@@ -102,7 +110,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                 <Block
                     display="flex"
                     alignItems="start"
-                    gap={FOUNDATION_THEME.unit[8]}
+                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
                     width="100%"
                 >
                     <Block flexGrow={1}>
@@ -123,6 +131,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             onChange={onStartTimeChange}
                             autoFocus={false}
                             tabIndex={-1}
+                            calendarToken={calendarToken}
                         />
                     )}
                 </Block>
@@ -134,18 +143,27 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         selectedRange.endDate.getTime())) && (
                 <Block
                     display="flex"
-                    gap={calendarToken.calendar.inputs.dateInput.gap}
+                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
                     alignItems="center"
                 >
                     <PrimitiveText
                         as="span"
                         color={
-                            calendarToken.calendar.inputs.dateInput.label.color
+                            calendarToken?.calendar?.inputs?.dateInput?.label
+                                ?.color
+                        }
+                        fontWeight={
+                            calendarToken?.calendar?.inputs?.dateInput?.label
+                                ?.fontWeight
+                        }
+                        fontSize={
+                            calendarToken?.calendar?.inputs?.dateInput?.label
+                                ?.fontSize
                         }
                         style={{
                             minWidth:
-                                calendarToken.calendar.inputs.dateInput.label
-                                    .width,
+                                calendarToken?.calendar?.inputs?.dateInput
+                                    ?.label?.width,
                         }}
                     >
                         End
@@ -153,7 +171,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                     <Block
                         display="flex"
                         alignItems="start"
-                        gap={FOUNDATION_THEME.unit[8]}
+                        gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
                         width="100%"
                     >
                         <Block flexGrow={1}>
@@ -174,6 +192,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 onChange={onEndTimeChange}
                                 autoFocus={false}
                                 tabIndex={-1}
+                                calendarToken={calendarToken}
                             />
                         )}
                     </Block>
@@ -197,7 +216,9 @@ type CalendarSectionProps = {
     showDateTimePicker: boolean
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({
+const CalendarSection: React.FC<
+    CalendarSectionProps & { resetScrollPosition?: number }
+> = ({
     selectedRange,
     today,
     allowSingleDateSelection,
@@ -209,6 +230,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     customRangeConfig,
     onDateSelect,
     showDateTimePicker,
+    resetScrollPosition,
 }) => (
     <Block>
         <CalendarGrid
@@ -223,6 +245,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             customDisableDates={customDisableDates}
             customRangeConfig={customRangeConfig}
             showDateTimePicker={showDateTimePicker}
+            resetScrollPosition={resetScrollPosition}
         />
     </Block>
 )
@@ -230,26 +253,27 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
 type FooterControlsProps = {
     onCancel: () => void
     onApply: () => void
-    calendarToken: CalendarTokenType
     isApplyDisabled: boolean
     applyDisabledMessage?: string
+    calendarToken: CalendarTokenType
 }
 
 const FooterControls: React.FC<FooterControlsProps> = ({
     onCancel,
     onApply,
-    calendarToken,
     isApplyDisabled,
     applyDisabledMessage,
+    calendarToken,
 }) => (
     <Block
         display="flex"
         alignItems="center"
         justifyContent="flex-end"
-        padding={calendarToken.calendar.footer.padding}
-        borderTop={calendarToken.calendar.footer.borderTop}
+        paddingX={calendarToken?.calendar?.footer?.padding?.x}
+        paddingY={calendarToken?.calendar?.footer?.padding?.y}
+        borderTop={calendarToken?.calendar?.footer?.borderTop}
     >
-        <Block display="flex" gap={calendarToken.calendar.footer.button.gap}>
+        <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
             <Button
                 buttonType={ButtonType.SECONDARY}
                 size={ButtonSize.SMALL}
@@ -711,16 +735,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 )
             }
 
-            const {
-                borderRadiusWithPresets,
-                borderRadiusWithoutPresets,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                padding: _,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                fontSize: __,
-                ...triggerProps
-            } = calendarToken.trigger
-
             const displayText = formatConfig
                 ? formatTriggerDisplay(
                       displayRange,
@@ -732,25 +746,58 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const iconElement =
                 triggerConfig?.showIcon === false
                     ? null
-                    : triggerConfig?.icon || <Calendar size={14} />
+                    : triggerConfig?.icon || (
+                          <Calendar
+                              size={calendarToken?.trigger?.dateInput?.iconSize}
+                          />
+                      )
 
             return (
                 <PrimitiveButton
-                    {...triggerProps}
-                    padding={calendarToken.trigger.padding[size]}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    backgroundColor={
+                        calendarToken?.trigger?.dateInput?.backgroundColor
+                    }
+                    color={calendarToken?.trigger?.dateInput?.text?.color}
+                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
+                    paddingX={
+                        calendarToken?.trigger?.dateInput?.padding?.[
+                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
+                        ]?.x
+                    }
+                    paddingY={
+                        calendarToken?.trigger?.dateInput?.padding?.[
+                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
+                        ]?.y
+                    }
                     borderRadius={
                         showPresets
-                            ? borderRadiusWithPresets
-                            : borderRadiusWithoutPresets
+                            ? calendarToken?.trigger?.dateInput?.borderRadius
+                                  ?.withQuickSelector
+                            : calendarToken?.trigger?.dateInput?.borderRadius
+                                  ?.withoutQuickSelector
                     }
                     border={
                         isDisabled
-                            ? calendarToken.trigger.disabled.border
-                            : calendarToken.trigger.border
+                            ? calendarToken?.trigger?.dateInput?.border
+                                  ?.disabled
+                            : calendarToken?.trigger?.dateInput?.border?.default
                     }
+                    boxShadow={FOUNDATION_THEME.shadows.xs}
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
+                    data-component-field-wrapper=""
+                    data-date-picker="dateRangePicker-Filter"
+                    data-button-for={displayText
+                        .replace(/\s/g, '')
+                        .replace(/-/g, '➟')}
+                    data-custom-value="calendar_button"
+                    data-button-status={isDisabled ? 'disabled' : 'enabled'}
+                    data-dynamic-button="dynamicButton"
+                    type="button"
                 >
                     <Block
                         flexGrow={1}
@@ -758,15 +805,22 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         alignItems="center"
                         justifyContent="space-between"
                         style={{
-                            color: FOUNDATION_THEME.colors.gray[600],
-                            fontWeight: FOUNDATION_THEME.font.weight[500],
-                            fontSize: calendarToken.trigger.fontSize[size],
+                            color: calendarToken?.trigger?.dateInput?.text
+                                ?.color,
+                            fontWeight:
+                                calendarToken?.trigger?.dateInput?.text
+                                    ?.fontWeight,
+                            fontSize:
+                                calendarToken?.trigger?.dateInput?.text
+                                    ?.fontSize?.[
+                                    size as keyof CalendarTokenType['trigger']['dateInput']['text']['fontSize']
+                                ],
                         }}
                     >
                         <Block
                             display="flex"
                             alignItems="center"
-                            gap={FOUNDATION_THEME.unit[8]}
+                            gap={calendarToken?.trigger?.dateInput?.gap}
                         >
                             {iconElement}
                             <span style={{ whiteSpace: 'nowrap' }}>
@@ -775,13 +829,23 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         </Block>
                         {isOpen ? (
                             <ChevronUp
-                                size={14}
-                                style={{ marginLeft: '8px' }}
+                                size={
+                                    calendarToken?.trigger?.dateInput?.iconSize
+                                }
+                                style={{
+                                    marginLeft:
+                                        calendarToken?.trigger?.dateInput?.gap,
+                                }}
                             />
                         ) : (
                             <ChevronDown
-                                size={14}
-                                style={{ marginLeft: '8px' }}
+                                size={
+                                    calendarToken?.trigger?.dateInput?.iconSize
+                                }
+                                style={{
+                                    marginLeft:
+                                        calendarToken?.trigger?.dateInput?.gap,
+                                }}
                             />
                         )}
                     </Block>
@@ -857,6 +921,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         size={size}
                         maxMenuHeight={maxMenuHeight}
                         isStandalone={true}
+                        calendarToken={calendarToken}
                     />
                 </Block>
             )
@@ -880,6 +945,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         isDisabled={isDisabled}
                         size={size}
                         maxMenuHeight={maxMenuHeight}
+                        calendarToken={calendarToken}
                     />
                 )}
 
@@ -937,14 +1003,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             customRangeConfig={customRangeConfig}
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
+                            resetScrollPosition={popoverKey}
                         />
 
                         <FooterControls
                             onCancel={handleCancel}
                             onApply={handleApply}
-                            calendarToken={calendarToken}
                             isApplyDisabled={isApplyDisabled}
                             applyDisabledMessage={applyButtonValidation.message}
+                            calendarToken={calendarToken}
                         />
                     </Block>
                 </Popover>

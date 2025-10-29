@@ -4,13 +4,34 @@ import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
 import { Tooltip, TooltipSize } from '../../../Tooltip'
 
-type InputLabelsProps = {
+type InputLabelTokens = {
+    label?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+    subLabel?: {
+        fontWeight?: number | string
+        fontSize?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+    required?: {
+        color?: string
+    }
+    helpIcon?: {
+        width?: number | string
+        color?: { default?: string; disabled?: string }
+    }
+}
+
+type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     label?: string
     sublabel?: string
     disabled?: boolean
     helpIconHintText?: string
     name?: string
     required?: boolean
+    tokens?: Partial<TTokens>
 }
 
 /**
@@ -21,44 +42,69 @@ type InputLabelsProps = {
  * @param {string} helpIconHintText - The hint text for the help icon.
  * @param {boolean} required - Whether the input field is required.
  */
-const InputLabels = ({
+const InputLabels = <TTokens extends InputLabelTokens>({
     label,
     sublabel,
     disabled,
     helpIconHintText,
     name,
     required,
-}: InputLabelsProps) => {
+    tokens,
+}: InputLabelsProps<TTokens>) => {
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
+                    data-form-label={label}
                     as="label"
                     htmlFor={name}
-                    variant="body.md"
-                    fontWeight={500}
+                    // variant="body.md"
+                    fontWeight={tokens?.label?.fontWeight}
+                    fontSize={
+                        tokens?.label?.fontSize ||
+                        FOUNDATION_THEME.font.size.body.md.fontSize
+                    }
                     color={
                         disabled
-                            ? FOUNDATION_THEME.colors.gray[400]
-                            : FOUNDATION_THEME.colors.gray[700]
+                            ? tokens?.label?.color?.disabled ||
+                              FOUNDATION_THEME.colors.gray[400]
+                            : tokens?.label?.color?.default ||
+                              FOUNDATION_THEME.colors.gray[700]
                     }
                     style={{ margin: 0, padding: 0 }}
                 >
                     {label}
                 </Text>
                 {required && (
-                    <sup style={{ color: FOUNDATION_THEME.colors.red[500] }}>
+                    <sup
+                        style={{
+                            color:
+                                tokens?.required?.color ||
+                                FOUNDATION_THEME.colors.red[600],
+                            top: '-1px',
+                            left: '-1px',
+                        }}
+                    >
                         *
                     </sup>
                 )}
                 {sublabel && (
                     <Text
-                        variant="body.md"
-                        fontWeight={400}
+                        // variant="body.md"
+                        fontWeight={
+                            tokens?.subLabel?.fontWeight ||
+                            FOUNDATION_THEME.font.weight[400]
+                        }
+                        fontSize={
+                            tokens?.subLabel?.fontSize ||
+                            FOUNDATION_THEME.font.size.body.md.fontSize
+                        }
                         color={
                             disabled
-                                ? FOUNDATION_THEME.colors.gray[300]
-                                : FOUNDATION_THEME.colors.gray[400]
+                                ? tokens?.subLabel?.color?.disabled ||
+                                  FOUNDATION_THEME.colors.gray[300]
+                                : tokens?.subLabel?.color?.default ||
+                                  FOUNDATION_THEME.colors.gray[400]
                         }
                         margin={0}
                     >
@@ -73,8 +119,14 @@ const InputLabels = ({
                             size={TooltipSize.SMALL}
                         >
                             <HelpCircleIcon
-                                size={14}
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                size={
+                                    tokens?.helpIcon?.width ||
+                                    FOUNDATION_THEME.unit[14]
+                                }
+                                color={
+                                    tokens?.helpIcon?.color?.default ||
+                                    FOUNDATION_THEME.colors.gray[400]
+                                }
                             />
                         </Tooltip>
                     </Block>

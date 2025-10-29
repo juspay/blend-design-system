@@ -3,7 +3,6 @@ import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
 import { foundationToken } from '../../foundationToken'
-import { styled } from 'styled-components'
 import {
     AlertActionPlacement,
     type AlertProps,
@@ -46,14 +45,14 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         return (
             <Block
                 ref={ref}
-                maxWidth={900}
+                maxWidth={alertTokens.maxWidth}
                 backgroundColor={alertTokens.background[variant][style]}
                 padding={alertTokens.padding}
                 borderRadius={alertTokens.borderRadius}
                 display="flex"
                 flexDirection="column"
-                gap={FOUNDATION_THEME.unit[8]}
-                border={alertTokens.border[variant]}
+                gap={alertTokens.gap}
+                border={alertTokens.border[variant][style]}
             >
                 <Block
                     display="flex"
@@ -75,21 +74,24 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             </Block>
                         )}
                         <Text
-                            variant="body.md"
-                            color={foundationToken.colors.gray[700]}
-                            fontWeight={600}
+                            data-alert-heading={heading}
+                            color={alertTokens.text.heading.color[variant]}
+                            fontWeight={alertTokens.text.heading.fontWeight}
+                            fontSize={alertTokens.text.heading.fontSize}
+                            lineHeight={alertTokens.text.heading.lineHeight}
                         >
                             {heading}
                         </Text>
                     </Block>
                     {onClose &&
                         actionPlacement === AlertActionPlacement.BOTTOM && (
-                            // <AlertCloseButton onClick={onClose} variant={variant}>
-                            //   <X size={16} color={foundationToken.colors.gray[800]} />
-                            // </AlertCloseButton>
                             <AlertCloseButton
                                 onClick={onClose}
-                                $color={alertTokens.button[variant]}
+                                $color={
+                                    alertTokens.button.closeButton.color[
+                                        variant
+                                    ]
+                                }
                             >
                                 <X
                                     size={16}
@@ -111,8 +113,11 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     gap={FOUNDATION_THEME.unit[18]}
                 >
                     <Text
-                        variant="body.md"
-                        color={foundationToken.colors.gray[600]}
+                        data-alert-description={description}
+                        fontWeight={alertTokens.text.description.fontWeight}
+                        fontSize={alertTokens.text.description.fontSize}
+                        lineHeight={alertTokens.text.description.lineHeight}
+                        color={alertTokens.text.description.color[variant]}
                     >
                         {description}
                     </Text>
@@ -122,25 +127,64 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                 <Block
                                     as="span"
                                     display="flex"
-                                    gap={FOUNDATION_THEME.unit[20]}
+                                    gap={alertTokens.button.gap}
                                 >
                                     {primaryAction && (
-                                        <AlertActionButton
+                                        <PrimitiveButton
                                             onClick={primaryAction.onClick}
-                                            $variant={variant}
-                                            $alertTokens={alertTokens}
+                                            style={{
+                                                border: 'none',
+                                                background: 'none',
+                                                cursor: 'pointer',
+                                                color: alertTokens.button
+                                                    .primaryAction.color[
+                                                    variant
+                                                ],
+
+                                                fontWeight:
+                                                    alertTokens.button
+                                                        .primaryAction
+                                                        .fontWeight,
+                                                fontSize:
+                                                    alertTokens.button
+                                                        .primaryAction.fontSize,
+                                                width: 'fit-content',
+                                                whiteSpace: 'nowrap',
+                                            }}
                                         >
                                             {primaryAction.label}
-                                        </AlertActionButton>
+                                        </PrimitiveButton>
                                     )}
                                     {secondaryAction && (
-                                        <AlertActionButton
-                                            onClick={secondaryAction.onClick}
-                                            $variant={variant}
-                                            $alertTokens={alertTokens}
-                                        >
-                                            {secondaryAction.label}
-                                        </AlertActionButton>
+                                        <>
+                                            <PrimitiveButton
+                                                onClick={
+                                                    secondaryAction.onClick
+                                                }
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'none',
+                                                    cursor: 'pointer',
+                                                    color: alertTokens.button
+                                                        .secondaryAction.color[
+                                                        variant
+                                                    ],
+
+                                                    fontWeight:
+                                                        alertTokens.button
+                                                            .secondaryAction
+                                                            .fontWeight,
+                                                    fontSize:
+                                                        alertTokens.button
+                                                            .secondaryAction
+                                                            .fontSize,
+                                                    width: 'fit-content',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {secondaryAction.label}
+                                            </PrimitiveButton>
+                                        </>
                                     )}
                                 </Block>
                             )}
@@ -159,7 +203,10 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                         />
                                         <AlertCloseButton
                                             onClick={onClose}
-                                            $color={alertTokens.button[variant]}
+                                            $color={
+                                                alertTokens.button.closeButton
+                                                    .color[variant]
+                                            }
                                         >
                                             <X
                                                 size={16}
@@ -204,30 +251,6 @@ const AlertCloseButton = ({
         </PrimitiveButton>
     )
 }
-
-const AlertActionButton = styled.button<{
-    $variant: AlertVariant
-    $alertTokens: AlertTokenType
-}>(({ $variant, $alertTokens }) => {
-    return {
-        border: 'none',
-        background: 'none',
-        cursor: 'pointer',
-        height: FOUNDATION_THEME.unit[20],
-        color: $alertTokens.button[$variant],
-        fontWeight: 600,
-        fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-        width: 'fit-content',
-        whiteSpace: 'nowrap',
-
-        '&:focus-visible, &:hover': {
-            textDecoration: 'underline',
-            textUnderlineOffset: 2,
-            outline: 'none',
-            border: 'none',
-        },
-    }
-})
 
 Alert.displayName = 'Alert'
 

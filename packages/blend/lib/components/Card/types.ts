@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ButtonV2Props } from '../Button/types'
+import type { ButtonProps } from '../Button/types'
 
 export enum CardVariant {
     DEFAULT = 'default',
@@ -24,7 +24,7 @@ export type DefaultCardProps = {
     bodyTitle?: string
     content?: ReactNode
     bodySlot2?: ReactNode
-    actionButton?: ButtonV2Props
+    actionButton?: ButtonProps
 }
 
 export type AlignedCardProps = {
@@ -41,7 +41,7 @@ export type AlignedCardProps = {
     bodySlot1?: ReactNode
     bodyTitle?: string
     content?: ReactNode
-    actionButton?: ButtonV2Props
+    actionButton?: ButtonProps
 }
 
 export type CustomCardProps = {
@@ -51,4 +51,15 @@ export type CustomCardProps = {
 
 export type CardProps = {
     maxWidth?: string
+    /**
+     * Height of the card. Accepts any valid CSS height value.
+     * Examples: "200px", "100%", "50vh", "auto"
+     * Note: For percentage heights to work, parent container must have a defined height.
+     */
+    maxHeight?: string
+    /**
+     * Minimum height of the card. Accepts any valid CSS height value.
+     * Useful when you want the card to grow with content but maintain a minimum height.
+     */
+    minHeight?: string
 } & (DefaultCardProps | AlignedCardProps | CustomCardProps)

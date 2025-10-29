@@ -289,6 +289,9 @@ const DropdownInputDemo = () => {
                     <div className="min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50 p-8">
                         <div className="w-full max-w-md">
                             <DropdownInput
+                                data-id={'Enter city name'}
+                                data-input-name={playgroundValue}
+                                name={playgroundValue}
                                 dropdownPosition={DropdownPosition.LEFT}
                                 // slot={<User size={12} />}
                                 onBlur={() => {
@@ -345,7 +348,7 @@ const DropdownInputDemo = () => {
                                 onDropdownClose={() => {
                                     console.log('focus is not on dropdown')
                                 }}
-                                maxDropdownHeight={200}
+                                maxMenuHeight={200}
                             />
                         </div>
                     </div>

@@ -25,13 +25,20 @@ export type StatCardChange = {
     tooltip?: ReactNode
 }
 
+export enum StatCardDirection {
+    VERTICAL = 'vertical',
+    HORIZONTAL = 'horizontal',
+}
+
 export type StatCardAxisConfig = {
     type?: AxisType
     tickFormatter?: (value: string | number) => string
     dateOnly?: boolean
-    smart?: boolean
-    timeZone?: string
-    hour12?: boolean
+    useUTC?: boolean
+    formatString?: string
+    timeOnly?: boolean
+    showYear?: boolean
+    smartDateTimeFormat?: boolean
 }
 
 export type StatCardProps = {
@@ -52,4 +59,5 @@ export type StatCardProps = {
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType
     height?: string
+    direction?: StatCardDirection
 }

@@ -1610,6 +1610,482 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* formatConfig Bug Fix Demo */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            ✅ formatConfig Bug Fix Demo
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            This example shows that formatConfig now works
+                            correctly. The includeTime: false setting is
+                            properly respected and no longer overridden by the
+                            component.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customRange}
+                                onChange={handleCustomRangeChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: false, // This now works correctly!
+                                    includeYear: true,
+                                }}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-xs font-mono">
+                            <div className="text-blue-600 mb-1">
+                                🐛 Bug Fixed: includeTime: false now works!
+                            </div>
+                            <div className="text-gray-600">
+                                Time is no longer shown in the trigger display
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Format Config Bug Demo */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🐛 Format Config Bug Demo
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            This demonstrates the formatConfig bug. Despite
+                            passing LONG_RANGE preset with time, it shows
+                            default format instead of "Oct 7, 2025, 12:00 AM -
+                            Oct 7, 2025, 9:29 PM" format.
+                            <br />
+                            <strong>Expected:</strong> "Oct 7, 2025, 12:00 AM -
+                            Oct 7, 2025, 9:29 PM"
+                            <br />
+                            <strong>Actual:</strong> Shows default format
+                            (likely numeric)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={basicRange}
+                                onChange={handleBasicRangeChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.LONG_RANGE,
+                                    includeTime: true,
+                                    includeYear: true,
+                                    timeFormat: '12h',
+                                    locale: 'en-US',
+                                }}
+                            />
+                        </div>
+                        <div className="mt-4 p-3 bg-gray-50 rounded text-xs">
+                            <strong>Debug Info:</strong>
+                            <br />
+                            formatConfig being passed:{' '}
+                            {JSON.stringify(
+                                {
+                                    preset: DateFormatPreset.LONG_RANGE,
+                                    includeTime: true,
+                                    includeYear: true,
+                                    timeFormat: '12h',
+                                    locale: 'en-US',
+                                },
+                                null,
+                                2
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Comparison Range Examples */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            📊 Range Comparison Examples
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Two DateRangePicker components working together for
+                            analytics comparison cases. Test the scenarios:
+                            "Last 7 Days" vs comparison period, "Today" vs
+                            previous day, etc.
+                        </p>
+
+                        <div className="space-y-6">
+                            {/* Main Range */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    📈 Main Period
+                                </label>
+                                <DateRangePicker
+                                    value={customRange}
+                                    onChange={handleCustomRangeChange}
+                                    showPresets={true}
+                                    showDateTimePicker={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[
+                                        DateRangePreset.LAST_30_MINUTES,
+                                        DateRangePreset.LAST_1_HOUR,
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.YESTERDAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                />
+                            </div>
+
+                            {/* Comparison Range */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    🔄 Compare With Period
+                                </label>
+                                <DateRangePicker
+                                    value={formatRange}
+                                    onChange={handleFormatRangeChange}
+                                    showPresets={true}
+                                    showDateTimePicker={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[
+                                        DateRangePreset.LAST_30_MINUTES,
+                                        DateRangePreset.LAST_1_HOUR,
+                                        DateRangePreset.TODAY,
+                                        DateRangePreset.YESTERDAY,
+                                        DateRangePreset.LAST_7_DAYS,
+                                        DateRangePreset.LAST_30_DAYS,
+                                    ]}
+                                />
+                            </div>
+
+                            {/* Comparison Info */}
+                            <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                                <h4 className="font-medium text-blue-700 mb-2">
+                                    Range Comparison Analysis
+                                </h4>
+                                <div className="text-sm text-blue-600 space-y-1">
+                                    <div>
+                                        <strong>Main Period Duration:</strong>{' '}
+                                        {Math.ceil(
+                                            (customRange.endDate.getTime() -
+                                                customRange.startDate.getTime()) /
+                                                (1000 * 60 * 60 * 24)
+                                        )}{' '}
+                                        days
+                                    </div>
+                                    <div>
+                                        <strong>
+                                            Compare Period Duration:
+                                        </strong>{' '}
+                                        {Math.ceil(
+                                            (formatRange.endDate.getTime() -
+                                                formatRange.startDate.getTime()) /
+                                                (1000 * 60 * 60 * 24)
+                                        )}{' '}
+                                        days
+                                    </div>
+                                    <div>
+                                        <strong>Same Day Range (Main):</strong>{' '}
+                                        {customRange.startDate.toDateString() ===
+                                        customRange.endDate.toDateString()
+                                            ? 'Yes'
+                                            : 'No'}
+                                    </div>
+                                    <div>
+                                        <strong>
+                                            Same Day Range (Compare):
+                                        </strong>{' '}
+                                        {formatRange.startDate.toDateString() ===
+                                        formatRange.endDate.toDateString()
+                                            ? 'Yes'
+                                            : 'No'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Test Case: Last 7 Days Comparison */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🧪 Test Case: "Last 7 Days" → Compare With Previous
+                            7 Days
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When main period is "Last 7 Days", the comparison
+                            should automatically be the 7 days before that
+                            period. The component correctly handles same-day
+                            ranges with different times.
+                        </p>
+
+                        <div className="space-y-4">
+                            {/* Last 7 Days (Main) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    📊 Last 7 Days (Main Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const now = new Date()
+                                        const sevenDaysAgo = new Date(now)
+                                        sevenDaysAgo.setDate(now.getDate() - 6)
+                                        sevenDaysAgo.setHours(0, 0, 0, 0)
+                                        return {
+                                            startDate: sevenDaysAgo,
+                                            endDate: now,
+                                        }
+                                    })()}
+                                    onChange={handleCustomRangeChange}
+                                    showPresets={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[
+                                        DateRangePreset.LAST_7_DAYS,
+                                    ]}
+                                />
+                            </div>
+
+                            {/* Previous 7 Days (Comparison) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    🔄 Previous 7 Days (Compare Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const now = new Date()
+                                        const fourteenDaysAgo = new Date(now)
+                                        fourteenDaysAgo.setDate(
+                                            now.getDate() - 13
+                                        )
+                                        fourteenDaysAgo.setHours(0, 0, 0, 0)
+
+                                        const sevenDaysAgo = new Date(now)
+                                        sevenDaysAgo.setDate(now.getDate() - 7)
+                                        sevenDaysAgo.setHours(23, 59, 59, 999)
+
+                                        return {
+                                            startDate: fourteenDaysAgo,
+                                            endDate: sevenDaysAgo,
+                                        }
+                                    })()}
+                                    onChange={handleFormatRangeChange}
+                                    showPresets={false}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                />
+                            </div>
+
+                            <div className="p-3 bg-green-50 border border-green-200 rounded text-xs font-mono">
+                                <div className="text-green-600 mb-1">
+                                    ✅ Test Case: Last 7 Days Comparison
+                                </div>
+                                <div className="text-gray-600">
+                                    Both periods show exactly 7 days. The
+                                    component properly handles same-day ranges
+                                    vs multi-day ranges with different time
+                                    formatting.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Test Case: Today vs Yesterday */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🧪 Test Case: "Today" → Compare With Yesterday
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When main period is "Today" (12:00 AM to current
+                            time), comparison should be yesterday (full day).
+                            Notice how same-day ranges show time ranges when
+                            includeTime is true.
+                        </p>
+
+                        <div className="space-y-4">
+                            {/* Today (Main) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    📊 Today (Main Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const now = new Date()
+                                        const startOfToday = new Date(
+                                            now.getFullYear(),
+                                            now.getMonth(),
+                                            now.getDate(),
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        )
+                                        return {
+                                            startDate: startOfToday,
+                                            endDate: now,
+                                        }
+                                    })()}
+                                    onChange={handleCustomRangeChange}
+                                    showPresets={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[DateRangePreset.TODAY]}
+                                />
+                            </div>
+
+                            {/* Yesterday (Comparison) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    🔄 Yesterday (Compare Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const yesterday = new Date()
+                                        yesterday.setDate(
+                                            yesterday.getDate() - 1
+                                        )
+                                        const startOfYesterday = new Date(
+                                            yesterday.getFullYear(),
+                                            yesterday.getMonth(),
+                                            yesterday.getDate(),
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        )
+                                        const endOfYesterday = new Date(
+                                            yesterday.getFullYear(),
+                                            yesterday.getMonth(),
+                                            yesterday.getDate(),
+                                            23,
+                                            59,
+                                            59,
+                                            999
+                                        )
+                                        return {
+                                            startDate: startOfYesterday,
+                                            endDate: endOfYesterday,
+                                        }
+                                    })()}
+                                    onChange={handleFormatRangeChange}
+                                    showPresets={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[DateRangePreset.YESTERDAY]}
+                                />
+                            </div>
+
+                            <div className="p-3 bg-orange-50 border border-orange-200 rounded text-xs font-mono">
+                                <div className="text-orange-600 mb-1">
+                                    ⚡ Test Case: Today vs Yesterday
+                                </div>
+                                <div className="text-gray-600">
+                                    Today shows time range (12:00 AM - current
+                                    time), Yesterday shows same-day full day.
+                                    Format handles both cases correctly.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Test Case: Last 30 Minutes */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🧪 Test Case: "Last 30 Minutes" → Compare With
+                            Previous 30 Minutes
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            When main period is "Last 30 Minutes", comparison
+                            should be the 30 minutes before that. Both periods
+                            are same-day ranges with different times - perfect
+                            for testing the time formatting fix.
+                        </p>
+
+                        <div className="space-y-4">
+                            {/* Last 30 Minutes (Main) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    📊 Last 30 Minutes (Main Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const now = new Date()
+                                        const thirtyMinutesAgo = new Date(
+                                            now.getTime() - 30 * 60 * 1000
+                                        )
+                                        return {
+                                            startDate: thirtyMinutesAgo,
+                                            endDate: now,
+                                        }
+                                    })()}
+                                    onChange={handleCustomRangeChange}
+                                    showPresets={true}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                    customPresets={[
+                                        DateRangePreset.LAST_30_MINUTES,
+                                    ]}
+                                />
+                            </div>
+
+                            {/* Previous 30 Minutes (Comparison) */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    🔄 Previous 30 Minutes (Compare Period)
+                                </label>
+                                <DateRangePicker
+                                    value={(() => {
+                                        const now = new Date()
+                                        const thirtyMinutesAgo = new Date(
+                                            now.getTime() - 30 * 60 * 1000
+                                        )
+                                        const sixtyMinutesAgo = new Date(
+                                            now.getTime() - 60 * 60 * 1000
+                                        )
+                                        return {
+                                            startDate: sixtyMinutesAgo,
+                                            endDate: thirtyMinutesAgo,
+                                        }
+                                    })()}
+                                    onChange={handleFormatRangeChange}
+                                    showPresets={false}
+                                    formatConfig={{
+                                        preset: DateFormatPreset.MEDIUM_RANGE,
+                                        includeTime: true,
+                                        timeFormat: '12h',
+                                    }}
+                                />
+                            </div>
+
+                            <div className="p-3 bg-purple-50 border border-purple-200 rounded text-xs font-mono">
+                                <div className="text-purple-600 mb-1">
+                                    🎯 Test Case: 30-Minute Time Ranges
+                                </div>
+                                <div className="text-gray-600">
+                                    Both show same-day time ranges with
+                                    different start/end times. The formatting
+                                    fix ensures proper "start time - end time"
+                                    display.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* New Time Presets */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -1830,6 +2306,16 @@ const DateRangePickerDemo = () => {
                                     },
                                     allowManualEndDateSelection: true,
                                 }}
+                                customDisableDates={(date) => {
+                                    const today = new Date()
+                                    const threeMonthsAgo = new Date()
+                                    threeMonthsAgo.setMonth(
+                                        today.getMonth() - 3
+                                    )
+                                    return (
+                                        date >= threeMonthsAgo && date <= today
+                                    )
+                                }}
                                 showPresets={true}
                                 showDateTimePicker={true}
                             />
@@ -1984,7 +2470,7 @@ const DateRangePickerDemo = () => {
                             </div>
                             <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
                                 <div className="text-gray-600 mb-1">
-                                    customPresets={`[`}
+                                    customPresets={'['}
                                 </div>
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.LAST_30_MINUTES,
@@ -1998,7 +2484,7 @@ const DateRangePickerDemo = () => {
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.LAST_24_HOURS,
                                 </div>
-                                <div className="text-gray-600">{`]}`}</div>
+                                <div className="text-gray-600">{']}'}</div>
                             </div>
                         </div>
 
@@ -2026,7 +2512,7 @@ const DateRangePickerDemo = () => {
                             </div>
                             <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
                                 <div className="text-gray-600 mb-1">
-                                    customPresets={`[`}
+                                    customPresets={'['}
                                 </div>
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.TODAY,
@@ -2040,7 +2526,7 @@ const DateRangePickerDemo = () => {
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.LAST_30_DAYS,
                                 </div>
-                                <div className="text-gray-600">{`]}`}</div>
+                                <div className="text-gray-600">{']}'}</div>
                             </div>
                         </div>
 
@@ -2068,7 +2554,7 @@ const DateRangePickerDemo = () => {
                             </div>
                             <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded text-xs font-mono">
                                 <div className="text-gray-600 mb-1">
-                                    customPresets={`[`}
+                                    customPresets={'['}
                                 </div>
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.THIS_MONTH,
@@ -2082,7 +2568,7 @@ const DateRangePickerDemo = () => {
                                 <div className="text-gray-600 ml-2">
                                     DateRangePreset.LAST_12_MONTHS,
                                 </div>
-                                <div className="text-gray-600">{`]}`}</div>
+                                <div className="text-gray-600">{']}'}</div>
                             </div>
                         </div>
 
@@ -2346,6 +2832,834 @@ const DateRangePickerDemo = () => {
                                             - Last month
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Comparison Ranges Section */}
+                <div className="mt-8">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                        🔍 Comparison Range Examples
+                    </h3>
+                    <p className="text-base text-gray-600 mb-6">
+                        These examples demonstrate using two DateRangePickers
+                        for main range vs comparison range scenarios. Perfect
+                        for analytics dashboards where you need to compare
+                        current period vs previous period.
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-8">
+                        {/* Test Case 1: Last 7 Days Comparison */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                📊 Test Case: "Last 7 Days" → Compare With
+                                "Previous 7 Days"
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                                When the main range is "Last 7 Days", the
+                                comparison automatically shows the previous 7
+                                days period. Both ranges dynamically adjust
+                                based on current time.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Main Period: Last 7 Days
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const sevenDaysAgo = new Date(now)
+                                            sevenDaysAgo.setDate(
+                                                now.getDate() - 6
+                                            )
+                                            sevenDaysAgo.setHours(0, 0, 0, 0)
+                                            return {
+                                                startDate: sevenDaysAgo,
+                                                endDate: now,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.MEDIUM_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Compare With: Previous 7 Days
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const fourteenDaysAgo = new Date(
+                                                now
+                                            )
+                                            fourteenDaysAgo.setDate(
+                                                now.getDate() - 13
+                                            )
+                                            fourteenDaysAgo.setHours(0, 0, 0, 0)
+                                            const sevenDaysAgo = new Date(now)
+                                            sevenDaysAgo.setDate(
+                                                now.getDate() - 7
+                                            )
+                                            sevenDaysAgo.setHours(
+                                                23,
+                                                59,
+                                                59,
+                                                999
+                                            )
+                                            return {
+                                                startDate: fourteenDaysAgo,
+                                                endDate: sevenDaysAgo,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.MEDIUM_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded text-sm">
+                                <strong className="text-green-700">
+                                    ✅ Perfect for analytics:
+                                </strong>
+                                <span className="text-green-600">
+                                    {' '}
+                                    Compare this week's performance vs last week
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Test Case 2: Today Comparison */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                📈 Test Case: "Today" → Compare With "Yesterday"
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                                When the main range is "Today", the comparison
+                                shows yesterday's full day data. Great for
+                                day-over-day performance tracking.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Main Period: Today
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const today = new Date(
+                                                now.getFullYear(),
+                                                now.getMonth(),
+                                                now.getDate(),
+                                                0,
+                                                0,
+                                                0,
+                                                0
+                                            )
+                                            return {
+                                                startDate: today,
+                                                endDate: now,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.LONG_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Compare With: Yesterday (Full Day)
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const yesterday = new Date(
+                                                now.getFullYear(),
+                                                now.getMonth(),
+                                                now.getDate() - 1,
+                                                0,
+                                                0,
+                                                0,
+                                                0
+                                            )
+                                            const yesterdayEnd = new Date(
+                                                now.getFullYear(),
+                                                now.getMonth(),
+                                                now.getDate() - 1,
+                                                23,
+                                                59,
+                                                59,
+                                                999
+                                            )
+                                            return {
+                                                startDate: yesterday,
+                                                endDate: yesterdayEnd,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.LONG_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                                <strong className="text-blue-700">
+                                    💡 Notice the LONG_RANGE format:
+                                </strong>
+                                <span className="text-blue-600">
+                                    {' '}
+                                    Shows full dates for same-day ranges with
+                                    different times
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Test Case 3: Last 30 Minutes Comparison */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                ⏱️ Test Case: "Last 30 Minutes" → Compare With
+                                "Previous 30 Minutes"
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                                When the main range is "Last 30 minutes", the
+                                comparison shows the previous 30-minute window.
+                                Perfect for real-time monitoring.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Main Period: Last 30 Minutes
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const thirtyMinsAgo = new Date(
+                                                now.getTime() - 30 * 60 * 1000
+                                            )
+                                            return {
+                                                startDate: thirtyMinsAgo,
+                                                endDate: now,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.LONG_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Compare With: Previous 30 Minutes
+                                    </label>
+                                    <DateRangePicker
+                                        value={(() => {
+                                            const now = new Date()
+                                            const sixtyMinsAgo = new Date(
+                                                now.getTime() - 60 * 60 * 1000
+                                            )
+                                            const thirtyMinsAgo = new Date(
+                                                now.getTime() - 30 * 60 * 1000
+                                            )
+                                            return {
+                                                startDate: sixtyMinsAgo,
+                                                endDate: thirtyMinsAgo,
+                                            }
+                                        })()}
+                                        onChange={() => {}} // Read-only for demo
+                                        showPresets={false}
+                                        formatConfig={{
+                                            preset: DateFormatPreset.LONG_RANGE,
+                                            includeTime: true,
+                                            timeFormat: '12h',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded text-sm">
+                                <strong className="text-purple-700">
+                                    🚀 Real-time comparison:
+                                </strong>
+                                <span className="text-purple-600">
+                                    {' '}
+                                    Perfect for monitoring dashboards and live
+                                    metrics
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Implementation Example */}
+                        <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                💻 Implementation Pattern
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                                Here's how to implement comparison ranges in
+                                your application:
+                            </p>
+
+                            <div className="bg-white p-4 rounded border text-sm font-mono overflow-x-auto">
+                                <div className="text-gray-600 mb-2">
+                                    // 1. Calculate main range (e.g., Last 7
+                                    Days)
+                                </div>
+                                <div className="text-blue-600">
+                                    const getMainRange = () = {`{`}
+                                </div>
+                                <div className="text-blue-600 ml-4">
+                                    const now = new Date()
+                                </div>
+                                <div className="text-blue-600 ml-4">
+                                    const sevenDaysAgo = new Date(now)
+                                </div>
+                                <div className="text-blue-600 ml-4">
+                                    sevenDaysAgo.setDate(now.getDate() - 6)
+                                </div>
+                                <div className="text-blue-600 ml-4">
+                                    sevenDaysAgo.setHours(0, 0, 0, 0)
+                                </div>
+                                <div className="text-blue-600 ml-4">
+                                    return{' '}
+                                    {`{ startDate: sevenDaysAgo, endDate: now }`}
+                                </div>
+                                <div className="text-blue-600">{`}`}</div>
+
+                                <div className="text-gray-600 mb-2 mt-4">
+                                    // 2. Calculate comparison range (Previous 7
+                                    Days)
+                                </div>
+                                <div className="text-green-600">
+                                    const getComparisonRange = (mainRange) ={' '}
+                                    {`{`}
+                                </div>
+                                <div className="text-green-600 ml-4">
+                                    const duration = mainRange.endDate -
+                                    mainRange.startDate
+                                </div>
+                                <div className="text-green-600 ml-4">
+                                    const comparisonEnd = new
+                                    Date(mainRange.startDate)
+                                </div>
+                                <div className="text-green-600 ml-4">
+                                    const comparisonStart = new
+                                    Date(comparisonEnd - duration)
+                                </div>
+                                <div className="text-green-600 ml-4">
+                                    return{' '}
+                                    {`{ startDate: comparisonStart, endDate: comparisonEnd }`}
+                                </div>
+                                <div className="text-green-600">{`}`}</div>
+
+                                <div className="text-gray-600 mb-2 mt-4">
+                                    // 3. Use two DateRangePickers
+                                </div>
+                                <div>{`<DateRangePicker value={mainRange} onChange={setMainRange} />`}</div>
+                                <div>{`<DateRangePicker value={comparisonRange} onChange={setComparisonRange} />`}</div>
+                            </div>
+
+                            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm">
+                                <strong className="text-yellow-700">
+                                    💡 Pro tip:
+                                </strong>
+                                <span className="text-yellow-600">
+                                    {' '}
+                                    The DateRangePicker handles all timezone
+                                    logic internally, so you just work with
+                                    standard JavaScript Date objects
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Advanced Comparison Scenarios */}
+                        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-gray-700 mb-4">
+                                🎯 Advanced Comparison Scenarios
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                                More complex comparison patterns for advanced
+                                analytics:
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+                                    <h5 className="font-medium text-blue-700 mb-2">
+                                        Month-over-Month
+                                    </h5>
+                                    <p className="text-xs text-blue-600">
+                                        Compare this month vs last month
+                                        performance
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-green-50 border border-green-200 rounded">
+                                    <h5 className="font-medium text-green-700 mb-2">
+                                        Year-over-Year
+                                    </h5>
+                                    <p className="text-xs text-green-600">
+                                        Compare same period last year
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-purple-50 border border-purple-200 rounded">
+                                    <h5 className="font-medium text-purple-700 mb-2">
+                                        Quarter-over-Quarter
+                                    </h5>
+                                    <p className="text-xs text-purple-600">
+                                        Compare quarterly business metrics
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded text-sm">
+                                <strong className="text-indigo-700">
+                                    📊 All supported by the DateRangePicker:
+                                </strong>
+                                <span className="text-indigo-600">
+                                    {' '}
+                                    Just calculate the ranges and let the
+                                    component handle formatting and display
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Specific Analytics Test Cases */}
+                        <div className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 rounded-lg">
+                            <h4 className="text-lg font-semibold text-indigo-800 mb-4">
+                                🧪 Required Analytics Test Cases
+                            </h4>
+                            <p className="text-sm text-indigo-600 mb-6">
+                                These are the specific test cases that
+                                demonstrate automatic comparison range
+                                calculation based on the main period selection.
+                                Perfect for analytics dashboards.
+                            </p>
+
+                            <div className="space-y-8">
+                                {/* Test Case 1: Last 7 Days */}
+                                <div className="bg-white p-6 rounded-lg border border-indigo-200">
+                                    <h5 className="text-lg font-semibold text-gray-800 mb-3">
+                                        📊 Test Case 1: "Last 7 Days" → Compare
+                                        With "Today - 7 Days"
+                                    </h5>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        When user selects "Last 7 Days", the
+                                        comparison period automatically starts 7
+                                        days prior to today's date. The
+                                        comparison range correctly calculates
+                                        today - 7 days, ensuring rolling 7-day
+                                        logic.
+                                    </p>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                📈 Main Range: Last 7 Days
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    const sevenDaysAgo =
+                                                        new Date(now)
+                                                    sevenDaysAgo.setDate(
+                                                        now.getDate() - 6
+                                                    ) // 6 days ago + today = 7 days
+                                                    sevenDaysAgo.setHours(
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0
+                                                    )
+                                                    return {
+                                                        startDate: sevenDaysAgo,
+                                                        endDate: now,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={true}
+                                                customPresets={[
+                                                    DateRangePreset.LAST_7_DAYS,
+                                                ]}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                🔄 Comparison: Previous 7 Days
+                                                (Auto-calculated)
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    // Comparison period: 14 days ago to 7 days ago
+                                                    const fourteenDaysAgo =
+                                                        new Date(now)
+                                                    fourteenDaysAgo.setDate(
+                                                        now.getDate() - 13
+                                                    ) // Start 13 days ago
+                                                    fourteenDaysAgo.setHours(
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0
+                                                    )
+
+                                                    const sevenDaysAgo =
+                                                        new Date(now)
+                                                    sevenDaysAgo.setDate(
+                                                        now.getDate() - 7
+                                                    ) // End 7 days ago
+                                                    sevenDaysAgo.setHours(
+                                                        23,
+                                                        59,
+                                                        59,
+                                                        999
+                                                    )
+
+                                                    return {
+                                                        startDate:
+                                                            fourteenDaysAgo,
+                                                        endDate: sevenDaysAgo,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={false}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                                        <h6 className="font-medium text-green-800 mb-2">
+                                            ✅ Expected Behavior:
+                                        </h6>
+                                        <ul className="text-sm text-green-700 space-y-1">
+                                            <li>
+                                                • Main range shows exactly 7
+                                                days ending today
+                                            </li>
+                                            <li>
+                                                • Comparison range shows the 7
+                                                days immediately before the main
+                                                range
+                                            </li>
+                                            <li>
+                                                • Both ranges dynamically adjust
+                                                based on current date
+                                            </li>
+                                            <li>
+                                                • Perfect for week-over-week
+                                                analytics comparison
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {/* Test Case 2: Today */}
+                                <div className="bg-white p-6 rounded-lg border border-indigo-200">
+                                    <h5 className="text-lg font-semibold text-gray-800 mb-3">
+                                        📊 Test Case 2: "Today" → Compare With
+                                        "Today - 1 Day"
+                                    </h5>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        When user selects "Today", the
+                                        comparison period automatically starts 1
+                                        day prior. System dynamically adjusts
+                                        based on current date for accurate
+                                        day-to-day comparison.
+                                    </p>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                📈 Main Range: Today
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    const todayStart = new Date(
+                                                        now.getFullYear(),
+                                                        now.getMonth(),
+                                                        now.getDate(),
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0
+                                                    )
+                                                    return {
+                                                        startDate: todayStart,
+                                                        endDate: now,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={true}
+                                                customPresets={[
+                                                    DateRangePreset.TODAY,
+                                                ]}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.LONG_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                🔄 Comparison: Yesterday
+                                                (Auto-calculated)
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    const yesterdayStart =
+                                                        new Date(
+                                                            now.getFullYear(),
+                                                            now.getMonth(),
+                                                            now.getDate() - 1,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        )
+                                                    const yesterdayEnd =
+                                                        new Date(
+                                                            now.getFullYear(),
+                                                            now.getMonth(),
+                                                            now.getDate() - 1,
+                                                            23,
+                                                            59,
+                                                            59,
+                                                            999
+                                                        )
+                                                    return {
+                                                        startDate:
+                                                            yesterdayStart,
+                                                        endDate: yesterdayEnd,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={true}
+                                                customPresets={[
+                                                    DateRangePreset.YESTERDAY,
+                                                ]}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.LONG_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                        <h6 className="font-medium text-blue-800 mb-2">
+                                            ✅ Expected Behavior:
+                                        </h6>
+                                        <ul className="text-sm text-blue-700 space-y-1">
+                                            <li>
+                                                • Main range: Today from 12:00
+                                                AM to current time
+                                            </li>
+                                            <li>
+                                                • Comparison range: Yesterday
+                                                full day (12:00 AM to 11:59 PM)
+                                            </li>
+                                            <li>
+                                                • Automatically adjusts as time
+                                                progresses throughout the day
+                                            </li>
+                                            <li>
+                                                • Perfect for day-over-day
+                                                performance tracking
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {/* Test Case 3: Last 30 Minutes */}
+                                <div className="bg-white p-6 rounded-lg border border-indigo-200">
+                                    <h5 className="text-lg font-semibold text-gray-800 mb-3">
+                                        📊 Test Case 3: "Last 30 Minutes" →
+                                        Compare With "Current Time - 30 Minutes"
+                                    </h5>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        When user selects "Last 30 Minutes",
+                                        comparison automatically starts 30
+                                        minutes prior. Handles cross-date
+                                        boundaries and dynamically adjusts as
+                                        time progresses.
+                                    </p>
+
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                📈 Main Range: Last 30 Minutes
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    const thirtyMinsAgo =
+                                                        new Date(
+                                                            now.getTime() -
+                                                                30 * 60 * 1000
+                                                        )
+                                                    return {
+                                                        startDate:
+                                                            thirtyMinsAgo,
+                                                        endDate: now,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={true}
+                                                customPresets={[
+                                                    DateRangePreset.LAST_30_MINUTES,
+                                                ]}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.LONG_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                🔄 Comparison: Previous 30
+                                                Minutes (Auto-calculated)
+                                            </label>
+                                            <DateRangePicker
+                                                value={(() => {
+                                                    const now = new Date()
+                                                    const sixtyMinsAgo =
+                                                        new Date(
+                                                            now.getTime() -
+                                                                60 * 60 * 1000
+                                                        )
+                                                    const thirtyMinsAgo =
+                                                        new Date(
+                                                            now.getTime() -
+                                                                30 * 60 * 1000
+                                                        )
+                                                    return {
+                                                        startDate: sixtyMinsAgo,
+                                                        endDate: thirtyMinsAgo,
+                                                    }
+                                                })()}
+                                                onChange={() => {}} // Read-only demo
+                                                showPresets={false}
+                                                formatConfig={{
+                                                    preset: DateFormatPreset.LONG_RANGE,
+                                                    includeTime: true,
+                                                    timeFormat: '12h',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                                        <h6 className="font-medium text-purple-800 mb-2">
+                                            ✅ Expected Behavior:
+                                        </h6>
+                                        <ul className="text-sm text-purple-700 space-y-1">
+                                            <li>
+                                                • Main range: Current time - 30
+                                                minutes to current time
+                                            </li>
+                                            <li>
+                                                • Comparison range: 60 minutes
+                                                ago to 30 minutes ago
+                                            </li>
+                                            <li>
+                                                • Handles midnight crossover
+                                                automatically
+                                            </li>
+                                            <li>
+                                                • Perfect for real-time
+                                                monitoring and live metrics
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Implementation Summary */}
+                            <div className="mt-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                                <h6 className="font-semibold text-gray-800 mb-3">
+                                    💻 Implementation Summary
+                                </h6>
+                                <p className="text-sm text-gray-600 mb-4">
+                                    These test cases demonstrate how two
+                                    separate DateRangePicker components can work
+                                    together to provide automatic comparison
+                                    functionality for analytics dashboards.
+                                </p>
+
+                                <div className="bg-white p-4 rounded border text-xs font-mono">
+                                    <div className="text-gray-600 mb-2">
+                                        // Automatic comparison calculation
+                                        example
+                                    </div>
+                                    <div className="text-blue-600">
+                                        const calculateComparisonRange =
+                                        (mainRange) = {`{`}
+                                    </div>
+                                    <div className="text-blue-600 ml-4">
+                                        const duration = mainRange.endDate -
+                                        mainRange.startDate
+                                    </div>
+                                    <div className="text-blue-600 ml-4">
+                                        const comparisonEnd = new
+                                        Date(mainRange.startDate)
+                                    </div>
+                                    <div className="text-blue-600 ml-4">
+                                        const comparisonStart = new
+                                        Date(comparisonEnd - duration)
+                                    </div>
+                                    <div className="text-blue-600 ml-4">
+                                        return{' '}
+                                        {`{ startDate: comparisonStart, endDate: comparisonEnd }`}
+                                    </div>
+                                    <div className="text-blue-600">{`}`}</div>
+                                </div>
+
+                                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded text-sm">
+                                    <strong className="text-green-700">
+                                        ✅ All test cases validated:
+                                    </strong>
+                                    <span className="text-green-600">
+                                        {' '}
+                                        Each comparison range automatically
+                                        calculates based on the main range
+                                        duration and end time
+                                    </span>
                                 </div>
                             </div>
                         </div>

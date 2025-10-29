@@ -1,52 +1,63 @@
 import type { CSSObject } from 'styled-components'
-import { FOUNDATION_THEME, type ThemeType } from '../../tokens'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
+import { FoundationTokenType } from '../../tokens/theme.token'
 
+/**
+ * Tag Tokens following the pattern: [target].CSSProp.[size].[variant].[subType]
+ *
+ * Structure:
+ * - target: container | text (defines what element the token applies to)
+ * - CSSProp: backgroundColor | borderRadius | padding | border | color | fontSize | fontWeight | gap | height
+ * - size: xs | sm | md | lg (only for size-dependent properties like padding, fontSize, height)
+ * - variant: noFill | attentive | subtle (tag variant)
+ * - subType: neutral | primary | success | error | warning | purple (tag color)
+ *
+ * Size-independent properties: backgroundColor, border, color
+ * Size-dependent properties: borderRadius, padding, fontSize, fontWeight, gap, height
+ */
 export type TagTokensType = Readonly<{
-    background: {
+    gap: CSSObject['gap']
+    // Pattern: backgroundColor.[variant].[subType]
+    backgroundColor: {
         [key in TagVariant]: {
-            [key in TagColor]: CSSObject['color']
+            [key in TagColor]: CSSObject['backgroundColor']
         }
     }
-    color: {
-        [key in TagVariant]: {
-            [key in TagColor]: CSSObject['color']
-        }
-    }
-    borderColor: {
-        [key in TagVariant]: {
-            [key in TagColor]: CSSObject['color']
-        }
-    }
+    // Pattern: borderRadius.[size].[shape] (size and shape dependent)
     borderRadius: {
-        [key in TagShape]: {
-            [key in TagSize]: CSSObject['borderRadius']
-        }
-    }
-    borderWidth: {
-        [key in TagVariant]: {
-            [key in TagColor]: CSSObject['borderWidth']
-        }
-    }
-    font: {
         [key in TagSize]: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+            [key in TagShape]: CSSObject['borderRadius']
         }
     }
-    gap: {
-        [key in TagSize]: CSSObject['gap']
-    }
+    // Pattern: padding.[size] (size-dependent)
     padding: {
         [key in TagSize]: CSSObject['padding']
     }
-    height: {
-        [key in TagSize]: CSSObject['height']
+    // Pattern: border.[variant].[subType]
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
     }
-    slot: {
-        size: {
-            [key in TagSize]: CSSObject['width']
+    // Pattern: height.[size] (size-dependent)
+    // height: {
+    //     [key in TagSize]: CSSObject['height']
+    // }
+    text: {
+        // Pattern: text.color.[variant].[subType]
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        // Pattern: text.fontSize.[size] (size-dependent)
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        // Pattern: text.fontWeight.[size] (size-dependent)
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
         }
     }
 }>
@@ -55,177 +66,16 @@ export type ResponsiveTagTokens = {
     [key in keyof BreakpointType]: TagTokensType
 }
 
-const tagTokens: TagTokensType = {
-    background: {
-        noFill: {
-            neutral: FOUNDATION_THEME.colors.gray[0],
-            primary: FOUNDATION_THEME.colors.gray[0],
-            success: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-            warning: FOUNDATION_THEME.colors.gray[0],
-            purple: FOUNDATION_THEME.colors.gray[0],
-        },
-        attentive: {
-            neutral: FOUNDATION_THEME.colors.gray[950],
-            primary: FOUNDATION_THEME.colors.primary[600],
-            success: FOUNDATION_THEME.colors.green[600],
-            error: FOUNDATION_THEME.colors.red[600],
-            warning: FOUNDATION_THEME.colors.orange[500],
-            purple: FOUNDATION_THEME.colors.purple[500],
-        },
-        subtle: {
-            neutral: FOUNDATION_THEME.colors.gray[50],
-            primary: FOUNDATION_THEME.colors.primary[50],
-            success: FOUNDATION_THEME.colors.green[50],
-            error: FOUNDATION_THEME.colors.red[50],
-            warning: FOUNDATION_THEME.colors.orange[50],
-            purple: FOUNDATION_THEME.colors.purple[50],
-        },
-    },
-    color: {
-        noFill: {
-            neutral: FOUNDATION_THEME.colors.gray[950],
-            primary: FOUNDATION_THEME.colors.primary[800],
-            success: FOUNDATION_THEME.colors.green[600],
-            error: FOUNDATION_THEME.colors.red[600],
-            warning: FOUNDATION_THEME.colors.orange[500],
-            purple: FOUNDATION_THEME.colors.purple[500],
-        },
-        attentive: {
-            neutral: FOUNDATION_THEME.colors.gray[0],
-            primary: FOUNDATION_THEME.colors.gray[0],
-            success: FOUNDATION_THEME.colors.gray[0],
-            error: FOUNDATION_THEME.colors.gray[0],
-            warning: FOUNDATION_THEME.colors.gray[0],
-            purple: FOUNDATION_THEME.colors.gray[0],
-        },
-        subtle: {
-            neutral: FOUNDATION_THEME.colors.gray[950],
-            primary: FOUNDATION_THEME.colors.primary[600],
-            success: FOUNDATION_THEME.colors.green[600],
-            error: FOUNDATION_THEME.colors.red[600],
-            warning: FOUNDATION_THEME.colors.orange[600],
-            purple: FOUNDATION_THEME.colors.purple[600],
-        },
-    },
-    borderColor: {
-        noFill: {
-            neutral: FOUNDATION_THEME.colors.gray[950],
-            primary: FOUNDATION_THEME.colors.primary[600],
-            success: FOUNDATION_THEME.colors.green[600],
-            error: FOUNDATION_THEME.colors.red[600],
-            warning: FOUNDATION_THEME.colors.orange[500],
-            purple: FOUNDATION_THEME.colors.purple[500],
-        },
-        subtle: {
-            neutral: FOUNDATION_THEME.colors.gray[200],
-            primary: FOUNDATION_THEME.colors.primary[100],
-            success: FOUNDATION_THEME.colors.green[100],
-            error: FOUNDATION_THEME.colors.red[100],
-            warning: FOUNDATION_THEME.colors.orange[100],
-            purple: FOUNDATION_THEME.colors.purple[100],
-        },
-        attentive: {
-            neutral: FOUNDATION_THEME.colors.gray[950],
-            primary: FOUNDATION_THEME.colors.primary[600],
-            success: FOUNDATION_THEME.colors.green[600],
-            error: FOUNDATION_THEME.colors.red[600],
-            warning: FOUNDATION_THEME.colors.orange[500],
-            purple: FOUNDATION_THEME.colors.purple[500],
-        },
-    },
-    borderRadius: {
-        squarical: {
-            xs: FOUNDATION_THEME.border.radius[6],
-            sm: FOUNDATION_THEME.border.radius[6],
-            md: FOUNDATION_THEME.border.radius[6],
-            lg: FOUNDATION_THEME.border.radius[8],
-        },
-        rounded: {
-            xs: FOUNDATION_THEME.border.radius.full,
-            sm: FOUNDATION_THEME.border.radius.full,
-            md: FOUNDATION_THEME.border.radius.full,
-            lg: FOUNDATION_THEME.border.radius.full,
-        },
-    },
-    borderWidth: {
-        noFill: {
-            neutral: 1,
-            primary: 1,
-            success: 1,
-            error: 1,
-            warning: 1,
-            purple: 1,
-        },
-        subtle: {
-            neutral: 1,
-            primary: 1,
-            success: 1,
-            error: 1,
-            warning: 1,
-            purple: 1,
-        },
-        attentive: {
-            neutral: 1,
-            primary: 1,
-            success: 1,
-            error: 1,
-            warning: 1,
-            purple: 1,
-        },
-    },
-    font: {
-        xs: {
-            fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        sm: {
-            fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        md: {
-            fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-        lg: {
-            fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
-            fontWeight: FOUNDATION_THEME.font.weight[600],
-        },
-    },
-    gap: {
-        xs: FOUNDATION_THEME.unit[6],
-        sm: FOUNDATION_THEME.unit[6],
-        md: FOUNDATION_THEME.unit[6],
-        lg: FOUNDATION_THEME.unit[6],
-    },
-    padding: {
-        xs: `${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[6]}`,
-        sm: `${FOUNDATION_THEME.unit[3]} ${FOUNDATION_THEME.unit[8]}`,
-        md: `${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[10]}`,
-        lg: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
-    },
-    height: {
-        xs: FOUNDATION_THEME.unit[20],
-        sm: FOUNDATION_THEME.unit[22],
-        md: FOUNDATION_THEME.unit[24],
-        lg: FOUNDATION_THEME.unit[28],
-    },
-    slot: {
-        size: {
-            xs: FOUNDATION_THEME.unit[12],
-            sm: FOUNDATION_THEME.unit[12],
-            md: FOUNDATION_THEME.unit[12],
-            lg: FOUNDATION_THEME.unit[12],
-        },
-    },
-}
-
 export const getTagTokens = (
-    foundationToken: ThemeType
+    foundationToken: FoundationTokenType
 ): ResponsiveTagTokens => {
     return {
         sm: {
-            background: {
+            gap: foundationToken.unit[6],
+
+            // Pattern: backgroundColor.[variant].[subType]
+            // Example: backgroundColor.attentive.primary
+            backgroundColor: {
                 noFill: {
                     neutral: foundationToken.colors.gray[0],
                     primary: foundationToken.colors.gray[0],
@@ -251,145 +101,123 @@ export const getTagTokens = (
                     purple: foundationToken.colors.purple[50],
                 },
             },
-            color: {
-                noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[800],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-                attentive: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
-                },
-                subtle: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[600],
-                    purple: foundationToken.colors.purple[600],
-                },
-            },
-            borderColor: {
-                noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-                subtle: {
-                    neutral: foundationToken.colors.gray[200],
-                    primary: foundationToken.colors.primary[100],
-                    success: foundationToken.colors.green[100],
-                    error: foundationToken.colors.red[100],
-                    warning: foundationToken.colors.orange[100],
-                    purple: foundationToken.colors.purple[100],
-                },
-                attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-            },
+            // Pattern: borderRadius.[size].[shape]
+            // Example: borderRadius.lg.rounded
             borderRadius: {
-                squarical: {
-                    xs: foundationToken.border.radius[6],
-                    sm: foundationToken.border.radius[6],
-                    md: foundationToken.border.radius[6],
-                    lg: foundationToken.border.radius[8],
-                },
-                rounded: {
-                    xs: foundationToken.border.radius.full,
-                    sm: foundationToken.border.radius.full,
-                    md: foundationToken.border.radius.full,
-                    lg: foundationToken.border.radius.full,
-                },
-            },
-            borderWidth: {
-                noFill: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-                subtle: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-                attentive: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-            },
-            font: {
                 xs: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 sm: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 md: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 lg: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[8],
+                    rounded: foundationToken.border.radius.full,
                 },
             },
-            gap: {
-                xs: foundationToken.unit[6],
-                sm: foundationToken.unit[6],
-                md: foundationToken.unit[6],
-                lg: foundationToken.unit[6],
-            },
+            // Pattern: padding.[size] (size-dependent)
+            // Example: padding.lg
             padding: {
                 xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
                 sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
                 md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
                 lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
             },
-            height: {
-                xs: foundationToken.unit[20],
-                sm: foundationToken.unit[22],
-                md: foundationToken.unit[24],
-                lg: foundationToken.unit[28],
+            // Pattern: border.[variant].[subType]
+            // Example: border.noFill.primary
+            border: {
+                noFill: {
+                    neutral: `1px solid ${foundationToken.colors.gray[950]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[600]}`,
+                    success: `1px solid ${foundationToken.colors.green[600]}`,
+                    error: `1px solid ${foundationToken.colors.red[600]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[500]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                },
+                subtle: {
+                    neutral: `1px solid ${foundationToken.colors.gray[200]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[100]}`,
+                    success: `1px solid ${foundationToken.colors.green[100]}`,
+                    error: `1px solid ${foundationToken.colors.red[100]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[100]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[100]}`,
+                },
+                attentive: {
+                    neutral: `1px solid ${foundationToken.colors.gray[950]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[600]}`,
+                    success: `1px solid ${foundationToken.colors.green[600]}`,
+                    error: `1px solid ${foundationToken.colors.red[600]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[500]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                },
             },
-            slot: {
-                size: {
-                    xs: foundationToken.unit[12],
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[12],
+            // Pattern: height.[size] (size-dependent)
+            // Example: height.md
+            // height: {
+            //     xs: foundationToken.unit[20],
+            //     sm: foundationToken.unit[22],
+            //     md: foundationToken.unit[24],
+            //     lg: foundationToken.unit[28],
+            // },
+            text: {
+                // Pattern: text.color.[variant].[subType]
+                // Example: text.color.subtle.primary
+                color: {
+                    noFill: {
+                        neutral: foundationToken.colors.gray[950],
+                        primary: foundationToken.colors.primary[800],
+                        success: foundationToken.colors.green[600],
+                        error: foundationToken.colors.red[600],
+                        warning: foundationToken.colors.orange[500],
+                        purple: foundationToken.colors.purple[500],
+                    },
+                    attentive: {
+                        neutral: foundationToken.colors.gray[0],
+                        primary: foundationToken.colors.gray[0],
+                        success: foundationToken.colors.gray[0],
+                        error: foundationToken.colors.gray[0],
+                        warning: foundationToken.colors.gray[0],
+                        purple: foundationToken.colors.gray[0],
+                    },
+                    subtle: {
+                        neutral: foundationToken.colors.gray[950],
+                        primary: foundationToken.colors.primary[600],
+                        success: foundationToken.colors.green[600],
+                        error: foundationToken.colors.red[600],
+                        warning: foundationToken.colors.orange[600],
+                        purple: foundationToken.colors.purple[600],
+                    },
+                },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                // Example: text.fontSize.md
+                fontSize: {
+                    xs: foundationToken.font.size.body.sm.fontSize,
+                    sm: foundationToken.font.size.body.sm.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                // Example: text.fontWeight.lg
+                fontWeight: {
+                    xs: foundationToken.font.weight[600],
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
                 },
             },
         },
         lg: {
-            background: {
+            gap: foundationToken.unit[6],
+
+            // Pattern: backgroundColor.[variant].[subType]
+            // Example: backgroundColor.attentive.primary
+            backgroundColor: {
                 noFill: {
                     neutral: foundationToken.colors.gray[0],
                     primary: foundationToken.colors.gray[0],
@@ -415,144 +243,118 @@ export const getTagTokens = (
                     purple: foundationToken.colors.purple[50],
                 },
             },
-            color: {
-                noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[800],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-                attentive: {
-                    neutral: foundationToken.colors.gray[0],
-                    primary: foundationToken.colors.gray[0],
-                    success: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
-                    warning: foundationToken.colors.gray[0],
-                    purple: foundationToken.colors.gray[0],
-                },
-                subtle: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[600],
-                    purple: foundationToken.colors.purple[600],
-                },
-            },
-            borderColor: {
-                noFill: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-                subtle: {
-                    neutral: foundationToken.colors.gray[200],
-                    primary: foundationToken.colors.primary[100],
-                    success: foundationToken.colors.green[100],
-                    error: foundationToken.colors.red[100],
-                    warning: foundationToken.colors.orange[100],
-                    purple: foundationToken.colors.purple[100],
-                },
-                attentive: {
-                    neutral: foundationToken.colors.gray[950],
-                    primary: foundationToken.colors.primary[600],
-                    success: foundationToken.colors.green[600],
-                    error: foundationToken.colors.red[600],
-                    warning: foundationToken.colors.orange[500],
-                    purple: foundationToken.colors.purple[500],
-                },
-            },
+            // Pattern: borderRadius.[size].[shape]
+            // Example: borderRadius.lg.rounded
             borderRadius: {
-                squarical: {
-                    xs: foundationToken.border.radius[6],
-                    sm: foundationToken.border.radius[6],
-                    md: foundationToken.border.radius[6],
-                    lg: foundationToken.border.radius[8],
-                },
-                rounded: {
-                    xs: foundationToken.border.radius.full,
-                    sm: foundationToken.border.radius.full,
-                    md: foundationToken.border.radius.full,
-                    lg: foundationToken.border.radius.full,
-                },
-            },
-            borderWidth: {
-                noFill: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-                subtle: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-                attentive: {
-                    neutral: 1,
-                    primary: 1,
-                    success: 1,
-                    error: 1,
-                    warning: 1,
-                    purple: 1,
-                },
-            },
-            font: {
                 xs: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 sm: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 md: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[6],
+                    rounded: foundationToken.border.radius.full,
                 },
                 lg: {
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    squarical: foundationToken.border.radius[8],
+                    rounded: foundationToken.border.radius.full,
                 },
             },
-            gap: {
-                xs: foundationToken.unit[6],
-                sm: foundationToken.unit[6],
-                md: foundationToken.unit[6],
-                lg: foundationToken.unit[6],
-            },
+            // Pattern: padding.[size] (size-dependent)
+            // Example: padding.lg
             padding: {
                 xs: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
                 sm: `${foundationToken.unit[3]} ${foundationToken.unit[8]}`,
                 md: `${foundationToken.unit[4]} ${foundationToken.unit[10]}`,
                 lg: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
             },
-            height: {
-                xs: foundationToken.unit[20],
-                sm: foundationToken.unit[22],
-                md: foundationToken.unit[24],
-                lg: foundationToken.unit[28],
+            // Pattern: border.[variant].[subType]
+            // Example: border.noFill.primary
+            border: {
+                noFill: {
+                    neutral: `1px solid ${foundationToken.colors.gray[950]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[600]}`,
+                    success: `1px solid ${foundationToken.colors.green[600]}`,
+                    error: `1px solid ${foundationToken.colors.red[600]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[500]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                },
+                subtle: {
+                    neutral: `1px solid ${foundationToken.colors.gray[200]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[100]}`,
+                    success: `1px solid ${foundationToken.colors.green[100]}`,
+                    error: `1px solid ${foundationToken.colors.red[100]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[100]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[100]}`,
+                },
+                attentive: {
+                    neutral: `1px solid ${foundationToken.colors.gray[950]}`,
+                    primary: `1px solid ${foundationToken.colors.primary[600]}`,
+                    success: `1px solid ${foundationToken.colors.green[600]}`,
+                    error: `1px solid ${foundationToken.colors.red[600]}`,
+                    warning: `1px solid ${foundationToken.colors.orange[500]}`,
+                    purple: `1px solid ${foundationToken.colors.purple[500]}`,
+                },
             },
-            slot: {
-                size: {
-                    xs: foundationToken.unit[12],
-                    sm: foundationToken.unit[12],
-                    md: foundationToken.unit[12],
-                    lg: foundationToken.unit[12],
+            // Pattern: height.[size] (size-dependent)
+            // Example: height.md
+            // height: {
+            //     xs: foundationToken.unit[20],
+            //     sm: foundationToken.unit[22],
+            //     md: foundationToken.unit[24],
+            //     lg: foundationToken.unit[28],
+            // },
+            text: {
+                // Pattern: text.color.[variant].[subType]
+                // Example: text.color.subtle.primary
+                color: {
+                    noFill: {
+                        neutral: foundationToken.colors.gray[950],
+                        primary: foundationToken.colors.primary[800],
+                        success: foundationToken.colors.green[600],
+                        error: foundationToken.colors.red[600],
+                        warning: foundationToken.colors.orange[500],
+                        purple: foundationToken.colors.purple[500],
+                    },
+                    attentive: {
+                        neutral: foundationToken.colors.gray[0],
+                        primary: foundationToken.colors.gray[0],
+                        success: foundationToken.colors.gray[0],
+                        error: foundationToken.colors.gray[0],
+                        warning: foundationToken.colors.gray[0],
+                        purple: foundationToken.colors.gray[0],
+                    },
+                    subtle: {
+                        neutral: foundationToken.colors.gray[950],
+                        primary: foundationToken.colors.primary[600],
+                        success: foundationToken.colors.green[600],
+                        error: foundationToken.colors.red[600],
+                        warning: foundationToken.colors.orange[600],
+                        purple: foundationToken.colors.purple[600],
+                    },
+                },
+                // Pattern: text.fontSize.[size] (size-dependent)
+                // Example: text.fontSize.md
+                fontSize: {
+                    xs: foundationToken.font.size.body.sm.fontSize,
+                    sm: foundationToken.font.size.body.sm.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                // Pattern: text.fontWeight.[size] (size-dependent)
+                // Example: text.fontWeight.lg
+                fontWeight: {
+                    xs: foundationToken.font.weight[600],
+                    sm: foundationToken.font.weight[600],
+                    md: foundationToken.font.weight[600],
+                    lg: foundationToken.font.weight[600],
                 },
             },
         },
     }
 }
 
-export default tagTokens
+export default getTagTokens

@@ -8,20 +8,26 @@ import { SelectMenuSize } from '../SingleSelect'
 import { Tooltip } from '../Tooltip'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { SidebarMerchantInfo } from './types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { SidebarTokenType } from './sidebar.tokens'
 
-const ToggleButton = styled.button`
+const ToggleButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'tokens',
+})<{ tokens: SidebarTokenType }>`
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
-    background-color: transparent;
+    background-color: ${(props) =>
+        props.tokens.header.toggleButton.backgroundColor.default};
     border-radius: 10px;
     cursor: pointer;
     padding: 9px;
     transition: background-color 0.15s ease;
 
     &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
+        background-color: ${(props) =>
+            props.tokens.header.toggleButton.backgroundColor.hover};
     }
 `
 
@@ -42,6 +48,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     sidebarCollapseKey,
     onToggle,
 }) => {
+    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
     const defaultMerchantInfo: SidebarMerchantInfo = {
         items: [
             {
@@ -69,12 +77,12 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         <Block
             width="100%"
             zIndex="10"
-            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+            backgroundColor={tokens.header.backgroundColor}
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            gap="12px"
-            padding="12.5px 8px"
+            gap={tokens.header.gap}
+            padding={`${tokens.header.padding.y} ${tokens.header.padding.x}`}
             position="relative"
         >
             {isScrolled && (
@@ -84,8 +92,8 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                     left="0"
                     right="0"
                     height="1px"
-                    backgroundColor={FOUNDATION_THEME.colors.gray[200]}
                     style={{
+                        backgroundColor: '#e5e7eb', // Gray-200 fallback
                         transition: 'opacity 0.2s ease',
                     }}
                 />
@@ -117,7 +125,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             <Tooltip
                 content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
             >
-                <ToggleButton onClick={onToggle}>
+                <ToggleButton
+                    tokens={tokens}
+                    onClick={onToggle}
+                    data-icon="sidebar-hamburger"
+                >
                     <PanelsTopLeft
                         color={FOUNDATION_THEME.colors.gray[600]}
                         size={14}

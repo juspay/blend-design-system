@@ -64,11 +64,16 @@ const StyledTableCell = styled.td<{
     $width?: string
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
+    $isFirstRow?: boolean
 }>`
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: top;
-    border-top: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
+    ${({ $isFirstRow }) =>
+        !$isFirstRow &&
+        css`
+            border-top: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
+        `}
 
     ${({ $width, $customBackgroundColor, $hasCustomBackground }) => css`
         ${$width && `width: ${$width};`}
@@ -487,6 +492,7 @@ const TableBody = forwardRef<
             currentData,
             visibleColumns,
             idField,
+            tableTitle,
             selectedRows,
             editingRows,
             editValues,
@@ -586,6 +592,7 @@ const TableBody = forwardRef<
                                               $hasCustomBackground={
                                                   hasCustomBackground
                                               }
+                                              $isFirstRow={index === 0}
                                               style={{
                                                   minWidth: `${FOUNDATION_THEME.unit[52]}`,
                                                   maxWidth: `${FOUNDATION_THEME.unit[52]}`,
@@ -650,6 +657,7 @@ const TableBody = forwardRef<
                                               $hasCustomBackground={
                                                   hasCustomBackground
                                               }
+                                              $isFirstRow={index === 0}
                                               style={{
                                                   ...(columnFreeze > 0 && {
                                                       position: 'sticky',
@@ -820,12 +828,15 @@ const TableBody = forwardRef<
                                                               : row
                                                       }
                                                       rowIndex={index}
+                                                      colIndex={colIndex}
+                                                      tableTitle={tableTitle}
                                                       isEditing={isEditing}
                                                       currentValue={
                                                           currentValue
                                                       }
                                                       width={columnStyles}
                                                       frozenStyles={getFrozenBodyStyles()}
+                                                      isFirstRow={index === 0}
                                                       onFieldChange={(value) =>
                                                           onFieldChange(
                                                               row[idField],
@@ -854,6 +865,7 @@ const TableBody = forwardRef<
                                                       hasCustomBackground
                                                   }
                                                   $width="200px"
+                                                  $isFirstRow={index === 0}
                                                   style={{
                                                       maxWidth: '200px',
                                                       overflow: 'hidden',
@@ -898,6 +910,7 @@ const TableBody = forwardRef<
                                                   $hasCustomBackground={
                                                       hasCustomBackground
                                                   }
+                                                  $isFirstRow={index === 0}
                                                   style={{
                                                       minWidth: '40px',
                                                       maxWidth: '40px',
@@ -949,6 +962,7 @@ const TableBody = forwardRef<
                                               $hasCustomBackground={
                                                   hasCustomBackground
                                               }
+                                              $isFirstRow={index === 0}
                                               style={{
                                                   minWidth:
                                                       FOUNDATION_THEME.unit[48],

@@ -27,6 +27,7 @@ const AvatarDemo = () => {
 
     // Options for selects
     const sizeOptions = [
+        { value: AvatarSize.XS, label: 'Extra Small' },
         { value: AvatarSize.SM, label: 'Small' },
         { value: AvatarSize.MD, label: 'Medium' },
         { value: AvatarSize.LG, label: 'Large' },
@@ -491,12 +492,18 @@ const AvatarDemo = () => {
                                                     <User
                                                         size={
                                                             size ===
-                                                            AvatarSize.SM
-                                                                ? 12
+                                                            AvatarSize.XS
+                                                                ? 10
                                                                 : size ===
-                                                                    AvatarSize.MD
-                                                                  ? 16
-                                                                  : 20
+                                                                    AvatarSize.SM
+                                                                  ? 12
+                                                                  : size ===
+                                                                      AvatarSize.MD
+                                                                    ? 16
+                                                                    : size ===
+                                                                        AvatarSize.LG
+                                                                      ? 20
+                                                                      : 24
                                                         }
                                                     />
                                                 }

@@ -123,7 +123,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         position: 'relative',
                         borderBottom:
                             variant === TabsVariant.UNDERLINE
-                                ? tabsToken.list.borderBottom[variant]
+                                ? tabsToken.borderBottom[variant]
                                 : 'none',
                         paddingTop:
                             variant === TabsVariant.UNDERLINE
@@ -174,6 +174,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         flexShrink: 0,
                                         whiteSpace: 'nowrap',
                                     }}
+                                    data-tabs={item.label}
+                                    data-tab-selected={item.value === activeTab}
+                                    // data-tabs-disabled={item.disabled}
                                 >
                                     {item.label}
                                 </TabsTrigger>
@@ -253,7 +256,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     position: 'relative',
                     borderBottom:
                         variant === TabsVariant.UNDERLINE
-                            ? tabsToken.list.borderBottom[variant]
+                            ? tabsToken.borderBottom[variant]
                             : 'none',
                 }}
             >

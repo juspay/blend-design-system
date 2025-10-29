@@ -1,4 +1,3 @@
-import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
@@ -13,6 +12,7 @@ import { useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
+import { Triangle } from 'lucide-react'
 
 const NumberInput = ({
     value,
@@ -46,13 +46,19 @@ const NumberInput = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === NumberInputSize.LARGE
 
-    const paddingX = numberInputTokens.input.paddingX[size]
+    const paddingX = numberInputTokens.inputContainer.padding.x[size]
     const paddingY =
-        toPixels(numberInputTokens.input.paddingY[size]) +
+        toPixels(numberInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 0)
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width="100%">
+        <Block
+            data-component-field-wrapper={`field-${name}`}
+            display="flex"
+            flexDirection="column"
+            gap={numberInputTokens.gap}
+            width="100%"
+        >
             {(!isSmallScreen || size !== NumberInputSize.LARGE) && (
                 <InputLabels
                     label={label}
@@ -61,13 +67,16 @@ const NumberInput = ({
                     helpIconHintText={helpIconHintText}
                     name={name}
                     required={required}
+                    tokens={numberInputTokens}
                 />
             )}
             <Block
                 position="relative"
                 width={'100%'}
                 display="flex"
-                borderRadius={8}
+                borderRadius={
+                    numberInputTokens.inputContainer.borderRadius[size]
+                }
             >
                 {label && isSmallScreenWithLargeSize && (
                     <Block
@@ -112,41 +121,44 @@ const NumberInput = ({
                             ? paddingY / 2
                             : paddingY
                     }
-                    borderRadius={numberInputTokens.input.borderRadius}
-                    boxShadow={numberInputTokens.input.boxShadow.default}
+                    borderRadius={
+                        numberInputTokens.inputContainer.borderRadius[size]
+                    }
+                    boxShadow={numberInputTokens.inputContainer.boxShadow}
                     border={
-                        numberInputTokens.input.border[
+                        numberInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
                         ]
                     }
-                    fontSize={'14px'}
-                    fontWeight={500}
-                    outline="none"
-                    width={'100%'}
-                    _hover={{
-                        border: numberInputTokens.input.border[
-                            error ? 'error' : 'hover'
-                        ],
-                    }}
+                    fontSize={numberInputTokens.inputContainer.fontSize[size]}
+                    fontWeight={
+                        numberInputTokens.inputContainer.fontWeight[size]
+                    }
                     color={
-                        numberInputTokens.input.color[
+                        numberInputTokens.inputContainer.color[
                             disabled ? 'disabled' : 'default'
                         ]
                     }
+                    outline="none"
+                    width={'100%'}
+                    _hover={{
+                        border: numberInputTokens.inputContainer.border[
+                            error ? 'error' : 'hover'
+                        ],
+                    }}
                     _focus={{
-                        border: numberInputTokens.input.border[
+                        border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow:
-                            numberInputTokens.input.boxShadow[
-                                error ? 'error' : 'focus'
-                            ],
+                        boxShadow: numberInputTokens.inputContainer.boxShadow,
                     }}
                     disabled={disabled}
                     _disabled={{
                         backgroundColor:
-                            numberInputTokens.input.backgroundColor.disabled,
-                        border: numberInputTokens.input.border.disabled,
+                            numberInputTokens.inputContainer.backgroundColor
+                                .disabled,
+                        border: numberInputTokens.inputContainer.border
+                            .disabled,
                         cursor: 'not-allowed',
                     }}
                     onFocus={(e) => {
@@ -178,7 +190,14 @@ const NumberInput = ({
                         left={0}
                         bottom={0}
                         zIndex={1}
-                        borderLeft={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                        borderLeft={
+                            disabled
+                                ? numberInputTokens.inputContainer.border
+                                      .disabled
+                                : numberInputTokens.inputContainer.border[
+                                      error ? 'error' : 'default'
+                                  ]
+                        }
                     ></Block>
                     <PrimitiveButton
                         onClick={() =>
@@ -192,12 +211,21 @@ const NumberInput = ({
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)
                         }
-                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        flexGrow={1}
-                        width={'24px'}
-                        height={'50%'}
+                        backgroundColor={
+                            numberInputTokens.inputContainer.stepperButton
+                                .backgroundColor.default
+                        }
+                        // flexGrow={1}
+                        width={
+                            numberInputTokens.inputContainer.stepperButton
+                                .width[size]
+                        }
+                        height={
+                            numberInputTokens.inputContainer.stepperButton
+                                .width[size]
+                        }
                         contentCentered
-                        borderRadius={`0 ${numberInputTokens.input.borderRadius} 0 0`}
+                        borderRadius={`0 ${numberInputTokens.inputContainer.borderRadius[size]} 0 0`}
                         disabled={
                             disabled ||
                             (typeof max === 'number' &&
@@ -205,13 +233,43 @@ const NumberInput = ({
                                 value >= max)
                         }
                         _focus={{
-                            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.focus,
                         }}
                         _hover={{
-                            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.hover,
+                        }}
+                        _disabled={{
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.disabled,
                         }}
                     >
-                        <TriangleSVG direction="up" />
+                        {/* <TriangleSVG direction="up" /> */}
+                        <Triangle
+                            direction="up"
+                            color={
+                                disabled
+                                    ? numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.disabled
+                                    : numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.default
+                            }
+                            fill={
+                                disabled
+                                    ? numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.disabled
+                                    : numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.default
+                            }
+                            size={
+                                numberInputTokens.inputContainer.stepperButton
+                                    .icon.width[size]
+                            }
+                        />
                     </PrimitiveButton>
                     <PrimitiveButton
                         onClick={() =>
@@ -223,17 +281,35 @@ const NumberInput = ({
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)
                         }
-                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                        flexGrow={1}
-                        width={'24px'}
-                        height={'50%'}
+                        backgroundColor={
+                            numberInputTokens.inputContainer.stepperButton
+                                .backgroundColor.default
+                        }
+                        // flexGrow={1}
+                        width={
+                            numberInputTokens.inputContainer.stepperButton
+                                .width[size]
+                        }
+                        height={
+                            numberInputTokens.inputContainer.stepperButton
+                                .width[size]
+                        }
                         contentCentered
-                        borderRadius={`0 0px ${numberInputTokens.input.borderRadius} 0`}
+                        borderRadius={`0 0px ${numberInputTokens.inputContainer.borderRadius[size]} 0`}
                         _focus={{
-                            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.focus,
                         }}
                         _hover={{
-                            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.hover,
+                        }}
+                        _disabled={{
+                            backgroundColor:
+                                numberInputTokens.inputContainer.stepperButton
+                                    .backgroundColor.disabled,
                         }}
                         disabled={
                             disabled ||
@@ -242,7 +318,29 @@ const NumberInput = ({
                                 value <= min)
                         }
                     >
-                        <TriangleSVG direction="down" />
+                        <Triangle
+                            style={{
+                                transform: 'rotate(180deg)',
+                            }}
+                            color={
+                                disabled
+                                    ? numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.disabled
+                                    : numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.default
+                            }
+                            fill={
+                                disabled
+                                    ? numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.disabled
+                                    : numberInputTokens.inputContainer
+                                          .stepperButton.icon.color.default
+                            }
+                            size={
+                                numberInputTokens.inputContainer.stepperButton
+                                    .icon.width[size]
+                            }
+                        />
                     </PrimitiveButton>
                 </Block>
             </Block>
@@ -251,28 +349,9 @@ const NumberInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                tokens={numberInputTokens}
             />
         </Block>
-    )
-}
-
-const TriangleSVG = ({ direction }: { direction: 'up' | 'down' }) => {
-    return (
-        <svg
-            width="9"
-            height="5"
-            viewBox="0 0 9 5"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-                transform: direction === 'up' ? 'rotate(180deg)' : 'none',
-            }}
-        >
-            <path
-                d="M5.19369 4.25489C6.29087 3.37174 7.26951 2.34261 8.10412 1.19449C8.20686 1.05498 8.26202 0.879398 8.24784 0.693089C8.21641 0.28007 7.85611 -0.0292686 7.4431 0.00216258C5.48387 0.151262 3.51614 0.151262 1.55692 0.00216222C1.1439 -0.029269 0.783599 0.280069 0.752168 0.693089C0.737989 0.879395 0.793151 1.05498 0.895889 1.19448C1.7305 2.34261 2.70914 3.37174 3.80632 4.25489C4.21232 4.5817 4.78769 4.5817 5.19369 4.25489Z"
-                fill="#222530"
-            />
-        </svg>
     )
 }
 

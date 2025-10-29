@@ -29,8 +29,12 @@ export * from './components/SingleSelect'
 export * from './components/Slider'
 export * from './components/ProgressBar'
 export * from './components/Drawer'
+export * from './components/Stepper'
 export * from './components/Skeleton'
 export * from './components/KeyValuePair'
+export * from './components/VirtualList'
+export * from './components/Upload'
+export * from './components/WorkflowCanvas'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'

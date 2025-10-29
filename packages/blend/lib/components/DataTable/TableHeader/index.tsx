@@ -119,6 +119,70 @@ const TableHeader = forwardRef<
         }, [visibleColumns])
 
         useEffect(() => {
+            const handleScroll = () => {
+                setOpenPopovers({})
+            }
+
+            const handleWheel = () => {
+                setOpenPopovers({})
+            }
+
+            const scrollContainers: Element[] = []
+
+            if (ref && typeof ref === 'object' && ref.current) {
+                const thead = ref.current
+                const table = thead.closest('table')
+
+                if (table) {
+                    let parent = table.parentElement
+                    while (parent && parent !== document.body) {
+                        const styles = window.getComputedStyle(parent)
+                        if (
+                            styles.overflow === 'auto' ||
+                            styles.overflow === 'scroll' ||
+                            styles.overflowX === 'auto' ||
+                            styles.overflowX === 'scroll' ||
+                            styles.overflowY === 'auto' ||
+                            styles.overflowY === 'scroll'
+                        ) {
+                            scrollContainers.push(parent)
+                        }
+                        parent = parent.parentElement
+                    }
+                }
+            }
+            const listeners: (() => void)[] = []
+
+            scrollContainers.forEach((container) => {
+                container.addEventListener('scroll', handleScroll, {
+                    passive: true,
+                })
+                container.addEventListener('wheel', handleWheel, {
+                    passive: true,
+                })
+                listeners.push(() => {
+                    container.removeEventListener('scroll', handleScroll)
+                    container.removeEventListener('wheel', handleWheel)
+                })
+            })
+
+            document.addEventListener('scroll', handleScroll, { passive: true })
+            document.addEventListener('wheel', handleWheel, { passive: true })
+            window.addEventListener('scroll', handleScroll, { passive: true })
+            window.addEventListener('wheel', handleWheel, { passive: true })
+
+            listeners.push(() => {
+                document.removeEventListener('scroll', handleScroll)
+                document.removeEventListener('wheel', handleWheel)
+                window.removeEventListener('scroll', handleScroll)
+                window.removeEventListener('wheel', handleWheel)
+            })
+            return () => {
+                listeners.forEach((cleanup) => cleanup())
+            }
+        }, [ref])
+
+        useEffect(() => {
             if (editingField && editableRef.current) {
                 editableRef.current.focus()
                 const range = document.createRange()
@@ -198,6 +262,11 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopLeftRadius:
+                                    tableToken.dataTable.borderRadius,
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
@@ -227,6 +296,13 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                ...(!enableRowExpansion && {
+                                    borderTopLeftRadius:
+                                        tableToken.dataTable.borderRadius,
+                                }),
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
@@ -242,6 +318,14 @@ const TableHeader = forwardRef<
                                 alignItems="center"
                                 justifyContent="center"
                                 width={FOUNDATION_THEME.unit[40]}
+                                style={{
+                                    height: '100%',
+                                    ...(!enableRowExpansion && {
+                                        borderTopLeftRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
+                                    overflow: 'hidden',
+                                }}
                             >
                                 <Checkbox
                                     checked={selectAll}
@@ -270,6 +354,21 @@ const TableHeader = forwardRef<
                                 '#ffffff'
                         )
 
+                        const isLastColumn =
+                            !enableColumnManager &&
+                            !(
+                                (enableInlineEdit || rowActions) &&
+                                !(
+                                    mobileConfig?.isMobile &&
+                                    mobileConfig?.enableColumnOverflow
+                                )
+                            ) &&
+                            !(
+                                mobileConfig?.enableColumnOverflow &&
+                                mobileOverflowColumns.length > 0
+                            ) &&
+                            index === localColumns.length - 1
+
                         return (
                             <th
                                 key={String(column.field)}
@@ -280,7 +379,16 @@ const TableHeader = forwardRef<
                                             .sortable),
                                     ...columnStyles,
                                     ...frozenStyles,
+                                    // Ensure border bottom is always present
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(isLastColumn && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
+                                data-table-column-heading={column.header}
                             >
                                 <Block
                                     display="flex"
@@ -644,6 +752,18 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(!enableColumnManager &&
+                                        !(
+                                            mobileConfig?.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                        ) && {
+                                            borderTopRightRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
                                 }}
                             >
                                 <Block
@@ -678,6 +798,13 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(!enableColumnManager && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
                             ></th>
                         )}
@@ -698,6 +825,11 @@ const TableHeader = forwardRef<
                                 width: FOUNDATION_THEME.unit[48],
                                 minWidth: FOUNDATION_THEME.unit[48],
                                 maxWidth: FOUNDATION_THEME.unit[48],
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
                             }}
                         >
                             <Block position="relative">

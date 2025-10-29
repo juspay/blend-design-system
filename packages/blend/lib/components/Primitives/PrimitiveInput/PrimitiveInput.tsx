@@ -419,7 +419,15 @@ const PrimitiveInput: React.FC<InputProps> = forwardRef<
     HTMLInputElement,
     InputProps
 >(({ as, ...props }, ref) => {
-    return <StyledInput as={as} {...props} ref={ref} />
+    return (
+        <StyledInput
+            as={as}
+            name={props.name}
+            id={props.id ?? (props.name as string | undefined)}
+            {...props}
+            ref={ref}
+        />
+    )
 })
 
 export default PrimitiveInput

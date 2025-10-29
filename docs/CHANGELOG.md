@@ -1,29 +1,40 @@
-# Changelog for v0.0.19 (Stable)
+# Changelog for v0.0.22-beta (Beta)
 
-This is a stable release. Changes since last stable release:
+> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
 
-- Merge pull request #448 from juspay/staging (a0c8646)
-- Merge pull request #447 from juspay/dev (d5bb6ee)
-- feat: add showPreset for enhanced preset functionality (#446) (aebd34b)
-- Fix tabs and calendar (#445) (8111c1a)
-- Merge pull request #444 from juspay/dev (2f37d24)
-- Merge pull request #443 from juspay/release/update-beta-version-0.0.19-beta (e90e0b7)
-- chore(release): v0.0.19-beta [BETA] (ce5f5c7)
-- Merge pull request #442 from juspay/dev (578256e)
-- Merge pull request #441 from juspay/release/update-beta-version-0.0.19-beta (e741ce4)
-- chore(release): v0.0.19-beta [BETA] (c87e938)
-- Merge pull request #440 from juspay/dev (b0cf0dc)
-- Merge pull request #435 from juspay/fix/submenu (dd54ea8)
-- Merge pull request #437 from juspay/bug-fix/data-display (f581333)
-- Merge branch 'dev' into bug-fix/data-display (cbcbfd6)
-- Merge pull request #439 from juspay/DS-436-improved-calendar (aa31558)
-- feat: enhance DateRangePicker styles for disabled state (d341a4b)
-- feat: add custom range configuration and enhance date range presets (919704f)
-- feat: added smooth scroll in tablist (ed69135)
-- feat: added title truncation (a9fd5be)
-- fix: fixed popover trigger width issue (5de8590)
-- fix: update zIndex values for Menu component (8e5f324)
-- Merge pull request #433 from juspay/staging (0fef48e)
-- Merge pull request #432 from juspay/dev (16b805b)
-- Merge pull request #431 from juspay/release/update-stable-version-0.0.18 (7029db7)
-- chore(release): v0.0.18 [STABLE] (1f55c9c)
+## 🚀 Features
+
+- added the initial version of workflow canvas component (#510) ([e40e7b2](../../commit/e40e7b2))
+- added the height and minHeight prop to the card component (#518) ([4299564](../../commit/4299564))
+- add Upload component and integrate with context and demo (#485) ([498f675](../../commit/498f675))
+- enhance DataTable to handle empty values with hyphen display (#508) ([f715208](../../commit/f715208))
+- added the wrapping funcationality in key value pair component (#499) ([b99b825](../../commit/b99b825))
+- added stepper component with theme provider (#369) ([b173f64](../../commit/b173f64))
+
+## 🐛 Bug Fixes
+
+- **sidebar**: prevent tokens prop forwarding to DOM to remove React unknown prop warnings (#509) ([060e6fd](../../commit/060e6fd))
+
+## 🔧 Chores
+
+- Add Data-ids calendar table sidebar and update component(card, table, calendar) (#519) ([5036d11](../../commit/5036d11))
+- Firebase credential rotation (#520) ([e95fca7](../../commit/e95fca7))
+- **release**: v0.0.21 [STABLE] ([23f5dda](../../commit/23f5dda))
+- Dev to staging (#512) ([c206933](../../commit/c206933))
+- **release**: v0.0.21-beta [BETA] ([219d2e8](../../commit/219d2e8))
+
+---
+
+**Release Date**: 2025-10-29
+**Commit Range**: v0.0.21-beta..HEAD
+**Total Changes**: 12 commits
+
+## Beta Installation
+
+```bash
+npm install @juspay/blend-design-system@beta
+# or specific beta version
+npm install @juspay/blend-design-system@0.0.22-beta
+```
+
+> **Note**: Beta versions are for testing only. Use stable versions in production.
