@@ -152,7 +152,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 <Block
                     data-dropdown-numeric={index + 1}
                     data-dropdown-value={item.label}
-                    data-dropdown-value-selected={isSelected}
+                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
                     ref={ref}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"

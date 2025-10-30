@@ -475,6 +475,7 @@ const StatCard = ({
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
             maxWidth={maxWidth}
+            {...props}
         >
             {variant !== StatCardVariant.NUMBER && (
                 <Block
