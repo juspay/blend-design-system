@@ -73,7 +73,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
 
         const isExpanded = isControlled
-            ? (controlledIsExpanded ?? true)
+            ? controlledIsExpanded!
             : internalExpanded
 
         const { innerWidth } = useBreakpoints()
@@ -112,6 +112,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         // Mobile and toggle button logic
         useEffect(() => {
             if (isMobile && isExpanded) {
+                setIsHovering(false)
                 if (isControlled) {
                     // In controlled mode, only notify parent
                     // Parent is responsible for updating isExpanded prop
@@ -120,17 +121,22 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     // In uncontrolled mode, auto-collapse
                     setInternalExpanded(false)
                 }
-                setIsHovering(false)
                 return
             }
 
             if (!isExpanded && !isMobile) {
                 const timer = setTimeout(() => setShowToggleButton(true), 50)
                 return () => clearTimeout(timer)
-            } else {
-                setShowToggleButton(false)
             }
-        }, [isExpanded, isMobile, isControlled, onExpandedChange])
+
+            setShowToggleButton(false)
+        }, [
+            isExpanded,
+            isMobile,
+            isControlled,
+            onExpandedChange,
+            setInternalExpanded,
+        ])
 
         // Directory scroll detection
         useEffect(() => {
@@ -145,8 +151,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 directoryContainer.removeEventListener('scroll', handleScroll)
         }, [])
 
-        const handleMouseEnter = () => setIsHovering(true)
-        const handleMouseLeave = () => setIsHovering(false)
+        const handleMouseEnter = useCallback(() => setIsHovering(true), [])
+        const handleMouseLeave = useCallback(() => setIsHovering(false), [])
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')

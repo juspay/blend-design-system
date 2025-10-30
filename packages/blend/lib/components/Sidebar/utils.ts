@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { TenantItem } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -92,7 +92,7 @@ export const getDefaultMerchantInfo = () => ({
 // Custom hook for topbar auto-hide functionality
 export const useTopbarAutoHide = (enableTopbarAutoHide: boolean) => {
     const [showTopbar, setShowTopbar] = useState(true)
-    const [lastScrollY, setLastScrollY] = useState(0)
+    const lastScrollYRef = useRef(0)
 
     useEffect(() => {
         if (!enableTopbarAutoHide) {
@@ -108,19 +108,22 @@ export const useTopbarAutoHide = (enableTopbarAutoHide: boolean) => {
         const handleScroll = () => {
             const currentScrollY = mainContentContainer.scrollTop
 
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            if (
+                currentScrollY > lastScrollYRef.current &&
+                currentScrollY > 100
+            ) {
                 setShowTopbar(false)
-            } else if (currentScrollY < lastScrollY) {
+            } else if (currentScrollY < lastScrollYRef.current) {
                 setShowTopbar(true)
             }
 
-            setLastScrollY(currentScrollY)
+            lastScrollYRef.current = currentScrollY
         }
 
         mainContentContainer.addEventListener('scroll', handleScroll)
         return () =>
             mainContentContainer.removeEventListener('scroll', handleScroll)
-    }, [enableTopbarAutoHide, lastScrollY])
+    }, [enableTopbarAutoHide])
 
     return showTopbar
 }
