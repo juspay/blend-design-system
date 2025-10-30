@@ -251,10 +251,16 @@ const AccordionItem = forwardRef<
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
                             style={{ width: '100%', height: '100%' }}
+                            transform={
+                                isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                            }
                         />
                     ) : (
                         <ChevronRight
                             style={{ width: '100%', height: '100%' }}
+                            transform={
+                                isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'
+                            }
                         />
                     )}
                 </ChevronIcon>
