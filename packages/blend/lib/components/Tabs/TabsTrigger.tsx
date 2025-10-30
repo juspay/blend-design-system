@@ -18,6 +18,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             rightSlot,
             closable = false,
             onClose,
+            disable = false,
             ...props
         },
         ref
@@ -61,6 +62,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 $size={size}
                 $tabsToken={tabsToken}
                 className={className}
+                disabled={disable}
                 {...props}
             >
                 {leftSlot && (

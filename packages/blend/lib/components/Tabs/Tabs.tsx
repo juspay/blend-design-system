@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { forwardRef, useState, useEffect } from 'react'
 import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
@@ -18,6 +19,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             maxDisplayTabs = 6,
             value,
             onValueChange,
+            disable = false,
             children,
             ...props
         },
@@ -57,6 +59,12 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         }
 
         if (items.length > 0) {
+            // Apply global disable to all items if not already disabled
+            const processedItems = items.map((item) => ({
+                ...item,
+                disable: item.disable || disable,
+            }))
+
             return (
                 <StyledTabs
                     ref={ref}
@@ -66,7 +74,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     {...props}
                 >
                     <TabsList
-                        items={items}
+                        items={processedItems}
                         onTabClose={handleTabClose}
                         onTabAdd={onTabAdd}
                         showDropdown={showDropdown}
@@ -87,6 +95,26 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             )
         }
 
+        // Clone children and pass disable prop (similar to Accordion pattern)
+        const renderChildren = () => {
+            return React.Children.map(children, (child) => {
+                if (!React.isValidElement(child)) return child
+
+                // Merge disable prop: if either parent or child has disable, it should be disabled
+                const existingProps = child.props as Record<string, unknown>
+                const childDisable =
+                    'disable' in existingProps
+                        ? (existingProps.disable as boolean | undefined)
+                        : undefined
+                const childProps = {
+                    ...existingProps,
+                    disable: childDisable || disable,
+                }
+
+                return React.cloneElement(child, childProps)
+            })
+        }
+
         return (
             <StyledTabs
                 ref={ref}
@@ -95,7 +123,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 onValueChange={onValueChange}
                 {...props}
             >
-                {children}
+                {renderChildren()}
             </StyledTabs>
         )
     }
