@@ -92,12 +92,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             }
 
             onExpandedChange?.(newValue)
-        }, [isExpanded, isControlled, onExpandedChange])
+        }, [isExpanded, isControlled, onExpandedChange, setInternalExpanded])
 
         const handleToggle = useCallback(() => {
             toggleSidebar()
             setIsHovering(false)
-        }, [toggleSidebar])
+        }, [toggleSidebar, setIsHovering])
 
         // Keyboard shortcut handler
         useEffect(() => {
