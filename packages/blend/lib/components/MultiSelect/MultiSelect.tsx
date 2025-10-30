@@ -267,12 +267,14 @@ const MultiSelect = ({
                                     ]
                                 ),
                             })}
+                            data-selectbox-value={placeholder}
                         >
                             <Block
                                 width={fullWidth ? '100%' : 'fit-content'}
                                 maxWidth={fullWidth ? '100%' : 'fit-content'}
                                 display="flex"
                                 alignItems="center"
+                                data-dropdown-for={placeholder}
                             >
                                 <Tooltip
                                     content={
@@ -284,8 +286,6 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
-                                        data-selectbox-value={placeholder}
-                                        data-dropdown-for={placeholder}
                                         data-value={placeholder}
                                         data-custom-value={placeholder}
                                         data-button-status={
@@ -429,6 +429,7 @@ const MultiSelect = ({
                                                         multiSelectTokens.label
                                                             .fontSize
                                                     }
+                                                    data-button-text={label}
                                                 >
                                                     {label}
                                                 </Text>
@@ -506,6 +507,9 @@ const MultiSelect = ({
                                                             multiSelectTokens
                                                                 .label.fontSize
                                                         }
+                                                        data-button-text={
+                                                            placeholder
+                                                        }
                                                     >
                                                         {placeholder}
                                                     </Text>
@@ -544,6 +548,19 @@ const MultiSelect = ({
                                                             'ellipsis',
                                                         whiteSpace: 'nowrap',
                                                     }}
+                                                    data-badge-value={
+                                                        selectionTagType ===
+                                                        MultiSelectSelectionTagType.COUNT
+                                                            ? selectedValues.length
+                                                            : selectedValues
+                                                                  .map(
+                                                                      (v) =>
+                                                                          valueLabelMap[
+                                                                              v
+                                                                          ]
+                                                                  )
+                                                                  .join(', ')
+                                                    }
                                                 >
                                                     {selectionTagType ===
                                                     MultiSelectSelectionTagType.COUNT

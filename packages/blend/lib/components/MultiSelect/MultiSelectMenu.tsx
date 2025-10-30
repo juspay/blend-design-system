@@ -526,6 +526,15 @@ const MultiSelectMenu = ({
                     <FixedActionButtons>
                         {secondaryAction && (
                             <Button
+                                data-button-for={secondaryAction.text}
+                                data-custom-value={secondaryAction.text}
+                                data-button-status={
+                                    secondaryAction.disabled
+                                        ? 'disabled'
+                                        : 'enabled'
+                                }
+                                data-dynamic-button={secondaryAction.text}
+                                data-batch-value={secondaryAction.text}
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 text={secondaryAction.text}
@@ -539,6 +548,15 @@ const MultiSelectMenu = ({
                         )}
                         {primaryAction && (
                             <Button
+                                data-button-for={primaryAction.text}
+                                data-custom-value={primaryAction.text}
+                                data-button-status={
+                                    primaryAction.disabled
+                                        ? 'disabled'
+                                        : 'enabled'
+                                }
+                                data-dynamic-button={primaryAction.text}
+                                data-batch-value={primaryAction.text}
                                 buttonType={ButtonType.PRIMARY}
                                 size={ButtonSize.SMALL}
                                 text={primaryAction.text}
