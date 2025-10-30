@@ -94,6 +94,7 @@ import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
+import ChatInputDemo from './ChatInputDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -126,6 +127,7 @@ const SidebarDemo = () => {
         | 'unitInput'
         | 'numberInput'
         | 'textArea'
+        | 'chatInput'
         | 'snackbar'
         | 'dataTable'
         | 'drawer'
@@ -347,6 +349,8 @@ const SidebarDemo = () => {
                 return <NumberInputDemo />
             case 'textArea':
                 return <TextAreaDemo />
+            case 'chatInput':
+                return <ChatInputDemo />
             case 'otpInput':
                 return <OTPInputDemo />
             case 'alerts':
@@ -599,6 +603,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'textArea',
                     onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Chat Input',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInput',
+                    onClick: () => setActiveComponent('chatInput'),
                 },
                 {
                     label: 'Multi Value Input',
