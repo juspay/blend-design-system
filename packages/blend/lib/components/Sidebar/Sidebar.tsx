@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback } from 'react'
+import { forwardRef, useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -72,6 +72,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
 
+        const hasWarnedMobileRef = useRef(false)
+
         const isExpanded = isControlled
             ? (controlledIsExpanded ?? true)
             : internalExpanded
@@ -107,7 +109,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isExpanded, isMobile, sidebarCollapseKey, toggleSidebar])
+        }, [isMobile, sidebarCollapseKey, toggleSidebar])
 
         // Mobile and toggle button logic
         useEffect(() => {
@@ -117,8 +119,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     // Parent is responsible for updating isExpanded prop
                     onExpandedChange?.(false)
 
-                    // Warn if parent doesn't respond to mobile resize
-                    if (process.env.NODE_ENV === 'development') {
+                    // Warn once if parent doesn't respond to mobile resize
+                    if (
+                        process.env.NODE_ENV === 'development' &&
+                        !hasWarnedMobileRef.current
+                    ) {
+                        hasWarnedMobileRef.current = true
                         console.warn(
                             '[Sidebar]: In controlled mode on mobile, sidebar should be collapsed. ' +
                                 'Make sure to update the isExpanded prop to false in your onExpandedChange handler.'
@@ -131,6 +137,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 setIsHovering(false)
                 return
             }
+
+            // Reset warning flag when not on mobile or when collapsed
+            if (!isMobile || !isExpanded) {
+                hasWarnedMobileRef.current = false
+            }
+
             if (!isExpanded && !isMobile) {
                 const timer = setTimeout(() => setShowToggleButton(true), 50)
                 return () => clearTimeout(timer)
