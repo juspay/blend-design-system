@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect } from 'react'
+import { forwardRef, useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -18,7 +18,6 @@ import {
     getDefaultMerchantInfo,
     useTopbarAutoHide,
     isControlledSidebar,
-    createSidebarToggleHandler,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 
@@ -83,17 +82,20 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         // Use custom hook for topbar auto-hide
         const showTopbar = useTopbarAutoHide(enableTopbarAutoHide)
 
-        const toggleSidebar = createSidebarToggleHandler(
-            isExpanded,
-            isControlled,
-            setInternalExpanded,
-            onExpandedChange
-        )
+        const toggleSidebar = useCallback(() => {
+            const newValue = !isExpanded
 
-        const handleToggle = () => {
+            if (!isControlled) {
+                setInternalExpanded(newValue)
+            }
+
+            onExpandedChange?.(newValue)
+        }, [isExpanded, isControlled, onExpandedChange])
+
+        const handleToggle = useCallback(() => {
             toggleSidebar()
             setIsHovering(false)
-        }
+        }, [toggleSidebar])
 
         // Keyboard shortcut handler
         useEffect(() => {
@@ -110,10 +112,22 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         // Mobile and toggle button logic
         useEffect(() => {
             if (isMobile && isExpanded) {
-                if (!isControlled) {
+                if (isControlled) {
+                    // In controlled mode, only notify parent
+                    // Parent is responsible for updating isExpanded prop
+                    onExpandedChange?.(false)
+
+                    // Warn if parent doesn't respond to mobile resize
+                    if (process.env.NODE_ENV === 'development') {
+                        console.warn(
+                            '[Sidebar]: In controlled mode on mobile, sidebar should be collapsed. ' +
+                                'Make sure to update the isExpanded prop to false in your onExpandedChange handler.'
+                        )
+                    }
+                } else {
+                    // In uncontrolled mode, auto-collapse
                     setInternalExpanded(false)
                 }
-                onExpandedChange?.(false)
                 setIsHovering(false)
                 return
             }

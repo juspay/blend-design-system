@@ -1,4 +1,4 @@
-import { useState, useEffect, type Dispatch, type SetStateAction } from 'react'
+import { useState, useEffect } from 'react'
 import type { TenantItem } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -129,21 +129,4 @@ export const isControlledSidebar = (
     isExpanded: boolean | undefined
 ): boolean => {
     return isExpanded !== undefined
-}
-
-export const createSidebarToggleHandler = (
-    currentExpanded: boolean,
-    isControlled: boolean,
-    setInternalExpanded?: Dispatch<SetStateAction<boolean>>,
-    onExpandedChange?: (expanded: boolean) => void
-) => {
-    return () => {
-        const newValue = !currentExpanded
-
-        if (!isControlled && setInternalExpanded) {
-            setInternalExpanded(newValue)
-        }
-
-        onExpandedChange?.(newValue)
-    }
 }

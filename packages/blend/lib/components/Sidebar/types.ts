@@ -42,7 +42,24 @@ export type SidebarProps = {
     merchantInfo?: MerchantInfo
     rightActions?: ReactNode
     enableTopbarAutoHide?: boolean
+
+    /**
+     * Controlled state: Current expanded state of the sidebar
+     * When provided, sidebar operates in controlled mode - parent must handle state updates
+     * Note: On mobile, onExpandedChange(false) will be called, but parent must update this prop
+     */
     isExpanded?: boolean
+
+    /**
+     * Callback fired when sidebar expand/collapse state should change
+     * In controlled mode: Parent MUST update isExpanded prop based on this callback
+     * In uncontrolled mode: Optional callback for state change notifications
+     */
     onExpandedChange?: (isExpanded: boolean) => void
+
+    /**
+     * Uncontrolled mode: Initial expanded state (defaults to true)
+     * Only used when isExpanded is not provided
+     */
     defaultIsExpanded?: boolean
 }
