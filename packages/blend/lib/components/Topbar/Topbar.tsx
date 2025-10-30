@@ -457,6 +457,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             <ToggleButton
                                 isMobile={isMobile}
                                 onClick={onToggleExpansion}
+                                data-icon="sidebar-hamburger"
                             >
                                 <PanelsTopLeft
                                     color={topBarToken.toggleButton.icon.color}

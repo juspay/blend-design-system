@@ -1086,6 +1086,450 @@ const CardDemo = () => {
                 </div>
             </div>
 
+            {/* Scrollable Card Examples */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Scrollable Card Examples
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Cards with <code>maxHeight</code> automatically become
+                    scrollable when content overflows. Scrollbars are hidden for
+                    a clean look but content remains fully accessible.
+                    <br />• <strong>Hidden Scrollbars:</strong> Clean appearance
+                    with full scroll functionality
+                    <br />• <strong>Smooth Scrolling:</strong> Enhanced user
+                    experience with smooth scroll behavior
+                    <br />• <strong>Touch Support:</strong> Optimized for mobile
+                    and touch devices
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Default Card with Scroll */}
+                    <Card
+                        maxHeight="300px"
+                        headerSlot1={iconSlot}
+                        headerTitle="Scrollable Default Card"
+                        headerTag={
+                            <Tag
+                                text="Scrollable"
+                                variant={TagVariant.ATTENTIVE}
+                                color={TagColor.WARNING}
+                                size={TagSize.SM}
+                            />
+                        }
+                        headerSlot2={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Settings size={16} />}
+                            />
+                        }
+                        subHeader="This card has maxHeight=300px and will scroll when content overflows"
+                        bodySlot1={
+                            <div
+                                style={{
+                                    padding: '12px',
+                                    backgroundColor: '#fef3c7',
+                                    borderRadius: '6px',
+                                    border: '1px solid #fbbf24',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: '14px',
+                                        color: '#92400e',
+                                    }}
+                                >
+                                    📏 Fixed Height Demo - Scroll to see all
+                                    content
+                                </Text>
+                            </div>
+                        }
+                        bodyTitle="Long Content Section"
+                        content="This is a demonstration of scrollable content in cards. When the total content height exceeds the maxHeight property, the card becomes scrollable with hidden scrollbars for a clean appearance. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Tag
+                                    text="Scroll Demo"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PRIMARY}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Hidden Scrollbar"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Overflow Content"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.WARNING}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'Take Action',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Aligned Card with Scroll */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.VERTICAL}
+                        centerAlign={false}
+                        maxHeight="300px"
+                        cardSlot={imageSlot}
+                        headerTitle="Scrollable Aligned Card"
+                        headerTag={
+                            <Tag
+                                text="Max Height"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.PRIMARY}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="Vertical aligned card with 300px height limit"
+                        bodyTitle="Overflow Content Demo"
+                        content="This aligned card demonstrates scrolling behavior when content exceeds the maxHeight. The image slot remains visible while the content area becomes scrollable. Perfect for image galleries with detailed descriptions, user profiles with extensive information, or any layout where you want to maintain a consistent card height while allowing content to expand. The scrolling is smooth and scrollbars are hidden for aesthetic appeal. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+                        actionButton={{
+                            text: 'View More',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Custom Card with Scroll and List */}
+                    <Card variant={CardVariant.CUSTOM} maxHeight="300px">
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <h3
+                                    style={{
+                                        margin: 0,
+                                        fontSize: '18px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Scrollable List
+                                </h3>
+                                <Tag
+                                    text="15 Items"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.NEUTRAL}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+
+                            <div style={{ fontSize: '14px', color: '#666' }}>
+                                This custom card contains a long list of items
+                                that exceeds the 300px height limit:
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '8px',
+                                }}
+                            >
+                                {Array.from({ length: 15 }, (_, i) => (
+                                    <div
+                                        key={i}
+                                        style={{
+                                            padding: '12px',
+                                            backgroundColor:
+                                                i % 2 === 0
+                                                    ? '#f8fafc'
+                                                    : '#ffffff',
+                                            borderRadius: '6px',
+                                            border: '1px solid #e5e7eb',
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <div>
+                                            <div
+                                                style={{
+                                                    fontWeight: '500',
+                                                    fontSize: '14px',
+                                                }}
+                                            >
+                                                List Item #{i + 1}
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: '12px',
+                                                    color: '#666',
+                                                }}
+                                            >
+                                                Description for item {i + 1}
+                                            </div>
+                                        </div>
+                                        <Tag
+                                            text={
+                                                i % 3 === 0
+                                                    ? 'Active'
+                                                    : i % 3 === 1
+                                                      ? 'Pending'
+                                                      : 'Done'
+                                            }
+                                            variant={TagVariant.SUBTLE}
+                                            color={
+                                                i % 3 === 0
+                                                    ? TagColor.SUCCESS
+                                                    : i % 3 === 1
+                                                      ? TagColor.WARNING
+                                                      : TagColor.NEUTRAL
+                                            }
+                                            size={TagSize.SM}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+
+                            <Button
+                                text="Load More Items"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                            />
+                        </div>
+                    </Card>
+                </div>
+
+                <div
+                    style={{
+                        padding: '16px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '8px',
+                        border: '1px solid #bbf7d0',
+                        fontSize: '14px',
+                        color: '#15803d',
+                        marginBottom: '32px',
+                    }}
+                >
+                    <strong>💡 Scrollable Card Features:</strong>
+                    <br />• <strong>Hidden Scrollbars:</strong> Clean appearance
+                    with full scroll functionality
+                    <br />• <strong>Smooth Scrolling:</strong> Enhanced user
+                    experience with smooth scroll behavior
+                    <br />• <strong>Touch Support:</strong> Optimized for mobile
+                    and touch devices
+                    <br />• <strong>Flexible Height:</strong> Set any maxHeight
+                    value (e.g., "300px", "50vh", "20rem")
+                    <br />• <strong>Content Preservation:</strong> All content
+                    remains accessible regardless of height
+                </div>
+            </div>
+
+            {/* Height Control Examples */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Height Control Examples
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    Cards support <strong>maxHeight</strong> and{' '}
+                    <strong>minHeight</strong> props for flexible sizing:
+                    <br />• Accepts any CSS height value: pixels, percentages,
+                    viewport units
+                    <br />• <strong>Note:</strong> For percentage heights,
+                    parent container must have a defined height
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Fixed Height Card */}
+                    <Card
+                        maxHeight="250px"
+                        headerTitle="Fixed Height"
+                        headerTag={
+                            <Tag
+                                text="250px"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.PRIMARY}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="height='250px'"
+                        bodyTitle="Fixed Dimensions"
+                        content="This card has a fixed height of 250px, useful for grid layouts where uniform card heights are needed."
+                        actionButton={{
+                            text: 'Learn More',
+                            buttonType: ButtonType.SECONDARY,
+                            subType: ButtonSubType.INLINE,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Min Height Card */}
+                    <Card
+                        minHeight="250px"
+                        headerTitle="Minimum Height"
+                        headerTag={
+                            <Tag
+                                text="minHeight: 250px"
+                                variant={TagVariant.SUBTLE}
+                                color={TagColor.SUCCESS}
+                                size={TagSize.SM}
+                            />
+                        }
+                        subHeader="minHeight='250px'"
+                        bodyTitle="Flexible Growth"
+                        content="This card has a minimum height of 250px but can grow with content. Perfect when you want a baseline height but need flexibility."
+                        bodySlot2={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '8px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Tag
+                                    text="Flexible"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.PRIMARY}
+                                    size={TagSize.SM}
+                                />
+                                <Tag
+                                    text="Grows with content"
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                            </div>
+                        }
+                        actionButton={{
+                            text: 'Explore',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+
+                    {/* Percentage Height Card */}
+                    <div style={{ height: '300px' }}>
+                        <Card
+                            minHeight="100%"
+                            variant={CardVariant.ALIGNED}
+                            alignment={CardAlignment.VERTICAL}
+                            centerAlign={true}
+                            cardSlot={
+                                <div
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '50%',
+                                        background:
+                                            'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: 'white',
+                                        fontSize: '20px',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    100%
+                                </div>
+                            }
+                            headerTitle="Full Height"
+                            headerTag={
+                                <Tag
+                                    text="100%"
+                                    variant={TagVariant.ATTENTIVE}
+                                    color={TagColor.SUCCESS}
+                                    size={TagSize.SM}
+                                />
+                            }
+                            subHeader="height='100%' (fills 300px parent)"
+                            content="This card fills 100% of its parent container's height (300px). Perfect for responsive layouts."
+                            actionButton={{
+                                text: 'View More',
+                                buttonType: ButtonType.SECONDARY,
+                                subType: ButtonSubType.INLINE,
+                                size: ButtonSize.SMALL,
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        padding: '16px',
+                        backgroundColor: '#fef3c7',
+                        borderRadius: '8px',
+                        border: '1px solid #fbbf24',
+                        fontSize: '14px',
+                        color: '#92400e',
+                        marginBottom: '32px',
+                    }}
+                >
+                    <strong>Tip:</strong> The percentage height example (100%)
+                    is wrapped in a div with height: 300px. Without a parent
+                    height, percentage heights will collapse to auto.
+                </div>
+            </div>
+
             {/* Usage Guidelines */}
             <div
                 style={{

@@ -4,7 +4,14 @@ import { SplitTagProps } from './types'
 
 const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
     return (
-        <Block display="flex" width="fit-content" flexWrap="nowrap">
+        <Block
+            display="flex"
+            width="fit-content"
+            flexWrap="nowrap"
+            data-split-tag="true"
+            data-split-tag-size={size}
+            data-split-tag-shape={shape}
+        >
             {primaryTag ? (
                 <Tag
                     {...primaryTag}
@@ -12,6 +19,8 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                     variant={TagVariant.NO_FILL}
                     size={size}
                     shape={shape}
+                    data-split-tag-left="true"
+                    data-split-tag-left-text={primaryTag.text}
                 />
             ) : null}
             {secondaryTag ? (
@@ -21,6 +30,8 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                     variant={TagVariant.ATTENTIVE}
                     size={size}
                     shape={shape}
+                    data-split-tag-right="true"
+                    data-split-tag-right-text={secondaryTag.text}
                 />
             ) : null}
         </Block>

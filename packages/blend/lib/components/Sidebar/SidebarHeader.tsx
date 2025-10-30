@@ -11,7 +11,9 @@ import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
 
-const ToggleButton = styled.button<{ tokens: SidebarTokenType }>`
+const ToggleButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== 'tokens',
+})<{ tokens: SidebarTokenType }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,7 +125,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             <Tooltip
                 content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
             >
-                <ToggleButton tokens={tokens} onClick={onToggle}>
+                <ToggleButton
+                    tokens={tokens}
+                    onClick={onToggle}
+                    data-icon="sidebar-hamburger"
+                >
                     <PanelsTopLeft
                         color={FOUNDATION_THEME.colors.gray[600]}
                         size={14}

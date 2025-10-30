@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useEffect, useState } from 'react'
+import React, { forwardRef, useRef, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { TableCellProps } from './types'
 import { TableTokenType } from '../dataTable.tokens'
@@ -127,6 +127,8 @@ const TableCell = forwardRef<
             column,
             row,
             rowIndex,
+            colIndex,
+            tableTitle,
             isEditing,
             currentValue,
             width,
@@ -144,6 +146,90 @@ const TableCell = forwardRef<
             !isEditing && getDisplayValue
                 ? getDisplayValue(currentValue, column)
                 : currentValue
+
+        const generateDataAttributes = () => {
+            const attrs: Record<string, string | number | boolean> = {}
+
+            if (
+                tableTitle &&
+                typeof rowIndex === 'number' &&
+                typeof colIndex === 'number'
+            ) {
+                attrs['data-table-location'] =
+                    `${tableTitle}_tr${rowIndex + 1}_td${colIndex + 1}`
+            }
+
+            const valueToCheck = displayValue || currentValue
+
+            if (
+                valueToCheck == null ||
+                React.isValidElement(valueToCheck) ||
+                (typeof valueToCheck === 'object' &&
+                    valueToCheck.constructor === Object)
+            ) {
+                if (row.id) {
+                    attrs['data-order-customer-id'] = String(row.id)
+                }
+                return attrs
+            }
+
+            if (
+                column.type === ColumnType.NUMBER ||
+                typeof valueToCheck === 'number'
+            ) {
+                attrs['data-cell-type'] = 'numeric'
+                attrs['data-numeric'] = String(valueToCheck || 0)
+            } else if (column.type === ColumnType.DATE) {
+                attrs['data-cell-type'] = 'date'
+                const dateData = valueToCheck as DateColumnProps
+                if (dateData && dateData.date) {
+                    const date = new Date(dateData.date)
+                    if (!isNaN(date.getTime())) {
+                        attrs['data-date'] = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                            hour: dateData.showTime ? '2-digit' : undefined,
+                            minute: dateData.showTime ? '2-digit' : undefined,
+                        })
+                    }
+                }
+            } else if (
+                typeof valueToCheck === 'string' &&
+                valueToCheck.trim() !== ''
+            ) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                const moneyPattern = /[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]/
+                const numberPattern =
+                    /^\s*[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]?[\d,]+\.?\d*\s*$/
+
+                if (emailPattern.test(valueToCheck)) {
+                    attrs['data-cell-type'] = 'email'
+                    attrs['data-email'] = valueToCheck
+                } else if (
+                    moneyPattern.test(valueToCheck) ||
+                    (numberPattern.test(valueToCheck) &&
+                        column.header?.toLowerCase().includes('amount'))
+                ) {
+                    attrs['data-cell-type'] = 'money'
+                    attrs['data-money-cell'] = valueToCheck
+                } else {
+                    attrs['data-cell-type'] = 'text'
+                    attrs['data-text'] = valueToCheck
+                }
+            } else if (typeof valueToCheck === 'boolean') {
+                attrs['data-cell-type'] = 'boolean'
+                attrs['data-boolean'] = String(valueToCheck)
+            }
+
+            if (row.id) {
+                attrs['data-order-customer-id'] = String(row.id)
+            }
+
+            return attrs
+        }
+
+        const dataAttributes = generateDataAttributes()
 
         const renderContent = () => {
             if (isEditing && column.isEditable) {
@@ -403,6 +489,7 @@ const TableCell = forwardRef<
                     verticalAlign: 'middle',
                     position: frozenStyles?.position || 'relative',
                 }}
+                {...dataAttributes}
             >
                 <Block
                     style={{

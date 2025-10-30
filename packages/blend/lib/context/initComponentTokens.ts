@@ -40,6 +40,7 @@ import { getProgressBarTokens } from '../components/ProgressBar/progressbar.toke
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -119,6 +120,9 @@ const initTokens = (
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
+        WORKFLOW_CANVAS:
+            componentTokens.WORKFLOW_CANVAS ??
+            getWorkflowTokens(foundationTokens),
     }
 }
 

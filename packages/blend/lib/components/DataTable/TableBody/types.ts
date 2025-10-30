@@ -5,6 +5,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
     visibleColumns: ColumnDefinition<T>[]
     idField: string
+    tableTitle?: string
     selectedRows: Record<string, boolean>
     editingRows: Record<string, boolean>
     editValues: Record<string, T>

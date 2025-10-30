@@ -111,6 +111,8 @@ const Section = ({
             padding="12px 8px"
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
+            data-sidebar-section={section.label || `section-${sectionIndex}`}
+            data-sidebar-expanded={isOpen}
             key={`section-${sectionIndex}`}
         >
             {section.label && (
