@@ -7,6 +7,7 @@ import type { ButtonTokensType } from './button.tokens'
 import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRipple, RippleContainer } from '../animations/Ripple'
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -29,6 +30,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref
     ) => {
         const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+        const { ripples, createRipple } = useRipple()
+
+        const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+            if (!disabled && !loading) {
+                createRipple(event)
+                onClick?.()
+            }
+        }
 
         const getBorderRadius = () => {
             const variantBorderRadius =
@@ -45,7 +54,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <PrimitiveButton
                 ref={ref}
-                onClick={onClick}
+                onClick={handleClick}
                 display="flex"
                 alignItems="center"
                 justifyContent={justifyContent}
@@ -62,7 +71,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 borderRadius={getBorderRadius()}
                 padding={buttonTokens.padding[size][buttonType][subType]}
                 border={buttonTokens.border[buttonType][subType].default}
-                outline={buttonTokens.outline[buttonType][subType].default}
+                outline={buttonTokens.border[buttonType][subType].default}
+                position="relative"
+                overflow="hidden"
                 _active={
                     !disabled
                         ? {
@@ -145,6 +156,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         )}
                     </>
                 )}
+                <RippleContainer ripples={ripples} />
             </PrimitiveButton>
         )
     }
