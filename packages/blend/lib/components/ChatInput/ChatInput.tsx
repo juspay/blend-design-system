@@ -7,13 +7,16 @@ import React, {
 } from 'react'
 import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Tag from '../Tags/Tags'
 import { TagColor, TagSize, TagVariant } from '../Tags/types'
 import { Menu } from '../Menu'
 import Button from '../Button/Button'
-import { ButtonType, ButtonSize } from '../Button/types'
+import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
 import { Paperclip, Mic, X, Plus } from 'lucide-react'
+import { getChatInputTokens } from './chatInput.tokens'
+import { FOUNDATION_THEME } from '../../tokens'
 import {
     getFileIcon,
     createOverflowMenuItems,
@@ -49,6 +52,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         },
         ref
     ) => {
+        const tokens = getChatInputTokens(FOUNDATION_THEME).sm
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
         const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
@@ -146,16 +150,32 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 display="flex"
                 flexDirection="column"
                 width="100%"
-                backgroundColor={disabled ? '#f9fafb' : '#ffffff'}
-                border="1px solid #e5e7eb"
-                borderRadius="12px"
-                padding="12px 12px 8px 12px"
-                minHeight="52px"
+                backgroundColor={
+                    disabled
+                        ? tokens.container.backgroundColor.disabled
+                        : attachedFiles.length > 0
+                          ? FOUNDATION_THEME.colors.gray[50]
+                          : tokens.container.backgroundColor.default
+                }
+                border={tokens.container.border}
+                borderRadius={tokens.container.borderRadius}
+                paddingTop={tokens.container.paddingTop}
+                paddingRight={tokens.container.paddingRight}
+                paddingBottom={tokens.container.paddingBottom}
+                paddingLeft={tokens.container.paddingLeft}
+                gap={tokens.container.gap}
+                minHeight={tokens.container.minHeight}
                 position="relative"
-                transition="background-color 0.2s ease"
+                transition={tokens.container.transition}
                 cursor={disabled ? 'not-allowed' : 'default'}
+                boxShadow={tokens.container.boxShadow.default}
                 _hover={{
-                    backgroundColor: disabled ? '#f9fafb' : '#f9fafb',
+                    backgroundColor: disabled
+                        ? tokens.container.backgroundColor.disabled
+                        : tokens.container.backgroundColor.hover,
+                    boxShadow: disabled
+                        ? tokens.container.boxShadow.default
+                        : tokens.container.boxShadow.hover,
                 }}
             >
                 {/* Hidden file input */}
@@ -173,10 +193,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     <Block
                         display="flex"
                         flexWrap="wrap"
-                        gap="8px"
-                        padding="0 0 8px 0"
-                        maxHeight="140px"
-                        overflowY="auto"
+                        gap={tokens.filesContainer.gap}
+                        maxHeight={tokens.filesContainer.maxHeight}
+                        overflowY={tokens.filesContainer.overflowY as any}
                     >
                         {visibleFiles.map((file) => (
                             <Tag
@@ -184,7 +203,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 text={file.name}
                                 variant={TagVariant.SUBTLE}
                                 color={TagColor.NEUTRAL}
-                                size={TagSize.SM}
+                                size={TagSize.XS}
                                 leftSlot={getFileIcon(file.type)}
                                 rightSlot={
                                     <X
@@ -203,37 +222,34 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         {hasOverflow && (
                             <Menu
                                 trigger={
-                                    <button
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            backgroundColor: '#f3f4f6',
-                                            color: '#4b5563',
-                                            border: '1px solid #e5e7eb',
-                                            borderRadius: '4px',
-                                            padding: '6px 10px',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.2s ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor =
-                                                '#e5e7eb'
-                                            e.currentTarget.style.color =
-                                                '#374151'
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor =
-                                                '#f3f4f6'
-                                            e.currentTarget.style.color =
-                                                '#4b5563'
+                                    <PrimitiveButton
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={tokens.overflowTag.gap}
+                                        backgroundColor={
+                                            tokens.overflowTag.backgroundColor
+                                                .default as string
+                                        }
+                                        color={
+                                            tokens.overflowTag.color
+                                                .default as string
+                                        }
+                                        paddingX={tokens.overflowTag.paddingX}
+                                        paddingY={tokens.overflowTag.paddingY}
+                                        fontSize={tokens.overflowTag.fontSize}
+                                        fontWeight={
+                                            tokens.overflowTag.fontWeight
+                                        }
+                                        cursor={tokens.overflowTag.cursor}
+                                        _hover={{
+                                            backgroundColor:
+                                                tokens.container.backgroundColor
+                                                    .hover,
                                         }}
                                     >
                                         <Plus size={14} />
                                         {hiddenFiles.length} more
-                                    </button>
+                                    </PrimitiveButton>
                                 }
                                 items={[
                                     {
@@ -248,71 +264,166 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     </Block>
                 )}
 
-                {/* Textarea */}
-                <textarea
-                    ref={textareaElement}
-                    value={value}
-                    onChange={handleTextareaChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder={placeholder}
-                    disabled={disabled}
-                    maxLength={maxLength}
-                    aria-label={ariaLabel}
-                    aria-describedby={ariaDescribedBy}
-                    rows={1}
-                    style={{
-                        backgroundColor: 'transparent',
-                        color: '#111827',
-                        fontSize: '16px',
-                        lineHeight: '1.5',
-                        padding: '0',
-                        border: 'none',
-                        outline: 'none',
-                        resize: 'none',
-                        fontFamily: 'inherit',
-                        width: '100%',
-                        minHeight: '24px',
-                        overflowY: 'auto',
-                        cursor: disabled ? 'not-allowed' : 'text',
-                    }}
-                />
-
-                {/* Bottom actions */}
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    padding="0"
-                    gap="16px"
-                    marginTop="16px"
-                >
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.SMALL}
-                        leadingIcon={
-                            attachButtonIcon || <Paperclip size={20} />
+                {attachedFiles.length > 0 ? (
+                    <Block
+                        backgroundColor={
+                            tokens.attachmentContainer.backgroundColor
                         }
-                        onClick={handleAttachClick}
-                        disabled={disabled}
-                        aria-label="Attach files"
-                    />
+                        borderRadius={tokens.attachmentContainer.borderRadius}
+                        padding={tokens.attachmentContainer.padding}
+                    >
+                        <textarea
+                            ref={textareaElement}
+                            value={value}
+                            onChange={handleTextareaChange}
+                            onKeyDown={handleKeyDown}
+                            placeholder={placeholder}
+                            disabled={disabled}
+                            maxLength={maxLength}
+                            aria-label={ariaLabel}
+                            aria-describedby={ariaDescribedBy}
+                            rows={1}
+                            style={{
+                                backgroundColor:
+                                    tokens.textarea.backgroundColor,
+                                color: tokens.textarea.color,
+                                fontSize: tokens.textarea.fontSize,
+                                lineHeight: tokens.textarea.lineHeight,
+                                padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
+                                border: tokens.textarea.border,
+                                borderRadius: tokens.textarea.borderRadius,
+                                outline: 'none',
+                                resize: tokens.textarea.resize as any,
+                                fontFamily: tokens.textarea.fontFamily,
+                                width: '100%',
+                                minHeight: tokens.textarea.minHeight,
+                                maxHeight: tokens.textarea.maxHeight,
+                                overflowY: tokens.textarea.overflowY as any,
+                                cursor: disabled ? 'not-allowed' : 'text',
+                            }}
+                            onFocus={(e) => {
+                                e.currentTarget.parentElement!.parentElement!.style.boxShadow =
+                                    tokens.container.boxShadow.focus as string
+                            }}
+                            onBlur={(e) => {
+                                e.currentTarget.parentElement!.parentElement!.style.boxShadow =
+                                    tokens.container.boxShadow.default as string
+                            }}
+                        />
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            justifyContent={tokens.bottomActions.justifyContent}
+                            paddingX={tokens.bottomActions.paddingX}
+                            paddingY={tokens.bottomActions.paddingY}
+                            gap={tokens.bottomActions.gap}
+                            marginTop={tokens.bottomActions.gap}
+                        >
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    attachButtonIcon || <Paperclip size={20} />
+                                }
+                                onClick={handleAttachClick}
+                                disabled={disabled}
+                                aria-label="Attach files"
+                            />
 
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        size={ButtonSize.SMALL}
-                        leadingIcon={voiceButtonIcon || <Mic size={20} />}
-                        onClick={handleVoiceClick}
-                        disabled={disabled}
-                        aria-label="Record voice message"
-                    />
-                </Block>
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    voiceButtonIcon || <Mic size={20} />
+                                }
+                                onClick={handleVoiceClick}
+                                disabled={disabled}
+                                aria-label="Record voice message"
+                            />
+                        </Block>
+                    </Block>
+                ) : (
+                    <>
+                        {/* Textarea */}
+                        <textarea
+                            ref={textareaElement}
+                            value={value}
+                            onChange={handleTextareaChange}
+                            onKeyDown={handleKeyDown}
+                            placeholder={placeholder}
+                            disabled={disabled}
+                            maxLength={maxLength}
+                            aria-label={ariaLabel}
+                            aria-describedby={ariaDescribedBy}
+                            rows={1}
+                            style={{
+                                backgroundColor:
+                                    tokens.textarea.backgroundColor,
+                                color: tokens.textarea.color,
+                                fontSize: tokens.textarea.fontSize,
+                                lineHeight: tokens.textarea.lineHeight,
+                                padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
+                                border: tokens.textarea.border,
+                                borderRadius: tokens.textarea.borderRadius,
+                                outline: 'none',
+                                resize: tokens.textarea.resize as any,
+                                fontFamily: tokens.textarea.fontFamily,
+                                width: '100%',
+                                minHeight: tokens.textarea.minHeight,
+                                maxHeight: tokens.textarea.maxHeight,
+                                overflowY: tokens.textarea.overflowY as any,
+                                cursor: disabled ? 'not-allowed' : 'text',
+                            }}
+                            onFocus={(e) => {
+                                e.currentTarget.parentElement!.style.boxShadow =
+                                    tokens.container.boxShadow.focus as string
+                            }}
+                            onBlur={(e) => {
+                                e.currentTarget.parentElement!.style.boxShadow =
+                                    tokens.container.boxShadow.default as string
+                            }}
+                        />
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            justifyContent={tokens.bottomActions.justifyContent}
+                            paddingX={tokens.bottomActions.paddingX}
+                            paddingY={tokens.bottomActions.paddingY}
+                            gap={tokens.bottomActions.gap}
+                        >
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    attachButtonIcon || <Paperclip size={20} />
+                                }
+                                onClick={handleAttachClick}
+                                disabled={disabled}
+                                aria-label="Attach files"
+                            />
 
-                {/* Top Queries */}
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    voiceButtonIcon || <Mic size={20} />
+                                }
+                                onClick={handleVoiceClick}
+                                disabled={disabled}
+                                aria-label="Record voice message"
+                            />
+                        </Block>
+                    </>
+                )}
+
                 {topQueries && topQueries.length > 0 && (
                     <Block
-                        borderTop="1px solid #e5e7eb"
-                        marginTop="16px"
-                        paddingTop="0"
+                        borderTop={tokens.topQueries.container.borderTop}
+                        paddingTop={tokens.topQueries.container.paddingTop}
                         display="flex"
                         flexDirection="column"
                         maxHeight={
@@ -322,25 +433,33 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         }
                     >
                         <Block
-                            backgroundColor="#ffffff"
-                            flexShrink="0"
-                            padding="16px 8px 6px 8px"
+                            backgroundColor={
+                                tokens.topQueries.header.backgroundColor
+                            }
+                            flexShrink={tokens.topQueries.header.flexShrink}
+                            paddingX={tokens.topQueries.header.paddingX}
+                            paddingY={tokens.topQueries.header.paddingY}
                         >
                             <Text
-                                color="#9ca3af"
-                                fontSize="12px"
-                                fontWeight="400"
-                                margin="0"
-                                textTransform="uppercase"
+                                color={tokens.topQueries.header.color}
+                                fontSize={tokens.topQueries.header.fontSize}
+                                fontWeight={tokens.topQueries.header.fontWeight}
+                                textTransform={
+                                    tokens.topQueries.header
+                                        .textTransform as any
+                                }
                             >
                                 Top Queries
                             </Text>
                         </Block>
                         <Block
-                            overflowY="auto"
+                            overflowY={
+                                tokens.topQueries.scrollContainer
+                                    .overflowY as any
+                            }
                             maxHeight={
                                 topQueriesMaxHeight
-                                    ? `${topQueriesMaxHeight - 40}px`
+                                    ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
                                     : undefined
                             }
                         >
@@ -353,30 +472,54 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                         display: 'block',
                                         width: '100%',
                                         textAlign: 'left',
-                                        background: 'none',
-                                        border: 'none',
-                                        color: '#4b5563',
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                        padding: '6px 8px',
+                                        background: disabled
+                                            ? (tokens.topQueries.item
+                                                  .backgroundColor
+                                                  .disabled as string)
+                                            : (tokens.topQueries.item
+                                                  .backgroundColor
+                                                  .default as string),
+                                        border: tokens.topQueries.item.border,
+                                        color: disabled
+                                            ? (tokens.topQueries.item.color
+                                                  .disabled as string)
+                                            : (tokens.topQueries.item.color
+                                                  .default as string),
+                                        fontSize:
+                                            tokens.topQueries.item.fontSize,
+                                        fontWeight:
+                                            tokens.topQueries.item.fontWeight,
+                                        padding: `${tokens.topQueries.item.paddingY} ${tokens.topQueries.item.paddingX}`,
                                         cursor: disabled
                                             ? 'not-allowed'
-                                            : 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        opacity: disabled ? '0.5' : '1',
+                                            : tokens.topQueries.item.cursor,
+                                        transition:
+                                            tokens.topQueries.item.transition,
+                                        opacity: disabled
+                                            ? tokens.topQueries.item.opacity
+                                                  .disabled
+                                            : tokens.topQueries.item.opacity
+                                                  .default,
                                     }}
                                     onMouseEnter={(e) => {
                                         if (!disabled) {
                                             e.currentTarget.style.backgroundColor =
-                                                '#f9fafb'
-                                            e.currentTarget.style.color =
-                                                '#374151'
+                                                tokens.topQueries.item
+                                                    .backgroundColor
+                                                    .hover as string
+                                            e.currentTarget.style.color = tokens
+                                                .topQueries.item.color
+                                                .hover as string
                                         }
                                     }}
                                     onMouseLeave={(e) => {
                                         e.currentTarget.style.backgroundColor =
-                                            'transparent'
-                                        e.currentTarget.style.color = '#4b5563'
+                                            tokens.topQueries.item
+                                                .backgroundColor
+                                                .default as string
+                                        e.currentTarget.style.color = tokens
+                                            .topQueries.item.color
+                                            .default as string
                                     }}
                                 >
                                     {query.text}

@@ -1,3 +1,4 @@
+import type { CSSObject } from 'styled-components'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 
@@ -15,112 +16,130 @@ import { FoundationTokenType } from '../../tokens/theme.token'
 export type ChatInputTokensType = Readonly<{
     container: {
         backgroundColor: {
-            default: string
-            hover: string
-            disabled: string
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            disabled: CSSObject['backgroundColor']
         }
-        border: string
-        borderRadius: string
-        padding: string
-        gap: string
-        minHeight: string
-        transition: string
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        paddingTop: CSSObject['paddingTop']
+        paddingRight: CSSObject['paddingRight']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        gap: CSSObject['gap']
+        minHeight: CSSObject['minHeight']
+        transition: CSSObject['transition']
+        boxShadow: {
+            default: CSSObject['boxShadow']
+            hover: CSSObject['boxShadow']
+            focus: CSSObject['boxShadow']
+        }
+    }
+
+    attachmentContainer: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        padding: CSSObject['padding']
     }
 
     textarea: {
-        backgroundColor: string
-        color: string
-        fontSize: string
-        lineHeight: string
-        padding: string
-        border: string
-        borderRadius: string
+        backgroundColor: CSSObject['backgroundColor']
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        lineHeight: CSSObject['lineHeight']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
         placeholder: {
-            color: string
+            color: CSSObject['color']
         }
-        resize: string
-        fontFamily: string
-        minHeight: string
-        overflowY: string
+        resize: CSSObject['resize']
+        fontFamily: CSSObject['fontFamily']
+        minHeight: CSSObject['minHeight']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
     }
 
     filesContainer: {
-        gap: string
-        padding: string
-        maxHeight: string
-        overflowY: string
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
     }
 
     bottomActions: {
-        padding: string
-        gap: string
-        justifyContent: string
-        marginTop: string
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        gap: CSSObject['gap']
+        justifyContent: CSSObject['justifyContent']
     }
 
     overflowTag: {
         backgroundColor: {
-            default: string
-            hover: string
-            active: string
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            active: CSSObject['backgroundColor']
         }
         color: {
-            default: string
-            hover: string
-            active: string
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
         }
-        border: string
-        borderRadius: string
-        padding: string
-        fontSize: string
-        fontWeight: string
-        gap: string
-        transition: string
-        cursor: string
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+        transition: CSSObject['transition']
+        cursor: CSSObject['cursor']
     }
 
     topQueries: {
         container: {
-            borderTop: string
-            marginTop: string
-            paddingTop: string
+            borderTop: CSSObject['borderTop']
+            paddingTop: CSSObject['paddingTop']
         }
         header: {
-            color: string
-            fontSize: string
-            fontWeight: string
-            padding: string
-            margin: string
-            textTransform: string
-            backgroundColor: string
-            flexShrink: string
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            textTransform: CSSObject['textTransform']
+            backgroundColor: CSSObject['backgroundColor']
+            flexShrink: CSSObject['flexShrink']
         }
         scrollContainer: {
-            overflowY: string
+            overflowY: CSSObject['overflowY']
             maxHeightOffset: number
         }
         item: {
             backgroundColor: {
-                default: string
-                hover: string
-                active: string
-                disabled: string
+                default: CSSObject['backgroundColor']
+                hover: CSSObject['backgroundColor']
+                active: CSSObject['backgroundColor']
+                disabled: CSSObject['backgroundColor']
             }
             color: {
-                default: string
-                hover: string
-                active: string
-                disabled: string
+                default: CSSObject['color']
+                hover: CSSObject['color']
+                active: CSSObject['color']
+                disabled: CSSObject['color']
             }
-            fontSize: string
-            fontWeight: string
-            padding: string
-            border: string
-            transition: string
-            cursor: string
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            border: CSSObject['border']
+            transition: CSSObject['transition']
+            cursor: CSSObject['cursor']
             opacity: {
-                default: string
-                disabled: string
+                default: CSSObject['opacity']
+                disabled: CSSObject['opacity']
             }
         }
     }
@@ -137,85 +156,101 @@ export const getChatInputTokens = (
         sm: {
             container: {
                 backgroundColor: {
-                    default: foundationToken.colors.gray[0] || '#ffffff',
-                    hover: foundationToken.colors.gray[25] || '#f9fafb',
-                    disabled: foundationToken.colors.gray[0] || '#ffffff',
+                    default: foundationToken.colors.gray[0],
+                    hover: foundationToken.colors.gray[25],
+                    disabled: foundationToken.colors.gray[0],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                borderRadius: `${foundationToken.unit?.[12] || 12}px`,
-                padding: `${foundationToken.unit?.[12] || 12}px ${foundationToken.unit?.[12] || 12}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[12] || 12}px`,
-                gap: `${foundationToken.unit?.[8] || 8}px`,
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: foundationToken.unit[12],
+                paddingTop: foundationToken.unit[12],
+                paddingRight: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: foundationToken.unit[12],
+                gap: foundationToken.unit[8],
                 minHeight: '52px',
-                transition: 'background-color 0.2s ease',
+                transition: 'all 0.2s ease',
+                boxShadow: {
+                    default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    focus: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                },
+            },
+
+            attachmentContainer: {
+                backgroundColor: foundationToken.colors.gray[0],
+                borderRadius: foundationToken.unit[8],
+                padding: foundationToken.unit[16],
             },
 
             textarea: {
                 backgroundColor: 'transparent',
-                color: foundationToken.colors.gray[900] || '#111827',
+                color: foundationToken.colors.gray[600],
                 fontSize: '16px',
                 lineHeight: '1.5',
-                padding: `${foundationToken.unit?.[0] || 0}px`,
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[0],
                 border: 'none',
-                borderRadius: `${foundationToken.unit?.[0] || 0}px`,
+                borderRadius: foundationToken.unit[0],
                 placeholder: {
-                    color: foundationToken.colors.gray[400] || '#9ca3af',
+                    color: foundationToken.colors.gray[400],
                 },
                 resize: 'none',
                 fontFamily: 'inherit',
                 minHeight: '24px',
+                maxHeight: '120px',
                 overflowY: 'auto',
             },
 
             filesContainer: {
-                gap: `${foundationToken.unit?.[8] || 8}px`,
-                padding: `${foundationToken.unit?.[0] || 0}px ${foundationToken.unit?.[0] || 0}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[0] || 0}px`,
+                gap: foundationToken.unit[8],
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
             },
 
             bottomActions: {
-                padding: `${foundationToken.unit?.[0] || 0}px`,
-                gap: `${foundationToken.unit?.[16] || 16}px`,
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[0],
+                gap: foundationToken.unit[16],
                 justifyContent: 'space-between',
-                marginTop: `${foundationToken.unit?.[16] || 16}px`,
             },
 
             overflowTag: {
                 backgroundColor: {
-                    default: foundationToken.colors.gray[100] || '#f3f4f6',
-                    hover: foundationToken.colors.gray[200] || '#e5e7eb',
-                    active: foundationToken.colors.gray[300] || '#d1d5db',
+                    default: foundationToken.colors.gray[100],
+                    hover: foundationToken.colors.gray[200],
+                    active: foundationToken.colors.gray[300],
                 },
                 color: {
-                    default: foundationToken.colors.gray[600] || '#4b5563',
-                    hover: foundationToken.colors.gray[700] || '#374151',
-                    active: foundationToken.colors.gray[700] || '#374151',
+                    default: foundationToken.colors.gray[600],
+                    hover: foundationToken.colors.gray[700],
+                    active: foundationToken.colors.gray[700],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                borderRadius: `${foundationToken.unit?.[4] || 4}px`,
-                padding: `${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[10] || 10}px`,
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: foundationToken.unit[4],
+                paddingX: foundationToken.unit[10],
+                paddingY: foundationToken.unit[6],
                 fontSize: '14px',
                 fontWeight: '500',
-                gap: `${foundationToken.unit?.[4] || 4}px`,
+                gap: foundationToken.unit[4],
                 transition: 'all 0.2s ease',
                 cursor: 'pointer',
             },
 
             topQueries: {
                 container: {
-                    borderTop: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                    marginTop: `${foundationToken.unit?.[16] || 16}px`,
-                    paddingTop: `${foundationToken.unit?.[0] || 0}px`,
+                    borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
+                    paddingTop: foundationToken.unit[0],
                 },
                 header: {
-                    color: foundationToken.colors.gray[400] || '#9ca3af',
-                    fontSize: `${foundationToken.font?.size?.body?.sm?.fontSize || '12'}px`,
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: '400',
-                    padding: `${foundationToken.unit?.[16] || 16}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[8] || 8}px`,
-                    margin: `${foundationToken.unit?.[0] || 0}px`,
+                    paddingX: foundationToken.unit[8],
+                    paddingY: foundationToken.unit[6],
                     textTransform: 'uppercase',
-                    backgroundColor:
-                        foundationToken.colors.gray[0] || '#ffffff',
+                    backgroundColor: foundationToken.colors.gray[0],
                     flexShrink: '0',
                 },
                 scrollContainer: {
@@ -225,19 +260,20 @@ export const getChatInputTokens = (
                 item: {
                     backgroundColor: {
                         default: 'transparent',
-                        hover: foundationToken.colors.gray[50] || '#f9fafb',
-                        active: foundationToken.colors.gray[100] || '#f3f4f6',
+                        hover: foundationToken.colors.gray[50],
+                        active: foundationToken.colors.gray[100],
                         disabled: 'transparent',
                     },
                     color: {
-                        default: foundationToken.colors.gray[600] || '#4b5563',
-                        hover: foundationToken.colors.gray[700] || '#374151',
-                        active: foundationToken.colors.gray[700] || '#374151',
-                        disabled: foundationToken.colors.gray[400] || '#9ca3af',
+                        default: foundationToken.colors.gray[600],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[400],
                     },
-                    fontSize: `${foundationToken.font?.size?.body?.md?.fontSize || '14'}px`,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: '500',
-                    padding: `${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[8] || 8}px`,
+                    paddingX: foundationToken.unit[8],
+                    paddingY: foundationToken.unit[6],
                     border: 'none',
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',
@@ -252,85 +288,101 @@ export const getChatInputTokens = (
         lg: {
             container: {
                 backgroundColor: {
-                    default: foundationToken.colors.gray[0] || '#ffffff',
-                    hover: foundationToken.colors.gray[25] || '#f9fafb',
-                    disabled: foundationToken.colors.gray[0] || '#ffffff',
+                    default: foundationToken.colors.gray[0],
+                    hover: foundationToken.colors.gray[25],
+                    disabled: foundationToken.colors.gray[0],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                borderRadius: `${foundationToken.unit?.[12] || 12}px`,
-                padding: `${foundationToken.unit?.[12] || 12}px ${foundationToken.unit?.[12] || 12}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[12] || 12}px`,
-                gap: `${foundationToken.unit?.[8] || 8}px`,
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: foundationToken.unit[12],
+                paddingTop: foundationToken.unit[12],
+                paddingRight: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: foundationToken.unit[12],
+                gap: foundationToken.unit[8],
                 minHeight: '52px',
-                transition: 'background-color 0.2s ease',
+                transition: 'all 0.2s ease',
+                boxShadow: {
+                    default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    focus: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                },
+            },
+
+            attachmentContainer: {
+                backgroundColor: foundationToken.colors.gray[0],
+                borderRadius: foundationToken.unit[8],
+                padding: foundationToken.unit[16],
             },
 
             textarea: {
                 backgroundColor: 'transparent',
-                color: foundationToken.colors.gray[900] || '#111827',
+                color: foundationToken.colors.gray[600],
                 fontSize: '16px',
                 lineHeight: '1.5',
-                padding: `${foundationToken.unit?.[0] || 0}px`,
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[0],
                 border: 'none',
-                borderRadius: `${foundationToken.unit?.[0] || 0}px`,
+                borderRadius: foundationToken.unit[0],
                 placeholder: {
-                    color: foundationToken.colors.gray[400] || '#9ca3af',
+                    color: foundationToken.colors.gray[400],
                 },
                 resize: 'none',
                 fontFamily: 'inherit',
                 minHeight: '24px',
+                maxHeight: '120px',
                 overflowY: 'auto',
             },
 
             filesContainer: {
-                gap: `${foundationToken.unit?.[8] || 8}px`,
-                padding: `${foundationToken.unit?.[0] || 0}px ${foundationToken.unit?.[0] || 0}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[0] || 0}px`,
+                gap: foundationToken.unit[8],
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
             },
 
             bottomActions: {
-                padding: `${foundationToken.unit?.[0] || 0}px`,
-                gap: `${foundationToken.unit?.[16] || 16}px`,
+                paddingX: foundationToken.unit[0],
+                paddingY: foundationToken.unit[0],
+                gap: foundationToken.unit[16],
                 justifyContent: 'space-between',
-                marginTop: `${foundationToken.unit?.[16] || 16}px`,
             },
 
             overflowTag: {
                 backgroundColor: {
-                    default: foundationToken.colors.gray[100] || '#f3f4f6',
-                    hover: foundationToken.colors.gray[200] || '#e5e7eb',
-                    active: foundationToken.colors.gray[300] || '#d1d5db',
+                    default: foundationToken.colors.gray[100],
+                    hover: foundationToken.colors.gray[200],
+                    active: foundationToken.colors.gray[300],
                 },
                 color: {
-                    default: foundationToken.colors.gray[600] || '#4b5563',
-                    hover: foundationToken.colors.gray[700] || '#374151',
-                    active: foundationToken.colors.gray[700] || '#374151',
+                    default: foundationToken.colors.gray[600],
+                    hover: foundationToken.colors.gray[700],
+                    active: foundationToken.colors.gray[700],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                borderRadius: `${foundationToken.unit?.[4] || 4}px`,
-                padding: `${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[10] || 10}px`,
+                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderRadius: foundationToken.unit[4],
+                paddingX: foundationToken.unit[10],
+                paddingY: foundationToken.unit[6],
                 fontSize: '14px',
                 fontWeight: '500',
-                gap: `${foundationToken.unit?.[4] || 4}px`,
+                gap: foundationToken.unit[4],
                 transition: 'all 0.2s ease',
                 cursor: 'pointer',
             },
 
             topQueries: {
                 container: {
-                    borderTop: `1px solid ${foundationToken.colors.gray[200] || '#e5e7eb'}`,
-                    marginTop: `${foundationToken.unit?.[16] || 16}px`,
-                    paddingTop: `${foundationToken.unit?.[0] || 0}px`,
+                    borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
+                    paddingTop: foundationToken.unit[0],
                 },
                 header: {
-                    color: foundationToken.colors.gray[400] || '#9ca3af',
-                    fontSize: `${foundationToken.font?.size?.body?.sm?.fontSize || '12'}px`,
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: '400',
-                    padding: `${foundationToken.unit?.[16] || 16}px ${foundationToken.unit?.[8] || 8}px ${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[8] || 8}px`,
-                    margin: `${foundationToken.unit?.[0] || 0}px`,
+                    paddingX: foundationToken.unit[8],
+                    paddingY: foundationToken.unit[6],
                     textTransform: 'uppercase',
-                    backgroundColor:
-                        foundationToken.colors.gray[0] || '#ffffff',
+                    backgroundColor: foundationToken.colors.gray[0],
                     flexShrink: '0',
                 },
                 scrollContainer: {
@@ -340,19 +392,20 @@ export const getChatInputTokens = (
                 item: {
                     backgroundColor: {
                         default: 'transparent',
-                        hover: foundationToken.colors.gray[50] || '#f9fafb',
-                        active: foundationToken.colors.gray[100] || '#f3f4f6',
+                        hover: foundationToken.colors.gray[50],
+                        active: foundationToken.colors.gray[100],
                         disabled: 'transparent',
                     },
                     color: {
-                        default: foundationToken.colors.gray[600] || '#4b5563',
-                        hover: foundationToken.colors.gray[700] || '#374151',
-                        active: foundationToken.colors.gray[700] || '#374151',
-                        disabled: foundationToken.colors.gray[400] || '#9ca3af',
+                        default: foundationToken.colors.gray[600],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[700],
+                        disabled: foundationToken.colors.gray[400],
                     },
-                    fontSize: `${foundationToken.font?.size?.body?.md?.fontSize || '14'}px`,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: '500',
-                    padding: `${foundationToken.unit?.[6] || 6}px ${foundationToken.unit?.[8] || 8}px`,
+                    paddingX: foundationToken.unit[8],
+                    paddingY: foundationToken.unit[6],
                     border: 'none',
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',

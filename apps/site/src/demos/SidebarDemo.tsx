@@ -153,7 +153,7 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
-    >('dataRangePicker')
+    >('chatInput')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
