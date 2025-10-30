@@ -28,6 +28,7 @@ import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
 
 export const renderChart = ({
+    chartName,
     flattenedData,
     chartType,
     hoveredKey,
@@ -136,6 +137,7 @@ export const renderChart = ({
                 justifyContent="center"
                 flexDirection="column"
                 gap={28}
+                data-chart="No-Data"
             >
                 <Block
                     display="flex"
@@ -191,6 +193,7 @@ export const renderChart = ({
         case ChartType.LINE:
             return (
                 <LineChart
+                    data-chart={chartName}
                     data={flattenedData}
                     margin={{
                         top: 10,
@@ -334,6 +337,7 @@ export const renderChart = ({
         case ChartType.BAR:
             return (
                 <BarChart
+                    data-chart={chartName}
                     data={flattenedData}
                     margin={{
                         top: 10,
@@ -474,7 +478,10 @@ export const renderChart = ({
             }))
 
             return (
-                <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 30 }}>
+                <PieChart
+                    data-chart={chartName}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
+                >
                     <Pie
                         data={pieData}
                         cx="50%"
