@@ -13,6 +13,7 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { Triangle } from 'lucide-react'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const NumberInput = ({
     value,
@@ -49,7 +50,7 @@ const NumberInput = ({
     const paddingX = numberInputTokens.inputContainer.padding.x[size]
     const paddingY =
         toPixels(numberInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
 
     return (
         <Block
@@ -101,6 +102,8 @@ const NumberInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    lineHeight={FOUNDATION_THEME.unit[20]}
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     name={name}
                     type="number"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
@@ -124,7 +127,6 @@ const NumberInput = ({
                     borderRadius={
                         numberInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={numberInputTokens.inputContainer.boxShadow}
                     border={
                         numberInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
@@ -150,7 +152,6 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow: numberInputTokens.inputContainer.boxShadow,
                     }}
                     disabled={disabled}
                     _disabled={{

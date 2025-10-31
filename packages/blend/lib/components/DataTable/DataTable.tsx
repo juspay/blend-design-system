@@ -34,11 +34,11 @@ import { Settings, Check } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
-import { foundationToken } from '../../foundationToken'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import styled from 'styled-components'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
@@ -113,6 +113,7 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             mobileColumnsToShow,
+            ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
     ) => {
@@ -162,6 +163,23 @@ const DataTable = forwardRef(
         const [pageSize, setPageSize] = useState<number>(
             pagination?.pageSize || 10
         )
+
+        useEffect(() => {
+            if (serverSidePagination && pagination) {
+                if (pagination.currentPage !== currentPage) {
+                    setCurrentPage(pagination.currentPage)
+                }
+                if (pagination.pageSize !== pageSize) {
+                    setPageSize(pagination.pageSize)
+                }
+            }
+        }, [
+            serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
+            currentPage,
+            pageSize,
+        ])
 
         const [selectedRows, setSelectedRows] = useState<
             Record<string, boolean>
@@ -233,8 +251,6 @@ const DataTable = forwardRef(
         const effectiveVisibleColumns = mobileConfig.enableColumnOverflow
             ? mobileVisibleColumns
             : visibleColumns
-
-        const totalRows = pagination?.totalRows || data.length
 
         const formatOptions: MenuGroupType[] = [
             {
@@ -326,6 +342,44 @@ const DataTable = forwardRef(
             serverSidePagination,
         ])
 
+        const totalRows = useMemo(() => {
+            if (
+                serverSidePagination ||
+                serverSideSearch ||
+                serverSideFiltering
+            ) {
+                return pagination?.totalRows || data.length
+            }
+            return processedData.length
+        }, [
+            serverSidePagination,
+            serverSideSearch,
+            serverSideFiltering,
+            pagination?.totalRows,
+            data.length,
+            processedData.length,
+        ])
+
+        useEffect(() => {
+            if (
+                !serverSidePagination &&
+                !serverSideSearch &&
+                !serverSideFiltering
+            ) {
+                const totalPages = Math.ceil(totalRows / pageSize)
+                if (currentPage > totalPages && totalPages > 0) {
+                    setCurrentPage(1)
+                }
+            }
+        }, [
+            totalRows,
+            pageSize,
+            currentPage,
+            serverSidePagination,
+            serverSideSearch,
+            serverSideFiltering,
+        ])
+
         const currentData = useMemo(() => {
             if (
                 serverSideSearch ||
@@ -335,8 +389,19 @@ const DataTable = forwardRef(
                 return processedData
             }
 
-            const startIndex = (currentPage - 1) * pageSize
-            return processedData.slice(startIndex, startIndex + pageSize)
+            const effectiveCurrentPage =
+                serverSidePagination && pagination
+                    ? pagination.currentPage
+                    : currentPage
+            const effectivePageSize =
+                serverSidePagination && pagination
+                    ? pagination.pageSize
+                    : pageSize
+            const startIndex = (effectiveCurrentPage - 1) * effectivePageSize
+            return processedData.slice(
+                startIndex,
+                startIndex + effectivePageSize
+            )
         }, [
             processedData,
             currentPage,
@@ -344,6 +409,8 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
             serverSidePagination,
+            pagination?.currentPage,
+            pagination?.pageSize,
         ])
 
         const updateSelectAllState = (
@@ -461,25 +528,99 @@ const DataTable = forwardRef(
             }
         }
 
+        const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+        const applySortConfig = (
+            field: keyof T,
+            newSortConfig: SortConfig | null
+        ) => {
+            setSortConfig(newSortConfig)
+
+            if (onSortChange) {
+                if (sortTimeoutRef.current) {
+                    clearTimeout(sortTimeoutRef.current)
+                }
+
+                sortTimeoutRef.current = setTimeout(() => {
+                    if (newSortConfig) {
+                        onSortChange(newSortConfig)
+                    } else {
+                        onSortChange({
+                            field: field.toString(),
+                            direction: SortDirection.NONE,
+                        })
+                    }
+                    sortTimeoutRef.current = null
+                }, 10)
+            }
+        }
+
         const handleSort = (field: keyof T) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
             }
 
-            const direction =
-                sortConfig?.field === field
-                    ? sortConfig.direction === SortDirection.ASCENDING
-                        ? SortDirection.DESCENDING
-                        : SortDirection.ASCENDING
-                    : SortDirection.ASCENDING
+            let direction: SortDirection
+            let newSortConfig: SortConfig | null
 
-            const newSortConfig = { field: field.toString(), direction }
-            setSortConfig(newSortConfig)
-
-            if (onSortChange) {
-                onSortChange(newSortConfig)
+            if (sortConfig?.field === field) {
+                if (sortConfig.direction === SortDirection.ASCENDING) {
+                    direction = SortDirection.DESCENDING
+                    newSortConfig = { field: field.toString(), direction }
+                } else if (sortConfig.direction === SortDirection.DESCENDING) {
+                    direction = SortDirection.NONE
+                    newSortConfig = null
+                } else {
+                    direction = SortDirection.ASCENDING
+                    newSortConfig = { field: field.toString(), direction }
+                }
+            } else {
+                direction = SortDirection.ASCENDING
+                newSortConfig = { field: field.toString(), direction }
             }
+
+            applySortConfig(field, newSortConfig)
+        }
+
+        const handleSortAscending = (field: keyof T) => {
+            const column = visibleColumns.find((col) => col.field === field)
+            if (!column || column.isSortable === false) {
+                return
+            }
+
+            const isCurrentlyAscending =
+                sortConfig?.field === field &&
+                sortConfig.direction === SortDirection.ASCENDING
+
+            const newSortConfig = isCurrentlyAscending
+                ? null
+                : {
+                      field: field.toString(),
+                      direction: SortDirection.ASCENDING,
+                  }
+
+            applySortConfig(field, newSortConfig)
+        }
+
+        const handleSortDescending = (field: keyof T) => {
+            const column = visibleColumns.find((col) => col.field === field)
+            if (!column || column.isSortable === false) {
+                return
+            }
+
+            const isCurrentlyDescending =
+                sortConfig?.field === field &&
+                sortConfig.direction === SortDirection.DESCENDING
+
+            const newSortConfig = isCurrentlyDescending
+                ? null
+                : {
+                      field: field.toString(),
+                      direction: SortDirection.DESCENDING,
+                  }
+
+            applySortConfig(field, newSortConfig)
         }
 
         const handlePageChange = (page: number) => {
@@ -700,6 +841,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
+                data-loaded-table={title}
             >
                 <DataTableHeader
                     title={title}
@@ -744,6 +886,7 @@ const DataTable = forwardRef(
                     }
                     headerSlot2={headerSlot1}
                     headerSlot3={headerSlot2}
+                    {...rest}
                 />
 
                 <Block
@@ -753,6 +896,11 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
+                        maxHeight:
+                            currentData.length > 0
+                                ? tableToken.dataTable.maxHeight
+                                : 'none',
+                        overflow: 'hidden',
                     }}
                 >
                     <BulkActionBar
@@ -768,17 +916,17 @@ const DataTable = forwardRef(
                             position: 'relative',
                             minHeight: 0,
                             overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                height: '100%',
-                                maxHeight:
-                                    currentData.length > 0
-                                        ? tableToken.dataTable.maxHeight
-                                        : 'none',
+                                flex: 1,
                                 position: 'relative',
+                                minHeight:
+                                    currentData.length > 0 ? '0' : 'auto',
                             }}
                         >
                             <table
@@ -814,6 +962,7 @@ const DataTable = forwardRef(
                                         >[]
                                     }
                                     selectAll={selectAll}
+                                    sortConfig={sortConfig}
                                     enableInlineEdit={enableInlineEdit}
                                     enableColumnManager={
                                         effectiveEnableColumnManager
@@ -851,6 +1000,8 @@ const DataTable = forwardRef(
                                         handleMobileOverflowClick(row as T)
                                     }
                                     onSort={handleSort}
+                                    onSortAscending={handleSortAscending}
+                                    onSortDescending={handleSortDescending}
                                     onSelectAll={handleSelectAll}
                                     onColumnChange={(columns) =>
                                         setVisibleColumns(
@@ -886,6 +1037,7 @@ const DataTable = forwardRef(
                                             handleMobileOverflowClick(row as T)
                                         }
                                         idField={String(idField)}
+                                        tableTitle={title}
                                         selectedRows={selectedRows}
                                         editingRows={editingRows}
                                         editValues={editValues}
@@ -1003,7 +1155,7 @@ const DataTable = forwardRef(
                                                             .table.body.cell
                                                             .fontSize,
                                                     backgroundColor:
-                                                        foundationToken.colors
+                                                        FOUNDATION_THEME.colors
                                                             .gray[0],
                                                 }}
                                             >
@@ -1022,6 +1174,7 @@ const DataTable = forwardRef(
                         pageSize={pageSize}
                         totalRows={totalRows}
                         isLoading={isLoading}
+                        hasData={currentData.length > 0}
                         onPageChange={handlePageChange}
                         onPageSizeChange={handlePageSizeChange}
                     />

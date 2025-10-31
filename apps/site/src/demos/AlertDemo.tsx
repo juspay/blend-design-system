@@ -189,6 +189,7 @@ const AlertDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
                         <div className="w-full max-w-2xl">
                             <Alert
+                                data-alert-text="playgroundAlert"
                                 heading={playgroundHeading}
                                 description={playgroundDescription}
                                 variant={playgroundVariant}

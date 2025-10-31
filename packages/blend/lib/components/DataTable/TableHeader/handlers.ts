@@ -35,8 +35,79 @@ export type SortHandlers = {
     handleSortDescending: (field: string) => void
 }
 
+export const createSortHandlers = (
+    sortState: SortState,
+    onSort: (field: keyof Record<string, unknown>) => void,
+    onSortAscending?: (field: keyof Record<string, unknown>) => void,
+    onSortDescending?: (field: keyof Record<string, unknown>) => void
+): SortHandlers => {
+    const handleSort = (field: string) => {
+        onSort(field as keyof Record<string, unknown>)
+    }
+
+    const handleSortAscending = (field: string) => {
+        const fieldKey = field as keyof Record<string, unknown>
+        if (onSortAscending) {
+            onSortAscending(fieldKey)
+            return
+        }
+
+        if (
+            sortState.currentSortField === field &&
+            sortState.currentSortDirection === SortDirection.ASCENDING
+        ) {
+            onSort(fieldKey)
+            setTimeout(() => {
+                onSort(fieldKey)
+            }, 0)
+        } else if (
+            sortState.currentSortField === field &&
+            sortState.currentSortDirection === SortDirection.DESCENDING
+        ) {
+            onSort(fieldKey)
+            setTimeout(() => {
+                onSort(fieldKey)
+            }, 0)
+        } else {
+            onSort(fieldKey)
+        }
+    }
+
+    const handleSortDescending = (field: string) => {
+        const fieldKey = field as keyof Record<string, unknown>
+
+        if (onSortDescending) {
+            onSortDescending(fieldKey)
+            return
+        }
+
+        if (
+            sortState.currentSortField === field &&
+            sortState.currentSortDirection === SortDirection.DESCENDING
+        ) {
+            onSort(fieldKey)
+        } else if (
+            sortState.currentSortField === field &&
+            sortState.currentSortDirection === SortDirection.ASCENDING
+        ) {
+            onSort(fieldKey)
+        } else {
+            onSort(fieldKey)
+            setTimeout(() => {
+                onSort(fieldKey)
+            }, 0)
+        }
+    }
+
+    return {
+        handleSort,
+        handleSortAscending,
+        handleSortDescending,
+    }
+}
+
 export type FilterHandlers = {
-    handleSearchChange: (fieldKey: string, value: string) => void // Updates search state only
+    handleSearchChange: (fieldKey: string, value: string) => void
     handleSelectFilter: (
         column: ColumnDefinition<Record<string, unknown>>,
         fieldKey: string,
@@ -49,69 +120,6 @@ export type FilterHandlers = {
         value: string,
         onColumnFilter?: ColumnFilterHandler
     ) => void
-}
-
-export const createSortHandlers = (
-    sortState: SortState,
-    setSortState: React.Dispatch<React.SetStateAction<SortState>>,
-    onSort: (field: keyof Record<string, unknown>) => void
-): SortHandlers => {
-    const handleSort = (field: string) => {
-        onSort(field as keyof Record<string, unknown>)
-    }
-
-    const handleSortAscending = (field: string) => {
-        const fieldKey = field as keyof Record<string, unknown>
-
-        if (
-            sortState.currentSortField !== field ||
-            sortState.currentSortDirection !== SortDirection.ASCENDING
-        ) {
-            setSortState({
-                currentSortField: field,
-                currentSortDirection: SortDirection.ASCENDING,
-            })
-
-            if (
-                sortState.currentSortField === field &&
-                sortState.currentSortDirection === SortDirection.DESCENDING
-            ) {
-                onSort(fieldKey)
-            } else if (sortState.currentSortField !== field) {
-                onSort(fieldKey)
-            }
-        }
-    }
-
-    const handleSortDescending = (field: string) => {
-        const fieldKey = field as keyof Record<string, unknown>
-
-        if (
-            sortState.currentSortField !== field ||
-            sortState.currentSortDirection !== SortDirection.DESCENDING
-        ) {
-            setSortState({
-                currentSortField: field,
-                currentSortDirection: SortDirection.DESCENDING,
-            })
-
-            if (
-                sortState.currentSortField === field &&
-                sortState.currentSortDirection === SortDirection.ASCENDING
-            ) {
-                onSort(fieldKey)
-            } else if (sortState.currentSortField !== field) {
-                onSort(fieldKey)
-                setTimeout(() => onSort(fieldKey), 0)
-            }
-        }
-    }
-
-    return {
-        handleSort,
-        handleSortAscending,
-        handleSortDescending,
-    }
 }
 
 export const createFilterHandlers = (

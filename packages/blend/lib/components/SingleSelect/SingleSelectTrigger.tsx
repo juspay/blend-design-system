@@ -27,6 +27,7 @@ export type SingleSelectTriggerProps = {
     inline?: boolean
     error?: boolean
     errorMessage?: string
+    disabled?: boolean
 }
 
 const SingleSelectTrigger = ({
@@ -46,6 +47,7 @@ const SingleSelectTrigger = ({
     singleSelectTokens,
     inline = false,
     error,
+    disabled,
 }: SingleSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -63,6 +65,11 @@ const SingleSelectTrigger = ({
     return (
         <>
             <PrimitiveButton
+                data-selectbox-value={placeholder}
+                data-dropdown-for={placeholder}
+                data-value={selected || placeholder}
+                data-custom-value={selected || placeholder}
+                data-button-status={disabled ? 'disabled' : 'enabled'}
                 onClick={onClick}
                 type="button"
                 name={name}
@@ -74,7 +81,6 @@ const SingleSelectTrigger = ({
                 justifyContent="space-between"
                 gap={8}
                 borderRadius={borderRadius}
-                boxShadow={singleSelectTokens.trigger.boxShadow[variant]}
                 outline={
                     singleSelectTokens.trigger.outline[variant][
                         error ? 'error' : open ? 'open' : 'closed'
@@ -162,13 +168,24 @@ const SingleSelectTrigger = ({
                             </Block>
                             {selected && (
                                 <Text
-                                    variant="body.md"
-                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    color={
+                                        singleSelectTokens.trigger.selectedValue
+                                            .color
+                                    }
+                                    fontWeight={
+                                        singleSelectTokens.trigger.selectedValue
+                                            .fontWeight
+                                    }
+                                    fontSize={
+                                        singleSelectTokens.trigger.selectedValue
+                                            .fontSize
+                                    }
                                     style={{
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                     }}
+                                    data-button-text={valueLabelMap[selected]}
                                 >
                                     {valueLabelMap[selected]}
                                 </Text>
@@ -176,18 +193,35 @@ const SingleSelectTrigger = ({
                         </Block>
                     ) : (
                         <Text
-                            variant="body.md"
                             color={
                                 selected
-                                    ? FOUNDATION_THEME.colors.gray[700]
-                                    : FOUNDATION_THEME.colors.gray[600]
+                                    ? singleSelectTokens.trigger.selectedValue
+                                          .color
+                                    : singleSelectTokens.trigger.placeholder
+                                          .color
                             }
-                            fontWeight={500}
+                            fontWeight={
+                                selected
+                                    ? singleSelectTokens.trigger.selectedValue
+                                          .fontWeight
+                                    : singleSelectTokens.trigger.placeholder
+                                          .fontWeight
+                            }
+                            fontSize={
+                                selected
+                                    ? singleSelectTokens.trigger.selectedValue
+                                          .fontSize
+                                    : singleSelectTokens.trigger.placeholder
+                                          .fontSize
+                            }
                             style={{
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                             }}
+                            data-button-text={
+                                selected ? valueLabelMap[selected] : placeholder
+                            }
                         >
                             {selected ? valueLabelMap[selected] : placeholder}
                         </Text>

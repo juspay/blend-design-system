@@ -37,6 +37,8 @@ const Charts: React.FC<ChartsProps> = ({
     showCollapseIcon = true,
     isExpanded: isExpandedProp,
     onExpandedChange,
+    chartName = 'Chart',
+    ...props
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -233,6 +235,7 @@ const Charts: React.FC<ChartsProps> = ({
                 transform: 'rotate(0deg)',
                 transformOrigin: '0 0',
             }}
+            {...props}
         >
             <Block
                 ref={chartContainerRef}
@@ -424,6 +427,7 @@ const Charts: React.FC<ChartsProps> = ({
                 height="100%"
                 border={chartTokens.border}
                 borderRadius={chartTokens.borderRadius}
+                {...props}
             >
                 {showHeader && (
                     <ChartHeader
@@ -486,6 +490,7 @@ const Charts: React.FC<ChartsProps> = ({
                                       //   height={'auto'}
                                   >
                                       {renderChart({
+                                          chartName,
                                           flattenedData,
                                           chartType,
                                           hoveredKey,

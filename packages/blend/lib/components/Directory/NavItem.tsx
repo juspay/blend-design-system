@@ -149,6 +149,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 aria-expanded={hasChildren ? isExpanded : undefined}
                 role={!item.href ? 'button' : undefined}
                 tabIndex={0}
+                data-sidebar-selected={isActive}
+                data-sidebar-sub-option={item.label}
+                data-sidebar-expanded={hasChildren ? isExpanded : undefined}
             >
                 <Block
                     display="flex"

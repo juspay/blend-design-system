@@ -2,7 +2,6 @@ import React from 'react'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
-import { foundationToken } from '../../foundationToken'
 import {
     AlertActionPlacement,
     type AlertProps,
@@ -95,7 +94,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             >
                                 <X
                                     size={16}
-                                    color={foundationToken.colors.gray[800]}
+                                    color={FOUNDATION_THEME.colors.gray[800]}
                                 />
                             </AlertCloseButton>
                         )}
@@ -198,7 +197,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                             width={'1px'}
                                             height={FOUNDATION_THEME.unit[20]}
                                             backgroundColor={
-                                                foundationToken.colors.gray[300]
+                                                FOUNDATION_THEME.colors
+                                                    .gray[300]
                                             }
                                         />
                                         <AlertCloseButton
@@ -211,7 +211,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                             <X
                                                 size={16}
                                                 color={
-                                                    foundationToken.colors
+                                                    FOUNDATION_THEME.colors
                                                         .gray[800]
                                                 }
                                             />

@@ -39,6 +39,7 @@ import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import { ResponsiveWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -82,7 +83,8 @@ export const useComponentToken = (
     | ResponsiveAvatarGroupTokens
     | ResponsiveSidebarTokens
     | ResponsiveUploadTokens
-    | ResponsiveCodeBlockTokens => {
+    | ResponsiveCodeBlockTokens
+    | ResponsiveWorkflowTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -166,6 +168,8 @@ export const useComponentToken = (
             return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
+        case 'WORKFLOW_CANVAS':
+            return componentTokens.WORKFLOW_CANVAS
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
