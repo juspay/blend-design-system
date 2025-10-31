@@ -151,7 +151,7 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
-    >('dataRangePicker')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

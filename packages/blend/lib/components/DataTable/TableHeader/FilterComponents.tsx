@@ -247,6 +247,7 @@ export const SingleSelectItems: React.FC<{
             maxHeight={tableToken.dataTable.table.header.filter.maxHeight}
             overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
+            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]}`}
         >
             {menuItems.map((group) =>
                 filterItemsBySearch(
@@ -314,10 +315,12 @@ export const SingleSelectItems: React.FC<{
                             >
                                 {item.label}
                             </PrimitiveText>
-                            <Checkbox
-                                checked={isSelected}
-                                size={CheckboxSize.SMALL}
-                            />
+                            {isSelected && (
+                                <Check
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                />
+                            )}
                         </Block>
                     )
                 })
@@ -815,7 +818,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                         display="flex"
                         flexDirection="column"
                         gap={FOUNDATION_THEME.unit[4]}
-                        padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[0]}`}
                         maxHeight="300px"
                         overflow="auto"
                     >
