@@ -91,6 +91,11 @@ export type MultiSelectTokensType = {
                 }
             }
         }
+        placeholder: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
     }
     menu: {
         backgroundColor: CSSObject['backgroundColor']
@@ -339,6 +344,11 @@ export const getMultiSelectTokens = (
                             fontWeight: 500,
                         },
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {
@@ -628,6 +638,11 @@ export const getMultiSelectTokens = (
                             fontWeight: 500,
                         },
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {

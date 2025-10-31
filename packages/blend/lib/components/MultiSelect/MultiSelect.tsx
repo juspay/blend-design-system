@@ -413,15 +413,18 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[400]
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                                     }
                                                     fontWeight={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontWeight
                                                     }
                                                     fontSize={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontSize
                                                     }
                                                     data-button-text={label}
@@ -489,18 +492,22 @@ const MultiSelect = ({
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[400]
+                                                            multiSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
-                                                                .label
+                                                                .trigger
+                                                                .placeholder
                                                                 .fontWeight
                                                         }
                                                         fontSize={
                                                             multiSelectTokens
-                                                                .label.fontSize
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
                                                         }
                                                         data-button-text={
                                                             placeholder

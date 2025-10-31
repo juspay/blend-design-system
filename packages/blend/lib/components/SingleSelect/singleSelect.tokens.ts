@@ -81,6 +81,16 @@ export type SingleSelectTokensType = {
                 [key in TriggerStates]: CSSObject['outline']
             }
         }
+        placeholder: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+        selectedValue: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
     }
     menu: {
         backgroundColor: CSSObject['backgroundColor']
@@ -293,6 +303,16 @@ export const getSingleSelectTokens = (
                         focus: undefined,
                         error: undefined,
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[600],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {
@@ -546,6 +566,16 @@ export const getSingleSelectTokens = (
                         focus: undefined,
                         error: undefined,
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[600],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {

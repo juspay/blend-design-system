@@ -399,15 +399,38 @@ const SingleSelect = ({
                                             </Block>
                                         ) : (
                                             <Text
-                                                variant="body.md"
                                                 color={
                                                     selected
-                                                        ? FOUNDATION_THEME
-                                                              .colors.gray[700]
-                                                        : FOUNDATION_THEME
-                                                              .colors.gray[400]
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .color
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder.color
                                                 }
-                                                fontWeight={500}
+                                                fontWeight={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontWeight
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontWeight
+                                                }
+                                                fontSize={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontSize
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontSize
+                                                }
                                                 style={{
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
