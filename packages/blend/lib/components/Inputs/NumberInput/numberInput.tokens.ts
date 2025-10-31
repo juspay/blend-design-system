@@ -3,6 +3,7 @@ import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 enum TextInputSize {
+    SM = 'sm',
     MD = 'md',
     LG = 'lg',
 }
@@ -164,14 +165,17 @@ export const getNumberInputTokens = (
 
             inputContainer: {
                 borderRadius: {
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[10],
                     lg: foundationToken.unit[10],
                 },
                 fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
                     md: foundationToken.font.size.body.md.fontSize,
                     lg: foundationToken.font.size.body.md.fontSize,
                 },
                 fontWeight: {
+                    sm: foundationToken.font.weight[500],
                     md: foundationToken.font.weight[500],
                     lg: foundationToken.font.weight[500],
                 },
@@ -184,12 +188,14 @@ export const getNumberInputTokens = (
                 },
                 padding: {
                     x: {
+                        sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
                         lg: foundationToken.unit[14],
                     },
                     y: {
+                        sm: foundationToken.unit[6],
                         md: foundationToken.unit[8],
-                        lg: foundationToken.unit[10],
+                        lg: foundationToken.unit[14],
                     },
                 },
                 border: {
@@ -209,6 +215,7 @@ export const getNumberInputTokens = (
                 boxShadow: foundationToken.shadows.sm,
                 stepperButton: {
                     width: {
+                        sm: foundationToken.unit[32],
                         md: foundationToken.unit[32],
                         lg: foundationToken.unit[32],
                     },
@@ -228,6 +235,7 @@ export const getNumberInputTokens = (
                             error: foundationToken.colors.gray[400],
                         },
                         width: {
+                            sm: foundationToken.unit[6],
                             md: foundationToken.unit[6],
                             lg: foundationToken.unit[6],
                         },
@@ -290,14 +298,17 @@ export const getNumberInputTokens = (
             },
             inputContainer: {
                 borderRadius: {
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[10],
                     lg: foundationToken.unit[10],
                 },
                 fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
                     md: foundationToken.font.size.body.md.fontSize,
                     lg: foundationToken.font.size.body.md.fontSize,
                 },
                 fontWeight: {
+                    sm: foundationToken.font.weight[500],
                     md: foundationToken.font.weight[500],
                     lg: foundationToken.font.weight[500],
                 },
@@ -310,10 +321,12 @@ export const getNumberInputTokens = (
                 },
                 padding: {
                     x: {
+                        sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
                         lg: foundationToken.unit[14],
                     },
                     y: {
+                        sm: foundationToken.unit[6],
                         md: foundationToken.unit[8],
                         lg: foundationToken.unit[10],
                     },
@@ -336,6 +349,7 @@ export const getNumberInputTokens = (
                 boxShadow: foundationToken.shadows.sm,
                 stepperButton: {
                     width: {
+                        sm: foundationToken.unit[32],
                         md: foundationToken.unit[32],
                         lg: foundationToken.unit[32],
                     },
@@ -356,6 +370,7 @@ export const getNumberInputTokens = (
                         },
 
                         width: {
+                            sm: foundationToken.unit[6],
                             md: foundationToken.unit[6],
                             lg: foundationToken.unit[6],
                         },

@@ -302,11 +302,6 @@ const MultiSelect = ({
                                         justifyContent="space-between"
                                         gap={8}
                                         borderRadius={appliedBorderRadius}
-                                        boxShadow={
-                                            multiSelectTokens.trigger.boxShadow[
-                                                variant
-                                            ]
-                                        }
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
@@ -418,15 +413,18 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens.label
-                                                            .color.default
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                                     }
                                                     fontWeight={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontWeight
                                                     }
                                                     fontSize={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontSize
                                                     }
                                                     data-button-text={label}
@@ -495,17 +493,21 @@ const MultiSelect = ({
                                                         // variant="body.md"
                                                         color={
                                                             multiSelectTokens
-                                                                .label.color
-                                                                .default
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
-                                                                .label
+                                                                .trigger
+                                                                .placeholder
                                                                 .fontWeight
                                                         }
                                                         fontSize={
                                                             multiSelectTokens
-                                                                .label.fontSize
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
                                                         }
                                                         data-button-text={
                                                             placeholder
