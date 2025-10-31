@@ -49,6 +49,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                     isFirst,
                     isLast,
                     isIntermediate,
+                    currentValue: value,
                 }
 
                 return React.cloneElement(child, childProps)

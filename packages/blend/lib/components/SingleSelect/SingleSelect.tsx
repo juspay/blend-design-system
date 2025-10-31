@@ -176,12 +176,14 @@ const SingleSelect = ({
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
+                data-selectbox-value={placeholder}
             >
                 <Block
                     width={fullWidth ? '100%' : 'fit-content'}
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
+                    data-dropdown-for={placeholder}
                 >
                     <SingleSelectMenu
                         open={open}
@@ -219,6 +221,11 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    data-value={selected || placeholder}
+                                    data-custom-value={selected || placeholder}
+                                    data-button-status={
+                                        disabled ? 'disabled' : 'enabled'
+                                    }
                                     type="button"
                                     name={name}
                                     position="relative"
@@ -381,6 +388,11 @@ const SingleSelect = ({
                                                             whiteSpace:
                                                                 'nowrap',
                                                         }}
+                                                        data-button-text={
+                                                            valueLabelMap[
+                                                                selected
+                                                            ]
+                                                        }
                                                     >
                                                         {
                                                             valueLabelMap[
@@ -406,6 +418,13 @@ const SingleSelect = ({
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
+                                                data-button-text={
+                                                    selected
+                                                        ? valueLabelMap[
+                                                              selected
+                                                          ]
+                                                        : placeholder
+                                                }
                                             >
                                                 {selected
                                                     ? valueLabelMap[selected]

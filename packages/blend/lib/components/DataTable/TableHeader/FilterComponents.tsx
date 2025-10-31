@@ -26,7 +26,6 @@ import {
     filterItemsBySearch,
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { foundationToken } from '../../../foundationToken'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { Popover } from '../../Popover'
@@ -64,7 +63,7 @@ export const SortOptions: React.FC<{
         <Block
             display="flex"
             flexDirection="column"
-            paddingBottom={foundationToken.spacing[2]}
+            paddingBottom={FOUNDATION_THEME.unit[2]}
         >
             <Block
                 display="flex"

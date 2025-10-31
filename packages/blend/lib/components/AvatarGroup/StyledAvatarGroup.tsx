@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { foundationToken } from '../../foundationToken'
 import type {
     StyledAvatarGroupContainerProps,
     StyledAvatarWrapperProps,
@@ -7,6 +6,7 @@ import type {
 } from './types'
 import type { AvatarGroupTokensType } from './avatarGroup.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export const StyledAvatarGroupContainer = styled.div<StyledAvatarGroupContainerProps>`
     display: flex;
@@ -38,14 +38,14 @@ export const StyledAvatarWrapper = styled.div<StyledAvatarWrapperProps>`
                     ? `
                 & > div {
                     box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
-                    outline: ${tokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
+                    outline: ${tokens.avatar.selected.ringOffset} solid ${FOUNDATION_THEME.colors.gray[0]};
                 }
             `
                     : ''
             }
 
             &:focus-visible {
-                outline: 2px solid ${foundationToken.colors.primary[500]};
+                outline: 2px solid ${FOUNDATION_THEME.colors.primary[500]};
                 outline-offset: 2px;
             }
         `
@@ -68,7 +68,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
             width: ${tokens.overflowCounter.size[props.$size].width};
             height: ${tokens.overflowCounter.size[props.$size].height};
             font-size: ${tokens.overflowCounter.size[props.$size].fontSize};
-            font-weight: ${foundationToken.fontWeight[500]};
+            font-weight: ${FOUNDATION_THEME.font.weight[500]};
 
             color: ${tokens.overflowCounter.text.color};
             background-color: ${
@@ -88,7 +88,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
             }
 
             &:focus-visible {
-                outline: 2px solid ${foundationToken.colors.primary[500]};
+                outline: 2px solid ${FOUNDATION_THEME.colors.primary[500]};
                 outline-offset: 2px;
             }
 
@@ -96,7 +96,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
                 props.$isOpen
                     ? `
                 box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
-                outline: ${tokens.avatar.selected.ringOffset} solid ${foundationToken.colors.gray[0]};
+                outline: ${tokens.avatar.selected.ringOffset} solid ${FOUNDATION_THEME.colors.gray[0]};
             `
                     : ''
             }

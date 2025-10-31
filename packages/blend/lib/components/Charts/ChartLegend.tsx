@@ -163,6 +163,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             >
                 {keys.slice(0, cuttOffIndex).map((dataKey, index) => (
                     <Block
+                        data-chart-legend={capitaliseCamelCase(dataKey)}
                         height={FOUNDATION_THEME.unit[16]}
                         display="flex"
                         alignItems="center"
@@ -181,12 +182,16 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                             borderRadius={FOUNDATION_THEME.border.radius[4]}
                             flexShrink={0}
                             backgroundColor={colors[index]}
+                            data-color={colors[index]}
                         />
                         <Text
                             fontSize={legendTokens.item.fontSize}
                             fontWeight={legendTokens.item.fontWeight}
                             truncate={true}
                             color={legendTokens.item.color.default}
+                            data-chart-legend-text={capitaliseCamelCase(
+                                dataKey
+                            )}
                         >
                             {capitaliseCamelCase(dataKey)}
                         </Text>
@@ -247,6 +252,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                         }
                                         onMouseLeave={handleLegendLeave}
                                         opacity={getItemOpacity(dataKey)}
+                                        data-chart-legend-text={capitaliseCamelCase(
+                                            dataKey
+                                        )}
                                     >
                                         {capitaliseCamelCase(dataKey)}
                                     </Block>
@@ -354,6 +362,7 @@ const StackedLegends: React.FC<{
                     })}
                 >
                     <Block
+                        data-chart-legend={capitaliseCamelCase(key)}
                         height={FOUNDATION_THEME.unit[16]}
                         display="flex"
                         alignItems="center"
@@ -372,8 +381,10 @@ const StackedLegends: React.FC<{
                             height={FOUNDATION_THEME.unit[12]}
                             borderRadius={FOUNDATION_THEME.border.radius[4]}
                             flexShrink={0}
+                            data-color={colors[index]}
                         />
                         <Text
+                            data-chart-legend-text={capitaliseCamelCase(key)}
                             fontSize={legendTokens.item.fontSize}
                             fontWeight={legendTokens.item.fontWeight}
                             color={

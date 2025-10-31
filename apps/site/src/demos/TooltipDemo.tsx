@@ -287,6 +287,7 @@ const TooltipDemo: React.FC = () => {
                     open={config.forceVisible || undefined}
                 >
                     <Button
+                        data-tooltip={'Hover Me'}
                         text="Hover Me"
                         buttonType={ButtonType.PRIMARY}
                         size={ButtonSize.MEDIUM}

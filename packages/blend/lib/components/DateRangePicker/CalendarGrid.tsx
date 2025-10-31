@@ -292,6 +292,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                     calendarToken.calendar.calendarGrid.month
                                         .header.gap,
                             }}
+                            data-calendar-month={monthCalendarData.monthName}
+                            data-calendar-year={year}
+                            data-calendar-month-year={`${monthCalendarData.monthName} ${year}`}
                         >
                             {monthCalendarData.monthName} {year}
                         </Block>
