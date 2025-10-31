@@ -244,6 +244,7 @@ const UnitInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     type="number"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
@@ -267,7 +268,6 @@ const UnitInput = ({
                     borderRadius={
                         unitInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={unitInputTokens.inputContainer.boxShadow}
                     border={
                         unitInputTokens.inputContainer.border[
                             error ? 'error' : 'default'

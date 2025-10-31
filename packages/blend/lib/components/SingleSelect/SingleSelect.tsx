@@ -229,11 +229,6 @@ const SingleSelect = ({
                                     justifyContent="space-between"
                                     gap={8}
                                     borderRadius={borderRadius}
-                                    boxShadow={
-                                        singleSelectTokens.trigger.boxShadow[
-                                            variant
-                                        ]
-                                    }
                                     outline={
                                         singleSelectTokens.trigger.outline[
                                             variant
@@ -398,7 +393,7 @@ const SingleSelect = ({
                                                         ? FOUNDATION_THEME
                                                               .colors.gray[700]
                                                         : FOUNDATION_THEME
-                                                              .colors.gray[600]
+                                                              .colors.gray[400]
                                                 }
                                                 fontWeight={500}
                                                 style={{

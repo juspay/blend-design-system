@@ -74,7 +74,6 @@ const SingleSelectTrigger = ({
                 justifyContent="space-between"
                 gap={8}
                 borderRadius={borderRadius}
-                boxShadow={singleSelectTokens.trigger.boxShadow[variant]}
                 outline={
                     singleSelectTokens.trigger.outline[variant][
                         error ? 'error' : open ? 'open' : 'closed'
@@ -180,7 +179,7 @@ const SingleSelectTrigger = ({
                             color={
                                 selected
                                     ? FOUNDATION_THEME.colors.gray[700]
-                                    : FOUNDATION_THEME.colors.gray[600]
+                                    : FOUNDATION_THEME.colors.gray[400]
                             }
                             fontWeight={500}
                             style={{

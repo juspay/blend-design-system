@@ -295,11 +295,6 @@ const MultiSelect = ({
                                         justifyContent="space-between"
                                         gap={8}
                                         borderRadius={appliedBorderRadius}
-                                        boxShadow={
-                                            multiSelectTokens.trigger.boxShadow[
-                                                variant
-                                            ]
-                                        }
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
@@ -411,8 +406,8 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens.label
-                                                            .color.default
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[400]
                                                     }
                                                     fontWeight={
                                                         multiSelectTokens.label
@@ -486,9 +481,9 @@ const MultiSelect = ({
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
-                                                            multiSelectTokens
-                                                                .label.color
-                                                                .default
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[400]
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens

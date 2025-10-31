@@ -6,6 +6,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -145,6 +146,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                 )}
 
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     ref={ref}
                     name={name}
                     value={value}

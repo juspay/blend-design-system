@@ -18,6 +18,7 @@ import {
     SelectMenuVariant,
     SingleSelect,
 } from '../../SingleSelect'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const DropdownInput = ({
     label,
@@ -197,6 +198,7 @@ const DropdownInput = ({
                 )}
 
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
                     type="text"
@@ -218,7 +220,6 @@ const DropdownInput = ({
                     borderRadius={
                         dropdownInputTokens.inputContainer.borderRadius?.[size]
                     }
-                    boxShadow={dropdownInputTokens.inputContainer.boxShadow}
                     border={
                         error
                             ? dropdownInputTokens.inputContainer.border.error
@@ -244,7 +245,6 @@ const DropdownInput = ({
                         border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow: dropdownInputTokens.inputContainer.boxShadow,
                         outline: 'none !important',
                     }}
                     disabled={disabled}

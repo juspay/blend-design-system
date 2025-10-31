@@ -315,7 +315,7 @@ export const getMultiSelectTokens = (
                 selectionTag: {
                     container: {
                         text: {
-                            color: foundationToken.colors.gray[400],
+                            color: foundationToken.colors.gray[600],
                             backgroundColor: 'transparent',
                             fontWeight: 500,
                         },
@@ -328,7 +328,7 @@ export const getMultiSelectTokens = (
                     },
                     'no-container': {
                         text: {
-                            color: foundationToken.colors.gray[400],
+                            color: foundationToken.colors.gray[600],
                             backgroundColor: 'transparent',
                             fontWeight: 500,
                         },
@@ -604,7 +604,7 @@ export const getMultiSelectTokens = (
                 selectionTag: {
                     container: {
                         text: {
-                            color: foundationToken.colors.gray[400],
+                            color: foundationToken.colors.gray[600],
                             backgroundColor: 'transparent',
                             fontWeight: 500,
                         },
@@ -617,7 +617,7 @@ export const getMultiSelectTokens = (
                     },
                     'no-container': {
                         text: {
-                            color: foundationToken.colors.gray[400],
+                            color: foundationToken.colors.gray[600],
                             backgroundColor: 'transparent',
                             fontWeight: 500,
                         },
