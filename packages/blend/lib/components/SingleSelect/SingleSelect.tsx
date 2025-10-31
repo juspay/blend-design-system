@@ -372,9 +372,22 @@ const SingleSelect = ({
                                                     <Text
                                                         variant="body.md"
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[600]
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
+                                                        }
+                                                        fontWeight={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontWeight
+                                                        }
+                                                        fontSize={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
                                                         }
                                                         style={{
                                                             overflow: 'hidden',
