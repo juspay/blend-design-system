@@ -210,12 +210,12 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: foundationToken.unit[32],
-                        'no-container': foundationToken.unit[32],
-                    },
-                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
+                    },
+                    md: {
+                        container: foundationToken.unit[40],
+                        'no-container': foundationToken.unit[40],
                     },
                     lg: {
                         container: foundationToken.unit[52],
@@ -472,16 +472,16 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: foundationToken.unit[32],
-                        'no-container': foundationToken.unit[32],
-                    },
-                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
                     },
-                    lg: {
+                    md: {
                         container: foundationToken.unit[40],
-                        'no-container': foundationToken.unit[40],
+                        'no-container': foundationToken.unit[36],
+                    },
+                    lg: {
+                        container: foundationToken.unit[44],
+                        'no-container': foundationToken.unit[44],
                     },
                 },
                 padding: {

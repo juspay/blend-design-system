@@ -72,7 +72,7 @@ const DropdownInput = ({
     )
     const paddingY =
         toPixels(dropdownInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(dropdownInputTokens.inputContainer.gap)
 
     const paddingInlineStart =
@@ -198,6 +198,7 @@ const DropdownInput = ({
                 )}
 
                 <PrimitiveInput
+                    lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}

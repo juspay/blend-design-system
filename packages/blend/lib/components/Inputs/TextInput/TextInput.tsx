@@ -53,7 +53,7 @@ const TextInput = ({
     const paddingX = toPixels(textInputTokens.inputContainer.padding.x[size])
     const paddingY =
         toPixels(textInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(textInputTokens.gap)
 
     const paddingInlineStart = leftSlot

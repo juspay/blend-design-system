@@ -56,7 +56,7 @@ const UnitInput = ({
     const paddingX = toPixels(unitInputTokens.inputContainer.padding.x[size])
     const paddingY =
         toPixels(unitInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
 
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
@@ -246,6 +246,7 @@ const UnitInput = ({
                 <PrimitiveInput
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     type="number"
+                    lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
                     onChange={onChange}
