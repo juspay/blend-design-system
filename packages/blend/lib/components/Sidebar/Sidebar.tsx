@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect } from 'react'
+import { forwardRef, useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -17,6 +17,7 @@ import {
     getTopbarStyles,
     getDefaultMerchantInfo,
     useTopbarAutoHide,
+    isControlledSidebar,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 
@@ -57,14 +58,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             merchantInfo,
             rightActions,
             enableTopbarAutoHide = false,
+            isExpanded: controlledIsExpanded,
+            onExpandedChange,
+            defaultIsExpanded = true,
         },
         ref
     ) => {
-        // Simplified state management
-        const [isExpanded, setIsExpanded] = useState<boolean>(true)
+        const isControlled = isControlledSidebar(controlledIsExpanded)
+
+        const [internalExpanded, setInternalExpanded] =
+            useState<boolean>(defaultIsExpanded)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
+
+        const isExpanded = isControlled
+            ? controlledIsExpanded!
+            : internalExpanded
 
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < BREAKPOINTS.lg
@@ -72,32 +82,61 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         // Use custom hook for topbar auto-hide
         const showTopbar = useTopbarAutoHide(enableTopbarAutoHide)
 
+        const toggleSidebar = useCallback(() => {
+            const newValue = !isExpanded
+
+            if (!isControlled) {
+                setInternalExpanded(newValue)
+            }
+
+            onExpandedChange?.(newValue)
+        }, [isExpanded, isControlled, onExpandedChange, setInternalExpanded])
+
+        const handleToggle = useCallback(() => {
+            toggleSidebar()
+            setIsHovering(false)
+        }, [toggleSidebar, setIsHovering])
+
         // Keyboard shortcut handler
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
                 if (event.key === sidebarCollapseKey && !isMobile) {
                     event.preventDefault()
-                    setIsExpanded(!isExpanded)
+                    toggleSidebar()
                 }
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isExpanded, isMobile, sidebarCollapseKey])
+        }, [isMobile, sidebarCollapseKey, toggleSidebar])
 
         // Mobile and toggle button logic
         useEffect(() => {
             if (isMobile && isExpanded) {
-                setIsExpanded(false)
                 setIsHovering(false)
+                if (isControlled) {
+                    // In controlled mode, only notify parent
+                    // Parent is responsible for updating isExpanded prop
+                    onExpandedChange?.(false)
+                } else {
+                    // In uncontrolled mode, auto-collapse
+                    setInternalExpanded(false)
+                }
                 return
             }
+
             if (!isExpanded && !isMobile) {
                 const timer = setTimeout(() => setShowToggleButton(true), 50)
                 return () => clearTimeout(timer)
-            } else {
-                setShowToggleButton(false)
             }
-        }, [isExpanded, isMobile])
+
+            setShowToggleButton(false)
+        }, [
+            isExpanded,
+            isMobile,
+            isControlled,
+            onExpandedChange,
+            setInternalExpanded,
+        ])
 
         // Directory scroll detection
         useEffect(() => {
@@ -112,16 +151,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 directoryContainer.removeEventListener('scroll', handleScroll)
         }, [])
 
-        // Helper functions and values
-        const toggleSidebar = () => {
-            setIsExpanded(!isExpanded)
-            setIsHovering(false)
-        }
-        const handleMouseEnter = () => setIsHovering(true)
-        const handleMouseLeave = () => setIsHovering(false)
+        const handleMouseEnter = useCallback(() => setIsHovering(true), [])
+        const handleMouseLeave = useCallback(() => setIsHovering(false), [])
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
+        const getSidebarState = () => {
+            if (isExpanded) return 'expanded'
+            if (isHovering) return 'intermediate'
+            return 'closed'
+        }
+
+        const getSidebarZIndex = () => {
+            const state = getSidebarState()
+            if (state === 'intermediate') return '98'
+            return '48'
+        }
 
         return (
             <Block
@@ -164,7 +210,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                     display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex="48"
+                    zIndex={getSidebarZIndex()}
                     height="100%"
                     style={{
                         willChange: 'transform',
@@ -173,7 +219,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={handleMouseLeave}
-                    data-is-sidebar-expanded={isExpanded}
+                    data-sidebar-state={getSidebarState()}
                 >
                     {!isMobile && (
                         <>
@@ -204,7 +250,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         isExpanded={isExpanded}
                                         isScrolled={isScrolled}
                                         sidebarCollapseKey={sidebarCollapseKey}
-                                        onToggle={toggleSidebar}
+                                        onToggle={handleToggle}
                                     />
 
                                     <DirectoryContainer
@@ -232,7 +278,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     >
                         <Topbar
                             isExpanded={isExpanded}
-                            onToggleExpansion={toggleSidebar}
+                            onToggleExpansion={handleToggle}
                             showToggleButton={showToggleButton}
                             sidebarTopSlot={sidebarTopSlot}
                             topbar={topbar}

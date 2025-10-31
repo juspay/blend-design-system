@@ -40,6 +40,7 @@ export const Tooltip = ({
                 {content && (
                     <RadixTooltip.Portal>
                         <RadixTooltip.Content
+                            data-tooltip={'tooltip'}
                             side={side}
                             align={align}
                             sideOffset={offset}
@@ -67,6 +68,7 @@ export const Tooltip = ({
                                     )}
                                 <Block flexGrow={1} overflow="hidden">
                                     <PrimitiveText
+                                        data-text={content}
                                         color={tooltipTokens.text.color}
                                         fontSize={
                                             tooltipTokens.text.fontSize[size]
