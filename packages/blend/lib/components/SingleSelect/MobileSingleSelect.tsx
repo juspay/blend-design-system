@@ -276,6 +276,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                             isItemSelected={isItemSelected}
                             inline={inline}
                             error={error}
+                            disabled={disabled}
                         />
                     )}
                 </DrawerTrigger>

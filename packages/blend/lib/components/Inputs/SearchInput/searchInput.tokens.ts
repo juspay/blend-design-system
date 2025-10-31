@@ -120,7 +120,7 @@ export const getSearchInputTokens = (
             inputContainer: {
                 padding: {
                     x: foundationTokens.unit[8],
-                    y: foundationTokens.unit[8],
+                    y: foundationTokens.unit[7],
                 },
                 borderRadius: foundationTokens.unit[0],
                 borderBottom: {
@@ -199,7 +199,7 @@ export const getSearchInputTokens = (
             inputContainer: {
                 padding: {
                     x: foundationTokens.unit[8],
-                    y: foundationTokens.unit[8],
+                    y: foundationTokens.unit[7],
                 },
                 borderRadius: foundationTokens.unit[0],
                 borderBottom: {

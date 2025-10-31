@@ -205,8 +205,6 @@ const OTPInput = ({
                             border: otpInputTokens.inputContainer.input.border[
                                 error ? 'error' : 'focus'
                             ],
-                            boxShadow:
-                                otpInputTokens.inputContainer.input.boxShadow,
                         }}
                         disabled={disabled}
                         _disabled={{

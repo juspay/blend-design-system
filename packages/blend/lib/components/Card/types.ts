@@ -50,7 +50,6 @@ export type CustomCardProps = {
 }
 
 export type CardProps = {
-    className?: string
     maxWidth?: string
     /**
      * Height of the card. Accepts any valid CSS height value.

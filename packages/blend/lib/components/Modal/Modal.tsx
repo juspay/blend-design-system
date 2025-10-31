@@ -85,6 +85,7 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            data-header-text={title}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -96,6 +97,7 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
+                        data-header-subtitle-text={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
@@ -182,13 +184,13 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             children,
             primaryAction,
             secondaryAction,
-            className,
             showCloseButton = true,
             closeOnBackdropClick = true,
             headerRightSlot,
             showDivider = true,
             minWidth = '500px',
             useDrawerOnMobile = true,
+            ...props
         },
         ref
     ) => {
@@ -251,7 +253,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         subtitle={subtitle}
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
-                        className={className}
                         showCloseButton={showCloseButton}
                         closeOnBackdropClick={closeOnBackdropClick}
                         headerRightSlot={headerRightSlot}
@@ -273,6 +274,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
                     boxShadow={modalTokens.boxShadow}
+                    {...props}
                 >
                     <Block
                         onClick={handleBackdropClick}
@@ -290,7 +292,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
                     <Block
                         ref={ref}
-                        className={className}
                         display="flex"
                         flexDirection="column"
                         position="relative"

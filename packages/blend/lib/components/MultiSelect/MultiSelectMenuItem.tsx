@@ -8,12 +8,14 @@ const MultiSelectMenuItem = ({
     selected,
     maxSelections,
     allItems,
+    index,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
     selected: string[]
     maxSelections?: number
     allItems?: MultiSelectMenuItemType[]
+    index?: number
 }) => {
     const isSelected = selected.includes(item.value)
     const isMaxReached =
@@ -67,6 +69,7 @@ const MultiSelectMenuItem = ({
             type={SelectItemType.MULTI}
             showCheckmark={true}
             selectedPosition={getSelectedPosition()}
+            index={index}
         />
     )
 }

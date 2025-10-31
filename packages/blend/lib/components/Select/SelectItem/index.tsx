@@ -29,6 +29,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             showCheckmark = true,
             className,
             selectedPosition = 'none',
+            index = 0,
         },
         ref
     ) => {
@@ -101,9 +102,23 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         const rightSlotContent = rightSlotConfig ? (
             rightSlotConfig.type === 'checkbox' ? (
-                <Checkbox {...rightSlotConfig.props} />
+                <Checkbox
+                    data-checkbox-value={item.value}
+                    data-selected-checkbox={isSelected}
+                    data-checkbox-status={
+                        item.disabled ? 'disabled' : 'enabled'
+                    }
+                    {...rightSlotConfig.props}
+                />
             ) : (
-                <Check {...rightSlotConfig.props} />
+                <Check
+                    data-checkmark-value={item.value}
+                    data-selected-checkmark={isSelected}
+                    data-checkmark-status={
+                        item.disabled ? 'disabled' : 'enabled'
+                    }
+                    {...rightSlotConfig.props}
+                />
             )
         ) : null
 
@@ -135,6 +150,9 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 data-disabled={item.disabled}
             >
                 <Block
+                    data-dropdown-numeric={index + 1}
+                    data-dropdown-value={item.label}
+                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
                     ref={ref}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
@@ -208,6 +226,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 style={{ minWidth: 0, maxWidth: '100%' }}
                             >
                                 <PrimitiveText
+                                    data-text={item.label}
                                     fontSize={
                                         tokens?.menu?.item?.option?.fontSize
                                     }
