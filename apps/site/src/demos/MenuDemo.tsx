@@ -952,6 +952,11 @@ export const MenuDemo: React.FC = () => {
                             <Menu
                                 trigger={
                                     <Button
+                                        data-selectbox-value="Interactive Menu"
+                                        data-dropdown-for="Interactive Menu"
+                                        data-value="Interactive Menu"
+                                        data-custom-value="Interactive Menu"
+                                        data-button-status="enabled"
                                         buttonType={ButtonType.PRIMARY}
                                         text="Interactive Menu"
                                     />

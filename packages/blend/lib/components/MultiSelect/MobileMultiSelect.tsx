@@ -380,6 +380,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                             onClick={() => setDrawerOpen(true)}
                             multiSelectTokens={multiSelectTokens}
                             error={error}
+                            disabled={disabled}
                         />
                     )}
                 </DrawerTrigger>

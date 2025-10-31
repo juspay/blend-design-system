@@ -45,6 +45,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 $size={size}
                 $shape={shape}
                 $hasImage={!!hasImage}
+                data-avatar="true"
+                data-avatar-size={size}
+                data-avatar-shape={shape}
+                data-avatar-online={online}
+                data-avatar-has-image={!!hasImage}
                 {...props}
             >
                 {hasImage ? (
@@ -52,9 +57,13 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         src={src}
                         alt={alt}
                         onError={() => setImageError(true)}
+                        data-avatar-image="true"
                     />
                 ) : (
-                    <StyledAvatarFallback aria-hidden="true">
+                    <StyledAvatarFallback
+                        aria-hidden="true"
+                        data-avatar-fallback="true"
+                    >
                         {renderFallback()}
                     </StyledAvatarFallback>
                 )}
@@ -77,7 +86,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 </span>
 
                 {online && (
-                    <StyledAvatarIndicator $size={size} aria-hidden="true" />
+                    <StyledAvatarIndicator
+                        $size={size}
+                        aria-hidden="true"
+                        data-avatar-indicator="true"
+                    />
                 )}
             </StyledAvatarContainer>
         )
@@ -85,15 +98,15 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         // If we have slots, use the wrapper
         if (leadingSlot || trailingSlot) {
             return (
-                <StyledAvatarWrapper>
+                <StyledAvatarWrapper data-avatar-wrapper="true">
                     {leadingSlot && (
-                        <StyledAvatarLeadingSlot>
+                        <StyledAvatarLeadingSlot data-avatar-slot="leading">
                             {leadingSlot}
                         </StyledAvatarLeadingSlot>
                     )}
                     {renderContent()}
                     {trailingSlot && (
-                        <StyledAvatarTrailingSlot>
+                        <StyledAvatarTrailingSlot data-avatar-slot="trailing">
                             {trailingSlot}
                         </StyledAvatarTrailingSlot>
                     )}

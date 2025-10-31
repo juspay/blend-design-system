@@ -22,6 +22,7 @@ const BreadcrumbItem = ({
     return (
         <>
             <PrimitiveLink
+                data-breadcrumb={item.label}
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}

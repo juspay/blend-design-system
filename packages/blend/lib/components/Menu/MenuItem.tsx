@@ -110,6 +110,8 @@ const MenuItem = ({
         >
             <Block
                 key={idx}
+                data-dropdown-numeric={idx + 1}
+                data-dropdown-value={item.label}
                 display="flex"
                 paddingX={menuTokens.item.padding.x}
                 paddingY={menuTokens.item.padding.y}
@@ -155,6 +157,7 @@ const MenuItem = ({
                         overflow="hidden"
                     >
                         <Text
+                            data-text={item.label}
                             color={getColor('default', menuTokens, item)}
                             fontWeight={menuTokens.item.option.fontWeight}
                             fontSize={menuTokens.item.option.fontSize}

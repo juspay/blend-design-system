@@ -106,6 +106,7 @@ export type StackedLegendsDataPoint = {
 }
 
 export type RenderChartProps = {
+    chartName?: string
     flattenedData: FlattenedDataPoint[]
     chartType: ChartType
     hoveredKey: string | null
@@ -159,6 +160,7 @@ export type ChartsProps = {
     showCollapseIcon?: boolean
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
+    chartName?: string
 }
 
 export type FlattenedDataPoint = {

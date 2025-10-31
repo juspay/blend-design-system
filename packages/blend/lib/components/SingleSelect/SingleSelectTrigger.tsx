@@ -27,6 +27,7 @@ export type SingleSelectTriggerProps = {
     inline?: boolean
     error?: boolean
     errorMessage?: string
+    disabled?: boolean
 }
 
 const SingleSelectTrigger = ({
@@ -46,6 +47,7 @@ const SingleSelectTrigger = ({
     singleSelectTokens,
     inline = false,
     error,
+    disabled,
 }: SingleSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -63,6 +65,11 @@ const SingleSelectTrigger = ({
     return (
         <>
             <PrimitiveButton
+                data-selectbox-value={placeholder}
+                data-dropdown-for={placeholder}
+                data-value={selected || placeholder}
+                data-custom-value={selected || placeholder}
+                data-button-status={disabled ? 'disabled' : 'enabled'}
                 onClick={onClick}
                 type="button"
                 name={name}
@@ -168,6 +175,7 @@ const SingleSelectTrigger = ({
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                     }}
+                                    data-button-text={valueLabelMap[selected]}
                                 >
                                     {valueLabelMap[selected]}
                                 </Text>
@@ -187,6 +195,9 @@ const SingleSelectTrigger = ({
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                             }}
+                            data-button-text={
+                                selected ? valueLabelMap[selected] : placeholder
+                            }
                         >
                             {selected ? valueLabelMap[selected] : placeholder}
                         </Text>

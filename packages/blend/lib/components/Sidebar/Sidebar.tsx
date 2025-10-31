@@ -157,6 +157,18 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
+        const getSidebarState = () => {
+            if (isExpanded) return 'expanded'
+            if (isHovering) return 'intermediate'
+            return 'closed'
+        }
+
+        const getSidebarZIndex = () => {
+            const state = getSidebarState()
+            if (state === 'intermediate') return '98'
+            return '48'
+        }
+
         return (
             <Block
                 ref={ref}
@@ -198,7 +210,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                     display={isMobile ? 'none' : 'flex'}
                     position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex="48"
+                    zIndex={getSidebarZIndex()}
                     height="100%"
                     style={{
                         willChange: 'transform',
@@ -213,6 +225,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
                             : 'none'
                     }
+                    data-sidebar-state={getSidebarState()}
                 >
                     {!isMobile && (
                         <>

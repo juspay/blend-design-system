@@ -228,6 +228,7 @@ const StatCardDemo = () => {
                     </div>
                     <div className="w-[350px]">
                         <StatCard
+                            data-single-stat={playgroundTitle}
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',

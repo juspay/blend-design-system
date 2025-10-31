@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { TabsVariant, TabsSize } from './types'
 import type { TabsTokensType } from './tabs.token'
-import { foundationToken } from '../../foundationToken'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export const StyledTabs = styled(TabsPrimitive.Root)`
     width: 100%;
@@ -109,7 +109,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
 
     '&:disabled': {
         color: props.$tabsToken.trigger.text.color[props.$variant].disabled,
-        opacity: foundationToken.opacity[50],
+        opacity: FOUNDATION_THEME.opacity[50],
         pointerEvents: 'none',
         cursor: 'not-allowed',
     },

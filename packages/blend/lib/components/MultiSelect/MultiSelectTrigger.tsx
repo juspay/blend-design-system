@@ -30,6 +30,7 @@ export type MultiSelectTriggerProps = {
     multiSelectTokens: MultiSelectTokensType
     inline?: boolean
     error?: boolean
+    disabled?: boolean
 }
 const MultiSelectTrigger = ({
     selectedValues,
@@ -49,6 +50,7 @@ const MultiSelectTrigger = ({
     multiSelectTokens,
     inline = false,
     error,
+    disabled,
 }: MultiSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -94,6 +96,11 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    data-selectbox-value={placeholder}
+                    data-dropdown-for={placeholder}
+                    data-value={placeholder}
+                    data-custom-value={placeholder}
+                    data-button-status={disabled ? 'disabled' : 'enabled'}
                     onClick={onClick}
                     position="relative"
                     width={'100%'}
