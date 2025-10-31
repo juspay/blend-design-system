@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import { NumberInput } from '../../../../packages/blend/lib/components/Inputs/NumberInput'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { TextArea } from '../../../../packages/blend/lib/components/Inputs/TextArea'
 import {
     Button,
     ButtonType,
@@ -18,6 +21,9 @@ const FormElementsDemo = () => {
         name: '',
         email: '',
         password: '',
+        budget: 1000,
+        country: 'us',
+        bio: '',
         accountType: 'personal',
         newsletter: false,
         terms: false,
@@ -37,6 +43,9 @@ const FormElementsDemo = () => {
             name: '',
             email: '',
             password: '',
+            budget: 1000,
+            country: 'us',
+            bio: '',
             accountType: 'personal',
             newsletter: false,
             terms: false,
@@ -93,6 +102,46 @@ const FormElementsDemo = () => {
                         hintText="Must be at least 8 characters"
                         required
                     />
+                    <NumberInput
+                        label="Budget"
+                        value={formData.budget}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                budget: parseFloat(e.target.value) || 0,
+                            })
+                        }
+                        placeholder="Enter budget"
+                        min={0}
+                        max={100000}
+                    />
+                    <SingleSelect
+                        label="Country"
+                        selected={formData.country}
+                        onSelect={(value) =>
+                            setFormData({ ...formData, country: value })
+                        }
+                        placeholder="Select country"
+                        items={[
+                            {
+                                items: [
+                                    { value: 'us', label: 'United States' },
+                                    { value: 'uk', label: 'United Kingdom' },
+                                    { value: 'ca', label: 'Canada' },
+                                    { value: 'au', label: 'Australia' },
+                                ],
+                            },
+                        ]}
+                    />
+                    <TextArea
+                        label="Bio"
+                        value={formData.bio}
+                        onChange={(e) =>
+                            setFormData({ ...formData, bio: e.target.value })
+                        }
+                        placeholder="Tell us about yourself"
+                        rows={3}
+                    />
                 </div>
 
                 {/* Radio Group */}
@@ -100,8 +149,9 @@ const FormElementsDemo = () => {
                     <h2 className="text-xl font-semibold">Radio Group</h2>
                     <RadioGroup
                         label="Account Type"
+                        name="accountType"
                         value={formData.accountType}
-                        onValueChange={(value) =>
+                        onChange={(value: string) =>
                             setFormData({ ...formData, accountType: value })
                         }
                     >
