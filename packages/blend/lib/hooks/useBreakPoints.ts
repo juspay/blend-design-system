@@ -1,32 +1,44 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
 
 export function useBreakpoints(breakpoints = BREAKPOINTS) {
-    const getLabel = (width: number) => {
-        // if (width >= breakpoints["2xl"]) return "2xl";
-        // if (width >= breakpoints.xl) return "xl";
-        if (width >= breakpoints.lg) return 'lg'
-        // if (width >= breakpoints.md) return "md";
-        if (width >= breakpoints.sm) return 'sm'
-        return 'lg'
-    }
+    const getLabel = useCallback(
+        (width: number) => {
+            if (width >= breakpoints.lg) return 'lg'
+            if (width >= breakpoints.sm) return 'sm'
+            return 'lg'
+        },
+        [breakpoints]
+    )
 
-    const [innerWidth, setInnerWidth] = useState(() => window.innerWidth)
+    const getSafeWindowWidth = useCallback(() => {
+        if (typeof window === 'undefined') {
+            return breakpoints.lg
+        }
+        return window.innerWidth
+    }, [breakpoints])
+
+    const [innerWidth, setInnerWidth] = useState<number>(getSafeWindowWidth)
     const [breakPointLabel, setBreakPointLabel] = useState(() =>
-        getLabel(window.innerWidth)
+        getLabel(getSafeWindowWidth())
     )
 
     useEffect(() => {
+        if (typeof window === 'undefined') {
+            return undefined
+        }
+
         const handleResize = () => {
             const newWidth = window.innerWidth
             setInnerWidth(newWidth)
             setBreakPointLabel(getLabel(newWidth))
         }
 
+        handleResize()
         window.addEventListener('resize', handleResize)
 
         return () => window.removeEventListener('resize', handleResize)
-    }, [breakpoints])
+    }, [getLabel])
 
     return { innerWidth, breakPointLabel }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type RefObject } from 'react'
 import type { TenantItem } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -90,7 +90,10 @@ export const getDefaultMerchantInfo = () => ({
 })
 
 // Custom hook for topbar auto-hide functionality
-export const useTopbarAutoHide = (enableTopbarAutoHide: boolean) => {
+export const useTopbarAutoHide = (
+    enableTopbarAutoHide: boolean,
+    containerRef: RefObject<HTMLElement>
+) => {
     const [showTopbar, setShowTopbar] = useState(true)
     const lastScrollYRef = useRef(0)
 
@@ -100,9 +103,7 @@ export const useTopbarAutoHide = (enableTopbarAutoHide: boolean) => {
             return
         }
 
-        const mainContentContainer = document.querySelector(
-            '[data-main-content]'
-        )
+        const mainContentContainer = containerRef.current
         if (!mainContentContainer) return
 
         const handleScroll = () => {
@@ -123,7 +124,7 @@ export const useTopbarAutoHide = (enableTopbarAutoHide: boolean) => {
         mainContentContainer.addEventListener('scroll', handleScroll)
         return () =>
             mainContentContainer.removeEventListener('scroll', handleScroll)
-    }, [enableTopbarAutoHide])
+    }, [containerRef, enableTopbarAutoHide])
 
     return showTopbar
 }
