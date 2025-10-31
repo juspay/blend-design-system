@@ -94,6 +94,7 @@ import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
+import FormElementsDemo from './FormElementsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -151,6 +152,7 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
+        | 'formElements'
     >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -411,6 +413,8 @@ const SidebarDemo = () => {
                 return <CodeBlockDemo />
             case 'workflowCanvas':
                 return <WorkflowCanvasDemo />
+            case 'formElements':
+                return <FormElementsDemo />
             default:
                 return (
                     <div className="p-8">
@@ -856,6 +860,14 @@ const SidebarDemo = () => {
             isCollapsible: true,
             defaultOpen: true,
             items: [
+                {
+                    label: 'Form Demo',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'formElements',
+                    onClick: () => setActiveComponent('formElements'),
+                },
                 {
                     label: 'Radio',
                     leftSlot: (

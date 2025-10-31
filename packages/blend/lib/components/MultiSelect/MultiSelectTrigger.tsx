@@ -110,7 +110,6 @@ const MultiSelectTrigger = ({
                     justifyContent="space-between"
                     gap={8}
                     borderRadius={appliedBorderRadius}
-                    boxShadow={multiSelectTokens.trigger.boxShadow[variant]}
                     outline={
                         multiSelectTokens.trigger.outline[variant][
                             error ? 'error' : open ? 'open' : 'closed'

@@ -1,4 +1,5 @@
 export enum UnitInputSize {
+    SMALL = 'sm',
     MEDIUM = 'md',
     LARGE = 'lg',
 }

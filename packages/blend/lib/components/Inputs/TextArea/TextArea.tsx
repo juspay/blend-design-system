@@ -53,6 +53,7 @@ const TextArea = ({
         >
             {!isSmallScreen && (
                 <InputLabels
+                    tokens={textAreaTokens}
                     label={label}
                     sublabel={sublabel}
                     disabled={disabled}
@@ -113,7 +114,6 @@ const TextArea = ({
                 paddingBottom={
                     isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
                 }
-                boxShadow={textAreaTokens.inputContainer.boxShadow}
                 border={
                     textAreaTokens.inputContainer.border[
                         error ? 'error' : 'default'
@@ -135,7 +135,6 @@ const TextArea = ({
                     border: textAreaTokens.inputContainer.border[
                         error ? 'error' : 'focus'
                     ],
-                    boxShadow: textAreaTokens.inputContainer.boxShadow,
                 }}
                 disabled={disabled}
                 _disabled={{

@@ -81,6 +81,16 @@ export type SingleSelectTokensType = {
                 [key in TriggerStates]: CSSObject['outline']
             }
         }
+        placeholder: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+        selectedValue: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
     }
     menu: {
         backgroundColor: CSSObject['backgroundColor']
@@ -200,12 +210,12 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: foundationToken.unit[32],
-                        'no-container': foundationToken.unit[32],
-                    },
-                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
+                    },
+                    md: {
+                        container: foundationToken.unit[40],
+                        'no-container': foundationToken.unit[40],
                     },
                     lg: {
                         container: foundationToken.unit[52],
@@ -293,6 +303,16 @@ export const getSingleSelectTokens = (
                         focus: undefined,
                         error: undefined,
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[800],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {
@@ -452,16 +472,16 @@ export const getSingleSelectTokens = (
             trigger: {
                 height: {
                     sm: {
-                        container: foundationToken.unit[32],
-                        'no-container': foundationToken.unit[32],
-                    },
-                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
                     },
-                    lg: {
+                    md: {
                         container: foundationToken.unit[40],
-                        'no-container': foundationToken.unit[40],
+                        'no-container': foundationToken.unit[36],
+                    },
+                    lg: {
+                        container: foundationToken.unit[44],
+                        'no-container': foundationToken.unit[44],
                     },
                 },
                 padding: {
@@ -546,6 +566,16 @@ export const getSingleSelectTokens = (
                         focus: undefined,
                         error: undefined,
                     },
+                },
+                placeholder: {
+                    color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[800],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             menu: {
