@@ -4,6 +4,7 @@ import React, {
     useCallback,
     useMemo,
     forwardRef,
+    useEffect,
 } from 'react'
 import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
@@ -14,16 +15,60 @@ import { Menu } from '../Menu'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
-import { Paperclip, Mic, X, Plus } from 'lucide-react'
+import {
+    Paperclip,
+    X,
+    Plus,
+    AudioLines,
+    FileMinus,
+    Image,
+    FileText,
+} from 'lucide-react'
 import { getChatInputTokens } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
-    getFileIcon,
     createOverflowMenuItems,
     handleAutoResize,
     shouldSendOnEnter,
     isValidMessageLength,
 } from './utils'
+import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
+import { useResizeObserver } from '../../hooks/useResizeObserver'
+import { useDebounce } from '../../hooks/useDebounce'
+import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+
+export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
+    switch (fileType) {
+        case 'image':
+            return <Image color={FOUNDATION_THEME.colors.gray[600]} size={12} />
+        case 'pdf':
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+        case 'csv':
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+        case 'text':
+            return (
+                <FileText color={FOUNDATION_THEME.colors.gray[600]} size={12} />
+            )
+        default:
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+    }
+    return '📎'
+}
 
 const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
     (
@@ -40,7 +85,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             maxLength,
             autoResize = true,
             attachedFiles = [],
-            maxVisibleFiles = 3,
             topQueries = [],
             onTopQuerySelect,
             topQueriesMaxHeight = 200,
@@ -55,19 +99,122 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const tokens = getChatInputTokens(FOUNDATION_THEME).sm
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
+        const filesContainerRef = useRef<HTMLDivElement>(null)
+        const containerRef = useRef<HTMLDivElement>(null!)
+        const lastWidth = useRef<number>(0)
+        const isExpanding = useRef<boolean>(false)
         const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
+        const [isTextareaFocused, setIsTextareaFocused] = useState(false)
+        const [cutOffIndex, setCutOffIndex] = useState<number>(
+            attachedFiles.length
+        )
 
         // Use the passed ref or our internal ref
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
 
+        // Dynamic overflow calculation
+        const handleResize = useCallback(() => {
+            if (!filesContainerRef.current || attachedFiles.length === 0) return
+
+            const container = filesContainerRef.current
+            const containerRect = container.getBoundingClientRect()
+            const containerWidth = containerRect.width
+
+            const BUFFER = 30
+            const MORE_BUTTON_ESTIMATED_WIDTH = 100
+            const GAP_SIZE = 8 // from tokens.filesContainer.gap
+
+            const fileItems = Array.from(container.children).filter(
+                (child) => !child.classList.contains('overflow-menu-trigger')
+            )
+
+            if (
+                isExpanding.current &&
+                fileItems.length < attachedFiles.length
+            ) {
+                setCutOffIndex(attachedFiles.length)
+                isExpanding.current = false
+
+                setTimeout(() => {
+                    handleResize()
+                }, 50)
+                return
+            }
+
+            let totalWidth = 0
+            let optimalCutoff = 0
+
+            for (
+                let i = 0;
+                i < Math.min(fileItems.length, attachedFiles.length);
+                i++
+            ) {
+                const itemWidth = (
+                    fileItems[i] as HTMLElement
+                ).getBoundingClientRect().width
+
+                const totalGaps = i > 0 ? i * GAP_SIZE : 0
+
+                const remainingItems = attachedFiles.length - (i + 1)
+                const needsMoreButton = remainingItems > 0
+                const requiredSpace =
+                    totalWidth +
+                    itemWidth +
+                    totalGaps +
+                    (needsMoreButton
+                        ? MORE_BUTTON_ESTIMATED_WIDTH + GAP_SIZE
+                        : 0) +
+                    BUFFER
+
+                if (requiredSpace <= containerWidth) {
+                    totalWidth += itemWidth
+                    optimalCutoff = i + 1
+                } else {
+                    break
+                }
+            }
+
+            const newCutoff = Math.max(
+                1,
+                Math.min(optimalCutoff, attachedFiles.length)
+            )
+            setCutOffIndex(newCutoff)
+        }, [attachedFiles.length])
+
+        const debouncedResize = useDebounce(handleResize, 150)
+
+        // Watch for container width changes
+        useResizeObserver(containerRef, ({ width }) => {
+            if (width && Math.abs(width - lastWidth.current) > 10) {
+                if (width > lastWidth.current + 20) {
+                    isExpanding.current = true
+                }
+
+                lastWidth.current = width
+                debouncedResize()
+            }
+        })
+
+        // Reset cutoff when files change
+        useEffect(() => {
+            setCutOffIndex(attachedFiles.length)
+            isExpanding.current = false
+
+            const timeoutId = setTimeout(() => {
+                handleResize()
+            }, 150)
+
+            return () => clearTimeout(timeoutId)
+        }, [attachedFiles.length, handleResize])
+
         const visibleFiles = useMemo(() => {
-            return attachedFiles.slice(0, maxVisibleFiles)
-        }, [attachedFiles, maxVisibleFiles])
+            return attachedFiles.slice(0, cutOffIndex)
+        }, [attachedFiles, cutOffIndex])
 
         const hiddenFiles = useMemo(() => {
-            return attachedFiles.slice(maxVisibleFiles)
-        }, [attachedFiles, maxVisibleFiles])
+            return attachedFiles.slice(cutOffIndex)
+        }, [attachedFiles, cutOffIndex])
 
         const hasOverflow = hiddenFiles.length > 0
 
@@ -84,14 +231,36 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         const handleKeyDown = useCallback(
             (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                if (shouldSendOnEnter(e.key, e.shiftKey)) {
+                // Handle Cmd+Enter or Ctrl+Enter for line breaks
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault()
+                    const textarea = e.currentTarget
+                    const start = textarea.selectionStart
+                    const end = textarea.selectionEnd
+                    const newValue =
+                        value.substring(0, start) + '\n' + value.substring(end)
+                    onChange?.(newValue)
+
+                    // Set cursor position after the inserted newline
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd =
+                            start + 1
+                        handleAutoResize(textarea, autoResize)
+                    }, 0)
+                    return
+                }
+
+                // Handle plain Enter for sending
+                if (
+                    shouldSendOnEnter(e.key, e.shiftKey, e.metaKey, e.ctrlKey)
+                ) {
                     e.preventDefault()
                     if (onSend && value.trim()) {
                         onSend(value, attachedFiles)
                     }
                 }
             },
-            [onSend, value, attachedFiles]
+            [onSend, value, attachedFiles, onChange, autoResize]
         )
 
         const handleAttachClick = useCallback(() => {
@@ -147,6 +316,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         return (
             <Block
+                ref={containerRef}
                 display="flex"
                 flexDirection="column"
                 width="100%"
@@ -157,7 +327,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                           ? FOUNDATION_THEME.colors.gray[50]
                           : tokens.container.backgroundColor.default
                 }
-                border={tokens.container.border}
+                border={tokens.container.border.default}
                 borderRadius={tokens.container.borderRadius}
                 paddingTop={tokens.container.paddingTop}
                 paddingRight={tokens.container.paddingRight}
@@ -169,17 +339,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 transition={tokens.container.transition}
                 cursor={disabled ? 'not-allowed' : 'default'}
                 boxShadow={tokens.container.boxShadow.default}
-                _hover={{
-                    backgroundColor: disabled
-                        ? tokens.container.backgroundColor.disabled
-                        : tokens.container.backgroundColor.hover,
-                    boxShadow: disabled
-                        ? tokens.container.boxShadow.default
-                        : tokens.container.boxShadow.hover,
-                }}
             >
                 {/* Hidden file input */}
-                <input
+                <PrimitiveInput
                     ref={fileInputRef}
                     type="file"
                     multiple
@@ -191,6 +353,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 {/* Files container */}
                 {attachedFiles.length > 0 && (
                     <Block
+                        ref={filesContainerRef}
                         display="flex"
                         flexWrap="wrap"
                         gap={tokens.filesContainer.gap}
@@ -200,11 +363,11 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         {visibleFiles.map((file) => (
                             <Tag
                                 key={file.id}
-                                text={file.name}
+                                text={capitalizeFirstLetter(file.type)}
                                 variant={TagVariant.SUBTLE}
                                 color={TagColor.NEUTRAL}
                                 size={TagSize.XS}
-                                leftSlot={getFileIcon(file.type)}
+                                leftSlot={getDocIcon(file.type)}
                                 rightSlot={
                                     <X
                                         size={12}
@@ -220,46 +383,30 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         ))}
 
                         {hasOverflow && (
-                            <Menu
-                                trigger={
-                                    <PrimitiveButton
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={tokens.overflowTag.gap}
-                                        backgroundColor={
-                                            tokens.overflowTag.backgroundColor
-                                                .default as string
-                                        }
-                                        color={
-                                            tokens.overflowTag.color
-                                                .default as string
-                                        }
-                                        paddingX={tokens.overflowTag.paddingX}
-                                        paddingY={tokens.overflowTag.paddingY}
-                                        fontSize={tokens.overflowTag.fontSize}
-                                        fontWeight={
-                                            tokens.overflowTag.fontWeight
-                                        }
-                                        cursor={tokens.overflowTag.cursor}
-                                        _hover={{
-                                            backgroundColor:
-                                                tokens.container.backgroundColor
-                                                    .hover,
-                                        }}
-                                    >
-                                        <Plus size={14} />
-                                        {hiddenFiles.length} more
-                                    </PrimitiveButton>
-                                }
-                                items={[
-                                    {
-                                        items: overflowMenuItems,
-                                    },
-                                ]}
-                                open={overflowMenuOpen}
-                                onOpenChange={setOverflowMenuOpen}
-                                {...overflowMenuProps}
-                            />
+                            <Block className="overflow-menu-trigger">
+                                <Menu
+                                    trigger={
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.SMALL}
+                                            subType={ButtonSubType.INLINE}
+                                            leadingIcon={<Plus size={14} />}
+                                            text={`${hiddenFiles.length} more`}
+                                        >
+                                            <Plus size={14} />
+                                            {hiddenFiles.length} more
+                                        </Button>
+                                    }
+                                    items={[
+                                        {
+                                            items: overflowMenuItems,
+                                        },
+                                    ]}
+                                    open={overflowMenuOpen}
+                                    onOpenChange={setOverflowMenuOpen}
+                                    {...overflowMenuProps}
+                                />
+                            </Block>
                         )}
                     </Block>
                 )}
@@ -302,12 +449,24 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 cursor: disabled ? 'not-allowed' : 'text',
                             }}
                             onFocus={(e) => {
-                                e.currentTarget.parentElement!.parentElement!.style.boxShadow =
-                                    tokens.container.boxShadow.focus as string
+                                setIsTextareaFocused(true)
+                                const container =
+                                    e.currentTarget.parentElement!
+                                        .parentElement!
+                                container.style.boxShadow = tokens.container
+                                    .boxShadow.focus as string
+                                container.style.border = tokens.container.border
+                                    .focus as string
                             }}
                             onBlur={(e) => {
-                                e.currentTarget.parentElement!.parentElement!.style.boxShadow =
-                                    tokens.container.boxShadow.default as string
+                                setIsTextareaFocused(false)
+                                const container =
+                                    e.currentTarget.parentElement!
+                                        .parentElement!
+                                container.style.boxShadow = tokens.container
+                                    .boxShadow.default as string
+                                container.style.border = tokens.container.border
+                                    .default as string
                             }}
                         />
                         <Block
@@ -324,7 +483,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.ICON_ONLY}
                                 leadingIcon={
-                                    attachButtonIcon || <Paperclip size={20} />
+                                    attachButtonIcon || <Paperclip size={14} />
                                 }
                                 onClick={handleAttachClick}
                                 disabled={disabled}
@@ -336,7 +495,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.ICON_ONLY}
                                 leadingIcon={
-                                    voiceButtonIcon || <Mic size={20} />
+                                    voiceButtonIcon || <AudioLines size={14} />
                                 }
                                 onClick={handleVoiceClick}
                                 disabled={disabled}
@@ -377,12 +536,20 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 cursor: disabled ? 'not-allowed' : 'text',
                             }}
                             onFocus={(e) => {
-                                e.currentTarget.parentElement!.style.boxShadow =
-                                    tokens.container.boxShadow.focus as string
+                                setIsTextareaFocused(true)
+                                const container = e.currentTarget.parentElement!
+                                container.style.boxShadow = tokens.container
+                                    .boxShadow.focus as string
+                                container.style.border = tokens.container.border
+                                    .focus as string
                             }}
                             onBlur={(e) => {
-                                e.currentTarget.parentElement!.style.boxShadow =
-                                    tokens.container.boxShadow.default as string
+                                setIsTextareaFocused(false)
+                                const container = e.currentTarget.parentElement!
+                                container.style.boxShadow = tokens.container
+                                    .boxShadow.default as string
+                                container.style.border = tokens.container.border
+                                    .default as string
                             }}
                         />
                         <Block
@@ -398,7 +565,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.ICON_ONLY}
                                 leadingIcon={
-                                    attachButtonIcon || <Paperclip size={20} />
+                                    attachButtonIcon || <Paperclip size={14} />
                                 }
                                 onClick={handleAttachClick}
                                 disabled={disabled}
@@ -410,7 +577,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.ICON_ONLY}
                                 leadingIcon={
-                                    voiceButtonIcon || <Mic size={20} />
+                                    voiceButtonIcon || <AudioLines size={14} />
                                 }
                                 onClick={handleVoiceClick}
                                 disabled={disabled}
@@ -420,7 +587,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     </>
                 )}
 
-                {topQueries && topQueries.length > 0 && (
+                {topQueries && topQueries.length > 0 && isTextareaFocused && (
                     <Block
                         borderTop={tokens.topQueries.container.borderTop}
                         paddingTop={tokens.topQueries.container.paddingTop}
@@ -462,9 +629,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             }
                         >
                             {topQueries.map((query) => (
-                                <button
+                                <PrimitiveButton
                                     key={query.id}
-                                    onClick={() => handleTopQueryClick(query)}
+                                    onMouseDown={(e) => {
+                                        e.preventDefault()
+                                        handleTopQueryClick(query)
+                                    }}
                                     disabled={disabled}
                                     style={{
                                         display: 'block',
@@ -521,7 +691,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                     }}
                                 >
                                     {query.text}
-                                </button>
+                                </PrimitiveButton>
                             ))}
                         </Block>
                     </Block>

@@ -16,13 +16,13 @@ const ChatInputDemo = () => {
     const [playgroundMaxLength, setPlaygroundMaxLength] = useState<
         number | undefined
     >(undefined)
-    const [playgroundMaxVisible, setPlaygroundMaxVisible] = useState(3)
     const [playgroundFiles, setPlaygroundFiles] = useState<AttachedFile[]>([])
     const [playgroundWidth, setPlaygroundWidth] = useState<string>('100%')
 
     // Demo state
     const [basicMessage, setBasicMessage] = useState('')
     const [basicFiles, setBasicFiles] = useState<AttachedFile[]>([])
+    const [topQueriesMessage, setTopQueriesMessage] = useState('')
 
     // File type utilities
     const getFileType = (file: File): AttachedFile['type'] => {
@@ -118,6 +118,8 @@ const ChatInputDemo = () => {
         setPlaygroundFiles([])
     }
 
+    console.log('topQueriesMessage-->>', topQueriesMessage)
+
     return (
         <div className="p-8 space-y-12">
             {/* Header */}
@@ -135,7 +137,7 @@ const ChatInputDemo = () => {
                 <h2 className="text-2xl font-bold">Interactive Playground</h2>
                 <div className="space-y-6">
                     {/* Controls */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TextInput
                             label="Width"
                             value={playgroundWidth}
@@ -153,19 +155,6 @@ const ChatInputDemo = () => {
                                 )
                             }}
                             placeholder="Enter max length"
-                            type="number"
-                        />
-
-                        <TextInput
-                            label="Max Visible Files"
-                            value={playgroundMaxVisible.toString()}
-                            onChange={(e) => {
-                                const val = parseInt(e.target.value)
-                                if (!isNaN(val) && val > 0) {
-                                    setPlaygroundMaxVisible(val)
-                                }
-                            }}
-                            placeholder="Max visible files"
                             type="number"
                         />
                     </div>
@@ -220,8 +209,48 @@ const ChatInputDemo = () => {
                                 disabled={playgroundDisabled}
                                 autoResize={playgroundAutoResize}
                                 maxLength={playgroundMaxLength}
-                                maxVisibleFiles={playgroundMaxVisible}
                                 placeholder="Type your message here..."
+                                onTopQuerySelect={(query) => {
+                                    setPlaygroundMessage(query.text)
+                                    addSnackbar({
+                                        header: 'Query Selected',
+                                        description: `Selected: "${query.text}"`,
+                                    })
+                                }}
+                                topQueries={[
+                                    {
+                                        id: '1',
+                                        text: 'Show me the trend of last month success rate for razorpay',
+                                    },
+                                    {
+                                        id: '2',
+                                        text: 'What are the latest sales figures?',
+                                    },
+                                    {
+                                        id: '3',
+                                        text: 'Generate a report for Q3 performance',
+                                    },
+                                    {
+                                        id: '4',
+                                        text: 'Show customer satisfaction metrics',
+                                    },
+                                    {
+                                        id: '5',
+                                        text: 'Display user engagement analytics for this quarter',
+                                    },
+                                    {
+                                        id: '6',
+                                        text: 'Show revenue breakdown by product category',
+                                    },
+                                    {
+                                        id: '7',
+                                        text: 'Generate monthly performance summary',
+                                    },
+                                    {
+                                        id: '8',
+                                        text: 'Display conversion rate trends',
+                                    },
+                                ]}
                             />
                         </div>
                     </div>
@@ -422,26 +451,26 @@ const ChatInputDemo = () => {
                     {/* Overflow Demo */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
-                            File Overflow (Max 2 visible)
+                            File Overflow (Dynamic)
                         </h3>
                         <ChatInput
                             value=""
                             onChange={() => {}}
                             onSend={() => {}}
                             attachedFiles={createSampleFiles()}
-                            maxVisibleFiles={2}
                             onFileClick={(file) => {
                                 addSnackbar({
                                     header: 'File from overflow menu',
                                     description: file.name,
                                 })
                             }}
-                            placeholder="Shows overflow menu with '+4 more'..."
+                            placeholder="Dynamically shows overflow menu..."
                         />
                         <p className="text-sm text-gray-600">
-                            When files exceed maxVisibleFiles, a "+X more"
-                            button appears that opens a menu with the remaining
-                            files.
+                            The component automatically calculates how many
+                            files can fit based on the available width. A "+X
+                            more" button appears that opens a menu with the
+                            remaining files.
                         </p>
                     </div>
                 </div>
@@ -456,15 +485,18 @@ const ChatInputDemo = () => {
                             With Top Queries
                         </h3>
                         <ChatInput
-                            value=""
-                            onChange={() => {}}
-                            onSend={(message) =>
+                            value={topQueriesMessage}
+                            onChange={setTopQueriesMessage}
+                            onSend={(message) => {
                                 addSnackbar({
                                     header: 'Message Sent',
                                     description: `"${message}"`,
                                 })
-                            }
+                                setTopQueriesMessage('')
+                            }}
                             onTopQuerySelect={(query) => {
+                                console.log('query', query)
+                                setTopQueriesMessage(query.text)
                                 addSnackbar({
                                     header: 'Query Selected',
                                     description: `Selected: "${query.text}"`,
@@ -591,7 +623,6 @@ const ChatInputDemo = () => {
                                 })
                             }
                             placeholder="Message your team..."
-                            maxVisibleFiles={4}
                             attachButtonIcon={<Hash size={20} />}
                             voiceButtonIcon={<Mic size={20} />}
                             sendButtonIcon={<Send size={20} />}
@@ -710,13 +741,8 @@ const ChatInputDemo = () => {
                                     <code className="bg-gray-200 px-2 py-1 rounded">
                                         attachedFiles
                                     </code>{' '}
-                                    - Array of attached files
-                                </li>
-                                <li>
-                                    <code className="bg-gray-200 px-2 py-1 rounded">
-                                        maxVisibleFiles
-                                    </code>{' '}
-                                    - Files shown before overflow
+                                    - Array of attached files (overflow
+                                    calculated dynamically)
                                 </li>
                             </ul>
                         </div>

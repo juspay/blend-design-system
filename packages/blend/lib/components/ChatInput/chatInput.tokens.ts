@@ -20,7 +20,10 @@ export type ChatInputTokensType = Readonly<{
             hover: CSSObject['backgroundColor']
             disabled: CSSObject['backgroundColor']
         }
-        border: CSSObject['border']
+        border: {
+            default: CSSObject['border']
+            focus: CSSObject['border']
+        }
         borderRadius: CSSObject['borderRadius']
         paddingTop: CSSObject['paddingTop']
         paddingRight: CSSObject['paddingRight']
@@ -160,7 +163,10 @@ export const getChatInputTokens = (
                     hover: foundationToken.colors.gray[25],
                     disabled: foundationToken.colors.gray[0],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                },
                 borderRadius: foundationToken.unit[12],
                 paddingTop: foundationToken.unit[12],
                 paddingRight: foundationToken.unit[12],
@@ -172,7 +178,7 @@ export const getChatInputTokens = (
                 boxShadow: {
                     default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
                     hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
-                    focus: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    focus: `0px 0px 0px 3px ${foundationToken.colors.primary[50]}`,
                 },
             },
 
@@ -292,7 +298,10 @@ export const getChatInputTokens = (
                     hover: foundationToken.colors.gray[25],
                     disabled: foundationToken.colors.gray[0],
                 },
-                border: `1px solid ${foundationToken.colors.gray[200]}`,
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                },
                 borderRadius: foundationToken.unit[12],
                 paddingTop: foundationToken.unit[12],
                 paddingRight: foundationToken.unit[12],

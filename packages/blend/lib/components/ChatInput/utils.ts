@@ -2,24 +2,8 @@ import { AttachedFile } from './types'
 import { MenuItemType } from '../Menu/types'
 import { X } from 'lucide-react'
 import React from 'react'
-
-/**
- * Get the appropriate file icon based on file type
- */
-export const getFileIcon = (fileType: AttachedFile['type']): string => {
-    switch (fileType) {
-        case 'image':
-            return '🖼️'
-        case 'pdf':
-            return '📄'
-        case 'csv':
-            return '📊'
-        case 'text':
-            return '📝'
-        default:
-            return '📎'
-    }
-}
+import { getDocIcon } from './ChatInput'
+import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 
 /**
  * Determine the file type from a File object
@@ -41,8 +25,8 @@ export const createOverflowMenuItems = (
     onFileClick: (file: AttachedFile) => void
 ): MenuItemType[] => {
     return hiddenFiles.map((file) => ({
-        label: file.name,
-        slot1: getFileIcon(file.type),
+        label: capitalizeFirstLetter(file.type),
+        slot1: getDocIcon(file.type),
         slot4: React.createElement(X, {
             size: 14,
             onClick: (e: React.MouseEvent) => {
@@ -71,8 +55,13 @@ export const handleAutoResize = (
 /**
  * Check if Enter key should trigger send
  */
-export const shouldSendOnEnter = (key: string, shiftKey: boolean): boolean => {
-    return key === 'Enter' && !shiftKey
+export const shouldSendOnEnter = (
+    key: string,
+    shiftKey: boolean,
+    metaKey: boolean,
+    ctrlKey: boolean
+): boolean => {
+    return key === 'Enter' && !shiftKey && !metaKey && !ctrlKey
 }
 
 /**

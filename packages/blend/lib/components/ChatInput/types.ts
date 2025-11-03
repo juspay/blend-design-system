@@ -30,7 +30,6 @@ export type ChatInputProps = {
     autoResize?: boolean
 
     attachedFiles?: AttachedFile[]
-    maxVisibleFiles?: number
 
     // Top queries
     topQueries?: TopQuery[]
