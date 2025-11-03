@@ -176,12 +176,14 @@ const SingleSelect = ({
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
+                data-selectbox-value={placeholder}
             >
                 <Block
                     width={fullWidth ? '100%' : 'fit-content'}
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
+                    data-dropdown-for={placeholder}
                 >
                     <SingleSelectMenu
                         open={open}
@@ -219,6 +221,11 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    data-value={selected || placeholder}
+                                    data-custom-value={selected || placeholder}
+                                    data-button-status={
+                                        disabled ? 'disabled' : 'enabled'
+                                    }
                                     type="button"
                                     name={name}
                                     position="relative"
@@ -229,11 +236,6 @@ const SingleSelect = ({
                                     justifyContent="space-between"
                                     gap={8}
                                     borderRadius={borderRadius}
-                                    boxShadow={
-                                        singleSelectTokens.trigger.boxShadow[
-                                            variant
-                                        ]
-                                    }
                                     outline={
                                         singleSelectTokens.trigger.outline[
                                             variant
@@ -370,9 +372,22 @@ const SingleSelect = ({
                                                     <Text
                                                         variant="body.md"
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[600]
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
+                                                        }
+                                                        fontWeight={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontWeight
+                                                        }
+                                                        fontSize={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
                                                         }
                                                         style={{
                                                             overflow: 'hidden',
@@ -381,6 +396,11 @@ const SingleSelect = ({
                                                             whiteSpace:
                                                                 'nowrap',
                                                         }}
+                                                        data-button-text={
+                                                            valueLabelMap[
+                                                                selected
+                                                            ]
+                                                        }
                                                     >
                                                         {
                                                             valueLabelMap[
@@ -392,20 +412,50 @@ const SingleSelect = ({
                                             </Block>
                                         ) : (
                                             <Text
-                                                variant="body.md"
                                                 color={
                                                     selected
-                                                        ? FOUNDATION_THEME
-                                                              .colors.gray[700]
-                                                        : FOUNDATION_THEME
-                                                              .colors.gray[600]
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .color
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder.color
                                                 }
-                                                fontWeight={500}
+                                                fontWeight={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontWeight
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontWeight
+                                                }
+                                                fontSize={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontSize
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontSize
+                                                }
                                                 style={{
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
+                                                data-button-text={
+                                                    selected
+                                                        ? valueLabelMap[
+                                                              selected
+                                                          ]
+                                                        : placeholder
+                                                }
                                             >
                                                 {selected
                                                     ? valueLabelMap[selected]

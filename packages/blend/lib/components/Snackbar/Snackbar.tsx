@@ -44,6 +44,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     onClose,
     actionButton,
     toastId,
+    ...props
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
 
@@ -57,6 +58,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             padding={snackbarTokens.padding}
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
+            {...props}
         >
             {' '}
             {/*  need to fix line height to remove margin */}
@@ -87,6 +89,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.header
                                     .fontWeight
                             }
+                            data-snackbar-header={header}
                         >
                             {header}
                         </Text>
@@ -103,6 +106,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.description
                                     .fontWeight
                             }
+                            data-snackbar-body={description}
                         >
                             {description}
                         </Text>

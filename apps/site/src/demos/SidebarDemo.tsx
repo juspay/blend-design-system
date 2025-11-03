@@ -95,6 +95,7 @@ import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
+import FormElementsDemo from './FormElementsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -153,6 +154,7 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
+        | 'formElements'
     >('chatInput')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -415,6 +417,8 @@ const SidebarDemo = () => {
                 return <CodeBlockDemo />
             case 'workflowCanvas':
                 return <WorkflowCanvasDemo />
+            case 'formElements':
+                return <FormElementsDemo />
             default:
                 return (
                     <div className="p-8">
@@ -871,6 +875,14 @@ const SidebarDemo = () => {
             defaultOpen: true,
             items: [
                 {
+                    label: 'Form Demo',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'formElements',
+                    onClick: () => setActiveComponent('formElements'),
+                },
+                {
                     label: 'Radio',
                     leftSlot: (
                         <Radio style={{ width: '16px', height: '16px' }} />
@@ -960,7 +972,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    enableTopbarAutoHide={false}
+                    enableTopbarAutoHide={true}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,

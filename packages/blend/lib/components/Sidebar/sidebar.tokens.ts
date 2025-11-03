@@ -228,7 +228,7 @@ export const getSidebarTokens = (
                 backgroundColor: foundationToken.colors.gray[25],
                 padding: {
                     x: foundationToken.unit[12],
-                    y: foundationToken.unit[14],
+                    y: foundationToken.unit[15],
                 },
                 gap: foundationToken.unit[16],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
