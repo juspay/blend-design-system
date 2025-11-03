@@ -81,6 +81,12 @@ export type SidebarTokenType = {
         }
     }
 
+    directory: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+    }
+
     // Controls the bottom footer section containing actions and information
     footer: {
         backgroundColor: CSSObject['backgroundColor'] // Footer background color
@@ -159,6 +165,12 @@ export const getSidebarTokens = (
                 },
             },
 
+            directory: {
+                gap: foundationToken.unit[24],
+                paddingX: foundationToken.unit[12],
+                paddingY: foundationToken.unit[12],
+            },
+
             // Footer section (bottom actions and info)
             footer: {
                 backgroundColor: foundationToken.colors.gray[25],
@@ -229,6 +241,12 @@ export const getSidebarTokens = (
                         active: foundationToken.colors.gray[100],
                     },
                 },
+            },
+
+            directory: {
+                gap: foundationToken.unit[24],
+                paddingX: foundationToken.unit[12],
+                paddingY: foundationToken.unit[12],
             },
 
             // Footer section (bottom actions and info)
