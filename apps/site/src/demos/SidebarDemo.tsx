@@ -94,6 +94,7 @@ import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
+import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 
 const SidebarDemo = () => {
@@ -127,6 +128,7 @@ const SidebarDemo = () => {
         | 'unitInput'
         | 'numberInput'
         | 'textArea'
+        | 'chatInput'
         | 'snackbar'
         | 'dataTable'
         | 'drawer'
@@ -153,7 +155,7 @@ const SidebarDemo = () => {
         | 'codeBlock'
         | 'workflowCanvas'
         | 'formElements'
-    >('dataRangePicker')
+    >('chatInput')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -349,6 +351,8 @@ const SidebarDemo = () => {
                 return <NumberInputDemo />
             case 'textArea':
                 return <TextAreaDemo />
+            case 'chatInput':
+                return <ChatInputDemo />
             case 'otpInput':
                 return <OTPInputDemo />
             case 'alerts':
@@ -603,6 +607,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'textArea',
                     onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Chat Input',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInput',
+                    onClick: () => setActiveComponent('chatInput'),
                 },
                 {
                     label: 'Multi Value Input',
