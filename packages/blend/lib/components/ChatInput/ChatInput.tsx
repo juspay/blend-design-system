@@ -195,7 +195,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         flexWrap="wrap"
                         gap={tokens.filesContainer.gap}
                         maxHeight={tokens.filesContainer.maxHeight}
-                        overflowY={tokens.filesContainer.overflowY as any}
+                        overflowY={tokens.filesContainer.overflowY}
                     >
                         {visibleFiles.map((file) => (
                             <Tag
@@ -293,12 +293,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 border: tokens.textarea.border,
                                 borderRadius: tokens.textarea.borderRadius,
                                 outline: 'none',
-                                resize: tokens.textarea.resize as any,
+                                resize: tokens.textarea.resize,
                                 fontFamily: tokens.textarea.fontFamily,
                                 width: '100%',
                                 minHeight: tokens.textarea.minHeight,
                                 maxHeight: tokens.textarea.maxHeight,
-                                overflowY: tokens.textarea.overflowY as any,
+                                overflowY: tokens.textarea.overflowY,
                                 cursor: disabled ? 'not-allowed' : 'text',
                             }}
                             onFocus={(e) => {
@@ -368,12 +368,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 border: tokens.textarea.border,
                                 borderRadius: tokens.textarea.borderRadius,
                                 outline: 'none',
-                                resize: tokens.textarea.resize as any,
+                                resize: tokens.textarea.resize,
                                 fontFamily: tokens.textarea.fontFamily,
                                 width: '100%',
                                 minHeight: tokens.textarea.minHeight,
                                 maxHeight: tokens.textarea.maxHeight,
-                                overflowY: tokens.textarea.overflowY as any,
+                                overflowY: tokens.textarea.overflowY,
                                 cursor: disabled ? 'not-allowed' : 'text',
                             }}
                             onFocus={(e) => {
@@ -445,8 +445,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 fontSize={tokens.topQueries.header.fontSize}
                                 fontWeight={tokens.topQueries.header.fontWeight}
                                 textTransform={
-                                    tokens.topQueries.header
-                                        .textTransform as any
+                                    tokens.topQueries.header.textTransform
                                 }
                             >
                                 Top Queries
@@ -454,8 +453,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         </Block>
                         <Block
                             overflowY={
-                                tokens.topQueries.scrollContainer
-                                    .overflowY as any
+                                tokens.topQueries.scrollContainer.overflowY
                             }
                             maxHeight={
                                 topQueriesMaxHeight
