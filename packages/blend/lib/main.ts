@@ -35,6 +35,8 @@ export * from './components/KeyValuePair'
 export * from './components/VirtualList'
 export * from './components/Upload'
 export * from './components/WorkflowCanvas'
+export * from './components/ChatInput'
+export * from './components/CodeBlock'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'
