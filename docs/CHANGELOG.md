@@ -1,9 +1,10 @@
-# Changelog for v0.0.23-beta (Beta)
+# Changelog for v0.0.23
 
-> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
+> **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
+- enhance Pagination with dynamic page size and update drawer border radius (#545) ([146ff72](../../commit/146ff72))
 - update SidebarDemo to use chatInput component ([118e5c6](../../commit/118e5c6))
 - add ChatInput component with utility functions and demo integration ([6772218](../../commit/6772218))
 
@@ -15,21 +16,20 @@
 
 ## 🔧 Chores
 
+- **release**: v0.0.23-beta [BETA] ([dac2b97](../../commit/dac2b97))
 - fixed chat-input component ([44b1450](../../commit/44b1450))
 - **release**: v0.0.22 [STABLE] ([4fc03d7](../../commit/4fc03d7))
 
 ---
 
-**Release Date**: 2025-11-03
+**Release Date**: 2025-11-04
 **Commit Range**: v0.0.22..HEAD
-**Total Changes**: 7 commits
+**Total Changes**: 9 commits
 
-## Beta Installation
+## Installation
 
 ```bash
-npm install @juspay/blend-design-system@beta
-# or specific beta version
-npm install @juspay/blend-design-system@0.0.23-beta
+npm install @juspay/blend-design-system@latest
+# or specific version
+npm install @juspay/blend-design-system@0.0.23
 ```
-
-> **Note**: Beta versions are for testing only. Use stable versions in production.
