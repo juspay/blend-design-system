@@ -153,6 +153,10 @@ export type DrawerFooterProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * The direction of the drawer (used to apply appropriate border radius)
+     */
+    direction?: 'top' | 'bottom' | 'left' | 'right'
 }
 
 export type DrawerCloseProps = {
