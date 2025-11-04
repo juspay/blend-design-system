@@ -140,7 +140,7 @@ const ModalFooter = ({
             padding={modalTokens.footer.padding}
             flexShrink={0}
             borderTop={showDivider ? modalTokens.footer.borderTop : undefined}
-            // borderRadius={modalTokens.borderRadius}
+            borderRadius={`0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`}
         >
             {secondaryAction && (
                 <Button
@@ -318,6 +318,11 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
+                            borderRadius={
+                                !primaryAction && !secondaryAction
+                                    ? `0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`
+                                    : undefined
+                            }
                         >
                             {children}
                         </Block>
