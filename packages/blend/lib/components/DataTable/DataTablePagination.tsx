@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useRef } from 'react'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -81,11 +81,47 @@ export function DataTablePagination({
 
     const pageNumbers = useMemo(getPageNumbers, [currentPage, totalPages])
 
+    const filteredPageSizeOptions = useMemo(() => {
+        const filtered = pageSizeOptions.filter((size) => size <= totalRows)
+        if (!filtered.includes(pageSize) && pageSize > 0) {
+            filtered.push(pageSize)
+            filtered.sort((a, b) => a - b)
+        }
+        if (filtered.length === 0 && pageSizeOptions.length > 0) {
+            filtered.push(Math.min(...pageSizeOptions))
+        }
+
+        return filtered
+    }, [pageSizeOptions, totalRows, pageSize])
+
+    const previousTotalRows = useRef(totalRows)
+    useEffect(() => {
+        if (
+            totalRows < previousTotalRows.current &&
+            pageSize > totalRows &&
+            totalRows > 0 &&
+            pageSizeOptions.length > 0
+        ) {
+            const validOptions = pageSizeOptions.filter(
+                (size) => size <= totalRows
+            )
+            if (validOptions.length > 0) {
+                const newPageSize = Math.max(...validOptions)
+                onPageSizeChange(newPageSize)
+            } else {
+                const smallestOption = Math.min(...pageSizeOptions)
+                onPageSizeChange(smallestOption)
+            }
+        }
+
+        previousTotalRows.current = totalRows
+    }, [totalRows, pageSize, pageSizeOptions, onPageSizeChange])
+
     const pageSizeMenuItems = [
         {
             groupLabel: '',
             showSeparator: false,
-            items: pageSizeOptions.map((size) => ({
+            items: filteredPageSizeOptions.map((size) => ({
                 label: `${size}`,
                 value: String(size),
                 onClick: () => onPageSizeChange(size),

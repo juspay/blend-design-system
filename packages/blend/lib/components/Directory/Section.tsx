@@ -108,7 +108,6 @@ const Section = ({
             flexDirection="column"
             gap="4px"
             width="100%"
-            padding="12px 8px"
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
             data-sidebar-section={section.label || `section-${sectionIndex}`}

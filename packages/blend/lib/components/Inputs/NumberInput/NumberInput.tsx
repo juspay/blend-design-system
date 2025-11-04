@@ -29,7 +29,7 @@ const NumberInput = ({
     placeholder,
     sublabel,
     helpIconHintText,
-    label = 'Number Input',
+    label,
     hintText,
     name,
     onBlur,
