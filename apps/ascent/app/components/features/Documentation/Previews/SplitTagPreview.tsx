@@ -31,53 +31,8 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `type tagVariant = [#noFill | #attentive | #subtle]
-type tagColor = [#neutral | #primary | #success | #error | #warning | #purple]
-type tagSize = [#xs | #sm | #md | #lg]
-type tagShape = [#rounded | #squarical]
-
-type tagConfig = {
-  text: string,
-  variant: option<tagVariant>=?,
-  color: option<tagColor>=?,
-  onClick: option<unit => unit>=?,
-}
-
-@react.component
-let make = (
-  ~primaryTag: tagConfig,
-  ~secondaryTag: option<tagConfig>=?,
-  ~leadingSlot: option<React.element>=?,
-  ~trailingSlot: option<React.element>=?,
-  ~size: option<tagSize>=?,
-  ~shape: option<tagShape>=?,
-) => {
-  <SplitTagBinding
-    primaryTag
-    ?secondaryTag
-    ?leadingSlot
-    ?trailingSlot
-    ?size
-    ?shape
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~primaryTag: tagConfig,
-  ~secondaryTag: option<tagConfig>=?,
-  ~leadingSlot: option<React.element>=?,
-  ~trailingSlot: option<React.element>=?,
-  ~size: option<tagSize>=?,
-  ~shape: option<tagShape>=?,
-) => React.element = "SplitTag"`
-
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <SplitTag
                 primaryTag={{
                     text: 'Status',

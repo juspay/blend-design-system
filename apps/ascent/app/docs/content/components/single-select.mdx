@@ -92,6 +92,7 @@ function MyComponent() {
                     'The main label text displayed above the select field',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -101,6 +102,7 @@ function MyComponent() {
                     'Optional secondary label text displayed below the main label',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -109,6 +111,7 @@ function MyComponent() {
                 hintText: 'Optional help text displayed below the select field',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -117,6 +120,7 @@ function MyComponent() {
                 hintText: 'Whether the field is required (displays asterisk)',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -126,6 +130,7 @@ function MyComponent() {
                     'Tooltip text displayed when hovering over the help icon',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -134,6 +139,7 @@ function MyComponent() {
                 hintText: 'Placeholder text shown when no option is selected',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -142,6 +148,7 @@ function MyComponent() {
                 hintText: 'Size variant affecting the select field dimensions',
             },
             { content: 'SelectMenuSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
             { content: 'SelectMenuSize.MEDIUM' },
         ],
         [
@@ -150,11 +157,8 @@ function MyComponent() {
                 hintText: 'Array of grouped menu items for selection',
             },
             { content: 'SelectMenuGroupType[]', hintText: 'array' },
-            {
-                content:
-                    'SelectMenuGroupType: see SelectMenuGroupType props below',
-                hintText: 'See SelectMenuGroupType below',
-            },
+            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -162,6 +166,7 @@ function MyComponent() {
                 hintText: 'Visual variant determining styling approach',
             },
             { content: 'SelectMenuVariant', hintText: 'enum' },
+            { content: 'CONTAINER, NO_CONTAINER' },
             { content: 'SelectMenuVariant.CONTAINER' },
         ],
         [
@@ -170,6 +175,7 @@ function MyComponent() {
                 hintText: 'Currently selected value (controlled component)',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -178,6 +184,7 @@ function MyComponent() {
                 hintText: 'Callback function called when an option is selected',
             },
             { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -186,6 +193,7 @@ function MyComponent() {
                 hintText: 'Whether to show search input in the dropdown menu',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -194,6 +202,7 @@ function MyComponent() {
                 hintText: 'Placeholder text for the search input field',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -203,6 +212,7 @@ function MyComponent() {
                     'Content displayed inside the trigger button (e.g., icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -212,6 +222,7 @@ function MyComponent() {
                     'Whether the select field is disabled and non-interactive',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -221,6 +232,7 @@ function MyComponent() {
                     'Name attribute for form identification and submission',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -230,6 +242,7 @@ function MyComponent() {
                     'Custom React element to replace the default trigger button',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -238,6 +251,7 @@ function MyComponent() {
                 hintText: 'Whether to render as drawer on mobile devices',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -247,6 +261,7 @@ function MyComponent() {
                     'How the dropdown menu aligns relative to the trigger',
             },
             { content: 'SelectMenuAlignment', hintText: 'enum' },
+            { content: 'START, CENTER, END' },
             { content: 'undefined' },
         ],
         [
@@ -255,6 +270,7 @@ function MyComponent() {
                 hintText: 'Which side of the trigger the dropdown appears on',
             },
             { content: 'SelectMenuSide', hintText: 'enum' },
+            { content: 'TOP, LEFT, RIGHT, BOTTOM' },
             { content: 'undefined' },
         ],
         [
@@ -263,6 +279,7 @@ function MyComponent() {
                 hintText: 'Distance in pixels between trigger and dropdown',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -271,6 +288,7 @@ function MyComponent() {
                 hintText: 'Alignment offset in pixels for fine positioning',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -279,6 +297,7 @@ function MyComponent() {
                 hintText: 'Minimum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -287,6 +306,7 @@ function MyComponent() {
                 hintText: 'Maximum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -295,6 +315,7 @@ function MyComponent() {
                 hintText: 'Maximum height of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -304,6 +325,7 @@ function MyComponent() {
                     'Whether the select renders inline without fixed height',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -313,6 +335,7 @@ function MyComponent() {
                     'Callback function called when the select loses focus',
             },
             { content: '() => void', hintText: 'function' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -322,6 +345,7 @@ function MyComponent() {
                     'Callback function called when the select gains focus',
             },
             { content: '() => void', hintText: 'function' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -330,6 +354,7 @@ function MyComponent() {
                 hintText: 'Whether the select is in an error state',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -338,6 +363,7 @@ function MyComponent() {
                 hintText: 'Error message displayed when error is true',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -346,6 +372,7 @@ function MyComponent() {
                 hintText: 'Whether the select field takes full width',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -354,6 +381,7 @@ function MyComponent() {
                 hintText: 'Whether to enable virtual scrolling for large lists',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -362,6 +390,7 @@ function MyComponent() {
                 hintText: 'Height of each virtualized list item in pixels',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -370,6 +399,7 @@ function MyComponent() {
                 hintText: 'Number of items to render outside visible area',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -378,6 +408,7 @@ function MyComponent() {
                 hintText: 'Callback when virtual list reaches the end',
             },
             { content: '() => void', hintText: 'function' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -386,6 +417,7 @@ function MyComponent() {
                 hintText: 'Distance from end to trigger onEndReached',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -394,6 +426,7 @@ function MyComponent() {
                 hintText: 'Whether there are more items to load',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -402,6 +435,7 @@ function MyComponent() {
                 hintText: 'Component to show while loading more items',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -410,6 +444,7 @@ function MyComponent() {
                 hintText: 'Optional label text for the group section',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -418,11 +453,8 @@ function MyComponent() {
                 hintText: 'Array of selectable items within this group',
             },
             { content: 'SelectMenuItemType[]', hintText: 'array' },
-            {
-                content:
-                    'SelectMenuItemType: see SelectMenuItemType props below',
-                hintText: 'See SelectMenuItemType below',
-            },
+            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -430,6 +462,7 @@ function MyComponent() {
                 hintText: 'Whether to show separator line after this group',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -438,6 +471,7 @@ function MyComponent() {
                 hintText: 'Main display text for the menu item',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -446,6 +480,7 @@ function MyComponent() {
                 hintText: 'Unique value identifier for the menu item',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -454,6 +489,7 @@ function MyComponent() {
                 hintText: 'Whether the item is currently selected',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -462,6 +498,7 @@ function MyComponent() {
                 hintText: 'Optional secondary text displayed below the label',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -470,6 +507,7 @@ function MyComponent() {
                 hintText: 'First content slot (typically for leading icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -478,6 +516,7 @@ function MyComponent() {
                 hintText: 'Second content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -486,6 +525,7 @@ function MyComponent() {
                 hintText: 'Third content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -495,6 +535,7 @@ function MyComponent() {
                     'Fourth content slot (typically for trailing elements)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -504,6 +545,7 @@ function MyComponent() {
                     'Whether the menu item is disabled and non-selectable',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -512,6 +554,7 @@ function MyComponent() {
                 hintText: 'Custom click handler for the menu item',
             },
             { content: '() => void', hintText: 'function' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -520,6 +563,7 @@ function MyComponent() {
                 hintText: 'Nested menu items for creating hierarchical menus',
             },
             { content: 'SelectMenuItemType[]', hintText: 'array' },
+            { content: '' },
             {
                 content: 'Recursive: SelectMenuItemType[]',
                 hintText: 'Recursive type',
@@ -531,6 +575,7 @@ function MyComponent() {
                 hintText: 'Tooltip content displayed on hover',
             },
             { content: 'string | React.ReactNode', hintText: 'union type' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -543,6 +588,7 @@ function MyComponent() {
                     '{ side?: TooltipSide, align?: TooltipAlign, size?: TooltipSize, showArrow?: boolean, delayDuration?: number, offset?: number }',
                 hintText: 'object',
             },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -551,104 +597,8 @@ function MyComponent() {
                 hintText: 'Whether to disable text truncation for long labels',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
-        ],
-        [
-            {
-                content: 'SelectMenuSize.SMALL',
-                hintText: 'Compact select for dense interfaces',
-            },
-            { content: '"sm"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuSize.MEDIUM',
-                hintText: 'Standard select size for most use cases',
-            },
-            { content: '"md"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'SelectMenuSize.LARGE',
-                hintText:
-                    'Large select for emphasized or touch-friendly interfaces',
-            },
-            { content: '"lg"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuVariant.CONTAINER',
-                hintText: 'Full container styling with borders and background',
-            },
-            { content: '"container"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'SelectMenuVariant.NO_CONTAINER',
-                hintText: 'Minimal styling without background container',
-            },
-            { content: '"no-container"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuAlignment.START',
-                hintText: 'Align dropdown to start edge of trigger',
-            },
-            { content: '"start"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuAlignment.CENTER',
-                hintText: 'Center align dropdown with trigger',
-            },
-            { content: '"center"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuAlignment.END',
-                hintText: 'Align dropdown to end edge of trigger',
-            },
-            { content: '"end"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuSide.TOP',
-                hintText: 'Dropdown appears above trigger',
-            },
-            { content: '"top"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuSide.LEFT',
-                hintText: 'Dropdown appears to left of trigger',
-            },
-            { content: '"left"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuSide.RIGHT',
-                hintText: 'Dropdown appears to right of trigger',
-            },
-            { content: '"right"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SelectMenuSide.BOTTOM',
-                hintText: 'Dropdown appears below trigger',
-            },
-            { content: '"bottom"', hintText: 'string' },
-            { content: 'Default' },
         ],
     ]}
     className="mb-8"

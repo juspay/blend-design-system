@@ -90,7 +90,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'children',
+                content: 'Sidebar.children',
                 hintText: 'Main content area of the application',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -98,15 +98,18 @@ function MyComponent() {
         ],
         [
             {
-                content: 'data',
+                content: 'Sidebar.data',
                 hintText: 'Directory navigation data structure',
             },
             { content: 'DirectoryData[]', hintText: 'array' },
-            { content: 'Required' },
+            {
+                content: 'DirectoryData: see DirectoryData props below',
+                hintText: 'See DirectoryData below',
+            },
         ],
         [
             {
-                content: 'topbar',
+                content: 'Sidebar.topbar',
                 hintText: 'Content for the top navigation bar',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -114,15 +117,18 @@ function MyComponent() {
         ],
         [
             {
-                content: 'leftPanel',
+                content: 'Sidebar.leftPanel',
                 hintText: 'Optional secondary sidebar panel configuration',
             },
             { content: 'LeftPanelInfo', hintText: 'object' },
-            { content: 'undefined' },
+            {
+                content: 'LeftPanelInfo: see LeftPanelInfo props below',
+                hintText: 'See LeftPanelInfo below',
+            },
         ],
         [
             {
-                content: 'footer',
+                content: 'Sidebar.footer',
                 hintText: 'Optional footer content in the sidebar',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -130,7 +136,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sidebarTopSlot',
+                content: 'Sidebar.sidebarTopSlot',
                 hintText: 'Custom content for the sidebar header area',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -138,7 +144,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sidebarCollapseKey',
+                content: 'Sidebar.sidebarCollapseKey',
                 hintText: 'Keyboard shortcut key to toggle sidebar collapse',
             },
             { content: 'string', hintText: 'string' },
@@ -146,7 +152,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'merchantInfo',
+                content: 'Sidebar.merchantInfo',
                 hintText: 'Merchant information for the topbar',
             },
             { content: 'MerchantInfo', hintText: 'object' },
@@ -154,7 +160,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'rightActions',
+                content: 'Sidebar.rightActions',
                 hintText: 'Right-side actions for the topbar',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -162,7 +168,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'enableTopbarAutoHide',
+                content: 'Sidebar.enableTopbarAutoHide',
                 hintText: 'Whether to auto-hide the topbar on scroll',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -170,7 +176,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'isExpanded',
+                content: 'Sidebar.isExpanded',
                 hintText:
                     'Controlled state: Current expanded state of the sidebar',
             },
@@ -179,7 +185,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onExpandedChange',
+                content: 'Sidebar.onExpandedChange',
                 hintText:
                     'Callback fired when sidebar expand/collapse state should change',
             },
@@ -188,29 +194,15 @@ function MyComponent() {
         ],
         [
             {
-                content: 'defaultIsExpanded',
+                content: 'Sidebar.defaultIsExpanded',
                 hintText: 'Uncontrolled mode: Initial expanded state',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'true' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### DirectoryData
-
-Navigation structure for the sidebar directory:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'id',
+                content: 'DirectoryData.id',
                 hintText: 'Unique identifier for the navigation item',
             },
             { content: 'string', hintText: 'string' },
@@ -218,7 +210,7 @@ Navigation structure for the sidebar directory:
         ],
         [
             {
-                content: 'label',
+                content: 'DirectoryData.label',
                 hintText: 'Display text for the navigation item',
             },
             { content: 'string', hintText: 'string' },
@@ -226,7 +218,7 @@ Navigation structure for the sidebar directory:
         ],
         [
             {
-                content: 'href',
+                content: 'DirectoryData.href',
                 hintText: 'URL or route for navigation',
             },
             { content: 'string', hintText: 'string' },
@@ -234,7 +226,7 @@ Navigation structure for the sidebar directory:
         ],
         [
             {
-                content: 'icon',
+                content: 'DirectoryData.icon',
                 hintText: 'Icon element for the navigation item',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -242,35 +234,29 @@ Navigation structure for the sidebar directory:
         ],
         [
             {
-                content: 'children',
+                content: 'DirectoryData.children',
                 hintText: 'Nested navigation items (sub-menu)',
             },
             { content: 'DirectoryData[]', hintText: 'array' },
-            { content: 'undefined' },
+            {
+                content: 'Recursive: DirectoryData[]',
+                hintText: 'Recursive type',
+            },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### LeftPanelInfo
-
-Configuration for the optional secondary sidebar panel:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'items',
+                content: 'LeftPanelInfo.items',
                 hintText: 'Array of items for the left panel',
             },
             { content: 'LeftPanelItem[]', hintText: 'array' },
-            { content: 'Required' },
+            {
+                content: 'LeftPanelItem: see LeftPanelItem props below',
+                hintText: 'See LeftPanelItem below',
+            },
         ],
         [
             {
-                content: 'selected',
+                content: 'LeftPanelInfo.selected',
                 hintText: 'Currently selected item identifier',
             },
             { content: 'string', hintText: 'string' },
@@ -278,7 +264,7 @@ Configuration for the optional secondary sidebar panel:
         ],
         [
             {
-                content: 'onSelect',
+                content: 'LeftPanelInfo.onSelect',
                 hintText: 'Callback when an item is selected',
             },
             { content: '(value: string) => void', hintText: 'function' },
@@ -286,27 +272,15 @@ Configuration for the optional secondary sidebar panel:
         ],
         [
             {
-                content: 'maxVisibleItems',
+                content: 'LeftPanelInfo.maxVisibleItems',
                 hintText: 'Maximum items to show before overflow menu',
             },
             { content: 'number', hintText: 'number' },
             { content: '5' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### LeftPanelItem
-
-Individual item configuration for the left panel:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'label',
+                content: 'LeftPanelItem.label',
                 hintText: 'Display text for the panel item',
             },
             { content: 'string', hintText: 'string' },
@@ -314,7 +288,7 @@ Individual item configuration for the left panel:
         ],
         [
             {
-                content: 'icon',
+                content: 'LeftPanelItem.icon',
                 hintText: 'Icon element for the panel item',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -322,7 +296,7 @@ Individual item configuration for the left panel:
         ],
         [
             {
-                content: 'value',
+                content: 'LeftPanelItem.value',
                 hintText: 'Optional custom value for selection',
             },
             { content: 'string', hintText: 'string' },
@@ -333,23 +307,6 @@ Individual item configuration for the left panel:
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Collapsible Sidebar**: Expandable/collapsible sidebar with smooth animations and hover states
-- **Directory Navigation**: Hierarchical navigation with nested menu support using Directory component
-- **Dual Panel Layout**: Optional secondary left panel for tenant or context switching
-- **Keyboard Shortcuts**: Configurable keyboard shortcut for sidebar toggle (default: '/')
-- **Responsive Design**: Mobile-friendly with auto-collapse and hover expansion
-- **Integrated Topbar**: Sticky topbar with backdrop blur and flexible content area
-- **Footer Support**: Optional footer area with user information or custom content
-- **Merchant Selection**: Built-in merchant/context switcher with dropdown selection
-- **Overflow Handling**: Smart overflow management for secondary panel items
-- **Smooth Animations**: CSS-based transitions for expand/collapse and hover states
-- **Customizable Header**: Flexible sidebar header area with custom slot support
-- **Backdrop Effects**: Modern backdrop blur effects for enhanced visual hierarchy
-- **Auto-scrolling**: Custom scrollbar styling with overflow management
-- **State Management**: Internal state management for expand/collapse functionality
 
 ## Component Tokens
 
@@ -418,71 +375,3 @@ export type ResponsiveSidebarTokens = {
 
 export type SidebarState = 'default' | 'hover' | 'active'
 ```
-
-## Behavior
-
-### Collapse/Expand System
-
-- **Default State**: Sidebar starts in expanded state
-- **Toggle Methods**: Click toggle button or use keyboard shortcut
-- **Hover Expansion**: Collapsed sidebar expands on hover
-- **Animation**: Smooth CSS transitions for state changes
-- **Persistence**: State maintained during session
-
-### Navigation Interaction
-
-- **Directory Integration**: Uses Directory component for navigation rendering
-- **Nested Menus**: Supports hierarchical navigation with expandable sub-menus
-- **Active States**: Visual indicators for current page/section
-- **Click Handling**: Standard link navigation with href support
-
-### Responsive Design
-
-- **Mobile Adaptation**: Automatic behavior adjustment for mobile screens
-- **Touch Support**: Touch-friendly interactions for mobile devices
-- **Overflow Management**: Smart content overflow handling
-- **Backdrop Effects**: Modern backdrop blur for depth perception
-
-### Panel Management
-
-- **Dual Panel Support**: Optional secondary panel for context switching
-- **Overflow Handling**: Dropdown menu for excess panel items
-- **Selection States**: Visual feedback for selected panel items
-- **Dynamic Content**: Reactive updates based on panel selection
-
-## Best Practices
-
-### When to Use Sidebar
-
-- **Complex Applications**: For applications with multiple sections and deep navigation
-- **Dashboard Layouts**: For admin panels and data-heavy interfaces
-- **Multi-Context Apps**: For applications with tenant or workspace switching
-- **Content Management**: For systems with hierarchical content organization
-
-### Navigation Design
-
-- **Clear Hierarchy**: Organize navigation items in logical groups
-- **Consistent Icons**: Use consistent icon styles throughout navigation
-- **Meaningful Labels**: Use clear, descriptive labels for navigation items
-- **Logical Grouping**: Group related navigation items together
-
-### Layout Considerations
-
-- **Content Area**: Ensure main content area adapts to sidebar state
-- **Mobile Experience**: Design for mobile-first with collapsible behavior
-- **Performance**: Optimize navigation data structure for large menus
-- **State Management**: Handle navigation state at application level
-
-### Accessibility Considerations
-
-- **Keyboard Navigation**: Ensure all functionality works with keyboard
-- **Screen Readers**: Provide appropriate ARIA labels and roles
-- **Focus Management**: Maintain logical focus order throughout navigation
-- **Color Independence**: Don't rely solely on color for navigation states
-
-### Customization Guidelines
-
-- **Brand Integration**: Customize header area with brand elements
-- **Consistent Styling**: Maintain visual consistency with application theme
-- **Footer Content**: Use footer for user information or secondary actions
-- **Responsive Breakpoints**: Consider custom breakpoints for sidebar behavior

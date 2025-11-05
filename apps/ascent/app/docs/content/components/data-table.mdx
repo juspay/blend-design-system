@@ -122,7 +122,25 @@ function MyComponent() {
             },
             { content: 'SortConfig', hintText: 'object' },
             { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'SortConfig.field',
+                hintText: 'Field name to sort by',
+            },
+            { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'SortConfig.direction',
+                hintText: 'Sort direction',
+            },
+            { content: 'SortDirection', hintText: 'enum' },
+            { content: 'NONE, ASCENDING, DESCENDING' },
+            { content: 'Required' },
         ],
         [
             {
@@ -233,7 +251,56 @@ function MyComponent() {
                 hintText: 'function',
             },
             { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'ColumnFilter.field',
+                hintText: 'Field name to filter by',
+            },
+            { content: 'keyof Record<string, unknown>', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'ColumnFilter.type',
+                hintText: 'Type of filter to apply',
+            },
+            { content: 'FilterType', hintText: 'enum' },
+            {
+                content:
+                    'TEXT, NUMBER, SELECT, MULTISELECT, DATE, BOOLEAN, SLIDER',
+            },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'ColumnFilter.value',
+                hintText: 'Filter value(s)',
+            },
+            {
+                content: 'string | string[] | { min: number; max: number }',
+                hintText: 'union type',
+            },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'ColumnFilter.operator',
+                hintText: 'Filter operator',
+            },
+            {
+                content:
+                    "'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'gte' | 'lte' | 'range'",
+                hintText: 'union type',
+            },
+            {
+                content:
+                    'equals, contains, startsWith, endsWith, gt, lt, gte, lte, range',
+            },
+            { content: "'contains'" },
         ],
         [
             {
@@ -527,7 +594,49 @@ function MyComponent() {
             },
             { content: 'BulkAction[]', hintText: 'array' },
             { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'BulkAction.id',
+                hintText: 'Unique identifier for the action',
+            },
+            { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'BulkAction.label',
+                hintText: 'Text displayed on the action button',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'BulkAction.variant',
+                hintText: 'Visual style variant of the action button',
+            },
+            {
+                content: "'primary' | 'secondary' | 'danger'",
+                hintText: 'union type',
+            },
+            { content: 'primary, secondary, danger' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'BulkAction.onClick',
+                hintText: 'Callback function called when action is clicked',
+            },
+            {
+                content: '(selectedRowIds: string[]) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: 'Required' },
         ],
         [
             {

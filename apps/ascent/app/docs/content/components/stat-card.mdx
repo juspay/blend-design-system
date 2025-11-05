@@ -89,6 +89,7 @@ function MyComponent() {
                 hintText: 'The title text displayed in the stat card',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -97,6 +98,7 @@ function MyComponent() {
                 hintText: 'The main value displayed in the stat card',
             },
             { content: 'string | number', hintText: 'union type' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -105,6 +107,7 @@ function MyComponent() {
                 hintText: 'The visual variant of the stat card',
             },
             { content: 'StatCardVariant', hintText: 'enum' },
+            { content: 'LINE, PROGRESS_BAR, BAR, NUMBER' },
             { content: 'Required' },
         ],
         [
@@ -113,6 +116,7 @@ function MyComponent() {
                 hintText: 'Tooltip content for the value',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -122,10 +126,8 @@ function MyComponent() {
                     'Change indicator showing percentage increase or decrease',
             },
             { content: 'StatCardChange', hintText: 'object' },
-            {
-                content: 'StatCardChange: see StatCardChange props below',
-                hintText: 'See StatCardChange below',
-            },
+            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -133,6 +135,7 @@ function MyComponent() {
                 hintText: 'Secondary text displayed below the main value',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -141,10 +144,8 @@ function MyComponent() {
                 hintText: 'Data points for line and bar chart variants',
             },
             { content: 'ChartDataPoint[]', hintText: 'array' },
-            {
-                content: 'ChartDataPoint: see ChartDataPoint props below',
-                hintText: 'See ChartDataPoint below',
-            },
+            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -153,6 +154,7 @@ function MyComponent() {
                     'Progress percentage for progress bar variant (0-100)',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -161,6 +163,7 @@ function MyComponent() {
                 hintText: 'Icon element displayed next to the title',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -170,6 +173,7 @@ function MyComponent() {
                     'Icon element displayed on the right side of the header',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -178,6 +182,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -186,6 +191,7 @@ function MyComponent() {
                 hintText: 'Props for the dropdown select component',
             },
             { content: 'SingleSelectProps', hintText: 'object' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -194,6 +200,7 @@ function MyComponent() {
                 hintText: 'Maximum width of the stat card',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: "'auto'" },
         ],
         [
@@ -202,11 +209,8 @@ function MyComponent() {
                 hintText: 'Configuration for the X-axis',
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
-            {
-                content:
-                    'StatCardAxisConfig: see StatCardAxisConfig props below',
-                hintText: 'See StatCardAxisConfig below',
-            },
+            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -214,11 +218,8 @@ function MyComponent() {
                 hintText: 'Configuration for the Y-axis',
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
-            {
-                content:
-                    'StatCardAxisConfig: see StatCardAxisConfig props below',
-                hintText: 'See StatCardAxisConfig below',
-            },
+            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -226,6 +227,7 @@ function MyComponent() {
                 hintText: 'Axis type for formatting the main value',
             },
             { content: 'AxisType', hintText: 'enum' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -234,6 +236,7 @@ function MyComponent() {
                 hintText: 'Height of the stat card',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: "'auto'" },
         ],
         [
@@ -242,6 +245,7 @@ function MyComponent() {
                 hintText: 'Layout direction of the stat card',
             },
             { content: 'StatCardDirection', hintText: 'enum' },
+            { content: 'VERTICAL, HORIZONTAL' },
             { content: 'StatCardDirection.VERTICAL' },
         ],
         [
@@ -250,6 +254,7 @@ function MyComponent() {
                 hintText: 'The percentage change value',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -258,6 +263,7 @@ function MyComponent() {
                 hintText: 'Whether the change is an increase or decrease',
             },
             { content: 'ChangeType', hintText: 'enum' },
+            { content: 'INCREASE, DECREASE' },
             { content: 'Required' },
         ],
         [
@@ -266,6 +272,7 @@ function MyComponent() {
                 hintText: 'Tooltip content for the change indicator',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -274,6 +281,7 @@ function MyComponent() {
                 hintText: 'The numeric value for the data point',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -282,6 +290,7 @@ function MyComponent() {
                 hintText: 'The name/label for the data point',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -290,6 +299,7 @@ function MyComponent() {
                 hintText: 'Type of axis data (number, date, etc.)',
             },
             { content: 'AxisType', hintText: 'enum' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -301,6 +311,7 @@ function MyComponent() {
                 content: '(value: string | number) => string',
                 hintText: 'function',
             },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -309,6 +320,7 @@ function MyComponent() {
                 hintText: 'Whether to show only date (for date-time type)',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -317,6 +329,7 @@ function MyComponent() {
                 hintText: 'Whether to use UTC timezone',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -325,6 +338,7 @@ function MyComponent() {
                 hintText: 'Custom format string for date formatting',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -333,6 +347,7 @@ function MyComponent() {
                 hintText: 'Whether to show only time (for date-time type)',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -341,6 +356,7 @@ function MyComponent() {
                 hintText: 'Whether to show year in date formatting',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -349,71 +365,8 @@ function MyComponent() {
                 hintText: 'Whether to use smart date-time formatting',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'StatCardVariant.LINE',
-                hintText: 'Line chart visualization',
-            },
-            { content: '"line"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'StatCardVariant.BAR',
-                hintText: 'Bar chart visualization',
-            },
-            { content: '"bar"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'StatCardVariant.PROGRESS_BAR',
-                hintText: 'Progress bar visualization',
-            },
-            { content: '"progress"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'StatCardVariant.NUMBER',
-                hintText: 'Number only (no chart)',
-            },
-            { content: '"number"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'ChangeType.INCREASE',
-                hintText: 'Positive change indicator',
-            },
-            { content: '"increase"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'ChangeType.DECREASE',
-                hintText: 'Negative change indicator',
-            },
-            { content: '"decrease"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'StatCardDirection.VERTICAL',
-                hintText: 'Vertical layout (default)',
-            },
-            { content: '"vertical"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'StatCardDirection.HORIZONTAL',
-                hintText: 'Horizontal layout',
-            },
-            { content: '"horizontal"', hintText: 'string' },
-            { content: '' },
         ],
     ]}
     className="mb-8"

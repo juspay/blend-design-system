@@ -63,6 +63,7 @@ function MyComponent() {
                 hintText: 'Current numeric value of the input',
             },
             { content: 'number | undefined', hintText: 'number or undefined' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -74,6 +75,7 @@ function MyComponent() {
                 content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -82,6 +84,7 @@ function MyComponent() {
                 hintText: 'Unit text to display (e.g., "kg", "cm", "$")',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -89,10 +92,8 @@ function MyComponent() {
                 content: 'unitPosition',
                 hintText: 'Position of the unit display',
             },
-            {
-                content: 'UnitPosition.LEFT | UnitPosition.RIGHT',
-                hintText: 'enum',
-            },
+            { content: 'UnitPosition', hintText: 'enum' },
+            { content: 'LEFT, RIGHT' },
             { content: 'UnitPosition.RIGHT' },
         ],
         [
@@ -101,6 +102,7 @@ function MyComponent() {
                 hintText: 'Size variant of the input',
             },
             { content: 'UnitInputSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
             { content: 'UnitInputSize.MEDIUM' },
         ],
         [
@@ -110,6 +112,7 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -118,6 +121,7 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -126,6 +130,7 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -133,6 +138,7 @@ function MyComponent() {
                 hintText: 'Whether the input is in error state',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -142,6 +148,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -149,6 +156,7 @@ function MyComponent() {
                 hintText: 'Whether the input is required',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -157,6 +165,7 @@ function MyComponent() {
                 hintText: 'Whether the input is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -165,6 +174,7 @@ function MyComponent() {
                 hintText: 'Primary label for the input',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: "'Number Input'" },
         ],
         [
@@ -174,6 +184,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -182,6 +193,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -190,6 +202,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -198,6 +211,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -206,6 +220,7 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'ReactNode' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -213,6 +228,7 @@ function MyComponent() {
                 hintText: 'React element to display on the right side',
             },
             { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
             { content: '<Weight icon (default)>' },
         ],
         [
@@ -222,6 +238,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -233,6 +250,7 @@ function MyComponent() {
                 hintText: 'function',
             },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -244,6 +262,7 @@ function MyComponent() {
                 hintText: 'function',
             },
             { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"

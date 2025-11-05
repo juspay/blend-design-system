@@ -61,6 +61,7 @@ function MyComponent() {
                 hintText: 'Visual style variant of the slider',
             },
             { content: 'SliderVariant', hintText: 'enum' },
+            { content: 'PRIMARY, SECONDARY' },
             { content: 'SliderVariant.PRIMARY' },
         ],
         [
@@ -69,6 +70,7 @@ function MyComponent() {
                 hintText: 'Size variant affecting dimensions and spacing',
             },
             { content: 'SliderSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
             { content: 'SliderSize.MEDIUM' },
         ],
         [
@@ -78,6 +80,7 @@ function MyComponent() {
             },
             { content: 'number[]', hintText: 'array' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -85,6 +88,7 @@ function MyComponent() {
                 hintText: 'Default value(s) for uncontrolled usage',
             },
             { content: 'number[]', hintText: 'array' },
+            { content: '' },
             { content: '[0]' },
         ],
         [
@@ -94,6 +98,7 @@ function MyComponent() {
             },
             { content: '(value: number[]) => void', hintText: 'function' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -101,6 +106,7 @@ function MyComponent() {
                 hintText: 'Minimum value of the slider range',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '0' },
         ],
         [
@@ -109,6 +115,7 @@ function MyComponent() {
                 hintText: 'Maximum value of the slider range',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '100' },
         ],
         [
@@ -117,6 +124,7 @@ function MyComponent() {
                 hintText: 'Step increment for value changes',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '1' },
         ],
         [
@@ -125,6 +133,7 @@ function MyComponent() {
                 hintText: 'Whether to display value labels on thumbs',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -133,16 +142,17 @@ function MyComponent() {
                 hintText: 'Position of value labels relative to thumbs',
             },
             { content: "'top' | 'bottom' | 'inline'", hintText: 'union type' },
+            { content: '' },
             { content: "'top'" },
         ],
         [
             {
                 content: 'Slider.valueFormat',
-                hintText:
-                    'Configuration for value formatting and display (SliderValueFormatConfig)',
+                hintText: 'Configuration for value formatting and display',
             },
             { content: 'SliderValueFormatConfig', hintText: 'object' },
             { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -150,6 +160,7 @@ function MyComponent() {
                 hintText: 'Whether the slider is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -158,47 +169,8 @@ function MyComponent() {
                 hintText: 'Orientation of the slider',
             },
             { content: "'horizontal' | 'vertical'", hintText: 'union type' },
+            { content: '' },
             { content: "'horizontal'" },
-        ],
-        [
-            {
-                content: 'SliderVariant.PRIMARY',
-                hintText: 'Primary variant',
-            },
-            { content: '"primary"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'SliderVariant.SECONDARY',
-                hintText: 'Secondary variant',
-            },
-            { content: '"secondary"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SliderSize.SMALL',
-                hintText: 'Small size',
-            },
-            { content: '"small"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SliderSize.MEDIUM',
-                hintText: 'Medium size',
-            },
-            { content: '"medium"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'SliderSize.LARGE',
-                hintText: 'Large size',
-            },
-            { content: '"large"', hintText: 'string' },
-            { content: '' },
         ],
     ]}
     className="mb-8"

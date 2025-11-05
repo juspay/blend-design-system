@@ -52,6 +52,7 @@ function MyComponent() {
                     'The trigger element that will show the tooltip on hover/focus',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -60,6 +61,7 @@ function MyComponent() {
                 hintText: 'The content to display in the tooltip',
             },
             { content: 'ReactNode | string', hintText: 'React node or string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -69,6 +71,7 @@ function MyComponent() {
                     'The side of the trigger element where the tooltip appears',
             },
             { content: 'TooltipSide', hintText: 'enum' },
+            { content: 'TOP, RIGHT, LEFT, BOTTOM' },
             { content: 'TooltipSide.TOP' },
         ],
         [
@@ -78,6 +81,7 @@ function MyComponent() {
                     'The alignment of the tooltip relative to the trigger element',
             },
             { content: 'TooltipAlign', hintText: 'enum' },
+            { content: 'START, END, CENTER' },
             { content: 'TooltipAlign.CENTER' },
         ],
         [
@@ -87,6 +91,7 @@ function MyComponent() {
                     'Whether to show the arrow pointing to the trigger element',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -95,6 +100,7 @@ function MyComponent() {
                 hintText: 'The size variant of the tooltip',
             },
             { content: 'TooltipSize', hintText: 'enum' },
+            { content: 'SMALL, LARGE' },
             { content: 'TooltipSize.SMALL' },
         ],
         [
@@ -104,6 +110,7 @@ function MyComponent() {
                     'Optional icon or element to display alongside the tooltip content',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -113,6 +120,7 @@ function MyComponent() {
                     'The position of the slot relative to the tooltip content',
             },
             { content: 'TooltipSlotDirection', hintText: 'enum' },
+            { content: 'LEFT, RIGHT' },
             { content: 'TooltipSlotDirection.LEFT' },
         ],
         [
@@ -121,6 +129,7 @@ function MyComponent() {
                 hintText: 'Delay in milliseconds before showing the tooltip',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '300' },
         ],
         [
@@ -130,6 +139,7 @@ function MyComponent() {
                     'Distance between the tooltip and the trigger element',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '5' },
         ],
         [
@@ -138,6 +148,7 @@ function MyComponent() {
                 hintText: 'Controlled state for showing/hiding the tooltip',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'undefined' },
         ],
         [
@@ -146,95 +157,8 @@ function MyComponent() {
                 hintText: 'Maximum width of the tooltip',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'TooltipSide.TOP',
-                hintText: 'Tooltip appears above the trigger element',
-            },
-            { content: '"top"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TooltipSide.RIGHT',
-                hintText: 'Tooltip appears to the right of the trigger element',
-            },
-            { content: '"right"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipSide.LEFT',
-                hintText: 'Tooltip appears to the left of the trigger element',
-            },
-            { content: '"left"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipSide.BOTTOM',
-                hintText: 'Tooltip appears below the trigger element',
-            },
-            { content: '"bottom"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipAlign.START',
-                hintText: 'Align tooltip to the start of the trigger element',
-            },
-            { content: '"start"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipAlign.END',
-                hintText: 'Align tooltip to the end of the trigger element',
-            },
-            { content: '"end"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipAlign.CENTER',
-                hintText: 'Center align tooltip with the trigger element',
-            },
-            { content: '"center"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TooltipSize.SMALL',
-                hintText: 'Small size variant',
-            },
-            { content: '"sm"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TooltipSize.LARGE',
-                hintText: 'Large size variant',
-            },
-            { content: '"lg"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TooltipSlotDirection.LEFT',
-                hintText: 'Slot appears to the left of the tooltip content',
-            },
-            { content: '"left"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TooltipSlotDirection.RIGHT',
-                hintText: 'Slot appears to the right of the tooltip content',
-            },
-            { content: '"right"', hintText: 'string' },
-            { content: '' },
         ],
     ]}
     className="mb-8"
