@@ -48,3 +48,33 @@
 .blend-workflow-canvas .react-flow__attribution {
     display: none;
 }
+
+/* Animation for dashed edges */
+@keyframes dashdraw {
+    from {
+        stroke-dashoffset: 10;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Make handles more visible and interactive */
+.blend-workflow-canvas .react-flow__handle {
+    transition: all 0.2s ease;
+}
+
+.blend-workflow-canvas .react-flow__handle:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.blend-workflow-canvas .react-flow__handle-connecting {
+    transform: scale(1.4);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+.blend-workflow-canvas .react-flow__handle-valid {
+    background: #22c55e !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+}
