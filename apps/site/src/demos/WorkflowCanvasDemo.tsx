@@ -502,8 +502,6 @@ const WorkflowCanvasDemo = () => {
     }, [])
 
     const handleConnect = useCallback((connection: Connection) => {
-        console.log('connection-->', connection)
-
         if (!connection.source || !connection.target) return
 
         const newEdge: BlendEdge = {
@@ -514,7 +512,6 @@ const WorkflowCanvasDemo = () => {
         }
         setEdges((eds) => [...eds, newEdge])
     }, [])
-    console.log('nodes-->', nodes)
 
     return (
         <ThemeProvider>
