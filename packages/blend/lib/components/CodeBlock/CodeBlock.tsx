@@ -14,6 +14,7 @@ import {
     shouldShowLineNumbers as shouldShowLineNumbersUtil,
     createCopyToClipboard,
     processLines,
+    formatCode,
     type SyntaxToken,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -85,6 +86,7 @@ const TokenizedCodeLine: React.FC<TokenizedCodeLineProps> = ({
                 typeof paddingRight === 'number'
                     ? `${paddingRight}px`
                     : paddingRight,
+            lineHeight: '18px',
         }}
     >
         {tokens.map((token, tokenIndex) => (
@@ -151,11 +153,16 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             headerRightSlot,
             diffLines,
             showCopyButton = true,
+            autoFormat = false,
+            language,
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<CodeBlockTokenType>('CODE_BLOCK')
         const [isCopied, setIsCopied] = useState(false)
+
+        // Format code if autoFormat is enabled
+        const formattedCode = autoFormat ? formatCode(code, language) : code
 
         // Determine if line numbers should be shown based on variant or explicit prop
         const shouldShowLineNumbers = shouldShowLineNumbersUtil(
@@ -163,15 +170,18 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             variant
         )
 
-        // Use diffLines if variant is diff, otherwise use code
+        // Use diffLines if variant is diff, otherwise use formatted code
         const isDiffMode =
             variant === CodeBlockVariant.DIFF && Boolean(diffLines)
-        const lines = processLines(isDiffMode, diffLines, code)
+        const lines = processLines(isDiffMode, diffLines, formattedCode)
 
-        const copyToClipboard = createCopyToClipboard(code, setIsCopied)
+        const copyToClipboard = createCopyToClipboard(
+            formattedCode,
+            setIsCopied
+        )
 
         // Use utility functions
-        const tokenizeLineLocal = (line: string) => tokenizeLine(line)
+        const tokenizeLineLocal = (line: string) => tokenizeLine(line, language)
         const getTokenColorLocal = (type: string) =>
             getTokenColor(type, tokens.body.syntax)
         const getDiffGutterStyleLocal = (lineType?: DiffLineType) =>
