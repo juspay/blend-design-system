@@ -37,6 +37,7 @@ const WorkflowCanvasInner = ({
     showControls = true,
     controlsPosition = 'top-right',
     showMinimap = false,
+    minimapPosition = 'bottom-right',
     showBackground = true,
     panOnScroll = true,
     zoomOnScroll = true,
@@ -88,7 +89,7 @@ const WorkflowCanvasInner = ({
 
     return (
         <Block
-            // className="blend-workflow-canvas"
+            className="blend-workflow-canvas"
             width={typeof width === 'number' ? `${width}px` : width}
             height={typeof height === 'number' ? `${height}px` : height}
             backgroundColor={tokens.canvas.backgroundColor}
@@ -133,6 +134,7 @@ const WorkflowCanvasInner = ({
                 )}
                 {showMinimap && (
                     <MiniMap
+                        position={minimapPosition}
                         nodeColor={tokens.minimap.nodeColor as string}
                         nodeStrokeColor={
                             tokens.minimap.nodeStrokeColor as string
@@ -148,7 +150,11 @@ const WorkflowCanvasInner = ({
                                 .backgroundColor as string,
                             border: tokens.minimap.border as string,
                             borderRadius: tokens.minimap.borderRadius as string,
+                            width: 200,
+                            height: 150,
                         }}
+                        zoomable
+                        pannable
                     />
                 )}
                 {showControls && (
