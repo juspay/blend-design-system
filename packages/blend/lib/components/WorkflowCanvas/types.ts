@@ -76,6 +76,7 @@ export type WorkflowCanvasProps = {
     showControls?: boolean
     controlsPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
     showMinimap?: boolean
+    minimapPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
     showBackground?: boolean
     panOnScroll?: boolean
     zoomOnScroll?: boolean

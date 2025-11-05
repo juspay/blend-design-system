@@ -514,10 +514,8 @@ const WorkflowCanvasDemo = () => {
     }, [])
 
     return (
-        <ThemeProvider>
-            <div
-                style={{ width: '100%', height: '100%', paddingBottom: '32px' }}
-            >
+        <div style={{ width: '100%', height: '100%', paddingBottom: '32px' }}>
+            <ThemeProvider>
                 <WorkflowCanvas
                     nodes={nodes}
                     edges={edges}
@@ -526,17 +524,21 @@ const WorkflowCanvasDemo = () => {
                     onConnect={handleConnect}
                     nodeTypes={customNodeTypes}
                     edgeTypes={customEdgeTypes}
-                    height={1200}
                     fitView={true}
                     showControls={true}
-                    showMinimap={false}
+                    showMinimap={true}
+                    height={'90vh'}
+                    // minimapPosition="bottom-left"
+                    // fitView={true}
+                    // showControls={true}
+                    // showMinimap={false}
                     showBackground={true}
                     nodesDraggable={true}
                     nodesConnectable={true}
                     elementsSelectable={true}
                 />
-            </div>
-        </ThemeProvider>
+            </ThemeProvider>
+        </div>
     )
 }
 
