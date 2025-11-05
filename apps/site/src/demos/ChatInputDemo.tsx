@@ -118,8 +118,6 @@ const ChatInputDemo = () => {
         setPlaygroundFiles([])
     }
 
-    console.log('topQueriesMessage-->>', topQueriesMessage)
-
     return (
         <div className="p-8 space-y-12">
             {/* Header */}
