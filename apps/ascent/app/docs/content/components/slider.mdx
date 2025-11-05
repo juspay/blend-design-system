@@ -58,119 +58,165 @@ function MyComponent() {
         [
             {
                 content: 'Slider.variant',
-                hintText: 'Visual style variant of the slider',
+                hintText:
+                    'Optional SliderVariant enum value that determines the visual style variant of the slider. PRIMARY creates a prominent slider with emphasized styling, SECONDARY creates a more subtle slider. The variant affects the track and thumb colors. Defaults to PRIMARY.',
             },
-            { content: 'SliderVariant', hintText: 'enum' },
+            {
+                content: 'SliderVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the slider',
+            },
             { content: 'PRIMARY, SECONDARY' },
-            { content: 'SliderVariant.PRIMARY' },
         ],
         [
             {
                 content: 'Slider.size',
-                hintText: 'Size variant affecting dimensions and spacing',
+                hintText:
+                    'Optional SliderSize enum value that determines the size variant affecting dimensions, spacing, track height, and thumb size. SMALL creates a compact slider, MEDIUM creates a standard size, LARGE creates a prominent size. Defaults to MEDIUM.',
             },
-            { content: 'SliderSize', hintText: 'enum' },
+            {
+                content: 'SliderSize',
+                hintText: 'Enum that determines the size variant of the slider',
+            },
             { content: 'SMALL, MEDIUM, LARGE' },
-            { content: 'SliderSize.MEDIUM' },
         ],
         [
             {
                 content: 'Slider.value',
-                hintText: 'Controlled value(s) for the slider',
+                hintText:
+                    'Optional array of numbers representing the controlled value(s) for the slider. For single-thumb sliders, provide an array with one value (e.g., [50]). For range sliders, provide two values (e.g., [25, 75]). The array length determines the number of thumbs. Use this for controlled state management. If not provided, use defaultValue.',
             },
-            { content: 'number[]', hintText: 'array' },
+            {
+                content: 'number[]',
+                hintText: 'Array of numbers representing slider value(s)',
+            },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'Slider.defaultValue',
-                hintText: 'Default value(s) for uncontrolled usage',
+                hintText:
+                    'Optional array of numbers representing the default value(s) for uncontrolled usage. For single-thumb sliders, provide an array with one value (e.g., [50]). For range sliders, provide two values (e.g., [25, 75]). The slider manages its own state internally. Defaults to [0] (single thumb at minimum).',
             },
-            { content: 'number[]', hintText: 'array' },
+            {
+                content: 'number[]',
+                hintText:
+                    'Array of numbers representing default slider value(s)',
+            },
             { content: '' },
-            { content: '[0]' },
         ],
         [
             {
                 content: 'Slider.onValueChange',
-                hintText: 'Callback fired when the slider value changes',
+                hintText:
+                    'Optional callback function invoked when the slider value changes. Receives an array of numbers representing the new value(s). Use this to update your state when using controlled mode. The function is called as the user drags the thumb(s) or clicks on the track.',
             },
-            { content: '(value: number[]) => void', hintText: 'function' },
+            {
+                content: '(value: number[]) => void',
+                hintText:
+                    'Function called with new value array when slider value changes',
+            },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'Slider.min',
-                hintText: 'Minimum value of the slider range',
+                hintText:
+                    'Optional minimum value number for the slider range. The slider cannot go below this value. The thumb(s) will be constrained to values >= min. Useful for setting lower bounds. Defaults to 0.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing the minimum value of the slider range',
+            },
             { content: '' },
-            { content: '0' },
         ],
         [
             {
                 content: 'Slider.max',
-                hintText: 'Maximum value of the slider range',
+                hintText:
+                    'Optional maximum value number for the slider range. The slider cannot go above this value. The thumb(s) will be constrained to values <= max. Useful for setting upper bounds. Defaults to 100.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing the maximum value of the slider range',
+            },
             { content: '' },
-            { content: '100' },
         ],
         [
             {
                 content: 'Slider.step',
-                hintText: 'Step increment for value changes',
+                hintText:
+                    'Optional step increment number for value changes. When the user drags the thumb or uses arrow keys, the value changes by this increment. Useful for discrete value selection (e.g., step={5} for multiples of 5). Must be a positive number. Defaults to 1.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText: 'Positive number representing the step increment',
+            },
             { content: '' },
-            { content: '1' },
         ],
         [
             {
                 content: 'Slider.showValueLabels',
-                hintText: 'Whether to display value labels on thumbs',
+                hintText:
+                    'When true, displays value labels on or near the thumb(s) showing the current value. The labels appear based on the labelPosition prop. Useful for providing precise feedback about the selected value. The labels are formatted according to valueFormat if provided. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows value labels, false hides value labels',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'Slider.labelPosition',
-                hintText: 'Position of value labels relative to thumbs',
+                hintText:
+                    'Optional string that determines the position of value labels relative to thumbs. Valid values: "top" (labels appear above thumbs), "bottom" (labels appear below thumbs), "inline" (labels appear on the thumb itself). Only applies when showValueLabels is true. Defaults to "top".',
             },
-            { content: "'top' | 'bottom' | 'inline'", hintText: 'union type' },
-            { content: '' },
-            { content: "'top'" },
+            {
+                content: "'top' | 'bottom' | 'inline'",
+                hintText: 'String that determines the position of value labels',
+            },
+            { content: 'top, bottom, inline' },
         ],
         [
             {
                 content: 'Slider.valueFormat',
-                hintText: 'Configuration for value formatting and display',
+                hintText:
+                    'Optional SliderValueFormatConfig object that configures how values are formatted and displayed. Can specify number type (NUMBER, DECIMAL), decimal places, prefix/suffix strings (e.g., "$", "%"), custom formatter function, and whether to show labels. Useful for currency, percentage, or custom formatting. If not provided, values are displayed as plain numbers.',
             },
-            { content: 'SliderValueFormatConfig', hintText: 'object' },
+            {
+                content: 'SliderValueFormatConfig',
+                hintText:
+                    'Object with value formatting configuration properties',
+            },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'Slider.disabled',
-                hintText: 'Whether the slider is disabled',
+                hintText:
+                    "When true, disables the slider, making it non-interactive and visually muted. Users cannot drag the thumb(s) or change values. Disabled sliders show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables slider, false allows normal interaction',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'Slider.orientation',
-                hintText: 'Orientation of the slider',
+                hintText:
+                    'Optional string that determines the orientation of the slider. Valid values: "horizontal" (slider extends left-to-right, default), "vertical" (slider extends top-to-bottom). Vertical sliders are useful for height, volume, or other vertical metrics. Defaults to "horizontal".',
             },
-            { content: "'horizontal' | 'vertical'", hintText: 'union type' },
-            { content: '' },
-            { content: "'horizontal'" },
+            {
+                content: "'horizontal' | 'vertical'",
+                hintText: 'String that determines the slider orientation',
+            },
+            { content: 'horizontal, vertical' },
         ],
     ]}
     className="mb-8"

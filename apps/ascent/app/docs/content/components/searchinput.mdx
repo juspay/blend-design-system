@@ -51,139 +51,140 @@ function MyComponent() {
             {
                 content: 'SearchInput.leftSlot',
                 hintText:
-                    'React element to display on the left side of the input',
+                    'Optional React element displayed on the left side of the input field, typically before the text. Commonly used for search icons (from lucide-react or other icon libraries) that visually indicate the search functionality. The slot maintains proper spacing and alignment with the input text.',
             },
-            { content: 'React.ReactNode', hintText: 'ReactNode' },
-            { content: 'undefined' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed on the left side',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.rightSlot',
                 hintText:
-                    'React element to display on the right side of the input',
+                    'Optional React element displayed on the right side of the input field, typically after the text. Can be used for filter icons, clear buttons, or other action elements. The slot maintains proper spacing and alignment with the input text.',
             },
-            { content: 'React.ReactNode', hintText: 'ReactNode' },
-            { content: 'undefined' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon or button) displayed on the right side',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.error',
-                hintText: 'Whether the input is in error state',
+                hintText:
+                    'When true, displays the input field in an error state with red underline border and error styling. Useful for form validation feedback when the search query is invalid or required but missing. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.value',
-                hintText: 'Current search input value',
+                hintText:
+                    'Optional string representing the current search input value. Use this for controlled input where the value is managed by your component state. When provided, the input is controlled and updates only through onChange. If not provided, the input is uncontrolled.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'String value representing the current search query',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.onChange',
-                hintText: 'Callback when input value changes',
+                hintText:
+                    'Optional callback function invoked when the input value changes. Receives a React.ChangeEvent<HTMLInputElement> as a parameter. Use event.target.value to get the new string value. Update your state in this handler for controlled input. Required for controlled usage.',
             },
             {
                 content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with change event when value changes',
             },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.placeholder',
-                hintText: 'Placeholder text for the input',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty. Provides guidance to users about what they can search for. Should be concise and action-oriented (e.g., "Search products...", "Enter search term"). Defaults to "Enter" if not provided.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: "'Enter'" },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when input is empty',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.name',
-                hintText: 'Name attribute for the input element',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.disabled',
-                hintText: 'Whether the input is disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot type or change the value. Disabled fields show reduced opacity and a disabled underline style. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.autoFocus',
-                hintText: 'Whether to auto-focus the input on mount',
+                hintText:
+                    'When true, automatically focuses the input field when the component mounts. Useful for improving UX by allowing users to immediately start typing without clicking. Only works if disabled is false. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true auto-focuses input on mount, false requires manual focus',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.onFocus',
-                hintText: 'Callback when input receives focus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for tracking user interaction, showing additional UI, or triggering search suggestions.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with focus event when input gains focus',
             },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'SearchInput.onBlur',
-                hintText: 'Callback when input loses focus',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for validation, cleanup, or hiding search suggestions when the user clicks away.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with focus event when input loses focus',
             },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'SearchInputState.DEFAULT',
-                hintText: 'Default state - normal input appearance',
-            },
-            { content: '"default"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'SearchInputState.HOVER',
-                hintText: 'Hover state',
-            },
-            { content: '"hover"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SearchInputState.FOCUS',
-                hintText: 'Focus state',
-            },
-            { content: '"focus"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SearchInputState.ERROR',
-                hintText: 'Error state',
-            },
-            { content: '"error"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SearchInputState.DISABLED',
-                hintText: 'Disabled state',
-            },
-            { content: '"disabled"', hintText: 'string' },
             { content: '' },
         ],
     ]}

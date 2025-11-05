@@ -47,42 +47,51 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.defaultValue',
-                hintText: 'The default selected tab value',
+                hintText:
+                    'Optional default selected tab value string for uncontrolled usage. When provided, the Tabs component manages its own state internally. The value should match the value prop of one of the TabsTrigger children. The tab with this value will be initially selected. If not provided, no tab is selected initially.',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'Tabs.value',
-                hintText: 'The currently selected tab value (controlled)',
+                hintText:
+                    'Optional controlled selected tab value string. When provided, the Tabs component is controlled and selection is managed by your component state. The value should match the value prop of one of the TabsTrigger children. Required for controlled mode. Use this with onValueChange for controlled state management.',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'Tabs.onValueChange',
-                hintText: 'Callback when tab selection changes',
+                hintText:
+                    'Optional callback function invoked when the tab selection changes. Receives the new selected tab value string as a parameter. Use this to update your state when using controlled mode. The function is called whenever a different tab is selected.',
             },
-            { content: '(value: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with new selected value when tab selection changes',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'Tabs.variant',
-                hintText: 'The visual style variant of the tabs',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tabs. UNDERLINE creates tabs with an underline indicator below the active tab, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
             },
             { content: 'TabsVariant', hintText: 'enum' },
-            { content: 'TabsVariant.UNDERLINE' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
         ],
         [
             {
                 content: 'Tabs.size',
-                hintText: 'The size of the tabs',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tabs. MD creates a medium-sized tab, LG creates a larger tab. The size applies to all tabs in the list. Defaults to MD.',
             },
             { content: 'TabsSize', hintText: 'enum' },
-            { content: 'TabsSize.MD' },
+            { content: 'MD, LG' },
         ],
         [
             {
@@ -90,7 +99,7 @@ function MyComponent() {
                 hintText: 'Array of tab items for programmatic rendering',
             },
             { content: 'TabItem[]', hintText: 'array' },
-            { content: '[]' },
+            { content: '' },
         ],
         [
             {
@@ -98,7 +107,7 @@ function MyComponent() {
                 hintText: 'Callback when a tab is closed',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -106,7 +115,7 @@ function MyComponent() {
                 hintText: 'Callback when add button is clicked',
             },
             { content: '() => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -114,7 +123,7 @@ function MyComponent() {
                 hintText: 'Whether to show dropdown for overflow tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -122,7 +131,7 @@ function MyComponent() {
                 hintText: 'Whether to show add button',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -130,7 +139,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for dropdown button',
             },
             { content: 'string', hintText: 'string' },
-            { content: "'Navigate to tab'" },
+            { content: '' },
         ],
         [
             {
@@ -138,7 +147,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for add button',
             },
             { content: 'string', hintText: 'string' },
-            { content: "'Add new tab'" },
+            { content: '' },
         ],
         [
             {
@@ -147,7 +156,7 @@ function MyComponent() {
                     'Maximum number of tabs to display before showing dropdown',
             },
             { content: 'number', hintText: 'number' },
-            { content: '6' },
+            { content: '' },
         ],
         [
             {
@@ -155,23 +164,25 @@ function MyComponent() {
                 hintText: 'Whether to disable all tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
                 content: 'TabsList.variant',
-                hintText: 'The visual style variant of the tabs list',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tabs list. UNDERLINE creates tabs with an underline indicator, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
             },
             { content: 'TabsVariant', hintText: 'enum' },
-            { content: 'TabsVariant.UNDERLINE' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
         ],
         [
             {
                 content: 'TabsList.size',
-                hintText: 'The size of the tabs list',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tabs list. MD creates a medium-sized tab list, LG creates a larger tab list. The size applies to all tabs in the list. Defaults to MD.',
             },
             { content: 'TabsSize', hintText: 'enum' },
-            { content: 'TabsSize.MD' },
+            { content: 'MD, LG' },
         ],
         [
             {
@@ -179,7 +190,7 @@ function MyComponent() {
                 hintText: 'Whether tabs should expand to fill available width',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -187,7 +198,7 @@ function MyComponent() {
                 hintText: 'Whether tabs should fit their content width',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -195,7 +206,7 @@ function MyComponent() {
                 hintText: 'Array of tab items for programmatic rendering',
             },
             { content: 'TabItem[]', hintText: 'array' },
-            { content: '[]' },
+            { content: '' },
         ],
         [
             {
@@ -203,7 +214,7 @@ function MyComponent() {
                 hintText: 'Callback when a tab is closed',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -211,7 +222,7 @@ function MyComponent() {
                 hintText: 'Callback when add button is clicked',
             },
             { content: '() => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -219,7 +230,7 @@ function MyComponent() {
                 hintText: 'Whether to show dropdown for overflow tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -227,7 +238,7 @@ function MyComponent() {
                 hintText: 'Whether to show add button',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -235,7 +246,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for add button',
             },
             { content: 'string', hintText: 'string' },
-            { content: "'Add new tab'" },
+            { content: '' },
         ],
         [
             {
@@ -243,7 +254,7 @@ function MyComponent() {
                 hintText: 'Callback when tab selection changes (for dropdown)',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -251,7 +262,7 @@ function MyComponent() {
                 hintText: 'The currently active tab value',
             },
             { content: 'string', hintText: 'string' },
-            { content: "''" },
+            { content: '' },
         ],
         [
             {
@@ -259,7 +270,7 @@ function MyComponent() {
                 hintText: 'Whether to disable all tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -267,23 +278,25 @@ function MyComponent() {
                 hintText: 'The unique value for this tab trigger',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'Required' },
+            { content: '' },
         ],
         [
             {
                 content: 'TabsTrigger.variant',
-                hintText: 'The visual style variant of the tab trigger',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tab trigger. UNDERLINE creates a tab with an underline indicator, BOXED creates a tab in a boxed container, FLOATING creates a tab in a floating container, PILLS creates a rounded pill-style tab. The variant should match the parent Tabs or TabsList variant. Defaults to UNDERLINE.',
             },
             { content: 'TabsVariant', hintText: 'enum' },
-            { content: 'TabsVariant.UNDERLINE' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
         ],
         [
             {
                 content: 'TabsTrigger.size',
-                hintText: 'The size of the tab trigger',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tab trigger. MD creates a medium-sized tab, LG creates a larger tab. The size should match the parent Tabs or TabsList size. Defaults to MD.',
             },
             { content: 'TabsSize', hintText: 'enum' },
-            { content: 'TabsSize.MD' },
+            { content: 'MD, LG' },
         ],
         [
             {
@@ -291,7 +304,7 @@ function MyComponent() {
                 hintText: 'Icon or element to display before the tab text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -299,7 +312,7 @@ function MyComponent() {
                 hintText: 'Icon or element to display after the tab text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -307,7 +320,7 @@ function MyComponent() {
                 hintText: 'The text content of the tab trigger',
             },
             { content: 'string | number', hintText: 'string or number' },
-            { content: 'Required' },
+            { content: '' },
         ],
         [
             {
@@ -315,7 +328,7 @@ function MyComponent() {
                 hintText: 'Whether the tab can be closed',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -323,7 +336,7 @@ function MyComponent() {
                 hintText: 'Callback when close button is clicked',
             },
             { content: '() => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
@@ -331,7 +344,7 @@ function MyComponent() {
                 hintText: 'Whether the tab trigger is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            { content: '' },
         ],
         [
             {
@@ -340,7 +353,7 @@ function MyComponent() {
                     'The value that matches the corresponding TabsTrigger',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'Required' },
+            { content: '' },
         ],
         [
             {
@@ -348,54 +361,6 @@ function MyComponent() {
                 hintText: 'The content to display when this tab is active',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'TabsVariant.UNDERLINE',
-                hintText: 'Underline variant - underline indicator',
-            },
-            { content: '"underline"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TabsVariant.BOXED',
-                hintText: 'Boxed variant - boxed container style',
-            },
-            { content: '"boxed"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TabsVariant.FLOATING',
-                hintText: 'Floating variant - floating container style',
-            },
-            { content: '"floating"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TabsVariant.PILLS',
-                hintText: 'Pills variant - rounded pill style',
-            },
-            { content: '"pills"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TabsSize.MD',
-                hintText: 'Medium size - default size',
-            },
-            { content: '"md"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'TabsSize.LG',
-                hintText: 'Large size - larger size variant',
-            },
-            { content: '"lg"', hintText: 'string' },
             { content: '' },
         ],
     ]}

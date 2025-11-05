@@ -72,177 +72,270 @@ function MyComponent() {
         [
             {
                 content: 'Modal.isOpen',
-                hintText: 'Controls whether the modal is visible',
+                hintText:
+                    'Required boolean that controls whether the modal is visible. When true, the modal is displayed with a backdrop overlay. When false, the modal is hidden. Use this for controlled modal state management. The modal appears centered on the screen with proper z-index layering.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows modal, false hides modal',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.onClose',
                 hintText:
-                    'Callback function called when the modal should close',
+                    'Required callback function invoked when the modal should close. This is called when the user clicks the close button, clicks the backdrop (if closeOnBackdropClick is true), or presses Escape. Use this to update the isOpen state to false.',
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: '() => void',
+                hintText: 'Function called when modal should close',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.title',
-                hintText: 'The title displayed in the modal header',
+                hintText:
+                    "Optional title string displayed prominently in the modal header. Provides context and description of the modal's purpose. Should be concise and descriptive. The title is styled as a prominent heading and appears above the subtitle (if provided).",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Text content for the modal title displayed in the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.subtitle',
-                hintText: 'Optional subtitle displayed below the title',
+                hintText:
+                    "Optional subtitle string displayed below the title in the modal header. Provides additional context, instructions, or explanation about the modal's purpose. Styled with smaller, lighter text than the title. Useful for clarifying the modal's intent.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Descriptive text shown below the title in the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.children',
-                hintText: 'The content to display in the modal body',
+                hintText:
+                    'Required React elements representing the main content to display in the modal body. This is the primary content area and can contain any custom components, forms, text, images, or other interactive elements. The content is scrollable if it exceeds the modal height.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'React elements for the main modal body content',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.primaryAction',
-                hintText: 'Primary action button configuration',
+                hintText:
+                    'Optional ModalButtonAction object that configures the primary action button displayed in the modal footer. The primary action is typically the main action (e.g., "Confirm", "Save", "Delete"). It appears on the right side of the footer and is styled prominently. If not provided, no primary button is shown.',
             },
-            { content: 'ModalButtonAction', hintText: 'object' },
+            {
+                content: 'ModalButtonAction',
+                hintText:
+                    'Object with button configuration properties (see ModalButtonAction below)',
+            },
             {
                 content: 'ModalButtonAction: see ModalButtonAction props below',
-                hintText: 'See ModalButtonAction below',
             },
         ],
         [
             {
                 content: 'Modal.secondaryAction',
-                hintText: 'Secondary action button configuration',
+                hintText:
+                    'Optional ModalButtonAction object that configures the secondary action button displayed in the modal footer. The secondary action is typically the cancel or alternative action (e.g., "Cancel", "Close"). It appears on the left side of the footer. If not provided, no secondary button is shown.',
             },
-            { content: 'ModalButtonAction', hintText: 'object' },
+            {
+                content: 'ModalButtonAction',
+                hintText:
+                    'Object with button configuration properties (see ModalButtonAction below)',
+            },
             {
                 content: 'ModalButtonAction: see ModalButtonAction props below',
-                hintText: 'See ModalButtonAction below',
             },
         ],
         [
             {
                 content: 'Modal.showCloseButton',
-                hintText: 'Whether to show the X close button in header',
+                hintText:
+                    'When true, displays an X close button in the top-right corner of the modal header. Users can click this button to close the modal. When false, the close button is hidden, and users must use the backdrop click or Escape key (if enabled) to close. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText: 'true shows close button, false hides close button',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'Modal.closeOnBackdropClick',
-                hintText: 'Whether clicking the backdrop closes the modal',
+                hintText:
+                    'When true, allows users to close the modal by clicking on the backdrop/overlay area outside the modal content. When false, the backdrop click does nothing, and users must use the close button or Escape key. Useful for preventing accidental dismissal of important modals. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows backdrop click to close, false disables backdrop click',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'Modal.headerRightSlot',
                 hintText:
-                    'Additional content displayed in the header right area',
+                    'Optional React element displayed in the right area of the modal header, typically after the title/subtitle but before the close button. Useful for adding action buttons, icons, badges, or other supplementary content in the header.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the header right area',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Modal.showDivider',
-                hintText: 'Whether to show divider line below header',
+                hintText:
+                    'When true, displays a horizontal divider line below the modal header, visually separating the header from the body content. When false, no divider is shown, creating a seamless transition. Useful for visual hierarchy. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows divider below header, false hides divider',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'Modal.minWidth',
-                hintText: 'Minimum width of the modal',
+                hintText:
+                    'Optional CSS width string that sets the minimum width constraint for the modal. Accepts any valid CSS width value (e.g., "500px", "50%", "40rem"). The modal will not shrink below this width, ensuring readability and proper layout. Defaults to "500px".',
             },
-            { content: 'string', hintText: 'CSS value' },
-            { content: "'500px'" },
+            {
+                content: 'string',
+                hintText: 'CSS width value for minimum modal width constraint',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'Modal.useDrawerOnMobile',
-                hintText: 'Whether to use drawer style on mobile devices',
+                hintText:
+                    'When true, renders the modal as a mobile drawer (full-screen slide-up panel) on mobile devices (typically screen width < 1024px). On desktop, it still appears as a centered modal. Drawers provide better mobile UX with more space and native-like interactions. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true uses drawer on mobile, false uses modal on all devices',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.text',
-                hintText: 'Text displayed on the button',
+                hintText:
+                    'Required string representing the text displayed on the button. Should be concise and action-oriented, clearly describing what the button does (e.g., "Confirm", "Save", "Delete", "Cancel"). The text is the primary visual element users see.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Button label text displayed to users',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.buttonType',
-                hintText: 'Visual style of the button',
+                hintText:
+                    'Optional ButtonType enum value that determines the visual style of the button. Common values include PRIMARY (prominent, typically blue), SECONDARY (less prominent), DANGER (warning/destructive, typically red), etc. If not provided, primaryAction defaults to PRIMARY and secondaryAction defaults to SECONDARY.',
             },
-            { content: 'ButtonType', hintText: 'enum' },
+            {
+                content: 'ButtonType',
+                hintText:
+                    'Enum that determines the visual style variant of the button',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.size',
-                hintText: 'Size of the button',
+                hintText:
+                    'Optional ButtonSize enum value that controls the physical dimensions of the button. Common values include SMALL, MEDIUM, LARGE. Size affects padding, font size, and overall height. If not provided, uses default button size.',
             },
-            { content: 'ButtonSize', hintText: 'enum' },
+            {
+                content: 'ButtonSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the button',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.onClick',
+                hintText:
+                    'Required callback function invoked when the button is clicked. Receives no parameters. Use this to perform the action associated with the button, such as form submission, data processing, or navigation. Typically, the modal should be closed after the action completes (call onClose).',
+            },
+            {
+                content: '() => void',
                 hintText: 'Function called when button is clicked',
             },
-            { content: '() => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.disabled',
-                hintText: 'Whether the button is disabled',
+                hintText:
+                    "When true, disables the button, making it non-clickable and visually muted. Disabled buttons show reduced opacity and cannot be clicked. Useful for preventing actions when prerequisites aren't met or during validation. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables button, false allows normal button interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.loading',
-                hintText: 'Whether the button shows loading state',
+                hintText:
+                    'When true, displays a loading indicator on the button and typically disables interaction. The button shows a spinner or loading animation, indicating that an async operation is in progress. Useful for API calls or form submissions. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows loading state, false shows normal button state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.leadingIcon',
-                hintText: 'Icon displayed before the button text',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed before the button text. Icons help users quickly identify the action. Common examples include Check, Save, Trash, or X icons. The icon is properly spaced from the text.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed before button text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'ModalButtonAction.trailingIcon',
-                hintText: 'Icon displayed after the button text',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed after the button text. Icons help users understand the action or indicate direction (e.g., arrow icons for navigation). The icon is properly spaced from the text.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed after button text',
+            },
             { content: '' },
         ],
     ]}

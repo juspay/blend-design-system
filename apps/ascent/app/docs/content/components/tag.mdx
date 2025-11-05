@@ -36,39 +36,48 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'text',
-                hintText: 'The text content displayed in the tag',
+                content: 'Tag.text',
+                hintText:
+                    'Required string representing the text content displayed in the tag. Should be concise and descriptive, clearly identifying the label, category, or status (e.g., "Success", "Pending", "New"). The text is styled based on the variant and color props.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
-        ],
-        [
-            { content: 'variant', hintText: 'The visual variant of the tag' },
-            { content: 'TagVariant', hintText: 'enum' },
-            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
-            { content: 'TagVariant.SUBTLE' },
-        ],
-        [
-            { content: 'color', hintText: 'The color theme of the tag' },
-            { content: 'TagColor', hintText: 'enum' },
-            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
-            { content: 'TagColor.PRIMARY' },
-        ],
-        [
-            { content: 'size', hintText: 'The size of the tag' },
-            { content: 'TagSize', hintText: 'enum' },
-            { content: 'XS, SM, MD, LG' },
-            { content: 'TagSize.SM' },
         ],
         [
             {
-                content: 'shape',
-                hintText: 'The border radius shape of the tag',
+                content: 'Tag.variant',
+                hintText:
+                    'Optional TagVariant enum value that determines the visual variant of the tag. NO_FILL creates a tag with transparent background and colored border/text, ATTENTIVE creates a tag with solid background and white/bold text, SUBTLE creates a tag with light background and colored text. The variant affects the overall appearance and emphasis. Defaults to SUBTLE.',
+            },
+            { content: 'TagVariant', hintText: 'enum' },
+            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
+        ],
+        [
+            {
+                content: 'Tag.color',
+                hintText:
+                    'Optional TagColor enum value that determines the color theme of the tag. NEUTRAL creates a gray tag, PRIMARY creates a primary brand color tag, SUCCESS creates a green tag, ERROR creates a red tag, WARNING creates an orange tag, PURPLE creates a purple tag. The color works with the variant to create the final appearance. Defaults to PRIMARY.',
+            },
+            { content: 'TagColor', hintText: 'enum' },
+            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
+        ],
+        [
+            {
+                content: 'Tag.size',
+                hintText:
+                    'Optional TagSize enum value that determines the size variant affecting dimensions, padding, and font size. XS creates an extra-small tag, SM creates a small tag, MD creates a medium tag, LG creates a large tag. The size affects the overall tag dimensions and text size. Defaults to SM.',
+            },
+            { content: 'TagSize', hintText: 'enum' },
+            { content: 'XS, SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'Tag.shape',
+                hintText:
+                    'Optional TagShape enum value that determines the border radius shape of the tag. ROUNDED creates tags with rounded corners, SQUARICAL creates tags with square/sharp corners. The shape affects the visual style and should be chosen based on design system requirements. Defaults to SQUARICAL.',
             },
             { content: 'TagShape', hintText: 'enum' },
             { content: 'ROUNDED, SQUARICAL' },
-            { content: 'TagShape.SQUARICAL' },
         ],
         [
             {
@@ -76,7 +85,6 @@ function MyComponent() {
                 hintText: 'Content displayed before the text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
             { content: '' },
         ],
         [
@@ -86,12 +94,10 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: '' },
         ],
         [
             { content: 'onClick', hintText: 'Click handler function' },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
             { content: '' },
         ],
         [
@@ -100,7 +106,6 @@ function MyComponent() {
                 hintText: 'Position for split tag styling',
             },
             { content: "'left' | 'right'", hintText: 'string union' },
-            { content: '' },
             { content: '' },
         ],
     ]}

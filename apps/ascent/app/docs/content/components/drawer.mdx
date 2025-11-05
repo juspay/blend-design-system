@@ -98,468 +98,608 @@ function MyComponent() {
         [
             {
                 content: 'Drawer.open',
-                hintText: 'Controls whether the drawer is visible',
+                hintText:
+                    'Optional boolean that controls whether the drawer is visible. When true, the drawer slides in from the specified direction. When false, the drawer is hidden. Use this for controlled drawer state management. If not provided, the drawer manages its own state internally.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText: 'true shows drawer, false hides drawer',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.onOpenChange',
                 hintText:
-                    'Callback function called when the drawer open state changes',
+                    'Optional callback function invoked when the drawer open state changes (when user opens or closes it). Receives a boolean indicating the new open state. Required when using controlled mode with the open prop. Use this to synchronize drawer state with your application state.',
             },
-            { content: '(open: boolean) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(open: boolean) => void',
+                hintText:
+                    'Function called with new open state when drawer visibility changes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.direction',
-                hintText: 'The direction from which the drawer slides in',
+                hintText:
+                    'Optional direction string that determines from which side of the screen the drawer slides in. Options: "top" (slides down from top), "bottom" (slides up from bottom), "left" (slides in from left), "right" (slides in from right). Bottom drawers are common for mobile patterns. Defaults to "bottom".',
             },
             {
                 content: "'top' | 'bottom' | 'left' | 'right'",
-                hintText: 'union type',
+                hintText: 'Union type defining the slide-in direction',
             },
-            { content: '' },
-            { content: "'bottom'" },
+            { content: 'top, bottom, left, right' },
         ],
         [
             {
                 content: 'Drawer.showHandle',
                 hintText:
-                    'Whether to show the drag handle (bottom/top drawers only)',
+                    'When true, displays a drag handle (typically a horizontal bar) at the top or bottom of the drawer, depending on direction. The handle is only shown for top/bottom drawers and allows users to drag the drawer to resize or dismiss it. Useful for mobile interactions. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows drag handle, false hides drag handle',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'Drawer.handle',
-                hintText: 'Custom handle element to replace the default handle',
+                hintText:
+                    'Optional custom React element to replace the default drag handle. Allows full customization of the handle appearance, including icons, text, or custom styling. If provided, showHandle should typically be true. Useful for branding or special handle designs.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText: 'Custom React element to use as the drag handle',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.modal',
-                hintText: 'Whether the drawer should be modal with overlay',
+                hintText:
+                    'When true, the drawer displays with a backdrop overlay that dims the background content and prevents interaction with elements behind it. When false, the drawer appears without an overlay, allowing background interaction. Modal drawers are typically used for important actions. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows overlay and prevents background interaction, false allows background interaction',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'Drawer.dismissible',
                 hintText:
-                    'Whether the drawer can be dismissed by clicking outside',
+                    'When true, users can dismiss the drawer by clicking on the overlay/backdrop or pressing the Escape key. When false, the drawer can only be closed programmatically or via a close button. Useful for preventing accidental dismissal of important drawers. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows dismissal via overlay/Escape, false requires explicit close action',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'Drawer.nested',
                 hintText:
-                    'Whether the drawer should be nested for stacking effect',
+                    'When true, enables nested drawer support for stacking multiple drawers on top of each other. Creates a visual stacking effect where subsequent drawers appear above previous ones with proper z-index management. Useful for multi-level navigation or workflows. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables drawer stacking, false uses single drawer behavior',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'Drawer.snapPoints',
-                hintText: 'Custom snap points for the drawer (bottom/top only)',
+                hintText:
+                    'Optional array of snap point values (strings or numbers) that define discrete positions where the drawer can "snap" when dragged. Only applies to top/bottom drawers. Values can be percentages (e.g., "50%") or pixel values. Useful for creating drawer states like "half-open" or "three-quarters open".',
             },
-            { content: '(string | number)[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: '(string | number)[]',
+                hintText:
+                    'Array of snap point values as strings (percentages) or numbers (pixels)',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.activeSnapPoint',
-                hintText: 'Active snap point index or value',
+                hintText:
+                    'Optional value that specifies which snap point is currently active. Can be a number (index into snapPoints array), a string (matching a snap point value), or null (no snap point active). Use with onSnapPointChange for controlled snap point management.',
             },
-            { content: 'number | string | null', hintText: 'union type' },
-            { content: '' },
+            {
+                content: 'number | string | null',
+                hintText:
+                    'Index, snap point value, or null for current active snap point',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.onSnapPointChange',
-                hintText: 'Callback when snap point changes',
+                hintText:
+                    'Optional callback function invoked when the drawer snaps to a different snap point during drag interactions. Receives the new active snap point (number, string, or null). Use this to track snap point changes and update your application state accordingly.',
             },
             {
                 content: '(activeSnapPoint: number | string | null) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with new active snap point when it changes',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.fadeFromIndex',
-                hintText: 'Index from which the drawer should fade',
+                hintText:
+                    'Optional number specifying the index in the snapPoints array from which the drawer content should start fading out. Content before this index is fully opaque, content after gradually fades. Useful for creating visual depth or indicating additional content is available.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
+            {
+                content: 'number',
+                hintText: 'Index in snapPoints array where fade effect begins',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.snapToSequentialPoint',
                 hintText:
-                    'Disable velocity-based snapping for sequential navigation',
+                    'When true, disables velocity-based snapping and forces sequential navigation through snap points. Users must drag through each snap point in order rather than jumping based on drag velocity. Useful for ensuring users experience all intermediate states. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true forces sequential snapping, false allows velocity-based snapping',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'Drawer.mobileOffset',
                 hintText:
-                    'Custom mobile offset values overriding token defaults',
+                    'Optional object with top, bottom, left, and/or right properties (strings) that override the default positioning offsets on mobile devices. Allows fine-tuning drawer position for specific mobile layouts or design requirements. Each property accepts CSS values (e.g., "20px", "10%").',
             },
             {
                 content:
                     '{ top?: string; bottom?: string; left?: string; right?: string }',
-                hintText: 'object',
+                hintText:
+                    'Object with optional CSS offset values for mobile positioning',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'Drawer.children',
-                hintText: 'Drawer trigger and content components',
+                hintText:
+                    'Required React elements representing the drawer trigger (DrawerTrigger) and content structure (DrawerPortal containing DrawerOverlay and DrawerContent). The children define the complete drawer structure including what opens it and what content it displays.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements for trigger and drawer content structure',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerTrigger.children',
-                hintText: 'The trigger element',
+                hintText:
+                    'Required React element that serves as the clickable trigger to open the drawer. Typically a Button component, but can be any interactive element. When clicked, it opens the drawer. The trigger element should be visually clear that it opens a drawer.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically a button) that opens the drawer when clicked',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerTrigger.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the trigger element. Useful for custom styling, positioning, or integrating with existing CSS frameworks. The class is added to the trigger wrapper element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the trigger element',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerTrigger.disabled',
-                hintText: 'Whether the trigger is disabled',
+                hintText:
+                    "When true, disables the trigger element, preventing it from opening the drawer. The trigger appears visually disabled (reduced opacity, non-clickable). Useful for preventing drawer opening when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables trigger, false allows normal trigger interaction',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'DrawerTrigger.onClick',
-                hintText: 'Custom click handler',
+                hintText:
+                    'Optional custom click handler function that executes before the default drawer opening behavior. Receives no parameters. Use this to perform additional actions when the trigger is clicked, such as logging, validation, or state updates.',
             },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when trigger is clicked, before drawer opens',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerPortal.children',
-                hintText: 'DrawerOverlay and DrawerContent components',
+                hintText:
+                    'Required React elements that should be rendered in a portal (typically DrawerOverlay and DrawerContent). The portal ensures these elements are rendered outside the normal DOM hierarchy, usually at the document body level, preventing z-index and overflow issues.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (overlay and content) to render in a portal',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerOverlay.className',
-                hintText: 'Additional CSS class for the overlay',
+                hintText:
+                    'Optional CSS class name string applied to the backdrop overlay element. Useful for custom styling the overlay appearance, such as changing opacity, background color, or adding animations. The overlay appears behind the drawer content.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the overlay backdrop',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.direction',
-                hintText: 'Override drawer direction for this content',
+                hintText:
+                    'Optional direction string that overrides the drawer direction set on the Drawer component. Allows different content sections to have different directions, though typically matches the parent Drawer direction. Options: "top", "bottom", "left", "right". Defaults to "bottom".',
             },
             {
                 content: "'top' | 'bottom' | 'left' | 'right'",
-                hintText: 'union type',
+                hintText:
+                    'Union type defining the slide-in direction for this content',
             },
-            { content: '' },
-            { content: "'bottom'" },
+            { content: 'top, bottom, left, right' },
         ],
         [
             {
                 content: 'DrawerContent.showHandle',
-                hintText: 'Whether to show the drag handle',
+                hintText:
+                    'When true, displays the drag handle on this content section. Overrides the parent Drawer showHandle prop for this specific content. Useful for showing handles only on certain drawer sections. Only applies to top/bottom drawers. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows drag handle on this content, false hides it',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'DrawerContent.handle',
-                hintText: 'Custom handle element',
+                hintText:
+                    'Optional custom React element to replace the default drag handle for this content section. Overrides the parent Drawer handle prop. Allows per-section handle customization. If provided, showHandle should typically be true.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Custom React element to use as the drag handle for this content',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.width',
-                hintText: 'Fixed width for left/right drawers',
+                hintText:
+                    'Optional fixed width value (string or number) for left/right drawers. Accepts CSS values like "300px", "50%", or numeric values in pixels. When provided, the drawer maintains this exact width. Useful for consistent drawer sizing.',
             },
-            { content: 'string | number', hintText: 'CSS value' },
-            { content: '' },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS width value (string with units) or number (pixels)',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.maxWidth',
-                hintText: 'Maximum width for left/right drawers',
+                hintText:
+                    'Optional maximum width constraint (string or number) for left/right drawers. The drawer will not grow beyond this width. Accepts CSS values like "500px", "80%", or numeric values in pixels. Useful for preventing drawers from becoming too wide.',
             },
-            { content: 'string | number', hintText: 'CSS value' },
-            { content: '' },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS max-width value (string with units) or number (pixels)',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.mobileOffset',
-                hintText: 'Custom mobile positioning offsets',
+                hintText:
+                    'Optional object with top, bottom, left, and/or right properties (strings) that override mobile positioning offsets for this content section. Overrides the parent Drawer mobileOffset. Allows fine-grained mobile positioning control per section.',
             },
             {
                 content:
                     '{ top?: string; bottom?: string; left?: string; right?: string }',
-                hintText: 'object',
+                hintText:
+                    'Object with optional CSS offset values for mobile positioning',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.className',
-                hintText: 'Additional CSS class for the content',
+                hintText:
+                    'Optional CSS class name string applied to the drawer content container. Useful for custom styling, animations, or integrating with CSS frameworks. The class is applied to the main content wrapper element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the content container',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.style',
-                hintText: 'Custom styles for the content',
+                hintText:
+                    "Optional React.CSSProperties object for inline styles on the drawer content container. Allows dynamic styling based on runtime state. Useful for programmatic styling that can't be achieved with className. Inline styles take precedence over className styles.",
             },
-            { content: 'React.CSSProperties', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'React.CSSProperties',
+                hintText: 'Object with CSS properties for inline styling',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerContent.children',
-                hintText: 'Content to display inside the drawer',
+                hintText:
+                    'Required React elements representing the content to display inside the drawer. Typically includes DrawerHeader, DrawerBody, and DrawerFooter components, but can be any custom content structure.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'React elements for drawer content structure',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerHeader.children',
                 hintText:
-                    'Header content (typically DrawerTitle and DrawerDescription)',
+                    'Required React elements for the drawer header section. Typically contains DrawerTitle and DrawerDescription components, but can include any custom header content like icons, badges, or action buttons.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (typically title and description) for header content',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerHeader.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the header container. Useful for custom header styling, spacing adjustments, or layout modifications. The class is applied to the header wrapper element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the header container',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerTitle.children',
-                hintText: 'Title text',
+                hintText:
+                    "Required React element (typically a string) representing the main title text displayed in the drawer header. Should be concise and descriptive, clearly indicating the drawer's purpose or content. Styled as a prominent heading.",
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element (typically text) for the drawer title',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerTitle.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the title element. Useful for custom title styling, font adjustments, or color modifications. The class is applied to the title text element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the title element',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerDescription.children',
-                hintText: 'Description text',
+                hintText:
+                    "Required React element (typically a string) representing the description text displayed below the title in the drawer header. Provides additional context, instructions, or explanation about the drawer's purpose. Styled as secondary text.",
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically text) for the drawer description',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerDescription.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the description element. Useful for custom description styling, font size adjustments, or color modifications. The class is applied to the description text element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the description element',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerBody.overflowY',
-                hintText: 'Vertical overflow behavior for the drawer body',
+                hintText:
+                    'Optional string that controls vertical overflow behavior for the drawer body content. "auto" shows scrollbar when needed, "hidden" hides overflow, "scroll" always shows scrollbar, "visible" allows content to overflow. Useful for managing long content. Defaults to "auto".',
             },
             {
                 content: "'auto' | 'hidden' | 'scroll' | 'visible'",
-                hintText: 'union type',
+                hintText: 'Union type defining CSS overflow-y behavior',
             },
-            { content: '' },
-            { content: "'auto'" },
+            { content: 'auto, hidden, scroll, visible' },
         ],
         [
             {
                 content: 'DrawerBody.noPadding',
-                hintText: 'Whether to remove default padding from the body',
+                hintText:
+                    'When true, removes the default padding from the drawer body, allowing content to extend to the edges. When false, the body has standard padding. Useful for full-width content like images or custom layouts. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true removes padding, false applies default padding',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'DrawerBody.hasFooter',
                 hintText:
-                    'Whether the drawer has a footer (affects border radius)',
+                    'When true, indicates that the drawer has a footer section, which affects the border radius styling of the body (bottom corners are not rounded when footer is present). When false, the body may have rounded bottom corners. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true indicates footer exists (affects border radius), false indicates no footer',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'DrawerBody.direction',
-                hintText: 'The direction of the drawer (affects border radius)',
+                hintText:
+                    'Optional direction string that affects border radius styling of the body based on drawer orientation. The direction determines which corners are rounded. Options: "top", "bottom", "left", "right". Defaults to "bottom".',
             },
             {
                 content: "'top' | 'bottom' | 'left' | 'right'",
-                hintText: 'union type',
+                hintText:
+                    'Union type defining drawer direction for border radius calculation',
             },
-            { content: '' },
-            { content: "'bottom'" },
+            { content: 'top, bottom, left, right' },
         ],
         [
             {
                 content: 'DrawerBody.className',
-                hintText: 'Additional CSS class for the body',
+                hintText:
+                    'Optional CSS class name string applied to the body container. Useful for custom body styling, spacing, or layout modifications. The class is applied to the body wrapper element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the body container',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerBody.children',
-                hintText: 'Content to display in the drawer body',
+                hintText:
+                    'Required React elements representing the main content to display in the drawer body. This is the primary content area and can contain any custom components, forms, lists, or other interactive elements.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'React elements for the main drawer body content',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerFooter.children',
-                hintText: 'Footer content (typically action buttons)',
+                hintText:
+                    'Required React elements for the drawer footer section. Typically contains action buttons (like "Save", "Cancel", "Confirm") wrapped in DrawerClose components, but can include any footer content.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (typically action buttons) for footer content',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerFooter.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the footer container. Useful for custom footer styling, spacing, or layout modifications. The class is applied to the footer wrapper element.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the footer container',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerFooter.direction',
-                hintText: 'The direction of the drawer (affects border radius)',
+                hintText:
+                    'Optional direction string that affects border radius styling of the footer based on drawer orientation. The direction determines which corners are rounded. Options: "top", "bottom", "left", "right". Defaults to "bottom".',
             },
             {
                 content: "'top' | 'bottom' | 'left' | 'right'",
-                hintText: 'union type',
+                hintText:
+                    'Union type defining drawer direction for border radius calculation',
             },
-            { content: '' },
-            { content: "'bottom'" },
+            { content: 'top, bottom, left, right' },
         ],
         [
             {
                 content: 'DrawerClose.children',
-                hintText: 'Close button content',
+                hintText:
+                    'Required React element (typically a Button component) that serves as the close button. When clicked, it closes the drawer. The button should be visually clear that it closes the drawer. Often styled as a secondary or tertiary button.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically a button) that closes the drawer when clicked',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'DrawerClose.className',
-                hintText: 'Additional CSS class',
+                hintText:
+                    'Optional CSS class name string applied to the close button wrapper. Useful for custom close button styling or positioning. The class is applied to the wrapper element around the close button.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to the close button wrapper',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'DrawerClose.disabled',
-                hintText: 'Whether the close button is disabled',
+                hintText:
+                    'When true, disables the close button, preventing it from closing the drawer. The button appears visually disabled. Useful for preventing drawer closure during critical operations or when validation is required. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables close button, false allows normal close functionality',
+            },
             { content: '' },
-            { content: 'false' },
         ],
     ]}
     className="mb-8"

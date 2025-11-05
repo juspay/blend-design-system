@@ -44,75 +44,102 @@ function MyComponent() {
         [
             {
                 content: 'code',
-                hintText: 'The code string to display',
+                hintText:
+                    'Required string containing the code to display in the code block. The code is rendered with syntax highlighting, line numbers (if enabled), and proper formatting. For diff variant, use diffLines instead. The code string should contain the complete source code to be displayed.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Source code text to display in the code block',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'variant',
-                hintText: 'The visual variant of the code block',
+                hintText:
+                    'Controls the visual style and behavior of the code block. DEFAULT shows standard code with gutter and line numbers, NO_GUTTER removes the line number gutter for cleaner appearance, DIFF displays code changes with added/removed line highlighting. Defaults to DEFAULT.',
             },
-            { content: 'CodeBlockVariant', hintText: 'enum' },
+            {
+                content: 'CodeBlockVariant',
+                hintText:
+                    'Enum that determines the visual style and layout of the code block',
+            },
             { content: 'DEFAULT, NO_GUTTER, DIFF' },
-            { content: 'CodeBlockVariant.DEFAULT' },
         ],
         [
             {
                 content: 'showLineNumbers',
-                hintText: 'Whether to show line numbers',
+                hintText:
+                    'Optional flag to explicitly control line number display. When true, shows line numbers in the gutter. When false, hides them. When undefined, line numbers are shown for DEFAULT variant and hidden for NO_GUTTER variant. DIFF variant always shows line numbers.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText: 'true shows line numbers, false hides them',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'showHeader',
-                hintText: 'Whether to show the header section',
+                hintText:
+                    'When true, displays the header section with title, slots, and copy button. When false, hides the header completely, showing only the code content. Useful for embedded code blocks where header is handled separately. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows header section, false hides header completely',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'header',
-                hintText: 'Header text displayed in the code block header',
+                hintText:
+                    'Optional text string displayed as the header title in the code block header. Typically shows the filename, language, or description of the code. If not provided and showHeader is true, defaults to "Header".',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content for the code block header title',
+            },
             { content: '' },
-            { content: "'Header'" },
         ],
         [
             {
                 content: 'headerLeftSlot',
-                hintText: 'Custom content slot on the left side of header',
+                hintText:
+                    'Optional React element displayed on the left side of the header, before the header text. Useful for adding file type icons, language indicators, or other visual elements that should appear at the start of the header.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the left side of the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'headerRightSlot',
                 hintText:
-                    'Custom content slot on the right side of header (before copy button)',
+                    'Optional React element displayed on the right side of the header, after the header text but before the copy button. Useful for adding action buttons, badges, or other controls that should appear in the header before the copy functionality.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the right side of the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'diffLines',
                 hintText:
-                    'Array of diff lines for diff view (required when variant is DIFF)',
+                    'Required array of DiffLine objects when variant is DIFF. Each object should have content (line text) and type (ADDED, REMOVED, or UNCHANGED). The diff view highlights added lines in green and removed lines in red, with appropriate gutter styling. Overrides the code prop when provided.',
             },
-            { content: 'DiffLine[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: 'DiffLine[]',
+                hintText:
+                    'Array of objects with content and type (ADDED, REMOVED, UNCHANGED) properties',
+            },
             { content: '' },
         ],
     ]}

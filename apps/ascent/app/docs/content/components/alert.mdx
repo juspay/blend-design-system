@@ -49,80 +49,122 @@ function MyComponent() {
         [
             {
                 content: 'heading',
-                hintText: 'The main title text of the alert',
+                hintText:
+                    'Required main heading text displayed prominently at the top of the alert. This is the primary message title that should be concise and attention-grabbing.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Main title text that appears at the top of the alert component',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'description',
-                hintText: 'The descriptive text content of the alert',
+                hintText:
+                    'Required descriptive text that provides detailed information about the alert message. This appears below the heading and should explain the context, consequences, or next steps.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Detailed description text displayed below the heading',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
-            { content: 'variant', hintText: 'The visual variant of the alert' },
-            { content: 'AlertVariant', hintText: 'enum' },
+            {
+                content: 'variant',
+                hintText:
+                    'Defines the color scheme and semantic meaning of the alert. PRIMARY (blue), SUCCESS (green), WARNING (yellow), ERROR (red), PURPLE, ORANGE, and NEUTRAL (gray) provide different visual cues for different types of messages. Defaults to PRIMARY.',
+            },
+            {
+                content: 'AlertVariant',
+                hintText:
+                    'Enum that determines the color scheme and semantic styling',
+            },
             {
                 content:
                     'PRIMARY, SUCCESS, WARNING, ERROR, PURPLE, ORANGE, NEUTRAL',
             },
-            { content: 'AlertVariant.PRIMARY' },
         ],
         [
-            { content: 'style', hintText: 'The visual style of the alert' },
-            { content: 'AlertStyle', hintText: 'enum' },
+            {
+                content: 'style',
+                hintText:
+                    'Controls the visual treatment of the alert background. SUBTLE uses a light background with borders, while NO_FILL removes background fill for a more minimal appearance. Defaults to SUBTLE.',
+            },
+            {
+                content: 'AlertStyle',
+                hintText:
+                    'Enum that controls background styling and visual treatment',
+            },
             { content: 'SUBTLE, NO_FILL' },
-            { content: 'AlertStyle.SUBTLE' },
         ],
         [
             {
                 content: 'primaryAction',
-                hintText: 'Primary action button configuration',
+                hintText:
+                    'Configuration object for the primary action button. Contains label (button text) and onClick (callback function). When provided, displays a prominent action button that users can click to perform the main action related to the alert.',
             },
-            { content: 'AlertAction', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'AlertAction',
+                hintText:
+                    'Object with { label: string, onClick: () => void } properties',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'secondaryAction',
-                hintText: 'Secondary action button configuration',
+                hintText:
+                    'Configuration object for the secondary action button. Contains label (button text) and onClick (callback function). When provided, displays a less prominent action button for alternative actions or cancellation.',
             },
-            { content: 'AlertAction', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'AlertAction',
+                hintText:
+                    'Object with { label: string, onClick: () => void } properties',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onClose',
-                hintText: 'Callback function when close button is clicked',
+                hintText:
+                    'Optional callback function invoked when the close (X) button is clicked. Providing this prop automatically shows a close button in the alert header, allowing users to dismiss the alert.',
             },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when the user clicks the close button',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'icon',
-                hintText: 'Custom icon displayed at the start of the alert',
+                hintText:
+                    'Optional custom icon or React element displayed at the start of the alert, before the heading. Useful for adding visual context or brand-specific icons. If not provided, the alert may use default icons based on the variant.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element (icon, image, or custom component) to display at the start',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'actionPlacement',
-                hintText: 'Position of action buttons relative to content',
+                hintText:
+                    'Controls where action buttons are positioned relative to the alert content. RIGHT places buttons horizontally next to the content (default), BOTTOM stacks buttons vertically below the content. Automatically switches to BOTTOM if only close button is present.',
             },
-            { content: 'AlertActionPlacement', hintText: 'enum' },
+            {
+                content: 'AlertActionPlacement',
+                hintText:
+                    'Enum that determines the layout position of action buttons',
+            },
             { content: 'BOTTOM, RIGHT' },
-            { content: 'AlertActionPlacement.RIGHT' },
         ],
     ]}
     className="mb-8"

@@ -43,59 +43,85 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'primaryTag',
-                hintText: 'The primary tag configuration',
+                content: 'SplitTag.primaryTag',
+                hintText:
+                    'Required TagProps object (excluding splitTagPosition, size, and shape) that configures the primary tag displayed on the left side of the split tag. The primary tag typically shows the main label or category (e.g., "Status", "Type"). The splitTagPosition is automatically set to "left" and the variant is set to NO_FILL. Contains: text (required string), variant (optional TagVariant), color (optional TagColor), leftSlot (optional ReactNode), rightSlot (optional ReactNode), and onClick (optional callback).',
             },
             {
                 content:
                     'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
-                hintText: 'object',
+                hintText:
+                    'Object with tag configuration properties (see TagProps below)',
             },
-            { content: '' },
-            { content: 'Required' },
+            {
+                content: 'TagProps: see Tag component props',
+            },
         ],
         [
             {
-                content: 'secondaryTag',
-                hintText: 'The secondary tag configuration (optional)',
+                content: 'SplitTag.secondaryTag',
+                hintText:
+                    'Optional TagProps object (excluding splitTagPosition, size, and shape) that configures the secondary tag displayed on the right side of the split tag. The secondary tag typically shows a status or value (e.g., "Active", "Pending"). The splitTagPosition is automatically set to "right" and the variant is set to ATTENTIVE. Contains: text (required string), variant (optional TagVariant), color (optional TagColor), leftSlot (optional ReactNode), rightSlot (optional ReactNode), and onClick (optional callback). If not provided, only the primary tag is displayed.',
             },
             {
                 content:
                     'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
-                hintText: 'object',
+                hintText:
+                    'Object with tag configuration properties (see TagProps below)',
             },
-            { content: '' },
+            {
+                content: 'TagProps: see Tag component props',
+            },
+        ],
+        [
+            {
+                content: 'SplitTag.leadingSlot',
+                hintText:
+                    'Optional React element displayed before the tags (on the left side). Can be used for icons, badges, or other content that appears before the split tag. The slot maintains proper spacing and alignment with the tags. Useful for adding visual context or additional information.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed before the split tag',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'leadingSlot',
-                hintText: 'Content to display before the tags',
+                content: 'SplitTag.trailingSlot',
+                hintText:
+                    'Optional React element displayed after the tags (on the right side). Can be used for icons, badges, or other content that appears after the split tag. The slot maintains proper spacing and alignment with the tags. Useful for adding visual context or additional information.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed after the split tag',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'trailingSlot',
-                hintText: 'Content to display after the tags',
+                content: 'SplitTag.size',
+                hintText:
+                    'Optional TagSize enum value that determines the size variant affecting dimensions, padding, and font size of both tags in the split tag. XS creates an extra-small split tag, SM creates a small size, MD creates a medium size, LG creates a large size. The size applies to both primary and secondary tags. If not provided, uses default tag size.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            { content: 'size', hintText: 'The size of the split tag' },
-            { content: 'TagSize', hintText: 'enum' },
+            {
+                content: 'TagSize',
+                hintText:
+                    'Enum that determines the size variant of the split tag',
+            },
             { content: 'XS, SM, MD, LG' },
-            { content: '' },
         ],
         [
-            { content: 'shape', hintText: 'The shape of the split tag' },
-            { content: 'TagShape', hintText: 'enum' },
+            {
+                content: 'SplitTag.shape',
+                hintText:
+                    'Optional TagShape enum value that determines the border radius shape of both tags in the split tag. ROUNDED creates tags with rounded corners, SQUARICAL creates tags with square corners. The shape applies to both primary and secondary tags, with the split tag automatically adjusting border radius where the tags meet. If not provided, uses default tag shape.',
+            },
+            {
+                content: 'TagShape',
+                hintText:
+                    'Enum that determines the shape variant of the split tag',
+            },
             { content: 'ROUNDED, SQUARICAL' },
-            { content: '' },
         ],
     ]}
     className="mb-8"

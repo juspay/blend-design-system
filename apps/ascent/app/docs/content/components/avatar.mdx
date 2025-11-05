@@ -39,74 +39,103 @@ function MyComponent() {
         [
             {
                 content: 'src',
-                hintText: 'The source URL of the avatar image',
+                hintText:
+                    'Optional URL string pointing to the avatar image source. If provided and the image loads successfully, it will be displayed. If the image fails to load or src is not provided, the component falls back to initials or custom fallback content.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'URL path to the image file to display as the avatar',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'alt',
                 hintText:
-                    'Alternative text for the avatar image, also used for initials fallback',
+                    'Optional alternative text for accessibility and fallback purposes. Used as the image alt attribute for screen readers. If no image is available or image loading fails, the alt text is parsed to extract initials (first letters of each word) as a fallback display. Defaults to empty string.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Accessibility text and source for generating initials fallback',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'fallback',
-                hintText: 'Custom fallback content when image fails to load',
+                hintText:
+                    'Optional custom React element or string to display when the image fails to load or src is not provided. If provided, this takes precedence over auto-generated initials. Can be a string (truncated to 2 characters), icon, or any custom React component.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Custom content to display when image is unavailable or fails to load',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'size',
-                hintText: 'The size variant of the avatar',
+                hintText:
+                    'Controls the dimensions of the avatar. Options range from XS (extra small, ~16px) to XL (extra large, ~64px), with MD (medium, ~40px) as the default. Size affects both the avatar container and any text/initials displayed within.',
             },
-            { content: 'AvatarSize', hintText: 'enum' },
+            {
+                content: 'AvatarSize',
+                hintText:
+                    'Enum that determines the width and height dimensions of the avatar',
+            },
             { content: 'XS, SM, MD, LG, XL' },
-            { content: 'AvatarSize.MD' },
         ],
         [
             {
                 content: 'shape',
-                hintText: 'The shape variant of the avatar',
+                hintText:
+                    'Defines the border radius shape of the avatar. CIRCULAR creates a perfect circle (100% border-radius), while ROUNDED uses a moderate border-radius for rounded rectangles. Defaults to CIRCULAR.',
             },
-            { content: 'AvatarShape', hintText: 'enum' },
+            {
+                content: 'AvatarShape',
+                hintText:
+                    'Enum that controls the border-radius styling of the avatar',
+            },
             { content: 'CIRCULAR, ROUNDED' },
-            { content: 'AvatarShape.CIRCULAR' },
         ],
         [
             {
                 content: 'online',
-                hintText: 'Whether to show the online status indicator',
+                hintText:
+                    'When true, displays a small status indicator (typically a colored dot or ring) on the avatar to show online/active status. The indicator appears in a corner position and uses variant-specific styling. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows online status indicator, false hides it',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'leadingSlot',
-                hintText: 'Content to display before the avatar',
+                hintText:
+                    'Optional React element displayed before (to the left of) the avatar. Useful for adding icons, badges, or other elements that should appear before the avatar in the layout. When provided, the avatar is wrapped in a container with proper spacing.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element to display before the avatar element',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'trailingSlot',
-                hintText: 'Content to display after the avatar',
+                hintText:
+                    'Optional React element displayed after (to the right of) the avatar. Useful for adding icons, badges, labels, or other elements that should appear after the avatar in the layout. When provided, the avatar is wrapped in a container with proper spacing.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element to display after the avatar element',
+            },
             { content: '' },
         ],
     ]}

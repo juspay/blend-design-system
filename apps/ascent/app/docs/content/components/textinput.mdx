@@ -44,176 +44,177 @@ function MyComponent() {
         [
             {
                 content: 'TextInput.value',
-                hintText: 'Current value of the input field',
+                hintText:
+                    'Required string representing the current value of the input field. Use this for controlled input where the value is managed by your component state. The value should be updated via the onChange callback. For uncontrolled usage, omit this prop and use defaultValue instead.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'TextInput.onChange',
-                hintText: 'Callback when input value changes',
+                hintText:
+                    'Required callback function invoked when the input value changes. Receives a React ChangeEvent with the input element. Use this to update your state when using controlled mode. The function is called on every keystroke, paste, or programmatic change. The event target value contains the new input value.',
             },
             {
                 content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'TextInput.label',
-                hintText: 'Primary label for the input field',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what the input is for (e.g., "Email Address", "Password", "Username"). The label is styled prominently and supports floating label behavior on mobile devices. Should be concise and descriptive.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.sublabel',
-                hintText: 'Secondary label or description',
+                hintText:
+                    'Optional secondary label string displayed below the primary label. Provides additional context, explanation, or clarification about the input (e.g., "Required for account creation", "Must be at least 8 characters"). Styled with smaller, lighter text than the primary label.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.placeholder',
-                hintText: 'Placeholder text shown when input is empty',
+                hintText:
+                    'Optional placeholder string shown when the input is empty. Provides a hint about what to enter (e.g., "Enter your email", "Type your message"). The placeholder disappears when the user starts typing or when the input has a value. On mobile devices with floating labels, the placeholder may be hidden when the input is focused. Defaults to "Enter" if not provided.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: "'Enter'" },
         ],
         [
             {
                 content: 'TextInput.size',
-                hintText: 'Size variant of the input field',
+                hintText:
+                    'Optional TextInputSize enum value that determines the size variant affecting dimensions, padding, font size, and border radius. SMALL creates a compact input, MEDIUM creates a standard size, LARGE creates a larger input. The size affects the overall input dimensions and text size. Defaults to MEDIUM.',
             },
             { content: 'TextInputSize', hintText: 'enum' },
             { content: 'SMALL, MEDIUM, LARGE' },
-            { content: 'TextInputSize.MEDIUM' },
+            { content: '' },
         ],
         [
             {
                 content: 'TextInput.error',
-                hintText: 'Whether the input is in error state',
+                hintText:
+                    'When true, displays the input in an error state with red border and error styling. Useful for form validation feedback when the input value is invalid or missing (for required inputs). When true, the errorMessage (if provided) is displayed below the input. Defaults to false.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'TextInput.errorMessage',
-                hintText: 'Error message to display when in error state',
+                hintText:
+                    'Optional error message string displayed below the input when error is true. Provides specific feedback about what went wrong (e.g., "Email is required", "Password must be at least 8 characters"). The error message is styled with red text and appears below the input, replacing the hintText if both are provided.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.hintText',
-                hintText: 'Helper text displayed below the input',
+                hintText:
+                    'Optional helper text string displayed below the input. Provides guidance, instructions, or additional context about the input (e.g., "We\'ll never share your email", "Minimum 8 characters"). The hint text is styled with lighter text and appears below the input. It is hidden when error is true and errorMessage is provided.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.helpIconHintText',
-                hintText: 'Tooltip text for the help icon',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon. The help icon appears next to the label when this prop is provided. Useful for providing additional context or explanation about the input field without cluttering the interface. The tooltip appears on hover or focus of the help icon.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.disabled',
-                hintText: 'Whether the input is disabled',
+                hintText:
+                    "When true, disables the input, making it non-interactive and visually muted. Users cannot type, select, or interact with the input. Disabled inputs show reduced opacity and cannot receive focus. Useful for preventing interaction when prerequisites aren't met or during form submission. Defaults to false.",
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'TextInput.required',
-                hintText: 'Whether the input is required',
+                hintText:
+                    'When true, marks the input as required and displays an asterisk (*) next to the label. Useful for form validation. Required inputs must have a value before form submission. The required indicator is visually distinct and helps users understand which fields are mandatory. Defaults to false.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'TextInput.leftSlot',
-                hintText: 'Content to display on the left side of input',
+                hintText:
+                    'Optional React element displayed on the left side of the input field. Can be used for icons, badges, or other content that appears before the input text (e.g., search icon, currency symbol, prefix text). The slot maintains proper spacing and alignment with the input. Useful for adding visual context or additional information.',
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.rightSlot',
-                hintText: 'Content to display on the right side of input',
+                hintText:
+                    'Optional React element displayed on the right side of the input field. Can be used for icons, badges, action buttons, or other content that appears after the input text (e.g., clear button, visibility toggle, suffix text). The slot maintains proper spacing and alignment with the input. Useful for adding actions or visual context.',
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.name',
-                hintText: 'Name attribute for the input field',
+                hintText:
+                    'Optional name attribute string for the input element. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful when inputs are part of a form that needs to be submitted or when using form libraries. The name is included in form data when the form is submitted.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.onFocus',
-                hintText: 'Callback when input receives focus',
+                hintText:
+                    'Optional callback function invoked when the input receives focus. Receives a React FocusEvent with the input element. Use this to perform actions when the user focuses the input (e.g., show additional information, highlight related fields, track analytics). The function is called when the user clicks or tabs into the input.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.onBlur',
-                hintText: 'Callback when input loses focus',
+                hintText:
+                    'Optional callback function invoked when the input loses focus. Receives a React FocusEvent with the input element. Use this to perform actions when the user leaves the input (e.g., validate input, save draft, track analytics). The function is called when the user clicks or tabs away from the input.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'TextInput.cursor',
-                hintText: 'Cursor style for the input',
+                hintText:
+                    'Optional CSS cursor style string that determines the cursor appearance when hovering over the input. TEXT shows a text selection cursor, POINTER shows a pointer hand cursor, DEFAULT shows the default cursor, NOT_ALLOWED shows a disabled cursor. Useful for indicating interactivity or disabled state. Defaults to "text".',
             },
             {
                 content: "'text' | 'pointer' | 'default' | 'not-allowed'",
                 hintText: 'union type',
             },
             { content: 'text, pointer, default, not-allowed' },
-            { content: "'text'" },
         ],
     ]}
     className="mb-8"

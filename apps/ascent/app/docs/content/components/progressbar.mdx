@@ -58,49 +58,67 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
-                hintText: 'Progress value between 0 and 100',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'variant',
-                hintText: 'Visual style variant of the progress bar',
-            },
-            { content: 'ProgressBarVariant', hintText: 'enum' },
-            { content: 'SOLID, SEGMENTED, CIRCULAR' },
-            { content: 'ProgressBarVariant.SOLID' },
-        ],
-        [
-            {
-                content: 'size',
-                hintText: 'Size variant affecting dimensions',
-            },
-            { content: 'ProgressBarSize', hintText: 'enum' },
-            { content: 'SMALL, MEDIUM, LARGE' },
-            { content: 'ProgressBarSize.MEDIUM' },
-        ],
-        [
-            {
-                content: 'type',
+                content: 'ProgressBar.value',
                 hintText:
-                    'Style type for circular variant (solid or segmented)',
+                    'Required numeric value between 0 and 100 representing the progress percentage. 0 means no progress, 100 means complete. The progress bar visually displays this value as a filled portion. Values outside this range are clamped to 0-100.',
             },
-            { content: 'ProgressBarType', hintText: 'enum' },
-            { content: 'SOLID, SEGMENTED' },
-            { content: 'ProgressBarType.SOLID' },
+            {
+                content: 'number',
+                hintText:
+                    'Number between 0 and 100 representing progress percentage',
+            },
+            { content: '' },
         ],
         [
             {
-                content: 'showLabel',
-                hintText: 'Whether to display progress percentage label',
+                content: 'ProgressBar.variant',
+                hintText:
+                    'Optional ProgressBarVariant enum value that determines the visual style and layout. SOLID creates a solid filled bar, SEGMENTED creates a segmented bar with visible segments, CIRCULAR creates a circular progress indicator. Defaults to SOLID.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'ProgressBarVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the progress bar',
+            },
+            { content: 'SOLID, SEGMENTED, CIRCULAR' },
+        ],
+        [
+            {
+                content: 'ProgressBar.size',
+                hintText:
+                    'Optional ProgressBarSize enum value that determines the size variant affecting dimensions, height (for linear), and stroke width (for circular). SMALL creates a compact progress bar, MEDIUM creates a standard size, LARGE creates a prominent size. Defaults to MEDIUM.',
+            },
+            {
+                content: 'ProgressBarSize',
+                hintText:
+                    'Enum that determines the size variant of the progress bar',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
+        ],
+        [
+            {
+                content: 'ProgressBar.type',
+                hintText:
+                    'Optional ProgressBarType enum value that determines the style type for circular variant only. SOLID creates a solid circular progress ring, SEGMENTED creates a segmented circular ring with visible segments. Only applies when variant is CIRCULAR. Defaults to SOLID.',
+            },
+            {
+                content: 'ProgressBarType',
+                hintText:
+                    'Enum that determines the style type for circular progress bars',
+            },
+            { content: 'SOLID, SEGMENTED' },
+        ],
+        [
+            {
+                content: 'ProgressBar.showLabel',
+                hintText:
+                    'When true, displays a progress percentage label showing the current value (e.g., "65%"). The label appears centered for linear progress bars and inside the circle for circular progress bars. Useful for providing precise progress feedback. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows percentage label, false hides label',
+            },
             { content: '' },
-            { content: 'false' },
         ],
     ]}
     className="mb-8"

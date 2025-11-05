@@ -72,600 +72,769 @@ function MyComponent() {
         [
             {
                 content: 'data',
-                hintText: 'Array of data objects to display in the table',
+                hintText:
+                    'Required array of data objects representing the rows to display in the table. Each object should have properties matching the field names defined in the columns configuration. The array is typed generically as T[], allowing for type-safe data structures.',
             },
-            { content: 'T[]', hintText: 'array' },
+            {
+                content: 'T[]',
+                hintText:
+                    'Array of data objects matching the column field definitions',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'columns',
                 hintText:
-                    'Column definitions that specify how data should be displayed',
+                    'Required array of ColumnDefinition objects that specify how each column should be displayed, including field mapping, header text, column type, sorting, filtering, and rendering behavior. Each definition determines the visual presentation and interaction capabilities for its column.',
             },
-            { content: 'ColumnDefinition<T>[]', hintText: 'array' },
+            {
+                content: 'ColumnDefinition<T>[]',
+                hintText:
+                    'Array of column configuration objects defining table structure',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'idField',
-                hintText: 'Field name to use as unique identifier for rows',
+                hintText:
+                    'Required key of type keyof T that identifies the unique identifier field in each data object. This field is used for row identification, selection tracking, expansion state, and row-level operations. Must be a field that exists in all data objects.',
             },
-            { content: 'keyof T', hintText: 'string' },
+            {
+                content: 'keyof T',
+                hintText:
+                    'Property name from the data type that serves as unique row identifier',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'title',
-                hintText: 'Optional title displayed above the table',
+                hintText:
+                    "Optional title string displayed prominently at the top of the table header. Provides context and description of the table's purpose. Typically shown above the description and toolbar when showHeader is true.",
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Text content for the table title displayed in the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'description',
-                hintText: 'Optional description displayed below the title',
+                hintText:
+                    'Optional descriptive text displayed below the title in the table header. Provides additional context, instructions, or summary information about the table content. Useful for explaining data sources or usage guidelines.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Descriptive text shown below the title in the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'defaultSort',
-                hintText: 'Default sort configuration',
+                hintText:
+                    'Optional SortConfig object that sets the initial sort state when the table first renders. Contains field (column to sort by) and direction (NONE, ASCENDING, or DESCENDING). If not provided, the table starts unsorted.',
             },
-            { content: 'SortConfig', hintText: 'object' },
+            {
+                content: 'SortConfig',
+                hintText:
+                    'Object with field and direction properties for initial sorting',
+            },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'SortConfig.field',
-                hintText: 'Field name to sort by',
+                hintText:
+                    'Required field name string from the data type (keyof T) that specifies which column to sort by. This field must exist in the data objects and should correspond to a sortable column definition.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Property name from the data type to sort by',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'SortConfig.direction',
-                hintText: 'Sort direction',
+                hintText:
+                    'Required SortDirection enum value that determines the sort order. NONE means no sorting is applied, ASCENDING sorts from lowest to highest (A-Z, 0-9), DESCENDING sorts from highest to lowest (Z-A, 9-0).',
             },
-            { content: 'SortDirection', hintText: 'enum' },
+            {
+                content: 'SortDirection',
+                hintText: 'Enum that determines the sort order direction',
+            },
             { content: 'NONE, ASCENDING, DESCENDING' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'onSortChange',
-                hintText: 'Callback when sort configuration changes',
+                hintText:
+                    'Optional callback function invoked when the user changes the sort configuration (clicks a column header). Receives the new SortConfig object with field and direction. Use this for controlled sorting or to sync sort state with your application.',
             },
             {
                 content: '(sortConfig: SortConfig) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with new sort configuration when sorting changes',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'enableSearch',
-                hintText: 'Enable global search functionality',
+                hintText:
+                    'When true, displays a global search input in the toolbar that allows users to search across all columns. The search filters rows client-side by default, or triggers server-side search if serverSideSearch is enabled. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows search input, false hides search functionality',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'searchPlaceholder',
-                hintText: 'Placeholder text for search input',
+                hintText:
+                    'Optional placeholder text displayed in the search input field when it\'s empty. Provides guidance to users about what they can search for. Should be concise and descriptive. Defaults to "Search...".',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when search input is empty',
+            },
             { content: '' },
-            { content: "'Search...'" },
         ],
         [
             {
                 content: 'serverSideSearch',
-                hintText: 'Enable server-side search handling',
+                hintText:
+                    'When true, search functionality is handled on the server side. The search query is passed to onSearchChange callback instead of filtering locally. Useful for large datasets or when search requires backend processing. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables server-side search, false uses client-side filtering',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'onSearchChange',
-                hintText: 'Callback when search query changes',
+                hintText:
+                    'Optional callback function invoked when the search query changes. Receives a SearchConfig object containing the search query. Required when serverSideSearch is true. Use this to trigger server-side search or update your data source.',
             },
             {
                 content: '(searchConfig: SearchConfig) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with search configuration when query changes',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'enableFiltering',
-                hintText: 'Enable column-based filtering',
+                hintText:
+                    'When true, enables column-based filtering functionality. Users can click filter icons in column headers to apply filters. Filters can be combined and work together. Requires onFilterChange callback for controlled filtering. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables column filtering, false disables filter functionality',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'enableAdvancedFilter',
-                hintText: 'Enable advanced filter component',
+                hintText:
+                    'When true, displays an advanced filter component that allows complex filtering logic beyond simple column filters. Requires advancedFilterComponent to be provided. Useful for multi-condition filtering with AND/OR logic. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows advanced filter component, false hides it',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'advancedFilterComponent',
-                hintText: 'Custom advanced filter component',
+                hintText:
+                    'Optional custom React component type for advanced filtering. This component receives AdvancedFilterProps and should render a custom filter UI. Use this when you need complex filtering beyond the built-in column filters.',
             },
             {
                 content: 'React.ComponentType<AdvancedFilterProps>',
-                hintText: 'component',
+                hintText:
+                    'React component class or function for custom advanced filtering',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'advancedFilters',
-                hintText: 'Advanced filter values',
+                hintText:
+                    'Optional array of advanced filter values in a format determined by your advancedFilterComponent. This represents the current state of advanced filters. Use with onAdvancedFiltersChange for controlled advanced filtering.',
             },
-            { content: 'unknown[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: 'unknown[]',
+                hintText:
+                    'Array of filter values in custom format for advanced filtering',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'serverSideFiltering',
-                hintText: 'Enable server-side filtering handling',
+                hintText:
+                    'When true, filtering is handled on the server side. Filter configurations are passed to onFilterChange callback instead of filtering locally. Useful for large datasets or when filtering requires backend processing. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables server-side filtering, false uses client-side filtering',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'onFilterChange',
-                hintText: 'Callback when column filters change',
+                hintText:
+                    'Optional callback function invoked when column filters change. Receives an array of ColumnFilter objects, each representing an active filter. Required when serverSideFiltering is true. Use this to trigger server-side filtering or update your data source.',
             },
             {
                 content: '(filters: ColumnFilter[]) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with array of active filters when filters change',
             },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'ColumnFilter.field',
-                hintText: 'Field name to filter by',
+                hintText:
+                    'Required field name string that identifies which column to filter. This should match a field name from your data type (keyof T) and correspond to a filterable column definition.',
             },
-            { content: 'keyof Record<string, unknown>', hintText: 'string' },
+            {
+                content: 'keyof Record<string, unknown>',
+                hintText: 'Property name from the data type to filter by',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'ColumnFilter.type',
-                hintText: 'Type of filter to apply',
+                hintText:
+                    'Required FilterType enum value that determines the filter input type. TEXT uses text input, NUMBER uses numeric input, SELECT uses dropdown, MULTISELECT allows multiple selections, DATE uses date picker, BOOLEAN uses checkbox, SLIDER uses range slider.',
             },
-            { content: 'FilterType', hintText: 'enum' },
+            {
+                content: 'FilterType',
+                hintText:
+                    'Enum that determines the filter input component type',
+            },
             {
                 content:
                     'TEXT, NUMBER, SELECT, MULTISELECT, DATE, BOOLEAN, SLIDER',
             },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'ColumnFilter.value',
-                hintText: 'Filter value(s)',
+                hintText:
+                    'Required filter value that can be a string (for TEXT, DATE, BOOLEAN), string[] (for MULTISELECT), or { min: number; max: number } (for SLIDER range). The value format depends on the filter type and operator.',
             },
             {
                 content: 'string | string[] | { min: number; max: number }',
-                hintText: 'union type',
+                hintText:
+                    'Filter value matching the filter type (string, array, or range object)',
             },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'ColumnFilter.operator',
-                hintText: 'Filter operator',
+                hintText:
+                    'Required filter operator string that determines how the filter value is compared to data. Options include: equals (exact match), contains (substring), startsWith, endsWith, gt/lt/gte/lte (numeric comparisons), and range (min-max). Defaults to "contains".',
             },
             {
                 content:
                     "'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'gte' | 'lte' | 'range'",
-                hintText: 'union type',
+                hintText:
+                    'Union type defining comparison operators for filtering',
             },
             {
                 content:
                     'equals, contains, startsWith, endsWith, gt, lt, gte, lte, range',
             },
-            { content: "'contains'" },
         ],
         [
             {
                 content: 'onAdvancedFiltersChange',
-                hintText: 'Callback when advanced filters change',
+                hintText:
+                    'Optional callback function invoked when advanced filters change. Receives an array of filter values in the format defined by your advancedFilterComponent. Use this for controlled advanced filtering to sync state with your application.',
             },
-            { content: '(filters: unknown[]) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(filters: unknown[]) => void',
+                hintText:
+                    'Function called with array of advanced filter values when they change',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'columnFreeze',
-                hintText: 'Number of columns to freeze on the left',
+                hintText:
+                    'Number of columns to freeze (make sticky) on the left side of the table. Frozen columns remain visible when scrolling horizontally. Useful for keeping important identifier columns (like names or IDs) always visible. Defaults to 0 (no frozen columns).',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing number of columns to freeze from the left',
+            },
             { content: '' },
-            { content: '0' },
         ],
         [
             {
                 content: 'enableColumnManager',
-                hintText: 'Enable column visibility management',
+                hintText:
+                    'When true, enables column visibility management through a column manager menu. Users can show/hide columns dynamically. The column manager icon appears in the toolbar. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables column manager, false disables column visibility controls',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'columnManagerMaxSelections',
-                hintText: 'Maximum number of columns that can be selected',
+                hintText:
+                    'Optional maximum number of columns that can be selected/visible at once in the column manager. When reached, users cannot enable additional columns. Useful for performance optimization or layout constraints.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer limiting the maximum number of visible columns',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'columnManagerAlwaysSelected',
                 hintText:
-                    'Columns that are always selected and cannot be hidden',
+                    'Optional array of column field names (keyof T) that are always visible and cannot be hidden via the column manager. These columns appear in the manager but are disabled/unchecked. Useful for keeping critical columns always visible.',
             },
-            { content: '(keyof T)[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: '(keyof T)[]',
+                hintText:
+                    'Array of field names that must always remain visible',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'columnManagerPrimaryAction',
-                hintText: 'Primary action button for column manager',
+                hintText:
+                    'Optional configuration object for the primary action button in the column manager menu. Contains text (button label), onClick (receives selected column IDs), and optional disabled/loading states. Typically used for "Apply" or "Save" actions.',
             },
             {
                 content:
                     '{ text: string; onClick: (selectedColumns: string[]) => void; disabled?: boolean; loading?: boolean }',
-                hintText: 'object',
+                hintText:
+                    'Object with button text, click handler, and optional state flags',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'columnManagerSecondaryAction',
-                hintText: 'Secondary action button for column manager',
+                hintText:
+                    'Optional configuration object for the secondary action button in the column manager menu. Contains text (button label), onClick (callback), and optional disabled/loading states. Typically used for "Cancel" or "Reset" actions.',
             },
             {
                 content:
                     '{ text: string; onClick: () => void; disabled?: boolean; loading?: boolean }',
-                hintText: 'object',
+                hintText:
+                    'Object with button text, click handler, and optional state flags',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'columnManagerWidth',
-                hintText: 'Width of the column manager menu',
+                hintText:
+                    'Optional width in pixels for the column manager menu/dropdown. Controls the horizontal size of the column selection interface. If not provided, uses default width based on content.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
+            {
+                content: 'number',
+                hintText: 'Positive number representing menu width in pixels',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'pagination',
-                hintText: 'Pagination configuration object',
+                hintText:
+                    'Optional PaginationConfig object that controls pagination behavior. Contains currentPage (current page number, 1-based), pageSize (rows per page), totalRows (total number of rows), and pageSizeOptions (available page size choices). Defaults to { currentPage: 1, pageSize: 10, totalRows: 0, pageSizeOptions: [10, 20, 50, 100] }.',
             },
-            { content: 'PaginationConfig', hintText: 'object' },
-            { content: '' },
             {
-                content:
-                    '{ currentPage: 1, pageSize: 10, totalRows: 0, pageSizeOptions: [10, 20, 50, 100] }',
+                content: 'PaginationConfig',
+                hintText:
+                    'Object with currentPage, pageSize, totalRows, and pageSizeOptions properties',
             },
+            { content: '' },
         ],
         [
             {
                 content: 'serverSidePagination',
-                hintText: 'Enable server-side pagination handling',
+                hintText:
+                    'When true, pagination is handled on the server side. Page changes trigger onPageChange callback instead of slicing data locally. Use this for large datasets or when pagination requires backend processing. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables server-side pagination, false uses client-side pagination',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'onPageChange',
-                hintText: 'Callback when page changes',
+                hintText:
+                    'Optional callback function invoked when the user navigates to a different page. Receives the new page number (1-based). Required when serverSidePagination is true. Use this to fetch the appropriate page of data from your server.',
             },
-            { content: '(page: number) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(page: number) => void',
+                hintText:
+                    'Function called with new page number when page changes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onPageSizeChange',
-                hintText: 'Callback when page size changes',
+                hintText:
+                    'Optional callback function invoked when the user changes the page size (rows per page). Receives the new page size number. Use this to update pagination configuration and potentially refetch data with the new page size.',
             },
-            { content: '(pageSize: number) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(pageSize: number) => void',
+                hintText: 'Function called with new page size when it changes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isLoading',
-                hintText: 'Show loading state for async operations',
+                hintText:
+                    'When true, displays a loading indicator overlay on the table, indicating that data is being fetched or processed. Useful for async operations like API calls. The table becomes non-interactive during loading. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows loading state, false shows normal table state',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'showHeader',
-                hintText: 'Show table header with title and description',
+                hintText:
+                    'When true, displays the table header section containing title, description, and header slots. When false, hides the header completely, showing only the table content. Useful for embedding tables in custom layouts. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows header section, false hides header completely',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'showToolbar',
-                hintText: 'Show toolbar with search and filters',
+                hintText:
+                    'When true, displays the toolbar section containing search input, filter controls, and action buttons. When false, hides the toolbar, removing search and filter functionality from the UI. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows toolbar, false hides toolbar completely',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'showSettings',
-                hintText: 'Show settings menu button',
+                hintText:
+                    'When true, displays a settings menu button in the toolbar that provides access to table configuration options. The settings menu typically includes column manager and other table customization options. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows settings button, false hides settings menu',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'headerSlot1',
-                hintText: 'Custom content slot in header (first position)',
+                hintText:
+                    'Optional React element displayed in the first position of the table header, before the title. Useful for adding icons, badges, or other visual elements that should appear at the start of the header area.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the first header slot position',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'headerSlot2',
-                hintText: 'Custom content slot in header (second position)',
+                hintText:
+                    'Optional React element displayed in the second position of the table header, after the title but before other header content. Useful for adding action buttons, controls, or supplementary information in the header.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the second header slot position',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'enableInlineEdit',
-                hintText: 'Enable inline editing of cells',
+                hintText:
+                    'When true, enables inline editing of table cells. Users can click on editable cells (defined by isEditable in column definitions) to edit values directly in the table. Requires onRowSave and optionally onRowCancel callbacks. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables inline editing, false disables cell editing',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'onRowSave',
-                hintText: 'Callback when a row is saved after editing',
+                hintText:
+                    'Optional callback function invoked when a user saves changes to an edited row (typically by pressing Enter or clicking a save button). Receives rowId (the unique identifier) and updatedRow (the complete updated row object with all changes). Use this to persist changes to your data source.',
             },
             {
                 content: '(rowId: unknown, updatedRow: T) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with row ID and updated row data when saving',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'onRowCancel',
-                hintText: 'Callback when row editing is cancelled',
+                hintText:
+                    'Optional callback function invoked when a user cancels editing a row (typically by pressing Escape or clicking a cancel button). Receives rowId (the unique identifier). Use this to handle cancellation logic or reset row state.',
             },
-            { content: '(rowId: unknown) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(rowId: unknown) => void',
+                hintText:
+                    'Function called with row ID when editing is cancelled',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onRowClick',
-                hintText: 'Callback when a row is clicked',
+                hintText:
+                    'Optional callback function invoked when a user clicks on a table row. Receives the row data object and its index. Useful for navigation, row selection, or triggering row-specific actions. The row typically shows hover feedback when this is provided.',
             },
             {
                 content: '(row: T, index: number) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with row data and index when row is clicked',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'onFieldChange',
-                hintText: 'Callback when a field value changes during editing',
+                hintText:
+                    'Optional callback function invoked when a field value changes during inline editing (before saving). Receives rowId (the unique identifier), fieldName (the field being edited), and value (the new field value). Use this for real-time validation or state updates.',
             },
             {
                 content:
                     '(rowId: unknown, fieldName: keyof T, value: unknown) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with row ID, field name, and new value during editing',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'enableRowExpansion',
-                hintText: 'Enable expandable rows for additional content',
+                hintText:
+                    'When true, enables expandable rows that can reveal additional content below the main row. Requires renderExpandedRow to define what content is shown when expanded. Useful for showing detailed information, nested data, or related content. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables row expansion, false disables expandable rows',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'renderExpandedRow',
-                hintText: 'Function to render expanded row content',
+                hintText:
+                    'Optional function that renders the content displayed when a row is expanded. Receives an expandedData object containing row (the row data), index (row index), isExpanded (current expansion state), and toggleExpansion (function to toggle expansion). Must return a ReactNode.',
             },
             {
                 content:
                     '(expandedData: { row: T; index: number; isExpanded: boolean; toggleExpansion: () => void }) => ReactNode',
-                hintText: 'function',
+                hintText:
+                    'Function that returns React content for expanded row display',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'isRowExpandable',
-                hintText: 'Function to determine if a row is expandable',
+                hintText:
+                    'Optional function that determines whether a specific row can be expanded. Receives the row data and index, returns a boolean. If not provided, all rows are expandable when enableRowExpansion is true. Useful for conditionally allowing expansion based on row properties.',
             },
             {
                 content: '(row: T, index: number) => boolean',
-                hintText: 'function',
+                hintText:
+                    'Function that returns true if row can be expanded, false otherwise',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'onRowExpansionChange',
-                hintText: 'Callback when row expansion state changes',
+                hintText:
+                    "Optional callback function invoked when a row's expansion state changes (expanded or collapsed). Receives rowId (the unique identifier), isExpanded (new expansion state), and rowData (the row object). Use this to track expansion state or trigger side effects.",
             },
             {
                 content:
                     '(rowId: unknown, isExpanded: boolean, rowData: T) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with row ID, expansion state, and row data when expansion changes',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'enableRowSelection',
-                hintText: 'Enable row selection with checkboxes',
+                hintText:
+                    'When true, enables row selection with checkboxes in the first column. Users can select individual rows or use "select all" functionality. Selected rows can trigger bulk actions. Requires bulkActions to be provided for actions to appear. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables row selection, false disables selection checkboxes',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'bulkActions',
-                hintText: 'Actions available when rows are selected',
+                hintText:
+                    'Optional array of BulkAction objects that define actions available when one or more rows are selected. Each action appears as a button in the bulk actions bar that appears above the table when rows are selected. Actions receive the array of selected row IDs when clicked.',
             },
-            { content: 'BulkAction[]', hintText: 'array' },
+            {
+                content: 'BulkAction[]',
+                hintText: 'Array of bulk action configuration objects',
+            },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'BulkAction.id',
-                hintText: 'Unique identifier for the action',
+                hintText:
+                    'Required unique identifier string for the bulk action. Used internally to track and identify the action. Should be unique across all bulk actions in the array.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier string for the bulk action',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'BulkAction.label',
-                hintText: 'Text displayed on the action button',
+                hintText:
+                    'Required text string displayed on the bulk action button. Should be concise and action-oriented, clearly describing what the action does (e.g., "Delete", "Export", "Archive").',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Button label text displayed to users',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'BulkAction.variant',
-                hintText: 'Visual style variant of the action button',
+                hintText:
+                    'Required visual style variant string for the bulk action button. "primary" creates a prominent button for main actions, "secondary" creates a less prominent button, "danger" creates a warning-style button for destructive actions. Each variant has distinct styling.',
             },
             {
                 content: "'primary' | 'secondary' | 'danger'",
-                hintText: 'union type',
+                hintText: 'Union type defining button visual style variants',
             },
             { content: 'primary, secondary, danger' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'BulkAction.onClick',
-                hintText: 'Callback function called when action is clicked',
+                hintText:
+                    'Required callback function invoked when the bulk action button is clicked. Receives an array of selected row IDs (strings) corresponding to the idField values of selected rows. Use this to perform the bulk operation on the selected rows.',
             },
             {
                 content: '(selectedRowIds: string[]) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with array of selected row IDs when action is clicked',
             },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'rowActions',
-                hintText: 'Configuration for row-level action buttons',
+                hintText:
+                    'Optional RowActionsConfig object that configures action buttons displayed at the row level (typically in the last column or a dedicated actions column). Contains slot1 and slot2 properties for positioning two action buttons per row. Useful for row-specific operations like edit, delete, or view details.',
             },
-            { content: 'RowActionsConfig<T>', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'RowActionsConfig<T>',
+                hintText:
+                    'Object with slot1 and slot2 properties for row action buttons',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'getRowStyle',
-                hintText: 'Function to get custom styles for a row',
+                hintText:
+                    'Optional function that returns custom CSS styles for individual rows. Receives the row data and index, returns a React.CSSProperties object. Useful for conditional styling based on row data (e.g., highlighting rows based on status, priority, or other properties).',
             },
             {
                 content: '(row: T, index: number) => React.CSSProperties',
-                hintText: 'function',
+                hintText:
+                    'Function that returns CSS properties for custom row styling',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'mobileColumnsToShow',
-                hintText: 'Number of columns to show on mobile devices',
+                hintText:
+                    'Optional number specifying how many columns to display on mobile devices. When provided, the table automatically adapts to show only the specified number of columns on small screens, with remaining columns accessible via overflow or expansion. Useful for responsive design.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing number of columns to show on mobile',
+            },
             { content: '' },
         ],
     ]}
@@ -683,155 +852,211 @@ Each column in the `columns` array should have the following structure:
         [
             {
                 content: 'field',
-                hintText: 'Field name from the data object',
+                hintText:
+                    'Required property name from the data type (keyof T) that identifies which field from the data objects this column should display. This field must exist in all data objects in the data array. The column will extract and display values from this field.',
             },
-            { content: 'keyof T', hintText: 'string' },
+            {
+                content: 'keyof T',
+                hintText:
+                    'Property name from the data type that this column maps to',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'header',
-                hintText: 'Column header text displayed in the table',
+                hintText:
+                    'Required text string displayed as the column header in the table. This is the visible label users see at the top of the column. Should be descriptive and concise, clearly indicating what data the column contains.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content for the column header label',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'headerSubtext',
-                hintText: 'Optional subtext displayed below the header',
+                hintText:
+                    'Optional secondary text string displayed below the main header text. Provides additional context, explanation, or units for the column. Styled with smaller, lighter text than the main header.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Secondary descriptive text shown below the header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'type',
-                hintText: 'Type of data and how it should be rendered',
+                hintText:
+                    'Required ColumnType enum value that determines how the column data is rendered and what input components are used for filtering/editing. Each type has specific rendering behavior: TEXT shows plain text, NUMBER formats numbers, AVATAR displays avatar components, TAG shows tag components, PROGRESS shows progress bars, DATE formats dates, etc.',
             },
-            { content: 'ColumnType', hintText: 'enum' },
+            {
+                content: 'ColumnType',
+                hintText:
+                    "Enum that determines the column's rendering and interaction type",
+            },
             {
                 content:
                     'TEXT, NUMBER, AVATAR, TAG, PROGRESS, DATE, DROPDOWN, REACT_ELEMENT, SELECT, MULTISELECT, DATE_RANGE, SLIDER, CUSTOM',
             },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'isSortable',
-                hintText: 'Whether this column can be sorted',
+                hintText:
+                    'When true, allows users to sort the table by this column by clicking the column header. Sortable columns show sort indicators (arrows) in the header. When false, the column cannot be sorted. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true enables sorting, false disables column sorting',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'isVisible',
-                hintText: 'Whether this column is visible',
+                hintText:
+                    'When true, the column is displayed in the table. When false, the column is hidden but can be shown via the column manager if enableColumnManager is true. Useful for conditionally showing columns or starting with a subset visible. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows column, false hides column (but can be shown via column manager)',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'isEditable',
-                hintText: 'Whether this column can be edited inline',
+                hintText:
+                    'When true and enableInlineEdit is enabled, cells in this column can be edited inline by clicking on them. Users can modify values directly in the table. Editable cells show visual feedback when in edit mode. If false or enableInlineEdit is false, cells are read-only.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows inline editing, false makes cells read-only',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'minWidth',
-                hintText: 'Minimum width for the column',
+                hintText:
+                    'Optional minimum width constraint for the column. Accepts any valid CSS width value (e.g., "100px", "10rem", "20%"). The column will not shrink below this width, ensuring minimum readability. Useful for preventing columns from becoming too narrow.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (px, %, em, rem) for minimum column width',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'maxWidth',
-                hintText: 'Maximum width for the column',
+                hintText:
+                    'Optional maximum width constraint for the column. Accepts any valid CSS width value. The column will not grow beyond this width, preventing it from taking too much space. Useful for constraining wide columns or maintaining table layout.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (px, %, em, rem) for maximum column width',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'width',
-                hintText: 'Fixed width for the column',
+                hintText:
+                    'Optional fixed width for the column. Accepts any valid CSS width value. When provided, the column maintains this exact width regardless of content. Overrides minWidth and maxWidth. Useful for consistent column sizing.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (px, %, em, rem) for fixed column width',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'filterOptions',
-                hintText: 'Options available for filtering this column',
+                hintText:
+                    'Optional array of FilterOption objects that provide predefined filter choices for this column. Used when filterType is SELECT or MULTISELECT. Each option should have a label and value. Users can select from these options instead of typing custom values.',
             },
-            { content: 'FilterOption[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: 'FilterOption[]',
+                hintText:
+                    'Array of filter option objects with label and value properties',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'canHide',
                 hintText:
-                    'Whether this column can be hidden via column manager',
+                    'When true, this column can be hidden/shown via the column manager menu. When false, the column is always visible and cannot be hidden by users. Useful for keeping critical columns always visible regardless of column manager settings.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows hiding via column manager, false forces column to always be visible',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'frozen',
-                hintText: 'Whether this column is frozen (sticky)',
+                hintText:
+                    'When true, this column is frozen (sticky) and remains visible when scrolling horizontally. Frozen columns stay fixed on the left side. Useful for keeping identifier columns (like names or IDs) always visible. The number of frozen columns should match columnFreeze prop.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true freezes column on left, false allows normal scrolling',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'className',
-                hintText: 'Custom CSS class for the column',
+                hintText:
+                    'Optional CSS class name string applied to column cells. Useful for custom styling, conditional styling via CSS, or targeting specific columns with external stylesheets. The class is applied to all cells in this column.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'CSS class name to apply to column cells',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'filterType',
-                hintText: 'Type of filter to use for this column',
+                hintText:
+                    'Optional FilterType enum value that overrides the default filter type for this column. If not provided, the filter type is inferred from the column type. Specifying this allows custom filter behavior even when using a different column type for rendering.',
             },
-            { content: 'FilterType', hintText: 'enum' },
+            {
+                content: 'FilterType',
+                hintText:
+                    'Enum that determines the filter input component for this column',
+            },
             {
                 content:
                     'TEXT, NUMBER, SELECT, MULTISELECT, DATE, BOOLEAN, SLIDER',
             },
-            { content: '' },
         ],
         [
             {
                 content: 'renderCell',
-                hintText: 'Custom render function for cell content',
+                hintText:
+                    'Optional custom render function that completely overrides the default cell rendering for this column. Receives value (the cell value), row (the entire row data), and index (the row index). Must return a ReactNode. Use this for highly customized cell content.',
             },
             {
                 content: '(value, row, index) => ReactNode',
-                hintText: 'function',
+                hintText:
+                    'Function that returns custom React content for cell rendering',
             },
-            { content: '' },
             { content: '' },
         ],
     ]}

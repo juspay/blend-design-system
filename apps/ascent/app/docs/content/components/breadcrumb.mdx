@@ -39,11 +39,14 @@ function MyComponent() {
             {
                 content: 'items',
                 hintText:
-                    'Array of breadcrumb items representing the navigation path. Each item should have label, href, and optional leftSlot/rightSlot',
+                    'Required array of breadcrumb items representing the hierarchical navigation path from root to current page. Each item should have a label (display text), href (navigation URL), and optionally leftSlot/rightSlot for custom content. The component automatically handles overflow by showing the first item, collapsing middle items into a menu when there are more than 4 items, and displaying the last 3 items.',
             },
-            { content: 'BreadcrumbItemType[]', hintText: 'array' },
+            {
+                content: 'BreadcrumbItemType[]',
+                hintText:
+                    'Array of objects with label, href, and optional leftSlot/rightSlot properties',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
     ]}
     className="mb-8"
@@ -60,38 +63,49 @@ Each item in the `items` array should have the following structure:
         [
             {
                 content: 'label',
-                hintText: 'The text displayed for the breadcrumb item',
+                hintText:
+                    'Required text string displayed as the breadcrumb item label. This is the visible text that users see and click to navigate. Should be concise and descriptive of the page or section it represents.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content displayed as the breadcrumb item label',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'href',
-                hintText: 'The URL the breadcrumb item links to',
+                hintText:
+                    'Required URL string that the breadcrumb item links to. When clicked, users will navigate to this URL. For the active (last) item, this is typically omitted or set to the current page URL, and the item becomes non-clickable.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'URL path that the breadcrumb item navigates to',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'leftSlot',
                 hintText:
-                    'Optional content to display before the label (e.g., icons)',
+                    'Optional React element displayed before (to the left of) the label text. Commonly used for icons, badges, or other visual indicators that provide additional context about the breadcrumb item.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Any React element to display before the label text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'rightSlot',
-                hintText: 'Optional content to display after the label',
+                hintText:
+                    'Optional React element displayed after (to the right of) the label text. Useful for adding icons, badges, dropdown indicators, or other supplementary content that appears after the label.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Any React element to display after the label text',
+            },
             { content: '' },
         ],
     ]}

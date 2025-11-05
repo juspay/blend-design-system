@@ -59,51 +59,69 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'steps',
-                hintText: 'Array of step objects to display',
+                content: 'Stepper.steps',
+                hintText:
+                    'Required array of Step objects that define the steps to display in the stepper. Each Step contains: id (required number), title (required string), status (optional StepState enum), disabled (optional boolean), description (optional string), icon (optional ReactNode), substeps (optional SubStep array), isExpandable (optional boolean), and isExpanded (optional boolean). The steps are displayed in order and show progress through a workflow or process.',
             },
-            { content: 'Step[]', hintText: 'array' },
-            { content: '' },
-            { content: 'Required' },
+            {
+                content: 'Step[]',
+                hintText: 'Array of step objects defining the stepper steps',
+            },
+            {
+                content: 'Step: see Step props below',
+            },
         ],
         [
             {
-                content: 'onStepClick',
-                hintText: 'Callback when a step is clicked',
+                content: 'Stepper.onStepClick',
+                hintText:
+                    'Optional callback function invoked when a step is clicked. Receives the step index (0-based) as a parameter. Only called when clickable is true. Use this to navigate to a step, show step details, or perform actions when a step is selected. The function is not called for disabled steps.',
             },
-            { content: '(stepIndex: number) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(stepIndex: number) => void',
+                hintText:
+                    'Function called with step index when step is clicked',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'onSubstepClick',
-                hintText: 'Callback when a substep is clicked',
+                content: 'Stepper.onSubstepClick',
+                hintText:
+                    'Optional callback function invoked when a substep is clicked. Receives the step ID (number) and substep index (0-based) as parameters. Only called when clickable is true and the step has substeps. Use this to navigate to a specific substep or perform actions when a substep is selected. The function is not called for disabled substeps.',
             },
             {
                 content: '(stepId: number, substepIndex: number) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with step ID and substep index when substep is clicked',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'clickable',
-                hintText: 'Whether steps are clickable',
+                content: 'Stepper.clickable',
+                hintText:
+                    'When true, makes steps clickable and interactive. Users can click on steps to navigate or trigger actions. When false, steps are display-only and non-interactive. Clickable steps show hover effects and cursor pointer. Only enabled steps can be clicked. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables step clicking, false makes steps display-only',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'stepperType',
-                hintText: 'Layout orientation of the stepper',
+                content: 'Stepper.stepperType',
+                hintText:
+                    'Optional StepperType enum value that determines the layout orientation of the stepper. HORIZONTAL displays steps in a horizontal row (left to right), VERTICAL displays steps in a vertical column (top to bottom). Horizontal is useful for wizards and forms, vertical is useful for timelines and processes. Defaults to HORIZONTAL.',
             },
-            { content: 'StepperType', hintText: 'enum' },
+            {
+                content: 'StepperType',
+                hintText:
+                    'Enum that determines the layout orientation of the stepper',
+            },
             { content: 'HORIZONTAL, VERTICAL' },
-            { content: 'StepperType.HORIZONTAL' },
         ],
     ]}
     className="mb-8"

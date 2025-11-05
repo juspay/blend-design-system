@@ -71,165 +71,257 @@ function MyComponent() {
 <DocsTypeTable
     data={[
         [
-            { content: 'chartType', hintText: 'The type of chart to render' },
-            { content: 'ChartType', hintText: 'enum' },
+            {
+                content: 'chartType',
+                hintText:
+                    'Determines the visualization type to render. LINE displays data as connected points for trends over time, BAR shows categorical comparisons with rectangular bars, PIE represents proportions as circular segments, and SCATTER plots individual data points for correlation analysis. Defaults to LINE.',
+            },
+            {
+                content: 'ChartType',
+                hintText: 'Enum that determines the chart visualization type',
+            },
             { content: 'LINE, BAR, PIE, SCATTER' },
-            { content: 'ChartType.LINE' },
         ],
         [
             {
                 content: 'data',
-                hintText: 'Array of nested data points for the chart',
+                hintText:
+                    'Required array of nested data points representing the chart dataset. Each object should have a name (category/label) and a data object containing key-value pairs where keys are data series names and values contain label and val properties. The structure supports multiple series per data point.',
             },
-            { content: 'NewNestedDataPoint[]', hintText: 'array' },
+            {
+                content: 'NewNestedDataPoint[]',
+                hintText:
+                    'Array of objects with name and nested data structure',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'colors',
-                hintText: 'Array of colors for chart elements',
+                hintText:
+                    'Optional array of color strings (hex codes, RGB, etc.) used to colorize chart elements. Each color in the array corresponds to a data series. If not provided or empty, the component uses DEFAULT_COLORS. Colors are applied in order to the data series.',
             },
-            { content: 'string[]', hintText: 'array' },
-            { content: '' },
-            { content: 'DEFAULT_COLORS' },
-        ],
-        [
-            { content: 'slot1', hintText: 'First slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'string[]',
+                hintText:
+                    'Array of color strings (hex, RGB, named colors) for chart series',
+            },
             { content: '' },
         ],
         [
-            { content: 'slot2', hintText: 'Second slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'slot1',
+                hintText:
+                    'Optional React element displayed as the first slot in the chart header. Useful for adding icons, badges, or other visual elements at the start of the header area before other content.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the first header slot',
+            },
             { content: '' },
         ],
         [
-            { content: 'slot3', hintText: 'Third slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'slot2',
+                hintText:
+                    'Optional React element displayed as the second slot in the chart header. Positioned between slot1 and slot3, useful for additional controls or information in the header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the second header slot',
+            },
             { content: '' },
+        ],
+        [
+            {
+                content: 'slot3',
+                hintText:
+                    'Optional React element displayed as the third slot in the chart header. Typically positioned near the end of the header, useful for action buttons or supplementary information.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the third header slot',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'legendPosition',
-                hintText: 'Position of the chart legend',
+                hintText:
+                    'Controls where the chart legend is displayed relative to the chart area. TOP places the legend above the chart, RIGHT places it to the side. The legend shows all data series with their corresponding colors and allows interactive selection. Defaults to TOP.',
             },
-            { content: 'ChartLegendPosition', hintText: 'enum' },
+            {
+                content: 'ChartLegendPosition',
+                hintText:
+                    "Enum that determines the legend's position relative to the chart",
+            },
             { content: 'TOP, RIGHT' },
-            { content: 'ChartLegendPosition.TOP' },
         ],
         [
             {
                 content: 'chartHeaderSlot',
-                hintText: 'Main content for the chart header',
+                hintText:
+                    'Required main content element displayed prominently in the chart header. Typically contains the chart title, description, or key information. This is the primary content area of the header section.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Main React element (title, heading, etc.) for the chart header',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'stackedLegends',
-                hintText: 'Whether to use stacked legend layout',
+                hintText:
+                    'When true, displays legends in a stacked layout with additional information like delta values and change indicators. Requires stackedLegendsData to be provided. Useful for showing comparative metrics alongside legend items. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables stacked legend layout, false uses standard legend',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'stackedLegendsData',
-                hintText: 'Data for stacked legends with delta values',
+                hintText:
+                    'Optional array of data points for stacked legends. Each object should have value, delta (change amount), and changeType properties. Used when stackedLegends is true to display rich legend information with metrics and trends.',
             },
-            { content: 'StackedLegendsDataPoint[]', hintText: 'array' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            { content: 'barsize', hintText: 'Size of bars in bar charts' },
-            { content: 'number', hintText: 'number' },
-            { content: '' },
+            {
+                content: 'StackedLegendsDataPoint[]',
+                hintText:
+                    'Array of objects with value, delta, and changeType properties',
+            },
             { content: '' },
         ],
         [
-            { content: 'xAxis', hintText: 'Configuration for the X-axis' },
-            { content: 'XAxisConfig', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'barsize',
+                hintText:
+                    'Optional number controlling the width of bars in bar charts. Higher values create wider bars, lower values create narrower bars. Useful for adjusting bar spacing and visual density. Only applies to BAR chart type.',
+            },
+            {
+                content: 'number',
+                hintText: 'Numeric value determining bar width in bar charts',
+            },
             { content: '' },
         ],
         [
-            { content: 'yAxis', hintText: 'Configuration for the Y-axis' },
-            { content: 'YAxisConfig', hintText: 'object' },
+            {
+                content: 'xAxis',
+                hintText:
+                    'Optional configuration object for the X-axis (horizontal axis). Can include label (axis title), type (numeric, date, category), showLabel (display axis label), interval (tick spacing), and show (visibility). Controls axis appearance, formatting, and behavior.',
+            },
+            {
+                content: 'XAxisConfig',
+                hintText:
+                    'Object with label, type, showLabel, interval, and show properties',
+            },
             { content: '' },
+        ],
+        [
+            {
+                content: 'yAxis',
+                hintText:
+                    'Optional configuration object for the Y-axis (vertical axis). Can include label (axis title), type (numeric, currency, percentage), showLabel (display axis label), interval (tick spacing), and show (visibility). Controls axis appearance, formatting, and behavior.',
+            },
+            {
+                content: 'YAxisConfig',
+                hintText:
+                    'Object with label, type, showLabel, interval, and show properties',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'noData',
                 hintText:
-                    'Configuration for empty state when no data is available',
+                    'Optional configuration object for the empty state displayed when no data is available. Can include custom message, icon, or other content to guide users when the chart has no data to display.',
             },
-            { content: 'NoDataProps', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'NoDataProps',
+                hintText:
+                    'Object with properties for customizing the empty state display',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'height',
-                hintText: 'Height of the chart in pixels',
+                hintText:
+                    'Height of the chart area in pixels. Controls the vertical dimension of the visualization. Larger values provide more vertical space for data visualization, smaller values create more compact charts. Defaults to 400 pixels.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText: 'Positive number representing chart height in pixels',
+            },
             { content: '' },
-            { content: '400' },
         ],
         [
             {
                 content: 'showHeader',
-                hintText: 'Whether to show the chart header',
+                hintText:
+                    'When true, displays the chart header section with slots and title. When false, hides the header completely, showing only the chart visualization. Useful for embedding charts in layouts where header is handled separately. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows header, false hides header completely',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'showCollapseIcon',
-                hintText: 'Whether to show the collapse/expand icon',
+                hintText:
+                    "When true, displays a collapse/expand icon in the chart header that allows users to toggle the chart's expanded state. Clicking the icon collapses or expands the chart content. Useful for space-constrained layouts. Defaults to true.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText: 'true shows collapse/expand icon, false hides it',
+            },
             { content: '' },
-            { content: 'true' },
         ],
         [
             {
                 content: 'isExpanded',
-                hintText: 'Controlled expanded state of the chart',
+                hintText:
+                    'Optional controlled state for whether the chart is expanded or collapsed. When provided, the component works in controlled mode, requiring onExpandedChange to update state. When undefined, the component manages expansion state internally.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'boolean',
+                hintText: 'true expands chart, false collapses chart',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onExpandedChange',
-                hintText: 'Callback when the expanded state changes',
+                hintText:
+                    "Optional callback function invoked when the chart's expanded state changes (via collapse/expand icon). Receives the new isExpanded boolean value. Use this for controlled expansion behavior to synchronize state.",
             },
-            { content: '(isExpanded: boolean) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(isExpanded: boolean) => void',
+                hintText:
+                    'Function called with new expanded state when it changes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'chartName',
                 hintText:
-                    'Name identifier for the chart (used in noData state)',
+                    'Optional name identifier string used for accessibility and in the noData empty state message. Helps screen readers identify the chart and provides context in error messages. Defaults to "Chart".',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Name or identifier for the chart component',
+            },
             { content: '' },
-            { content: "'Chart'" },
         ],
     ]}
     className="mb-8"

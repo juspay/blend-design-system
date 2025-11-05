@@ -86,57 +86,62 @@ function MyComponent() {
         [
             {
                 content: 'StatCard.title',
-                hintText: 'The title text displayed in the stat card',
+                hintText:
+                    'Required string representing the title text displayed prominently in the stat card header. Should be concise and descriptive, clearly identifying the metric (e.g., "Total Revenue", "Active Users", "Conversion Rate"). The title appears above the value and is styled prominently.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'StatCard.value',
-                hintText: 'The main value displayed in the stat card',
+                hintText:
+                    'Required string or number representing the main value displayed prominently in the stat card. This is the primary metric that users see (e.g., "$12,345", "1,234", "85%"). Can be formatted as a string for currency, percentages, or custom formatting, or as a number for numeric values.',
             },
             { content: 'string | number', hintText: 'union type' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'StatCard.variant',
-                hintText: 'The visual variant of the stat card',
+                hintText:
+                    'Required StatCardVariant enum value that determines the visual variant and chart type displayed in the stat card. LINE displays a line chart, PROGRESS_BAR displays a progress bar, BAR displays a bar chart, NUMBER displays only the numeric value without a chart. Each variant requires specific props (e.g., chartData for LINE/BAR, progressValue for PROGRESS_BAR).',
             },
             { content: 'StatCardVariant', hintText: 'enum' },
             { content: 'LINE, PROGRESS_BAR, BAR, NUMBER' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'StatCard.valueTooltip',
-                hintText: 'Tooltip content for the value',
+                hintText:
+                    'Optional React element displayed as a tooltip when hovering over the main value. Can be used to provide additional context, breakdown, or detailed information about the value. Useful for showing tooltips with rich content (e.g., formatted text, lists, or custom components).',
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'StatCard.change',
                 hintText:
-                    'Change indicator showing percentage increase or decrease',
+                    'Optional StatCardChange object that configures a change indicator showing percentage increase or decrease. Displays an arrow icon (up for increase, down for decrease) with the percentage change value. Useful for showing trends and comparisons. Contains: value (required number for percentage), valueType (required ChangeType enum), and tooltip (optional ReactNode).',
             },
-            { content: 'StatCardChange', hintText: 'object' },
-            { content: '' },
-            { content: 'undefined' },
+            {
+                content: 'StatCardChange',
+                hintText:
+                    'Object with change indicator configuration properties (see StatCardChange below)',
+            },
+            {
+                content: 'StatCardChange: see StatCardChange props below',
+            },
         ],
         [
             {
                 content: 'StatCard.subtitle',
-                hintText: 'Secondary text displayed below the main value',
+                hintText:
+                    'Optional string representing secondary text displayed below the main value. Provides context, time period, or additional information about the metric (e.g., "Last 30 days", "Current month", "Target: 90%"). Styled with smaller, lighter text than the value.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -145,7 +150,6 @@ function MyComponent() {
             },
             { content: 'ChartDataPoint[]', hintText: 'array' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -155,7 +159,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -164,7 +167,6 @@ function MyComponent() {
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -174,7 +176,6 @@ function MyComponent() {
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -183,7 +184,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -192,7 +192,6 @@ function MyComponent() {
             },
             { content: 'SingleSelectProps', hintText: 'object' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -201,7 +200,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: "'auto'" },
         ],
         [
             {
@@ -210,7 +208,6 @@ function MyComponent() {
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -219,7 +216,6 @@ function MyComponent() {
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -228,7 +224,6 @@ function MyComponent() {
             },
             { content: 'AxisType', hintText: 'enum' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -237,7 +232,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: "'auto'" },
         ],
         [
             {
@@ -246,7 +240,6 @@ function MyComponent() {
             },
             { content: 'StatCardDirection', hintText: 'enum' },
             { content: 'VERTICAL, HORIZONTAL' },
-            { content: 'StatCardDirection.VERTICAL' },
         ],
         [
             {
@@ -255,7 +248,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -264,7 +256,6 @@ function MyComponent() {
             },
             { content: 'ChangeType', hintText: 'enum' },
             { content: 'INCREASE, DECREASE' },
-            { content: 'Required' },
         ],
         [
             {
@@ -273,7 +264,6 @@ function MyComponent() {
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -282,7 +272,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -291,7 +280,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -300,7 +288,6 @@ function MyComponent() {
             },
             { content: 'AxisType', hintText: 'enum' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -312,7 +299,6 @@ function MyComponent() {
                 hintText: 'function',
             },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -321,7 +307,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -330,7 +315,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -339,7 +323,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -348,7 +331,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -357,7 +339,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -366,7 +347,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
     ]}
     className="mb-8"

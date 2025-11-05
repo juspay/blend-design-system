@@ -46,60 +46,79 @@ function MyComponent() {
         [
             {
                 content: 'avatars',
-                hintText: 'Array of avatar data objects to display',
+                hintText:
+                    'Required array of avatar data objects. Each object should have an id (string or number), alt text for accessibility, and optionally src (image URL) or fallback (custom content). The avatars are displayed in the order provided, with stacking and overflow handling applied automatically.',
             },
-            { content: 'AvatarData[]', hintText: 'array' },
+            {
+                content: 'AvatarData[]',
+                hintText:
+                    'Array of objects with id, alt, and optional src or fallback properties',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'maxCount',
                 hintText:
-                    'Maximum number of avatars to display before showing overflow counter',
+                    'Maximum number of avatars to display before showing an overflow counter. When the number of avatars exceeds this value, only the first maxCount avatars are shown, and a "+N" counter displays the remaining count. Clicking the counter opens a menu with all avatars. Defaults to 5.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer determining how many avatars to show before overflow',
+            },
             { content: '' },
-            { content: '5' },
         ],
         [
             {
                 content: 'size',
-                hintText: 'The size variant for all avatars in the group',
+                hintText:
+                    'Sets the size for all avatars in the group. Options range from XS (extra small) to XL (extra large), with consistent sizing applied across all avatars. This ensures uniform appearance regardless of individual avatar content. Defaults to MD (medium).',
             },
-            { content: 'AvatarSize', hintText: 'enum' },
+            {
+                content: 'AvatarSize',
+                hintText:
+                    'Enum that controls the dimensions of all avatars uniformly',
+            },
             { content: 'XS, SM, MD, LG, XL' },
-            { content: 'AvatarSize.MD' },
         ],
         [
             {
                 content: 'shape',
-                hintText: 'The shape variant for all avatars in the group',
+                hintText:
+                    'Defines the border shape for all avatars in the group. CIRCULAR creates perfect circles, while ROUNDED uses rounded rectangles with moderate border radius. All avatars in the group share the same shape for visual consistency. Defaults to CIRCULAR.',
             },
-            { content: 'AvatarShape', hintText: 'enum' },
+            {
+                content: 'AvatarShape',
+                hintText:
+                    'Enum that determines the border radius shape for all avatars',
+            },
             { content: 'CIRCULAR, ROUNDED' },
-            { content: 'AvatarShape.CIRCULAR' },
         ],
         [
             {
                 content: 'selectedAvatarIds',
                 hintText:
-                    'Array of selected avatar IDs for controlled selection',
+                    'Array of avatar IDs that are currently selected, used for controlled selection state. Each ID should match the id property of avatars in the avatars array. When provided, the component works in controlled mode, requiring onSelectionChange to update state.',
             },
-            { content: '(string | number)[]', hintText: 'array' },
-            { content: '' },
+            {
+                content: '(string | number)[]',
+                hintText:
+                    'Array of IDs matching the id values from the avatars array',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onSelectionChange',
-                hintText: 'Callback function when avatar selection changes',
+                hintText:
+                    'Callback function invoked whenever the selection changes. Receives an array of selected avatar IDs (string | number)[] as a parameter. Use this for controlled selection behavior to synchronize state with your application.',
             },
             {
                 content: '(selectedIds: (string | number)[]) => void',
-                hintText: 'function',
+                hintText:
+                    'Function that receives the updated array of selected avatar IDs',
             },
-            { content: '' },
             { content: '' },
         ],
     ]}

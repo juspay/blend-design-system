@@ -48,66 +48,78 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'header',
-                hintText: 'The main title text displayed in the snackbar',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'description',
+                content: 'addSnackbar.header',
                 hintText:
-                    'Optional descriptive text displayed below the header',
+                    'Required string representing the main title text displayed prominently in the snackbar. Should be concise and action-oriented, clearly describing the notification (e.g., "Success!", "Error occurred", "Warning"). The header is styled prominently and appears at the top of the snackbar content.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Text content for the snackbar header title',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'variant',
-                hintText: 'The visual style variant of the snackbar',
+                content: 'addSnackbar.description',
+                hintText:
+                    'Optional descriptive text string displayed below the header in the snackbar. Provides additional context, details, or explanation about the notification. Styled with smaller, lighter text than the header. Useful for providing more information about the action or error. If not provided, only the header is displayed.',
             },
-            { content: 'SnackbarVariant', hintText: 'enum' },
+            {
+                content: 'string',
+                hintText: 'Descriptive text shown below the header',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'addSnackbar.variant',
+                hintText:
+                    'Optional SnackbarVariant enum value that determines the visual style and icon of the snackbar. INFO displays a blue info icon, SUCCESS displays a green checkmark icon, WARNING displays a yellow warning icon, ERROR displays a red error icon. The variant affects colors, icon, and overall appearance. Defaults to INFO.',
+            },
+            {
+                content: 'SnackbarVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the snackbar',
+            },
             { content: 'INFO, SUCCESS, WARNING, ERROR' },
-            { content: 'SnackbarVariant.INFO' },
         ],
         [
             {
-                content: 'onClose',
+                content: 'addSnackbar.onClose',
                 hintText:
-                    'Callback function called when the snackbar is closed',
+                    'Optional callback function invoked when the snackbar is closed. Receives no parameters. Called when the user clicks the close button, the snackbar auto-dismisses, or is programmatically dismissed. Useful for cleanup, tracking dismissal, or performing actions when the snackbar closes.',
             },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '() => void',
+                hintText: 'Function called when snackbar is closed',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'actionButton',
-                hintText: 'Optional action button configuration',
+                content: 'addSnackbar.actionButton',
+                hintText:
+                    'Optional object that configures an action button displayed in the snackbar. The button allows users to perform an action related to the notification (e.g., "Undo", "Retry", "View Details"). Contains: label (required string for button text), onClick (required callback function), and autoDismiss (optional boolean to auto-close snackbar on click). If not provided, no action button is shown.',
             },
             {
                 content:
                     '{ label: string; onClick: () => void; autoDismiss?: boolean }',
-                hintText: 'object',
+                hintText: 'Object with action button configuration properties',
             },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'duration',
-                hintText: 'Optional toast duration',
+                content: 'addSnackbar.duration',
+                hintText:
+                    'Optional duration in milliseconds that the snackbar remains visible before auto-dismissing. After this duration, the snackbar automatically closes. Set to 0 or Infinity to prevent auto-dismissal. Useful for controlling how long users have to read and act on the notification. Defaults to 4000 milliseconds (4 seconds).',
             },
             {
                 content: 'number',
-                hintText: 'number',
+                hintText:
+                    'Positive number representing duration in milliseconds',
             },
             { content: '' },
-            { content: '4000' },
         ],
     ]}
     className="mb-8"

@@ -81,121 +81,166 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'id',
-                hintText: 'Unique identifier for the radio button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: 'auto-generated' },
-        ],
-        [
-            {
-                content: 'value',
-                hintText: 'The value associated with the radio button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'checked',
-                hintText: 'Whether the radio button is selected',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'defaultChecked',
-                hintText: 'The default checked state for uncontrolled usage',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'onChange',
-                hintText: 'Callback when the radio button state changes',
-            },
-            { content: '(checked: boolean) => void', hintText: 'function' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disabled',
+                content: 'Radio.id',
                 hintText:
-                    'Whether the radio button is disabled and non-interactive',
+                    'Optional unique identifier string for the radio button. Used for form identification, accessibility, and linking labels. If not provided, an ID is automatically generated. Should be unique within the form.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the radio button element',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'required',
+                content: 'Radio.value',
                 hintText:
-                    'Whether the radio button is required (shows asterisk)',
+                    "Required string value associated with the radio button. This value is used to track which radio button is selected within a RadioGroup. Must be unique within the group. The value is returned in the RadioGroup's onChange callback when this radio is selected.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'string',
+                hintText: 'Unique value identifier for the radio button',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'error',
-                hintText: 'Whether the radio button is in an error state',
+                content: 'Radio.checked',
+                hintText:
+                    "Optional boolean that controls whether the radio button is selected. When true, the radio appears checked. When false or undefined, the checked state is determined by whether the value matches the RadioGroup's selected value. Useful for controlled state management.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows checked state, false shows unchecked state',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'size',
-                hintText: 'The size variant of the radio button',
+                content: 'Radio.defaultChecked',
+                hintText:
+                    'Optional boolean that sets the default checked state for uncontrolled usage. Used when the RadioGroup is uncontrolled (no value prop). When true, this radio is initially selected. Only one radio in a group should have defaultChecked. Defaults to false.',
             },
-            { content: 'RadioSize', hintText: 'enum' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial checked state, false sets initial unchecked state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.onChange',
+                hintText:
+                    'Optional callback function invoked when the radio button state changes. Receives a boolean indicating the new checked state. Typically not needed when using RadioGroup, as RadioGroup handles selection. Useful for standalone radio buttons.',
+            },
+            {
+                content: '(checked: boolean) => void',
+                hintText:
+                    'Function called with new checked state when radio state changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.disabled',
+                hintText:
+                    "When true, disables the radio button, making it non-interactive and visually muted. Disabled radios show reduced opacity and cannot be selected. Useful for preventing selection when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables radio button, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.required',
+                hintText:
+                    'When true, marks the radio button as required and displays an asterisk (*) next to the label. Useful for form validation. At least one radio in a required group must be selected. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks radio as required, false allows optional selection',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.error',
+                hintText:
+                    'When true, displays the radio button in an error state with red border and error styling. Useful for form validation feedback when the selection is invalid or missing (for required groups). Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.size',
+                hintText:
+                    'Optional RadioSize enum value that determines the size variant of the radio button. Affects the indicator size, label font size, and overall dimensions. SMALL creates a compact radio, MEDIUM creates a standard size. Defaults to MEDIUM.',
+            },
+            {
+                content: 'RadioSize',
+                hintText:
+                    'Enum that determines the size variant of the radio button',
+            },
             { content: 'SMALL, MEDIUM' },
-            { content: 'RadioSize.MEDIUM' },
         ],
         [
             {
-                content: 'children',
-                hintText: 'The label text for the radio button',
+                content: 'Radio.children',
+                hintText:
+                    'Required React node representing the label text displayed next to the radio button. Can be a string or React element. The label is clickable and toggles the radio button. Should clearly describe the option (e.g., "Basic Plan", "Professional Plan").',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
             {
-                content: 'subtext',
-                hintText: 'Optional descriptive text displayed below the label',
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically text) displayed as the radio label',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'slot',
-                hintText: 'Optional element to display alongside the label',
+                content: 'Radio.subtext',
+                hintText:
+                    'Optional descriptive text string displayed below the main label. Provides additional context, explanation, or clarification about the radio option. Styled with smaller, lighter text. Useful for explaining complex options.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for form grouping',
+                content: 'Radio.slot',
+                hintText:
+                    'Optional React element displayed alongside the label, typically on the right side. Can be used for badges, prices, icons, or other supplementary content that complements the radio option. Useful for displaying additional information.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed alongside the radio label',
+            },
             { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.name',
+                hintText:
+                    "Optional name attribute string for form grouping. When used within a RadioGroup, this is typically inherited from the RadioGroup's name prop. Required for proper form submission and accessibility. Should match the RadioGroup's name.",
+            },
+            {
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
+            },
             { content: '' },
         ],
     ]}
@@ -210,69 +255,103 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'id',
-                hintText: 'Unique identifier for the radio group',
+                content: 'RadioGroup.id',
+                hintText:
+                    'Optional unique identifier string for the radio group container. Used for form identification, accessibility, and linking labels. Should be unique within the form. If not provided, an ID may be auto-generated.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the radio group element',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'label',
-                hintText: 'The label text for the radio group',
+                content: 'RadioGroup.label',
+                hintText:
+                    'Optional label string displayed above the radio group. Provides context and description of what users should select. Should be concise and descriptive (e.g., "Choose your subscription plan"). The label is styled prominently and helps users understand the selection.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Label text displayed above the radio group',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for the radio group (required)',
+                content: 'RadioGroup.name',
+                hintText:
+                    'Required name attribute string for the radio group. All Radio components within this group must share this name value. Used for form identification, form submission, and ensuring only one radio can be selected at a time. Must be unique within the form.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
             {
-                content: 'defaultValue',
-                hintText: 'The default selected value for uncontrolled usage',
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            { content: 'value', hintText: 'The controlled selected value' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
-            { content: 'children', hintText: 'The radio buttons to render' },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'onChange',
-                hintText: 'Callback when the selected value changes',
-            },
-            { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether all radio buttons in the group are disabled',
+                content: 'RadioGroup.defaultValue',
+                hintText:
+                    'Optional default selected value string for uncontrolled usage. When provided, the RadioGroup manages its own state internally. The radio button with a matching value will be initially selected. Only one value should be provided.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'string',
+                hintText: 'Default value string for initially selected radio',
+            },
             { content: '' },
-            { content: 'false' },
+        ],
+        [
+            {
+                content: 'RadioGroup.value',
+                hintText:
+                    'Optional controlled selected value string. When provided, the RadioGroup is controlled and selection is managed by your component state. The value should match the value prop of one of the Radio children. Required for controlled mode.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Controlled value string representing the selected radio',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.children',
+                hintText:
+                    'Required React nodes representing the Radio components to render within the group. Each Radio should have a unique value prop. The RadioGroup manages the selection state and ensures only one radio can be selected at a time.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (Radio components) to render in the group',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.onChange',
+                hintText:
+                    'Optional callback function invoked when the selected value changes. Receives the new selected value string as a parameter. Use this to update your state when using controlled mode. The function is called whenever a different radio is selected.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with new selected value when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.disabled',
+                hintText:
+                    "When true, disables all radio buttons within the group, making them non-interactive and visually muted. Disabled radios show reduced opacity and cannot be selected. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables all radios in group, false allows normal interaction',
+            },
+            { content: '' },
         ],
     ]}
     className="mb-8"

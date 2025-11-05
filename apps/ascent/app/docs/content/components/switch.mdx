@@ -40,112 +40,164 @@ function MyComponent() {
 <DocsTypeTable
     data={[
         [
-            { content: 'id', hintText: 'Unique identifier for the switch' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-            { content: '' },
-        ],
-        [
             {
-                content: 'checked',
+                content: 'Switch.id',
                 hintText:
-                    'Whether the switch is in the on/checked state (controlled)',
+                    'Optional unique identifier string for the switch element. Used for form identification, accessibility, and linking labels. If not provided, an ID is automatically generated. Should be unique within the form.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the switch element',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'defaultChecked',
-                hintText: 'The default checked state for uncontrolled usage',
+                content: 'Switch.checked',
+                hintText:
+                    'Optional boolean that controls whether the switch is in the on/checked state (controlled mode). When true, the switch is on/checked. When false, the switch is off/unchecked. Use this with onChange for controlled state management. If not provided, use defaultChecked for uncontrolled mode.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'onChange',
-                hintText: 'Callback when the switch state changes',
+                content: 'boolean',
+                hintText:
+                    'true shows checked state, false shows unchecked state',
             },
-            { content: '(checked: boolean) => void', hintText: 'function' },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether the switch is disabled and non-interactive',
+                content: 'Switch.defaultChecked',
+                hintText:
+                    'Optional boolean that sets the default checked state for uncontrolled usage. When true, the switch starts in the checked state. When false, the switch starts in the unchecked state. Only used when checked is not provided. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial checked state, false sets initial unchecked state',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'required',
-                hintText: 'Whether the switch is required (shows asterisk)',
+                content: 'Switch.onChange',
+                hintText:
+                    'Optional callback function invoked when the switch state changes. Receives a boolean indicating the new checked state. Use this to update your state when using controlled mode. The function is called when the user toggles the switch.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: '(checked: boolean) => void',
+                hintText:
+                    'Function called with new checked state when switch state changes',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
-                content: 'error',
-                hintText: 'Whether the switch is in an error state',
+                content: 'Switch.disabled',
+                hintText:
+                    "When true, disables the switch, making it non-interactive and visually muted. Users cannot toggle the switch. Disabled switches show reduced opacity and cannot be clicked. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables switch, false allows normal interaction',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
-            { content: 'size', hintText: 'The size variant of the switch' },
-            { content: 'SwitchSize', hintText: 'enum' },
+            {
+                content: 'Switch.required',
+                hintText:
+                    'When true, marks the switch as required and displays an asterisk (*) next to the label. Useful for form validation. Required switches must be checked before form submission. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks switch as required, false allows optional selection',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Switch.error',
+                hintText:
+                    'When true, displays the switch in an error state with red border and error styling. Useful for form validation feedback when the switch state is invalid or missing (for required switches). Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Switch.size',
+                hintText:
+                    'Optional SwitchSize enum value that determines the size variant of the switch. Affects the switch container dimensions, thumb size, and label font size. SMALL creates a compact switch, MEDIUM creates a standard size. Defaults to MEDIUM.',
+            },
+            {
+                content: 'SwitchSize',
+                hintText: 'Enum that determines the size variant of the switch',
+            },
             { content: 'SMALL, MEDIUM' },
-            { content: 'SwitchSize.MEDIUM' },
         ],
         [
-            { content: 'label', hintText: 'The label text for the switch' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'Switch.label',
+                hintText:
+                    'Optional label string displayed next to the switch. Provides context and description of what the switch controls (e.g., "Enable notifications", "Auto-save"). The label is clickable and toggles the switch. Should be concise and descriptive.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text displayed next to the switch',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'subtext',
-                hintText: 'Optional descriptive text displayed below the label',
+                content: 'Switch.subtext',
+                hintText:
+                    "Optional React element displayed below the main label. Provides additional context, explanation, or clarification about the switch. Can be a string or React element. Styled with smaller, lighter text. Useful for explaining the switch's purpose or consequences.",
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed below the main label',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'slot',
-                hintText: 'Optional element to display alongside the label',
+                content: 'Switch.slot',
+                hintText:
+                    'Optional React element displayed alongside the label, typically on the right side. Can be used for badges, icons, or other supplementary content that complements the switch. Useful for displaying additional information or actions.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed alongside the switch label',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for form grouping',
+                content: 'Switch.name',
+                hintText:
+                    'Optional name attribute string for form grouping. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful when switches are part of a form that needs to be submitted.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'value',
-                hintText: 'The value associated with the switch',
+                content: 'Switch.value',
+                hintText:
+                    'Optional value string associated with the switch. Used for form submission and when the switch is part of a SwitchGroup. The value is included in form data when the switch is checked. Useful for identifying which switch was toggled in a group.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Value string associated with the switch',
+            },
             { content: '' },
         ],
     ]}
@@ -160,74 +212,103 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'id',
-                hintText: 'Unique identifier for the switch group',
+                content: 'SwitchGroup.id',
+                hintText:
+                    'Optional unique identifier string for the switch group container. Used for form identification, accessibility, and linking labels. Should be unique within the form. If not provided, an ID may be auto-generated.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the switch group element',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'label',
-                hintText: 'The label text for the switch group',
+                content: 'SwitchGroup.label',
+                hintText:
+                    'Optional label string displayed above the switch group. Provides context and description of what users should select (e.g., "Notification preferences", "Feature toggles"). The label is styled prominently and helps users understand the selection.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Label text displayed above the switch group',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for the switch group',
+                content: 'SwitchGroup.name',
+                hintText:
+                    'Optional name attribute string for the switch group. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'children',
-                hintText: 'The switch components to render',
+                content: 'SwitchGroup.children',
+                hintText:
+                    'Required React nodes representing the Switch components to render within the group. Each Switch should have a unique value prop. The SwitchGroup manages the selection state and tracks which switches are checked. The children are rendered vertically with proper spacing.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-            { content: 'Required' },
-        ],
-        [
             {
-                content: 'disabled',
-                hintText: 'Whether all switches in the group are disabled',
+                content: 'ReactNode',
+                hintText:
+                    'React elements (Switch components) to render in the group',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'value',
-                hintText: 'The controlled selected values array',
-            },
-            { content: 'string[]', hintText: 'array' },
-            { content: '' },
             { content: '' },
         ],
         [
             {
-                content: 'defaultValue',
-                hintText: 'The default selected values for uncontrolled usage',
+                content: 'SwitchGroup.disabled',
+                hintText:
+                    "When true, disables all switch components within the group, making them non-interactive and visually muted. Disabled switches show reduced opacity and cannot be toggled. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'string[]', hintText: 'array' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables all switches in group, false allows normal interaction',
+            },
             { content: '' },
-            { content: '[]' },
         ],
         [
             {
-                content: 'onChange',
-                hintText: 'Callback when the selected values change',
+                content: 'SwitchGroup.value',
+                hintText:
+                    'Optional controlled array of selected value strings. When provided, the SwitchGroup is controlled and selection is managed by your component state. The array should contain the value strings of all checked switches. Required for controlled mode.',
             },
-            { content: '(value: string[]) => void', hintText: 'function' },
+            {
+                content: 'string[]',
+                hintText:
+                    'Array of value strings representing checked switches',
+            },
             { content: '' },
+        ],
+        [
+            {
+                content: 'SwitchGroup.defaultValue',
+                hintText:
+                    'Optional default array of selected value strings for uncontrolled usage. When provided, the SwitchGroup manages its own state internally. The array should contain the value strings of switches that should be initially checked. Defaults to an empty array (no switches checked).',
+            },
+            {
+                content: 'string[]',
+                hintText:
+                    'Array of value strings for initially checked switches',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SwitchGroup.onChange',
+                hintText:
+                    'Optional callback function invoked when the selected values change. Receives an array of value strings representing all currently checked switches. Use this to update your state when using controlled mode. The function is called whenever a switch is toggled.',
+            },
+            {
+                content: '(value: string[]) => void',
+                hintText:
+                    'Function called with new value array when selection changes',
+            },
             { content: '' },
         ],
     ]}

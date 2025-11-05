@@ -54,213 +54,226 @@ function MyComponent() {
         [
             {
                 content: 'NumberInput.value',
-                hintText: 'Current numeric value of the input',
+                hintText:
+                    'Required numeric value or undefined representing the current input value. Use undefined to represent an empty input. The value is controlled by your component state and updates when the user types or uses the stepper buttons. Required for controlled input.',
             },
-            { content: 'number | undefined', hintText: 'number or undefined' },
-            { content: 'Required' },
+            {
+                content: 'number | undefined',
+                hintText: 'Number value or undefined for empty state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.onChange',
-                hintText: 'Callback when input value changes',
+                hintText:
+                    'Required callback function invoked when the input value changes. Receives a React.ChangeEvent<HTMLInputElement> as a parameter. Use event.target.value to get the new string value, then convert to number if needed. Update your state in this handler.',
             },
             {
                 content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with change event when value changes',
             },
-            { content: 'Required' },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.min',
-                hintText: 'Minimum allowed value',
+                hintText:
+                    'Optional minimum allowed numeric value. Users cannot enter values below this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., negative quantities).',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText: 'Number representing the minimum allowed value',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.max',
-                hintText: 'Maximum allowed value',
+                hintText:
+                    'Optional maximum allowed numeric value. Users cannot enter values above this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., stock limits).',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText: 'Number representing the maximum allowed value',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.step',
-                hintText: 'Increment/decrement step value',
+                hintText:
+                    'Optional increment/decrement step value used by the stepper buttons and arrow keys. When users click the up/down buttons or press arrow keys, the value changes by this amount. Defaults to 1 if not provided.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '1' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing the step increment/decrement',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.label',
-                hintText: 'Primary label for the input field',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what users should input. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the input field',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.sublabel',
-                hintText: 'Secondary label or description',
+                hintText:
+                    "Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the input field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex input requirements.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty or when value is undefined. Provides guidance to users about what they can input. Should be concise and action-oriented (e.g., "Enter quantity").',
+            },
+            {
+                content: 'string',
                 hintText: 'Placeholder text shown when input is empty',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.size',
-                hintText: 'Size variant of the input field',
+                hintText:
+                    'Optional NumberInputSize enum value that determines the size variant of the input field. Affects padding, height, font size, and overall dimensions. MEDIUM is the default size, LARGE provides a prominent input with floating label on mobile. Defaults to MEDIUM.',
             },
-            { content: 'NumberInputSize', hintText: 'enum' },
-            { content: 'NumberInputSize.MEDIUM' },
+            {
+                content: 'NumberInputSize',
+                hintText:
+                    'Enum that determines the size variant of the input field',
+            },
+            { content: 'MEDIUM, LARGE' },
         ],
         [
             {
                 content: 'NumberInput.error',
-                hintText: 'Whether the input is in error state',
+                hintText:
+                    'When true, displays the input field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.errorMessage',
-                hintText: 'Error message to display when in error state',
+                hintText:
+                    'Optional error message string displayed below the input field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Error message text displayed when error is true',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.hintText',
-                hintText: 'Helper text displayed below the input',
+                hintText:
+                    'Optional helper text string displayed below the input field. Provides guidance, examples, or additional information about the input. Styled with smaller, lighter text. Useful for clarifying complex input requirements or providing examples.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Helper text shown below the input field',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.helpIconHintText',
-                hintText: 'Tooltip text for the help icon',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the input field. Should be concise and helpful. If not provided, no help icon is shown.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Tooltip text shown when hovering over the help icon',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.disabled',
-                hintText: 'Whether the input is disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot type, use stepper buttons, or change the value. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.required',
-                hintText: 'Whether the input is required',
+                hintText:
+                    'When true, marks the input field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure values are provided. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks field as required, false allows optional input',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.name',
-                hintText: 'Name attribute for the input field',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'NumberInput.onFocus',
-                hintText: 'Callback when input receives focus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for tracking user interaction or showing additional UI.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                hintText:
+                    'Function called with focus event when input gains focus',
             },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'NumberInput.onBlur',
-                hintText: 'Callback when input loses focus',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for validation, cleanup, or tracking user interaction.',
             },
             {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
-            },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'NumberInputSize.MEDIUM',
-                hintText: 'Medium input size - default size for most use cases',
-            },
-            { content: '"md"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'NumberInputSize.LARGE',
                 hintText:
-                    'Large input size - prominent input with floating label on mobile',
+                    'Function called with focus event when input loses focus',
             },
-            { content: '"lg"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'NumberInputState.DEFAULT',
-                hintText: 'Default state - normal input appearance',
-            },
-            { content: '"default"', hintText: 'string' },
-            { content: 'Default' },
-        ],
-        [
-            {
-                content: 'NumberInputState.HOVER',
-                hintText: 'Hover state - enhanced outline on hover',
-            },
-            { content: '"hover"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'NumberInputState.FOCUS',
-                hintText:
-                    'Focus state - primary outline and shadow when focused',
-            },
-            { content: '"focus"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'NumberInputState.ERROR',
-                hintText: 'Error state - red outline and error styling',
-            },
-            { content: '"error"', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'NumberInputState.DISABLED',
-                hintText:
-                    'Disabled state - muted appearance with no interaction',
-            },
-            { content: '"disabled"', hintText: 'string' },
             { content: '' },
         ],
     ]}

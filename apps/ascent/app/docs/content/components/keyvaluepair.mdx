@@ -38,102 +38,142 @@ function MyComponent() {
         [
             {
                 content: 'keyString',
-                hintText: 'The key text to display',
+                hintText:
+                    'Required string representing the key/label text displayed in the key-value pair. This is typically the label or identifier (e.g., "Name", "Email", "Status"). The key text is always displayed and wraps naturally. Should be concise and descriptive.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content for the key/label portion of the pair',
+            },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'value',
-                hintText: 'The value text to display',
+                hintText:
+                    'Optional string representing the value text displayed in the key-value pair. This is the actual data associated with the key (e.g., "John Doe", "john@example.com", "Active"). The value text respects the textOverflow setting and can be truncated, wrapped, or clamped based on configuration.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Text content for the value portion of the pair',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'size',
-                hintText: 'Size of the value text',
+                hintText:
+                    'Optional KeyValuePairSize enum value that controls the font size of the value text. SMALL creates compact text, MEDIUM provides standard sizing, LARGE creates more prominent text. The key text size remains constant; only the value text size changes. Defaults to SMALL.',
             },
-            { content: 'KeyValuePairSize', hintText: 'enum' },
+            {
+                content: 'KeyValuePairSize',
+                hintText:
+                    'Enum that determines the font size of the value text',
+            },
             { content: 'SMALL, MEDIUM, LARGE' },
-            { content: 'KeyValuePairSize.SMALL' },
         ],
         [
             {
                 content: 'keySlot',
-                hintText: 'Custom content slot after the key text',
+                hintText:
+                    'Optional React element displayed after the key text, within the key container. Useful for adding icons, badges, or other visual elements that complement the key. The slot appears aligned with the key text and maintains proper spacing.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (icon, badge, etc.) displayed after the key text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'valueLeftSlot',
-                hintText: 'Custom content slot before the value text',
+                hintText:
+                    'Optional React element displayed before the value text, within the value container. Useful for adding leading icons, indicators, or visual elements that precede the value. The slot appears aligned with the value text.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (icon, badge, etc.) displayed before the value text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'valueRightSlot',
-                hintText: 'Custom content slot after the value text',
+                hintText:
+                    'Optional React element displayed after the value text, within the value container. Useful for adding trailing icons, badges, or action buttons that follow the value. The slot appears aligned with the value text and maintains proper spacing.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (icon, badge, etc.) displayed after the value text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'keyValuePairState',
-                hintText: 'Layout orientation (vertical or horizontal)',
+                hintText:
+                    'Optional KeyValuePairStateType enum value that determines the layout orientation of the key-value pair. "vertical" stacks the key above the value, "horizontal" places the key and value side by side. Vertical is common for forms and lists, horizontal for inline displays. Defaults to "vertical".',
             },
-            { content: 'KeyValuePairStateType', hintText: 'enum' },
+            {
+                content: 'KeyValuePairStateType',
+                hintText:
+                    'Enum that determines the layout orientation of the pair',
+            },
             { content: 'vertical, horizontal' },
-            { content: 'KeyValuePairStateType.vertical' },
         ],
         [
             {
                 content: 'maxWidth',
-                hintText: 'Maximum width of the component',
+                hintText:
+                    'Optional CSS width string that sets the maximum width constraint for the entire component. Accepts any valid CSS width value (e.g., "220px", "100%", "20rem"). The component will not grow beyond this width, ensuring consistent sizing. Defaults to "220px".',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value for maximum component width constraint',
+            },
             { content: '' },
-            { content: "'220px'" },
         ],
         [
             {
                 content: 'textOverflow',
-                hintText: 'How to handle text overflow',
+                hintText:
+                    'Optional TextOverflowMode enum value that controls how text overflow is handled for both key and value. "truncate" shows single line with ellipsis (widely supported), "wrap" allows natural text wrapping, "wrap-clamp" wraps with line limit and ellipsis (uses -webkit-line-clamp, graceful fallback). Defaults to "truncate".',
             },
-            { content: 'TextOverflowMode', hintText: 'enum' },
+            {
+                content: 'TextOverflowMode',
+                hintText: 'Enum that determines how text overflow is handled',
+            },
             { content: 'truncate, wrap, wrap-clamp' },
-            { content: "'truncate'" },
         ],
         [
             {
                 content: 'maxLines',
                 hintText:
-                    'Maximum number of lines when textOverflow is wrap-clamp',
+                    'Optional number specifying the maximum number of lines to display when textOverflow is "wrap-clamp". After this number of lines, text is truncated with ellipsis. Only applies when textOverflow is "wrap-clamp". Useful for controlling multi-line text display. Defaults to 2.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing maximum lines before truncation',
+            },
             { content: '' },
-            { content: '2' },
         ],
         [
             {
                 content: 'showTooltipOnTruncate',
-                hintText: 'Show tooltip on hover when text is truncated',
+                hintText:
+                    'When true, displays a tooltip on hover when text is truncated (either through "truncate" or "wrap-clamp" modes). The tooltip shows the full text content. When false, no tooltip appears even if text is truncated. Useful for allowing users to see full content when space is limited. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows tooltip on truncated text hover, false hides tooltip',
+            },
             { content: '' },
-            { content: 'true' },
         ],
     ]}
     className="mb-8"

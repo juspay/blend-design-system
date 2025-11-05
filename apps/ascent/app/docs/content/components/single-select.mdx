@@ -89,103 +89,103 @@ function MyComponent() {
             {
                 content: 'SingleSelect.label',
                 hintText:
-                    'The main label text displayed above the select field',
+                    'Optional label string displayed above the select field. Provides context and description of what users should select. Should be concise and descriptive (e.g., "Assign team member", "Choose a category"). The label is styled prominently and helps users understand the selection purpose.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'SingleSelect.subLabel',
                 hintText:
-                    'Optional secondary label text displayed below the main label',
+                    'Optional secondary label string displayed below the main label. Provides additional context, explanation, or clarification about the select field. Styled with smaller, lighter text. Useful for explaining complex selections or providing guidance.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'SingleSelect.hintText',
-                hintText: 'Optional help text displayed below the select field',
+                hintText:
+                    'Optional help text string displayed below the select field. Provides guidance, instructions, or examples about valid selections. Styled with smaller, lighter text. Useful for form validation hints or usage instructions.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'SingleSelect.required',
-                hintText: 'Whether the field is required (displays asterisk)',
+                hintText:
+                    'When true, marks the select field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields must have a selection before form submission. Defaults to false.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'SingleSelect.helpIconText',
                 hintText:
-                    'Tooltip text displayed when hovering over the help icon',
+                    'Optional tooltip text string displayed when hovering over the help icon (question mark icon) next to the label. Provides additional context or detailed explanation about the select field. Useful for complex fields that need extra guidance.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
                 content: 'SingleSelect.placeholder',
-                hintText: 'Placeholder text shown when no option is selected',
+                hintText:
+                    'Required placeholder string displayed in the trigger button when no option is selected. Provides guidance to users about what they can select (e.g., "Select a team member", "Choose an option"). Should be concise and action-oriented. The placeholder disappears once a selection is made.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'SingleSelect.size',
-                hintText: 'Size variant affecting the select field dimensions',
+                hintText:
+                    'Optional SelectMenuSize enum value that determines the size variant affecting dimensions, height, padding, and font size of the select field. SMALL creates a compact select, MEDIUM creates a standard size, LARGE creates a prominent size. Defaults to MEDIUM.',
             },
             { content: 'SelectMenuSize', hintText: 'enum' },
             { content: 'SMALL, MEDIUM, LARGE' },
-            { content: 'SelectMenuSize.MEDIUM' },
         ],
         [
             {
                 content: 'SingleSelect.items',
-                hintText: 'Array of grouped menu items for selection',
+                hintText:
+                    'Required array of SelectMenuGroupType objects that define the grouped menu items available for selection. Each group can have an optional label and contains an array of selectable items. The items are displayed in the dropdown menu organized by groups. Supports nested sub-menus for hierarchical structures.',
             },
             { content: 'SelectMenuGroupType[]', hintText: 'array' },
-            { content: '' },
-            { content: 'Required' },
+            {
+                content:
+                    'SelectMenuGroupType: see SelectMenuGroupType props below',
+            },
         ],
         [
             {
                 content: 'SingleSelect.variant',
-                hintText: 'Visual variant determining styling approach',
+                hintText:
+                    'Optional SelectMenuVariant enum value that determines the visual styling approach. CONTAINER creates a select with border and background (like an input field), NO_CONTAINER creates a minimal select without border. The variant affects the trigger button appearance. Defaults to CONTAINER.',
             },
             { content: 'SelectMenuVariant', hintText: 'enum' },
             { content: 'CONTAINER, NO_CONTAINER' },
-            { content: 'SelectMenuVariant.CONTAINER' },
         ],
         [
             {
                 content: 'SingleSelect.selected',
-                hintText: 'Currently selected value (controlled component)',
+                hintText:
+                    'Required string representing the currently selected value (controlled component). Should match the value prop of one of the items in the items array. When provided, the component is controlled and selection is managed by your component state. Use this with onSelect for controlled state management.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
                 content: 'SingleSelect.onSelect',
-                hintText: 'Callback function called when an option is selected',
+                hintText:
+                    "Required callback function invoked when an option is selected. Receives the selected item's value string as a parameter. Use this to update your state when using controlled mode. The function is called whenever a different option is selected from the dropdown menu.",
             },
             { content: '(value: string) => void', hintText: 'function' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -194,7 +194,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -203,7 +202,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -213,7 +211,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -223,7 +220,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -233,7 +229,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -243,7 +238,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -280,7 +274,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -289,7 +282,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -298,7 +290,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -307,7 +298,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -316,7 +306,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -326,7 +315,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -336,7 +324,6 @@ function MyComponent() {
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -346,7 +333,6 @@ function MyComponent() {
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -355,7 +341,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -364,7 +349,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -373,7 +357,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -382,7 +365,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -391,7 +373,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -400,7 +381,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -409,7 +389,6 @@ function MyComponent() {
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -418,7 +397,6 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -427,7 +405,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -436,7 +413,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -445,7 +421,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -454,7 +429,6 @@ function MyComponent() {
             },
             { content: 'SelectMenuItemType[]', hintText: 'array' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -463,7 +437,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -472,7 +445,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -481,7 +453,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'Required' },
         ],
         [
             {
@@ -490,7 +461,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -499,7 +469,6 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -508,7 +477,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -517,7 +485,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -526,7 +493,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -536,7 +502,6 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -546,7 +511,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
@@ -555,7 +519,6 @@ function MyComponent() {
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -576,7 +539,6 @@ function MyComponent() {
             },
             { content: 'string | React.ReactNode', hintText: 'union type' },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -589,7 +551,6 @@ function MyComponent() {
                 hintText: 'object',
             },
             { content: '' },
-            { content: 'undefined' },
         ],
         [
             {
@@ -598,7 +559,6 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-            { content: 'false' },
         ],
     ]}
     className="mb-8"

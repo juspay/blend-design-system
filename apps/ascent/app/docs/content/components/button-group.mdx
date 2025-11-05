@@ -47,24 +47,28 @@ function MyComponent() {
             {
                 content: 'stacked',
                 hintText:
-                    'Whether buttons should be stacked vertically or arranged horizontally',
+                    'When true, buttons are arranged vertically in a stacked layout. When false, buttons are arranged horizontally in a row. Horizontal layout is useful for action buttons side-by-side, while stacked layout is better for mobile views or when vertical space is available. Defaults to false (horizontal layout).',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true arranges buttons vertically, false arranges them horizontally',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'children',
-                hintText: 'Button components to be grouped together',
+                hintText:
+                    'Required Button components to be grouped together. Can be a single Button element or an array of Button elements. The ButtonGroup provides consistent spacing, border radius handling (for connected buttons), and layout management for all child buttons.',
             },
             {
                 content:
                     'ReactElement<ButtonProps> | ReactElement<ButtonProps>[]',
-                hintText: 'React elements',
+                hintText:
+                    'Single Button element or array of Button elements to group',
             },
             { content: '' },
-            { content: 'Required' },
         ],
     ]}
     className="mb-8"

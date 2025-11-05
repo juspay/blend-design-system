@@ -55,114 +55,177 @@ function MyComponent() {
         [
             {
                 content: 'MultiValueInput.tags',
-                hintText: 'Array of current tag values',
+                hintText:
+                    'Required array of strings representing the current tag values displayed in the input field. Each string becomes a removable tag/chip. The array is controlled by your component state and updates when tags are added or removed. Defaults to empty array if not provided.',
             },
-            { content: 'string[]', hintText: 'array' },
-            { content: '[]' },
+            {
+                content: 'string[]',
+                hintText: 'Array of tag value strings displayed as chips',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.required',
-                hintText: 'Whether the input is required',
+                hintText:
+                    'When true, marks the input field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure tags are provided. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks field as required, false allows optional input',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.onTagAdd',
-                hintText: 'Callback when a new tag is added',
+                hintText:
+                    'Required callback function invoked when a new tag is added. Receives the new tag string as a parameter. Use this to update your tags state array. The function is called when the user presses Enter or submits the input value.',
             },
-            { content: '(tag: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the new tag string when a tag is added',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.onTagRemove',
-                hintText: 'Callback when a tag is removed',
+                hintText:
+                    'Required callback function invoked when a tag is removed. Receives the tag string to remove as a parameter. Use this to update your tags state array by filtering out the removed tag. The function is called when the user clicks the X button on a tag.',
             },
-            { content: '(tag: string) => void', hintText: 'function' },
-            { content: 'undefined' },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the tag string when a tag is removed',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.label',
-                hintText: 'Primary label for the input field',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what users should input. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the input field',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.sublabel',
-                hintText: 'Secondary label or description',
+                hintText:
+                    "Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the input field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex input requirements.",
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty. Provides guidance to users about what they can input. Should be concise and action-oriented (e.g., "Type a skill and press Enter").',
+            },
+            {
+                content: 'string',
                 hintText: 'Placeholder text shown when input is empty',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.size',
-                hintText: 'Size variant of the input field',
+                hintText:
+                    'Optional TextInputSize enum value that determines the size variant of the input field. Affects padding, height, font size, and overall dimensions. Common values include SMALL, MEDIUM, LARGE. Defaults to MEDIUM.',
             },
-            { content: 'TextInputSize', hintText: 'enum' },
-            { content: 'TextInputSize.MEDIUM' },
+            {
+                content: 'TextInputSize',
+                hintText:
+                    'Enum that determines the size variant of the input field',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.error',
-                hintText: 'Whether the input is in error state',
+                hintText:
+                    'When true, displays the input field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.errorMessage',
-                hintText: 'Error message to display when in error state',
+                hintText:
+                    'Optional error message string displayed below the input field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'Error message text displayed when error is true',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.hintText',
-                hintText: 'Helper text displayed below the input',
+                hintText:
+                    'Optional helper text string displayed below the input field. Provides guidance, examples, or additional information about the input. Styled with smaller, lighter text. Useful for clarifying complex input requirements or providing examples.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'Helper text shown below the input field',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.helpIconHintText',
-                hintText: 'Tooltip text for the help icon',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the input field. Should be concise and helpful. If not provided, no help icon is shown.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText: 'Tooltip text shown when hovering over the help icon',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.disabled',
-                hintText: 'Whether the input is disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot add tags, remove tags, or type in the input. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'MultiValueInput.name',
-                hintText: 'Name attribute for the input field',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
         ],
     ]}
     className="mb-8"

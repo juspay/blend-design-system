@@ -59,58 +59,73 @@ function MyComponent() {
 <DocsTypeTable
     data={[
         [
-            { content: 'children', hintText: 'The accordion items to render' },
+            {
+                content: 'children',
+                hintText:
+                    'React elements representing AccordionItem components to be rendered within the accordion. Each child should be an AccordionItem with a unique value prop.',
+            },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
             { content: '' },
         ],
         [
             {
                 content: 'accordionType',
-                hintText: 'The visual style variant of the accordion',
+                hintText:
+                    'Controls the visual styling of the accordion. BORDER displays borders around each item, while NO_BORDER removes borders for a cleaner look. Defaults to NO_BORDER.',
             },
             { content: 'AccordionType', hintText: 'enum' },
             { content: 'BORDER, NO_BORDER' },
-            { content: 'AccordionType.NO_BORDER' },
         ],
         [
             {
                 content: 'defaultValue',
-                hintText: 'The default value(s) for the accordion',
+                hintText:
+                    'Sets the initial expanded state for uncontrolled accordions. Can be a single string value or an array of strings for multiple items. Use this for uncontrolled components where you want to set initial state.',
             },
-            { content: 'string | string[]', hintText: 'string or array' },
-            { content: '' },
+            {
+                content: 'string | string[]',
+                hintText:
+                    'Single value for single accordion mode, or array for multiple mode',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'value',
-                hintText: 'The controlled value(s) for the accordion',
+                hintText:
+                    'Controlled value(s) that determine which accordion item(s) are currently expanded. Use with onValueChange for controlled accordion behavior. Must be a string for single mode or string[] for multiple mode.',
             },
-            { content: 'string | string[]', hintText: 'string or array' },
-            { content: '' },
+            {
+                content: 'string | string[]',
+                hintText:
+                    'Single value for single accordion mode, or array for multiple mode',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isMultiple',
                 hintText:
-                    'Whether multiple items can be expanded simultaneously',
+                    'When true, allows multiple accordion items to be expanded simultaneously. When false, only one item can be expanded at a time, and expanding a new item will collapse the previously expanded one. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'true/false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables multiple expansion, false allows only one item expanded',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'onValueChange',
-                hintText: 'Callback when the accordion value changes',
+                hintText:
+                    'Callback function invoked whenever the expanded state changes. Receives the new value (string or string[]) as a parameter. Use this for controlled accordion behavior to synchronize state.',
             },
             {
                 content: '(value: string | string[]) => void',
-                hintText: 'function',
+                hintText:
+                    'Function that receives the new expanded value(s) when state changes',
             },
-            { content: '' },
             { content: '' },
         ],
     ]}
@@ -126,88 +141,113 @@ function MyComponent() {
         [
             {
                 content: 'value',
-                hintText: 'Unique identifier for the accordion item',
+                hintText:
+                    "Required unique identifier string for this accordion item. This value is used to track which item is expanded and must match the value used in the parent Accordion component's value or defaultValue prop.",
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Unique string identifier that must be unique across all accordion items',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'title',
-                hintText: 'The title text displayed in the accordion trigger',
+                hintText:
+                    'Required main heading text displayed in the accordion trigger button. This is the primary text that users see and click to expand/collapse the item.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText: 'Text content for the accordion item heading',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'children',
                 hintText:
-                    'The content to display when the accordion item is expanded',
+                    'Required content that appears when the accordion item is expanded. Can be any React node including text, components, or complex layouts. This content is hidden when the item is collapsed.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any valid React content to display when item is expanded',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'subtext',
-                hintText: 'Optional subtitle text displayed below the title',
+                hintText:
+                    'Optional secondary text displayed below the main title in the trigger. Useful for providing additional context or description without expanding the item.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the title in the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'leftSlot',
                 hintText:
-                    'Optional element to display on the left side of the trigger',
+                    'Optional React element displayed on the left side of the trigger, before the title. Commonly used for icons, badges, or other visual indicators.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the left side of the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'rightSlot',
                 hintText:
-                    'Optional element to display on the right side of the trigger',
+                    'Optional React element displayed on the right side of the trigger, typically between the title and chevron icon. Useful for action buttons, badges, or status indicators.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the right side of the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'subtextSlot',
-                hintText: 'Optional element to display alongside the subtext',
+                hintText:
+                    'Optional React element displayed alongside the subtext, typically on the right side. Useful for adding icons or small interactive elements next to the secondary text.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React element to display alongside the subtext',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isDisabled',
                 hintText:
-                    'Whether the accordion item is disabled and non-interactive',
+                    'When true, disables the accordion item, making it non-interactive. Disabled items cannot be expanded or collapsed and typically have reduced visual opacity. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables interaction, false allows normal interaction',
+            },
             { content: '' },
-            { content: 'false' },
         ],
         [
             {
                 content: 'chevronPosition',
                 hintText:
-                    'Position of the chevron icon relative to the trigger',
+                    'Controls the position of the expand/collapse chevron icon relative to the trigger content. LEFT places the chevron on the left side, RIGHT places it on the right side (default). The chevron automatically rotates to indicate expanded/collapsed state.',
             },
             { content: 'AccordionChevronPosition', hintText: 'enum' },
             { content: 'LEFT, RIGHT' },
-            { content: 'AccordionChevronPosition.RIGHT' },
         ],
     ]}
     className="mb-8"
