@@ -1,8 +1,24 @@
-import type { Node, Edge, NodeProps, EdgeProps, Connection } from 'reactflow'
+import type {
+    Node,
+    Edge,
+    NodeProps,
+    EdgeProps,
+    Connection,
+    NodeTypes,
+    EdgeTypes,
+} from 'reactflow'
 import type { ReactNode } from 'react'
 
 // Re-export React Flow types for convenience
-export type { Node, Edge, NodeProps, EdgeProps, Connection }
+export type {
+    Node,
+    Edge,
+    NodeProps,
+    EdgeProps,
+    Connection,
+    NodeTypes,
+    EdgeTypes,
+}
 
 // Node type variants
 export enum NodeType {
@@ -52,6 +68,8 @@ export type WorkflowCanvasProps = {
     onEdgeClick?: (event: React.MouseEvent, edge: BlendEdge) => void
     onNodeDoubleClick?: (event: React.MouseEvent, node: BlendNode) => void
     onPaneClick?: (event: React.MouseEvent) => void
+    nodeTypes?: NodeTypes
+    edgeTypes?: EdgeTypes
     height?: string | number
     width?: string | number
     fitView?: boolean

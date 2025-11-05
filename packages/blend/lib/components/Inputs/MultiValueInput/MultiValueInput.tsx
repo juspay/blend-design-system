@@ -22,6 +22,7 @@ const MultiValueInput = ({
     tags = [],
     onTagAdd,
     onTagRemove,
+    onChange,
     size = TextInputSize.MEDIUM,
     ...rest
 }: MultiValueInputProps) => {
@@ -140,7 +141,11 @@ const MultiValueInput = ({
                     outline="none"
                     border="none"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={(e) => {
+                        const newValue = e.target.value
+                        setInputValue(newValue)
+                        onChange?.(newValue)
+                    }}
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}

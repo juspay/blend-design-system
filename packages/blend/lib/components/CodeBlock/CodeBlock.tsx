@@ -150,6 +150,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             headerLeftSlot,
             headerRightSlot,
             diffLines,
+            showCopyButton = true,
         },
         ref
     ) => {
@@ -232,19 +233,22 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 </Block>
                             )}
                         </Block>
-                        <Button
-                            onClick={copyToClipboard}
-                            buttonType={ButtonType.SECONDARY}
-                            subType={ButtonSubType.ICON_ONLY}
-                            size={ButtonSize.SMALL}
-                            leadingIcon={
-                                isCopied ? (
-                                    <Check size={16} />
-                                ) : (
-                                    <Copy size={16} />
-                                )
-                            }
-                        />
+
+                        {showCopyButton && (
+                            <Button
+                                onClick={copyToClipboard}
+                                buttonType={ButtonType.SECONDARY}
+                                subType={ButtonSubType.ICON_ONLY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={
+                                    isCopied ? (
+                                        <Check size={16} />
+                                    ) : (
+                                        <Copy size={16} />
+                                    )
+                                }
+                            />
+                        )}
                     </Block>
                 )}
 

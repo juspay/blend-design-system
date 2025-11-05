@@ -198,14 +198,6 @@ export const getBodySlot2MarginBottom = (
 /**
  * Gets custom card styles (simple wrapper with padding)
  */
-export const getCustomCardStyles = (
-    cardToken: CardTokenType
-): React.CSSProperties => {
-    const padding = cardToken.padding[CardVariant.CUSTOM]
-    return {
-        padding: `${String(padding.y)} ${String(padding.x)}`,
-    }
-}
 
 /**
  * Determines if action button is inline type
