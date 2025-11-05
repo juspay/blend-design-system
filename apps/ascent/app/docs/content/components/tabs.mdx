@@ -42,50 +42,51 @@ function MyComponent() {
 
 ## API Reference
 
-### Tabs Props
-
 <DocsTypeTable
     data={[
         [
             {
-                content: 'defaultValue',
+                content: 'Tabs.defaultValue',
                 hintText: 'The default selected tab value',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'value',
+                content: 'Tabs.value',
                 hintText: 'The currently selected tab value (controlled)',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'onValueChange',
+                content: 'Tabs.onValueChange',
                 hintText: 'Callback when tab selection changes',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'variant',
+                content: 'Tabs.variant',
                 hintText: 'The visual style variant of the tabs',
             },
             { content: 'TabsVariant', hintText: 'enum' },
             { content: 'TabsVariant.UNDERLINE' },
         ],
         [
-            { content: 'size', hintText: 'The size of the tabs' },
+            {
+                content: 'Tabs.size',
+                hintText: 'The size of the tabs',
+            },
             { content: 'TabsSize', hintText: 'enum' },
             { content: 'TabsSize.MD' },
         ],
         [
             {
-                content: 'items',
+                content: 'Tabs.items',
                 hintText: 'Array of tab items for programmatic rendering',
             },
             { content: 'TabItem[]', hintText: 'array' },
@@ -93,7 +94,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onTabClose',
+                content: 'Tabs.onTabClose',
                 hintText: 'Callback when a tab is closed',
             },
             { content: '(value: string) => void', hintText: 'function' },
@@ -101,7 +102,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onTabAdd',
+                content: 'Tabs.onTabAdd',
                 hintText: 'Callback when add button is clicked',
             },
             { content: '() => void', hintText: 'function' },
@@ -109,7 +110,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showDropdown',
+                content: 'Tabs.showDropdown',
                 hintText: 'Whether to show dropdown for overflow tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -117,7 +118,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showAddButton',
+                content: 'Tabs.showAddButton',
                 hintText: 'Whether to show add button',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -125,7 +126,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'dropdownTooltip',
+                content: 'Tabs.dropdownTooltip',
                 hintText: 'Tooltip text for dropdown button',
             },
             { content: 'string', hintText: 'string' },
@@ -133,7 +134,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'addButtonTooltip',
+                content: 'Tabs.addButtonTooltip',
                 hintText: 'Tooltip text for add button',
             },
             { content: 'string', hintText: 'string' },
@@ -141,7 +142,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'maxDisplayTabs',
+                content: 'Tabs.maxDisplayTabs',
                 hintText:
                     'Maximum number of tabs to display before showing dropdown',
             },
@@ -150,38 +151,31 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disable',
+                content: 'Tabs.disable',
                 hintText: 'Whether to disable all tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### TabsList Props
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'variant',
+                content: 'TabsList.variant',
                 hintText: 'The visual style variant of the tabs list',
             },
             { content: 'TabsVariant', hintText: 'enum' },
             { content: 'TabsVariant.UNDERLINE' },
         ],
         [
-            { content: 'size', hintText: 'The size of the tabs list' },
+            {
+                content: 'TabsList.size',
+                hintText: 'The size of the tabs list',
+            },
             { content: 'TabsSize', hintText: 'enum' },
             { content: 'TabsSize.MD' },
         ],
         [
             {
-                content: 'expanded',
+                content: 'TabsList.expanded',
                 hintText: 'Whether tabs should expand to fill available width',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -189,7 +183,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'fitContent',
+                content: 'TabsList.fitContent',
                 hintText: 'Whether tabs should fit their content width',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -197,7 +191,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'items',
+                content: 'TabsList.items',
                 hintText: 'Array of tab items for programmatic rendering',
             },
             { content: 'TabItem[]', hintText: 'array' },
@@ -205,7 +199,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onTabClose',
+                content: 'TabsList.onTabClose',
                 hintText: 'Callback when a tab is closed',
             },
             { content: '(value: string) => void', hintText: 'function' },
@@ -213,7 +207,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onTabAdd',
+                content: 'TabsList.onTabAdd',
                 hintText: 'Callback when add button is clicked',
             },
             { content: '() => void', hintText: 'function' },
@@ -221,7 +215,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showDropdown',
+                content: 'TabsList.showDropdown',
                 hintText: 'Whether to show dropdown for overflow tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -229,7 +223,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showAddButton',
+                content: 'TabsList.showAddButton',
                 hintText: 'Whether to show add button',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -237,7 +231,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'addButtonTooltip',
+                content: 'TabsList.addButtonTooltip',
                 hintText: 'Tooltip text for add button',
             },
             { content: 'string', hintText: 'string' },
@@ -245,7 +239,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onTabChange',
+                content: 'TabsList.onTabChange',
                 hintText: 'Callback when tab selection changes (for dropdown)',
             },
             { content: '(value: string) => void', hintText: 'function' },
@@ -253,7 +247,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'activeTab',
+                content: 'TabsList.activeTab',
                 hintText: 'The currently active tab value',
             },
             { content: 'string', hintText: 'string' },
@@ -261,70 +255,63 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disable',
+                content: 'TabsList.disable',
                 hintText: 'Whether to disable all tabs',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### TabsTrigger Props
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'value',
+                content: 'TabsTrigger.value',
                 hintText: 'The unique value for this tab trigger',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
-                content: 'variant',
+                content: 'TabsTrigger.variant',
                 hintText: 'The visual style variant of the tab trigger',
             },
             { content: 'TabsVariant', hintText: 'enum' },
             { content: 'TabsVariant.UNDERLINE' },
         ],
         [
-            { content: 'size', hintText: 'The size of the tab trigger' },
+            {
+                content: 'TabsTrigger.size',
+                hintText: 'The size of the tab trigger',
+            },
             { content: 'TabsSize', hintText: 'enum' },
             { content: 'TabsSize.MD' },
         ],
         [
             {
-                content: 'leftSlot',
+                content: 'TabsTrigger.leftSlot',
                 hintText: 'Icon or element to display before the tab text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'rightSlot',
+                content: 'TabsTrigger.rightSlot',
                 hintText: 'Icon or element to display after the tab text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'children',
+                content: 'TabsTrigger.children',
                 hintText: 'The text content of the tab trigger',
             },
             { content: 'string | number', hintText: 'string or number' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
-                content: 'closable',
+                content: 'TabsTrigger.closable',
                 hintText: 'Whether the tab can be closed',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -332,7 +319,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onClose',
+                content: 'TabsTrigger.onClose',
                 hintText: 'Callback when close button is clicked',
             },
             { content: '() => void', hintText: 'function' },
@@ -340,37 +327,75 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disable',
+                content: 'TabsTrigger.disable',
                 hintText: 'Whether the tab trigger is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### TabsContent Props
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'value',
+                content: 'TabsContent.value',
                 hintText:
                     'The value that matches the corresponding TabsTrigger',
             },
             { content: 'string', hintText: 'string' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'TabsContent.children',
+                hintText: 'The content to display when this tab is active',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'TabsVariant.UNDERLINE',
+                hintText: 'Underline variant - underline indicator',
+            },
+            { content: '"underline"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'TabsVariant.BOXED',
+                hintText: 'Boxed variant - boxed container style',
+            },
+            { content: '"boxed"', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'children',
-                hintText: 'The content to display when this tab is active',
+                content: 'TabsVariant.FLOATING',
+                hintText: 'Floating variant - floating container style',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '"floating"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsVariant.PILLS',
+                hintText: 'Pills variant - rounded pill style',
+            },
+            { content: '"pills"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsSize.MD',
+                hintText: 'Medium size - default size',
+            },
+            { content: '"md"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'TabsSize.LG',
+                hintText: 'Large size - larger size variant',
+            },
+            { content: '"lg"', hintText: 'string' },
             { content: '' },
         ],
     ]}
@@ -378,17 +403,6 @@ function MyComponent() {
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- Multiple visual variants (underline, boxed, floating, pills)
-- Two sizes (medium, large)
-- Support for icons in tab triggers
-- Expandable tabs to fill container width
-- Fit-content option for compact layouts
-- Controlled and uncontrolled modes
-- Accessible keyboard navigation
-- Smooth transitions and hover states
 
 ## Component Tokens
 

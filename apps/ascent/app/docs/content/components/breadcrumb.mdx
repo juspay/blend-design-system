@@ -39,11 +39,60 @@ function MyComponent() {
             {
                 content: 'items',
                 hintText:
-                    'Array of breadcrumb items representing the navigation path',
+                    'Array of breadcrumb items representing the navigation path. Each item should have label, href, and optional leftSlot/rightSlot',
             },
             { content: 'BreadcrumbItemType[]', hintText: 'array' },
             { content: '' },
             { content: 'Required' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### BreadcrumbItemType
+
+Each item in the `items` array should have the following structure:
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'label',
+                hintText: 'The text displayed for the breadcrumb item',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'href',
+                hintText: 'The URL the breadcrumb item links to',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional content to display before the label (e.g., icons)',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Optional content to display after the label',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
         ],
     ]}
     className="mb-8"

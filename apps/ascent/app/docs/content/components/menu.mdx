@@ -87,147 +87,168 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'trigger',
+                content: 'Menu.trigger',
                 hintText: 'The element that triggers the menu to open',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             {
-                content: 'items',
+                content: 'Menu.items',
                 hintText: 'Array of menu groups containing menu items',
             },
             { content: 'MenuGroupType[]', hintText: 'array' },
+            {
+                content:
+                    'MenuGroupType: { label?: string, items: MenuItemType[], showSeparator?: boolean }',
+                hintText: 'See MenuGroupType below',
+            },
             { content: '[]' },
         ],
         [
             {
-                content: 'maxHeight',
+                content: 'Menu.maxHeight',
                 hintText: 'Maximum height of the menu in pixels',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'minHeight',
+                content: 'Menu.minHeight',
                 hintText: 'Minimum height of the menu in pixels',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'maxWidth',
+                content: 'Menu.maxWidth',
                 hintText: 'Maximum width of the menu in pixels',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'minWidth',
+                content: 'Menu.minWidth',
                 hintText: 'Minimum width of the menu in pixels',
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'enableSearch',
+                content: 'Menu.enableSearch',
                 hintText:
                     'Whether to show a search input for filtering menu items',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
             {
-                content: 'searchPlaceholder',
+                content: 'Menu.searchPlaceholder',
                 hintText: 'Placeholder text for the search input',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Search' },
         ],
         [
             {
-                content: 'open',
+                content: 'Menu.open',
                 hintText: 'Controlled open state of the menu',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
-        ],
-        [
-            {
-                content: 'onOpenChange',
-                hintText: 'Callback when the menu open state changes',
-            },
-            { content: '(open: boolean) => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'asModal',
+                content: 'Menu.onOpenChange',
+                hintText: 'Callback when the menu open state changes',
+            },
+            { content: '(open: boolean) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Menu.asModal',
                 hintText: 'Whether to render the menu as a modal on mobile',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
             {
-                content: 'alignment',
+                content: 'Menu.alignment',
                 hintText: 'How the menu aligns relative to the trigger',
             },
             { content: 'MenuAlignment', hintText: 'enum' },
+            { content: 'START, CENTER, END' },
             { content: 'MenuAlignment.CENTER' },
         ],
         [
             {
-                content: 'side',
+                content: 'Menu.side',
                 hintText: 'Which side of the trigger the menu appears on',
             },
             { content: 'MenuSide', hintText: 'enum' },
+            { content: 'TOP, LEFT, RIGHT, BOTTOM' },
             { content: 'MenuSide.BOTTOM' },
         ],
         [
             {
-                content: 'sideOffset',
+                content: 'Menu.sideOffset',
                 hintText: 'Distance in pixels from the trigger',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '8' },
         ],
         [
             {
-                content: 'alignOffset',
+                content: 'Menu.alignOffset',
                 hintText: 'Offset for fine-tuning alignment',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '0' },
         ],
         [
             {
-                content: 'collisonBoundaryRef',
+                content: 'Menu.collisonBoundaryRef',
                 hintText: 'Element(s) to use as collision boundary',
             },
             {
                 content: 'Element | null | Array<Element | null>',
                 hintText: 'element',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'enableVirtualScrolling',
+                content: 'Menu.enableVirtualScrolling',
                 hintText: 'Whether to enable virtual scrolling for large lists',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
             {
-                content: 'virtualItemHeight',
+                content: 'Menu.virtualItemHeight',
                 hintText:
                     'Height of each virtual item or function to calculate height',
             },
@@ -236,189 +257,192 @@ function MyComponent() {
                     'number | ((item: MenuItemType, index: number) => number)',
                 hintText: 'number or function',
             },
+            {
+                content: 'MenuItemType: see MenuItemType props below',
+                hintText: 'See MenuItemType below',
+            },
             { content: '40' },
         ],
         [
             {
-                content: 'virtualOverscan',
+                content: 'Menu.virtualOverscan',
                 hintText: 'Number of items to render outside visible area',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '5' },
         ],
         [
             {
-                content: 'virtualScrollThreshold',
+                content: 'Menu.virtualScrollThreshold',
                 hintText: 'Minimum number of items to enable virtual scrolling',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '50' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### MenuGroupType
-
-Structure for grouping menu items:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'label',
+                content: 'MenuGroupType.label',
                 hintText: 'Optional label for the group section',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'items',
+                content: 'MenuGroupType.items',
                 hintText: 'Array of menu items in this group',
             },
             { content: 'MenuItemType[]', hintText: 'array' },
+            {
+                content: 'MenuItemType: see MenuItemType props below',
+                hintText: 'See MenuItemType below',
+            },
             { content: 'Required' },
         ],
         [
             {
-                content: 'showSeparator',
+                content: 'MenuGroupType.showSeparator',
                 hintText: 'Whether to show a separator after this group',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### MenuItemType
-
-Structure for individual menu items:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'label',
+                content: 'MenuItemType.label',
                 hintText: 'The main text label for the menu item',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'subLabel',
+                content: 'MenuItemType.subLabel',
                 hintText: 'Optional secondary text below the main label',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'slot1',
+                content: 'MenuItemType.slot1',
                 hintText: 'Content slot (typically used for icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-        ],
-        [
-            {
-                content: 'slot2',
-                hintText: 'Additional content slot',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'slot3',
+                content: 'MenuItemType.slot2',
                 hintText: 'Additional content slot',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
-        ],
-        [
-            {
-                content: 'slot4',
-                hintText: 'Additional content slot',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'variant',
+                content: 'MenuItemType.slot3',
+                hintText: 'Additional content slot',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.slot4',
+                hintText: 'Additional content slot',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.variant',
                 hintText: 'Visual variant of the menu item',
             },
             { content: 'MenuItemVariant', hintText: 'enum' },
+            { content: 'DEFAULT, ACTION' },
             { content: 'MenuItemVariant.DEFAULT' },
         ],
         [
             {
-                content: 'actionType',
+                content: 'MenuItemType.actionType',
                 hintText: 'Action type for styling (used with ACTION variant)',
             },
             { content: 'MenuItemActionType', hintText: 'enum' },
+            { content: 'PRIMARY, DANGER' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
+                content: 'MenuItemType.disabled',
                 hintText: 'Whether the menu item is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
             {
-                content: 'onClick',
+                content: 'MenuItemType.onClick',
                 hintText: 'Callback when the menu item is clicked',
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'subMenu',
+                content: 'MenuItemType.subMenu',
                 hintText: 'Nested menu items for creating submenus',
             },
             { content: 'MenuItemType[]', hintText: 'array' },
-            { content: 'undefined' },
+            {
+                content: 'Recursive: MenuItemType[]',
+                hintText: 'Recursive type',
+            },
+            { content: '' },
         ],
         [
             {
-                content: 'enableSubMenuSearch',
+                content: 'MenuItemType.enableSubMenuSearch',
                 hintText: 'Whether to enable search in submenu',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'subMenuSearchPlaceholder',
+                content: 'MenuItemType.subMenuSearchPlaceholder',
                 hintText: 'Placeholder text for submenu search',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'tooltip',
+                content: 'MenuItemType.tooltip',
                 hintText: 'Tooltip text or React node to display on hover',
             },
             { content: 'string | ReactNode', hintText: 'string or React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
-                content: 'tooltipProps',
+                content: 'MenuItemType.tooltipProps',
                 hintText: 'Additional props for the tooltip component',
             },
             {
@@ -426,29 +450,14 @@ Structure for individual menu items:
                     '{ side?: TooltipSide; align?: TooltipAlign; size?: TooltipSize; showArrow?: boolean; delayDuration?: number; offset?: number }',
                 hintText: 'object',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Flexible Positioning**: 4 sides and 3 alignment options for optimal placement
-- **Grouped Items**: Organize menu items into labeled groups with optional separators
-- **Search Functionality**: Built-in search to filter menu items by label
-- **Multiple Content Slots**: 4 content slots per item for icons, badges, and additional content
-- **Action Variants**: Special styling for primary and danger actions
-- **Submenu Support**: Nested menu items for hierarchical navigation
-- **Controlled/Uncontrolled**: Support for both controlled and uncontrolled open states
-- **Modal Mode**: Renders as modal on mobile devices for better UX
-- **Collision Detection**: Automatic repositioning to stay within viewport
-- **Disabled States**: Individual menu items can be disabled
-- **Custom Sizing**: Configurable width and height constraints
-- **Virtual Scrolling**: Performance optimization for large lists
-- **Accessibility First**: Full keyboard navigation and screen reader support
 
 ## Component Tokens
 
@@ -579,103 +588,3 @@ export type MenuItemStates =
     | 'focusVisible'
     | 'disabled'
 ```
-
-## Behavior
-
-### Positioning Logic
-
-- **Side**: Menu appears on specified side of trigger (top, right, bottom, left)
-- **Alignment**: Menu aligns to start, center, or end of trigger
-- **Collision Detection**: Automatically repositions if menu would overflow viewport
-- **Offsets**: Fine-tune positioning with side and align offsets
-
-### Search Functionality
-
-- **Live Filtering**: Menu items filter as user types
-- **Label Matching**: Searches both main label and subLabel text
-- **Case Insensitive**: Search is not case sensitive
-- **Group Filtering**: Empty groups are hidden when all items are filtered out
-
-### Interaction Patterns
-
-- **Click to Open**: Trigger click opens the menu
-- **Click Outside**: Clicking outside closes the menu
-- **Escape Key**: Escape key closes the menu
-- **Item Selection**: Clicking menu item executes action and closes menu
-
-### Mobile Behavior
-
-- **Modal Mode**: When `asModal={true}`, renders as full-screen modal on mobile
-- **Touch Interactions**: Optimized for touch interactions
-- **Responsive Sizing**: Adapts to screen size constraints
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support with arrow keys, Enter, and Escape
-- **Focus Management**: Proper focus management when opening/closing menu
-- **Screen Reader Support**: ARIA labels and proper semantic structure
-- **ARIA Compliance**: Uses `aria-expanded`, `aria-haspopup`, and `role` attributes
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Tab Navigation**: Proper tab order through menu items
-
-## Enums
-
-### MenuAlignment
-
-```tsx
-enum MenuAlignment {
-    START = 'start', // Align to start edge of trigger
-    CENTER = 'center', // Center align with trigger
-    END = 'end', // Align to end edge of trigger
-}
-```
-
-### MenuSide
-
-```tsx
-enum MenuSide {
-    TOP = 'top', // Menu appears above trigger
-    LEFT = 'left', // Menu appears to left of trigger
-    RIGHT = 'right', // Menu appears to right of trigger
-    BOTTOM = 'bottom', // Menu appears below trigger
-}
-```
-
-### MenuItemVariant
-
-```tsx
-enum MenuItemVariant {
-    DEFAULT = 'default', // Standard menu item styling
-    ACTION = 'action', // Special styling for actions (with actionType)
-}
-```
-
-### MenuItemActionType
-
-```tsx
-enum MenuItemActionType {
-    PRIMARY = 'primary', // Primary action styling (blue)
-    DANGER = 'danger', // Danger action styling (red)
-}
-```
-
-## Best Practices
-
-### Menu Organization
-
-- **Group Related Items**: Use groups to organize related functionality
-- **Logical Order**: Place most common actions at the top
-- **Dangerous Actions**: Use danger action type for destructive actions
-- **Clear Labels**: Use descriptive labels that clearly indicate the action
-
-### Search Implementation
-
-- **Enable for Long Lists**: Use search when menu has many items
-- **Meaningful Placeholder**: Provide helpful search placeholder text
-- **Consider Performance**: Search filters client-side, suitable for moderate lists
-
-### Positioning Guidelines
-
-- **Consider Context**: Choose side and alignment based on trigger position
-- **Avoid Overflow**: Ensure menu doesn't extend beyond viewport
-- **Mobile Considerations**: Use modal mode for complex menus on mobile

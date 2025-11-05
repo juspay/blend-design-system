@@ -73,6 +73,7 @@ function MyComponent() {
         [
             { content: 'chartType', hintText: 'The type of chart to render' },
             { content: 'ChartType', hintText: 'enum' },
+            { content: 'LINE, BAR, PIE, SCATTER' },
             { content: 'ChartType.LINE' },
         ],
         [
@@ -81,6 +82,7 @@ function MyComponent() {
                 hintText: 'Array of nested data points for the chart',
             },
             { content: 'NewNestedDataPoint[]', hintText: 'array' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -89,22 +91,26 @@ function MyComponent() {
                 hintText: 'Array of colors for chart elements',
             },
             { content: 'string[]', hintText: 'array' },
+            { content: '' },
             { content: 'DEFAULT_COLORS' },
         ],
         [
             { content: 'slot1', hintText: 'First slot in the chart header' },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             { content: 'slot2', hintText: 'Second slot in the chart header' },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             { content: 'slot3', hintText: 'Third slot in the chart header' },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -112,6 +118,7 @@ function MyComponent() {
                 hintText: 'Position of the chart legend',
             },
             { content: 'ChartLegendPosition', hintText: 'enum' },
+            { content: 'TOP, RIGHT' },
             { content: 'ChartLegendPosition.TOP' },
         ],
         [
@@ -120,6 +127,7 @@ function MyComponent() {
                 hintText: 'Main content for the chart header',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -128,6 +136,7 @@ function MyComponent() {
                 hintText: 'Whether to use stacked legend layout',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -136,22 +145,26 @@ function MyComponent() {
                 hintText: 'Data for stacked legends with delta values',
             },
             { content: 'StackedLegendsDataPoint[]', hintText: 'array' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             { content: 'barsize', hintText: 'Size of bars in bar charts' },
             { content: 'number', hintText: 'number' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             { content: 'xAxis', hintText: 'Configuration for the X-axis' },
             { content: 'XAxisConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             { content: 'yAxis', hintText: 'Configuration for the Y-axis' },
             { content: 'YAxisConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -160,7 +173,8 @@ function MyComponent() {
                     'Configuration for empty state when no data is available',
             },
             { content: 'NoDataProps', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -168,6 +182,7 @@ function MyComponent() {
                 hintText: 'Height of the chart in pixels',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '400' },
         ],
         [
@@ -176,6 +191,7 @@ function MyComponent() {
                 hintText: 'Whether to show the chart header',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -184,6 +200,7 @@ function MyComponent() {
                 hintText: 'Whether to show the collapse/expand icon',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -192,7 +209,8 @@ function MyComponent() {
                 hintText: 'Controlled expanded state of the chart',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -200,7 +218,8 @@ function MyComponent() {
                 hintText: 'Callback when the expanded state changes',
             },
             { content: '(isExpanded: boolean) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -209,6 +228,7 @@ function MyComponent() {
                     'Name identifier for the chart (used in noData state)',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: "'Chart'" },
         ],
     ]}
@@ -216,333 +236,6 @@ function MyComponent() {
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Data Types
-
-### NewNestedDataPoint
-
-The main data structure for chart data:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'name',
-                hintText: 'Label for this data point (e.g., month, category)',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'data',
-                hintText: 'Object containing the data series for this point',
-            },
-            { content: '{ [key: string]: DataPoint }', hintText: 'object' },
-            { content: 'Required' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### DataPoint
-
-Structure for individual data series:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'primary',
-                hintText: 'Primary data with label and value',
-            },
-            { content: '{ label: string, val: number }', hintText: 'object' },
-            { content: 'Required' },
-        ],
-        [
-            { content: 'aux', hintText: 'Optional auxiliary data points' },
-            {
-                content:
-                    '{ label: string, val: number, type?: AxisType, dateOnly?: boolean, smart?: boolean, timeZone?: string, hour12?: boolean }[]',
-                hintText: 'array',
-            },
-            { content: 'undefined' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### AxisConfig
-
-Configuration for chart axes:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'label', hintText: 'Label text for the axis' },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'showLabel',
-                hintText: 'Whether to display the axis label',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'interval',
-                hintText: 'Interval between ticks or interval type',
-            },
-            {
-                content: 'number | AxisIntervalType',
-                hintText: 'number or enum',
-            },
-            { content: 'undefined' },
-        ],
-        [
-            { content: 'show', hintText: 'Whether to display the axis' },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'type',
-                hintText: 'Type of data displayed on this axis',
-            },
-            { content: 'AxisType', hintText: 'enum' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'tickFormatter',
-                hintText: 'Custom formatter for tick values',
-            },
-            {
-                content: '(value: string | number) => string',
-                hintText: 'function',
-            },
-            { content: 'undefined' },
-        ],
-        [
-            { content: 'customTick', hintText: 'Custom tick component' },
-            {
-                content: 'React.ComponentType<TickProps>',
-                hintText: 'component',
-            },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'dateOnly',
-                hintText: 'For date axes, show only date without time',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'useUTC',
-                hintText: 'Whether to use UTC for date formatting',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'formatString',
-                hintText: 'Custom format string for date/time formatting',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'timeOnly',
-                hintText: 'For date axes, show only time without date',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'showYear',
-                hintText: 'Whether to show year in date formatting',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'ticks',
-                hintText: 'Custom tick values for consistent intervals',
-            },
-            { content: '(number | string)[]', hintText: 'array' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'autoConsistentTicks',
-                hintText:
-                    'Automatically generate consistent ticks for DATE_TIME axes',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'maxTicks',
-                hintText: 'Maximum number of ticks to generate',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: '10' },
-        ],
-        [
-            {
-                content: 'smartDateTimeFormat',
-                hintText:
-                    'Alternates between showing date and time like Highcharts',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### NoDataProps
-
-Configuration for empty state display:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'title',
-                hintText: 'Title text for the empty state',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'subtitle',
-                hintText: 'Subtitle or description text',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'slot',
-                hintText: 'Custom content slot (icon, image, etc.)',
-            },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
-        ],
-        [
-            {
-                content: 'button',
-                hintText: 'Action button configuration',
-            },
-            { content: 'ButtonProps', hintText: 'object' },
-            { content: 'undefined' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### StackedLegendsDataPoint
-
-Structure for stacked legend data:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'value',
-                hintText: 'The main value to display',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'delta',
-                hintText: 'Change value (positive or negative)',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'changeType',
-                hintText: 'Type of change (increase or decrease)',
-            },
-            { content: 'LegendsChangeType', hintText: 'enum' },
-            { content: 'Required' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- **4 Chart Types**: Line, Bar, Pie, and Scatter charts for different data visualization needs
-- **Interactive Legends**: Clickable legends with hover effects and data series toggling
-- **Responsive Design**: Adapts to different screen sizes with mobile-optimized layouts
-- **Fullscreen Mode**: Built-in fullscreen toggle for detailed data analysis
-- **Custom Axes**: Configurable X and Y axes with multiple data types and formatting options
-- **Flexible Data Structure**: Nested data format supporting multiple series and auxiliary data
-- **Color Customization**: Customizable color schemes with default palette
-- **Header Slots**: Multiple slots for custom header content and controls
-- **Stacked Legends**: Advanced legend layout with delta values and change indicators
-- **Tooltip Integration**: Rich tooltips with custom formatting and data display
-- **Export Capabilities**: Built-in chart export and fullscreen viewing
-- **Accessibility Support**: Screen reader compatible with proper ARIA labels
-
-## Behavior
-
-### Interactive Features
-
-- **Legend Interaction**: Click legends to toggle data series visibility
-- **Hover Effects**: Hover over chart elements for detailed tooltips
-- **Fullscreen Mode**: Toggle fullscreen for detailed analysis (mobile only)
-- **Responsive Legends**: Legends adapt position based on screen size
-- **Collapse/Expand**: Toggle chart visibility with collapse icon
-
-### Data Processing
-
-- **Data Transformation**: Automatically flattens nested data for chart libraries
-- **Series Management**: Dynamic handling of multiple data series
-- **Key Selection**: Interactive selection and deselection of data keys
-- **Empty State**: Customizable no-data state with title, subtitle, and action button
-
-### Mobile Responsiveness
-
-- **Layout Adaptation**: Automatic layout changes for small screens
-- **Touch Interactions**: Optimized touch interactions for mobile devices
-- **Legend Positioning**: Smart legend positioning based on screen size
-- **Fullscreen Support**: Mobile-optimized fullscreen experience with orientation lock
-
-### Axis Configuration
-
-- **Smart Formatting**: Automatic date/time formatting with smart intervals
-- **Custom Ticks**: Support for custom tick values and formatters
-- **Multiple Types**: Support for date/time, currency, percentage, and number axes
-- **Consistent Intervals**: Automatic generation of consistent tick intervals
 
 ## Component Tokens
 
@@ -592,65 +285,4 @@ export type ResponsiveChartTokens = {
 }
 
 export type ChartState = 'default' | 'hover' | 'active'
-```
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support for interactive elements
-- **Screen Reader Support**: Proper ARIA labels and data announcements
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Focus Management**: Clear focus indicators for all interactive elements
-- **Alternative Text**: Meaningful descriptions for chart data
-- **Color Independence**: Chart data conveyed through patterns and labels, not just color
-
-## Enums
-
-### ChartType
-
-```tsx
-enum ChartType {
-    LINE = 'line', // Line chart for trends over time
-    BAR = 'bar', // Bar chart for categorical comparisons
-    PIE = 'pie', // Pie chart for part-to-whole relationships
-    SCATTER = 'scatter', // Scatter chart for correlation analysis
-}
-```
-
-### ChartLegendPosition
-
-```tsx
-enum ChartLegendPosition {
-    TOP = 'top', // Legend positioned above the chart
-    RIGHT = 'right', // Legend positioned to the right of the chart
-}
-```
-
-### AxisType
-
-```tsx
-enum AxisType {
-    DATE_TIME = 'dateTime', // Date/time axis with date formatting
-    CURRENCY = 'currency', // Currency axis with monetary formatting
-    PERCENTAGE = 'percentage', // Percentage axis with % formatting
-    NUMBER = 'number', // Numeric axis with number formatting
-}
-```
-
-### AxisIntervalType
-
-```tsx
-enum AxisIntervalType {
-    PRESERVE_START = 'preserveStart', // Always show first tick
-    PRESERVE_END = 'preserveEnd', // Always show last tick
-    PRESERVE_START_END = 'preserveStartEnd', // Always show first and last ticks
-}
-```
-
-### LegendsChangeType
-
-```tsx
-enum LegendsChangeType {
-    INCREASE = 'increase', // Positive change indicator
-    DECREASE = 'decrease', // Negative change indicator
-}
 ```

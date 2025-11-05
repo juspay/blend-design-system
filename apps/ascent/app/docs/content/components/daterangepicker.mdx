@@ -55,7 +55,8 @@ function MyComponent() {
                 hintText: 'Current selected date range',
             },
             { content: 'DateRange | undefined', hintText: 'DateRange' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -63,7 +64,8 @@ function MyComponent() {
                 hintText: 'Callback when date range changes',
             },
             { content: '(range: DateRange) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -74,7 +76,8 @@ function MyComponent() {
                 content: '(data: PresetSelectionData) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -82,6 +85,7 @@ function MyComponent() {
                 hintText: 'Whether to show date and time inputs',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -90,6 +94,7 @@ function MyComponent() {
                 hintText: 'Whether to show quick preset options',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -98,7 +103,8 @@ function MyComponent() {
                 hintText: 'Custom preset configurations',
             },
             { content: 'PresetsConfig', hintText: 'array or object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -106,7 +112,8 @@ function MyComponent() {
                 hintText: 'Placeholder text for the trigger',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -114,6 +121,7 @@ function MyComponent() {
                 hintText: 'Whether the picker is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -122,7 +130,8 @@ function MyComponent() {
                 hintText: 'Custom icon for the trigger',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -130,7 +139,8 @@ function MyComponent() {
                 hintText: 'Minimum selectable date',
             },
             { content: 'Date', hintText: 'Date' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -138,7 +148,8 @@ function MyComponent() {
                 hintText: 'Maximum selectable date',
             },
             { content: 'Date', hintText: 'Date' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -146,6 +157,7 @@ function MyComponent() {
                 hintText: 'Format for displaying dates',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: '"dd/MM/yyyy"' },
         ],
         [
@@ -154,6 +166,7 @@ function MyComponent() {
                 hintText: 'Allow selection of single date instead of range',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -162,6 +175,7 @@ function MyComponent() {
                 hintText: 'Disable selection of future dates',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -170,6 +184,7 @@ function MyComponent() {
                 hintText: 'Disable selection of past dates',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -179,6 +194,7 @@ function MyComponent() {
                     'Hide future dates from calendar (but allow selection)',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -187,6 +203,7 @@ function MyComponent() {
                 hintText: 'Hide past dates from calendar (but allow selection)',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -195,7 +212,8 @@ function MyComponent() {
                 hintText: 'Custom function to disable specific dates',
             },
             { content: '(date: Date) => boolean', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -203,7 +221,8 @@ function MyComponent() {
                 hintText: 'Configuration for custom range calculation',
             },
             { content: 'CustomRangeConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -212,7 +231,8 @@ function MyComponent() {
                     'Custom trigger element (deprecated, use triggerConfig)',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'null' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -220,6 +240,7 @@ function MyComponent() {
                 hintText: 'Use mobile drawer instead of popover on mobile',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -228,6 +249,7 @@ function MyComponent() {
                 hintText: 'Hide preset options on mobile',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -236,6 +258,7 @@ function MyComponent() {
                 hintText: 'Size variant of the picker',
             },
             { content: 'DateRangePickerSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
             { content: 'DateRangePickerSize.MEDIUM' },
         ],
         [
@@ -244,7 +267,8 @@ function MyComponent() {
                 hintText: 'Configuration for date format display',
             },
             { content: 'DateFormatConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -252,7 +276,8 @@ function MyComponent() {
                 hintText: 'Configuration for custom trigger rendering',
             },
             { content: 'TriggerConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -260,6 +285,7 @@ function MyComponent() {
                 hintText: 'Maximum height for the dropdown menu',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '250' },
         ],
         [
@@ -268,6 +294,7 @@ function MyComponent() {
                 hintText: 'Show only preset selector without date picker',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
     ]}
@@ -275,144 +302,6 @@ function MyComponent() {
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Data Types
-
-### DateRange
-
-```tsx
-export type DateRange = {
-    startDate: Date
-    endDate: Date
-    showTimePicker?: boolean
-}
-```
-
-### DateFormatConfig
-
-```tsx
-export type DateFormatConfig = {
-    preset?: DateFormatPreset
-    customFormat?: CustomFormatFunction
-    includeTime?: boolean
-    includeYear?: boolean
-    separator?: string
-    locale?: string
-    timeFormat?: '12h' | '24h'
-}
-```
-
-### TriggerConfig
-
-```tsx
-export type TriggerConfig = {
-    element?: ReactNode
-    placeholder?: string
-    showIcon?: boolean
-    icon?: ReactNode
-    style?: React.CSSProperties
-    renderTrigger?: (props: {
-        selectedRange: DateRange | undefined
-        isOpen: boolean
-        isDisabled: boolean
-        formattedValue: string
-        onClick: () => void
-    }) => ReactNode
-}
-```
-
-### CustomRangeConfig
-
-```tsx
-export type CustomRangeConfig = {
-    calculateEndDate?: CustomRangeCalculatorFunction
-    fixedDayRange?: number
-    referenceRange?: DateRange
-    backwardDays?: number
-    allowManualEndDateSelection?: boolean
-    applyToPresets?: boolean
-}
-```
-
-### PresetSelectionData
-
-```tsx
-export type PresetSelectionData = {
-    preset: DateRangePreset
-    label: string
-    dateRange: DateRange
-    formattedStartDate: string
-    formattedEndDate: string
-    formattedStartTime: string
-    formattedEndTime: string
-}
-```
-
-## Enums
-
-### DateRangePreset
-
-```tsx
-enum DateRangePreset {
-    CUSTOM = 'custom',
-    TODAY = 'today',
-    YESTERDAY = 'yesterday',
-    TOMORROW = 'tomorrow',
-    LAST_30_MINUTES = 'last30Minutes',
-    LAST_1_HOUR = 'last1Hour',
-    LAST_6_HOURS = 'last6Hours',
-    LAST_24_HOURS = 'last24Hours',
-    LAST_7_DAYS = 'last7Days',
-    LAST_30_DAYS = 'last30Days',
-    THIS_MONTH = 'thisMonth',
-    LAST_MONTH = 'lastMonth',
-    LAST_3_MONTHS = 'last3Months',
-    LAST_12_MONTHS = 'last12Months',
-    NEXT_7_DAYS = 'next7Days',
-    NEXT_30_DAYS = 'next30Days',
-    NEXT_3_MONTHS = 'next3Months',
-    NEXT_12_MONTHS = 'next12Months',
-}
-```
-
-### DateRangePickerSize
-
-```tsx
-enum DateRangePickerSize {
-    SMALL = 'sm',
-    MEDIUM = 'md',
-    LARGE = 'lg',
-}
-```
-
-### DateFormatPreset
-
-```tsx
-enum DateFormatPreset {
-    SHORT_RANGE = 'short-range',
-    MEDIUM_RANGE = 'medium-range',
-    LONG_RANGE = 'long-range',
-    SHORT_SINGLE = 'short-single',
-    MEDIUM_SINGLE = 'medium-single',
-    LONG_SINGLE = 'long-single',
-    ISO_RANGE = 'iso-range',
-    US_RANGE = 'us-range',
-    CUSTOM = 'custom',
-}
-```
-
-## Features
-
-- **Date Range Selection**: Select start and end dates with visual range indication
-- **Time Picker Integration**: Optional time selection with date ranges
-- **Quick Presets**: Pre-defined date ranges (Today, Yesterday, Last 7 days, etc.)
-- **Mobile Optimized**: Responsive design with mobile drawer on small screens
-- **Single Date Mode**: Option to select single dates instead of ranges
-- **Date Validation**: Built-in validation with min/max date constraints
-- **Custom Triggers**: Support for custom trigger elements
-- **Keyboard Navigation**: Full keyboard accessibility support
-- **Flexible Formatting**: Configurable date display formats
-- **Time Zone Support**: Handles local time zone calculations
 
 ## Component Tokens
 
@@ -623,96 +512,3 @@ export type ResponsiveCalendarTokens = {
     [key in keyof BreakpointType]: CalendarTokenType
 }
 ```
-
-## Behavior
-
-### Date Selection Flow
-
-- **Single Click**: Select single date or start of range
-- **Range Selection**: Click start date, then end date to complete range
-- **Visual Feedback**: Highlight selected dates and range preview
-- **Validation**: Ensure end date is after start date
-
-### Mobile Experience
-
-- **Drawer Interface**: Full-screen drawer on mobile devices
-- **Touch Optimized**: Large touch targets for mobile interaction
-- **Preset Integration**: Quick access to common date ranges
-- **Time Picker**: Scrollable time selection interface
-
-### Keyboard Navigation
-
-- **Tab Navigation**: Navigate between inputs and calendar
-- **Arrow Keys**: Navigate calendar grid
-- **Enter/Space**: Select dates and activate controls
-- **Escape**: Close picker without selection
-
-### Preset Functionality
-
-- **Quick Selection**: Common date ranges (Today, Last 7 days, etc.)
-- **Custom Presets**: Support for custom preset configurations
-- **Smart Defaults**: Intelligent preset suggestions based on context
-- **Mobile Adaptation**: Streamlined presets for mobile interfaces
-
-## Best Practices
-
-### When to Use DateRangePicker
-
-- **Analytics Dashboards**: Date range selection for data analysis
-- **Booking Systems**: Hotel, flight, and event booking date selection
-- **Report Generation**: Selecting time periods for reports
-- **Scheduling**: Meeting and event scheduling interfaces
-- **Data Filtering**: Filtering datasets by date ranges
-
-### Mobile Considerations
-
-- **Drawer Mode**: Use `useDrawerOnMobile={true}` for better mobile UX
-- **Preset Optimization**: Consider `skipQuickFiltersOnMobile` for simpler mobile UI
-- **Touch Targets**: Ensure adequate spacing for touch interaction
-- **Responsive Design**: Test across different mobile screen sizes
-
-### Date Range Configuration
-
-- **Logical Constraints**: Set appropriate min/max dates for your use case
-- **Future/Past Restrictions**: Use `disableFutureDates` or `disablePastDates` as needed
-- **Format Consistency**: Use consistent date formats across your application
-- **Time Zone Handling**: Consider time zone implications for your users
-
-### Accessibility Guidelines
-
-- **Label Association**: Provide clear labels for screen readers
-- **Keyboard Support**: Ensure full keyboard navigation functionality
-- **Focus Management**: Maintain proper focus flow through the interface
-- **Error Communication**: Provide accessible error messages for invalid selections
-- **ARIA Labels**: Use appropriate ARIA labels for complex calendar interactions
-
-### Performance Optimization
-
-- **State Management**: Use appropriate state management for complex applications
-- **Debouncing**: Consider debouncing for expensive operations triggered by date changes
-- **Memory Management**: Clean up event listeners and timers properly
-- **Lazy Loading**: Consider lazy loading for large calendar ranges
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled date range state
-- **Validation**: Integrate with form validation libraries
-- **Submission Handling**: Properly format dates for API submission
-- **Reset Functionality**: Implement proper form reset behavior
-- **Default Values**: Provide sensible default date ranges when appropriate
-
-### User Experience Guidelines
-
-- **Clear Labels**: Use descriptive labels and placeholders
-- **Visual Feedback**: Show clear selection states and hover effects
-- **Error Handling**: Provide helpful error messages for invalid selections
-- **Loading States**: Show loading indicators during data fetching
-- **Confirmation**: Consider confirmation steps for critical date selections
-
-### Data Handling
-
-- **Time Zone Consistency**: Handle time zones consistently across your application
-- **Date Formatting**: Format dates appropriately for display and storage
-- **Range Validation**: Validate date ranges on both client and server
-- **Edge Cases**: Handle edge cases like leap years and daylight saving time
-- **Persistence**: Consider persisting user's preferred date ranges

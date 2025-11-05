@@ -54,7 +54,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
+                content: 'OTPInput.value',
                 hintText: 'Current OTP value as a string',
             },
             { content: 'string', hintText: 'string' },
@@ -62,7 +62,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onChange',
+                content: 'OTPInput.onChange',
                 hintText: 'Callback when OTP value changes',
             },
             { content: '(value: string) => void', hintText: 'function' },
@@ -70,7 +70,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'length',
+                content: 'OTPInput.length',
                 hintText: 'Number of OTP digit inputs to display',
             },
             { content: 'number', hintText: 'number' },
@@ -78,7 +78,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'autoFocus',
+                content: 'OTPInput.autoFocus',
                 hintText: 'Whether to auto-focus the first input on mount',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -86,7 +86,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'label',
+                content: 'OTPInput.label',
                 hintText: 'Primary label for the OTP input group',
             },
             { content: 'string', hintText: 'string' },
@@ -94,7 +94,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sublabel',
+                content: 'OTPInput.sublabel',
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
@@ -102,7 +102,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'error',
+                content: 'OTPInput.error',
                 hintText: 'Whether the OTP inputs are in error state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -110,7 +110,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'errorMessage',
+                content: 'OTPInput.errorMessage',
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
@@ -118,7 +118,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'hintText',
+                content: 'OTPInput.hintText',
                 hintText: 'Helper text displayed below the inputs',
             },
             { content: 'string', hintText: 'string' },
@@ -126,7 +126,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'helpIconHintText',
+                content: 'OTPInput.helpIconHintText',
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
@@ -134,7 +134,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disabled',
+                content: 'OTPInput.disabled',
                 hintText: 'Whether all OTP inputs are disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -142,7 +142,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'required',
+                content: 'OTPInput.required',
                 hintText: 'Whether the OTP input is required',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -150,7 +150,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'name',
+                content: 'OTPInput.name',
                 hintText: 'Name attribute for the input group',
             },
             { content: 'string', hintText: 'string' },
@@ -158,10 +158,50 @@ function MyComponent() {
         ],
         [
             {
-                content: 'form',
+                content: 'OTPInput.form',
                 hintText: 'Form ID to associate the inputs with',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'OTPInputState.DEFAULT',
+                hintText: 'Default state - normal input appearance',
+            },
+            { content: '"default"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'OTPInputState.HOVER',
+                hintText: 'Hover state',
+            },
+            { content: '"hover"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'OTPInputState.FOCUS',
+                hintText: 'Focus state',
+            },
+            { content: '"focus"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'OTPInputState.ERROR',
+                hintText: 'Error state',
+            },
+            { content: '"error"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'OTPInputState.DISABLED',
+                hintText: 'Disabled state',
+            },
+            { content: '"disabled"', hintText: 'string' },
             { content: '' },
         ],
     ]}
@@ -240,112 +280,3 @@ export type ResponsiveOTPInputTokens = {
 
 export type OTPInputState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
 ```
-
-The component uses responsive tokens that adapt to different breakpoints with consistent styling for optimal user experience across devices.
-
-## Features
-
-- **Individual Digit Inputs**: Separate input field for each OTP digit
-- **Auto-Focus Management**: Automatic focus progression and regression
-- **Keyboard Navigation**: Arrow key navigation between inputs
-- **Clipboard Support**: Smart paste functionality with digit extraction
-- **Numeric Validation**: Only accepts numeric digits (0-9)
-- **Customizable Length**: Configurable number of digits (typically 4-8)
-- **Error States**: Visual error feedback for invalid codes
-- **Accessibility**: Full keyboard navigation and screen reader support
-- **Form Integration**: Compatible with form libraries and validation
-- **Auto-Focus**: Optional auto-focus on component mount
-
-## Behavior
-
-### Focus Management
-
-- **Auto-Focus**: Optionally focuses first input on mount
-- **Forward Focus**: Automatically moves to next input when digit is entered
-- **Backward Focus**: Moves to previous input on backspace when current is empty
-- **Arrow Navigation**: Left/right arrow keys move between inputs
-- **Click Focus**: Clicking any input focuses that specific field
-
-### Input Handling
-
-- **Numeric Only**: Accepts only digits (0-9), ignores other characters
-- **Single Digit**: Each input accepts only one digit, replacing existing
-- **Backspace Logic**: Clears current digit or moves to previous input
-- **Overflow Handling**: Extra characters are ignored, maintains single digit per input
-
-### Clipboard Support
-
-- **Smart Paste**: Paste operation on first input distributes digits across all inputs
-- **Digit Extraction**: Automatically extracts numeric digits from pasted content
-- **Length Limiting**: Only uses digits up to the specified length
-- **Focus Positioning**: Focuses appropriate input after paste operation
-
-### State Synchronization
-
-- **Value Binding**: Component value stays synchronized with parent state
-- **Change Callbacks**: Calls onChange for every digit modification
-- **Error Propagation**: Error state applies to all input fields
-- **Disabled State**: Disabling affects all inputs uniformly
-
-## Best Practices
-
-### When to Use OTPInput
-
-- **Email Verification**: Confirm email addresses during registration
-- **SMS Authentication**: Phone number verification workflows
-- **Two-Factor Authentication**: Secondary authentication step
-- **Password Reset**: Secure password reset verification
-- **Transaction Confirmation**: High-security transaction verification
-
-### Security Considerations
-
-- **Time Limits**: Implement appropriate code expiration times
-- **Rate Limiting**: Prevent brute force attacks with rate limiting
-- **Secure Transmission**: Always use HTTPS for OTP transmission
-- **Auto-Clear**: Clear codes after successful verification
-- **Attempt Limits**: Limit the number of verification attempts
-
-### User Experience
-
-- **Clear Instructions**: Provide clear context about where the code is sent
-- **Visual Feedback**: Show loading states during verification
-- **Error Handling**: Provide specific, actionable error messages
-- **Resend Options**: Offer code resend functionality with appropriate delays
-- **Auto-Submit**: Consider auto-submitting when code is complete
-
-### Length Configuration
-
-- **4 Digits**: Quick SMS verification, lower security scenarios
-- **6 Digits**: Standard email verification, moderate security
-- **8 Digits**: High-security scenarios, sensitive operations
-- **Custom Length**: Match your backend OTP generation settings
-
-### Accessibility Considerations
-
-- **Label Association**: Ensure proper labeling for screen readers
-- **Input Announcement**: Verify each input is properly announced
-- **Keyboard Navigation**: Test all keyboard interactions thoroughly
-- **Focus Indicators**: Maintain visible focus indicators
-- **Error Communication**: Ensure error messages are accessible
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled inputs with proper state
-- **Validation**: Integrate with form validation libraries
-- **Submission**: Handle form submission when OTP is complete
-- **Reset Functionality**: Implement proper form reset behavior
-- **Loading States**: Show appropriate loading states during verification
-
-### Performance Optimization
-
-- **Debouncing**: Consider debouncing for expensive validation operations
-- **Memoization**: Use React.memo for input optimization if needed
-- **State Management**: Use appropriate state management patterns
-- **Memory Cleanup**: Properly clean up timers and event listeners
-
-### Error Handling
-
-- **Validation Timing**: Validate only when OTP is complete
-- **Clear Messaging**: Provide specific error messages for different scenarios
-- **Recovery**: Allow easy recovery from error states
-- **Visual Feedback**: Use consistent error styling across all inputs

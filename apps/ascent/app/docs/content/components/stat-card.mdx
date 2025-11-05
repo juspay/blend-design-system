@@ -85,7 +85,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'title',
+                content: 'StatCard.title',
                 hintText: 'The title text displayed in the stat card',
             },
             { content: 'string', hintText: 'string' },
@@ -93,7 +93,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'value',
+                content: 'StatCard.value',
                 hintText: 'The main value displayed in the stat card',
             },
             { content: 'string | number', hintText: 'union type' },
@@ -101,7 +101,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'variant',
+                content: 'StatCard.variant',
                 hintText: 'The visual variant of the stat card',
             },
             { content: 'StatCardVariant', hintText: 'enum' },
@@ -109,7 +109,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'valueTooltip',
+                content: 'StatCard.valueTooltip',
                 hintText: 'Tooltip content for the value',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -117,16 +117,19 @@ function MyComponent() {
         ],
         [
             {
-                content: 'change',
+                content: 'StatCard.change',
                 hintText:
                     'Change indicator showing percentage increase or decrease',
             },
             { content: 'StatCardChange', hintText: 'object' },
-            { content: 'undefined' },
+            {
+                content: 'StatCardChange: see StatCardChange props below',
+                hintText: 'See StatCardChange below',
+            },
         ],
         [
             {
-                content: 'subtitle',
+                content: 'StatCard.subtitle',
                 hintText: 'Secondary text displayed below the main value',
             },
             { content: 'string', hintText: 'string' },
@@ -134,15 +137,18 @@ function MyComponent() {
         ],
         [
             {
-                content: 'chartData',
+                content: 'StatCard.chartData',
                 hintText: 'Data points for line and bar chart variants',
             },
             { content: 'ChartDataPoint[]', hintText: 'array' },
-            { content: 'undefined' },
+            {
+                content: 'ChartDataPoint: see ChartDataPoint props below',
+                hintText: 'See ChartDataPoint below',
+            },
         ],
         [
             {
-                content: 'progressValue',
+                content: 'StatCard.progressValue',
                 hintText:
                     'Progress percentage for progress bar variant (0-100)',
             },
@@ -151,7 +157,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'titleIcon',
+                content: 'StatCard.titleIcon',
                 hintText: 'Icon element displayed next to the title',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -159,7 +165,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'actionIcon',
+                content: 'StatCard.actionIcon',
                 hintText:
                     'Icon element displayed on the right side of the header',
             },
@@ -168,7 +174,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'helpIconText',
+                content: 'StatCard.helpIconText',
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
@@ -176,7 +182,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'dropdownProps',
+                content: 'StatCard.dropdownProps',
                 hintText: 'Props for the dropdown select component',
             },
             { content: 'SingleSelectProps', hintText: 'object' },
@@ -184,7 +190,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'maxWidth',
+                content: 'StatCard.maxWidth',
                 hintText: 'Maximum width of the stat card',
             },
             { content: 'string', hintText: 'string' },
@@ -192,23 +198,31 @@ function MyComponent() {
         ],
         [
             {
-                content: 'xAxis',
+                content: 'StatCard.xAxis',
                 hintText: 'Configuration for the X-axis',
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
-            { content: 'undefined' },
+            {
+                content:
+                    'StatCardAxisConfig: see StatCardAxisConfig props below',
+                hintText: 'See StatCardAxisConfig below',
+            },
         ],
         [
             {
-                content: 'yAxis',
+                content: 'StatCard.yAxis',
                 hintText: 'Configuration for the Y-axis',
             },
             { content: 'StatCardAxisConfig', hintText: 'object' },
-            { content: 'undefined' },
+            {
+                content:
+                    'StatCardAxisConfig: see StatCardAxisConfig props below',
+                hintText: 'See StatCardAxisConfig below',
+            },
         ],
         [
             {
-                content: 'valueFormatter',
+                content: 'StatCard.valueFormatter',
                 hintText: 'Axis type for formatting the main value',
             },
             { content: 'AxisType', hintText: 'enum' },
@@ -216,7 +230,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'height',
+                content: 'StatCard.height',
                 hintText: 'Height of the stat card',
             },
             { content: 'string', hintText: 'string' },
@@ -224,30 +238,23 @@ function MyComponent() {
         ],
         [
             {
-                content: 'direction',
+                content: 'StatCard.direction',
                 hintText: 'Layout direction of the stat card',
             },
             { content: 'StatCardDirection', hintText: 'enum' },
             { content: 'StatCardDirection.VERTICAL' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## StatCardChange API Reference
-
-<DocsTypeTable
-    data={[
         [
-            { content: 'value', hintText: 'The percentage change value' },
+            {
+                content: 'StatCardChange.value',
+                hintText: 'The percentage change value',
+            },
             { content: 'number', hintText: 'number' },
             { content: 'Required' },
         ],
         [
             {
-                content: 'valueType',
+                content: 'StatCardChange.valueType',
                 hintText: 'Whether the change is an increase or decrease',
             },
             { content: 'ChangeType', hintText: 'enum' },
@@ -255,48 +262,31 @@ function MyComponent() {
         ],
         [
             {
-                content: 'tooltip',
+                content: 'StatCardChange.tooltip',
                 hintText: 'Tooltip content for the change indicator',
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: 'undefined' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## ChartDataPoint API Reference
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'value',
+                content: 'ChartDataPoint.value',
                 hintText: 'The numeric value for the data point',
             },
             { content: 'number', hintText: 'number' },
             { content: 'Required' },
         ],
         [
-            { content: 'name', hintText: 'The name/label for the data point' },
+            {
+                content: 'ChartDataPoint.name',
+                hintText: 'The name/label for the data point',
+            },
             { content: 'string', hintText: 'string' },
             { content: 'Required' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## StatCardAxisConfig API Reference
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'type',
+                content: 'StatCardAxisConfig.type',
                 hintText: 'Type of axis data (number, date, etc.)',
             },
             { content: 'AxisType', hintText: 'enum' },
@@ -304,7 +294,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'tickFormatter',
+                content: 'StatCardAxisConfig.tickFormatter',
                 hintText: 'Custom function to format tick labels',
             },
             {
@@ -315,7 +305,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'dateOnly',
+                content: 'StatCardAxisConfig.dateOnly',
                 hintText: 'Whether to show only date (for date-time type)',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -323,7 +313,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'useUTC',
+                content: 'StatCardAxisConfig.useUTC',
                 hintText: 'Whether to use UTC timezone',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -331,7 +321,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'formatString',
+                content: 'StatCardAxisConfig.formatString',
                 hintText: 'Custom format string for date formatting',
             },
             { content: 'string', hintText: 'string' },
@@ -339,7 +329,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'timeOnly',
+                content: 'StatCardAxisConfig.timeOnly',
                 hintText: 'Whether to show only time (for date-time type)',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -347,7 +337,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showYear',
+                content: 'StatCardAxisConfig.showYear',
                 hintText: 'Whether to show year in date formatting',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -355,30 +345,81 @@ function MyComponent() {
         ],
         [
             {
-                content: 'smartDateTimeFormat',
+                content: 'StatCardAxisConfig.smartDateTimeFormat',
                 hintText: 'Whether to use smart date-time formatting',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'StatCardVariant.LINE',
+                hintText: 'Line chart visualization',
+            },
+            { content: '"line"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardVariant.BAR',
+                hintText: 'Bar chart visualization',
+            },
+            { content: '"bar"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardVariant.PROGRESS_BAR',
+                hintText: 'Progress bar visualization',
+            },
+            { content: '"progress"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardVariant.NUMBER',
+                hintText: 'Number only (no chart)',
+            },
+            { content: '"number"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ChangeType.INCREASE',
+                hintText: 'Positive change indicator',
+            },
+            { content: '"increase"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ChangeType.DECREASE',
+                hintText: 'Negative change indicator',
+            },
+            { content: '"decrease"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardDirection.VERTICAL',
+                hintText: 'Vertical layout (default)',
+            },
+            { content: '"vertical"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'StatCardDirection.HORIZONTAL',
+                hintText: 'Horizontal layout',
+            },
+            { content: '"horizontal"', hintText: 'string' },
+            { content: '' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- Four visual variants: Line chart, Bar chart, Progress bar, and Number only
-- Built-in chart rendering with Recharts integration
-- Change indicators with increase/decrease arrows and percentages
-- Icon support for title and action areas
-- Help tooltip functionality
-- Responsive design with customizable dimensions
-- Progress bar with pattern background
-- Interactive tooltips for chart data
-- Automatic color theming based on trend direction
-- Flexible layout with header and chart sections
 
 ## Component Tokens
 
@@ -517,35 +558,4 @@ export type ResponsiveStatCardTokens = {
 }
 
 export type StatCardState = 'default' | 'hover' | 'loading'
-```
-
-## Enums
-
-### StatCardVariant
-
-```tsx
-enum StatCardVariant {
-    LINE = 'line', // Line chart visualization
-    BAR = 'bar', // Bar chart visualization
-    PROGRESS_BAR = 'progress', // Progress bar visualization
-    NUMBER = 'number', // Number only (no chart)
-}
-```
-
-### ChangeType
-
-```tsx
-enum ChangeType {
-    INCREASE = 'increase', // Positive change indicator
-    DECREASE = 'decrease', // Negative change indicator
-}
-```
-
-### StatCardDirection
-
-```tsx
-enum StatCardDirection {
-    VERTICAL = 'vertical', // Vertical layout (default)
-    HORIZONTAL = 'horizontal', // Horizontal layout
-}
 ```

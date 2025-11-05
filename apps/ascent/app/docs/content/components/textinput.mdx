@@ -43,7 +43,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
+                content: 'TextInput.value',
                 hintText: 'Current value of the input field',
             },
             { content: 'string', hintText: 'string' },
@@ -51,7 +51,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onChange',
+                content: 'TextInput.onChange',
                 hintText: 'Callback when input value changes',
             },
             {
@@ -62,23 +62,23 @@ function MyComponent() {
         ],
         [
             {
-                content: 'label',
+                content: 'TextInput.label',
                 hintText: 'Primary label for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'sublabel',
+                content: 'TextInput.sublabel',
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'placeholder',
+                content: 'TextInput.placeholder',
                 hintText: 'Placeholder text shown when input is empty',
             },
             { content: 'string', hintText: 'string' },
@@ -86,7 +86,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'size',
+                content: 'TextInput.size',
                 hintText: 'Size variant of the input field',
             },
             { content: 'TextInputSize', hintText: 'enum' },
@@ -94,7 +94,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'error',
+                content: 'TextInput.error',
                 hintText: 'Whether the input is in error state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -102,31 +102,31 @@ function MyComponent() {
         ],
         [
             {
-                content: 'errorMessage',
+                content: 'TextInput.errorMessage',
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'hintText',
+                content: 'TextInput.hintText',
                 hintText: 'Helper text displayed below the input',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'helpIconHintText',
+                content: 'TextInput.helpIconHintText',
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'disabled',
+                content: 'TextInput.disabled',
                 hintText: 'Whether the input is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -134,7 +134,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'required',
+                content: 'TextInput.required',
                 hintText: 'Whether the input is required',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -142,31 +142,31 @@ function MyComponent() {
         ],
         [
             {
-                content: 'leftSlot',
+                content: 'TextInput.leftSlot',
                 hintText: 'Content to display on the left side of input',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'rightSlot',
+                content: 'TextInput.rightSlot',
                 hintText: 'Content to display on the right side of input',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'name',
+                content: 'TextInput.name',
                 hintText: 'Name attribute for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'onFocus',
+                content: 'TextInput.onFocus',
                 hintText: 'Callback when input receives focus',
             },
             {
@@ -177,7 +177,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onBlur',
+                content: 'TextInput.onBlur',
                 hintText: 'Callback when input loses focus',
             },
             {
@@ -188,7 +188,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'cursor',
+                content: 'TextInput.cursor',
                 hintText: 'Cursor style for the input',
             },
             {
@@ -197,76 +197,77 @@ function MyComponent() {
             },
             { content: "'text'" },
         ],
+        [
+            {
+                content: 'TextInputSize.SMALL',
+                hintText: 'Small input size - compact input for tight layouts',
+            },
+            { content: '"sm"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInputSize.MEDIUM',
+                hintText: 'Medium input size - default size for most use cases',
+            },
+            { content: '"md"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'TextInputSize.LARGE',
+                hintText:
+                    'Large input size - prominent input with floating label on mobile',
+            },
+            { content: '"lg"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInputState.DEFAULT',
+                hintText: 'Default state - normal input appearance',
+            },
+            { content: '"default"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'TextInputState.HOVER',
+                hintText: 'Hover state - enhanced outline on hover',
+            },
+            { content: '"hover"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInputState.FOCUS',
+                hintText:
+                    'Focus state - primary outline and shadow when focused',
+            },
+            { content: '"focus"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInputState.ERROR',
+                hintText: 'Error state - red outline and error styling',
+            },
+            { content: '"error"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInputState.DISABLED',
+                hintText:
+                    'Disabled state - muted appearance with no interaction',
+            },
+            { content: '"disabled"', hintText: 'string' },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
-/>
-
-## Enums
-
-### TextInputSize
-
-Size variants for the text input:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'SMALL', hintText: 'Small input size' },
-            { content: '"sm"', hintText: 'value' },
-            { content: 'Compact input for tight layouts' },
-        ],
-        [
-            { content: 'MEDIUM', hintText: 'Medium input size' },
-            { content: '"md"', hintText: 'value' },
-            { content: 'Default size for most use cases' },
-        ],
-        [
-            { content: 'LARGE', hintText: 'Large input size' },
-            { content: '"lg"', hintText: 'value' },
-            { content: 'Prominent input with floating label on mobile' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No sizes available"
-    loadingMessage="Loading sizes..."
-/>
-
-### TextInputState
-
-Internal state variants (for styling):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'DEFAULT', hintText: 'Default state' },
-            { content: '"default"', hintText: 'value' },
-            { content: 'Normal input appearance' },
-        ],
-        [
-            { content: 'HOVER', hintText: 'Hover state' },
-            { content: '"hover"', hintText: 'value' },
-            { content: 'Enhanced outline on hover' },
-        ],
-        [
-            { content: 'FOCUS', hintText: 'Focus state' },
-            { content: '"focus"', hintText: 'value' },
-            { content: 'Primary outline and shadow when focused' },
-        ],
-        [
-            { content: 'ERROR', hintText: 'Error state' },
-            { content: '"error"', hintText: 'value' },
-            { content: 'Red outline and error styling' },
-        ],
-        [
-            { content: 'DISABLED', hintText: 'Disabled state' },
-            { content: '"disabled"', hintText: 'value' },
-            { content: 'Muted appearance with no interaction' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No states available"
-    loadingMessage="Loading states..."
 />
 
 ## Component Tokens
@@ -351,84 +352,3 @@ The component uses responsive tokens that adapt to different breakpoints:
 
 - **sm**: Mobile-optimized with floating label behavior for large size
 - **lg**: Desktop layout with consistent behavior across all sizes
-
-## Features
-
-- **Responsive Design**: Adaptive layout with floating labels on mobile for large size
-- **Flexible Slots**: Left and right slots for icons, buttons, or custom content
-- **Validation States**: Built-in error styling with custom error messages
-- **Accessibility**: Full keyboard navigation and screen reader support
-- **Form Integration**: Native HTML input attributes and form compatibility
-- **Visual States**: Hover, focus, and disabled states with smooth transitions
-- **Customizable Sizing**: Three size variants for different layout needs
-- **Helper Text**: Support for hints, help icons, and error messages
-- **Dynamic Padding**: Automatic padding adjustment based on slot content
-
-## Behavior
-
-### Responsive Floating Labels
-
-- **Large Size on Mobile**: Automatically shows floating label animation
-- **Label Positioning**: Smooth transition between placeholder and floating states
-- **Touch Optimization**: Enhanced mobile experience with larger touch targets
-
-### Focus Management
-
-- **Focus States**: Visual feedback with outline and shadow changes
-- **Keyboard Navigation**: Full tab navigation support
-- **Focus Callbacks**: Custom onFocus and onBlur handlers
-
-### Dynamic Layout
-
-- **Slot Integration**: Automatic padding adjustment for left/right content
-- **Width Calculation**: Dynamic measurement of slot content for precise spacing
-- **Responsive Tokens**: Breakpoint-aware styling and spacing
-
-### Validation Integration
-
-- **Error Styling**: Automatic error state styling when error prop is true
-- **Message Display**: Error messages shown below input with proper styling
-- **State Consistency**: Visual state matches validation state throughout interaction
-
-## Best Practices
-
-### When to Use TextInput
-
-- **Form Fields**: Primary choice for text-based form inputs
-- **Search Interfaces**: With appropriate left slot icons
-- **Data Entry**: For capturing user information and content
-- **Settings Panels**: For configurable text values
-
-### Label and Hint Guidelines
-
-- **Clear Labels**: Use descriptive labels that explain the expected input
-- **Helpful Hints**: Provide context or format examples in hint text
-- **Error Messages**: Write specific, actionable error messages
-- **Required Indication**: Use required prop and clear visual indicators
-
-### Size Selection
-
-- **Small**: Use in compact forms or secondary inputs
-- **Medium**: Default choice for most form scenarios
-- **Large**: Use for primary inputs or mobile-first experiences
-
-### Slot Usage
-
-- **Left Slots**: Icons, currency symbols, or input prefixes
-- **Right Slots**: Action buttons, validation icons, or suffixes
-- **Interactive Content**: Ensure slot content has proper focus management
-- **Visual Balance**: Keep slot content appropriately sized
-
-### Accessibility Considerations
-
-- **Label Association**: Always provide labels for screen readers
-- **Error Announcement**: Ensure error messages are announced to screen readers
-- **Focus Indicators**: Maintain visible focus indicators for keyboard users
-- **Form Structure**: Use proper form markup and validation patterns
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled inputs with value and onChange
-- **Validation Timing**: Validate on blur for better user experience
-- **Form Libraries**: Compatible with React Hook Form, Formik, and other libraries
-- **Submit Handling**: Integrate with form submission and validation flows

@@ -71,7 +71,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'isOpen',
+                content: 'Modal.isOpen',
                 hintText: 'Controls whether the modal is visible',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -79,7 +79,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onClose',
+                content: 'Modal.onClose',
                 hintText:
                     'Callback function called when the modal should close',
             },
@@ -88,7 +88,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'title',
+                content: 'Modal.title',
                 hintText: 'The title displayed in the modal header',
             },
             { content: 'string', hintText: 'string' },
@@ -96,7 +96,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'subtitle',
+                content: 'Modal.subtitle',
                 hintText: 'Optional subtitle displayed below the title',
             },
             { content: 'string', hintText: 'string' },
@@ -104,7 +104,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'children',
+                content: 'Modal.children',
                 hintText: 'The content to display in the modal body',
             },
             { content: 'ReactNode', hintText: 'React node' },
@@ -112,23 +112,29 @@ function MyComponent() {
         ],
         [
             {
-                content: 'primaryAction',
+                content: 'Modal.primaryAction',
                 hintText: 'Primary action button configuration',
             },
             { content: 'ModalButtonAction', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'ModalButtonAction: see ModalButtonAction props below',
+                hintText: 'See ModalButtonAction below',
+            },
         ],
         [
             {
-                content: 'secondaryAction',
+                content: 'Modal.secondaryAction',
                 hintText: 'Secondary action button configuration',
             },
             { content: 'ModalButtonAction', hintText: 'object' },
-            { content: '' },
+            {
+                content: 'ModalButtonAction: see ModalButtonAction props below',
+                hintText: 'See ModalButtonAction below',
+            },
         ],
         [
             {
-                content: 'showCloseButton',
+                content: 'Modal.showCloseButton',
                 hintText: 'Whether to show the X close button in header',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -136,7 +142,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'closeOnBackdropClick',
+                content: 'Modal.closeOnBackdropClick',
                 hintText: 'Whether clicking the backdrop closes the modal',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -144,7 +150,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'headerRightSlot',
+                content: 'Modal.headerRightSlot',
                 hintText:
                     'Additional content displayed in the header right area',
             },
@@ -153,7 +159,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showDivider',
+                content: 'Modal.showDivider',
                 hintText: 'Whether to show divider line below header',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -161,7 +167,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'minWidth',
+                content: 'Modal.minWidth',
                 hintText: 'Minimum width of the modal',
             },
             { content: 'string', hintText: 'CSS value' },
@@ -169,29 +175,15 @@ function MyComponent() {
         ],
         [
             {
-                content: 'useDrawerOnMobile',
+                content: 'Modal.useDrawerOnMobile',
                 hintText: 'Whether to use drawer style on mobile devices',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'true' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### ModalButtonAction
-
-Action buttons use the Button component configuration:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'text',
+                content: 'ModalButtonAction.text',
                 hintText: 'Text displayed on the button',
             },
             { content: 'string', hintText: 'string' },
@@ -199,7 +191,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'buttonType',
+                content: 'ModalButtonAction.buttonType',
                 hintText: 'Visual style of the button',
             },
             { content: 'ButtonType', hintText: 'enum' },
@@ -207,7 +199,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'size',
+                content: 'ModalButtonAction.size',
                 hintText: 'Size of the button',
             },
             { content: 'ButtonSize', hintText: 'enum' },
@@ -215,7 +207,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'onClick',
+                content: 'ModalButtonAction.onClick',
                 hintText: 'Function called when button is clicked',
             },
             { content: '() => void', hintText: 'function' },
@@ -223,7 +215,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'disabled',
+                content: 'ModalButtonAction.disabled',
                 hintText: 'Whether the button is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -231,7 +223,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'loading',
+                content: 'ModalButtonAction.loading',
                 hintText: 'Whether the button shows loading state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -239,7 +231,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'leadingIcon',
+                content: 'ModalButtonAction.leadingIcon',
                 hintText: 'Icon displayed before the button text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
@@ -247,7 +239,7 @@ Action buttons use the Button component configuration:
         ],
         [
             {
-                content: 'trailingIcon',
+                content: 'ModalButtonAction.trailingIcon',
                 hintText: 'Icon displayed after the button text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
@@ -258,20 +250,6 @@ Action buttons use the Button component configuration:
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Overlay Management**: Full-screen overlay with backdrop blur and click-to-close options
-- **Responsive Design**: Automatic mobile drawer mode for better mobile experience
-- **Flexible Actions**: Primary and secondary actions with full Button component configuration
-- **Header Right Slot**: Additional content displayed in the header right area
-- **Scroll Lock**: Automatically prevents body scroll when modal is open
-- **Accessibility First**: Full keyboard navigation, focus management, and ARIA compliance
-- **Animation Support**: Smooth enter/exit animations with backdrop transitions
-- **Header Control**: Show/hide dividers and close button as needed
-- **Size Control**: Configurable minimum width and responsive sizing
-- **Mobile Optimization**: Drawer-style presentation on mobile devices
-- **Backdrop Interaction**: Configurable backdrop click behavior
 
 ## Component Tokens
 
@@ -316,72 +294,3 @@ export type ModalTokensType = {
     }
 }
 ```
-
-## Behavior
-
-### Modal Lifecycle
-
-- **Open Animation**: Smooth fade-in animation for backdrop and modal content
-- **Close Animation**: Fade-out animation when closing
-- **Scroll Lock**: Body scroll is locked when modal is open
-- **Focus Management**: Focus is trapped within the modal
-
-### Interaction Patterns
-
-- **Backdrop Click**: Configurable backdrop click-to-close behavior
-- **Escape Key**: Escape key closes the modal by default
-- **Close Button**: Optional X button in header for closing
-- **Action Buttons**: Primary and secondary actions in footer
-
-### Mobile Behavior
-
-- **Responsive Layout**: Adapts to smaller screens automatically
-- **Drawer Mode**: Optional drawer-style presentation on mobile
-- **Touch Interactions**: Optimized for touch interactions
-- **Safe Areas**: Respects mobile safe areas and notches
-
-### Content Management
-
-- **Scrollable Content**: Content area scrolls when content exceeds viewport
-- **Header Pinning**: Header stays fixed when content scrolls
-- **Footer Pinning**: Footer stays fixed at bottom
-- **Responsive Sizing**: Modal adapts to content size with constraints
-
-## Accessibility
-
-- **Focus Management**: Focus is trapped within modal and restored on close
-- **Keyboard Navigation**: Full keyboard support with Tab, Shift+Tab, and Escape
-- **Screen Reader Support**: Proper ARIA roles, labels, and live regions
-- **ARIA Compliance**: Uses `role="dialog"`, `aria-modal`, and `aria-labelledby`
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Motion Preferences**: Respects user's reduced motion preferences
-
-## Best Practices
-
-### When to Use Modals
-
-- **Important Decisions**: For critical actions that need user confirmation
-- **Form Dialogs**: For forms that interrupt the main workflow
-- **Information Display**: For detailed information that needs focus
-- **Error Messages**: For critical error messages that need attention
-
-### Modal Design Guidelines
-
-- **Clear Purpose**: Modal should have a clear, single purpose
-- **Concise Content**: Keep content focused and concise
-- **Clear Actions**: Action buttons should clearly indicate what will happen
-- **Escape Routes**: Always provide a way to close the modal
-
-### Mobile Considerations
-
-- **Use Drawer Mode**: Enable drawer mode for better mobile experience
-- **Touch Targets**: Ensure buttons are large enough for touch interaction
-- **Content Length**: Keep content length appropriate for mobile screens
-- **Safe Areas**: Consider mobile safe areas when positioning content
-
-### Action Button Guidelines
-
-- **Primary Action**: Use for the main action user should take
-- **Secondary Action**: Use for alternative or cancel actions
-- **Dangerous Actions**: Use danger button type for destructive actions
-- **Loading States**: Show loading state for async operations

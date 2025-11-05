@@ -53,7 +53,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
+                content: 'NumberInput.value',
                 hintText: 'Current numeric value of the input',
             },
             { content: 'number | undefined', hintText: 'number or undefined' },
@@ -61,7 +61,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onChange',
+                content: 'NumberInput.onChange',
                 hintText: 'Callback when input value changes',
             },
             {
@@ -72,7 +72,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'min',
+                content: 'NumberInput.min',
                 hintText: 'Minimum allowed value',
             },
             { content: 'number', hintText: 'number' },
@@ -80,7 +80,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'max',
+                content: 'NumberInput.max',
                 hintText: 'Maximum allowed value',
             },
             { content: 'number', hintText: 'number' },
@@ -88,7 +88,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'step',
+                content: 'NumberInput.step',
                 hintText: 'Increment/decrement step value',
             },
             { content: 'number', hintText: 'number' },
@@ -96,7 +96,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'label',
+                content: 'NumberInput.label',
                 hintText: 'Primary label for the input field',
             },
             { content: 'string', hintText: 'string' },
@@ -104,7 +104,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sublabel',
+                content: 'NumberInput.sublabel',
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
@@ -112,7 +112,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'placeholder',
+                content: 'NumberInput.placeholder',
                 hintText: 'Placeholder text shown when input is empty',
             },
             { content: 'string', hintText: 'string' },
@@ -120,7 +120,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'size',
+                content: 'NumberInput.size',
                 hintText: 'Size variant of the input field',
             },
             { content: 'NumberInputSize', hintText: 'enum' },
@@ -128,7 +128,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'error',
+                content: 'NumberInput.error',
                 hintText: 'Whether the input is in error state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -136,7 +136,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'errorMessage',
+                content: 'NumberInput.errorMessage',
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
@@ -144,7 +144,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'hintText',
+                content: 'NumberInput.hintText',
                 hintText: 'Helper text displayed below the input',
             },
             { content: 'string', hintText: 'string' },
@@ -152,7 +152,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'helpIconHintText',
+                content: 'NumberInput.helpIconHintText',
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
@@ -160,7 +160,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disabled',
+                content: 'NumberInput.disabled',
                 hintText: 'Whether the input is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -168,7 +168,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'required',
+                content: 'NumberInput.required',
                 hintText: 'Whether the input is required',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -176,7 +176,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'name',
+                content: 'NumberInput.name',
                 hintText: 'Name attribute for the input field',
             },
             { content: 'string', hintText: 'string' },
@@ -184,7 +184,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onFocus',
+                content: 'NumberInput.onFocus',
                 hintText: 'Callback when input receives focus',
             },
             {
@@ -195,7 +195,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onBlur',
+                content: 'NumberInput.onBlur',
                 hintText: 'Callback when input loses focus',
             },
             {
@@ -204,71 +204,69 @@ function MyComponent() {
             },
             { content: 'undefined' },
         ],
+        [
+            {
+                content: 'NumberInputSize.MEDIUM',
+                hintText: 'Medium input size - default size for most use cases',
+            },
+            { content: '"md"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'NumberInputSize.LARGE',
+                hintText:
+                    'Large input size - prominent input with floating label on mobile',
+            },
+            { content: '"lg"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInputState.DEFAULT',
+                hintText: 'Default state - normal input appearance',
+            },
+            { content: '"default"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'NumberInputState.HOVER',
+                hintText: 'Hover state - enhanced outline on hover',
+            },
+            { content: '"hover"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInputState.FOCUS',
+                hintText:
+                    'Focus state - primary outline and shadow when focused',
+            },
+            { content: '"focus"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInputState.ERROR',
+                hintText: 'Error state - red outline and error styling',
+            },
+            { content: '"error"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInputState.DISABLED',
+                hintText:
+                    'Disabled state - muted appearance with no interaction',
+            },
+            { content: '"disabled"', hintText: 'string' },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
-/>
-
-## Enums
-
-### NumberInputSize
-
-Size variants for the number input:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'MEDIUM', hintText: 'Medium input size' },
-            { content: '"md"', hintText: 'value' },
-            { content: 'Default size for most use cases' },
-        ],
-        [
-            { content: 'LARGE', hintText: 'Large input size' },
-            { content: '"lg"', hintText: 'value' },
-            { content: 'Prominent input with floating label on mobile' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No sizes available"
-    loadingMessage="Loading sizes..."
-/>
-
-### NumberInputState
-
-Internal state variants (for styling):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'DEFAULT', hintText: 'Default state' },
-            { content: '"default"', hintText: 'value' },
-            { content: 'Normal input appearance' },
-        ],
-        [
-            { content: 'HOVER', hintText: 'Hover state' },
-            { content: '"hover"', hintText: 'value' },
-            { content: 'Enhanced outline on hover' },
-        ],
-        [
-            { content: 'FOCUS', hintText: 'Focus state' },
-            { content: '"focus"', hintText: 'value' },
-            { content: 'Primary outline and shadow when focused' },
-        ],
-        [
-            { content: 'ERROR', hintText: 'Error state' },
-            { content: '"error"', hintText: 'value' },
-            { content: 'Red outline and error styling' },
-        ],
-        [
-            { content: 'DISABLED', hintText: 'Disabled state' },
-            { content: '"disabled"', hintText: 'value' },
-            { content: 'Muted appearance with no interaction' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No states available"
-    loadingMessage="Loading states..."
 />
 
 ## Component Tokens
@@ -371,108 +369,3 @@ export type NumberInputState =
     | 'error'
     | 'disabled'
 ```
-
-The component uses responsive tokens that adapt to different breakpoints:
-
-- **sm**: Mobile-optimized with floating label behavior for large size
-- **lg**: Desktop layout with consistent behavior across all sizes
-
-## Features
-
-- **Stepper Controls**: Built-in increment/decrement buttons with triangle indicators
-- **Numeric Validation**: Enforces numeric input with proper value handling
-- **Min/Max Constraints**: Automatic validation and button disabling at limits
-- **Step Intervals**: Configurable step size for increment/decrement operations
-- **Responsive Design**: Adaptive layout with floating labels on mobile for large size
-- **Visual Controls**: Intuitive up/down arrow buttons positioned on the right
-- **Keyboard Support**: Standard numeric input keyboard interactions
-- **Validation States**: Built-in error styling with custom error messages
-- **Form Integration**: Native HTML input attributes and form compatibility
-- **Accessibility**: Full keyboard navigation and screen reader support
-
-## Behavior
-
-### Stepper Controls
-
-- **Increment Button**: Increases value by step amount (top arrow)
-- **Decrement Button**: Decreases value by step amount (bottom arrow)
-- **Auto-disable**: Buttons disable when reaching min/max limits
-- **Visual Feedback**: Hover and focus states for better interaction
-- **Click Handling**: Triggers onChange with synthetic events
-
-### Value Management
-
-- **Undefined Values**: Supports undefined for empty states
-- **Number Parsing**: Automatic conversion from string to number
-- **Step Validation**: Ensures increments follow step intervals
-- **Boundary Checking**: Prevents values outside min/max range
-- **Decimal Support**: Handles decimal values with proper precision
-
-### Responsive Layout
-
-- **Large Size on Mobile**: Floating label animation for enhanced mobile experience
-- **Dynamic Spacing**: Automatic adjustment of stepper button positioning
-- **Touch Optimization**: Enhanced mobile interactions for stepper controls
-- **Consistent Styling**: Maintains visual consistency across screen sizes
-
-### Keyboard Interactions
-
-- **Arrow Keys**: Native browser support for up/down arrow increment/decrement
-- **Direct Input**: Standard numeric keyboard input
-- **Tab Navigation**: Proper tab order through input and stepper controls
-- **Focus Management**: Clear focus indicators for accessibility
-
-## Best Practices
-
-### When to Use NumberInput
-
-- **Quantity Selection**: Product quantities, item counts, etc.
-- **Numeric Settings**: Configuration values, limits, thresholds
-- **Measurements**: Dimensions, weights, temperatures, percentages
-- **Financial Inputs**: Prices, amounts, budgets (with appropriate step values)
-- **Range Inputs**: Values within specific numeric ranges
-
-### Value Handling
-
-- **Type Safety**: Use proper TypeScript types (number | undefined)
-- **Validation**: Implement client-side validation for business rules
-- **Error Handling**: Provide clear error messages for invalid values
-- **Default Values**: Consider appropriate default values for better UX
-- **Precision**: Use appropriate step values for decimal precision
-
-### Min/Max Configuration
-
-- **Logical Ranges**: Set realistic min/max values for your use case
-- **User Feedback**: Clearly communicate value constraints
-- **Progressive Enhancement**: Allow manual typing beyond stepper limits
-- **Edge Cases**: Handle edge cases like negative numbers appropriately
-
-### Step Configuration
-
-- **Appropriate Increments**: Choose step values that make sense for your data
-- **Decimal Precision**: Use decimal steps (0.01, 0.1) for precise values
-- **User Expectations**: Match step values to user mental models
-- **Performance**: Consider reasonable step sizes for good UX
-
-### Accessibility Considerations
-
-- **Label Association**: Ensure proper labeling for screen readers
-- **Stepper Announcement**: Verify stepper controls are accessible
-- **Keyboard Navigation**: Test all keyboard interactions
-- **Value Changes**: Ensure value changes are announced appropriately
-- **Error Communication**: Provide clear, accessible error messages
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled inputs with proper state
-- **Validation Libraries**: Compatible with React Hook Form, Formik, etc.
-- **Submission Handling**: Handle undefined values appropriately in forms
-- **Reset Functionality**: Implement proper form reset behavior
-- **Loading States**: Consider loading states for async operations
-
-### Performance Optimization
-
-- **Debouncing**: Consider debouncing for expensive validation operations
-- **State Management**: Use appropriate state management patterns
-- **Re-rendering**: Optimize for minimal unnecessary re-renders
-- **Memory Cleanup**: Properly clean up event listeners and timers

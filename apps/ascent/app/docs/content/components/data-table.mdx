@@ -75,6 +75,7 @@ function MyComponent() {
                 hintText: 'Array of data objects to display in the table',
             },
             { content: 'T[]', hintText: 'array' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -84,6 +85,7 @@ function MyComponent() {
                     'Column definitions that specify how data should be displayed',
             },
             { content: 'ColumnDefinition<T>[]', hintText: 'array' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -92,6 +94,7 @@ function MyComponent() {
                 hintText: 'Field name to use as unique identifier for rows',
             },
             { content: 'keyof T', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -100,7 +103,8 @@ function MyComponent() {
                 hintText: 'Optional title displayed above the table',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -108,7 +112,8 @@ function MyComponent() {
                 hintText: 'Optional description displayed below the title',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -116,7 +121,8 @@ function MyComponent() {
                 hintText: 'Default sort configuration',
             },
             { content: 'SortConfig', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -127,7 +133,8 @@ function MyComponent() {
                 content: '(sortConfig: SortConfig) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -135,6 +142,7 @@ function MyComponent() {
                 hintText: 'Enable global search functionality',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -143,6 +151,7 @@ function MyComponent() {
                 hintText: 'Placeholder text for search input',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: "'Search...'" },
         ],
         [
@@ -151,6 +160,7 @@ function MyComponent() {
                 hintText: 'Enable server-side search handling',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -162,7 +172,8 @@ function MyComponent() {
                 content: '(searchConfig: SearchConfig) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -170,6 +181,7 @@ function MyComponent() {
                 hintText: 'Enable column-based filtering',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -178,6 +190,7 @@ function MyComponent() {
                 hintText: 'Enable advanced filter component',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -189,7 +202,8 @@ function MyComponent() {
                 content: 'React.ComponentType<AdvancedFilterProps>',
                 hintText: 'component',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -197,7 +211,8 @@ function MyComponent() {
                 hintText: 'Advanced filter values',
             },
             { content: 'unknown[]', hintText: 'array' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -205,6 +220,7 @@ function MyComponent() {
                 hintText: 'Enable server-side filtering handling',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -216,7 +232,8 @@ function MyComponent() {
                 content: '(filters: ColumnFilter[]) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -224,7 +241,8 @@ function MyComponent() {
                 hintText: 'Callback when advanced filters change',
             },
             { content: '(filters: unknown[]) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -232,6 +250,7 @@ function MyComponent() {
                 hintText: 'Number of columns to freeze on the left',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '0' },
         ],
         [
@@ -240,6 +259,7 @@ function MyComponent() {
                 hintText: 'Enable column visibility management',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -248,7 +268,8 @@ function MyComponent() {
                 hintText: 'Maximum number of columns that can be selected',
             },
             { content: 'number', hintText: 'number' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -257,7 +278,8 @@ function MyComponent() {
                     'Columns that are always selected and cannot be hidden',
             },
             { content: '(keyof T)[]', hintText: 'array' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -269,7 +291,8 @@ function MyComponent() {
                     '{ text: string; onClick: (selectedColumns: string[]) => void; disabled?: boolean; loading?: boolean }',
                 hintText: 'object',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -281,7 +304,8 @@ function MyComponent() {
                     '{ text: string; onClick: () => void; disabled?: boolean; loading?: boolean }',
                 hintText: 'object',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -289,7 +313,8 @@ function MyComponent() {
                 hintText: 'Width of the column manager menu',
             },
             { content: 'number', hintText: 'number' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -297,6 +322,7 @@ function MyComponent() {
                 hintText: 'Pagination configuration object',
             },
             { content: 'PaginationConfig', hintText: 'object' },
+            { content: '' },
             {
                 content:
                     '{ currentPage: 1, pageSize: 10, totalRows: 0, pageSizeOptions: [10, 20, 50, 100] }',
@@ -308,6 +334,7 @@ function MyComponent() {
                 hintText: 'Enable server-side pagination handling',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -316,7 +343,8 @@ function MyComponent() {
                 hintText: 'Callback when page changes',
             },
             { content: '(page: number) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -324,7 +352,8 @@ function MyComponent() {
                 hintText: 'Callback when page size changes',
             },
             { content: '(pageSize: number) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -332,6 +361,7 @@ function MyComponent() {
                 hintText: 'Show loading state for async operations',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -340,6 +370,7 @@ function MyComponent() {
                 hintText: 'Show table header with title and description',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -348,6 +379,7 @@ function MyComponent() {
                 hintText: 'Show toolbar with search and filters',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -356,6 +388,7 @@ function MyComponent() {
                 hintText: 'Show settings menu button',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -364,7 +397,8 @@ function MyComponent() {
                 hintText: 'Custom content slot in header (first position)',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -372,7 +406,8 @@ function MyComponent() {
                 hintText: 'Custom content slot in header (second position)',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -380,6 +415,7 @@ function MyComponent() {
                 hintText: 'Enable inline editing of cells',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -391,7 +427,8 @@ function MyComponent() {
                 content: '(rowId: unknown, updatedRow: T) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -399,7 +436,8 @@ function MyComponent() {
                 hintText: 'Callback when row editing is cancelled',
             },
             { content: '(rowId: unknown) => void', hintText: 'function' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -410,7 +448,8 @@ function MyComponent() {
                 content: '(row: T, index: number) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -422,7 +461,8 @@ function MyComponent() {
                     '(rowId: unknown, fieldName: keyof T, value: unknown) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -430,6 +470,7 @@ function MyComponent() {
                 hintText: 'Enable expandable rows for additional content',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -442,7 +483,8 @@ function MyComponent() {
                     '(expandedData: { row: T; index: number; isExpanded: boolean; toggleExpansion: () => void }) => ReactNode',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -453,7 +495,8 @@ function MyComponent() {
                 content: '(row: T, index: number) => boolean',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -465,7 +508,8 @@ function MyComponent() {
                     '(rowId: unknown, isExpanded: boolean, rowData: T) => void',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -473,6 +517,7 @@ function MyComponent() {
                 hintText: 'Enable row selection with checkboxes',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -481,7 +526,8 @@ function MyComponent() {
                 hintText: 'Actions available when rows are selected',
             },
             { content: 'BulkAction[]', hintText: 'array' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -489,7 +535,8 @@ function MyComponent() {
                 hintText: 'Configuration for row-level action buttons',
             },
             { content: 'RowActionsConfig<T>', hintText: 'object' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -500,7 +547,8 @@ function MyComponent() {
                 content: '(row: T, index: number) => React.CSSProperties',
                 hintText: 'function',
             },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -508,7 +556,8 @@ function MyComponent() {
                 hintText: 'Number of columns to show on mobile devices',
             },
             { content: 'number', hintText: 'number' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
     ]}
     className="mb-8"
@@ -516,7 +565,7 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## ColumnDefinition
+### ColumnDefinition
 
 Each column in the `columns` array should have the following structure:
 
@@ -528,6 +577,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Field name from the data object',
             },
             { content: 'keyof T', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -536,6 +586,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Column header text displayed in the table',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -544,7 +595,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Optional subtext displayed below the header',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -552,6 +604,10 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Type of data and how it should be rendered',
             },
             { content: 'ColumnType', hintText: 'enum' },
+            {
+                content:
+                    'TEXT, NUMBER, AVATAR, TAG, PROGRESS, DATE, DROPDOWN, REACT_ELEMENT, SELECT, MULTISELECT, DATE_RANGE, SLIDER, CUSTOM',
+            },
             { content: 'Required' },
         ],
         [
@@ -560,6 +616,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Whether this column can be sorted',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -568,6 +625,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Whether this column is visible',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'true' },
         ],
         [
@@ -576,7 +634,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Whether this column can be edited inline',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -584,7 +643,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Minimum width for the column',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -592,7 +652,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Maximum width for the column',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -600,7 +661,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Fixed width for the column',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -608,7 +670,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Options available for filtering this column',
             },
             { content: 'FilterOption[]', hintText: 'array' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -617,7 +680,8 @@ Each column in the `columns` array should have the following structure:
                     'Whether this column can be hidden via column manager',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -625,7 +689,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Whether this column is frozen (sticky)',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -633,7 +698,8 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Custom CSS class for the column',
             },
             { content: 'string', hintText: 'string' },
-            { content: 'undefined' },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -641,7 +707,11 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Type of filter to use for this column',
             },
             { content: 'FilterType', hintText: 'enum' },
-            { content: 'undefined' },
+            {
+                content:
+                    'TEXT, NUMBER, SELECT, MULTISELECT, DATE, BOOLEAN, SLIDER',
+            },
+            { content: '' },
         ],
         [
             {
@@ -652,122 +722,7 @@ Each column in the `columns` array should have the following structure:
                 content: '(value, row, index) => ReactNode',
                 hintText: 'function',
             },
-            { content: 'undefined' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Column Types
-
-The DataTable supports various column types for different data presentations:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'TEXT',
-                hintText: 'Basic text content',
-            },
-            { content: 'ColumnType.TEXT', hintText: 'enum' },
             { content: '' },
-        ],
-        [
-            {
-                content: 'NUMBER',
-                hintText: 'Numeric values with formatting options',
-            },
-            { content: 'ColumnType.NUMBER', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'AVATAR',
-                hintText: 'User profile images with labels',
-            },
-            { content: 'ColumnType.AVATAR', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'TAG',
-                hintText: 'Colored tags for status or categories',
-            },
-            { content: 'ColumnType.TAG', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'PROGRESS',
-                hintText: 'Progress bars with percentage values',
-            },
-            { content: 'ColumnType.PROGRESS', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'DATE',
-                hintText: 'Formatted date values',
-            },
-            { content: 'ColumnType.DATE', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'DROPDOWN',
-                hintText: 'Dropdown selection for inline editing',
-            },
-            { content: 'ColumnType.DROPDOWN', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'REACT_ELEMENT',
-                hintText: 'Custom React components',
-            },
-            { content: 'ColumnType.REACT_ELEMENT', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SELECT',
-                hintText: 'Select dropdown column type',
-            },
-            { content: 'ColumnType.SELECT', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'MULTISELECT',
-                hintText: 'Multi-select dropdown column type',
-            },
-            { content: 'ColumnType.MULTISELECT', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'DATE_RANGE',
-                hintText: 'Date range column type',
-            },
-            { content: 'ColumnType.DATE_RANGE', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SLIDER',
-                hintText: 'Slider column type',
-            },
-            { content: 'ColumnType.SLIDER', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'CUSTOM',
-                hintText: 'Custom column type',
-            },
-            { content: 'ColumnType.CUSTOM', hintText: 'enum' },
             { content: '' },
         ],
     ]}
@@ -775,145 +730,6 @@ The DataTable supports various column types for different data presentations:
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Flexible Column Types**: Support for text, numbers, avatars, tags, progress bars, dates, dropdowns, sliders, and custom React elements
-- **Advanced Sorting**: Multi-column sorting with ascending/descending directions
-- **Powerful Filtering**: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean, slider)
-- **Advanced Filters**: Custom advanced filter component support
-- **Global Search**: Search across all columns or specific fields
-- **Server-Side Operations**: Support for server-side pagination, sorting, filtering, and search
-- **Pagination**: Client-side and server-side pagination with customizable page sizes
-- **Row Selection**: Single or multiple row selection with bulk actions
-- **Row Expansion**: Expandable rows for displaying additional content
-- **Inline Editing**: Editable cells with validation and save/cancel functionality
-- **Column Management**: Show/hide columns and adjust column order with selection limits
-- **Column Freezing**: Freeze columns on the left for better navigation
-- **Mobile Responsive**: Optimized mobile view with column overflow and drawer
-- **Loading States**: Built-in loading indicators for async operations
-- **Export Functionality**: Export selected rows to CSV
-- **Custom Styling**: Extensive theming with responsive design tokens
-- **Accessibility**: Full keyboard navigation and screen reader support
-
-## Enums
-
-### SortDirection
-
-```tsx
-enum SortDirection {
-    NONE = 'none',
-    ASCENDING = 'asc',
-    DESCENDING = 'desc',
-}
-```
-
-### FilterType
-
-```tsx
-enum FilterType {
-    TEXT = 'text',
-    NUMBER = 'number',
-    SELECT = 'select',
-    MULTISELECT = 'multiselect',
-    DATE = 'date',
-    BOOLEAN = 'boolean',
-    SLIDER = 'slider',
-}
-```
-
-### ColumnType
-
-```tsx
-enum ColumnType {
-    TEXT = 'text',
-    NUMBER = 'number',
-    AVATAR = 'avatar',
-    TAG = 'tag',
-    PROGRESS = 'progress',
-    DROPDOWN = 'dropdown',
-    REACT_ELEMENT = 'react_element',
-    SELECT = 'select',
-    MULTISELECT = 'multiselect',
-    DATE = 'date',
-    DATE_RANGE = 'date_range',
-    SLIDER = 'slider',
-    CUSTOM = 'custom',
-}
-```
-
-## Data Types
-
-### SortConfig
-
-```tsx
-export type SortConfig = {
-    field: string
-    direction: SortDirection
-}
-```
-
-### SearchConfig
-
-```tsx
-export type SearchConfig = {
-    query: string
-    caseSensitive?: boolean
-    searchFields?: string[]
-}
-```
-
-### ColumnFilter
-
-```tsx
-export type ColumnFilter = {
-    field: keyof Record<string, unknown>
-    type: FilterType
-    value: string | string[] | { min: number; max: number }
-    operator:
-        | 'equals'
-        | 'contains'
-        | 'startsWith'
-        | 'endsWith'
-        | 'gt'
-        | 'lt'
-        | 'gte'
-        | 'lte'
-        | 'range'
-}
-```
-
-### PaginationConfig
-
-```tsx
-export type PaginationConfig = {
-    currentPage: number
-    pageSize: number
-    totalRows: number
-    pageSizeOptions?: number[]
-}
-```
-
-### BulkAction
-
-```tsx
-export type BulkAction = {
-    id: string
-    label: string
-    variant: 'primary' | 'secondary' | 'danger'
-    onClick: (selectedRowIds: string[]) => void
-}
-```
-
-### RowActionsConfig
-
-```tsx
-export type RowActionsConfig<T extends Record<string, unknown>> = {
-    showEditAction?: boolean
-    slot1?: RowActionConfig<T>
-    slot2?: RowActionConfig<T>
-}
-```
 
 ## Component Tokens
 
@@ -1165,49 +981,3 @@ export type ResponsiveTableTokens = {
     [key in keyof BreakpointType]: TableTokenType
 }
 ```
-
-## Behavior
-
-### Sorting
-
-- **Single Column**: Click column headers to sort by that column
-- **Direction Toggle**: Click again to toggle between ascending/descending
-- **Multiple Columns**: Hold Shift while clicking for multi-column sorting
-- **Sort Indicators**: Visual arrows show current sort direction
-
-### Filtering
-
-- **Column Filters**: Each column can have its own filter based on data type
-- **Filter Types**: Text, number, select, multiselect, date, boolean, and slider filters
-- **Global Search**: Searches across all visible columns
-- **Filter Combination**: Multiple filters work together with AND logic
-
-### Pagination
-
-- **Page Navigation**: Previous/Next buttons and direct page selection
-- **Page Size**: Customizable rows per page with dropdown selector
-- **Server-Side**: Supports server-side pagination for large datasets
-- **URL Sync**: Optional URL synchronization for bookmarkable states
-
-### Row Selection
-
-- **Single Selection**: Click row for single selection
-- **Multiple Selection**: Checkbox column for multiple row selection
-- **Select All**: Header checkbox to select/deselect all visible rows
-- **Bulk Actions**: Actions that operate on selected rows
-
-### Mobile Responsiveness
-
-- **Column Management**: Mobile drawer for showing/hiding columns
-- **Horizontal Scroll**: Smooth scrolling for wide tables
-- **Touch Friendly**: Large touch targets for mobile interaction
-- **Responsive Design**: Adapts layout based on screen size
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard navigation support with arrow keys
-- **Screen Reader**: Proper ARIA labels and roles for screen readers
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Sort Announcements**: Screen reader announcements for sort changes
-- **Filter Labels**: Descriptive labels for all filter controls
-- **Loading States**: Accessible loading indicators with proper announcements

@@ -99,7 +99,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'label',
+                content: 'MultiSelect.label',
                 hintText:
                     'The main label text displayed above the select field',
             },
@@ -108,7 +108,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sublabel',
+                content: 'MultiSelect.sublabel',
                 hintText:
                     'Optional secondary label text displayed below the main label',
             },
@@ -117,7 +117,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'placeholder',
+                content: 'MultiSelect.placeholder',
                 hintText: 'Placeholder text shown when no options are selected',
             },
             { content: 'string', hintText: 'string' },
@@ -125,7 +125,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'selectedValues',
+                content: 'MultiSelect.selectedValues',
                 hintText: 'Array of currently selected option values',
             },
             { content: 'string[]', hintText: 'array' },
@@ -133,7 +133,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onChange',
+                content: 'MultiSelect.onChange',
                 hintText: 'Callback function called when selections change',
             },
             {
@@ -144,15 +144,19 @@ function MyComponent() {
         ],
         [
             {
-                content: 'items',
+                content: 'MultiSelect.items',
                 hintText: 'Array of grouped menu items for selection',
             },
             { content: 'MultiSelectMenuGroupType[]', hintText: 'array' },
-            { content: 'Required' },
+            {
+                content:
+                    'MultiSelectMenuGroupType: see MultiSelectMenuGroupType props below',
+                hintText: 'See MultiSelectMenuGroupType below',
+            },
         ],
         [
             {
-                content: 'size',
+                content: 'MultiSelect.size',
                 hintText: 'Size variant affecting the select field dimensions',
             },
             { content: 'MultiSelectMenuSize', hintText: 'enum' },
@@ -160,7 +164,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'variant',
+                content: 'MultiSelect.variant',
                 hintText: 'Visual variant determining styling approach',
             },
             { content: 'MultiSelectVariant', hintText: 'enum' },
@@ -168,7 +172,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'selectionTagType',
+                content: 'MultiSelect.selectionTagType',
                 hintText: 'How selected items are displayed (count or text)',
             },
             { content: 'MultiSelectSelectionTagType', hintText: 'enum' },
@@ -176,7 +180,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'required',
+                content: 'MultiSelect.required',
                 hintText: 'Whether the field is required (displays asterisk)',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -184,7 +188,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disabled',
+                content: 'MultiSelect.disabled',
                 hintText:
                     'Whether the select field is disabled and non-interactive',
             },
@@ -193,7 +197,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'helpIconHintText',
+                content: 'MultiSelect.helpIconHintText',
                 hintText:
                     'Tooltip text displayed when hovering over the help icon',
             },
@@ -202,7 +206,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'hintText',
+                content: 'MultiSelect.hintText',
                 hintText: 'Optional help text displayed below the select field',
             },
             { content: 'string', hintText: 'string' },
@@ -210,7 +214,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'enableSearch',
+                content: 'MultiSelect.enableSearch',
                 hintText: 'Whether to show search input in the dropdown menu',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -218,7 +222,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'searchPlaceholder',
+                content: 'MultiSelect.searchPlaceholder',
                 hintText: 'Placeholder text for the search input field',
             },
             { content: 'string', hintText: 'string' },
@@ -226,7 +230,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'enableSelectAll',
+                content: 'MultiSelect.enableSelectAll',
                 hintText: 'Whether to show select all option in the dropdown',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -234,7 +238,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'selectAllText',
+                content: 'MultiSelect.selectAllText',
                 hintText: 'Text displayed for the select all option',
             },
             { content: 'string', hintText: 'string' },
@@ -242,7 +246,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'slot',
+                content: 'MultiSelect.slot',
                 hintText:
                     'Content displayed inside the trigger button (e.g., icons)',
             },
@@ -251,7 +255,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'name',
+                content: 'MultiSelect.name',
                 hintText:
                     'Name attribute for form identification and submission',
             },
@@ -260,7 +264,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'customTrigger',
+                content: 'MultiSelect.customTrigger',
                 hintText:
                     'Custom React element to replace the default trigger button',
             },
@@ -269,7 +273,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'useDrawerOnMobile',
+                content: 'MultiSelect.useDrawerOnMobile',
                 hintText: 'Whether to render as drawer on mobile devices',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -277,7 +281,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'alignment',
+                content: 'MultiSelect.alignment',
                 hintText:
                     'How the dropdown menu aligns relative to the trigger',
             },
@@ -286,7 +290,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'side',
+                content: 'MultiSelect.side',
                 hintText: 'Which side of the trigger the dropdown appears on',
             },
             { content: 'MultiSelectMenuSide', hintText: 'enum' },
@@ -294,7 +298,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'sideOffset',
+                content: 'MultiSelect.sideOffset',
                 hintText: 'Distance in pixels between trigger and dropdown',
             },
             { content: 'number', hintText: 'number' },
@@ -302,7 +306,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'alignOffset',
+                content: 'MultiSelect.alignOffset',
                 hintText: 'Alignment offset in pixels for fine positioning',
             },
             { content: 'number', hintText: 'number' },
@@ -310,7 +314,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'minMenuWidth',
+                content: 'MultiSelect.minMenuWidth',
                 hintText: 'Minimum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
@@ -318,7 +322,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'maxMenuWidth',
+                content: 'MultiSelect.maxMenuWidth',
                 hintText: 'Maximum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
@@ -326,7 +330,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'maxMenuHeight',
+                content: 'MultiSelect.maxMenuHeight',
                 hintText: 'Maximum height of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
@@ -334,7 +338,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'inline',
+                content: 'MultiSelect.inline',
                 hintText:
                     'Whether the select renders inline without fixed height',
             },
@@ -343,7 +347,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onBlur',
+                content: 'MultiSelect.onBlur',
                 hintText:
                     'Callback function called when the select loses focus',
             },
@@ -352,7 +356,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onFocus',
+                content: 'MultiSelect.onFocus',
                 hintText:
                     'Callback function called when the select gains focus',
             },
@@ -361,7 +365,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'error',
+                content: 'MultiSelect.error',
                 hintText: 'Whether the select is in an error state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -369,7 +373,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'errorMessage',
+                content: 'MultiSelect.errorMessage',
                 hintText: 'Error message displayed when error is true',
             },
             { content: 'string', hintText: 'string' },
@@ -377,7 +381,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showActionButtons',
+                content: 'MultiSelect.showActionButtons',
                 hintText:
                     'Whether to show action buttons in the dropdown footer',
             },
@@ -386,7 +390,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'primaryAction',
+                content: 'MultiSelect.primaryAction',
                 hintText: 'Configuration for the primary action button',
             },
             {
@@ -398,7 +402,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'secondaryAction',
+                content: 'MultiSelect.secondaryAction',
                 hintText: 'Configuration for the secondary action button',
             },
             {
@@ -410,7 +414,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showItemDividers',
+                content: 'MultiSelect.showItemDividers',
                 hintText: 'Whether to show dividers between menu items',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -418,7 +422,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'showHeaderBorder',
+                content: 'MultiSelect.showHeaderBorder',
                 hintText: 'Whether to show border below the dropdown header',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -426,7 +430,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'height',
+                content: 'MultiSelect.height',
                 hintText: 'Height of the select field in pixels',
             },
             { content: 'number', hintText: 'number' },
@@ -434,7 +438,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'maxSelections',
+                content: 'MultiSelect.maxSelections',
                 hintText: 'Maximum number of items that can be selected',
             },
             { content: 'number', hintText: 'number' },
@@ -442,7 +446,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'fullWidth',
+                content: 'MultiSelect.fullWidth',
                 hintText: 'Whether the select field takes full width',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -450,7 +454,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'enableVirtualization',
+                content: 'MultiSelect.enableVirtualization',
                 hintText: 'Whether to enable virtual scrolling for large lists',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -458,7 +462,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'virtualListItemHeight',
+                content: 'MultiSelect.virtualListItemHeight',
                 hintText: 'Height of each virtualized list item in pixels',
             },
             { content: 'number', hintText: 'number' },
@@ -466,7 +470,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'virtualListOverscan',
+                content: 'MultiSelect.virtualListOverscan',
                 hintText: 'Number of items to render outside visible area',
             },
             { content: 'number', hintText: 'number' },
@@ -474,7 +478,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'itemsToRender',
+                content: 'MultiSelect.itemsToRender',
                 hintText: 'Number of items to render initially',
             },
             { content: 'number', hintText: 'number' },
@@ -482,7 +486,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onEndReached',
+                content: 'MultiSelect.onEndReached',
                 hintText: 'Callback when virtual list reaches the end',
             },
             { content: '() => void', hintText: 'function' },
@@ -490,7 +494,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'endReachedThreshold',
+                content: 'MultiSelect.endReachedThreshold',
                 hintText: 'Distance from end to trigger onEndReached',
             },
             { content: 'number', hintText: 'number' },
@@ -498,7 +502,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'hasMore',
+                content: 'MultiSelect.hasMore',
                 hintText: 'Whether there are more items to load',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -506,29 +510,15 @@ function MyComponent() {
         ],
         [
             {
-                content: 'loadingComponent',
+                content: 'MultiSelect.loadingComponent',
                 hintText: 'Component to show while loading more items',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: 'undefined' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### MultiSelectMenuGroupType
-
-Structure for organizing menu items into groups:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'groupLabel',
+                content: 'MultiSelectMenuGroupType.groupLabel',
                 hintText: 'Optional label text for the group section',
             },
             { content: 'string', hintText: 'string' },
@@ -536,35 +526,27 @@ Structure for organizing menu items into groups:
         ],
         [
             {
-                content: 'items',
+                content: 'MultiSelectMenuGroupType.items',
                 hintText: 'Array of selectable items within this group',
             },
             { content: 'MultiSelectMenuItemType[]', hintText: 'array' },
-            { content: 'Required' },
+            {
+                content:
+                    'MultiSelectMenuItemType: see MultiSelectMenuItemType props below',
+                hintText: 'See MultiSelectMenuItemType below',
+            },
         ],
         [
             {
-                content: 'showSeparator',
+                content: 'MultiSelectMenuGroupType.showSeparator',
                 hintText: 'Whether to show separator line after this group',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### MultiSelectMenuItemType
-
-Structure for individual selectable items:
-
-<DocsTypeTable
-    data={[
         [
             {
-                content: 'label',
+                content: 'MultiSelectMenuItemType.label',
                 hintText: 'Main display text for the menu item',
             },
             { content: 'string', hintText: 'string' },
@@ -572,7 +554,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'value',
+                content: 'MultiSelectMenuItemType.value',
                 hintText: 'Unique value identifier for the menu item',
             },
             { content: 'string', hintText: 'string' },
@@ -580,7 +562,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'checked',
+                content: 'MultiSelectMenuItemType.checked',
                 hintText: 'Whether the item is currently selected',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -588,7 +570,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'subLabel',
+                content: 'MultiSelectMenuItemType.subLabel',
                 hintText: 'Optional secondary text displayed below the label',
             },
             { content: 'string', hintText: 'string' },
@@ -596,7 +578,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'slot1',
+                content: 'MultiSelectMenuItemType.slot1',
                 hintText: 'First content slot (typically for leading icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
@@ -604,7 +586,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'slot2',
+                content: 'MultiSelectMenuItemType.slot2',
                 hintText: 'Second content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
@@ -612,7 +594,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'slot3',
+                content: 'MultiSelectMenuItemType.slot3',
                 hintText: 'Third content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
@@ -620,7 +602,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'slot4',
+                content: 'MultiSelectMenuItemType.slot4',
                 hintText:
                     'Fourth content slot (typically for trailing elements)',
             },
@@ -629,7 +611,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'disabled',
+                content: 'MultiSelectMenuItemType.disabled',
                 hintText:
                     'Whether the menu item is disabled and non-selectable',
             },
@@ -638,7 +620,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'alwaysSelected',
+                content: 'MultiSelectMenuItemType.alwaysSelected',
                 hintText:
                     'Whether the item is always selected and cannot be deselected',
             },
@@ -647,7 +629,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'onClick',
+                content: 'MultiSelectMenuItemType.onClick',
                 hintText: 'Custom click handler for the menu item',
             },
             { content: '() => void', hintText: 'function' },
@@ -655,15 +637,18 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'subMenu',
+                content: 'MultiSelectMenuItemType.subMenu',
                 hintText: 'Nested menu items for creating hierarchical menus',
             },
             { content: 'MultiSelectMenuItemType[]', hintText: 'array' },
-            { content: 'undefined' },
+            {
+                content: 'Recursive: MultiSelectMenuItemType[]',
+                hintText: 'Recursive type',
+            },
         ],
         [
             {
-                content: 'tooltip',
+                content: 'MultiSelectMenuItemType.tooltip',
                 hintText: 'Tooltip content displayed on hover',
             },
             { content: 'string | React.ReactNode', hintText: 'union type' },
@@ -671,7 +656,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'tooltipProps',
+                content: 'MultiSelectMenuItemType.tooltipProps',
                 hintText: 'Configuration options for the tooltip display',
             },
             {
@@ -683,7 +668,7 @@ Structure for individual selectable items:
         ],
         [
             {
-                content: 'disableTruncation',
+                content: 'MultiSelectMenuItemType.disableTruncation',
                 hintText: 'Whether to disable text truncation for long labels',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -857,159 +842,3 @@ export type MultiSelectItemStates =
     | 'selected'
 export type TriggerStates = 'open' | 'closed' | 'hover' | 'focus' | 'error'
 ```
-
-## Features
-
-- **Multiple Selection**: Select multiple options with visual feedback and management
-- **Size Variants**: Three sizes (small, medium, large) for different interface densities
-- **Visual Variants**: Container and no-container styles for flexible integration
-- **Selection Display**: Count badges or comma-separated text display options
-- **Search Functionality**: Optional built-in search with customizable placeholder
-- **Select All Option**: Convenient select/deselect all functionality
-- **Grouped Organization**: Support for organizing items into labeled groups with separators
-- **Rich Content Support**: Multiple slot positions for icons, badges, and custom elements
-- **Clear Selection**: Easy clear button to remove all selections
-- **Form Integration**: Complete form support with labels, validation, and error states
-- **Mobile Optimization**: Automatic drawer mode on mobile devices for better UX
-- **Custom Triggers**: Support for completely custom trigger elements
-- **Flexible Positioning**: 4 sides and 3 alignment options with offset controls
-- **Action Buttons**: Optional footer buttons for Apply/Cancel workflows
-- **Tooltip Integration**: Built-in tooltip support for menu items with configuration options
-- **Keyboard Navigation**: Full keyboard support with space/enter for selection
-- **Error Handling**: Comprehensive error state management with custom error messages
-- **Accessibility First**: ARIA compliance, screen reader support, and focus management
-- **Responsive Design**: Adapts to different screen sizes and device types
-
-## Enums
-
-### MultiSelectMenuSize
-
-```tsx
-enum MultiSelectMenuSize {
-    SMALL = 'sm', // Compact select for dense interfaces
-    MEDIUM = 'md', // Standard select size for most use cases
-    LARGE = 'lg', // Large select for emphasized or touch-friendly interfaces
-}
-```
-
-### MultiSelectVariant
-
-```tsx
-enum MultiSelectVariant {
-    CONTAINER = 'container', // Full container styling with borders and background
-    NO_CONTAINER = 'no-container', // Minimal styling without background container
-}
-```
-
-### MultiSelectSelectionTagType
-
-```tsx
-enum MultiSelectSelectionTagType {
-    COUNT = 'count', // Shows number of selected items (e.g., "3")
-    TEXT = 'text', // Shows comma-separated list of selected item labels
-}
-```
-
-### MultiSelectMenuAlignment
-
-```tsx
-enum MultiSelectMenuAlignment {
-    START = 'start', // Align dropdown to start edge of trigger
-    CENTER = 'center', // Center align dropdown with trigger
-    END = 'end', // Align dropdown to end edge of trigger
-}
-```
-
-### MultiSelectMenuSide
-
-```tsx
-enum MultiSelectMenuSide {
-    TOP = 'top', // Dropdown appears above trigger
-    LEFT = 'left', // Dropdown appears to left of trigger
-    RIGHT = 'right', // Dropdown appears to right of trigger
-    BOTTOM = 'bottom', // Dropdown appears below trigger
-}
-```
-
-## Behavior
-
-### Selection Management
-
-- **Multiple Selection**: Users can select multiple options using checkboxes
-- **Selection Feedback**: Visual feedback shows selected items with checkmarks
-- **Clear Functionality**: Clear button removes all selections when visible
-- **Selection Display**: Shows count or text based on selectionTagType setting
-
-### Search Behavior
-
-- **Live Filtering**: Search filters options in real-time as user types
-- **Label and SubLabel**: Searches both main label and subLabel text
-- **Case Insensitive**: Search is not case sensitive
-- **Group Filtering**: Groups with no matching items are hidden
-
-### Keyboard Navigation
-
-- **Arrow Keys**: Navigate through menu options
-- **Space/Enter**: Toggle selection of the currently focused option
-- **Escape**: Close the dropdown menu
-- **Type Ahead**: Jump to options by typing first letters
-
-### Positioning Logic
-
-- **Auto-Positioning**: Dropdown repositions to stay within viewport
-- **Side Options**: Can appear on top, bottom, left, or right of trigger
-- **Alignment Control**: Align to start, center, or end of trigger
-- **Offset Adjustments**: Fine-tune positioning with pixel offsets
-
-### Mobile Behavior
-
-- **Drawer Mode**: Renders as drawer on mobile devices when useDrawerOnMobile is true
-- **Touch Optimization**: Optimized for touch interactions
-- **Responsive Sizing**: Adapts to mobile screen constraints
-
-### Action Buttons
-
-- **Optional Footer**: Shows action buttons when configured
-- **Apply/Cancel Pattern**: Common pattern for confirming selections
-- **Loading States**: Support for async operations with loading indicators
-
-## Accessibility
-
-- **ARIA Compliance**: Full ARIA support with proper roles and attributes
-- **Keyboard Navigation**: Complete keyboard support with arrow keys and space/enter
-- **Screen Reader Support**: Proper announcements for state changes and selections
-- **Focus Management**: Focus is trapped within dropdown and restored properly
-- **Label Association**: Form labels are properly associated with the select trigger
-- **Group Semantics**: Menu groups are announced as groups to screen readers
-- **Selection Communication**: Current selections are communicated to assistive technologies
-- **Required Field Support**: Required fields are announced to assistive technologies
-
-## Best Practices
-
-### When to Use MultiSelect
-
-- **Multiple Choices**: When users need to select multiple options from a list
-- **Form Fields**: As form controls where multiple selections are required
-- **Filtering**: For filtering data based on multiple criteria
-- **Tag Selection**: For selecting multiple tags, categories, or attributes
-
-### Design Guidelines
-
-- **Clear Labels**: Use descriptive labels that clearly explain the purpose
-- **Logical Grouping**: Group related options together with meaningful group labels
-- **Appropriate Sizing**: Choose size based on interface density and importance
-- **Selection Feedback**: Ensure users can clearly see what they've selected
-
-### Content Guidelines
-
-- **Concise Options**: Keep option labels brief but descriptive
-- **Helpful SubLabels**: Use subLabels to provide additional context when needed
-- **Logical Ordering**: Order options logically (alphabetical, by frequency, or importance)
-- **Search Support**: Enable search for lists with many options
-
-### Mobile Considerations
-
-- **Drawer Mode**: Use drawer mode on mobile for better touch experience
-- **Touch Targets**: Ensure adequate touch target sizes for mobile devices
-- **Search Functionality**: Enable search for long option lists on mobile
-- **Performance**: Consider lazy loading for very large option sets

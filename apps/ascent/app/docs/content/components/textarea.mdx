@@ -53,7 +53,7 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
+                content: 'TextArea.value',
                 hintText: 'Current textarea value as a string',
             },
             { content: 'string', hintText: 'string' },
@@ -61,7 +61,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'placeholder',
+                content: 'TextArea.placeholder',
                 hintText: 'Placeholder text for the textarea',
             },
             { content: 'string', hintText: 'string' },
@@ -69,7 +69,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onChange',
+                content: 'TextArea.onChange',
                 hintText: 'Callback when textarea value changes',
             },
             {
@@ -80,7 +80,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'disabled',
+                content: 'TextArea.disabled',
                 hintText: 'Whether the textarea is disabled',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -88,7 +88,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'autoFocus',
+                content: 'TextArea.autoFocus',
                 hintText: 'Whether to auto-focus the textarea on mount',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -96,29 +96,29 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onFocus',
+                content: 'TextArea.onFocus',
                 hintText: 'Callback when textarea receives focus',
             },
             {
                 content: '(e: React.FocusEvent<HTMLTextAreaElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'onBlur',
+                content: 'TextArea.onBlur',
                 hintText: 'Callback when textarea loses focus',
             },
             {
                 content: '(e: React.FocusEvent<HTMLTextAreaElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'rows',
+                content: 'TextArea.rows',
                 hintText: 'Number of visible text lines',
             },
             { content: 'number', hintText: 'number' },
@@ -126,47 +126,47 @@ function MyComponent() {
         ],
         [
             {
-                content: 'cols',
+                content: 'TextArea.cols',
                 hintText: 'Number of visible character columns',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'label',
+                content: 'TextArea.label',
                 hintText: 'Primary label for the textarea',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'sublabel',
+                content: 'TextArea.sublabel',
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'hintText',
+                content: 'TextArea.hintText',
                 hintText: 'Helper text displayed below the textarea',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'helpIconHintText',
+                content: 'TextArea.helpIconHintText',
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'required',
+                content: 'TextArea.required',
                 hintText: 'Whether the textarea is required',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -174,7 +174,7 @@ function MyComponent() {
         ],
         [
             {
-                content: 'error',
+                content: 'TextArea.error',
                 hintText: 'Whether the textarea is in error state',
             },
             { content: 'boolean', hintText: 'boolean' },
@@ -182,15 +182,15 @@ function MyComponent() {
         ],
         [
             {
-                content: 'errorMessage',
+                content: 'TextArea.errorMessage',
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'resize',
+                content: 'TextArea.resize',
                 hintText: 'Resize behavior for the textarea',
             },
             {
@@ -202,10 +202,50 @@ function MyComponent() {
         ],
         [
             {
-                content: 'wrap',
+                content: 'TextArea.wrap',
                 hintText: 'Text wrapping behavior',
             },
             { content: "CSSObject['whiteSpace']", hintText: 'string' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'TextAreaState.DEFAULT',
+                hintText: 'Default state - normal textarea appearance',
+            },
+            { content: '"default"', hintText: 'string' },
+            { content: 'Default' },
+        ],
+        [
+            {
+                content: 'TextAreaState.HOVER',
+                hintText: 'Hover state',
+            },
+            { content: '"hover"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextAreaState.FOCUS',
+                hintText: 'Focus state',
+            },
+            { content: '"focus"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextAreaState.ERROR',
+                hintText: 'Error state',
+            },
+            { content: '"error"', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextAreaState.DISABLED',
+                hintText: 'Disabled state',
+            },
+            { content: '"disabled"', hintText: 'string' },
             { content: '' },
         ],
     ]}
@@ -285,111 +325,3 @@ export type TextAreaState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
 ```
 
 The component uses responsive tokens that adapt to different breakpoints with floating labels on small screens and consistent styling across all states.
-
-## Features
-
-- **Multi-line Input**: Configurable rows and columns for text area sizing
-- **Responsive Labels**: Floating labels on small screens, standard labels on larger screens
-- **Resize Control**: Customizable resize behavior (none, vertical, horizontal, both, block, inline)
-- **Error States**: Visual error feedback with custom error messages
-- **Form Integration**: Full form library support with validation
-- **Accessibility**: Screen reader support and proper focus management
-- **Helper Text**: Support for hint text and help icon tooltips
-- **Auto-Focus**: Optional auto-focus on component mount
-- **Disabled State**: Complete disabled state styling and behavior
-
-## Behavior
-
-### Responsive Labels
-
-- **Large Screens**: Labels appear above the textarea with sublabels
-- **Small Screens**: Labels float inside the textarea and scale when focused or filled
-- **Focus Animation**: Smooth transition for floating label positioning
-- **Label Scaling**: Floating labels scale down when active
-
-### Resize Functionality
-
-- **None**: No resize handle, fixed size
-- **Vertical**: Only vertical resizing allowed
-- **Horizontal**: Only horizontal resizing allowed
-- **Both**: Both directions resizable
-- **Block/Inline**: CSS logical properties for resize direction
-
-### Focus and Validation
-
-- **Focus States**: Visual focus indicators with border and shadow changes
-- **Error States**: Red borders and error message display
-- **Validation**: Real-time validation support with error feedback
-- **Required Fields**: Visual indicators for required fields
-
-### Padding Adjustments
-
-- **Dynamic Padding**: Adjusts top/bottom padding on small screens for floating labels
-- **Consistent Spacing**: Maintains consistent internal spacing across breakpoints
-- **Content Alignment**: Proper text alignment with floating label positioning
-
-## Best Practices
-
-### When to Use TextArea
-
-- **Long-form Content**: Comments, descriptions, articles, messages
-- **Multi-line Input**: Address fields, feedback forms, code snippets
-- **Flexible Content**: When content length is unpredictable
-- **Rich Text Needs**: Before implementing rich text editors
-- **Form Fields**: Any form requiring more than a single line of text
-
-### Sizing Guidelines
-
-- **3-4 Rows**: Short descriptions, comments, brief feedback
-- **5-6 Rows**: Medium content like detailed descriptions, messages
-- **8+ Rows**: Long-form content like articles, documentation
-- **Resize Options**: Allow vertical resize for user flexibility
-- **Character Limits**: Implement and display character count when needed
-
-### Accessibility Considerations
-
-- **Label Association**: Ensure proper label-textarea association
-- **Error Announcements**: Make error states accessible to screen readers
-- **Focus Management**: Maintain clear focus indicators
-- **Keyboard Navigation**: Support all standard keyboard interactions
-- **Help Text**: Provide clear instructions and help text
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled components with proper state
-- **Validation**: Integrate with form validation libraries
-- **Error Handling**: Provide specific, actionable error messages
-- **Auto-save**: Consider implementing draft saving for long forms
-- **Character Counting**: Show character/word count for length-limited fields
-
-### Performance Optimization
-
-- **Debouncing**: Debounce onChange for expensive operations
-- **Auto-save**: Implement debounced auto-save for long content
-- **Memory Management**: Clean up event listeners and timers
-- **State Management**: Use appropriate state management patterns
-- **Memoization**: Consider memoizing for complex validation logic
-
-### User Experience
-
-- **Clear Placeholders**: Use descriptive placeholder text
-- **Progressive Enhancement**: Start with basic functionality
-- **Auto-resize**: Consider auto-expanding textarea based on content
-- **Save Indicators**: Show save status for important content
-- **Format Preservation**: Maintain formatting when appropriate
-
-### Content Guidelines
-
-- **Character Limits**: Set reasonable limits and communicate them clearly
-- **Validation Messages**: Provide helpful, specific error messages
-- **Formatting Support**: Consider markdown or rich text for complex content
-- **Preview Options**: Offer preview functionality for formatted content
-- **Content Recovery**: Implement draft recovery for important forms
-
-### Security Considerations
-
-- **Input Sanitization**: Sanitize user input on the backend
-- **XSS Prevention**: Prevent cross-site scripting attacks
-- **Content Validation**: Validate content length and format
-- **Rate Limiting**: Implement rate limiting for form submissions
-- **CSRF Protection**: Use CSRF tokens for form submissions
