@@ -26,4 +26,5 @@ export type CodeBlockProps = {
     headerLeftSlot?: ReactNode
     headerRightSlot?: ReactNode
     diffLines?: DiffLine[]
+    showCopyButton?: boolean
 }
