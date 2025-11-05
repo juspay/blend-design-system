@@ -104,7 +104,7 @@ function MyComponent() {
                     'The main label text displayed above the select field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -113,7 +113,7 @@ function MyComponent() {
                     'Optional secondary label text displayed below the main label',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -121,7 +121,7 @@ function MyComponent() {
                 hintText: 'Placeholder text shown when no options are selected',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -129,15 +129,18 @@ function MyComponent() {
                 hintText: 'Array of currently selected option values',
             },
             { content: 'string[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
                 content: 'onChange',
                 hintText: 'Callback function called when selections change',
             },
-            { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
+            {
+                content: '(selectedValue: string) => void',
+                hintText: 'function',
+            },
+            { content: 'Required' },
         ],
         [
             {
@@ -145,7 +148,7 @@ function MyComponent() {
                 hintText: 'Array of grouped menu items for selection',
             },
             { content: 'MultiSelectMenuGroupType[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -195,7 +198,7 @@ function MyComponent() {
                     'Tooltip text displayed when hovering over the help icon',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -203,7 +206,7 @@ function MyComponent() {
                 hintText: 'Optional help text displayed below the select field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -244,7 +247,7 @@ function MyComponent() {
                     'Content displayed inside the trigger button (e.g., icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -253,7 +256,7 @@ function MyComponent() {
                     'Name attribute for form identification and submission',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -262,7 +265,7 @@ function MyComponent() {
                     'Custom React element to replace the default trigger button',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -279,7 +282,7 @@ function MyComponent() {
                     'How the dropdown menu aligns relative to the trigger',
             },
             { content: 'MultiSelectMenuAlignment', hintText: 'enum' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -287,7 +290,7 @@ function MyComponent() {
                 hintText: 'Which side of the trigger the dropdown appears on',
             },
             { content: 'MultiSelectMenuSide', hintText: 'enum' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -295,7 +298,7 @@ function MyComponent() {
                 hintText: 'Distance in pixels between trigger and dropdown',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -303,31 +306,31 @@ function MyComponent() {
                 hintText: 'Alignment offset in pixels for fine positioning',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'minWidth',
+                content: 'minMenuWidth',
                 hintText: 'Minimum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'maxWidth',
+                content: 'maxMenuWidth',
                 hintText: 'Maximum width of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'maxHeight',
+                content: 'maxMenuHeight',
                 hintText: 'Maximum height of the dropdown menu in pixels',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -345,7 +348,7 @@ function MyComponent() {
                     'Callback function called when the select loses focus',
             },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -354,7 +357,7 @@ function MyComponent() {
                     'Callback function called when the select gains focus',
             },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -370,7 +373,7 @@ function MyComponent() {
                 hintText: 'Error message displayed when error is true',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -386,16 +389,24 @@ function MyComponent() {
                 content: 'primaryAction',
                 hintText: 'Configuration for the primary action button',
             },
-            { content: 'ActionButtonType', hintText: 'object' },
-            { content: '' },
+            {
+                content:
+                    '{ text: string, onClick: (selectedValues: string[]) => void, disabled?: boolean, loading?: boolean }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
         ],
         [
             {
                 content: 'secondaryAction',
                 hintText: 'Configuration for the secondary action button',
             },
-            { content: 'ActionButtonType', hintText: 'object' },
-            { content: '' },
+            {
+                content:
+                    '{ text: string, onClick: () => void, disabled?: boolean, loading?: boolean }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
         ],
         [
             {
@@ -412,6 +423,94 @@ function MyComponent() {
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Height of the select field in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'maxSelections',
+                hintText: 'Maximum number of items that can be selected',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'fullWidth',
+                hintText: 'Whether the select field takes full width',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'enableVirtualization',
+                hintText: 'Whether to enable virtual scrolling for large lists',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'virtualListItemHeight',
+                hintText: 'Height of each virtualized list item in pixels',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '48' },
+        ],
+        [
+            {
+                content: 'virtualListOverscan',
+                hintText: 'Number of items to render outside visible area',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '5' },
+        ],
+        [
+            {
+                content: 'itemsToRender',
+                hintText: 'Number of items to render initially',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onEndReached',
+                hintText: 'Callback when virtual list reaches the end',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'endReachedThreshold',
+                hintText: 'Distance from end to trigger onEndReached',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'hasMore',
+                hintText: 'Whether there are more items to load',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'loadingComponent',
+                hintText: 'Component to show while loading more items',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -433,7 +532,7 @@ Structure for organizing menu items into groups:
                 hintText: 'Optional label text for the group section',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -441,7 +540,7 @@ Structure for organizing menu items into groups:
                 hintText: 'Array of selectable items within this group',
             },
             { content: 'MultiSelectMenuItemType[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -469,7 +568,7 @@ Structure for individual selectable items:
                 hintText: 'Main display text for the menu item',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -477,7 +576,7 @@ Structure for individual selectable items:
                 hintText: 'Unique value identifier for the menu item',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -485,7 +584,7 @@ Structure for individual selectable items:
                 hintText: 'Whether the item is currently selected',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -493,7 +592,7 @@ Structure for individual selectable items:
                 hintText: 'Optional secondary text displayed below the label',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -501,7 +600,7 @@ Structure for individual selectable items:
                 hintText: 'First content slot (typically for leading icons)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -509,7 +608,7 @@ Structure for individual selectable items:
                 hintText: 'Second content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -517,7 +616,7 @@ Structure for individual selectable items:
                 hintText: 'Third content slot for additional elements',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -526,7 +625,7 @@ Structure for individual selectable items:
                     'Fourth content slot (typically for trailing elements)',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -539,11 +638,20 @@ Structure for individual selectable items:
         ],
         [
             {
+                content: 'alwaysSelected',
+                hintText:
+                    'Whether the item is always selected and cannot be deselected',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
                 content: 'onClick',
                 hintText: 'Custom click handler for the menu item',
             },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -551,7 +659,7 @@ Structure for individual selectable items:
                 hintText: 'Nested menu items for creating hierarchical menus',
             },
             { content: 'MultiSelectMenuItemType[]', hintText: 'array' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -559,15 +667,19 @@ Structure for individual selectable items:
                 hintText: 'Tooltip content displayed on hover',
             },
             { content: 'string | React.ReactNode', hintText: 'union type' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
                 content: 'tooltipProps',
                 hintText: 'Configuration options for the tooltip display',
             },
-            { content: 'TooltipProps', hintText: 'object' },
-            { content: '' },
+            {
+                content:
+                    '{ side?: TooltipSide, align?: TooltipAlign, size?: TooltipSize, showArrow?: boolean, delayDuration?: number, offset?: number }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
         ],
         [
             {
@@ -583,49 +695,168 @@ Structure for individual selectable items:
     loadingMessage="Loading props..."
 />
 
-### ActionButtonType
+## Component Tokens
 
-Configuration for action buttons in the dropdown footer:
+You can style the MultiSelect component using the following tokens:
 
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'text',
-                hintText: 'Text displayed on the button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onClick',
-                hintText: 'Function called when button is clicked',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disabled',
-                hintText: 'Whether the button is disabled',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'loading',
-                hintText: 'Whether the button shows loading state',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
+```tsx
+export type MultiSelectTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    trigger: {
+        height: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['height']
+            }
+        }
+        padding: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+        }
+        borderRadius: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['borderRadius']
+            }
+        }
+        boxShadow: {
+            [key in MultiSelectVariant]: CSSObject['boxShadow']
+        }
+        backgroundColor: {
+            [key in MultiSelectVariant]: {
+                [key in TriggerStates]: CSSObject['backgroundColor']
+            }
+        }
+        outline: {
+            [key in MultiSelectVariant]: {
+                [key in TriggerStates]: CSSObject['outline']
+            }
+        }
+        selectionTag: {
+            [key in MultiSelectVariant]: {
+                [key in MultiSelectSelectionTagType]: {
+                    color: CSSObject['color']
+                    backgroundColor: CSSObject['backgroundColor']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+        }
+        placeholder: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+    }
+    menu: {
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        padding: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+        }
+        item: {
+            padding: CSSObject['padding']
+            margin: CSSObject['margin']
+            borderRadius: CSSObject['borderRadius']
+            gap: CSSObject['gap']
+            backgroundColor: {
+                [key in MultiSelectItemStates]: CSSObject['backgroundColor']
+            }
+            optionsLabel: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            option: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            description: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            seperator: {
+                color: CSSObject['color']
+                height: CSSObject['height']
+                margin: CSSObject['margin']
+            }
+        }
+    }
+    drawer: {
+        header: {
+            paddingX: CSSObject['padding']
+            paddingBottom: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+        }
+        search: {
+            paddingX: CSSObject['padding']
+            marginTop: CSSObject['margin']
+            marginBottom: CSSObject['margin']
+        }
+        content: {
+            gap: CSSObject['gap']
+        }
+    }
+}
+
+export type ResponsiveMultiSelectTokens = {
+    [key in keyof BreakpointType]: MultiSelectTokensType
+}
+
+export type MultiSelectItemStates =
+    | 'default'
+    | 'hover'
+    | 'active'
+    | 'focus'
+    | 'focusVisible'
+    | 'disabled'
+    | 'selected'
+export type TriggerStates = 'open' | 'closed' | 'hover' | 'focus' | 'error'
+```
 
 ## Features
 

@@ -41,21 +41,25 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             { content: 'variant', hintText: 'The visual variant of the tag' },
             { content: 'TagVariant', hintText: 'enum' },
-            { content: 'SUBTLE' },
+            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
+            { content: 'TagVariant.SUBTLE' },
         ],
         [
             { content: 'color', hintText: 'The color theme of the tag' },
             { content: 'TagColor', hintText: 'enum' },
-            { content: 'PRIMARY' },
+            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
+            { content: 'TagColor.PRIMARY' },
         ],
         [
             { content: 'size', hintText: 'The size of the tag' },
             { content: 'TagSize', hintText: 'enum' },
-            { content: 'SM' },
+            { content: 'XS, SM, MD, LG' },
+            { content: 'TagSize.SM' },
         ],
         [
             {
@@ -63,7 +67,8 @@ function MyComponent() {
                 hintText: 'The border radius shape of the tag',
             },
             { content: 'TagShape', hintText: 'enum' },
-            { content: 'SQUARICAL' },
+            { content: 'ROUNDED, SQUARICAL' },
+            { content: 'TagShape.SQUARICAL' },
         ],
         [
             {
@@ -71,6 +76,7 @@ function MyComponent() {
                 hintText: 'Content displayed before the text',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: '' },
         ],
         [
@@ -80,10 +86,12 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
+            { content: '' },
         ],
         [
             { content: 'onClick', hintText: 'Click handler function' },
             { content: '() => void', hintText: 'function' },
+            { content: '' },
             { content: '' },
         ],
         [
@@ -93,118 +101,51 @@ function MyComponent() {
             },
             { content: "'left' | 'right'", hintText: 'string union' },
             { content: '' },
+            { content: '' },
         ],
     ]}
-    isHoverable={true}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
 
-## Features
+## Component Tokens
 
-- Multiple tag variants (noFill, attentive, subtle)
-- Six color themes (neutral, primary, success, error, warning, purple)
-- Four sizes (xs, sm, md, lg)
-- Two shape options (rounded, squarical)
-- Optional click functionality
-- Left and right slot support for icons or additional content
-- Split tag positioning for special styling
-- Responsive design with proper spacing
-- Accessible keyboard navigation
-
-## Usage Examples
-
-### Basic Tag
-
-Simple tag with text content
+You can style the Tag component using the following tokens:
 
 ```tsx
-<Tag text="Label" color={TagColor.PRIMARY} />
-```
-
-### Success Tag
-
-Tag with success styling
-
-```tsx
-<Tag
-    text="Success"
-    variant={TagVariant.SUBTLE}
-    color={TagColor.SUCCESS}
-    size={TagSize.MD}
-/>
-```
-
-### Interactive Tag
-
-Clickable tag with custom handler
-
-```tsx
-<Tag
-    text="Clickable"
-    color={TagColor.PRIMARY}
-    onClick={() => console.log('Tag clicked')}
-/>
-```
-
-### Tag with Icon
-
-Tag with left slot icon
-
-```tsx
-import { CheckCircle } from 'lucide-react'
-;<Tag
-    text="Completed"
-    color={TagColor.SUCCESS}
-    leftSlot={<CheckCircle size={12} />}
-/>
-```
-
-### Warning Tag
-
-Tag with warning styling and right slot
-
-```tsx
-import { AlertTriangle } from 'lucide-react'
-;<Tag
-    text="Warning"
-    variant={TagVariant.ATTENTIVE}
-    color={TagColor.WARNING}
-    rightSlot={<AlertTriangle size={12} />}
-/>
-```
-
-### Large Rounded Tag
-
-Tag with large size and rounded shape
-
-```tsx
-<Tag
-    text="Featured"
-    color={TagColor.PURPLE}
-    size={TagSize.LG}
-    shape={TagShape.ROUNDED}
-/>
-```
-
-### No Fill Tag
-
-Tag with no background fill
-
-```tsx
-<Tag
-    text="Outline"
-    variant={TagVariant.NO_FILL}
-    color={TagColor.NEUTRAL}
-    size={TagSize.SM}
-/>
-```
-
-### Split Tag
-
-Tag with split positioning for special styling
-
-```tsx
-<Tag text="Split" color={TagColor.ERROR} splitTagPosition="left" />
+export type TagTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['backgroundColor']
+        }
+    }
+    borderRadius: {
+        [key in TagSize]: {
+            [key in TagShape]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TagSize]: CSSObject['padding']
+    }
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
+    }
+    text: {
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
+        }
+    }
+}
 ```

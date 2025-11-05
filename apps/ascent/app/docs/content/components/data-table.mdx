@@ -75,7 +75,7 @@ function MyComponent() {
                 hintText: 'Array of data objects to display in the table',
             },
             { content: 'T[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -84,7 +84,7 @@ function MyComponent() {
                     'Column definitions that specify how data should be displayed',
             },
             { content: 'ColumnDefinition<T>[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -92,7 +92,7 @@ function MyComponent() {
                 hintText: 'Field name to use as unique identifier for rows',
             },
             { content: 'keyof T', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -100,7 +100,7 @@ function MyComponent() {
                 hintText: 'Optional title displayed above the table',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -108,7 +108,26 @@ function MyComponent() {
                 hintText: 'Optional description displayed below the title',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'defaultSort',
+                hintText: 'Default sort configuration',
+            },
+            { content: 'SortConfig', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onSortChange',
+                hintText: 'Callback when sort configuration changes',
+            },
+            {
+                content: '(sortConfig: SortConfig) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
         ],
         [
             {
@@ -120,6 +139,33 @@ function MyComponent() {
         ],
         [
             {
+                content: 'searchPlaceholder',
+                hintText: 'Placeholder text for search input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: "'Search...'" },
+        ],
+        [
+            {
+                content: 'serverSideSearch',
+                hintText: 'Enable server-side search handling',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onSearchChange',
+                hintText: 'Callback when search query changes',
+            },
+            {
+                content: '(searchConfig: SearchConfig) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
                 content: 'enableFiltering',
                 hintText: 'Enable column-based filtering',
             },
@@ -128,11 +174,255 @@ function MyComponent() {
         ],
         [
             {
-                content: 'enableRowSelection',
-                hintText: 'Enable row selection with checkboxes',
+                content: 'enableAdvancedFilter',
+                hintText: 'Enable advanced filter component',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
+        ],
+        [
+            {
+                content: 'advancedFilterComponent',
+                hintText: 'Custom advanced filter component',
+            },
+            {
+                content: 'React.ComponentType<AdvancedFilterProps>',
+                hintText: 'component',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'advancedFilters',
+                hintText: 'Advanced filter values',
+            },
+            { content: 'unknown[]', hintText: 'array' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'serverSideFiltering',
+                hintText: 'Enable server-side filtering handling',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onFilterChange',
+                hintText: 'Callback when column filters change',
+            },
+            {
+                content: '(filters: ColumnFilter[]) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onAdvancedFiltersChange',
+                hintText: 'Callback when advanced filters change',
+            },
+            { content: '(filters: unknown[]) => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'columnFreeze',
+                hintText: 'Number of columns to freeze on the left',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            {
+                content: 'enableColumnManager',
+                hintText: 'Enable column visibility management',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'columnManagerMaxSelections',
+                hintText: 'Maximum number of columns that can be selected',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'columnManagerAlwaysSelected',
+                hintText:
+                    'Columns that are always selected and cannot be hidden',
+            },
+            { content: '(keyof T)[]', hintText: 'array' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'columnManagerPrimaryAction',
+                hintText: 'Primary action button for column manager',
+            },
+            {
+                content:
+                    '{ text: string; onClick: (selectedColumns: string[]) => void; disabled?: boolean; loading?: boolean }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'columnManagerSecondaryAction',
+                hintText: 'Secondary action button for column manager',
+            },
+            {
+                content:
+                    '{ text: string; onClick: () => void; disabled?: boolean; loading?: boolean }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'columnManagerWidth',
+                hintText: 'Width of the column manager menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'pagination',
+                hintText: 'Pagination configuration object',
+            },
+            { content: 'PaginationConfig', hintText: 'object' },
+            {
+                content:
+                    '{ currentPage: 1, pageSize: 10, totalRows: 0, pageSizeOptions: [10, 20, 50, 100] }',
+            },
+        ],
+        [
+            {
+                content: 'serverSidePagination',
+                hintText: 'Enable server-side pagination handling',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onPageChange',
+                hintText: 'Callback when page changes',
+            },
+            { content: '(page: number) => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onPageSizeChange',
+                hintText: 'Callback when page size changes',
+            },
+            { content: '(pageSize: number) => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'isLoading',
+                hintText: 'Show loading state for async operations',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'showHeader',
+                hintText: 'Show table header with title and description',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'showToolbar',
+                hintText: 'Show toolbar with search and filters',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'showSettings',
+                hintText: 'Show settings menu button',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'headerSlot1',
+                hintText: 'Custom content slot in header (first position)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'headerSlot2',
+                hintText: 'Custom content slot in header (second position)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'enableInlineEdit',
+                hintText: 'Enable inline editing of cells',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onRowSave',
+                hintText: 'Callback when a row is saved after editing',
+            },
+            {
+                content: '(rowId: unknown, updatedRow: T) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onRowCancel',
+                hintText: 'Callback when row editing is cancelled',
+            },
+            { content: '(rowId: unknown) => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onRowClick',
+                hintText: 'Callback when a row is clicked',
+            },
+            {
+                content: '(row: T, index: number) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onFieldChange',
+                hintText: 'Callback when a field value changes during editing',
+            },
+            {
+                content:
+                    '(rowId: unknown, fieldName: keyof T, value: unknown) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
         ],
         [
             {
@@ -144,19 +434,81 @@ function MyComponent() {
         ],
         [
             {
-                content: 'pagination',
-                hintText: 'Pagination configuration object',
+                content: 'renderExpandedRow',
+                hintText: 'Function to render expanded row content',
             },
-            { content: 'PaginationConfig', hintText: 'object' },
-            { content: '' },
+            {
+                content:
+                    '(expandedData: { row: T; index: number; isExpanded: boolean; toggleExpansion: () => void }) => ReactNode',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'isLoading',
-                hintText: 'Show loading state for async operations',
+                content: 'isRowExpandable',
+                hintText: 'Function to determine if a row is expandable',
+            },
+            {
+                content: '(row: T, index: number) => boolean',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onRowExpansionChange',
+                hintText: 'Callback when row expansion state changes',
+            },
+            {
+                content:
+                    '(rowId: unknown, isExpanded: boolean, rowData: T) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'enableRowSelection',
+                hintText: 'Enable row selection with checkboxes',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
+        ],
+        [
+            {
+                content: 'bulkActions',
+                hintText: 'Actions available when rows are selected',
+            },
+            { content: 'BulkAction[]', hintText: 'array' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'rowActions',
+                hintText: 'Configuration for row-level action buttons',
+            },
+            { content: 'RowActionsConfig<T>', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'getRowStyle',
+                hintText: 'Function to get custom styles for a row',
+            },
+            {
+                content: '(row: T, index: number) => React.CSSProperties',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'mobileColumnsToShow',
+                hintText: 'Number of columns to show on mobile devices',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -176,7 +528,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Field name from the data object',
             },
             { content: 'keyof T', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -184,7 +536,15 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Column header text displayed in the table',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'headerSubtext',
+                hintText: 'Optional subtext displayed below the header',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -192,7 +552,7 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'Type of data and how it should be rendered',
             },
             { content: 'ColumnType', hintText: 'enum' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -212,11 +572,76 @@ Each column in the `columns` array should have the following structure:
         ],
         [
             {
+                content: 'isEditable',
+                hintText: 'Whether this column can be edited inline',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width for the column',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width for the column',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
+        ],
+        [
+            {
                 content: 'width',
                 hintText: 'Fixed width for the column',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'filterOptions',
+                hintText: 'Options available for filtering this column',
+            },
+            { content: 'FilterOption[]', hintText: 'array' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'canHide',
+                hintText:
+                    'Whether this column can be hidden via column manager',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'frozen',
+                hintText: 'Whether this column is frozen (sticky)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'className',
+                hintText: 'Custom CSS class for the column',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'filterType',
+                hintText: 'Type of filter to use for this column',
+            },
+            { content: 'FilterType', hintText: 'enum' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -227,7 +652,7 @@ Each column in the `columns` array should have the following structure:
                 content: '(value, row, index) => ReactNode',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -305,6 +730,46 @@ The DataTable supports various column types for different data presentations:
             { content: 'ColumnType.REACT_ELEMENT', hintText: 'enum' },
             { content: '' },
         ],
+        [
+            {
+                content: 'SELECT',
+                hintText: 'Select dropdown column type',
+            },
+            { content: 'ColumnType.SELECT', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MULTISELECT',
+                hintText: 'Multi-select dropdown column type',
+            },
+            { content: 'ColumnType.MULTISELECT', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DATE_RANGE',
+                hintText: 'Date range column type',
+            },
+            { content: 'ColumnType.DATE_RANGE', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SLIDER',
+                hintText: 'Slider column type',
+            },
+            { content: 'ColumnType.SLIDER', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'CUSTOM',
+                hintText: 'Custom column type',
+            },
+            { content: 'ColumnType.CUSTOM', hintText: 'enum' },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -313,311 +778,141 @@ The DataTable supports various column types for different data presentations:
 
 ## Features
 
-- **Flexible Column Types**: Support for text, numbers, avatars, tags, progress bars, dates, and custom React elements
+- **Flexible Column Types**: Support for text, numbers, avatars, tags, progress bars, dates, dropdowns, sliders, and custom React elements
 - **Advanced Sorting**: Multi-column sorting with ascending/descending directions
-- **Powerful Filtering**: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean)
+- **Powerful Filtering**: Column-based filters with multiple filter types (text, number, select, multiselect, date, boolean, slider)
+- **Advanced Filters**: Custom advanced filter component support
 - **Global Search**: Search across all columns or specific fields
+- **Server-Side Operations**: Support for server-side pagination, sorting, filtering, and search
 - **Pagination**: Client-side and server-side pagination with customizable page sizes
 - **Row Selection**: Single or multiple row selection with bulk actions
 - **Row Expansion**: Expandable rows for displaying additional content
 - **Inline Editing**: Editable cells with validation and save/cancel functionality
-- **Column Management**: Show/hide columns and adjust column order
-- **Mobile Responsive**: Optimized mobile view with column selection
+- **Column Management**: Show/hide columns and adjust column order with selection limits
+- **Column Freezing**: Freeze columns on the left for better navigation
+- **Mobile Responsive**: Optimized mobile view with column overflow and drawer
 - **Loading States**: Built-in loading indicators for async operations
 - **Export Functionality**: Export selected rows to CSV
 - **Custom Styling**: Extensive theming with responsive design tokens
 - **Accessibility**: Full keyboard navigation and screen reader support
 
-## Usage Examples
+## Enums
 
-### Basic Data Table
-
-Simple table with text columns and sorting
+### SortDirection
 
 ```tsx
-const data = [
-    { id: 1, name: 'Alice Johnson', department: 'Engineering', salary: 75000 },
-    { id: 2, name: 'Bob Smith', department: 'Marketing', salary: 65000 },
-    { id: 3, name: 'Carol Williams', department: 'Sales', salary: 70000 },
-]
-
-const columns: ColumnDefinition<typeof data[0]>[] = [
-    {
-        field: 'name',
-        header: 'Full Name',
-        type: ColumnType.TEXT,
-        isSortable: true,
-    },
-    {
-        field: 'department',
-        header: 'Department',
-        type: ColumnType.TEXT,
-        isSortable: true,
-    },
-    {
-        field: 'salary',
-        header: 'Salary',
-        type: ColumnType.NUMBER,
-        isSortable: true,
-        format: 'currency',
-    },
-]
-
-<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Employee Directory"
-/>
-```
-
-### Table with Search and Filtering
-
-Table with global search and column filters
-
-```tsx
-<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Searchable Employee Directory"
-    enableSearch={true}
-    searchPlaceholder="Search employees..."
-    enableFiltering={true}
-    defaultSort={{ field: 'name', direction: SortDirection.ASCENDING }}
-/>
-```
-
-### Table with Row Selection and Bulk Actions
-
-Table with row selection and bulk action capabilities
-
-```tsx
-const bulkActions = [
-    {
-        id: 'export',
-        label: 'Export Selected',
-        variant: 'primary' as const,
-        onClick: (selectedRowIds: string[]) => {
-            console.log('Exporting rows:', selectedRowIds)
-        },
-    },
-    {
-        id: 'delete',
-        label: 'Delete Selected',
-        variant: 'danger' as const,
-        onClick: (selectedRowIds: string[]) => {
-            console.log('Deleting rows:', selectedRowIds)
-        },
-    },
-]
-
-<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Employee Management"
-    enableRowSelection={true}
-    bulkActions={bulkActions}
-    enableSearch={true}
-    enableFiltering={true}
-/>
-```
-
-### Table with Custom Column Types
-
-Table featuring avatar, tag, and progress columns
-
-```tsx
-const projectData = [
-    {
-        id: 1,
-        manager: { src: '/avatar1.jpg', alt: 'John Doe', label: 'John Doe', sublabel: 'Project Manager' },
-        project: 'Website Redesign',
-        status: { text: 'In Progress', variant: 'primary', color: 'primary' },
-        progress: { value: 75, max: 100, showPercentage: true, color: 'primary' },
-        deadline: { date: '2024-03-15', format: 'MMM dd, yyyy' },
-    },
-    {
-        id: 2,
-        manager: { src: '/avatar2.jpg', alt: 'Jane Smith', label: 'Jane Smith', sublabel: 'Tech Lead' },
-        project: 'Mobile App',
-        status: { text: 'Completed', variant: 'success', color: 'success' },
-        progress: { value: 100, max: 100, showPercentage: true, color: 'success' },
-        deadline: { date: '2024-02-28', format: 'MMM dd, yyyy' },
-    },
-]
-
-const projectColumns: ColumnDefinition<typeof projectData[0]>[] = [
-    {
-        field: 'manager',
-        header: 'Project Manager',
-        type: ColumnType.AVATAR,
-    },
-    {
-        field: 'project',
-        header: 'Project Name',
-        type: ColumnType.TEXT,
-        isSortable: true,
-    },
-    {
-        field: 'status',
-        header: 'Status',
-        type: ColumnType.TAG,
-    },
-    {
-        field: 'progress',
-        header: 'Progress',
-        type: ColumnType.PROGRESS,
-    },
-    {
-        field: 'deadline',
-        header: 'Deadline',
-        type: ColumnType.DATE,
-        isSortable: true,
-    },
-]
-
-<DataTable
-    data={projectData}
-    columns={projectColumns}
-    idField="id"
-    title="Project Dashboard"
-    enableSearch={true}
-    enableFiltering={true}
-/>
-```
-
-### Table with Row Expansion
-
-Table with expandable rows for additional details
-
-```tsx
-const renderExpandedRow = ({ row, isExpanded }) => {
-    if (!isExpanded) return null
-
-    return (
-        <div className="p-4 bg-gray-50">
-            <h4 className="font-semibold mb-2">Additional Details</h4>
-            <p>
-                <strong>Employee ID:</strong> {row.id}
-            </p>
-            <p>
-                <strong>Start Date:</strong> {row.startDate}
-            </p>
-            <p>
-                <strong>Manager:</strong> {row.manager}
-            </p>
-            <p>
-                <strong>Notes:</strong> {row.notes}
-            </p>
-        </div>
-    )
+enum SortDirection {
+    NONE = 'none',
+    ASCENDING = 'asc',
+    DESCENDING = 'desc',
 }
-
-;<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Employee Details"
-    enableRowExpansion={true}
-    renderExpandedRow={renderExpandedRow}
-    isRowExpandable={(row) => row.hasDetails}
-/>
 ```
 
-### Table with Pagination
-
-Table with client-side pagination
+### FilterType
 
 ```tsx
-const [currentPage, setCurrentPage] = useState(1)
-const [pageSize, setPageSize] = useState(10)
-
-<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Paginated Employee List"
-    pagination={{
-        currentPage,
-        pageSize,
-        totalRows: data.length,
-        pageSizeOptions: [5, 10, 20, 50],
-    }}
-    onPageChange={setCurrentPage}
-    onPageSizeChange={setPageSize}
-/>
+enum FilterType {
+    TEXT = 'text',
+    NUMBER = 'number',
+    SELECT = 'select',
+    MULTISELECT = 'multiselect',
+    DATE = 'date',
+    BOOLEAN = 'boolean',
+    SLIDER = 'slider',
+}
 ```
 
-### Table with Inline Editing
-
-Table with editable cells and save/cancel functionality
+### ColumnType
 
 ```tsx
-const handleRowSave = (rowId: unknown, updatedRow: any) => {
-    console.log('Saving row:', rowId, updatedRow)
-    // Update your data source here
+enum ColumnType {
+    TEXT = 'text',
+    NUMBER = 'number',
+    AVATAR = 'avatar',
+    TAG = 'tag',
+    PROGRESS = 'progress',
+    DROPDOWN = 'dropdown',
+    REACT_ELEMENT = 'react_element',
+    SELECT = 'select',
+    MULTISELECT = 'multiselect',
+    DATE = 'date',
+    DATE_RANGE = 'date_range',
+    SLIDER = 'slider',
+    CUSTOM = 'custom',
 }
-
-const handleFieldChange = (
-    rowId: unknown,
-    fieldName: keyof any,
-    value: unknown
-) => {
-    console.log('Field changed:', rowId, fieldName, value)
-    // Handle field changes for real-time updates
-}
-
-;<DataTable
-    data={data}
-    columns={columns}
-    idField="id"
-    title="Editable Employee Data"
-    enableInlineEdit={true}
-    onRowSave={handleRowSave}
-    onFieldChange={handleFieldChange}
-/>
 ```
 
-### Server-Side Operations
+## Data Types
 
-Table with server-side pagination, sorting, and filtering
+### SortConfig
 
 ```tsx
-const [loading, setLoading] = useState(false)
-const [serverData, setServerData] = useState([])
-const [totalRows, setTotalRows] = useState(0)
-
-const handleServerOperation = async (config: any) => {
-    setLoading(true)
-    try {
-        const response = await fetchData(config)
-        setServerData(response.data)
-        setTotalRows(response.total)
-    } finally {
-        setLoading(false)
-    }
+export type SortConfig = {
+    field: string
+    direction: SortDirection
 }
+```
 
-;<DataTable
-    data={serverData}
-    columns={columns}
-    idField="id"
-    title="Server-Side Data Table"
-    isLoading={loading}
-    serverSidePagination={true}
-    serverSideSearch={true}
-    serverSideFiltering={true}
-    onPageChange={(page) => handleServerOperation({ page })}
-    onSearchChange={(search) => handleServerOperation({ search })}
-    onFilterChange={(filters) => handleServerOperation({ filters })}
-    pagination={{
-        currentPage: 1,
-        pageSize: 10,
-        totalRows,
-    }}
-/>
+### SearchConfig
+
+```tsx
+export type SearchConfig = {
+    query: string
+    caseSensitive?: boolean
+    searchFields?: string[]
+}
+```
+
+### ColumnFilter
+
+```tsx
+export type ColumnFilter = {
+    field: keyof Record<string, unknown>
+    type: FilterType
+    value: string | string[] | { min: number; max: number }
+    operator:
+        | 'equals'
+        | 'contains'
+        | 'startsWith'
+        | 'endsWith'
+        | 'gt'
+        | 'lt'
+        | 'gte'
+        | 'lte'
+        | 'range'
+}
+```
+
+### PaginationConfig
+
+```tsx
+export type PaginationConfig = {
+    currentPage: number
+    pageSize: number
+    totalRows: number
+    pageSizeOptions?: number[]
+}
+```
+
+### BulkAction
+
+```tsx
+export type BulkAction = {
+    id: string
+    label: string
+    variant: 'primary' | 'secondary' | 'danger'
+    onClick: (selectedRowIds: string[]) => void
+}
+```
+
+### RowActionsConfig
+
+```tsx
+export type RowActionsConfig<T extends Record<string, unknown>> = {
+    showEditAction?: boolean
+    slot1?: RowActionConfig<T>
+    slot2?: RowActionConfig<T>
+}
 ```
 
 ## Component Tokens
@@ -626,8 +921,9 @@ You can style the DataTable component using the following tokens:
 
 ```tsx
 export type TableTokenType = {
+    padding?: CSSObject['padding']
     width: CSSObject['width']
-    height: CSSObject['height']
+    height?: CSSObject['height']
     display: CSSObject['display']
     flexDirection: CSSObject['flexDirection']
     position: CSSObject['position']
@@ -638,6 +934,8 @@ export type TableTokenType = {
         alignItems: CSSObject['alignItems']
         marginBottom: CSSObject['marginBottom']
         gap: CSSObject['gap']
+        maxWidth: CSSObject['maxWidth']
+        overflowX: CSSObject['overflowX']
         title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
@@ -647,6 +945,43 @@ export type TableTokenType = {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
             lineHeight: CSSObject['lineHeight']
+            maxWidth: CSSObject['maxWidth']
+        }
+        headerSlot1: {
+            maxHeight: CSSObject['maxHeight']
+            flexShrink: CSSObject['flexShrink']
+        }
+        headerSlot2: {
+            maxHeight: CSSObject['maxHeight']
+            flexShrink: CSSObject['flexShrink']
+        }
+        headerSlot3: {
+            maxHeight: CSSObject['maxHeight']
+            flexShrink: CSSObject['flexShrink']
+        }
+        titleRow: {
+            gap: CSSObject['gap']
+            marginBottom: CSSObject['marginBottom']
+            justifyContent: CSSObject['justifyContent']
+            alignItems: CSSObject['alignItems']
+        }
+        descriptionRow: {
+            marginTop: CSSObject['marginTop']
+        }
+        actionIcons: {
+            gap: CSSObject['gap']
+            searchIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+            filterIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+            columnManagerIcon: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
         }
     }
 
@@ -654,34 +989,108 @@ export type TableTokenType = {
         borderRadius: CSSObject['borderRadius']
         border: CSSObject['border']
         maxHeight: CSSObject['maxHeight']
-
+        minHeight?: CSSObject['minHeight']
+        bulkActions: {
+            top: CSSObject['top']
+            left: CSSObject['left']
+            transform: CSSObject['transform']
+            zIndex: CSSObject['zIndex']
+            backgroundColor: CSSObject['backgroundColor']
+            color: CSSObject['color']
+            borderRadius: CSSObject['borderRadius']
+            padding: CSSObject['padding']
+            boxShadow: CSSObject['boxShadow']
+            display: CSSObject['display']
+            alignItems: CSSObject['alignItems']
+            gap: CSSObject['gap']
+            minWidth?: CSSObject['minWidth']
+            width?: CSSObject['width']
+            maxWidth?: CSSObject['maxWidth']
+            border: CSSObject['border']
+            selectText: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                flex?: CSSObject['flex']
+                color: CSSObject['color']
+            }
+            height: CSSObject['height']
+        }
         table: {
             width: CSSObject['width']
             tableLayout: CSSObject['tableLayout']
             borderCollapse: CSSObject['borderCollapse']
             borderSpacing: CSSObject['borderSpacing']
-
+            position: CSSObject['position']
+            minWidth: CSSObject['minWidth']
             header: {
                 backgroundColor: CSSObject['backgroundColor']
                 borderBottom: CSSObject['borderBottom']
                 height: CSSObject['height']
+                row: {
+                    height: CSSObject['height']
+                    '&:hover': {
+                        backgroundColor: CSSObject['backgroundColor']
+                    }
+                }
                 cell: {
                     padding: CSSObject['padding']
                     textAlign: CSSObject['textAlign']
                     fontWeight: CSSObject['fontWeight']
                     color: CSSObject['color']
                     fontSize: CSSObject['fontSize']
+                    width?: CSSObject['width']
+                }
+                sortable: {
+                    cursor: CSSObject['cursor']
+                    userSelect: CSSObject['userSelect']
+                }
+                filter: {
+                    backgroundColor: CSSObject['backgroundColor']
+                    borderRadius: CSSObject['borderRadius']
+                    border: CSSObject['border']
+                    cursor: CSSObject['cursor']
+                    textColor: CSSObject['color']
+                    maxHeight: CSSObject['maxHeight']
+                    overflowY: CSSObject['overflowY']
+                    gap: CSSObject['gap']
+                    sortOption: {
+                        padding: CSSObject['padding']
+                        borderRadius: CSSObject['borderRadius']
+                        hoverBackground: CSSObject['backgroundColor']
+                        iconColor: CSSObject['color']
+                        textColor: CSSObject['color']
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                    }
+                    selectedBackground: CSSObject['backgroundColor']
+                    hoverBackground: CSSObject['backgroundColor']
+                    selectedTextColor: CSSObject['color']
+                    normalTextColor: CSSObject['color']
+                    selectedFontWeight: CSSObject['fontWeight']
+                    normalFontWeight: CSSObject['fontWeight']
+                    itemPadding: CSSObject['padding']
+                    itemGap: CSSObject['gap']
+                    itemBorderRadius: CSSObject['borderRadius']
+                    itemFontSize: CSSObject['fontSize']
+                    groupLabelFontSize: CSSObject['fontSize']
+                    groupLabelFontWeight: CSSObject['fontWeight']
+                    groupLabelColor: CSSObject['color']
+                    groupLabelPadding: CSSObject['padding']
+                    groupLabelTextTransform: CSSObject['textTransform']
+                    separatorHeight: CSSObject['height']
+                    separatorColor: CSSObject['color']
                 }
             }
-
             body: {
                 backgroundColor: CSSObject['backgroundColor']
+                borderTop: CSSObject['borderTop']
                 row: {
                     height: CSSObject['height']
                     '&:hover': {
                         backgroundColor: CSSObject['backgroundColor']
                         cursor: CSSObject['cursor']
                     }
+                    backgroundColor: CSSObject['backgroundColor']
                 }
                 cell: {
                     padding: CSSObject['padding']
@@ -689,9 +1098,29 @@ export type TableTokenType = {
                     color: CSSObject['color']
                     fontSize: CSSObject['fontSize']
                     borderTop: CSSObject['borderTop']
+                    expandable: {
+                        padding: CSSObject['padding']
+                        borderTop: CSSObject['borderTop']
+                        expandButton: {
+                            display: CSSObject['display']
+                            alignItems: CSSObject['alignItems']
+                            justifyContent: CSSObject['justifyContent']
+                            width: CSSObject['width']
+                            height: CSSObject['height']
+                            borderRadius: CSSObject['borderRadius']
+                            backgroundColor: CSSObject['backgroundColor']
+                            cursor: CSSObject['cursor']
+                            transition: CSSObject['transition']
+                            color: CSSObject['color']
+                            border: CSSObject['border']
+                            '&:hover': {
+                                backgroundColor: CSSObject['backgroundColor']
+                                color: CSSObject['color']
+                            }
+                        }
+                    }
                 }
             }
-
             footer: {
                 display: CSSObject['display']
                 justifyContent: CSSObject['justifyContent']
@@ -699,9 +1128,41 @@ export type TableTokenType = {
                 padding: CSSObject['padding']
                 borderTop: CSSObject['borderTop']
                 height: CSSObject['height']
+                position: CSSObject['position']
+                bottom: CSSObject['bottom']
+                backgroundColor: CSSObject['backgroundColor']
+                zIndex: CSSObject['zIndex']
+                flexShrink: CSSObject['flexShrink']
+                pagination: {
+                    pageText: {
+                        fontSize: CSSObject['fontSize']
+                        color: CSSObject['color']
+                    }
+                    pageSizeSelector: {
+                        gap: CSSObject['gap']
+                        padding: CSSObject['padding']
+                        borderRadius: CSSObject['borderRadius']
+                        display: CSSObject['display']
+                        alignItems: CSSObject['alignItems']
+                        backgroundColor: CSSObject['backgroundColor']
+                        border: CSSObject['border']
+                        background: CSSObject['background']
+                        cursor: CSSObject['cursor']
+                        color: CSSObject['color']
+                        fontSize: CSSObject['fontSize']
+                        hoverColor: CSSObject['color']
+                    }
+                    pageNavigation: {
+                        gap: CSSObject['gap']
+                    }
+                }
             }
         }
     }
+}
+
+export type ResponsiveTableTokens = {
+    [key in keyof BreakpointType]: TableTokenType
 }
 ```
 

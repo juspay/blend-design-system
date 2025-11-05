@@ -50,6 +50,7 @@ function MyComponent() {
             },
             { content: 'AvatarData[]', hintText: 'array' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -58,6 +59,7 @@ function MyComponent() {
                     'Maximum number of avatars to display before showing overflow counter',
             },
             { content: 'number', hintText: 'number' },
+            { content: '' },
             { content: '5' },
         ],
         [
@@ -66,6 +68,7 @@ function MyComponent() {
                 hintText: 'The size variant for all avatars in the group',
             },
             { content: 'AvatarSize', hintText: 'enum' },
+            { content: 'XS, SM, MD, LG, XL' },
             { content: 'AvatarSize.MD' },
         ],
         [
@@ -74,6 +77,7 @@ function MyComponent() {
                 hintText: 'The shape variant for all avatars in the group',
             },
             { content: 'AvatarShape', hintText: 'enum' },
+            { content: 'CIRCULAR, ROUNDED' },
             { content: 'AvatarShape.CIRCULAR' },
         ],
         [
@@ -83,6 +87,7 @@ function MyComponent() {
                     'Array of selected avatar IDs for controlled selection',
             },
             { content: '(string | number)[]', hintText: 'array' },
+            { content: '' },
             { content: '' },
         ],
         [
@@ -95,77 +100,6 @@ function MyComponent() {
                 hintText: 'function',
             },
             { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## AvatarData Type
-
-The `avatars` prop accepts an array of `AvatarData` objects with the following properties:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'id',
-                hintText: 'Unique identifier for the avatar',
-            },
-            { content: 'string | number', hintText: 'string or number' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'src',
-                hintText: 'The source URL of the avatar image',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'alt',
-                hintText:
-                    'Alternative text for the avatar image, also used for initials fallback',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'fallback',
-                hintText: 'Custom fallback content when image fails to load',
-            },
-            {
-                content: 'string | React.ReactNode',
-                hintText: 'string or React node',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'online',
-                hintText: 'Whether to show the online status indicator',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'leadingSlot',
-                hintText: 'Content to display before the avatar',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'trailingSlot',
-                hintText: 'Content to display after the avatar',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
     ]}
@@ -173,130 +107,6 @@ The `avatars` prop accepts an array of `AvatarData` objects with the following p
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- Compact stacked layout for displaying multiple avatars
-- Configurable maximum visible count with overflow handling
-- Interactive overflow counter with searchable dropdown menu
-- Optional multi-selection functionality with visual feedback
-- Consistent sizing and shape options across all avatars
-- Accessible keyboard navigation and screen reader support
-- Automatic positioning of overflow menu
-- Built-in search functionality for large avatar lists
-- Smooth animations and hover effects
-
-## Usage Examples
-
-### Basic Avatar Group
-
-Simple avatar group with default settings
-
-```tsx
-const basicAvatars = [
-    { id: '1', alt: 'John Doe', src: 'https://example.com/john.jpg' },
-    { id: '2', alt: 'Jane Smith', src: 'https://example.com/jane.jpg' },
-    { id: '3', alt: 'Bob Johnson', fallback: 'BJ' },
-]
-
-<AvatarGroup avatars={basicAvatars} />
-```
-
-### Avatar Group with Overflow
-
-Avatar group that shows overflow counter when exceeding maxCount
-
-```tsx
-const manyAvatars = [
-    { id: '1', alt: 'John Doe', src: 'https://example.com/john.jpg' },
-    { id: '2', alt: 'Jane Smith', src: 'https://example.com/jane.jpg' },
-    { id: '3', alt: 'Bob Johnson', fallback: 'BJ' },
-    { id: '4', alt: 'Alice Brown', fallback: 'AB' },
-    { id: '5', alt: 'Charlie Wilson', fallback: 'CW' },
-    { id: '6', alt: 'Diana Prince', fallback: 'DP' },
-]
-
-<AvatarGroup avatars={manyAvatars} maxCount={3} />
-```
-
-### Avatar Group with Selection
-
-Avatar group with controlled selection functionality
-
-```tsx
-const [selectedIds, setSelectedIds] = useState<(string | number)[]>(['1', '3'])
-
-const teamAvatars = [
-    { id: '1', alt: 'Team Lead', src: 'https://example.com/lead.jpg' },
-    { id: '2', alt: 'Developer', src: 'https://example.com/dev.jpg' },
-    { id: '3', alt: 'Designer', fallback: 'DG' },
-    { id: '4', alt: 'Manager', fallback: 'MG' },
-]
-
-<AvatarGroup
-    avatars={teamAvatars}
-    selectedAvatarIds={selectedIds}
-    onSelectionChange={setSelectedIds}
-    maxCount={3}
-/>
-```
-
-### Different Sizes
-
-Avatar groups in various sizes
-
-```tsx
-<AvatarGroup avatars={avatars} size={AvatarSize.SM} maxCount={4} />
-<AvatarGroup avatars={avatars} size={AvatarSize.MD} maxCount={4} />
-<AvatarGroup avatars={avatars} size={AvatarSize.LG} maxCount={4} />
-<AvatarGroup avatars={avatars} size={AvatarSize.XL} maxCount={4} />
-```
-
-### Rounded Shape
-
-Avatar group with rounded corners instead of circular
-
-```tsx
-<AvatarGroup
-    avatars={avatars}
-    shape={AvatarShape.ROUNDED}
-    size={AvatarSize.LG}
-    maxCount={3}
-/>
-```
-
-### Avatar Group with Online Status
-
-Avatar group showing online status indicators
-
-```tsx
-const onlineAvatars = [
-    { id: '1', alt: 'John Doe', src: 'https://example.com/john.jpg', online: true },
-    { id: '2', alt: 'Jane Smith', src: 'https://example.com/jane.jpg', online: false },
-    { id: '3', alt: 'Bob Johnson', fallback: 'BJ', online: true },
-]
-
-<AvatarGroup avatars={onlineAvatars} maxCount={3} />
-```
-
-### Large Avatar Group with Search
-
-Avatar group with many avatars demonstrating search functionality
-
-```tsx
-const largeTeam = Array.from({ length: 20 }, (_, i) => ({
-    id: `user-${i + 1}`,
-    alt: `User ${i + 1}`,
-    fallback: `U${i + 1}`,
-}))
-
-<AvatarGroup
-    avatars={largeTeam}
-    maxCount={4}
-    size={AvatarSize.MD}
-    onSelectionChange={(selectedIds) => console.log('Selected:', selectedIds)}
-/>
-```
 
 ## Component Tokens
 
@@ -304,22 +114,20 @@ You can style the avatar group component using the following tokens:
 
 ```tsx
 export type AvatarGroupTokensType = {
+    gap: CSSObject['gap']
     container: {
-        spacing: {
-            [key in AvatarSize]: string
+        marginLeft: {
+            [key in AvatarSize]: CSSObject['margin']
         }
     }
     avatar: {
-        stacking: {
-            zIndex: number
-        }
         selected: {
             ringColor: CSSObject['borderColor']
-            ringWidth: string
-            ringOffset: string
+            ringWidth: CSSObject['borderWidth']
+            ringOffset: CSSObject['outlineOffset']
         }
         border: {
-            width: string
+            width: CSSObject['borderWidth']
             color: CSSObject['borderColor']
         }
     }
@@ -333,35 +141,22 @@ export type AvatarGroupTokensType = {
             color: CSSObject['color']
         }
         border: {
-            width: string
+            width: CSSObject['borderWidth']
             color: CSSObject['borderColor']
         }
-        sizes: {
+        size: {
             [key in AvatarSize]: {
                 width: CSSObject['width']
                 height: CSSObject['height']
                 fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
             }
         }
-        shapes: {
-            [key in AvatarShape]: {
-                borderRadius: CSSObject['borderRadius']
-            }
+        borderRadius: {
+            [key in AvatarShape]: CSSObject['borderRadius']
         }
     }
     menu: {
-        spacing: string
-        zIndex: number
+        marginTop: CSSObject['margin']
     }
 }
 ```
-
-## Accessibility
-
-- **ARIA Support**: Uses proper ARIA roles and labels for screen readers
-- **Keyboard Navigation**: Full keyboard support with Enter/Space activation
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Screen Reader Announcements**: Announces selection state and overflow information
-- **Semantic HTML**: Uses appropriate button and group roles
-- **High Contrast**: Supports high contrast mode with proper color tokens

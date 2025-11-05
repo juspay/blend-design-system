@@ -46,7 +46,12 @@ function MyComponent() {
                 content: 'primaryTag',
                 hintText: 'The primary tag configuration',
             },
-            { content: 'TagConfig', hintText: 'object' },
+            {
+                content:
+                    'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
+                hintText: 'object',
+            },
+            { content: '' },
             { content: 'Required' },
         ],
         [
@@ -54,8 +59,13 @@ function MyComponent() {
                 content: 'secondaryTag',
                 hintText: 'The secondary tag configuration (optional)',
             },
-            { content: 'TagConfig', hintText: 'object' },
-            { content: 'Optional' },
+            {
+                content:
+                    'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
+                hintText: 'object',
+            },
+            { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -63,6 +73,7 @@ function MyComponent() {
                 hintText: 'Content to display before the tags',
             },
             { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
             { content: '' },
         ],
         [
@@ -72,83 +83,63 @@ function MyComponent() {
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
+            { content: '' },
         ],
         [
             { content: 'size', hintText: 'The size of the split tag' },
             { content: 'TagSize', hintText: 'enum' },
-            { content: 'SM' },
+            { content: 'XS, SM, MD, LG' },
+            { content: '' },
         ],
         [
             { content: 'shape', hintText: 'The shape of the split tag' },
             { content: 'TagShape', hintText: 'enum' },
-            { content: 'SQUARICAL' },
-        ],
-    ]}
-    isHoverable={true}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### TagConfig Properties
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'text', hintText: 'The text content of the tag' },
-            { content: 'string', hintText: 'string' },
-            { content: 'Required' },
-        ],
-        [
-            { content: 'variant', hintText: 'The visual variant of the tag' },
-            { content: 'TagVariant', hintText: 'enum' },
-            { content: 'SUBTLE' },
-        ],
-        [
-            { content: 'color', hintText: 'The color scheme of the tag' },
-            { content: 'TagColor', hintText: 'enum' },
-            { content: 'PRIMARY' },
-        ],
-        [
-            { content: 'onClick', hintText: 'Click handler function' },
-            { content: '() => void', hintText: 'function' },
+            { content: 'ROUNDED, SQUARICAL' },
             { content: '' },
         ],
     ]}
-    isHoverable={true}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
 
-## Features
+## Component Tokens
 
-- Split design with primary and secondary sections
-- Multiple color schemes (neutral, primary, success, error, warning, purple)
-- Three visual variants (no fill, attentive, subtle)
-- Four sizes (xs, sm, md, lg)
-- Two shapes (rounded, squarical)
-- Optional leading and trailing slots
-- Click handlers for interactive tags
-- Seamless border radius handling for split sections
-
-## Usage Examples
-
-### Basic Split Tag
-
-Simple split tag with primary and secondary sections
+You can style the SplitTag component using the following tokens:
 
 ```tsx
-<SplitTag
-    primaryTag={{
-        text: 'Status',
-        variant: TagVariant.NO_FILL,
-        color: TagColor.PRIMARY,
-    }}
-    secondaryTag={{
-        text: 'Active',
-        variant: TagVariant.ATTENTIVE,
-        color: TagColor.SUCCESS,
-    }}
-/>
+export type SplitTagTokenType = {
+    gap: CSSObject['gap']
+    borderRadius: {
+        [key in TagSize]: {
+            [key in TagShape]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TagSize]: CSSObject['padding']
+    }
+    backgroundColor: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['backgroundColor']
+        }
+    }
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
+    }
+    text: {
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
+        }
+    }
+}
 ```

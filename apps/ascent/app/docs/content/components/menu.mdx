@@ -98,7 +98,7 @@ function MyComponent() {
                 content: 'items',
                 hintText: 'Array of menu groups containing menu items',
             },
-            { content: 'MenuV2GroupType[]', hintText: 'array' },
+            { content: 'MenuGroupType[]', hintText: 'array' },
             { content: '[]' },
         ],
         [
@@ -215,7 +215,44 @@ function MyComponent() {
                 content: 'Element | null | Array<Element | null>',
                 hintText: 'element',
             },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'enableVirtualScrolling',
+                hintText: 'Whether to enable virtual scrolling for large lists',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'virtualItemHeight',
+                hintText:
+                    'Height of each virtual item or function to calculate height',
+            },
+            {
+                content:
+                    'number | ((item: MenuItemType, index: number) => number)',
+                hintText: 'number or function',
+            },
+            { content: '40' },
+        ],
+        [
+            {
+                content: 'virtualOverscan',
+                hintText: 'Number of items to render outside visible area',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '5' },
+        ],
+        [
+            {
+                content: 'virtualScrollThreshold',
+                hintText: 'Minimum number of items to enable virtual scrolling',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '50' },
         ],
     ]}
     className="mb-8"
@@ -225,7 +262,7 @@ function MyComponent() {
 
 ## Data Types
 
-### MenuV2GroupType
+### MenuGroupType
 
 Structure for grouping menu items:
 
@@ -237,7 +274,7 @@ Structure for grouping menu items:
                 hintText: 'Optional label for the group section',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -245,7 +282,7 @@ Structure for grouping menu items:
                 hintText: 'Array of menu items in this group',
             },
             { content: 'MenuItemType[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -353,7 +390,43 @@ Structure for individual menu items:
                 hintText: 'Nested menu items for creating submenus',
             },
             { content: 'MenuItemType[]', hintText: 'array' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'enableSubMenuSearch',
+                hintText: 'Whether to enable search in submenu',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'subMenuSearchPlaceholder',
+                hintText: 'Placeholder text for submenu search',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'tooltip',
+                hintText: 'Tooltip text or React node to display on hover',
+            },
+            { content: 'string | ReactNode', hintText: 'string or React node' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'tooltipProps',
+                hintText: 'Additional props for the tooltip component',
+            },
+            {
+                content:
+                    '{ side?: TooltipSide; align?: TooltipAlign; size?: TooltipSize; showArrow?: boolean; delayDuration?: number; offset?: number }',
+                hintText: 'object',
+            },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -374,273 +447,8 @@ Structure for individual menu items:
 - **Collision Detection**: Automatic repositioning to stay within viewport
 - **Disabled States**: Individual menu items can be disabled
 - **Custom Sizing**: Configurable width and height constraints
+- **Virtual Scrolling**: Performance optimization for large lists
 - **Accessibility First**: Full keyboard navigation and screen reader support
-
-## Usage Examples
-
-### Basic Action Menu
-
-Simple menu with common actions
-
-```tsx
-const basicItems = [
-    {
-        items: [
-            {
-                label: 'Copy',
-                slot1: <Copy size={16} />,
-                onClick: () => navigator.clipboard.writeText('copied'),
-            },
-            {
-                label: 'Paste',
-                slot1: <Clipboard size={16} />,
-                onClick: () => console.log('Paste clicked'),
-            },
-            {
-                label: 'Delete',
-                slot1: <Trash size={16} />,
-                variant: MenuItemVariant.ACTION,
-                actionType: MenuItemActionType.DANGER,
-                onClick: () => console.log('Delete clicked'),
-            },
-        ],
-    },
-]
-
-<Menu
-    trigger={<Button text="Actions" buttonType={ButtonType.SECONDARY} />}
-    items={basicItems}
-/>
-```
-
-### Menu with Search
-
-Menu with search functionality for filtering
-
-```tsx
-const searchableItems = [
-    {
-        label: 'Navigation',
-        items: [
-            { label: 'Dashboard', onClick: () => console.log('Dashboard') },
-            { label: 'Analytics', onClick: () => console.log('Analytics') },
-            { label: 'Reports', onClick: () => console.log('Reports') },
-            { label: 'Settings', onClick: () => console.log('Settings') },
-            { label: 'Profile', onClick: () => console.log('Profile') },
-            { label: 'Help Center', onClick: () => console.log('Help') },
-        ],
-    },
-]
-
-<Menu
-    trigger={<Button text="Navigate" buttonType={ButtonType.PRIMARY} />}
-    items={searchableItems}
-    enableSearch={true}
-    searchPlaceholder="Search pages..."
-    maxHeight={300}
-/>
-```
-
-### Grouped Menu with Separators
-
-Menu with multiple groups and separators
-
-```tsx
-const groupedItems = [
-    {
-        label: 'Account',
-        items: [
-            {
-                label: 'Profile Settings',
-                subLabel: 'Manage your account',
-                slot1: <User size={16} />,
-                onClick: () => console.log('Profile'),
-            },
-            {
-                label: 'Billing',
-                subLabel: 'Manage subscription',
-                slot1: <CreditCard size={16} />,
-                onClick: () => console.log('Billing'),
-            },
-        ],
-    },
-    {
-        label: 'Support',
-        items: [
-            {
-                label: 'Help Center',
-                slot1: <HelpCircle size={16} />,
-                onClick: () => console.log('Help'),
-            },
-            {
-                label: 'Contact Support',
-                slot1: <MessageCircle size={16} />,
-                onClick: () => console.log('Contact'),
-            },
-        ],
-        showSeparator: true,
-    },
-    {
-        items: [
-            {
-                label: 'Sign Out',
-                slot1: <LogOut size={16} />,
-                variant: MenuItemVariant.ACTION,
-                actionType: MenuItemActionType.DANGER,
-                onClick: () => console.log('Sign out'),
-            },
-        ],
-    },
-]
-
-<Menu
-    trigger={<Button text="Account" buttonType={ButtonType.SECONDARY} />}
-    items={groupedItems}
-    alignment={MenuAlignment.END}
-/>
-```
-
-### Menu with Custom Positioning
-
-Menu with specific positioning and offsets
-
-```tsx
-<Menu
-    trigger={<Button text="More Options" buttonType={ButtonType.SECONDARY} />}
-    items={basicItems}
-    side={MenuSide.RIGHT}
-    alignment={MenuAlignment.START}
-    sideOffset={12}
-    alignOffset={-4}
-    minWidth={200}
-    maxHeight={400}
-/>
-```
-
-### Controlled Menu
-
-Menu with controlled open state
-
-```tsx
-const [isOpen, setIsOpen] = useState(false)
-
-<Menu
-    trigger={
-        <Button
-            text={isOpen ? "Close Menu" : "Open Menu"}
-            buttonType={ButtonType.PRIMARY}
-        />
-    }
-    items={basicItems}
-    open={isOpen}
-    onOpenChange={setIsOpen}
-/>
-```
-
-### Menu with Submenus
-
-Menu with nested submenu items
-
-```tsx
-const menuWithSubmenus = [
-    {
-        items: [
-            {
-                label: 'File',
-                subMenu: [
-                    {
-                        label: 'New Document',
-                        slot1: <FileText size={16} />,
-                        onClick: () => console.log('New Document'),
-                    },
-                    {
-                        label: 'Open',
-                        slot1: <FolderOpen size={16} />,
-                        onClick: () => console.log('Open'),
-                    },
-                    {
-                        label: 'Save',
-                        slot1: <Save size={16} />,
-                        onClick: () => console.log('Save'),
-                    },
-                ],
-            },
-            {
-                label: 'Edit',
-                subMenu: [
-                    {
-                        label: 'Undo',
-                        slot1: <Undo size={16} />,
-                        onClick: () => console.log('Undo'),
-                    },
-                    {
-                        label: 'Redo',
-                        slot1: <Redo size={16} />,
-                        onClick: () => console.log('Redo'),
-                    },
-                ],
-            },
-        ],
-    },
-]
-
-<Menu
-    trigger={<Button text="File Menu" buttonType={ButtonType.SECONDARY} />}
-    items={menuWithSubmenus}
-/>
-```
-
-### Mobile Modal Menu
-
-Menu that renders as modal on mobile devices
-
-```tsx
-<Menu
-    trigger={<Button text="Mobile Menu" buttonType={ButtonType.SECONDARY} />}
-    items={groupedItems}
-    asModal={true}
-    enableSearch={true}
-    searchPlaceholder="Search options..."
-/>
-```
-
-### Menu with Status Items
-
-Menu items with additional status information
-
-```tsx
-const statusItems = [
-    {
-        items: [
-            {
-                label: 'Online',
-                subLabel: 'Available for messages',
-                slot1: <div className="w-2 h-2 bg-green-500 rounded-full" />,
-                slot4: <Check size={14} className="text-green-500" />,
-                onClick: () => console.log('Set online'),
-            },
-            {
-                label: 'Away',
-                subLabel: 'Away from keyboard',
-                slot1: <div className="w-2 h-2 bg-yellow-500 rounded-full" />,
-                onClick: () => console.log('Set away'),
-            },
-            {
-                label: 'Do Not Disturb',
-                subLabel: 'Only urgent notifications',
-                slot1: <div className="w-2 h-2 bg-red-500 rounded-full" />,
-                onClick: () => console.log('Set DND'),
-            },
-        ],
-    },
-]
-
-<Menu
-    trigger={<Button text="Status" buttonType={ButtonType.SECONDARY} />}
-    items={statusItems}
-    minWidth={220}
-/>
-```
 
 ## Component Tokens
 
@@ -648,71 +456,128 @@ You can style the Menu component using the following tokens:
 
 ```tsx
 export type MenuTokensType = {
-    content: {
-        backgroundColor: CSSObject['backgroundColor']
+    boxShadow: CSSObject['boxShadow']
+    backgroundColor: CSSObject['backgroundColor']
+    padding: {
+        x: CSSObject['padding']
+        y: CSSObject['padding']
+    }
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    item: {
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        margin: {
+            x: CSSObject['margin']
+            y: CSSObject['margin']
+        }
         borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        padding: CSSObject['padding']
-        maxHeight: CSSObject['maxHeight']
-        minWidth: CSSObject['minWidth']
-    }
-
-    search: {
-        padding: CSSObject['padding']
-        marginBottom: CSSObject['marginBottom']
-    }
-
-    group: {
-        label: {
+        backgroundColor: {
+            [MenuItemVariant.DEFAULT]: {
+                enabled: {
+                    [key in MenuItemStates]: CSSObject['backgroundColor']
+                }
+                disabled: {
+                    [key in MenuItemStates]: CSSObject['backgroundColor']
+                }
+            }
+            [MenuItemVariant.ACTION]: {
+                [key in MenuItemActionType]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['backgroundColor']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['backgroundColor']
+                    }
+                }
+            }
+        }
+        gap: CSSObject['gap']
+        optionsLabel: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
-            padding: CSSObject['padding']
-            marginBottom: CSSObject['marginBottom']
-        }
-        separator: {
-            height: CSSObject['height']
-            backgroundColor: CSSObject['backgroundColor']
-            margin: CSSObject['margin']
-        }
-    }
-
-    item: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
-        fontSize: CSSObject['fontSize']
-
-        colors: {
-            [key in MenuItemVariant]: {
-                default: {
-                    background: CSSObject['backgroundColor']
-                    text: CSSObject['color']
-                }
-                hover: {
-                    background: CSSObject['backgroundColor']
-                    text: CSSObject['color']
-                }
-                disabled: {
-                    background: CSSObject['backgroundColor']
-                    text: CSSObject['color']
-                }
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            margin: {
+                x: CSSObject['margin']
+                y: CSSObject['margin']
             }
         }
-
-        actionColors: {
-            [key in MenuItemActionType]: {
-                default: CSSObject['color']
-                hover: CSSObject['color']
-            }
-        }
-
-        subLabel: {
+        option: {
             fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [MenuItemVariant.DEFAULT]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                }
+                [MenuItemVariant.ACTION]: {
+                    [key in MenuItemActionType]: {
+                        enabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                        disabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+        }
+        description: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [MenuItemVariant.DEFAULT]: {
+                    enabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                    disabled: {
+                        [key in MenuItemStates]: CSSObject['color']
+                    }
+                }
+                [MenuItemVariant.ACTION]: {
+                    [key in MenuItemActionType]: {
+                        enabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                        disabled: {
+                            [key in MenuItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+        }
+        seperator: {
             color: CSSObject['color']
-            marginTop: CSSObject['marginTop']
+            height: CSSObject['height']
+            margin: {
+                x: CSSObject['margin']
+                y: CSSObject['margin']
+            }
         }
     }
 }
+
+export type ResponsiveMenuTokensType = {
+    [key in keyof BreakpointType]: MenuTokensType
+}
+
+export type MenuItemStates =
+    | 'default'
+    | 'hover'
+    | 'active'
+    | 'focus'
+    | 'focusVisible'
+    | 'disabled'
 ```
 
 ## Behavior

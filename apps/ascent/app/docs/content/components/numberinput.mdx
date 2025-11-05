@@ -56,7 +56,7 @@ function MyComponent() {
                 content: 'value',
                 hintText: 'Current numeric value of the input',
             },
-            { content: 'number | undefined', hintText: 'number' },
+            { content: 'number | undefined', hintText: 'number or undefined' },
             { content: 'Required' },
         ],
         [
@@ -65,7 +65,7 @@ function MyComponent() {
                 hintText: 'Callback when input value changes',
             },
             {
-                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
             { content: 'Required' },
@@ -100,7 +100,7 @@ function MyComponent() {
                 hintText: 'Primary label for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '"Number Input"' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -124,7 +124,7 @@ function MyComponent() {
                 hintText: 'Size variant of the input field',
             },
             { content: 'NumberInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            { content: 'NumberInputSize.MEDIUM' },
         ],
         [
             {
@@ -188,10 +188,10 @@ function MyComponent() {
                 hintText: 'Callback when input receives focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -199,10 +199,10 @@ function MyComponent() {
                 hintText: 'Callback when input loses focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -234,36 +234,128 @@ Size variants for the number input:
     loadingMessage="Loading sizes..."
 />
 
+### NumberInputState
+
+Internal state variants (for styling):
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'DEFAULT', hintText: 'Default state' },
+            { content: '"default"', hintText: 'value' },
+            { content: 'Normal input appearance' },
+        ],
+        [
+            { content: 'HOVER', hintText: 'Hover state' },
+            { content: '"hover"', hintText: 'value' },
+            { content: 'Enhanced outline on hover' },
+        ],
+        [
+            { content: 'FOCUS', hintText: 'Focus state' },
+            { content: '"focus"', hintText: 'value' },
+            { content: 'Primary outline and shadow when focused' },
+        ],
+        [
+            { content: 'ERROR', hintText: 'Error state' },
+            { content: '"error"', hintText: 'value' },
+            { content: 'Red outline and error styling' },
+        ],
+        [
+            { content: 'DISABLED', hintText: 'Disabled state' },
+            { content: '"disabled"', hintText: 'value' },
+            { content: 'Muted appearance with no interaction' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No states available"
+    loadingMessage="Loading states..."
+/>
+
 ## Component Tokens
 
 You can style the NumberInput component using the following tokens:
 
 ```tsx
 export type NumberInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextInputState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        paddingX: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        paddingY: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        border: {
-            [key in TextInputState]: CSSObject['border']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in NumberInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in NumberInputSize]: CSSObject['fontWeight']
         }
         color: {
-            [key in TextInputState]: CSSObject['color']
+            [key in NumberInputState]: CSSObject['color']
         }
-        outline: {
-            [key in TextInputState]: CSSObject['outline']
+        borderRadius: {
+            [key in NumberInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in NumberInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in NumberInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in NumberInputState]: CSSObject['border']
         }
         backgroundColor: {
-            default: CSSObject['backgroundColor']
-            disabled: CSSObject['backgroundColor']
+            [key in NumberInputState]: CSSObject['backgroundColor']
+        }
+        stepperButton: {
+            width: {
+                [key in NumberInputSize]: CSSObject['width']
+            }
+            backgroundColor: {
+                [key in NumberInputState]: CSSObject['backgroundColor']
+            }
+            icon: {
+                color: {
+                    [key in NumberInputState]: CSSObject['color']
+                }
+                width: {
+                    [key in NumberInputSize]: CSSObject['width']
+                }
+            }
         }
     }
 }
@@ -271,6 +363,13 @@ export type NumberInputTokensType = {
 export type ResponsiveNumberInputTokens = {
     [key in keyof BreakpointType]: NumberInputTokensType
 }
+
+export type NumberInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
 
 The component uses responsive tokens that adapt to different breakpoints:
@@ -290,144 +389,6 @@ The component uses responsive tokens that adapt to different breakpoints:
 - **Validation States**: Built-in error styling with custom error messages
 - **Form Integration**: Native HTML input attributes and form compatibility
 - **Accessibility**: Full keyboard navigation and screen reader support
-
-## Usage Examples
-
-### Basic Quantity Input
-
-Simple number input for quantity selection:
-
-```tsx
-import { NumberInput } from '@juspay/blend-design-system'
-
-const [quantity, setQuantity] = useState<number | undefined>(1)
-
-const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setQuantity(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Quantity"
-    placeholder="Enter quantity"
-    value={quantity}
-    onChange={handleQuantityChange}
-    min={1}
-    max={99}
-    step={1}
-    hintText="Select between 1 and 99 items"
-/>
-```
-
-### Price Input with Decimal Steps
-
-Number input for price with decimal precision:
-
-```tsx
-const [price, setPrice] = useState<number | undefined>(10.0)
-
-const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setPrice(value === '' ? undefined : parseFloat(value))
-}
-
-;<NumberInput
-    label="Price"
-    sublabel="Set your product price"
-    placeholder="0.00"
-    value={price}
-    onChange={handlePriceChange}
-    min={0.01}
-    max={9999.99}
-    step={0.01}
-    hintText="Price in USD"
-/>
-```
-
-### Age Input with Validation
-
-Number input with custom validation and error handling:
-
-```tsx
-const [age, setAge] = useState<number | undefined>()
-const [ageError, setAgeError] = useState('')
-
-const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const numericAge = value === '' ? undefined : Number(value)
-
-    setAge(numericAge)
-
-    if (numericAge && (numericAge < 18 || numericAge > 120)) {
-        setAgeError('Age must be between 18 and 120')
-    } else {
-        setAgeError('')
-    }
-}
-
-;<NumberInput
-    label="Age"
-    placeholder="Enter your age"
-    value={age}
-    onChange={handleAgeChange}
-    min={18}
-    max={120}
-    step={1}
-    error={!!ageError}
-    errorMessage={ageError}
-    required
-/>
-```
-
-### Temperature Input
-
-Number input for temperature with negative values:
-
-```tsx
-const [temperature, setTemperature] = useState<number | undefined>(20)
-
-const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setTemperature(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Temperature"
-    sublabel="Room temperature setting"
-    placeholder="Enter temperature"
-    value={temperature}
-    onChange={handleTempChange}
-    min={-20}
-    max={50}
-    step={0.5}
-    hintText="Temperature in Celsius (-20°C to 50°C)"
-/>
-```
-
-### Percentage Input
-
-Number input for percentage values:
-
-```tsx
-const [percentage, setPercentage] = useState<number | undefined>(50)
-
-const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setPercentage(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Completion Percentage"
-    placeholder="Enter percentage"
-    value={percentage}
-    onChange={handlePercentageChange}
-    min={0}
-    max={100}
-    step={5}
-    size="large"
-    hintText="Progress completion (0% to 100%)"
-/>
-```
 
 ## Behavior
 

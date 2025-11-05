@@ -50,6 +50,7 @@ function MyComponent() {
                     'Whether buttons should be stacked vertically or arranged horizontally',
             },
             { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
             { content: 'false' },
         ],
         [
@@ -59,10 +60,11 @@ function MyComponent() {
             },
             {
                 content:
-                    'ReactElement<ButtonV2Props> | ReactElement<ButtonV2Props>[]',
+                    'ReactElement<ButtonProps> | ReactElement<ButtonProps>[]',
                 hintText: 'React elements',
             },
             { content: '' },
+            { content: 'Required' },
         ],
     ]}
     className="mb-8"
@@ -70,320 +72,15 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Features
-
-- **2 Layout Modes**: Horizontal (default) and vertical stacked layouts for different design contexts
-- **Automatic Positioning**: Intelligent button positioning with left, center, and right positioning in stacked mode
-- **Seamless Integration**: Works exclusively with Button components for consistent styling
-- **Smart Spacing**: Automatic gap management - 10px for horizontal, 0px for stacked layout
-- **Dynamic Children**: Supports any number of Button components as children
-- **Position Awareness**: Automatically sets `buttonGroupPosition` prop for stacked buttons
-- **Flexible Styling**: Inherits all Button component styling capabilities
-- **Responsive Design**: Adapts to container constraints and screen sizes
-- **Type Safety**: TypeScript support with proper Button component validation
-- **Clean Rendering**: Optimized rendering with React.cloneElement for stacked mode
-
-## Usage Examples
-
-### Basic Horizontal Group
-
-Default horizontal layout with standard spacing
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="Cancel"
-        buttonType={ButtonType.SECONDARY}
-        onClick={() => console.log('Cancel')}
-    />
-    <Button
-        text="Continue"
-        buttonType={ButtonType.PRIMARY}
-        onClick={() => console.log('Continue')}
-    />
-</ButtonGroup>
-```
-
-### Stacked Vertical Group
-
-Vertical layout with connected button styling
-
-```tsx
-<ButtonGroup stacked={true}>
-    <Button
-        text="Edit Profile"
-        buttonType={ButtonType.PRIMARY}
-        onClick={() => console.log('Edit clicked')}
-    />
-    <Button
-        text="Change Password"
-        buttonType={ButtonType.SECONDARY}
-        onClick={() => console.log('Password clicked')}
-    />
-    <Button
-        text="Delete Account"
-        buttonType={ButtonType.DANGER}
-        onClick={() => console.log('Delete clicked')}
-    />
-</ButtonGroup>
-```
-
-### Form Action Buttons
-
-Common form submission pattern
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="Reset Form"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Form reset')}
-    />
-    <Button
-        text="Save Draft"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Draft saved')}
-    />
-    <Button
-        text="Submit"
-        buttonType={ButtonType.PRIMARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Form submitted')}
-    />
-</ButtonGroup>
-```
-
-### Navigation Button Group
-
-Stacked navigation menu with different button types
-
-```tsx
-<ButtonGroup stacked={true}>
-    <Button
-        text="Dashboard"
-        buttonType={ButtonType.PRIMARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Dashboard')}
-    />
-    <Button
-        text="Analytics"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Analytics')}
-    />
-    <Button
-        text="Settings"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Settings')}
-    />
-    <Button
-        text="Sign Out"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Sign out')}
-    />
-</ButtonGroup>
-```
-
-### Dialog Action Buttons
-
-Standard dialog confirmation pattern
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="No, Keep It"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Cancelled')}
-    />
-    <Button
-        text="Yes, Delete"
-        buttonType={ButtonType.DANGER}
-        size={ButtonSize.MEDIUM}
-        onClick={() => console.log('Confirmed delete')}
-    />
-</ButtonGroup>
-```
-
-### Toolbar Actions
-
-Multiple action buttons in horizontal layout
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="Copy"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.SMALL}
-        onClick={() => console.log('Copy')}
-    />
-    <Button
-        text="Cut"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.SMALL}
-        onClick={() => console.log('Cut')}
-    />
-    <Button
-        text="Paste"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.SMALL}
-        onClick={() => console.log('Paste')}
-    />
-    <Button
-        text="Delete"
-        buttonType={ButtonType.DANGER}
-        size={ButtonSize.SMALL}
-        onClick={() => console.log('Delete')}
-    />
-</ButtonGroup>
-```
-
-### Loading State Group
-
-Button group with loading states
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="Cancel"
-        buttonType={ButtonType.SECONDARY}
-        onClick={() => console.log('Cancel')}
-    />
-    <Button
-        text="Processing..."
-        buttonType={ButtonType.PRIMARY}
-        loading={true}
-        onClick={() => console.log('Processing')}
-    />
-</ButtonGroup>
-```
-
-### Mixed Size Buttons
-
-Buttons with different sizes in one group
-
-```tsx
-<ButtonGroup>
-    <Button
-        text="Back"
-        buttonType={ButtonType.SECONDARY}
-        size={ButtonSize.SMALL}
-        onClick={() => console.log('Back')}
-    />
-    <Button
-        text="Continue to Payment"
-        buttonType={ButtonType.PRIMARY}
-        size={ButtonSize.LARGE}
-        onClick={() => console.log('Payment')}
-    />
-</ButtonGroup>
-```
-
 ## Component Tokens
 
-ButtonGroup uses the Button component's tokens for styling. The container itself has minimal styling:
+You can style the ButtonGroup component using the following tokens:
 
 ```tsx
 export type ButtonGroupTokenType = {
-    spacing: {
-        horizontal: CSSObject['gap'] // 10px gap between buttons
-        stacked: CSSObject['gap'] // 0px gap for connected buttons
-    }
-    layout: {
-        horizontal: {
-            display: CSSObject['display'] // 'flex'
-            flexDirection: CSSObject['flexDirection'] // 'row'
-        }
-        stacked: {
-            display: CSSObject['display'] // 'flex'
-            flexDirection: CSSObject['flexDirection'] // 'column'
-        }
+    gap: {
+        horizontal: CSSObject['gap']
+        stacked: CSSObject['gap']
     }
 }
-
-// Individual buttons inherit these positioning props in stacked mode:
-export type ButtonGroupPosition = 'left' | 'center' | 'right'
 ```
-
-## Behavior
-
-### Layout Modes
-
-- **Horizontal (Default)**: Buttons arranged side-by-side with 10px gap
-- **Stacked**: Buttons arranged vertically with 0px gap for connected appearance
-
-### Automatic Positioning
-
-- **First Button**: Gets `buttonGroupPosition="left"` in stacked mode
-- **Middle Buttons**: Get `buttonGroupPosition="center"` in stacked mode
-- **Last Button**: Gets `buttonGroupPosition="right"` in stacked mode
-- **Single Button**: Gets `buttonGroupPosition="left"` in stacked mode
-
-### Children Management
-
-- **Type Safety**: Only accepts Button components as children
-- **Dynamic Rendering**: Automatically handles single or multiple Button children
-- **Prop Injection**: Adds positioning props to buttons in stacked mode
-- **Key Management**: Preserves existing keys or generates index-based keys
-
-### Responsive Behavior
-
-- **Container Adaptation**: Adapts to parent container constraints
-- **Button Scaling**: Individual buttons maintain their responsive behavior
-- **Overflow Handling**: Horizontal groups may wrap based on Button properties
-
-## Accessibility
-
-- **Focus Management**: Maintains proper tab order through button sequence
-- **Keyboard Navigation**: Standard button keyboard navigation (Tab, Enter, Space)
-- **Screen Reader Support**: Each button maintains its individual accessibility features
-- **Semantic Structure**: Uses proper button semantics for each child component
-- **ARIA Compliance**: Inherits ARIA attributes from individual Button components
-- **High Contrast**: Supports high contrast mode through Button component styling
-
-## Layout Specifications
-
-### Horizontal Layout (Default)
-
-```tsx
-// Rendered structure:
-<div style={{ display: 'flex', gap: '10px' }}>{children}</div>
-```
-
-### Stacked Layout
-
-```tsx
-// Rendered structure:
-<div style={{ display: 'flex', gap: '0px' }}>
-    {/* First button gets buttonGroupPosition="left" */}
-    {/* Middle buttons get buttonGroupPosition="center" */}
-    {/* Last button gets buttonGroupPosition="right" */}
-</div>
-```
-
-## Best Practices
-
-### When to Use Horizontal Layout
-
-- Form action buttons (Cancel, Submit)
-- Dialog confirmations (No, Yes)
-- Navigation controls (Previous, Next)
-- Toolbar actions with limited buttons
-
-### When to Use Stacked Layout
-
-- Vertical navigation menus
-- Action lists in sidebars
-- Mobile-first button groups
-- When vertical space is preferred over horizontal
-
-### Button Combinations
-
-- **Primary + Secondary**: Most common pattern for forms
-- **Multiple Secondary**: For equal-weight actions
-- **Danger + Secondary**: For destructive confirmations
-- **Success + Secondary**: For positive confirmations

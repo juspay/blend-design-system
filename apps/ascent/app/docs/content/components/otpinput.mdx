@@ -58,7 +58,7 @@ function MyComponent() {
                 hintText: 'Current OTP value as a string',
             },
             { content: 'string', hintText: 'string' },
-            { content: '""' },
+            { content: "''" },
         ],
         [
             {
@@ -66,7 +66,7 @@ function MyComponent() {
                 hintText: 'Callback when OTP value changes',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -176,24 +176,60 @@ You can style the OTPInput component using the following tokens:
 
 ```tsx
 export type OTPInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: {
-            [key in OTPInputState]: CSSObject['boxShadow']
-        }
-        padding: CSSObject['padding']
-        outline: {
-            [key in OTPInputState]: CSSObject['outline']
-        }
-        border: {
-            [key in OTPInputState]: CSSObject['border']
-        }
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
         color: {
             [key in OTPInputState]: CSSObject['color']
         }
-        backgroundColor: {
-            [key in OTPInputState]: CSSObject['backgroundColor']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in OTPInputState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in OTPInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in OTPInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        gap: CSSObject['gap']
+        input: {
+            height: CSSObject['height']
+            width: CSSObject['width']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in OTPInputState]: CSSObject['color']
+            }
+            borderRadius: CSSObject['borderRadius']
+            boxShadow: CSSObject['boxShadow']
+            border: {
+                [key in OTPInputState]: CSSObject['border']
+            }
+            backgroundColor: {
+                [key in OTPInputState]: CSSObject['backgroundColor']
+            }
         }
     }
 }
@@ -201,6 +237,8 @@ export type OTPInputTokensType = {
 export type ResponsiveOTPInputTokens = {
     [key in keyof BreakpointType]: OTPInputTokensType
 }
+
+export type OTPInputState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
 ```
 
 The component uses responsive tokens that adapt to different breakpoints with consistent styling for optimal user experience across devices.
@@ -217,183 +255,6 @@ The component uses responsive tokens that adapt to different breakpoints with co
 - **Accessibility**: Full keyboard navigation and screen reader support
 - **Form Integration**: Compatible with form libraries and validation
 - **Auto-Focus**: Optional auto-focus on component mount
-
-## Usage Examples
-
-### Basic OTP Input
-
-Simple 6-digit OTP input for verification:
-
-```tsx
-import { OTPInput } from '@juspay/blend-design-system'
-
-const [verificationCode, setVerificationCode] = useState('')
-
-const handleVerificationChange = (value: string) => {
-    setVerificationCode(value)
-
-    if (value.length === 6) {
-        // Auto-submit when complete
-        verifyCode(value)
-    }
-}
-
-;<OTPInput
-    label="Verification Code"
-    value={verificationCode}
-    onChange={handleVerificationChange}
-    length={6}
-    autoFocus
-    hintText="Enter the 6-digit code sent to your email"
-/>
-```
-
-### SMS Authentication
-
-4-digit SMS OTP with custom validation:
-
-```tsx
-const [smsCode, setSmsCode] = useState('')
-const [isInvalid, setIsInvalid] = useState(false)
-
-const handleSMSCodeChange = (value: string) => {
-    setSmsCode(value)
-    setIsInvalid(false) // Clear error on new input
-
-    if (value.length === 4) {
-        validateSMSCode(value)
-    }
-}
-
-const validateSMSCode = async (code: string) => {
-    try {
-        await verifySMSCode(code)
-        // Handle success
-    } catch (error) {
-        setIsInvalid(true)
-    }
-}
-
-;<OTPInput
-    label="SMS Code"
-    sublabel="Verify your phone number"
-    value={smsCode}
-    onChange={handleSMSCodeChange}
-    length={4}
-    error={isInvalid}
-    errorMessage="Invalid code. Please try again."
-    hintText="Enter the 4-digit code sent via SMS"
-/>
-```
-
-### Two-Factor Authentication
-
-8-digit 2FA code with security context:
-
-```tsx
-const [twoFactorCode, setTwoFactorCode] = useState('')
-const [isSubmitting, setIsSubmitting] = useState(false)
-
-const handle2FAChange = (value: string) => {
-    setTwoFactorCode(value)
-
-    if (value.length === 8) {
-        setIsSubmitting(true)
-        submit2FACode(value)
-    }
-}
-
-;<OTPInput
-    label="Two-Factor Authentication"
-    sublabel="Enter code from your authenticator app"
-    value={twoFactorCode}
-    onChange={handle2FAChange}
-    length={8}
-    disabled={isSubmitting}
-    hintText="8-digit code from Google Authenticator, Authy, etc."
-    autoFocus
-/>
-```
-
-### Email Verification
-
-6-digit email verification with resend functionality:
-
-```tsx
-const [emailCode, setEmailCode] = useState('')
-const [timeLeft, setTimeLeft] = useState(300) // 5 minutes
-const [canResend, setCanResend] = useState(false)
-
-const handleEmailCodeChange = (value: string) => {
-    setEmailCode(value)
-}
-
-const resendCode = () => {
-    setEmailCode('')
-    setTimeLeft(300)
-    setCanResend(false)
-    // Resend email verification code
-}
-
-;<div>
-    <OTPInput
-        label="Email Verification"
-        value={emailCode}
-        onChange={handleEmailCodeChange}
-        length={6}
-        hintText={`Enter the code sent to your email ${canResend ? '' : `(${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')})`}`}
-        required
-    />
-
-    {canResend && (
-        <button onClick={resendCode} className="mt-2 text-blue-600">
-            Resend Code
-        </button>
-    )}
-</div>
-```
-
-### Custom Length OTP
-
-Variable length OTP based on security requirements:
-
-```tsx
-const [customOTP, setCustomOTP] = useState('')
-const [otpLength, setOtpLength] = useState(6)
-
-const handleCustomOTPChange = (value: string) => {
-    setCustomOTP(value)
-
-    if (value.length === otpLength) {
-        console.log(`Complete ${otpLength}-digit OTP:`, value)
-    }
-}
-
-;<div>
-    <div className="mb-4">
-        <label>OTP Length:</label>
-        <select
-            value={otpLength}
-            onChange={(e) => {
-                setOtpLength(Number(e.target.value))
-                setCustomOTP('') // Clear on length change
-            }}
-        >
-            <option value={4}>4 digits</option>
-            <option value={6}>6 digits</option>
-            <option value={8}>8 digits</option>
-        </select>
-    </div>
-
-    <OTPInput
-        label="Custom Length OTP"
-        value={customOTP}
-        onChange={handleCustomOTPChange}
-        length={otpLength}
-        hintText={`Enter ${otpLength}-digit verification code`}
-    />
-</div>
-```
 
 ## Behavior
 

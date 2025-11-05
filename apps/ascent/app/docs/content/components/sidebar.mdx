@@ -94,7 +94,7 @@ function MyComponent() {
                 hintText: 'Main content area of the application',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -102,7 +102,7 @@ function MyComponent() {
                 hintText: 'Directory navigation data structure',
             },
             { content: 'DirectoryData[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -110,7 +110,7 @@ function MyComponent() {
                 hintText: 'Content for the top navigation bar',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -118,7 +118,7 @@ function MyComponent() {
                 hintText: 'Optional secondary sidebar panel configuration',
             },
             { content: 'LeftPanelInfo', hintText: 'object' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -126,7 +126,7 @@ function MyComponent() {
                 hintText: 'Optional footer content in the sidebar',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -134,7 +134,7 @@ function MyComponent() {
                 hintText: 'Custom content for the sidebar header area',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -142,7 +142,57 @@ function MyComponent() {
                 hintText: 'Keyboard shortcut key to toggle sidebar collapse',
             },
             { content: 'string', hintText: 'string' },
-            { content: "'/''" },
+            { content: "'/'" },
+        ],
+        [
+            {
+                content: 'merchantInfo',
+                hintText: 'Merchant information for the topbar',
+            },
+            { content: 'MerchantInfo', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'rightActions',
+                hintText: 'Right-side actions for the topbar',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'enableTopbarAutoHide',
+                hintText: 'Whether to auto-hide the topbar on scroll',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'isExpanded',
+                hintText:
+                    'Controlled state: Current expanded state of the sidebar',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onExpandedChange',
+                hintText:
+                    'Callback fired when sidebar expand/collapse state should change',
+            },
+            { content: '(isExpanded: boolean) => void', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'defaultIsExpanded',
+                hintText: 'Uncontrolled mode: Initial expanded state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
         ],
     ]}
     className="mb-8"
@@ -164,7 +214,7 @@ Navigation structure for the sidebar directory:
                 hintText: 'Unique identifier for the navigation item',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -172,7 +222,7 @@ Navigation structure for the sidebar directory:
                 hintText: 'Display text for the navigation item',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -180,7 +230,7 @@ Navigation structure for the sidebar directory:
                 hintText: 'URL or route for navigation',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -188,7 +238,7 @@ Navigation structure for the sidebar directory:
                 hintText: 'Icon element for the navigation item',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -196,7 +246,7 @@ Navigation structure for the sidebar directory:
                 hintText: 'Nested navigation items (sub-menu)',
             },
             { content: 'DirectoryData[]', hintText: 'array' },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -216,7 +266,7 @@ Configuration for the optional secondary sidebar panel:
                 hintText: 'Array of items for the left panel',
             },
             { content: 'LeftPanelItem[]', hintText: 'array' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -224,7 +274,7 @@ Configuration for the optional secondary sidebar panel:
                 hintText: 'Currently selected item identifier',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -232,7 +282,7 @@ Configuration for the optional secondary sidebar panel:
                 hintText: 'Callback when an item is selected',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -260,7 +310,7 @@ Individual item configuration for the left panel:
                 hintText: 'Display text for the panel item',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -268,7 +318,7 @@ Individual item configuration for the left panel:
                 hintText: 'Icon element for the panel item',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -276,7 +326,7 @@ Individual item configuration for the left panel:
                 hintText: 'Optional custom value for selection',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -301,237 +351,72 @@ Individual item configuration for the left panel:
 - **Auto-scrolling**: Custom scrollbar styling with overflow management
 - **State Management**: Internal state management for expand/collapse functionality
 
-## Usage Examples
+## Component Tokens
 
-### Basic Sidebar
-
-Simple sidebar with navigation items
+You can style the Sidebar component using the following tokens:
 
 ```tsx
-import { Sidebar } from 'blend-v1'
-import { Home, Users, Settings } from 'lucide-react'
-
-const navigationData = [
-    {
-        id: 'home',
-        label: 'Home',
-        href: '/',
-        icon: <Home size={16} />,
-    },
-    {
-        id: 'users',
-        label: 'Users',
-        href: '/users',
-        icon: <Users size={16} />,
-    },
-    {
-        id: 'settings',
-        label: 'Settings',
-        href: '/settings',
-        icon: <Settings size={16} />,
+export type SidebarTokenType = {
+    maxWidth: {
+        withLeftPanel: CSSObject['maxWidth']
+        withoutLeftPanel: CSSObject['maxWidth']
     }
-]
-
-<Sidebar
-    data={navigationData}
-    topbar={
-        <h1 className="text-lg font-semibold">Dashboard</h1>
-    }
->
-    <div className="p-6">
-        <h2>Welcome to the Dashboard</h2>
-    </div>
-</Sidebar>
-```
-
-### Nested Navigation
-
-Sidebar with hierarchical navigation structure
-
-```tsx
-const hierarchicalData = [
-    {
-        id: 'dashboard',
-        label: 'Dashboard',
-        href: '/dashboard',
-        icon: <Dashboard size={16} />,
-    },
-    {
-        id: 'projects',
-        label: 'Projects',
-        href: '/projects',
-        icon: <Folder size={16} />,
-        children: [
-            {
-                id: 'active-projects',
-                label: 'Active Projects',
-                href: '/projects/active',
-            },
-            {
-                id: 'archived-projects',
-                label: 'Archived Projects',
-                href: '/projects/archived',
-            },
-            {
-                id: 'templates',
-                label: 'Templates',
-                href: '/projects/templates',
-            }
-        ]
-    },
-    {
-        id: 'analytics',
-        label: 'Analytics',
-        href: '/analytics',
-        icon: <BarChart size={16} />,
-        children: [
-            {
-                id: 'reports',
-                label: 'Reports',
-                href: '/analytics/reports',
-            },
-            {
-                id: 'insights',
-                label: 'Insights',
-                href: '/analytics/insights',
-            }
-        ]
-    }
-]
-
-<Sidebar
-    data={hierarchicalData}
-    topbar={
-        <div className="flex items-center justify-between w-full">
-            <h1>Project Manager</h1>
-            <button>Export</button>
-        </div>
-    }
->
-    <div className="p-6">
-        <h2>Project Overview</h2>
-    </div>
-</Sidebar>
-```
-
-### Dual Panel Sidebar
-
-Sidebar with secondary tenant/context panel
-
-```tsx
-import { Building, Users } from 'lucide-react'
-
-const [selectedTenant, setSelectedTenant] = useState('company-a')
-
-const leftPanelConfig = {
-    items: [
-        {
-            label: 'Company A',
-            icon: <Building size={16} />,
-            value: 'company-a'
-        },
-        {
-            label: 'Company B',
-            icon: <Building size={16} />,
-            value: 'company-b'
-        },
-        {
-            label: 'Company C',
-            icon: <Users size={16} />,
-            value: 'company-c'
+    backgroundColor: CSSObject['backgroundColor']
+    borderRight: CSSObject['border']
+    leftPanel: {
+        width: CSSObject['width']
+        backgroundColor: CSSObject['backgroundColor']
+        borderRight: CSSObject['border']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
         }
-    ],
-    selected: selectedTenant,
-    onSelect: setSelectedTenant,
-    maxVisibleItems: 2
+        gap: CSSObject['gap']
+        item: {
+            width: CSSObject['width']
+            borderRadius: CSSObject['borderTopLeftRadius']
+            border: {
+                [key in SidebarState]: CSSObject['border']
+            }
+            backgroundColor: {
+                [key in SidebarState]: CSSObject['backgroundColor']
+            }
+        }
+    }
+    header: {
+        backgroundColor: CSSObject['backgroundColor']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        gap: CSSObject['gap']
+        borderBottom: CSSObject['border']
+        toggleButton: {
+            backgroundColor: {
+                [key in SidebarState]: CSSObject['backgroundColor']
+            }
+        }
+    }
+    directory: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+    }
+    footer: {
+        backgroundColor: CSSObject['backgroundColor']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderTop: CSSObject['border']
+    }
 }
 
-<Sidebar
-    data={navigationData}
-    leftPanel={leftPanelConfig}
-    topbar={
-        <div className="flex items-center gap-3">
-            <h1>Multi-Tenant App</h1>
-            <span className="text-sm text-gray-500">
-                ({selectedTenant})
-            </span>
-        </div>
-    }
->
-    <div className="p-6">
-        <h2>Tenant-Specific Content</h2>
-        <p>Content for {selectedTenant}</p>
-    </div>
-</Sidebar>
-```
+export type ResponsiveSidebarTokens = {
+    [key in keyof BreakpointType]: SidebarTokenType
+}
 
-### Custom Footer and Header
-
-Sidebar with custom header slot and footer
-
-```tsx
-<Sidebar
-    data={navigationData}
-    sidebarTopSlot={
-        <div className="flex items-center gap-2 p-2">
-            <img src="/logo.png" alt="Logo" className="w-6 h-6" />
-            <span className="font-semibold">MyApp</span>
-        </div>
-    }
-    footer={
-        <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
-                    JD
-                </div>
-                <div>
-                    <div className="text-sm font-medium">John Doe</div>
-                    <div className="text-xs text-gray-500">Administrator</div>
-                </div>
-            </div>
-            <button className="p-1 hover:bg-gray-100 rounded">
-                <Settings size={16} />
-            </button>
-        </div>
-    }
-    topbar={
-        <div className="flex items-center justify-between w-full">
-            <h1>Dashboard</h1>
-            <div className="flex items-center gap-2">
-                <button>Notifications</button>
-                <button>Profile</button>
-            </div>
-        </div>
-    }
->
-    <div className="p-6">
-        <h2>Application Content</h2>
-    </div>
-</Sidebar>
-```
-
-### Custom Keyboard Shortcut
-
-Sidebar with custom collapse key
-
-```tsx
-<Sidebar
-    data={navigationData}
-    sidebarCollapseKey="Escape"
-    topbar={
-        <div className="flex items-center justify-between w-full">
-            <h1>Keyboard Navigation</h1>
-            <kbd className="px-2 py-1 bg-gray-100 rounded text-xs">
-                ESC to toggle
-            </kbd>
-        </div>
-    }
->
-    <div className="p-6">
-        <h2>Keyboard-Friendly Interface</h2>
-        <p>Press ESC to toggle the sidebar</p>
-    </div>
-</Sidebar>
+export type SidebarState = 'default' | 'hover' | 'active'
 ```
 
 ## Behavior

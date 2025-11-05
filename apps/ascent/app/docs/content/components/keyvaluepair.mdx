@@ -1,0 +1,175 @@
+---
+title: Key Value Pair
+description: The KeyValuePair component displays key-value pairs in a structured layout with support for vertical and horizontal orientations, text overflow handling, and customizable slots.
+category: components
+tags:
+    - key-value-pair
+    - component
+    - display
+    - data-display
+    - key-value
+RepoFolderName: KeyValuePair
+StorybookLink: components-keyvaluepair--docs
+---
+
+<KeyValuePairPreview />
+
+## Usage
+
+```tsx
+import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <KeyValuePair
+            keyString="Name"
+            value="John Doe"
+            size={KeyValuePairSize.MEDIUM}
+            keyValuePairState={KeyValuePairStateType.vertical}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'keyString',
+                hintText: 'The key text to display',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'The value text to display',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size of the value text',
+            },
+            { content: 'KeyValuePairSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
+            { content: 'KeyValuePairSize.SMALL' },
+        ],
+        [
+            {
+                content: 'keySlot',
+                hintText: 'Custom content slot after the key text',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'valueLeftSlot',
+                hintText: 'Custom content slot before the value text',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'valueRightSlot',
+                hintText: 'Custom content slot after the value text',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'keyValuePairState',
+                hintText: 'Layout orientation (vertical or horizontal)',
+            },
+            { content: 'KeyValuePairStateType', hintText: 'enum' },
+            { content: 'vertical, horizontal' },
+            { content: 'KeyValuePairStateType.vertical' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width of the component',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: "'220px'" },
+        ],
+        [
+            {
+                content: 'textOverflow',
+                hintText: 'How to handle text overflow',
+            },
+            { content: 'TextOverflowMode', hintText: 'enum' },
+            { content: 'truncate, wrap, wrap-clamp' },
+            { content: "'truncate'" },
+        ],
+        [
+            {
+                content: 'maxLines',
+                hintText:
+                    'Maximum number of lines when textOverflow is wrap-clamp',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: '2' },
+        ],
+        [
+            {
+                content: 'showTooltipOnTruncate',
+                hintText: 'Show tooltip on hover when text is truncated',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'true' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the KeyValuePair component using the following tokens:
+
+```tsx
+export type KeyValuePairTokensType = {
+    gap: {
+        vertical: CSSObject['gap']
+        horizontal: CSSObject['gap']
+    }
+
+    key: {
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+    }
+
+    value: {
+        color: CSSObject['color']
+        fontSize: {
+            [key in KeyValuePairSize]: CSSObject['fontSize']
+        }
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+    }
+}
+
+export type ResponsiveKeyValuePairTokens = {
+    [key in keyof BreakpointType]: KeyValuePairTokensType
+}
+```

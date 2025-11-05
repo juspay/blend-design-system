@@ -263,7 +263,7 @@ function MyComponent() {
                 hintText: 'Z-index value for the popover overlay layer',
             },
             { content: 'number', hintText: 'number' },
-            { content: '1000' },
+            { content: '999' },
         ],
         [
             {
@@ -272,6 +272,15 @@ function MyComponent() {
             },
             { content: 'PopoverSize', hintText: 'enum' },
             { content: 'PopoverSize.MEDIUM' },
+        ],
+        [
+            {
+                content: 'avoidCollisions',
+                hintText:
+                    'Whether to automatically reposition to avoid viewport collisions',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true' },
         ],
         [
             {
@@ -402,380 +411,59 @@ Action buttons in popovers use the Button component configuration, excluding cer
 - **Responsive Design**: Adapts to different screen sizes and device types
 - **Accessibility First**: Full keyboard navigation, focus management, and screen reader support
 
-## Usage Examples
+## Behavior
 
-### Basic Information Popover
+### Positioning Logic
 
-Simple popover displaying contextual information
+- **Side Placement**: Popover appears on specified side of trigger (top, right, bottom, left)
+- **Alignment Options**: Aligns to start, center, or end of trigger element
+- **Collision Detection**: Automatically repositions if popover would overflow viewport
+- **Offset Controls**: Fine-tune positioning with side and align offsets
 
-```tsx
-import { Popover, PopoverSize, Button, ButtonType } from 'blend-v1'
-import { Info } from 'lucide-react'
-;<Popover
-    heading="Feature Information"
-    description="Learn more about this feature"
-    trigger={
-        <Button
-            text="Learn More"
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<Info size={16} />}
-        />
-    }
-    size={PopoverSize.MEDIUM}
-    side="bottom"
-    align="center"
->
-    <div className="space-y-3">
-        <p>This feature helps you manage your workspace more efficiently.</p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-            <li>Organize your projects</li>
-            <li>Collaborate with team members</li>
-            <li>Track progress in real-time</li>
-        </ul>
-    </div>
-</Popover>
-```
+### Interaction Patterns
 
-### Confirmation Popover
+- **Click to Open**: Trigger click opens the popover
+- **Click Outside**: Clicking outside the popover closes it
+- **Escape Key**: Escape key closes the popover
+- **Action Execution**: Action buttons execute their onClick handlers and close popover
 
-Popover for confirming destructive actions
+### State Management
 
-```tsx
-import { Trash2 } from 'lucide-react'
-;<Popover
-    heading="Delete Project"
-    description="This action cannot be undone"
-    trigger={
-        <Button
-            text="Delete"
-            buttonType={ButtonType.DANGER}
-            leadingIcon={<Trash2 size={16} />}
-        />
-    }
-    primaryAction={{
-        text: 'Delete Project',
-        buttonType: ButtonType.DANGER,
-        onClick: () => {
-            console.log('Project deleted')
-            // Handle deletion logic
-        },
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => console.log('Deletion cancelled'),
-    }}
->
-    <div className="space-y-2">
-        <p className="text-sm text-gray-600">
-            The project "My Awesome Project" will be permanently deleted.
-        </p>
-        <p className="text-sm text-gray-600">
-            All associated files and data will be lost.
-        </p>
-    </div>
-</Popover>
-```
+- **Controlled Mode**: Use `open` and `onOpenChange` props for external state control
+- **Uncontrolled Mode**: Component manages its own open/closed state internally
+- **Close Events**: Multiple ways to close including actions, close button, escape key, and backdrop click
 
-### Form Popover
+### Mobile Behavior
 
-Popover containing a form for quick actions
+- **Drawer Mode**: When `useDrawerOnMobile` is true, renders as drawer on mobile devices
+- **Touch Interactions**: Optimized for touch interactions and gestures
+- **Responsive Sizing**: Adapts to mobile screen constraints and safe areas
+
+### Content Management
+
+- **Flexible Content**: Supports any React content in children
+- **Header Control**: Optional header with title and description
+- **Footer Actions**: Optional action buttons in footer area
+- **Custom Padding**: Automatic padding handling with override options for custom content
+
+## Accessibility
+
+- **Focus Management**: Focus is trapped within popover when open and restored on close
+- **Keyboard Navigation**: Full keyboard support with Tab, Shift+Tab, and Escape keys
+- **Screen Reader Support**: Proper ARIA roles, labels, and live regions
+- **ARIA Compliance**: Uses `aria-expanded`, `aria-haspopup`, and proper dialog semantics
+- **High Contrast**: Supports high contrast mode and respects user color preferences
+- **Motion Preferences**: Respects user's reduced motion preferences for animations
+
+## Enums
+
+### PopoverSize
 
 ```tsx
-import { Plus } from 'lucide-react'
-
-const [taskName, setTaskName] = useState('')
-
-<Popover
-    heading="Add New Task"
-    description="Create a task for your project"
-    trigger={
-        <Button
-            text="Add Task"
-            buttonType={ButtonType.PRIMARY}
-            leadingIcon={<Plus size={16} />}
-        />
-    }
-    primaryAction={{
-        text: 'Create Task',
-        buttonType: ButtonType.PRIMARY,
-        disabled: !taskName.trim(),
-        onClick: () => {
-            console.log('Creating task:', taskName)
-            setTaskName('')
-        },
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => setTaskName(''),
-    }}
-    minWidth={350}
->
-    <div className="space-y-4">
-        <div>
-            <label className="block text-sm font-medium mb-2">
-                Task Name
-            </label>
-            <input
-                type="text"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                placeholder="Enter task name"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-        </div>
-        <div>
-            <label className="block text-sm font-medium mb-2">
-                Priority
-            </label>
-            <select className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-        </div>
-    </div>
-</Popover>
-```
-
-### Small Quick Actions Popover
-
-Compact popover for quick actions
-
-```tsx
-import { MoreHorizontal, Edit2, Copy, Archive } from 'lucide-react'
-;<Popover
-    trigger={
-        <Button
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<MoreHorizontal size={16} />}
-        />
-    }
-    size={PopoverSize.SMALL}
-    side="bottom"
-    align="end"
-    showCloseButton={false}
-    minWidth={200}
->
-    <div className="space-y-1">
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Edit2 size={14} className="mr-2" />
-            Edit
-        </button>
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Copy size={14} className="mr-2" />
-            Duplicate
-        </button>
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Archive size={14} className="mr-2" />
-            Archive
-        </button>
-    </div>
-</Popover>
-```
-
-### Positioned Popover
-
-Popover with specific positioning and alignment
-
-```tsx
-import { ChevronDown } from 'lucide-react'
-;<Popover
-    heading="Filter Options"
-    description="Customize your view"
-    trigger={
-        <Button
-            text="Filters"
-            buttonType={ButtonType.SECONDARY}
-            trailingIcon={<ChevronDown size={16} />}
-        />
-    }
-    side="top"
-    align="start"
-    sideOffset={12}
-    alignOffset={-8}
-    shadow="xl"
->
-    <div className="space-y-3">
-        <div>
-            <h4 className="font-medium mb-2">Status</h4>
-            <div className="space-y-1">
-                {['Active', 'Pending', 'Completed'].map((status) => (
-                    <label key={status} className="flex items-center">
-                        <input type="checkbox" className="mr-2" />
-                        <span className="text-sm">{status}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-        <div>
-            <h4 className="font-medium mb-2">Date Range</h4>
-            <input
-                type="date"
-                className="w-full px-2 py-1 border rounded text-sm"
-            />
-        </div>
-    </div>
-</Popover>
-```
-
-### Controlled State Popover
-
-Popover with external state management
-
-```tsx
-import { Settings } from 'lucide-react'
-
-const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-const [theme, setTheme] = useState('light')
-
-<Popover
-    heading="Appearance Settings"
-    description="Customize your interface"
-    trigger={
-        <Button
-            text="Settings"
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<Settings size={16} />}
-        />
-    }
-    open={isSettingsOpen}
-    onOpenChange={setIsSettingsOpen}
-    primaryAction={{
-        text: 'Apply',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => {
-            console.log('Settings applied:', { theme })
-            setIsSettingsOpen(false)
-        },
-    }}
-    secondaryAction={{
-        text: 'Reset',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => setTheme('light'),
-    }}
->
-    <div className="space-y-4">
-        <div>
-            <label className="block text-sm font-medium mb-2">Theme</label>
-            <div className="space-y-2">
-                {['light', 'dark', 'auto'].map((option) => (
-                    <label key={option} className="flex items-center">
-                        <input
-                            type="radio"
-                            name="theme"
-                            value={option}
-                            checked={theme === option}
-                            onChange={(e) => setTheme(e.target.value)}
-                            className="mr-2"
-                        />
-                        <span className="text-sm capitalize">{option}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-    </div>
-</Popover>
-```
-
-### Content-Only Popover
-
-Popover without header for custom layouts
-
-```tsx
-import { HelpCircle } from 'lucide-react'
-;<Popover
-    trigger={
-        <Button
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<HelpCircle size={16} />}
-        />
-    }
-    showCloseButton={false}
-    minWidth={300}
-    maxWidth={400}
->
-    <div className="p-4">
-        <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <HelpCircle size={16} className="text-blue-600" />
-            </div>
-            <div className="flex-1">
-                <h3 className="font-medium text-gray-900 mb-1">Need Help?</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                    Check out our documentation or contact support for
-                    assistance.
-                </p>
-                <div className="flex space-x-2">
-                    <Button
-                        text="Documentation"
-                        buttonType={ButtonType.SECONDARY}
-                        size="small"
-                    />
-                    <Button
-                        text="Contact Support"
-                        buttonType={ButtonType.PRIMARY}
-                        size="small"
-                    />
-                </div>
-            </div>
-        </div>
-    </div>
-</Popover>
-```
-
-### Modal-Style Popover
-
-Popover that behaves as a modal for critical interactions
-
-```tsx
-import { AlertTriangle } from 'lucide-react'
-;<Popover
-    heading="System Maintenance"
-    description="Scheduled maintenance window"
-    trigger={
-        <Button
-            text="View Maintenance"
-            buttonType={ButtonType.WARNING}
-            leadingIcon={<AlertTriangle size={16} />}
-        />
-    }
-    asModal={true}
-    primaryAction={{
-        text: 'Acknowledge',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => console.log('Maintenance acknowledged'),
-    }}
-    showCloseButton={true}
->
-    <div className="space-y-4">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-            <div className="flex">
-                <AlertTriangle
-                    size={16}
-                    className="text-yellow-600 mr-2 mt-0.5"
-                />
-                <div>
-                    <h4 className="text-sm font-medium text-yellow-800">
-                        Scheduled Maintenance
-                    </h4>
-                    <p className="text-sm text-yellow-700 mt-1">
-                        System will be unavailable from 2:00 AM to 4:00 AM UTC
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div>
-            <h4 className="font-medium mb-2">What to expect:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Temporary service interruption</li>
-                <li>• Data backup and system updates</li>
-                <li>• Improved performance after completion</li>
-            </ul>
-        </div>
-    </div>
-</Popover>
+enum PopoverSize {
+    SMALL = 'small', // Compact popover with smaller typography and spacing
+    MEDIUM = 'medium', // Standard popover with regular typography and spacing
+}
 ```
 
 ## Component Tokens
@@ -786,74 +474,58 @@ You can style the Popover component using the following tokens:
 export type PopoverTokenType = {
     background: CSSObject['backgroundColor']
     border: CSSObject['border']
-    borderRadius: CSSObject['borderRadius']
-    shadow: {
-        xs: CSSObject['boxShadow']
-        sm: CSSObject['boxShadow']
-        md: CSSObject['boxShadow']
-        lg: CSSObject['boxShadow']
-        xl: CSSObject['boxShadow']
-        '2xl': CSSObject['boxShadow']
-        full: CSSObject['boxShadow']
+    shadow: FoundationTokenType['shadows']
+    gap: {
+        [key in PopoverSize]: CSSObject['gap']
     }
-    gap: CSSObject['gap']
     zIndex: CSSObject['zIndex']
-
-    padding: {
-        top: CSSObject['paddingTop']
-        bottom: CSSObject['paddingBottom']
-        horizontal: CSSObject['paddingLeft']
+    borderRadius: {
+        [key in PopoverSize]: CSSObject['borderRadius']
     }
-
+    padding: {
+        left: {
+            [key in PopoverSize]: CSSObject['paddingLeft']
+        }
+        right: {
+            [key in PopoverSize]: CSSObject['paddingRight']
+        }
+        top: {
+            [key in PopoverSize]: CSSObject['paddingTop']
+        }
+        bottom: {
+            [key in PopoverSize]: CSSObject['paddingBottom']
+        }
+    }
     headerContainer: {
         heading: {
+            color: CSSObject['color']
             fontSize: {
                 [key in PopoverSize]: CSSObject['fontSize']
             }
             fontWeight: {
                 [key in PopoverSize]: CSSObject['fontWeight']
-            }
-            color: {
-                [key in PopoverSize]: CSSObject['color']
             }
             lineHeight: {
                 [key in PopoverSize]: CSSObject['lineHeight']
             }
         }
         description: {
+            color: CSSObject['color']
             fontSize: {
                 [key in PopoverSize]: CSSObject['fontSize']
-            }
-            color: {
-                [key in PopoverSize]: CSSObject['color']
             }
             fontWeight: {
                 [key in PopoverSize]: CSSObject['fontWeight']
             }
-            marginTop: {
-                [key in PopoverSize]: CSSObject['marginTop']
-            }
-        }
-        closeButton: {
-            padding: CSSObject['padding']
-            borderRadius: CSSObject['borderRadius']
-            color: CSSObject['color']
-            '&:hover': {
-                backgroundColor: CSSObject['backgroundColor']
+            lineHeight: {
+                [key in PopoverSize]: CSSObject['lineHeight']
             }
         }
     }
-
     footer: {
-        justifyContent: CSSObject['justifyContent']
-        gap: CSSObject['gap']
-        marginTop: CSSObject['marginTop']
-    }
-
-    mobileDrawer: {
-        borderRadius: CSSObject['borderRadius']
-        maxHeight: CSSObject['maxHeight']
-        transform: CSSObject['transform']
+        gap: {
+            [key in PopoverSize]: CSSObject['gap']
+        }
     }
 }
 ```

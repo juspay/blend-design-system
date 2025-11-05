@@ -1,0 +1,184 @@
+---
+title: Stepper
+description: The Stepper component displays a series of steps in a process, showing progress through horizontal or vertical layouts with support for substeps, custom icons, and interactive step navigation.
+category: components
+tags:
+    - stepper
+    - component
+    - progress
+    - steps
+    - navigation
+    - workflow
+RepoFolderName: Stepper
+StorybookLink: components-stepper--docs
+---
+
+<StepperPreview />
+
+## Usage
+
+```tsx
+import { Stepper, StepperType, StepState } from 'blend-v1'
+
+function MyComponent() {
+    const steps = [
+        {
+            id: 1,
+            title: 'Step 1',
+            status: StepState.COMPLETED,
+            description: 'First step completed',
+        },
+        {
+            id: 2,
+            title: 'Step 2',
+            status: StepState.CURRENT,
+            description: 'Current step',
+        },
+        {
+            id: 3,
+            title: 'Step 3',
+            status: StepState.PENDING,
+            description: 'Pending step',
+        },
+    ]
+
+    return (
+        <Stepper
+            steps={steps}
+            stepperType={StepperType.HORIZONTAL}
+            clickable={true}
+            onStepClick={(stepIndex) => console.log('Step clicked:', stepIndex)}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'steps',
+                hintText: 'Array of step objects to display',
+            },
+            { content: 'Step[]', hintText: 'array' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'onStepClick',
+                hintText: 'Callback when a step is clicked',
+            },
+            { content: '(stepIndex: number) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSubstepClick',
+                hintText: 'Callback when a substep is clicked',
+            },
+            {
+                content: '(stepId: number, substepIndex: number) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'clickable',
+                hintText: 'Whether steps are clickable',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'stepperType',
+                hintText: 'Layout orientation of the stepper',
+            },
+            { content: 'StepperType', hintText: 'enum' },
+            { content: 'HORIZONTAL, VERTICAL' },
+            { content: 'StepperType.HORIZONTAL' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Stepper component using the following tokens:
+
+```tsx
+export type StepperTokensType = {
+    container: {
+        default: {
+            gap: CSSObject['gap']
+        }
+    }
+
+    step: {
+        circle: {
+            [key in StepState]: {
+                [key in StepperState]: {
+                    backgroundColor: CSSObject['backgroundColor']
+                    borderColor: CSSObject['borderColor']
+                    borderWidth: CSSObject['borderWidth']
+                    borderRadius: CSSObject['borderRadius']
+                    size: CSSObject['width']
+                    transition: CSSObject['transition']
+                    outline: CSSObject['outline']
+                    outlineOffset: CSSObject['outlineOffset']
+                }
+            }
+        }
+        icon: {
+            [key in StepState]: {
+                [key in StepperState]: {
+                    color: CSSObject['color']
+                }
+            }
+        }
+    }
+
+    connector: {
+        line: {
+            active: {
+                default: {
+                    color: CSSObject['color']
+                    height: CSSObject['height']
+                }
+            }
+            inactive: {
+                default: {
+                    color: CSSObject['color']
+                    height: CSSObject['height']
+                }
+            }
+        }
+    }
+
+    title: {
+        text: {
+            [key in StepState]: {
+                [key in StepperState]: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    gap: CSSObject['gap']
+                }
+            }
+        }
+    }
+}
+
+export type ResponsiveStepperTokens = {
+    [key in keyof BreakpointType]: StepperTokensType
+}
+```

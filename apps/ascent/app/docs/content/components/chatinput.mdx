@@ -1,0 +1,389 @@
+---
+title: Chat Input
+description: The ChatInput component provides a rich text input interface for chat applications with file attachments, voice recording, auto-resize functionality, top queries suggestions, and comprehensive keyboard navigation.
+category: components
+tags:
+    - chat-input
+    - component
+    - input
+    - textarea
+    - file-upload
+    - chat
+    - messaging
+RepoFolderName: ChatInput
+StorybookLink: components-chatinput--docs
+---
+
+<ChatInputPreview />
+
+## Usage
+
+```tsx
+import { ChatInput } from 'blend-v1'
+
+function MyComponent() {
+    const [message, setMessage] = useState('')
+
+    const handleSend = (message: string, files: AttachedFile[]) => {
+        console.log('Sending message:', message)
+        console.log('Attached files:', files)
+    }
+
+    return (
+        <ChatInput
+            value={message}
+            onChange={setMessage}
+            onSend={handleSend}
+            placeholder="Type a message..."
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Controlled value of the text input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: "''" },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when input value changes',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSend',
+                hintText:
+                    'Callback when message is sent (Enter key or send button)',
+            },
+            {
+                content: '(message: string, files: AttachedFile[]) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onAttachFiles',
+                hintText: 'Callback when files are attached',
+            },
+            { content: '(files: File[]) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onVoiceRecord',
+                hintText: 'Callback when voice recording button is clicked',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileRemove',
+                hintText: 'Callback when a file is removed',
+            },
+            { content: '(fileId: string) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileClick',
+                hintText: 'Callback when a file is clicked',
+            },
+            { content: '(file: AttachedFile) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: "'Type a message...'" },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Disable the chat input',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText: 'Maximum character length for the message',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoResize',
+                hintText: 'Automatically resize textarea based on content',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'attachedFiles',
+                hintText: 'Array of attached files',
+            },
+            { content: 'AttachedFile[]', hintText: 'array' },
+            { content: '' },
+            { content: '[]' },
+        ],
+        [
+            {
+                content: 'topQueries',
+                hintText: 'Array of top query suggestions',
+            },
+            { content: 'TopQuery[]', hintText: 'array' },
+            { content: '' },
+            { content: '[]' },
+        ],
+        [
+            {
+                content: 'onTopQuerySelect',
+                hintText: 'Callback when a top query is selected',
+            },
+            { content: '(query: TopQuery) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topQueriesMaxHeight',
+                hintText: 'Maximum height for top queries container',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: '200' },
+        ],
+        [
+            {
+                content: 'attachButtonIcon',
+                hintText: 'Custom icon for attach button',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'voiceButtonIcon',
+                hintText: 'Custom icon for voice recording button',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sendButtonIcon',
+                hintText: 'Custom icon for send button',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'overflowMenuProps',
+                hintText: 'Props for the overflow files menu',
+            },
+            { content: 'Partial<MenuProps>', hintText: 'object' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'aria-label',
+                hintText: 'ARIA label for accessibility',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'aria-describedby',
+                hintText: 'ARIA describedby for accessibility',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ChatInput component using the following tokens:
+
+```tsx
+export type ChatInputTokensType = {
+    container: {
+        backgroundColor: {
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            disabled: CSSObject['backgroundColor']
+        }
+        border: {
+            default: CSSObject['border']
+            focus: CSSObject['border']
+        }
+        borderRadius: CSSObject['borderRadius']
+        paddingTop: CSSObject['paddingTop']
+        paddingRight: CSSObject['paddingRight']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        gap: CSSObject['gap']
+        minHeight: CSSObject['minHeight']
+        transition: CSSObject['transition']
+        boxShadow: {
+            default: CSSObject['boxShadow']
+            hover: CSSObject['boxShadow']
+            focus: CSSObject['boxShadow']
+        }
+    }
+
+    attachmentContainer: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        padding: CSSObject['padding']
+    }
+
+    textarea: {
+        backgroundColor: CSSObject['backgroundColor']
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        lineHeight: CSSObject['lineHeight']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        placeholder: {
+            color: CSSObject['color']
+        }
+        resize: CSSObject['resize']
+        fontFamily: CSSObject['fontFamily']
+        minHeight: CSSObject['minHeight']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
+    }
+
+    filesContainer: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
+    }
+
+    bottomActions: {
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        gap: CSSObject['gap']
+        justifyContent: CSSObject['justifyContent']
+    }
+
+    overflowTag: {
+        backgroundColor: {
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            active: CSSObject['backgroundColor']
+        }
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
+        }
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+        transition: CSSObject['transition']
+        cursor: CSSObject['cursor']
+    }
+
+    topQueries: {
+        container: {
+            borderTop: CSSObject['borderTop']
+            paddingTop: CSSObject['paddingTop']
+        }
+        header: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            textTransform: CSSObject['textTransform']
+            backgroundColor: CSSObject['backgroundColor']
+            flexShrink: CSSObject['flexShrink']
+        }
+        scrollContainer: {
+            overflowY: CSSObject['overflowY']
+            maxHeightOffset: number
+        }
+        item: {
+            backgroundColor: {
+                default: CSSObject['backgroundColor']
+                hover: CSSObject['backgroundColor']
+                active: CSSObject['backgroundColor']
+                disabled: CSSObject['backgroundColor']
+            }
+            color: {
+                default: CSSObject['color']
+                hover: CSSObject['color']
+                active: CSSObject['color']
+                disabled: CSSObject['color']
+            }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            border: CSSObject['border']
+            transition: CSSObject['transition']
+            cursor: CSSObject['cursor']
+            opacity: {
+                default: CSSObject['opacity']
+                disabled: CSSObject['opacity']
+            }
+        }
+    }
+}
+
+export type ResponsiveChatInputTokensType = {
+    [key in keyof BreakpointType]: ChatInputTokensType
+}
+```

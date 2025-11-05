@@ -43,262 +43,31 @@ function MyComponent() {
             },
             { content: 'BreadcrumbItemType[]', hintText: 'array' },
             { content: '' },
+            { content: 'Required' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## BreadcrumbItemType
-
-Each item in the `items` array should have the following structure:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'label',
-                hintText: 'The text displayed for the breadcrumb item',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'href',
-                hintText: 'The URL the breadcrumb item links to',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'leftSlot',
-                hintText:
-                    'Optional content to display before the label (e.g., icons)',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'rightSlot',
-                hintText: 'Optional content to display after the label',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- Hierarchical navigation display with clear visual separators
-- Automatic overflow handling for long navigation paths (max 4 visible items)
-- Responsive design that adapts to different screen sizes
-- Support for custom icons and content through left/right slots
-- Active state styling for the current page (last item)
-- Keyboard accessible navigation with proper focus management
-- Ellipsis menu for collapsed items (when more than 4 items)
-- Consistent spacing and typography following design tokens
-
-## Usage Examples
-
-### Basic Breadcrumb
-
-Simple breadcrumb with text-only navigation
-
-```tsx
-const basicItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Documentation', href: '/docs' },
-    { label: 'Components', href: '/docs/components' },
-]
-
-<Breadcrumb items={basicItems} />
-```
-
-### Breadcrumb with Icons
-
-Breadcrumb items with left slot icons
-
-```tsx
-const itemsWithIcons = [
-    {
-        label: 'Home',
-        href: '/',
-        leftSlot: <HomeIcon size={14} />
-    },
-    {
-        label: 'Products',
-        href: '/products',
-        leftSlot: <PackageIcon size={14} />
-    },
-    {
-        label: 'Electronics',
-        href: '/products/electronics',
-        leftSlot: <CpuIcon size={14} />
-    },
-]
-
-<Breadcrumb items={itemsWithIcons} />
-```
-
-### Long Navigation Path
-
-Breadcrumb with overflow handling (shows ellipsis for middle items)
-
-```tsx
-const longPath = [
-    { label: 'Home', href: '/' },
-    { label: 'E-commerce', href: '/ecommerce' },
-    { label: 'Products', href: '/ecommerce/products' },
-    { label: 'Electronics', href: '/ecommerce/products/electronics' },
-    { label: 'Computers', href: '/ecommerce/products/electronics/computers' },
-    { label: 'Laptops', href: '/ecommerce/products/electronics/computers/laptops' },
-    { label: 'Gaming Laptops', href: '/ecommerce/products/electronics/computers/laptops/gaming' },
-]
-
-<Breadcrumb items={longPath} />
-```
-
-### Breadcrumb with Right Slots
-
-Breadcrumb items with additional content on the right
-
-```tsx
-const itemsWithRightSlots = [
-    {
-        label: 'Dashboard',
-        href: '/dashboard',
-        rightSlot: <ChevronRightIcon size={12} />
-    },
-    {
-        label: 'Analytics',
-        href: '/dashboard/analytics',
-        rightSlot: <ExternalLinkIcon size={12} />
-    },
-    {
-        label: 'Reports',
-        href: '/dashboard/analytics/reports'
-    },
-]
-
-<Breadcrumb items={itemsWithRightSlots} />
-```
-
-### Single Item Breadcrumb
-
-Breadcrumb with just one item (shows as active)
-
-```tsx
-const singleItem = [
-    { label: 'Dashboard', href: '/dashboard' }
-]
-
-<Breadcrumb items={singleItem} />
-```
-
-### Empty Breadcrumb
-
-Breadcrumb gracefully handles empty array
-
-```tsx
-<Breadcrumb items={[]} />
-// Renders nothing (returns null)
-```
-
-### Complex Navigation with Mixed Content
-
-Breadcrumb with various combinations of slots
-
-```tsx
-const complexItems = [
-    {
-        label: 'Workspace',
-        href: '/workspace',
-        leftSlot: <FolderIcon size={14} />
-    },
-    {
-        label: 'Project Alpha',
-        href: '/workspace/project-alpha',
-        leftSlot: <ProjectIcon size={14} />,
-        rightSlot: <StarIcon size={12} />
-    },
-    {
-        label: 'Source Code',
-        href: '/workspace/project-alpha/src',
-        leftSlot: <CodeIcon size={14} />
-    },
-    {
-        label: 'Components',
-        href: '/workspace/project-alpha/src/components'
-    },
-]
-
-<Breadcrumb items={complexItems} />
-```
 
 ## Component Tokens
 
 You can style the breadcrumb component using the following tokens:
 
 ```tsx
-export type BreadcrumbTokensType = {
-    height: CSSObject['height']
-    padding: CSSObject['padding']
+export type BreadcrumbTokenType = {
     gap: CSSObject['gap']
     item: {
         padding: CSSObject['padding']
         gap: CSSObject['gap']
-        fontSize: {
-            active: CSSObject['fontSize']
-            inactive: CSSObject['fontSize']
-        }
-        fontWeight: {
-            active: CSSObject['fontWeight']
-            inactive: CSSObject['fontWeight']
-        }
-        color: {
-            active: CSSObject['color']
-            inactive: CSSObject['color']
-        }
-        background: {
-            active: CSSObject['background']
-            inactive: CSSObject['background']
+        text: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in 'default' | 'hover' | 'active']: CSSObject['color']
+            }
         }
     }
 }
 ```
-
-## Behavior
-
-### Overflow Handling
-
-- **Up to 4 items**: All items are displayed
-- **More than 4 items**: Shows first item + ellipsis + last 3 items
-- **Ellipsis button**: Indicates collapsed items (menu functionality planned)
-
-### Active State
-
-- The last item in the breadcrumb is considered "active" (current page)
-- Active items use different styling (color, font weight)
-- Active items are not clickable (no href applied)
-
-### Navigation
-
-- All items except the last one are clickable links
-- Proper semantic HTML structure for screen readers
-- Keyboard navigation support through standard link behavior
-
-## Accessibility
-
-- **Semantic HTML**: Uses proper link elements for navigation
-- **ARIA Support**: Proper roles and labels for screen readers
-- **Keyboard Navigation**: Standard tab navigation through links
-- **Visual Hierarchy**: Clear distinction between active and inactive states
-- **Focus Management**: Visible focus indicators for keyboard users

@@ -1,0 +1,323 @@
+---
+title: Card
+description: The Card component is a flexible container component used to display content in a structured format with multiple variants, alignment options, and customizable slots for headers, body content, and actions.
+category: components
+tags:
+    - card
+    - component
+    - container
+    - layout
+    - content
+RepoFolderName: Card
+StorybookLink: components-card--docs
+---
+
+<CardPreview />
+
+## Usage
+
+```tsx
+import { Card, CardVariant, CardAlignment } from 'blend-v1'
+import { Button, ButtonType } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Card
+            variant={CardVariant.DEFAULT}
+            headerTitle="Card Title"
+            subHeader="Card subtitle"
+            bodyTitle="Body Title"
+            content="This is the card content"
+            actionButton={{
+                buttonType: ButtonType.PRIMARY,
+                children: 'Action',
+                onClick: () => console.log('Action clicked'),
+            }}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual variant of the card',
+            },
+            { content: 'CardVariant', hintText: 'enum' },
+            { content: 'DEFAULT, ALIGNED, CUSTOM' },
+            { content: 'CardVariant.DEFAULT' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width of the card',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: "'auto'" },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText:
+                    'Maximum height of the card. Accepts any valid CSS height value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minHeight',
+                hintText:
+                    'Minimum height of the card. Accepts any valid CSS height value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerSlot1',
+                hintText:
+                    'Custom content slot before header title (DEFAULT variant)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerTitle',
+                hintText: 'Main title text in the header section',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerTag',
+                hintText: 'Tag component displayed in the header',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerSlot2',
+                hintText:
+                    'Custom content slot after header title (DEFAULT and ALIGNED variants)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subHeader',
+                hintText: 'Subtitle text displayed below the header title',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodySlot1',
+                hintText: 'Custom content slot before body title',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodyTitle',
+                hintText: 'Title text in the body section',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'content',
+                hintText: 'Main content displayed in the body section',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodySlot2',
+                hintText:
+                    'Custom content slot after body content (DEFAULT variant)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionButton',
+                hintText: 'Action button configuration',
+            },
+            { content: 'ButtonProps', hintText: 'object' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignment',
+                hintText:
+                    'Alignment direction for card slot (ALIGNED variant only)',
+            },
+            { content: 'CardAlignment', hintText: 'enum' },
+            { content: 'VERTICAL, HORIZONTAL' },
+            { content: 'Required (when variant is ALIGNED)' },
+        ],
+        [
+            {
+                content: 'centerAlign',
+                hintText:
+                    'Whether to center-align content (ALIGNED variant only)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'cardSlot',
+                hintText:
+                    'Custom slot content for aligned card (ALIGNED variant only)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Custom content for card (CUSTOM variant only)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: 'Required (when variant is CUSTOM)' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Card component using the following tokens:
+
+```tsx
+export type CardTokenType = {
+    maxWidth: CSSObject['maxWidth']
+    borderRadius: CSSObject['borderRadius']
+    border: CSSObject['border']
+    boxShadow: CSSObject['boxShadow']
+    backgroundColor: CSSObject['backgroundColor']
+    padding: {
+        [key in CardVariant]: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+    }
+
+    header: {
+        [CardVariant.DEFAULT]: {
+            backgroundColor: CSSObject['backgroundColor']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            borderBottom: CSSObject['borderBottom']
+        }
+        [CardVariant.ALIGNED]: undefined
+        [CardVariant.CUSTOM]: undefined
+
+        text: {
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+                gap: CSSObject['gap']
+            }
+            subTitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap']
+        }
+    }
+
+    body: {
+        padding: {
+            [CardVariant.DEFAULT]: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            [CardVariant.ALIGNED]: undefined
+            [CardVariant.CUSTOM]: undefined
+        }
+
+        gap: {
+            [key in CardVariant]: CSSObject['gap']
+        }
+
+        text: {
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            content: {
+                fontSize: CSSObject['fontSize']
+                color: CSSObject['color']
+                fontWeight: CSSObject['fontWeight']
+            }
+            gap: CSSObject['gap']
+        }
+
+        actions: {
+            gap: CSSObject['gap']
+            centerAlignGap: CSSObject['gap']
+        }
+
+        alignment: {
+            [CardVariant.ALIGNED]: {
+                cardSlot: {
+                    vertical: {
+                        marginBottom: CSSObject['marginBottom']
+                        minHeight: CSSObject['minHeight']
+                    }
+                    horizontal: {
+                        marginRight: CSSObject['marginRight']
+                        width: CSSObject['width']
+                        height: CSSObject['height']
+                    }
+                }
+            }
+            [CardVariant.DEFAULT]: undefined
+            [CardVariant.CUSTOM]: undefined
+        }
+    }
+}
+
+export type ResponsiveCardTokens = {
+    [key in keyof BreakpointType]: CardTokenType
+}
+```

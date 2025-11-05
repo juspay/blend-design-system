@@ -57,7 +57,7 @@ function MyComponent() {
                 hintText: 'Current textarea value as a string',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -65,7 +65,7 @@ function MyComponent() {
                 hintText: 'Placeholder text for the textarea',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -76,7 +76,7 @@ function MyComponent() {
                 content: '(e: React.ChangeEvent<HTMLTextAreaElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -220,24 +220,60 @@ You can style the TextArea component using the following tokens:
 
 ```tsx
 export type TextAreaTokensType = {
-    fontFamily: CSSObject['fontFamily']
-    paddingX: CSSObject['padding']
-    paddingY: CSSObject['padding']
-    borderRadius: CSSObject['borderRadius']
-    boxShadow: {
-        [key in TextAreaState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
     }
-    outline: {
-        [key in TextAreaState]: CSSObject['outline']
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
     }
-    border: {
-        [key in TextAreaState]: CSSObject['border']
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
     }
-    color: {
-        [key in TextAreaState]: CSSObject['color']
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
     }
-    backgroundColor: {
-        [key in TextAreaState]: CSSObject['backgroundColor']
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        border: {
+            [key in TextAreaState]: CSSObject['border']
+        }
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+        backgroundColor: {
+            [key in TextAreaState]: CSSObject['backgroundColor']
+        }
     }
 }
 
@@ -254,241 +290,13 @@ The component uses responsive tokens that adapt to different breakpoints with fl
 
 - **Multi-line Input**: Configurable rows and columns for text area sizing
 - **Responsive Labels**: Floating labels on small screens, standard labels on larger screens
-- **Resize Control**: Customizable resize behavior (none, vertical, horizontal, both)
+- **Resize Control**: Customizable resize behavior (none, vertical, horizontal, both, block, inline)
 - **Error States**: Visual error feedback with custom error messages
 - **Form Integration**: Full form library support with validation
 - **Accessibility**: Screen reader support and proper focus management
 - **Helper Text**: Support for hint text and help icon tooltips
-- **Character Counting**: Can be extended with character count functionality
 - **Auto-Focus**: Optional auto-focus on component mount
 - **Disabled State**: Complete disabled state styling and behavior
-
-## Usage Examples
-
-### Basic Description Field
-
-Simple textarea for user descriptions:
-
-```tsx
-import { TextArea } from '@juspay/blend-design-system'
-
-const [description, setDescription] = useState('')
-
-const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value)
-}
-
-;<TextArea
-    label="Description"
-    placeholder="Tell us about yourself..."
-    value={description}
-    onChange={handleDescriptionChange}
-    rows={4}
-    hintText="Share your background and experience"
-/>
-```
-
-### Comment Box
-
-Textarea for user comments with validation:
-
-```tsx
-const [comment, setComment] = useState('')
-const [isInvalid, setIsInvalid] = useState(false)
-
-const validateComment = (value: string) => {
-    if (value.length > 500) {
-        setIsInvalid(true)
-        return false
-    }
-    setIsInvalid(false)
-    return true
-}
-
-const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setComment(value)
-    validateComment(value)
-}
-
-;<TextArea
-    label="Comment"
-    sublabel="Share your thoughts"
-    placeholder="Write your comment here..."
-    value={comment}
-    onChange={handleCommentChange}
-    rows={3}
-    error={isInvalid}
-    errorMessage="Comment must be 500 characters or less"
-    hintText={`${comment.length}/500 characters`}
-    required
-/>
-```
-
-### Feedback Form
-
-Large textarea for detailed feedback:
-
-```tsx
-const [feedback, setFeedback] = useState('')
-
-const handleFeedbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFeedback(e.target.value)
-}
-
-;<TextArea
-    label="Detailed Feedback"
-    sublabel="Help us improve our service"
-    placeholder="Please provide detailed feedback about your experience..."
-    value={feedback}
-    onChange={handleFeedbackChange}
-    rows={6}
-    resize="vertical"
-    hintText="Your feedback is valuable to us"
-    helpIconHintText="This information helps us understand your needs better"
-/>
-```
-
-### Message Composer
-
-Resizable textarea for message composition:
-
-```tsx
-const [message, setMessage] = useState('')
-const [isDraft, setIsDraft] = useState(false)
-
-const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value)
-    setIsDraft(true)
-
-    // Auto-save draft
-    setTimeout(() => {
-        localStorage.setItem('messageDraft', e.target.value)
-    }, 500)
-}
-
-const sendMessage = () => {
-    if (message.trim()) {
-        // Send message logic
-        setMessage('')
-        setIsDraft(false)
-        localStorage.removeItem('messageDraft')
-    }
-}
-
-;<div>
-    <TextArea
-        label="Message"
-        placeholder="Type your message..."
-        value={message}
-        onChange={handleMessageChange}
-        rows={4}
-        resize="both"
-        hintText={isDraft ? 'Draft saved' : 'Start typing your message'}
-        autoFocus
-    />
-    <button
-        onClick={sendMessage}
-        disabled={!message.trim()}
-        style={{ marginTop: '8px' }}
-    >
-        Send Message
-    </button>
-</div>
-```
-
-### Code Snippet Input
-
-Textarea for code or technical content:
-
-```tsx
-const [codeSnippet, setCodeSnippet] = useState('')
-
-const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCodeSnippet(e.target.value)
-}
-
-;<TextArea
-    label="Code Snippet"
-    sublabel="Paste your code here"
-    placeholder="// Enter your code here..."
-    value={codeSnippet}
-    onChange={handleCodeChange}
-    rows={8}
-    resize="vertical"
-    wrap="off"
-    hintText="Supports all programming languages"
-    style={{ fontFamily: 'monospace' }}
-/>
-```
-
-### Article Content
-
-Large textarea for article or blog content:
-
-```tsx
-const [articleContent, setArticleContent] = useState('')
-const [wordCount, setWordCount] = useState(0)
-
-const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const content = e.target.value
-    setArticleContent(content)
-
-    // Calculate word count
-    const words = content.trim() ? content.trim().split(/\s+/).length : 0
-    setWordCount(words)
-}
-
-;<TextArea
-    label="Article Content"
-    sublabel="Write your article"
-    placeholder="Start writing your article..."
-    value={articleContent}
-    onChange={handleContentChange}
-    rows={12}
-    resize="vertical"
-    hintText={`Word count: ${wordCount} ${wordCount === 1 ? 'word' : 'words'}`}
-    helpIconHintText="Write engaging content for your readers"
-/>
-```
-
-### Support Ticket
-
-Textarea for customer support requests:
-
-```tsx
-const [issueDescription, setIssueDescription] = useState('')
-const [priority, setPriority] = useState('medium')
-
-const handleIssueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIssueDescription(e.target.value)
-}
-
-;<div>
-    <select
-        value={priority}
-        onChange={(e) => setPriority(e.target.value)}
-        style={{ marginBottom: '16px' }}
-    >
-        <option value="low">Low Priority</option>
-        <option value="medium">Medium Priority</option>
-        <option value="high">High Priority</option>
-    </select>
-
-    <TextArea
-        label="Issue Description"
-        sublabel={`Priority: ${priority.charAt(0).toUpperCase() + priority.slice(1)}`}
-        placeholder="Describe the issue you're experiencing..."
-        value={issueDescription}
-        onChange={handleIssueChange}
-        rows={5}
-        resize="vertical"
-        required
-        hintText="Include steps to reproduce the issue if applicable"
-        helpIconHintText="Detailed descriptions help us resolve issues faster"
-    />
-</div>
-```
 
 ## Behavior
 

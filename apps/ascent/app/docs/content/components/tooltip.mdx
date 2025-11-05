@@ -52,7 +52,7 @@ function MyComponent() {
                     'The trigger element that will show the tooltip on hover/focus',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -60,7 +60,7 @@ function MyComponent() {
                 hintText: 'The content to display in the tooltip',
             },
             { content: 'ReactNode | string', hintText: 'React node or string' },
-            { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -101,7 +101,7 @@ function MyComponent() {
                     'Optional icon or element to display alongside the tooltip content',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -135,7 +135,15 @@ function MyComponent() {
                 hintText: 'Controlled state for showing/hiding the tooltip',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width of the tooltip',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -155,115 +163,13 @@ function MyComponent() {
 - Accessible by default
 - Customizable styling through tokens
 
-## Usage Examples
-
-### Basic Tooltip
-
-Simple tooltip with text content
-
-```tsx
-<Tooltip content="This is a helpful tooltip">
-    <button>Hover me</button>
-</Tooltip>
-```
-
-### Tooltip with Different Positions
-
-Tooltips can be positioned on different sides of the trigger element
-
-```tsx
-<Tooltip content="Top tooltip" side={TooltipSide.TOP}>
-  <button>Top</button>
-</Tooltip>
-
-<Tooltip content="Right tooltip" side={TooltipSide.RIGHT}>
-  <button>Right</button>
-</Tooltip>
-
-<Tooltip content="Bottom tooltip" side={TooltipSide.BOTTOM}>
-  <button>Bottom</button>
-</Tooltip>
-
-<Tooltip content="Left tooltip" side={TooltipSide.LEFT}>
-  <button>Left</button>
-</Tooltip>
-```
-
-### Tooltip with Icon Slot
-
-Tooltip with an icon displayed alongside the content
-
-```tsx
-<Tooltip
-  content="Tooltip with icon"
-  slot={<span>⚠️</span>}
-  slotDirection={TooltipSlotDirection.LEFT}
->
-  <button>With Icon</button>
-</Tooltip>
-
-<Tooltip
-  content="Tooltip with icon on right"
-  slot={<span>ℹ️</span>}
-  slotDirection={TooltipSlotDirection.RIGHT}
->
-  <button>With Icon (Right)</button>
-</Tooltip>
-```
-
-### Large Tooltip
-
-Tooltip with larger size for more content
-
-```tsx
-<Tooltip
-    content="This is a large tooltip with more content to demonstrate the larger size variant"
-    size={TooltipSize.LARGE}
->
-    <button>Large Tooltip</button>
-</Tooltip>
-```
-
-### Tooltip without Arrow
-
-Tooltip without the pointing arrow
-
-```tsx
-<Tooltip content="Tooltip without arrow" showArrow={false}>
-    <button>No Arrow</button>
-</Tooltip>
-```
-
-### Controlled Tooltip
-
-Tooltip with controlled visibility state
-
-```tsx
-const [isOpen, setIsOpen] = useState(false)
-
-;<Tooltip content="Controlled tooltip" open={isOpen}>
-    <button
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-    >
-        Controlled
-    </button>
-</Tooltip>
-```
-
 ## Component Tokens
 
-You can style the tooltip component using the following tokens:
+You can style the Tooltip component using the following tokens:
 
 ```tsx
-export type TooltipSize = 'sm' | 'lg'
-
 export type TooltipTokensType = {
     background: CSSObject['backgroundColor']
-    color: CSSObject['color']
-    fontWeight: {
-        [key in TooltipSize]: CSSObject['fontWeight']
-    }
     borderRadius: {
         [key in TooltipSize]: CSSObject['borderRadius']
     }
@@ -273,12 +179,25 @@ export type TooltipTokensType = {
     padding: {
         [key in TooltipSize]: CSSObject['padding']
     }
-    fontSize: {
-        [key in TooltipSize]: VariantType
-    }
     gap: {
         [key in TooltipSize]: CSSObject['gap']
     }
+    text: {
+        color: CSSObject['color']
+        fontWeight: {
+            [key in TooltipSize]: CSSObject['fontWeight']
+        }
+        fontSize: {
+            [key in TooltipSize]: CSSObject['fontSize']
+        }
+        lineHeight: {
+            [key in TooltipSize]: CSSObject['lineHeight']
+        }
+    }
+}
+
+export type ResponsiveTooltipTokens = {
+    [key in keyof BreakpointType]: TooltipTokensType
 }
 ```
 

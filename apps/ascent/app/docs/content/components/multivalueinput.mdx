@@ -62,11 +62,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'required',
+                hintText: 'Whether the input is required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
                 content: 'onTagAdd',
                 hintText: 'Callback when a new tag is added',
             },
             { content: '(tag: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -74,7 +82,7 @@ function MyComponent() {
                 hintText: 'Callback when a tag is removed',
             },
             { content: '(tag: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -82,7 +90,7 @@ function MyComponent() {
                 hintText: 'Primary label for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -90,7 +98,7 @@ function MyComponent() {
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -98,7 +106,7 @@ function MyComponent() {
                 hintText: 'Placeholder text shown when input is empty',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -106,7 +114,7 @@ function MyComponent() {
                 hintText: 'Size variant of the input field',
             },
             { content: 'TextInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            { content: 'TextInputSize.MEDIUM' },
         ],
         [
             {
@@ -122,7 +130,7 @@ function MyComponent() {
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -130,7 +138,7 @@ function MyComponent() {
                 hintText: 'Helper text displayed below the input',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -138,7 +146,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -150,19 +158,11 @@ function MyComponent() {
         ],
         [
             {
-                content: 'required',
-                hintText: 'Whether the input is required',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
                 content: 'name',
                 hintText: 'Name attribute for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -242,17 +242,61 @@ You can style the MultiValueInput component using the following tokens:
 
 ```tsx
 export type MultiValueInputTokensType = {
-    input: {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in MultiValueInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in MultiValueInputSize]: CSSObject['fontWeight']
+        }
         gap: CSSObject['gap']
         borderRadius?: CSSObject['borderRadius']
         boxShadow: {
             [key in MultiValueInputState]: CSSObject['boxShadow']
         }
-        paddingX: {
-            [key in MultiValueInputSize]: CSSObject['padding']
-        }
-        paddingY: {
-            [key in MultiValueInputSize]: CSSObject['padding']
+        padding: {
+            x: {
+                [key in MultiValueInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in MultiValueInputSize]: CSSObject['padding']
+            }
         }
         border: {
             [key in MultiValueInputState]: CSSObject['border']
@@ -260,14 +304,23 @@ export type MultiValueInputTokensType = {
         color: {
             [key in MultiValueInputState]: CSSObject['color']
         }
-        outline: {
-            [key in MultiValueInputState]: CSSObject['outline']
-        }
         backgroundColor: {
             [key in MultiValueInputState]: CSSObject['backgroundColor']
         }
     }
 }
+
+export type ResponsiveMultiValueInputTokens = {
+    [key in keyof BreakpointType]: MultiValueInputTokensType
+}
+
+export type MultiValueInputSize = 'sm' | 'md' | 'lg'
+export type MultiValueInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
 
 The component integrates with the Tag component system for displaying individual values with consistent styling and interactions.
@@ -283,142 +336,6 @@ The component integrates with the Tag component system for displaying individual
 - **Focus Management**: Automatic focus handling for seamless user experience
 - **Accessibility**: Full keyboard navigation and screen reader support
 - **Form Integration**: Native HTML input attributes and form compatibility
-
-## Usage Examples
-
-### Skills Input
-
-Multi-value input for collecting technical skills:
-
-```tsx
-import { MultiValueInput } from '@juspay/blend-design-system'
-
-const [skills, setSkills] = useState(['JavaScript', 'TypeScript', 'React'])
-
-const handleAddSkill = (skill: string) => {
-    setSkills((prev) => [...prev, skill])
-}
-
-const handleRemoveSkill = (skillToRemove: string) => {
-    setSkills((prev) => prev.filter((skill) => skill !== skillToRemove))
-}
-
-;<MultiValueInput
-    label="Technical Skills"
-    placeholder="Type a skill and press Enter"
-    tags={skills}
-    onTagAdd={handleAddSkill}
-    onTagRemove={handleRemoveSkill}
-    hintText="Add technologies you work with"
-    required
-/>
-```
-
-### Email Recipients
-
-Input for multiple email addresses:
-
-```tsx
-const [recipients, setRecipients] = useState(['john@example.com'])
-
-const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
-
-const handleAddEmail = (email: string) => {
-    if (validateEmail(email)) {
-        setRecipients((prev) => [...prev, email])
-    }
-}
-
-const handleRemoveEmail = (emailToRemove: string) => {
-    setRecipients((prev) => prev.filter((email) => email !== emailToRemove))
-}
-
-;<MultiValueInput
-    label="Email Recipients"
-    placeholder="Enter email address and press Enter"
-    tags={recipients}
-    onTagAdd={handleAddEmail}
-    onTagRemove={handleRemoveEmail}
-    hintText="Add email addresses for recipients"
-    error={recipients.some((email) => !validateEmail(email))}
-    errorMessage="Please enter valid email addresses"
-/>
-```
-
-### Keywords/Tags
-
-Input for content keywords or tags:
-
-```tsx
-const [keywords, setKeywords] = useState(['design', 'ui', 'ux'])
-
-const handleAddKeyword = (keyword: string) => {
-    // Convert to lowercase and limit length
-    const processedKeyword = keyword.toLowerCase().slice(0, 20)
-    if (processedKeyword.length >= 2) {
-        setKeywords((prev) => [...prev, processedKeyword])
-    }
-}
-
-const handleRemoveKeyword = (keywordToRemove: string) => {
-    setKeywords((prev) => prev.filter((keyword) => keyword !== keywordToRemove))
-}
-
-;<MultiValueInput
-    label="Tags"
-    placeholder="Add tags (min 2 characters)"
-    tags={keywords}
-    onTagAdd={handleAddKeyword}
-    onTagRemove={handleRemoveKeyword}
-    hintText="Add relevant tags for your content"
-    size="small"
-/>
-```
-
-### Programming Languages
-
-Input with validation and custom processing:
-
-```tsx
-const [languages, setLanguages] = useState(['JavaScript', 'Python'])
-
-const popularLanguages = [
-    'JavaScript',
-    'Python',
-    'Java',
-    'TypeScript',
-    'C++',
-    'C#',
-    'PHP',
-    'Ruby',
-    'Go',
-    'Rust',
-]
-
-const handleAddLanguage = (language: string) => {
-    // Capitalize first letter
-    const formattedLanguage =
-        language.charAt(0).toUpperCase() + language.slice(1).toLowerCase()
-    setLanguages((prev) => [...prev, formattedLanguage])
-}
-
-const handleRemoveLanguage = (languageToRemove: string) => {
-    setLanguages((prev) => prev.filter((lang) => lang !== languageToRemove))
-}
-
-;<MultiValueInput
-    label="Programming Languages"
-    sublabel="Languages you're proficient in"
-    placeholder="Enter programming language"
-    tags={languages}
-    onTagAdd={handleAddLanguage}
-    onTagRemove={handleRemoveLanguage}
-    hintText={`Popular: ${popularLanguages.slice(0, 3).join(', ')}, etc.`}
-    size="large"
-/>
-```
 
 ## Behavior
 

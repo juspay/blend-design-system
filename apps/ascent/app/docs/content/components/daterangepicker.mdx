@@ -63,7 +63,18 @@ function MyComponent() {
                 hintText: 'Callback when date range changes',
             },
             { content: '(range: DateRange) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'onPresetSelection',
+                hintText: 'Callback when a preset is selected',
+            },
+            {
+                content: '(data: PresetSelectionData) => void',
+                hintText: 'function',
+            },
+            { content: 'undefined' },
         ],
         [
             {
@@ -83,11 +94,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'customPresets',
+                hintText: 'Custom preset configurations',
+            },
+            { content: 'PresetsConfig', hintText: 'array or object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
                 content: 'placeholder',
                 hintText: 'Placeholder text for the trigger',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -102,8 +121,8 @@ function MyComponent() {
                 content: 'icon',
                 hintText: 'Custom icon for the trigger',
             },
-            { content: 'ReactNode', hintText: 'ReactNode' },
-            { content: '' },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -111,7 +130,7 @@ function MyComponent() {
                 hintText: 'Minimum selectable date',
             },
             { content: 'Date', hintText: 'Date' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -119,7 +138,7 @@ function MyComponent() {
                 hintText: 'Maximum selectable date',
             },
             { content: 'Date', hintText: 'Date' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -155,10 +174,44 @@ function MyComponent() {
         ],
         [
             {
-                content: 'triggerElement',
-                hintText: 'Custom trigger element',
+                content: 'hideFutureDates',
+                hintText:
+                    'Hide future dates from calendar (but allow selection)',
             },
-            { content: 'ReactNode', hintText: 'ReactNode' },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'hidePastDates',
+                hintText: 'Hide past dates from calendar (but allow selection)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'customDisableDates',
+                hintText: 'Custom function to disable specific dates',
+            },
+            { content: '(date: Date) => boolean', hintText: 'function' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'customRangeConfig',
+                hintText: 'Configuration for custom range calculation',
+            },
+            { content: 'CustomRangeConfig', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'triggerElement',
+                hintText:
+                    'Custom trigger element (deprecated, use triggerConfig)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
             { content: 'null' },
         ],
         [
@@ -177,13 +230,55 @@ function MyComponent() {
             { content: 'boolean', hintText: 'boolean' },
             { content: 'false' },
         ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size variant of the picker',
+            },
+            { content: 'DateRangePickerSize', hintText: 'enum' },
+            { content: 'DateRangePickerSize.MEDIUM' },
+        ],
+        [
+            {
+                content: 'formatConfig',
+                hintText: 'Configuration for date format display',
+            },
+            { content: 'DateFormatConfig', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'triggerConfig',
+                hintText: 'Configuration for custom trigger rendering',
+            },
+            { content: 'TriggerConfig', hintText: 'object' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'maxMenuHeight',
+                hintText: 'Maximum height for the dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '250' },
+        ],
+        [
+            {
+                content: 'showPreset',
+                hintText: 'Show only preset selector without date picker',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
 
-## Types
+## Data Types
+
+### DateRange
 
 ```tsx
 export type DateRange = {
@@ -191,16 +286,86 @@ export type DateRange = {
     endDate: Date
     showTimePicker?: boolean
 }
+```
 
-export enum DateRangePreset {
+### DateFormatConfig
+
+```tsx
+export type DateFormatConfig = {
+    preset?: DateFormatPreset
+    customFormat?: CustomFormatFunction
+    includeTime?: boolean
+    includeYear?: boolean
+    separator?: string
+    locale?: string
+    timeFormat?: '12h' | '24h'
+}
+```
+
+### TriggerConfig
+
+```tsx
+export type TriggerConfig = {
+    element?: ReactNode
+    placeholder?: string
+    showIcon?: boolean
+    icon?: ReactNode
+    style?: React.CSSProperties
+    renderTrigger?: (props: {
+        selectedRange: DateRange | undefined
+        isOpen: boolean
+        isDisabled: boolean
+        formattedValue: string
+        onClick: () => void
+    }) => ReactNode
+}
+```
+
+### CustomRangeConfig
+
+```tsx
+export type CustomRangeConfig = {
+    calculateEndDate?: CustomRangeCalculatorFunction
+    fixedDayRange?: number
+    referenceRange?: DateRange
+    backwardDays?: number
+    allowManualEndDateSelection?: boolean
+    applyToPresets?: boolean
+}
+```
+
+### PresetSelectionData
+
+```tsx
+export type PresetSelectionData = {
+    preset: DateRangePreset
+    label: string
+    dateRange: DateRange
+    formattedStartDate: string
+    formattedEndDate: string
+    formattedStartTime: string
+    formattedEndTime: string
+}
+```
+
+## Enums
+
+### DateRangePreset
+
+```tsx
+enum DateRangePreset {
     CUSTOM = 'custom',
     TODAY = 'today',
     YESTERDAY = 'yesterday',
     TOMORROW = 'tomorrow',
+    LAST_30_MINUTES = 'last30Minutes',
     LAST_1_HOUR = 'last1Hour',
     LAST_6_HOURS = 'last6Hours',
+    LAST_24_HOURS = 'last24Hours',
     LAST_7_DAYS = 'last7Days',
     LAST_30_DAYS = 'last30Days',
+    THIS_MONTH = 'thisMonth',
+    LAST_MONTH = 'lastMonth',
     LAST_3_MONTHS = 'last3Months',
     LAST_12_MONTHS = 'last12Months',
     NEXT_7_DAYS = 'next7Days',
@@ -210,58 +375,31 @@ export enum DateRangePreset {
 }
 ```
 
-## Component Tokens
-
-The DateRangePicker uses comprehensive tokens for styling all its sub-components:
+### DateRangePickerSize
 
 ```tsx
-export type CalendarTokenType = {
-    quickRange: {
-        width: CSSObject['width']
-        trigger: {
-            /* Quick range trigger styling */
-        }
-        content: {
-            /* Dropdown content styling */
-        }
-        item: {
-            /* Individual preset item styling */
-        }
-    }
-    mobileDrawer: {
-        picker: {
-            /* Mobile time picker styling */
-        }
-        header: {
-            /* Mobile drawer header */
-        }
-        presetItem: {
-            /* Mobile preset items */
-        }
-        actionButtons: {
-            /* Mobile action buttons */
-        }
-    }
-    trigger: {
-        height: CSSObject['height']
-        borderRadius: CSSObject['borderRadius']
-        /* Complete trigger button styling */
-    }
-    calendar: {
-        inputs: {
-            /* Date/time input styling */
-        }
-        calendarGrid: {
-            /* Calendar grid and day styling */
-        }
-        footer: {
-            /* Footer controls styling */
-        }
-    }
+enum DateRangePickerSize {
+    SMALL = 'sm',
+    MEDIUM = 'md',
+    LARGE = 'lg',
 }
 ```
 
-The component uses responsive tokens that provide comprehensive styling for desktop popover and mobile drawer experiences.
+### DateFormatPreset
+
+```tsx
+enum DateFormatPreset {
+    SHORT_RANGE = 'short-range',
+    MEDIUM_RANGE = 'medium-range',
+    LONG_RANGE = 'long-range',
+    SHORT_SINGLE = 'short-single',
+    MEDIUM_SINGLE = 'medium-single',
+    LONG_SINGLE = 'long-single',
+    ISO_RANGE = 'iso-range',
+    US_RANGE = 'us-range',
+    CUSTOM = 'custom',
+}
+```
 
 ## Features
 
@@ -276,228 +414,214 @@ The component uses responsive tokens that provide comprehensive styling for desk
 - **Flexible Formatting**: Configurable date display formats
 - **Time Zone Support**: Handles local time zone calculations
 
-## Usage Examples
+## Component Tokens
 
-### Basic Date Range Picker
-
-Simple date range selection with presets:
+You can style the DateRangePicker component using the following tokens:
 
 ```tsx
-import { DateRangePicker, DateRange } from '@juspay/blend-design-system'
+export type CalendarState = 'default' | 'hover' | 'active' | 'disabled'
+export type CalendarSize = 'sm' | 'md' | 'lg'
 
-const [reportDateRange, setReportDateRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleReportDateChange = (range: DateRange) => {
-    setReportDateRange(range)
-    // Fetch data for the selected range
-    fetchReportData(range)
+export type CalendarTokenType = {
+    trigger: {
+        quickSelector: {
+            borderRadius: {
+                topLeft: CSSObject['borderTopLeftRadius']
+                topRight: CSSObject['borderTopRightRadius']
+                bottomLeft: CSSObject['borderBottomLeftRadius']
+                bottomRight: CSSObject['borderBottomRightRadius']
+            }
+            backgroundColor: CSSObject['backgroundColor']
+            gap: CSSObject['gap']
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+            border: {
+                [key in CalendarState]: {
+                    left: CSSObject['borderLeft']
+                    top: CSSObject['borderTop']
+                    bottom: CSSObject['borderBottom']
+                    right: CSSObject['borderRight']
+                }
+            }
+            text: {
+                color: CSSObject['color']
+                fontWeight: CSSObject['fontWeight']
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize']
+                }
+            }
+            iconSize: CSSObject['width']
+        }
+        dateInput: {
+            borderRadius: {
+                withQuickSelector: CSSObject['borderRadius']
+                withoutQuickSelector: CSSObject['borderRadius']
+            }
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+            text: {
+                color: CSSObject['color']
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize']
+                }
+                fontWeight: CSSObject['fontWeight']
+            }
+            border: {
+                [key in CalendarState]: CSSObject['border']
+            }
+            backgroundColor: CSSObject['backgroundColor']
+            iconSize: CSSObject['width']
+            gap: CSSObject['gap']
+        }
+    }
+    calendar: {
+        minWidth: CSSObject['minWidth']
+        width: CSSObject['width']
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        inputs: {
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            dateInput: {
+                gap: CSSObject['gap']
+                label: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+        }
+        calendarGrid: {
+            month: {
+                header: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    padding: {
+                        x: CSSObject['padding']
+                        y: CSSObject['padding']
+                    }
+                    gap: CSSObject['gap']
+                }
+            }
+            week: {
+                gap: CSSObject['gap']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                boxShadow: CSSObject['boxShadow']
+                color: CSSObject['color']
+                padding: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+                row: {
+                    gap: CSSObject['gap']
+                }
+            }
+            day: {
+                cell: {
+                    padding: {
+                        x: CSSObject['padding']
+                        y: CSSObject['padding']
+                    }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                    outline: {
+                        [key in CalendarState]: CSSObject['outline']
+                    }
+                    borderRadius: CSSObject['borderRadius']
+                }
+                states: {
+                    startDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: {
+                            topLeft: CSSObject['borderTopLeftRadius']
+                            bottomLeft: CSSObject['borderBottomLeftRadius']
+                        }
+                    }
+                    endDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: {
+                            topRight: CSSObject['borderTopRightRadius']
+                            bottomRight: CSSObject['borderBottomRightRadius']
+                        }
+                    }
+                    singleDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: CSSObject['borderRadius']
+                    }
+                    rangeDay: {
+                        backgroundColor: CSSObject['backgroundColor']
+                    }
+                    todayDay: {
+                        fontWeight: CSSObject['fontWeight']
+                    }
+                    hoverState: {
+                        boxShadow: CSSObject['boxShadow']
+                        borderRadius: CSSObject['borderRadius']
+                    }
+                    disabledDay: {
+                        opacity: CSSObject['opacity']
+                        cursor: CSSObject['cursor']
+                        pointerEvents: CSSObject['pointerEvents']
+                    }
+                }
+                text: {
+                    dayNumber: {
+                        color: CSSObject['color']
+                    }
+                    selectedDay: {
+                        color: CSSObject['color']
+                    }
+                    rangeDay: {
+                        color: CSSObject['color']
+                    }
+                    todayDay: {
+                        color: CSSObject['color']
+                    }
+                }
+                todayIndicator: {
+                    width: CSSObject['width']
+                    height: CSSObject['height']
+                    backgroundColor: CSSObject['backgroundColor']
+                    borderRadius: CSSObject['borderRadius']
+                    position: CSSObject['position']
+                    bottom: CSSObject['bottom']
+                    left: CSSObject['left']
+                    transform: CSSObject['transform']
+                }
+            }
+        }
+        footer: {
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            borderTop: CSSObject['borderTop']
+            gap: CSSObject['gap']
+        }
+    }
 }
 
-;<DateRangePicker
-    value={reportDateRange}
-    onChange={handleReportDateChange}
-    showDateTimePicker={true}
-    showPresets={true}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Single Date Selection
-
-Date picker for single date selection:
-
-```tsx
-const [eventDate, setEventDate] = useState<DateRange | undefined>(undefined)
-
-const handleEventDateChange = (range: DateRange) => {
-    setEventDate(range)
+export type ResponsiveCalendarTokens = {
+    [key in keyof BreakpointType]: CalendarTokenType
 }
-
-;<DateRangePicker
-    value={eventDate}
-    onChange={handleEventDateChange}
-    allowSingleDateSelection={true}
-    showPresets={false}
-    showDateTimePicker={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Date Range with Time
-
-Precise date and time range selection:
-
-```tsx
-const [meetingSchedule, setMeetingSchedule] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleScheduleChange = (range: DateRange) => {
-    setMeetingSchedule(range)
-    console.log('Meeting scheduled:', {
-        start: range.startDate,
-        end: range.endDate,
-    })
-}
-
-;<DateRangePicker
-    value={meetingSchedule}
-    onChange={handleScheduleChange}
-    showDateTimePicker={true}
-    showPresets={true}
-    allowSingleDateSelection={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Historical Data Selection
-
-Date range picker for historical data with future dates disabled:
-
-```tsx
-const [historicalRange, setHistoricalRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleHistoricalChange = (range: DateRange) => {
-    setHistoricalRange(range)
-    // Load historical analytics data
-    loadAnalyticsData(range)
-}
-
-;<DateRangePicker
-    value={historicalRange}
-    onChange={handleHistoricalChange}
-    disableFutureDates={true}
-    showPresets={true}
-    showDateTimePicker={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Custom Trigger Element
-
-Date range picker with custom button trigger:
-
-```tsx
-const [customRange, setCustomRange] = useState<DateRange | undefined>(undefined)
-
-const CustomTrigger = () => (
-    <button
-        style={{
-            padding: '12px 16px',
-            border: '2px solid #e5e7eb',
-            borderRadius: '8px',
-            background: 'white',
-            cursor: 'pointer',
-        }}
-    >
-        📅{' '}
-        {customRange
-            ? `${customRange.startDate.toLocaleDateString()} - ${customRange.endDate.toLocaleDateString()}`
-            : 'Select Date Range'}
-    </button>
-)
-
-;<DateRangePicker
-    value={customRange}
-    onChange={setCustomRange}
-    triggerElement={<CustomTrigger />}
-    showPresets={true}
-    showDateTimePicker={true}
-/>
-```
-
-### Mobile-Optimized Configuration
-
-Date picker optimized for mobile experience:
-
-```tsx
-const [mobileRange, setMobileRange] = useState<DateRange | undefined>(undefined)
-
-;<DateRangePicker
-    value={mobileRange}
-    onChange={setMobileRange}
-    useDrawerOnMobile={true}
-    skipQuickFiltersOnMobile={false}
-    showDateTimePicker={true}
-    showPresets={true}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Booking System Integration
-
-Date range picker for booking systems with constraints:
-
-```tsx
-const [bookingDates, setBookingDates] = useState<DateRange | undefined>(
-    undefined
-)
-
-const today = new Date()
-const maxDate = new Date()
-maxDate.setFullYear(today.getFullYear() + 1) // One year from now
-
-const handleBookingChange = (range: DateRange) => {
-    setBookingDates(range)
-    // Check availability for selected dates
-    checkAvailability(range)
-}
-
-;<DateRangePicker
-    value={bookingDates}
-    onChange={handleBookingChange}
-    minDate={today}
-    maxDate={maxDate}
-    disablePastDates={true}
-    showPresets={false}
-    showDateTimePicker={true}
-    allowSingleDateSelection={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Analytics Dashboard
-
-Date range picker for analytics with common presets:
-
-```tsx
-const [analyticsRange, setAnalyticsRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleAnalyticsChange = (range: DateRange) => {
-    setAnalyticsRange(range)
-
-    // Update dashboard metrics
-    updateDashboardMetrics({
-        startDate: range.startDate,
-        endDate: range.endDate,
-        includeTime: true,
-    })
-}
-
-;<div>
-    <h3>Analytics Dashboard</h3>
-    <DateRangePicker
-        value={analyticsRange}
-        onChange={handleAnalyticsChange}
-        showPresets={true}
-        showDateTimePicker={false}
-        disableFutureDates={true}
-        dateFormat="dd/MM/yyyy"
-    />
-
-    {analyticsRange && (
-        <div>
-            Showing data from {analyticsRange.startDate.toLocaleDateString()}
-            to {analyticsRange.endDate.toLocaleDateString()}
-        </div>
-    )}
-</div>
 ```
 
 ## Behavior

@@ -65,7 +65,7 @@ function MyComponent() {
                 hintText: 'Current value of the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -73,10 +73,10 @@ function MyComponent() {
                 hintText: 'Callback when input value changes',
             },
             {
-                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -84,7 +84,7 @@ function MyComponent() {
                 hintText: 'Current selected value in dropdown',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -92,7 +92,7 @@ function MyComponent() {
                 hintText: 'Callback when dropdown selection changes',
             },
             { content: '(value: string) => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -108,7 +108,7 @@ function MyComponent() {
                 hintText: 'Position of dropdown relative to input',
             },
             { content: 'DropdownPosition', hintText: 'enum' },
-            { content: 'RIGHT' },
+            { content: 'DropdownPosition.RIGHT' },
         ],
         [
             {
@@ -116,7 +116,7 @@ function MyComponent() {
                 hintText: 'Primary label for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -124,7 +124,7 @@ function MyComponent() {
                 hintText: 'Secondary label or description',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -132,7 +132,7 @@ function MyComponent() {
                 hintText: 'Placeholder text shown when input is empty',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -140,7 +140,7 @@ function MyComponent() {
                 hintText: 'Size variant of the input field',
             },
             { content: 'TextInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            { content: 'TextInputSize.MEDIUM' },
         ],
         [
             {
@@ -156,7 +156,7 @@ function MyComponent() {
                 hintText: 'Error message to display when in error state',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -164,7 +164,7 @@ function MyComponent() {
                 hintText: 'Helper text displayed below the input',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -172,7 +172,7 @@ function MyComponent() {
                 hintText: 'Tooltip text for the help icon',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -196,7 +196,7 @@ function MyComponent() {
                 hintText: 'Content to display as an additional slot',
             },
             { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -204,7 +204,7 @@ function MyComponent() {
                 hintText: 'Name attribute for the input field',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -212,15 +212,31 @@ function MyComponent() {
                 hintText: 'Name attribute for the dropdown',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
-                content: 'maxDropdownHeight',
+                content: 'maxMenuHeight',
                 hintText: 'Maximum height for dropdown menu',
             },
             { content: 'number', hintText: 'number' },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'minMenuWidth',
+                hintText: 'Minimum width for dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'maxMenuWidth',
+                hintText: 'Maximum width for dropdown menu',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -228,7 +244,7 @@ function MyComponent() {
                 hintText: 'Callback when dropdown opens',
             },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -236,7 +252,7 @@ function MyComponent() {
                 hintText: 'Callback when dropdown closes',
             },
             { content: '() => void', hintText: 'function' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -244,10 +260,10 @@ function MyComponent() {
                 hintText: 'Callback when input receives focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -255,10 +271,10 @@ function MyComponent() {
                 hintText: 'Callback when input loses focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -299,96 +315,73 @@ Position of the dropdown relative to the input field:
     loadingMessage="Loading positions..."
 />
 
-### DropdownInputSize
-
-Size variants (inherits from TextInputSize):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'SM', hintText: 'Small input size' },
-            { content: '"sm"', hintText: 'value' },
-            { content: 'Compact for tight layouts' },
-        ],
-        [
-            { content: 'MD', hintText: 'Medium input size' },
-            { content: '"md"', hintText: 'value' },
-            { content: 'Default size for most use cases' },
-        ],
-        [
-            { content: 'LG', hintText: 'Large input size' },
-            { content: '"lg"', hintText: 'value' },
-            { content: 'Prominent with floating label on mobile' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No sizes available"
-    loadingMessage="Loading sizes..."
-/>
-
-### DropdownInputState
-
-Internal state variants (for styling):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'DEFAULT', hintText: 'Default state' },
-            { content: '"default"', hintText: 'value' },
-            { content: 'Normal input appearance' },
-        ],
-        [
-            { content: 'HOVER', hintText: 'Hover state' },
-            { content: '"hover"', hintText: 'value' },
-            { content: 'Enhanced border on hover' },
-        ],
-        [
-            { content: 'FOCUS', hintText: 'Focus state' },
-            { content: '"focus"', hintText: 'value' },
-            { content: 'Primary border and shadow when focused' },
-        ],
-        [
-            { content: 'ERROR', hintText: 'Error state' },
-            { content: '"error"', hintText: 'value' },
-            { content: 'Red border and error styling' },
-        ],
-        [
-            { content: 'DISABLED', hintText: 'Disabled state' },
-            { content: '"disabled"', hintText: 'value' },
-            { content: 'Muted appearance with no interaction' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No states available"
-    loadingMessage="Loading states..."
-/>
-
 ## Component Tokens
 
 You can style the DropdownInput component using the following tokens:
 
 ```tsx
 export type DropdownInputTokensType = {
-    input: {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    inputContainer: {
         gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in DropdownInputState]: CSSObject['boxShadow']
+        fontSize: {
+            [key in DropdownInputSize]: CSSObject['fontSize']
         }
-        paddingX: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        paddingY: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        border: {
-            [key in DropdownInputState]: CSSObject['border']
+        fontWeight: {
+            [key in DropdownInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in DropdownInputState]: CSSObject['color']
         }
-        outline: {
-            [key in DropdownInputState]: CSSObject['outline']
+        borderRadius?: {
+            [key in DropdownInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in DropdownInputState]: CSSObject['border']
         }
         backgroundColor: {
             [key in DropdownInputState]: CSSObject['backgroundColor']
@@ -399,6 +392,14 @@ export type DropdownInputTokensType = {
 export type ResponsiveDropdownInputTokens = {
     [key in keyof BreakpointType]: DropdownInputTokensType
 }
+
+export type DropdownInputSize = 'sm' | 'md' | 'lg'
+export type DropdownInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
 
 The component uses responsive tokens that adapt to different breakpoints:
@@ -417,109 +418,6 @@ The component uses responsive tokens that adapt to different breakpoints:
 - **Form Integration**: Native HTML input attributes and form compatibility
 - **Accessibility**: Full keyboard navigation and screen reader support
 - **State Management**: Coordinated state between input and dropdown components
-
-## Usage Examples
-
-### Currency Input
-
-Input field with currency selector:
-
-```tsx
-import { DropdownInput, DropdownPosition } from '@juspay/blend-design-system'
-
-const [amount, setAmount] = useState('')
-const [currency, setCurrency] = useState('USD')
-
-const currencies = [
-    {
-        group: 'Major Currencies',
-        items: [
-            { id: 'USD', label: '$ USD', value: 'USD' },
-            { id: 'EUR', label: '€ EUR', value: 'EUR' },
-            { id: 'GBP', label: '£ GBP', value: 'GBP' },
-            { id: 'JPY', label: '¥ JPY', value: 'JPY' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Amount"
-    placeholder="0.00"
-    value={amount}
-    onChange={(e) => setAmount(e.target.value)}
-    dropDownValue={currency}
-    onDropDownChange={setCurrency}
-    dropDownItems={currencies}
-    dropdownPosition={DropdownPosition.RIGHT}
-    hintText="Enter amount and select currency"
-/>
-```
-
-### Unit Measurement Input
-
-Input with unit selector on the left:
-
-```tsx
-const [value, setValue] = useState('')
-const [unit, setUnit] = useState('px')
-
-const units = [
-    {
-        group: 'CSS Units',
-        items: [
-            { id: 'px', label: 'px', value: 'px' },
-            { id: 'rem', label: 'rem', value: 'rem' },
-            { id: 'em', label: 'em', value: 'em' },
-            { id: '%', label: '%', value: '%' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Width"
-    placeholder="Enter value"
-    value={value}
-    onChange={(e) => setValue(e.target.value)}
-    dropDownValue={unit}
-    onDropDownChange={setUnit}
-    dropDownItems={units}
-    dropdownPosition={DropdownPosition.LEFT}
-    hintText="Select unit and enter width value"
-/>
-```
-
-### Phone Number Input
-
-Phone input with country code selector:
-
-```tsx
-const [phoneNumber, setPhoneNumber] = useState('')
-const [countryCode, setCountryCode] = useState('+1')
-
-const countryCodes = [
-    {
-        group: 'Country Codes',
-        items: [
-            { id: 'us', label: '+1 🇺🇸', value: '+1' },
-            { id: 'uk', label: '+44 🇬🇧', value: '+44' },
-            { id: 'de', label: '+49 🇩🇪', value: '+49' },
-            { id: 'fr', label: '+33 🇫🇷', value: '+33' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Phone Number"
-    placeholder="Enter phone number"
-    value={phoneNumber}
-    onChange={(e) => setPhoneNumber(e.target.value)}
-    dropDownValue={countryCode}
-    onDropDownChange={setCountryCode}
-    dropDownItems={countryCodes}
-    dropdownPosition={DropdownPosition.LEFT}
-    hintText="Select country code and enter phone number"
-/>
-```
 
 ## Behavior
 

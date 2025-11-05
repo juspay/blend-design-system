@@ -63,6 +63,7 @@ function MyComponent() {
             },
             { content: 'number', hintText: 'number' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -70,6 +71,7 @@ function MyComponent() {
                 hintText: 'Visual style variant of the progress bar',
             },
             { content: 'ProgressBarVariant', hintText: 'enum' },
+            { content: 'SOLID, SEGMENTED, CIRCULAR' },
             { content: 'ProgressBarVariant.SOLID' },
         ],
         [
@@ -78,6 +80,7 @@ function MyComponent() {
                 hintText: 'Size variant affecting dimensions',
             },
             { content: 'ProgressBarSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
             { content: 'ProgressBarSize.MEDIUM' },
         ],
         [
@@ -87,6 +90,7 @@ function MyComponent() {
                     'Style type for circular variant (solid or segmented)',
             },
             { content: 'ProgressBarType', hintText: 'enum' },
+            { content: 'SOLID, SEGMENTED' },
             { content: 'ProgressBarType.SOLID' },
         ],
         [
@@ -95,15 +99,8 @@ function MyComponent() {
                 hintText: 'Whether to display progress percentage label',
             },
             { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'className',
-                hintText: 'Additional CSS class for the progress bar',
-            },
-            { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'false' },
         ],
     ]}
     className="mb-8"
@@ -111,282 +108,80 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Features
-
-- **Multiple Variants**: Linear solid, linear segmented, and circular progress indicators
-- **Size Options**: Three size variants (small, medium, large) for different contexts
-- **Progress Labels**: Optional percentage labels with consistent typography
-- **Smooth Animations**: Built-in transitions for smooth progress updates
-- **Value Clamping**: Automatic clamping of values between 0-100 range
-- **Circular Indicators**: Full circular progress with solid and segmented styles
-- **Segmented Styling**: Distinctive segmented appearance for step-based progress
-- **Responsive Design**: Adapts to container width for linear variants
-- **Accessibility Ready**: Semantic structure suitable for ARIA enhancements
-- **Token-Based Styling**: Comprehensive design token system for customization
-- **High Performance**: Optimized rendering for smooth animations
-- **Type Safety**: Full TypeScript support with proper type definitions
-
-## Enums
-
-### ProgressBarVariant
-
-```tsx
-enum ProgressBarVariant {
-    SOLID = 'solid', // Linear solid progress bar
-    SEGMENTED = 'segmented', // Linear segmented progress bar
-    CIRCULAR = 'circular', // Circular progress indicator
-}
-```
-
-### ProgressBarSize
-
-```tsx
-enum ProgressBarSize {
-    SMALL = 'sm', // Compact size for dense layouts
-    MEDIUM = 'md', // Standard size for general use
-    LARGE = 'lg', // Larger size for emphasis
-}
-```
-
-### ProgressBarType
-
-```tsx
-enum ProgressBarType {
-    SOLID = 'solid', // Solid fill style (for circular)
-    SEGMENTED = 'segmented', // Segmented dash style (for circular)
-}
-```
-
-## Usage Examples
-
-### Linear Progress Bar
-
-Basic linear progress indicator
-
-```tsx
-import { ProgressBar, ProgressBarVariant, ProgressBarSize } from 'blend-v1'
-;<ProgressBar
-    value={75}
-    variant={ProgressBarVariant.SOLID}
-    size={ProgressBarSize.MEDIUM}
-    showLabel={true}
-/>
-```
-
-### Segmented Progress Bar
-
-Linear progress bar with segmented appearance
-
-```tsx
-<ProgressBar
-    value={60}
-    variant={ProgressBarVariant.SEGMENTED}
-    size={ProgressBarSize.LARGE}
-    showLabel={false}
-/>
-```
-
-### Circular Progress Indicator
-
-Circular progress with percentage label
-
-```tsx
-import { ProgressBarType } from 'blend-v1'
-;<ProgressBar
-    value={80}
-    variant={ProgressBarVariant.CIRCULAR}
-    type={ProgressBarType.SOLID}
-    size={ProgressBarSize.MEDIUM}
-    showLabel={true}
-/>
-```
-
-### Segmented Circular Progress
-
-Circular progress with dashed segmented style
-
-```tsx
-<ProgressBar
-    value={45}
-    variant={ProgressBarVariant.CIRCULAR}
-    type={ProgressBarType.SEGMENTED}
-    size={ProgressBarSize.LARGE}
-    showLabel={true}
-/>
-```
-
-### Different Sizes
-
-Progress bars in various sizes
-
-```tsx
-<div className="space-y-4">
-    <ProgressBar value={30} size={ProgressBarSize.SMALL} showLabel={true} />
-
-    <ProgressBar value={60} size={ProgressBarSize.MEDIUM} showLabel={true} />
-
-    <ProgressBar value={90} size={ProgressBarSize.LARGE} showLabel={true} />
-</div>
-```
-
-### Loading States
-
-Progress bars for different loading scenarios
-
-```tsx
-// File upload progress
-<div>
-    <label>Uploading file...</label>
-    <ProgressBar
-        value={uploadProgress}
-        variant={ProgressBarVariant.SOLID}
-        showLabel={true}
-    />
-</div>
-
-// Step-based process
-<div>
-    <label>Setup Progress</label>
-    <ProgressBar
-        value={stepProgress}
-        variant={ProgressBarVariant.SEGMENTED}
-        showLabel={false}
-    />
-</div>
-
-// Circular loading indicator
-<div className="flex items-center gap-3">
-    <ProgressBar
-        value={loadingProgress}
-        variant={ProgressBarVariant.CIRCULAR}
-        size={ProgressBarSize.SMALL}
-        showLabel={false}
-    />
-    <span>Processing...</span>
-</div>
-```
-
-## Behavior
-
-### Value Management
-
-- **Range Clamping**: Values are automatically clamped between 0 and 100
-- **Real-time Updates**: Progress updates smoothly with CSS transitions
-- **Percentage Display**: Labels show rounded percentage values
-- **Responsive Width**: Linear variants adapt to container width
-
-### Visual Feedback
-
-- **Smooth Transitions**: 0.3s ease-in-out transitions for progress changes
-- **Clear Indication**: Visual distinction between completed and remaining progress
-- **Consistent Sizing**: Proportional scaling across size variants
-- **Label Positioning**: Appropriately positioned labels for readability
-
-### Animation System
-
-- **CSS Transitions**: Hardware-accelerated transitions for smooth performance
-- **Stroke Animation**: Circular variants animate stroke-dashoffset for smooth circular progress
-- **Width Animation**: Linear variants animate width property for smooth filling
-- **No Flicker**: Optimized rendering to prevent visual artifacts
-
 ## Component Tokens
 
-The ProgressBar component uses a comprehensive token system for styling:
+You can style the ProgressBar component using the following tokens:
 
 ```tsx
-type ProgressBarTokenType = {
-    container: {
-        borderRadius: string
-        overflow: string
-    }
-    height: {
-        [ProgressBarSize.SMALL]: string
-        [ProgressBarSize.MEDIUM]: string
-        [ProgressBarSize.LARGE]: string
-    }
-    fill: {
-        solid: {
-            backgroundColor: string
-            borderRadius: string
+export type ProgressBarTokenType = {
+    linear: {
+        height: {
+            [key in ProgressBarSize]: CSSObject['height']
         }
-        segmented: {
-            backgroundColor: string
-            borderRadius: string
+        fill: {
+            backgroundColor: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['backgroundColor']
+            }
+            borderRadius: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['borderRadius']
+            }
         }
-    }
-    empty: {
-        solid: {
-            backgroundColor: string
+        empty: {
+            backgroundColor: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['backgroundColor']
+            }
+            backgroundImage: {
+                segmented: CSSObject['backgroundImage']
+            }
+            backgroundSize: {
+                segmented: CSSObject['backgroundSize']
+            }
         }
-        segmented: {
-            backgroundColor: string
-            backgroundImage: string
-            backgroundSize: string
+        borderRadius: {
+            [key in Exclude<
+                ProgressBarVariant,
+                'circular'
+            >]: CSSObject['borderRadius']
         }
     }
     circular: {
-        size: Record<ProgressBarSize, string>
-        strokeWidth: Record<ProgressBarSize, number>
-        solid: {
-            stroke: string
-            background: string
+        size: {
+            [key in ProgressBarSize]: CSSObject['width']
         }
-        segmented: {
-            stroke: string
-            background: string
-            dashArray: string
-            dashOffset: string
+        strokeWidth: {
+            [key in ProgressBarSize]: number
+        }
+        stroke: {
+            [key in ProgressBarType]: CSSObject['stroke']
+        }
+        background: {
+            [key in ProgressBarType]: CSSObject['stroke']
+        }
+        dashArray: {
+            [key in ProgressBarType]: string
+        }
+        dashOffset: {
+            [key in ProgressBarType]: string
         }
     }
     label: {
-        fontSize: string
-        fontWeight: number
-        color: string
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
     }
     transition: string
 }
+
+export type ResponsiveProgressBarTokens = {
+    [key in keyof BreakpointType]: ProgressBarTokenType
+}
 ```
-
-## Best Practices
-
-### When to Use Progress Bars
-
-- **File Operations**: For file uploads, downloads, or processing
-- **Multi-step Processes**: For wizards, forms, or setup procedures
-- **Loading States**: For data loading or content generation
-- **Background Tasks**: For long-running operations with known duration
-
-### Progress Bar Guidelines
-
-- **Accurate Values**: Ensure progress values accurately reflect actual completion
-- **Appropriate Variants**: Use segmented for step-based processes, solid for continuous progress
-- **Clear Context**: Provide descriptive labels explaining what's progressing
-- **Size Selection**: Choose sizes appropriate for the UI context and importance
-
-### Visual Design
-
-- **Consistent Sizing**: Use consistent progress bar sizes throughout your application
-- **Proper Spacing**: Ensure adequate spacing around progress bars
-- **Label Visibility**: Show labels when progress percentage is important to users
-- **Color Contrast**: Ensure sufficient contrast between progress and background
-
-### Performance Considerations
-
-- **Smooth Updates**: Avoid frequent rapid updates that could cause visual jitter
-- **Animation Optimization**: Leverage CSS transitions for smooth visual feedback
-- **Value Throttling**: Consider throttling progress updates for better performance
-- **Memory Management**: Clean up intervals or timeouts used for progress simulation
-
-### Accessibility Considerations
-
-- **ARIA Labels**: Consider adding ARIA labels for screen readers
-- **Progress Context**: Provide context about what process is being tracked
-- **Completion Feedback**: Ensure users are notified when progress completes
-- **Alternative Text**: Provide alternative indicators for users who can't see progress bars
-
-### Mobile Considerations
-
-- **Touch-Friendly Sizing**: Ensure progress bars are visible on mobile screens
-- **Performance Optimization**: Optimize animations for mobile devices
-- **Battery Efficiency**: Consider reducing animation frequency on mobile
-- **Screen Real Estate**: Choose appropriate sizes for mobile layouts

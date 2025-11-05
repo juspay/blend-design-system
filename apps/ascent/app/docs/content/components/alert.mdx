@@ -53,6 +53,7 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             {
@@ -61,15 +62,21 @@ function MyComponent() {
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
+            { content: 'Required' },
         ],
         [
             { content: 'variant', hintText: 'The visual variant of the alert' },
             { content: 'AlertVariant', hintText: 'enum' },
+            {
+                content:
+                    'PRIMARY, SUCCESS, WARNING, ERROR, PURPLE, ORANGE, NEUTRAL',
+            },
             { content: 'AlertVariant.PRIMARY' },
         ],
         [
             { content: 'style', hintText: 'The visual style of the alert' },
             { content: 'AlertStyle', hintText: 'enum' },
+            { content: 'SUBTLE, NO_FILL' },
             { content: 'AlertStyle.SUBTLE' },
         ],
         [
@@ -79,6 +86,7 @@ function MyComponent() {
             },
             { content: 'AlertAction', hintText: 'object' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -86,6 +94,7 @@ function MyComponent() {
                 hintText: 'Secondary action button configuration',
             },
             { content: 'AlertAction', hintText: 'object' },
+            { content: '' },
             { content: '' },
         ],
         [
@@ -95,6 +104,7 @@ function MyComponent() {
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -103,6 +113,7 @@ function MyComponent() {
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
+            { content: '' },
         ],
         [
             {
@@ -110,6 +121,7 @@ function MyComponent() {
                 hintText: 'Position of action buttons relative to content',
             },
             { content: 'AlertActionPlacement', hintText: 'enum' },
+            { content: 'BOTTOM, RIGHT' },
             { content: 'AlertActionPlacement.RIGHT' },
         ],
     ]}
@@ -118,167 +130,14 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## AlertAction Type
-
-The `AlertAction` type defines the structure for action buttons:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'label',
-                hintText: 'Text displayed on the action button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onClick',
-                hintText: 'Function called when the action button is clicked',
-            },
-            { content: '() => void', hintText: 'function' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- **7 Semantic Variants**: Primary, Success, Warning, Error, Purple, Orange, and Neutral for different message types
-- **2 Visual Styles**: Subtle (filled background) and No Fill (outline only) for different design contexts
-- **Flexible Actions**: Support for primary and secondary action buttons with customizable placement
-- **Dismissible**: Optional close button with callback functionality
-- **Custom Icons**: Support for custom icons to enhance visual communication
-- **Responsive Layout**: Automatic layout adjustment based on content and screen size
-- **Accessible Design**: Full keyboard navigation and screen reader support
-- **Action Placement**: Buttons can be positioned on the right or bottom for optimal layout
-- **Max Width Control**: Built-in max-width of 900px for optimal readability
-- **Theme Integration**: Consistent styling through design tokens
-
-## Usage Examples
-
-### Basic Information Alert
-
-Simple alert with heading and description only
-
-```tsx
-<Alert
-    heading="Information"
-    description="This is an important informational message for the user."
-    variant={AlertVariant.PRIMARY}
-/>
-```
-
-### Success Alert with Close Button
-
-Alert confirming successful action with dismissible option
-
-```tsx
-<Alert
-    heading="Success!"
-    description="Your changes have been saved successfully."
-    variant={AlertVariant.SUCCESS}
-    onClose={() => console.log('Alert dismissed')}
-/>
-```
-
-### Warning Alert with Actions
-
-Alert requiring user decision with action buttons
-
-```tsx
-<Alert
-    heading="Unsaved Changes"
-    description="You have unsaved changes. Do you want to save them before leaving?"
-    variant={AlertVariant.WARNING}
-    primaryAction={{
-        label: 'Save Changes',
-        onClick: () => console.log('Save clicked'),
-    }}
-    secondaryAction={{
-        label: 'Discard',
-        onClick: () => console.log('Discard clicked'),
-    }}
-/>
-```
-
-### Error Alert with Custom Icon
-
-Error alert with custom icon for enhanced visual communication
-
-```tsx
-import { AlertCircle } from 'lucide-react'
-;<Alert
-    heading="Connection Error"
-    description="Unable to connect to the server. Please check your internet connection and try again."
-    variant={AlertVariant.ERROR}
-    icon={<AlertCircle size={20} />}
-    primaryAction={{
-        label: 'Retry',
-        onClick: () => console.log('Retry clicked'),
-    }}
-    onClose={() => console.log('Error dismissed')}
-/>
-```
-
-### Alert with Bottom Action Placement
-
-Alert with action buttons positioned below the content
-
-```tsx
-<Alert
-    heading="Software Update"
-    description="A new version is available with important security updates and new features."
-    variant={AlertVariant.PURPLE}
-    actionPlacement={AlertActionPlacement.BOTTOM}
-    primaryAction={{
-        label: 'Download Update',
-        onClick: () => console.log('Download clicked'),
-    }}
-    secondaryAction={{
-        label: 'Remind Me Later',
-        onClick: () => console.log('Later clicked'),
-    }}
-/>
-```
-
-### No Fill Style Alert
-
-Alert with transparent background and border-only styling
-
-```tsx
-<Alert
-    heading="System Maintenance"
-    description="Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM UTC."
-    variant={AlertVariant.NEUTRAL}
-    style={AlertStyle.NO_FILL}
-    icon={<span>🔧</span>}
-/>
-```
-
-### Alert with Only Close Button
-
-Alert with automatic bottom placement when only close button is provided
-
-```tsx
-<Alert
-    heading="Welcome!"
-    description="Welcome to the new version of our application. Explore the updated interface and new features."
-    variant={AlertVariant.PRIMARY}
-    onClose={() => console.log('Welcome message dismissed')}
-/>
-```
-
 ## Component Tokens
 
 You can style the Alert component using the following tokens:
 
 ```tsx
 export type AlertTokenType = {
+    maxWidth: CSSObject['maxWidth']
+    gap: CSSObject['gap']
     padding: CSSObject['padding']
     borderRadius: CSSObject['borderRadius']
     background: {
@@ -287,83 +146,44 @@ export type AlertTokenType = {
         }
     }
     border: {
-        [key in AlertVariant]: CSSObject['border']
+        [key in AlertVariant]: {
+            [key in AlertStyle]: CSSObject['border']
+        }
+    }
+    text: {
+        heading: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        description: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
     }
     button: {
-        [key in AlertVariant]: CSSObject['color']
+        gap: CSSObject['gap']
+        primaryAction: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        secondaryAction: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        closeButton: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
     }
-    heading: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    description: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-        lineHeight: CSSObject['lineHeight']
-    }
-}
-```
-
-## Behavior
-
-### Action Placement Logic
-
-- **Right Placement**: When both primary and secondary actions are provided
-- **Bottom Placement**: When `actionPlacement={AlertActionPlacement.BOTTOM}` is explicitly set
-- **Automatic Bottom**: When only `onClose` is provided without other actions
-
-### Close Button Behavior
-
-- **Auto-positioning**: Close button automatically moves to bottom when no other actions are present
-- **Always Visible**: Close button remains accessible when `onClose` prop is provided
-- **Icon Consistency**: Uses standard X icon from Lucide React
-
-### Responsive Behavior
-
-- **Max Width**: Component has a maximum width of 900px for optimal readability
-- **Flexible Layout**: Content and actions adapt to available space
-- **Mobile Friendly**: Action buttons stack appropriately on smaller screens
-
-## Accessibility
-
-- **Semantic HTML**: Uses proper ARIA roles and landmarks for alert content
-- **Keyboard Navigation**: All interactive elements are keyboard accessible
-- **Screen Reader Support**: Proper announcements for alert content and state changes
-- **Focus Management**: Clear focus indicators on all interactive elements
-- **Color Independence**: Alert meaning conveyed through text, not color alone
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### AlertVariant
-
-```tsx
-enum AlertVariant {
-    PRIMARY = 'primary', // Blue color scheme for general information
-    SUCCESS = 'success', // Green color scheme for positive feedback
-    WARNING = 'warning', // Yellow color scheme for caution messages
-    ERROR = 'error', // Red color scheme for error messages
-    PURPLE = 'purple', // Purple color scheme for feature announcements
-    ORANGE = 'orange', // Orange color scheme for marketing messages
-    NEUTRAL = 'neutral', // Gray color scheme for neutral information
-}
-```
-
-### AlertStyle
-
-```tsx
-enum AlertStyle {
-    SUBTLE = 'subtle', // Filled background with subtle colors
-    NO_FILL = 'noFill', // Transparent background with border only
-}
-```
-
-### AlertActionPlacement
-
-```tsx
-enum AlertActionPlacement {
-    BOTTOM = 'bottom', // Action buttons positioned below content
-    RIGHT = 'right', // Action buttons positioned to the right of content
 }
 ```

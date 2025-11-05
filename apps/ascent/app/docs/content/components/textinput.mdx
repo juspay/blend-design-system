@@ -55,7 +55,7 @@ function MyComponent() {
                 hintText: 'Callback when input value changes',
             },
             {
-                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
             { content: 'Required' },
@@ -82,7 +82,7 @@ function MyComponent() {
                 hintText: 'Placeholder text shown when input is empty',
             },
             { content: 'string', hintText: 'string' },
-            { content: '"Enter"' },
+            { content: "'Enter'" },
         ],
         [
             {
@@ -90,7 +90,7 @@ function MyComponent() {
                 hintText: 'Size variant of the input field',
             },
             { content: 'TextInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            { content: 'TextInputSize.MEDIUM' },
         ],
         [
             {
@@ -170,10 +170,10 @@ function MyComponent() {
                 hintText: 'Callback when input receives focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -181,10 +181,21 @@ function MyComponent() {
                 hintText: 'Callback when input loses focus',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
+        ],
+        [
+            {
+                content: 'cursor',
+                hintText: 'Cursor style for the input',
+            },
+            {
+                content: "'text' | 'pointer' | 'default' | 'not-allowed'",
+                hintText: 'string',
+            },
+            { content: "'text'" },
         ],
     ]}
     className="mb-8"
@@ -264,26 +275,66 @@ You can style the TextInput component using the following tokens:
 
 ```tsx
 export type TextInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextInputState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingX: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        paddingY: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
         }
-        border: {
-            [key in TextInputState]: CSSObject['border']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in TextInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TextInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in TextInputState]: CSSObject['color']
         }
-        outline: {
-            [key in TextInputState]: CSSObject['outline']
+        borderRadius: {
+            [key in TextInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in TextInputState]: CSSObject['border']
         }
         backgroundColor: {
             [key in TextInputState]: CSSObject['backgroundColor']
@@ -312,80 +363,6 @@ The component uses responsive tokens that adapt to different breakpoints:
 - **Customizable Sizing**: Three size variants for different layout needs
 - **Helper Text**: Support for hints, help icons, and error messages
 - **Dynamic Padding**: Automatic padding adjustment based on slot content
-
-## Usage Examples
-
-### Basic Input
-
-Simple text input with label and hint text:
-
-```tsx
-import { TextInput } from '@juspay/blend-design-system'
-
-const [email, setEmail] = useState('')
-
-<TextInput
-    label="Email Address"
-    placeholder="Enter your email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    hintText="We'll never share your email with anyone"
-/>
-```
-
-### Input with Error State
-
-Text input showing validation error:
-
-```tsx
-const [password, setPassword] = useState('')
-const hasError = password.length > 0 && password.length < 8
-
-<TextInput
-    label="Password"
-    placeholder="Enter password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    error={hasError}
-    errorMessage="Password must be at least 8 characters long"
-    required
-/>
-```
-
-### Input with Slots
-
-Text input with icon slots for enhanced UX:
-
-```tsx
-import { Search, Eye, EyeOff } from 'lucide-react'
-
-const [searchQuery, setSearchQuery] = useState('')
-const [showPassword, setShowPassword] = useState(false)
-
-// Search input with left icon
-<TextInput
-    placeholder="Search..."
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    leftSlot={<Search size={16} />}
-/>
-
-// Password input with toggle visibility
-<TextInput
-    label="Password"
-    type={showPassword ? 'text' : 'password'}
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    rightSlot={
-        <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-        >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-        </button>
-    }
-/>
-```
 
 ## Behavior
 

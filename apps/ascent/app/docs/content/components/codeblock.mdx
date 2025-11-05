@@ -1,0 +1,210 @@
+---
+title: Code Block
+description: The CodeBlock component displays code snippets with syntax highlighting, line numbers, and diff view capabilities for showcasing code examples and changes.
+category: components
+tags:
+    - code-block
+    - component
+    - code
+    - syntax-highlighting
+    - diff
+    - code-snippet
+RepoFolderName: CodeBlock
+StorybookLink: components-codeblock--docs
+---
+
+<CodeBlockPreview />
+
+## Usage
+
+```tsx
+import { CodeBlock, CodeBlockVariant, DiffLineType } from 'blend-v1'
+
+function MyComponent() {
+    const code = `function greet(name: string) {
+    return \`Hello, \${name}!\`
+}`
+
+    return (
+        <CodeBlock
+            code={code}
+            variant={CodeBlockVariant.DEFAULT}
+            showLineNumbers={true}
+            showHeader={true}
+            header="example.ts"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'code',
+                hintText: 'The code string to display',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: 'Required' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'The visual variant of the code block',
+            },
+            { content: 'CodeBlockVariant', hintText: 'enum' },
+            { content: 'DEFAULT, NO_GUTTER, DIFF' },
+            { content: 'CodeBlockVariant.DEFAULT' },
+        ],
+        [
+            {
+                content: 'showLineNumbers',
+                hintText: 'Whether to show line numbers',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showHeader',
+                hintText: 'Whether to show the header section',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'header',
+                hintText: 'Header text displayed in the code block header',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: "'Header'" },
+        ],
+        [
+            {
+                content: 'headerLeftSlot',
+                hintText: 'Custom content slot on the left side of header',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerRightSlot',
+                hintText:
+                    'Custom content slot on the right side of header (before copy button)',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'diffLines',
+                hintText:
+                    'Array of diff lines for diff view (required when variant is DIFF)',
+            },
+            { content: 'DiffLine[]', hintText: 'array' },
+            { content: '' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the CodeBlock component using the following tokens:
+
+```tsx
+export type CodeBlockTokenType = {
+    backgroundColor: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    boxShadow: CSSObject['boxShadow']
+
+    header: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderBottom: CSSObject['borderBottom']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        gap: CSSObject['gap']
+        icon: {
+            width: CSSObject['width']
+        }
+        text: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
+            color: CSSObject['color']
+        }
+    }
+
+    body: {
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        backgroundColor: CSSObject['backgroundColor']
+
+        gutter: {
+            width: CSSObject['width']
+            color: CSSObject['color']
+            backgroundColor: {
+                [key in DiffLineType]: CSSObject['backgroundColor']
+            }
+            borderLeft: {
+                [key in DiffLineType]: CSSObject['borderLeft']
+            }
+            borderColor: {
+                [key in DiffLineType]: CSSObject['color']
+            }
+        }
+
+        code: {
+            fontFamily: CSSObject['fontFamily']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+            padding: {
+                x: {
+                    left: CSSObject['paddingLeft']
+                    right: CSSObject['paddingRight']
+                }
+                y: CSSObject['padding']
+            }
+        }
+
+        highlightedLine: {
+            backgroundColor: {
+                [key in DiffLineType]: CSSObject['backgroundColor']
+            }
+        }
+
+        syntax: {
+            keyword: CSSObject['color']
+            function: CSSObject['color']
+            string: CSSObject['color']
+            number: CSSObject['color']
+            operator: CSSObject['color']
+            variable: CSSObject['color']
+            comment: CSSObject['color']
+            text: CSSObject['color']
+        }
+    }
+}
+
+export type ResponsiveCodeBlockTokens = {
+    [key in keyof BreakpointType]: CodeBlockTokenType
+}
+```

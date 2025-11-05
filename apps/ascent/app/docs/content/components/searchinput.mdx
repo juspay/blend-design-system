@@ -54,7 +54,7 @@ function MyComponent() {
                     'React element to display on the left side of the input',
             },
             { content: 'React.ReactNode', hintText: 'ReactNode' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -63,7 +63,7 @@ function MyComponent() {
                     'React element to display on the right side of the input',
             },
             { content: 'React.ReactNode', hintText: 'ReactNode' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -79,7 +79,7 @@ function MyComponent() {
                 hintText: 'Current search input value',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -90,7 +90,7 @@ function MyComponent() {
                 content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -98,7 +98,7 @@ function MyComponent() {
                 hintText: 'Placeholder text for the input',
             },
             { content: 'string', hintText: 'string' },
-            { content: '"Enter"' },
+            { content: "'Enter'" },
         ],
         [
             {
@@ -106,7 +106,7 @@ function MyComponent() {
                 hintText: 'Name attribute for the input element',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -133,7 +133,7 @@ function MyComponent() {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
         [
             {
@@ -144,7 +144,7 @@ function MyComponent() {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText: 'function',
             },
-            { content: '' },
+            { content: 'undefined' },
         ],
     ]}
     className="mb-8"
@@ -158,31 +158,71 @@ You can style the SearchInput component using the following tokens:
 
 ```tsx
 export type SearchInputTokensType = {
-    height: CSSObject['height']
-    width: CSSObject['width']
     gap: CSSObject['gap']
-    padding: {
-        x: CSSObject['padding']
-        y: CSSObject['padding']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
     }
-    borderRadius: CSSObject['borderRadius']
-    borderTop: {
-        [key in SearchInputState]: CSSObject['borderTop']
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
     }
-    borderLeft: {
-        [key in SearchInputState]: CSSObject['borderTop']
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
     }
-    borderRight: {
-        [key in SearchInputState]: CSSObject['borderRight']
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
     }
-    borderBottom: {
-        [key in SearchInputState]: CSSObject['borderBottom']
+    required: {
+        color: CSSObject['color']
     }
-    outline: CSSObject['outline']
-    boxShadow: CSSObject['boxShadow']
+    inputContainer: {
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderRadius: CSSObject['borderRadius']
+        borderBottom: {
+            [key in SearchInputState]: CSSObject['borderBottom']
+        }
+        outline: CSSObject['outline']
+        boxShadow: CSSObject['boxShadow']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+    }
+    icon: {
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+        width: CSSObject['width']
+    }
 }
 
-export type SearchInputState = 'default' | 'hover' | 'focus' | 'error'
+export type ResponsiveSearchInputTokens = {
+    [key in keyof BreakpointType]: SearchInputTokensType
+}
+
+export type SearchInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
 
 The component uses a minimalist design with only bottom borders for different states and customizable padding for left and right slots.
@@ -197,202 +237,6 @@ The component uses a minimalist design with only bottom borders for different st
 - **Accessibility**: Full keyboard navigation and screen reader support
 - **Form Integration**: Compatible with form libraries and validation
 - **Responsive**: Adapts to container width with 100% default width
-
-## Usage Examples
-
-### Basic Search
-
-Simple search input with left search icon:
-
-```tsx
-import { SearchInput } from '@juspay/blend-design-system'
-
-const [query, setQuery] = useState('')
-
-const SearchIcon = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#6B7280"
-    >
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-    </svg>
-)
-
-;<SearchInput
-    placeholder="Search..."
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-    leftSlot={<SearchIcon />}
-/>
-```
-
-### Search with Filter
-
-Search input with both search and filter icons:
-
-```tsx
-const [searchTerm, setSearchTerm] = useState('')
-
-const FilterIcon = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#6B7280"
-    >
-        <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46" />
-    </svg>
-)
-
-;<SearchInput
-    placeholder="Search products..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    leftSlot={<SearchIcon />}
-    rightSlot={<FilterIcon />}
-/>
-```
-
-### Global Search Bar
-
-Search bar for site-wide search functionality:
-
-```tsx
-const [globalSearch, setGlobalSearch] = useState('')
-
-const handleGlobalSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGlobalSearch(e.target.value)
-
-    if (e.target.value.length >= 3) {
-        // Trigger search API call
-        performSearch(e.target.value)
-    }
-}
-
-;<SearchInput
-    placeholder="Search everything..."
-    value={globalSearch}
-    onChange={handleGlobalSearch}
-    leftSlot={<SearchIcon />}
-    name="global-search"
-    autoFocus
-/>
-```
-
-### Product Filter Search
-
-Search with category filter integration:
-
-```tsx
-const [productQuery, setProductQuery] = useState('')
-const [showFilters, setShowFilters] = useState(false)
-
-const CategoryIcon = () => (
-    <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#6B7280"
-    >
-        <rect x="3" y="3" width="7" height="7" />
-        <rect x="14" y="3" width="7" height="7" />
-        <rect x="14" y="14" width="7" height="7" />
-        <rect x="3" y="14" width="7" height="7" />
-    </svg>
-)
-
-;<div>
-    <SearchInput
-        placeholder="Search products by name, category..."
-        value={productQuery}
-        onChange={(e) => setProductQuery(e.target.value)}
-        leftSlot={<SearchIcon />}
-        rightSlot={
-            <button onClick={() => setShowFilters(!showFilters)}>
-                <CategoryIcon />
-            </button>
-        }
-    />
-    {showFilters && <div className="filter-panel">{/* Filter options */}</div>}
-</div>
-```
-
-### Error State Search
-
-Search input with validation and error handling:
-
-```tsx
-const [searchInput, setSearchInput] = useState('')
-const [hasError, setHasError] = useState(false)
-
-const validateSearch = (value: string) => {
-    if (value.length > 0 && value.length < 2) {
-        setHasError(true)
-        return false
-    }
-    setHasError(false)
-    return true
-}
-
-const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchInput(value)
-    validateSearch(value)
-}
-
-;<div>
-    <SearchInput
-        placeholder="Search (minimum 2 characters)..."
-        value={searchInput}
-        onChange={handleSearchInput}
-        leftSlot={<SearchIcon />}
-        error={hasError}
-    />
-    {hasError && (
-        <p className="error-message">
-            Search term must be at least 2 characters long
-        </p>
-    )}
-</div>
-```
-
-### Advanced Search with Commands
-
-Search input supporting command shortcuts:
-
-```tsx
-const [commandSearch, setCommandSearch] = useState('')
-
-const CommandIcon = () => <kbd className="command-key">⌘K</kbd>
-
-const handleCommandSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setCommandSearch(value)
-
-    // Handle command patterns like @user, #tag, /command
-    if (value.startsWith('@')) {
-        // User search
-    } else if (value.startsWith('#')) {
-        // Tag search
-    } else if (value.startsWith('/')) {
-        // Command search
-    }
-}
-
-;<SearchInput
-    placeholder="Search or type @ for users, # for tags..."
-    value={commandSearch}
-    onChange={handleCommandSearch}
-    leftSlot={<SearchIcon />}
-    rightSlot={<CommandIcon />}
-/>
-```
 
 ## Behavior
 

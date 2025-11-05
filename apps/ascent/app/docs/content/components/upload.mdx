@@ -1,0 +1,385 @@
+---
+title: Upload
+description: The Upload component provides a flexible file upload interface with drag-and-drop support, file validation, progress tracking, and multiple upload states for seamless file handling.
+category: components
+tags:
+    - upload
+    - component
+    - file-upload
+    - drag-drop
+    - file-input
+RepoFolderName: Upload
+StorybookLink: components-upload--docs
+---
+
+<UploadPreview />
+
+## Usage
+
+```tsx
+import { Upload, UploadState } from 'blend-v1'
+
+function MyComponent() {
+    const handleDrop = (
+        acceptedFiles: File[],
+        fileRejections: FileRejection[]
+    ) => {
+        console.log('Accepted files:', acceptedFiles)
+        console.log('Rejected files:', fileRejections)
+    }
+
+    return (
+        <Upload
+            label="Upload File"
+            subLabel="Max size 5MB"
+            multiple={false}
+            accept={['.pdf', '.doc', '.docx']}
+            maxSize={5 * 1024 * 1024}
+            onDrop={handleDrop}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'multiple',
+                hintText: 'Allow multiple file selection',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'accept',
+                hintText: 'Array of accepted file extensions or MIME types',
+            },
+            { content: 'string[]', hintText: 'array' },
+            { content: '' },
+            { content: '[]' },
+        ],
+        [
+            {
+                content: 'maxSize',
+                hintText: 'Maximum file size in bytes',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxFiles',
+                hintText:
+                    'Maximum number of files allowed (only when multiple is true)',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: 'multiple ? undefined : 1' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Disable the upload component',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Mark the upload as required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Label text displayed above the upload area',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText: 'Sub-label text displayed next to the label',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Custom content to display in the upload area',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Description text displayed in the upload area',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'errorText',
+                hintText: 'Error message to display',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'state',
+                hintText: 'Controlled upload state',
+            },
+            { content: 'UploadState', hintText: 'enum' },
+            { content: 'IDLE, UPLOADING, SUCCESS, ERROR' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'uploadingFiles',
+                hintText: 'Controlled list of files currently being uploaded',
+            },
+            { content: 'UploadFile[]', hintText: 'array' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'uploadedFiles',
+                hintText: 'Controlled list of successfully uploaded files',
+            },
+            { content: 'UploadedFileWithStatus[]', hintText: 'array' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'failedFiles',
+                hintText: 'Controlled list of files that failed to upload',
+            },
+            { content: 'UploadedFileWithStatus[]', hintText: 'array' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enforceFileTypeConsistency',
+                hintText: 'Enforce same file type for multiple uploads',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onDrop',
+                hintText: 'Callback when files are dropped or selected',
+            },
+            {
+                content:
+                    '(acceptedFiles: File[], fileRejections: FileRejection[]) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onDropAccepted',
+                hintText: 'Callback when files are accepted',
+            },
+            { content: '(files: File[]) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onDropRejected',
+                hintText: 'Callback when files are rejected',
+            },
+            {
+                content: '(fileRejections: FileRejection[]) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileRemove',
+                hintText: 'Callback when a file is removed',
+            },
+            { content: '(fileId: string) => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onReplaceFile',
+                hintText: 'Callback when a file is replaced',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDragActive',
+                hintText: 'Controlled drag active state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDragAccept',
+                hintText: 'Controlled drag accept state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDragReject',
+                hintText: 'Controlled drag reject state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'validator',
+                hintText: 'Custom file validation function',
+            },
+            {
+                content: '(file: File) => FileRejection["errors"][0] | null',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Upload component using the following tokens:
+
+```tsx
+export type UploadTokenType = {
+    header: {
+        label: {
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            marginBottom: CSSObject['marginBottom']
+            gap: CSSObject['gap']
+        }
+        required: {
+            text: {
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap']
+        }
+        subLabel: {
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap']
+        }
+        helpIcon: {
+            width: CSSObject['width']
+            color: CSSObject['color']
+        }
+    }
+
+    container: {
+        border: {
+            idle: CSSObject['border']
+            uploading: CSSObject['border']
+            success: CSSObject['border']
+            error: CSSObject['border']
+            dragActive: CSSObject['border']
+        }
+        backgroundColor: {
+            idle: CSSObject['backgroundColor']
+            uploading: CSSObject['backgroundColor']
+            success: CSSObject['backgroundColor']
+            error: CSSObject['backgroundColor']
+            dragActive: CSSObject['backgroundColor']
+        }
+        borderRadius: CSSObject['borderRadius']
+        padding: CSSObject['padding']
+        content: {
+            slot: {
+                width: CSSObject['width']
+                gap: CSSObject['gap']
+            }
+            text: {
+                title: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                subtitle: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                gap: CSSObject['gap']
+            }
+            actionable: {
+                gap: CSSObject['gap']
+                errorText: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+        }
+    }
+}
+
+export type ResponsiveUploadTokens = {
+    [key in keyof BreakpointType]: UploadTokenType
+}
+```
