@@ -529,6 +529,9 @@ const WorkflowCanvasDemo = () => {
                     showMinimap={true}
                     height={'90vh'}
                     // minimapPosition="bottom-left"
+                    // fitView={true}
+                    // showControls={true}
+                    // showMinimap={false}
                     showBackground={true}
                     nodesDraggable={true}
                     nodesConnectable={true}

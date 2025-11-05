@@ -90,6 +90,7 @@ const WorkflowCanvasInner = ({
     return (
         <Block
             className="blend-workflow-canvas"
+            // className="blend-workflow-canvas"
             width={typeof width === 'number' ? `${width}px` : width}
             height={typeof height === 'number' ? `${height}px` : height}
             backgroundColor={tokens.canvas.backgroundColor}
