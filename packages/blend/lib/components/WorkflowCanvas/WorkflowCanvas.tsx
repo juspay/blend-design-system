@@ -10,33 +10,14 @@ import ReactFlow, {
     type EdgeChange,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import styled from 'styled-components'
 import type { WorkflowCanvasProps } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { WorkflowTokensType } from './workflow.tokens'
 import DefaultNode from './nodes/DefaultNode'
-import InputNode from './nodes/InputNode'
-import OutputNode from './nodes/OutputNode'
 import DefaultEdge from './edges/DefaultEdge'
 import WorkflowControls from './WorkflowControls'
 import './WorkflowCanvas.css'
-
-const WorkflowContainer = styled.div<{
-    $tokens: WorkflowTokensType
-    $height: string | number
-    $width: string | number
-}>`
-    width: ${(props) =>
-        typeof props.$width === 'number' ? `${props.$width}px` : props.$width};
-    height: ${(props) =>
-        typeof props.$height === 'number'
-            ? `${props.$height}px`
-            : props.$height};
-    background-color: ${(props) => props.$tokens.canvas.backgroundColor};
-    border-radius: ${(props) => props.$tokens.node.default.borderRadius};
-    overflow: hidden;
-    position: relative;
-`
+import Block from '../Primitives/Block/Block'
 
 const WorkflowCanvasInner = ({
     nodes,
@@ -48,12 +29,15 @@ const WorkflowCanvasInner = ({
     onEdgeClick,
     onNodeDoubleClick,
     onPaneClick,
+    nodeTypes: customNodeTypes,
+    edgeTypes: customEdgeTypes,
     height = 600,
     width = '100%',
     fitView = true,
     showControls = true,
     controlsPosition = 'top-right',
     showMinimap = false,
+    minimapPosition = 'bottom-right',
     showBackground = true,
     panOnScroll = true,
     zoomOnScroll = true,
@@ -70,17 +54,17 @@ const WorkflowCanvasInner = ({
     const nodeTypes = useMemo(
         () => ({
             default: DefaultNode,
-            input: InputNode,
-            output: OutputNode,
+            ...customNodeTypes,
         }),
-        []
+        [customNodeTypes]
     )
 
     const edgeTypes = useMemo(
         () => ({
             default: DefaultEdge,
+            ...customEdgeTypes,
         }),
-        []
+        [customEdgeTypes]
     )
 
     const handleNodesChange = useCallback(
@@ -104,11 +88,15 @@ const WorkflowCanvasInner = ({
     )
 
     return (
-        <WorkflowContainer
+        <Block
             className="blend-workflow-canvas"
-            $tokens={tokens}
-            $height={height}
-            $width={width}
+            // className="blend-workflow-canvas"
+            width={typeof width === 'number' ? `${width}px` : width}
+            height={typeof height === 'number' ? `${height}px` : height}
+            backgroundColor={tokens.canvas.backgroundColor}
+            borderRadius={tokens.node.default.borderRadius}
+            overflow="hidden"
+            position="relative"
         >
             <ReactFlow
                 nodes={nodes}
@@ -147,6 +135,7 @@ const WorkflowCanvasInner = ({
                 )}
                 {showMinimap && (
                     <MiniMap
+                        position={minimapPosition}
                         nodeColor={tokens.minimap.nodeColor as string}
                         nodeStrokeColor={
                             tokens.minimap.nodeStrokeColor as string
@@ -162,7 +151,11 @@ const WorkflowCanvasInner = ({
                                 .backgroundColor as string,
                             border: tokens.minimap.border as string,
                             borderRadius: tokens.minimap.borderRadius as string,
+                            width: 200,
+                            height: 150,
                         }}
+                        zoomable
+                        pannable
                     />
                 )}
                 {showControls && (
@@ -170,7 +163,7 @@ const WorkflowCanvasInner = ({
                 )}
                 {children}
             </ReactFlow>
-        </WorkflowContainer>
+        </Block>
     )
 }
 

@@ -40,4 +40,5 @@ export type SelectItemProps = {
     showCheckmark?: boolean
     className?: string
     selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
+    index?: number
 }

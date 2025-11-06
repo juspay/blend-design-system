@@ -17,6 +17,20 @@ export interface DiffLine {
     type: DiffLineType
 }
 
+export type SupportedLanguage =
+    | 'javascript'
+    | 'typescript'
+    | 'jsx'
+    | 'tsx'
+    | 'json'
+    | 'css'
+    | 'html'
+    | 'markdown'
+    | 'yaml'
+    | 'python'
+    | 'rust'
+    | 'haskell'
+
 export type CodeBlockProps = {
     code: string
     variant?: CodeBlockVariant
@@ -26,4 +40,7 @@ export type CodeBlockProps = {
     headerLeftSlot?: ReactNode
     headerRightSlot?: ReactNode
     diffLines?: DiffLine[]
+    showCopyButton?: boolean
+    autoFormat?: boolean
+    language?: SupportedLanguage
 }

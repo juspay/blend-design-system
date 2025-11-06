@@ -9,6 +9,7 @@ import type { MultiValueInputProps } from './types'
 import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 import { X } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const MultiValueInput = ({
     label,
@@ -21,6 +22,7 @@ const MultiValueInput = ({
     tags = [],
     onTagAdd,
     onTagRemove,
+    onChange,
     size = TextInputSize.MEDIUM,
     ...rest
 }: MultiValueInputProps) => {
@@ -89,9 +91,6 @@ const MultiValueInput = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                boxShadow={
-                    multiValueInputTokens.inputContainer.boxShadow.default
-                }
                 border={
                     error
                         ? multiValueInputTokens.inputContainer.border.error
@@ -103,19 +102,11 @@ const MultiValueInput = ({
                     border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'hover'
                     ],
-                    boxShadow:
-                        multiValueInputTokens.inputContainer.boxShadow[
-                            error ? 'error' : 'hover'
-                        ],
                 }}
                 _focus={{
                     border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'focus'
                     ],
-                    boxShadow:
-                        multiValueInputTokens.inputContainer.boxShadow[
-                            error ? 'error' : 'focus'
-                        ],
                 }}
             >
                 {tags?.map((tag) => (
@@ -134,6 +125,7 @@ const MultiValueInput = ({
                     />
                 ))}
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     fontSize={
                         multiValueInputTokens.inputContainer.fontSize[size]
                     }
@@ -149,7 +141,11 @@ const MultiValueInput = ({
                     outline="none"
                     border="none"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={(e) => {
+                        const newValue = e.target.value
+                        setInputValue(newValue)
+                        onChange?.(newValue)
+                    }}
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}

@@ -24,6 +24,7 @@ const PopoverHeader = ({
     const Header = () => {
         return (
             <PrimitiveText
+                data-popover-header={heading}
                 fontSize={popoverTokens.headerContainer.heading.fontSize[size]}
                 fontWeight={
                     popoverTokens.headerContainer.heading.fontWeight[size]
@@ -38,6 +39,7 @@ const PopoverHeader = ({
     const Description = () => {
         return (
             <PrimitiveText
+                data-popover-description={description}
                 fontSize={
                     popoverTokens.headerContainer.description.fontSize[size]
                 }

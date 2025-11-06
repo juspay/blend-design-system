@@ -20,7 +20,6 @@ import {
     getBodyTitleMarginBottom,
     getContentMarginBottom,
     getBodySlot2MarginBottom,
-    getCustomCardStyles,
     isInlineActionButton,
 } from './utils'
 
@@ -508,7 +507,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 
 export const CustomCard: React.FC<CustomCardComponentProps> = ({
     props,
-    cardToken,
+
     maxHeight,
 }) => {
     const { children } = props
@@ -516,7 +515,6 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
     return (
         <Block
             style={{
-                ...getCustomCardStyles(cardToken),
                 ...(maxHeight && {
                     overflowY: 'auto',
                     overflowX: 'hidden',

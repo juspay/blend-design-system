@@ -2,7 +2,7 @@ import { ColumnDefinition } from '../types'
 import { SelectMenuGroupType } from '../../Select/types'
 import { MultiSelectMenuGroupType } from '../../MultiSelect/types'
 import { getUniqueColumnValues } from '../utils'
-import { foundationToken } from '../../../foundationToken'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 export const getFilterOptions = (
     column: ColumnDefinition<Record<string, unknown>>,
@@ -157,9 +157,9 @@ export const getFrozenColumnStyles = (
         left: `${leftOffset}px`,
         zIndex: 9,
         backgroundColor,
-        padding: `0 ${foundationToken.spacing[16]}`,
+        padding: `0 ${FOUNDATION_THEME.unit[16]}`,
         ...(isLastFrozenColumn && {
-            borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
+            borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         }),
     }
 }

@@ -64,6 +64,7 @@ const TableHeader = forwardRef<
             allVisibleColumns,
             initialColumns,
             selectAll,
+            sortConfig,
             enableInlineEdit = false,
             enableColumnManager = true,
             columnManagerMaxSelections,
@@ -80,6 +81,8 @@ const TableHeader = forwardRef<
             mobileOverflowColumns = [],
             onMobileOverflowClick,
             onSort,
+            onSortAscending,
+            onSortDescending,
             onSelectAll,
             onColumnChange,
             onHeaderChange,
@@ -94,8 +97,8 @@ const TableHeader = forwardRef<
         const editableRef = useRef<HTMLDivElement>(null)
 
         const [sortState, setSortState] = useState<SortState>({
-            currentSortField: null,
-            currentSortDirection: SortDirection.NONE,
+            currentSortField: sortConfig?.field || null,
+            currentSortDirection: sortConfig?.direction || SortDirection.NONE,
         })
 
         const [filterState, setFilterState] = useState<FilterState>({
@@ -111,7 +114,12 @@ const TableHeader = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
 
-        const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
+        const sortHandlers = createSortHandlers(
+            sortState,
+            onSort,
+            onSortAscending,
+            onSortDescending
+        )
         const filterHandlers = createFilterHandlers(setFilterState)
 
         useEffect(() => {
@@ -119,11 +127,39 @@ const TableHeader = forwardRef<
         }, [visibleColumns])
 
         useEffect(() => {
-            const handleScroll = () => {
+            setSortState({
+                currentSortField: sortConfig?.field || null,
+                currentSortDirection:
+                    sortConfig?.direction || SortDirection.NONE,
+            })
+        }, [sortConfig])
+
+        useEffect(() => {
+            const handleScroll = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
                 setOpenPopovers({})
             }
 
-            const handleWheel = () => {
+            const handleWheel = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
                 setOpenPopovers({})
             }
 
@@ -596,7 +632,70 @@ const TableHeader = forwardRef<
                                             onClick={(e) => e.stopPropagation()}
                                             _focus={{ outline: 'none' }}
                                             _focusVisible={{ outline: 'none' }}
+                                            position="relative"
                                         >
+                                            {(() => {
+                                                const fieldKey = String(
+                                                    column.field
+                                                )
+                                                const hasSort =
+                                                    sortState.currentSortField ===
+                                                        fieldKey &&
+                                                    sortState.currentSortDirection !==
+                                                        SortDirection.NONE
+                                                const hasFilter = (() => {
+                                                    const selectedValues =
+                                                        filterState
+                                                            .columnSelectedValues[
+                                                            fieldKey
+                                                        ]
+                                                    if (!selectedValues)
+                                                        return false
+
+                                                    if (
+                                                        Array.isArray(
+                                                            selectedValues
+                                                        )
+                                                    ) {
+                                                        return (
+                                                            selectedValues.length >
+                                                            0
+                                                        )
+                                                    }
+                                                    if (
+                                                        typeof selectedValues ===
+                                                            'object' &&
+                                                        selectedValues !==
+                                                            null &&
+                                                        'min' in
+                                                            selectedValues &&
+                                                        'max' in selectedValues
+                                                    ) {
+                                                        return true // Range filter
+                                                    }
+                                                    return false
+                                                })()
+
+                                                return (
+                                                    (hasSort || hasFilter) && (
+                                                        <Block
+                                                            position="absolute"
+                                                            top="-2px"
+                                                            right="-2px"
+                                                            width="6px"
+                                                            height="6px"
+                                                            borderRadius="50%"
+                                                            backgroundColor={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[500]
+                                                            }
+                                                            zIndex={1}
+                                                        />
+                                                    )
+                                                )
+                                            })()}
+
                                             {isMobile ? (
                                                 // Mobile: Use Drawer wrapper
                                                 <Drawer

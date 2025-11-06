@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useRef } from 'react'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -81,11 +81,47 @@ export function DataTablePagination({
 
     const pageNumbers = useMemo(getPageNumbers, [currentPage, totalPages])
 
+    const filteredPageSizeOptions = useMemo(() => {
+        const filtered = pageSizeOptions.filter((size) => size <= totalRows)
+        if (!filtered.includes(pageSize) && pageSize > 0) {
+            filtered.push(pageSize)
+            filtered.sort((a, b) => a - b)
+        }
+        if (filtered.length === 0 && pageSizeOptions.length > 0) {
+            filtered.push(Math.min(...pageSizeOptions))
+        }
+
+        return filtered
+    }, [pageSizeOptions, totalRows, pageSize])
+
+    const previousTotalRows = useRef(totalRows)
+    useEffect(() => {
+        if (
+            totalRows < previousTotalRows.current &&
+            pageSize > totalRows &&
+            totalRows > 0 &&
+            pageSizeOptions.length > 0
+        ) {
+            const validOptions = pageSizeOptions.filter(
+                (size) => size <= totalRows
+            )
+            if (validOptions.length > 0) {
+                const newPageSize = Math.max(...validOptions)
+                onPageSizeChange(newPageSize)
+            } else {
+                const smallestOption = Math.min(...pageSizeOptions)
+                onPageSizeChange(smallestOption)
+            }
+        }
+
+        previousTotalRows.current = totalRows
+    }, [totalRows, pageSize, pageSizeOptions, onPageSizeChange])
+
     const pageSizeMenuItems = [
         {
             groupLabel: '',
             showSeparator: false,
-            items: pageSizeOptions.map((size) => ({
+            items: filteredPageSizeOptions.map((size) => ({
                 label: `${size}`,
                 value: String(size),
                 onClick: () => onPageSizeChange(size),
@@ -124,22 +160,24 @@ export function DataTablePagination({
                     {isMobile ? 'Rows' : 'Rows per page'}
                 </PrimitiveText>
 
-                <SingleSelect
-                    label="rows per page"
-                    items={pageSizeMenuItems}
-                    selected={String(pageSize)}
-                    onSelect={(value) => {
-                        if (typeof value === 'string' && hasData) {
-                            onPageSizeChange(Number(value))
-                        }
-                    }}
-                    enableSearch={false}
-                    size={SelectMenuSize.SMALL}
-                    variant={SelectMenuVariant.NO_CONTAINER}
-                    placeholder=""
-                    minMenuWidth={80}
-                    disabled={!hasData}
-                />
+                <Block style={{ cursor: hasData ? 'pointer' : 'not-allowed' }}>
+                    <SingleSelect
+                        label="rows per page"
+                        items={pageSizeMenuItems}
+                        selected={String(pageSize)}
+                        onSelect={(value) => {
+                            if (typeof value === 'string' && hasData) {
+                                onPageSizeChange(Number(value))
+                            }
+                        }}
+                        enableSearch={false}
+                        size={SelectMenuSize.SMALL}
+                        variant={SelectMenuVariant.NO_CONTAINER}
+                        placeholder=""
+                        minMenuWidth={80}
+                        disabled={!hasData}
+                    />
+                </Block>
 
                 {isLoading && (
                     <Block
@@ -205,6 +243,12 @@ export function DataTablePagination({
                                 ? 'transparent'
                                 : FOUNDATION_THEME.colors.gray[50],
                     }}
+                    style={{
+                        cursor:
+                            currentPage === 1 || isLoading || !hasData
+                                ? 'not-allowed'
+                                : 'pointer',
+                    }}
                 >
                     <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
                 </PrimitiveButton>
@@ -230,20 +274,37 @@ export function DataTablePagination({
                                     color={
                                         currentPage === page
                                             ? FOUNDATION_THEME.colors.gray[700]
-                                            : FOUNDATION_THEME.colors.gray[600]
+                                            : isLoading ||
+                                                !hasData ||
+                                                page > totalPages
+                                              ? FOUNDATION_THEME.colors
+                                                    .gray[300]
+                                              : FOUNDATION_THEME.colors
+                                                    .gray[600]
                                     }
                                     borderRadius={
                                         FOUNDATION_THEME.border.radius[8]
                                     }
-                                    disabled={isLoading || !hasData}
+                                    disabled={
+                                        isLoading ||
+                                        !hasData ||
+                                        page > totalPages
+                                    }
                                     onClick={() =>
-                                        hasData && onPageChange(page)
+                                        hasData &&
+                                        page <= totalPages &&
+                                        onPageChange(page)
                                     }
                                     _hover={{
                                         backgroundColor:
-                                            currentPage === page
-                                                ? FOUNDATION_THEME.colors
-                                                      .gray[100]
+                                            currentPage === page ||
+                                            isLoading ||
+                                            !hasData ||
+                                            page > totalPages
+                                                ? currentPage === page
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[100]
+                                                    : 'transparent'
                                                 : FOUNDATION_THEME.colors
                                                       .gray[50],
                                     }}
@@ -251,23 +312,101 @@ export function DataTablePagination({
                                         fontSize:
                                             FOUNDATION_THEME.font.size.body.sm
                                                 .fontSize,
+                                        cursor:
+                                            isLoading ||
+                                            !hasData ||
+                                            page > totalPages
+                                                ? 'not-allowed'
+                                                : 'pointer',
                                     }}
                                 >
                                     {page}
                                 </PrimitiveButton>
                             ) : (
-                                <PrimitiveText
-                                    as="span"
+                                <SingleSelect
                                     key={index}
-                                    fontSize={
-                                        FOUNDATION_THEME.font.size.body.sm
-                                            .fontSize
+                                    label="Jump to page"
+                                    items={[
+                                        {
+                                            groupLabel: 'Go to page',
+                                            showSeparator: false,
+                                            items: (() => {
+                                                const visiblePages =
+                                                    pageNumbers.filter(
+                                                        (p) =>
+                                                            typeof p ===
+                                                            'number'
+                                                    ) as number[]
+
+                                                const hiddenPages = []
+                                                for (
+                                                    let i = 1;
+                                                    i <= totalPages;
+                                                    i++
+                                                ) {
+                                                    if (
+                                                        !visiblePages.includes(
+                                                            i
+                                                        )
+                                                    ) {
+                                                        hiddenPages.push({
+                                                            label: `Page ${i}`,
+                                                            value: String(i),
+                                                        })
+                                                    }
+                                                }
+                                                return hiddenPages
+                                            })(),
+                                        },
+                                    ]}
+                                    selected=""
+                                    onSelect={(value) => {
+                                        if (
+                                            typeof value === 'string' &&
+                                            hasData
+                                        ) {
+                                            onPageChange(Number(value))
+                                        }
+                                    }}
+                                    enableSearch={totalPages > 10}
+                                    searchPlaceholder="Search pages..."
+                                    size={SelectMenuSize.SMALL}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    placeholder="..."
+                                    minMenuWidth={120}
+                                    maxMenuHeight={300}
+                                    disabled={isLoading || !hasData}
+                                    customTrigger={
+                                        <PrimitiveButton
+                                            contentCentered
+                                            minWidth={FOUNDATION_THEME.unit[32]}
+                                            height={FOUNDATION_THEME.unit[32]}
+                                            backgroundColor="transparent"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            borderRadius={
+                                                FOUNDATION_THEME.border
+                                                    .radius[8]
+                                            }
+                                            disabled={isLoading || !hasData}
+                                            _hover={{
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[50],
+                                            }}
+                                            style={{
+                                                fontSize:
+                                                    FOUNDATION_THEME.font.size
+                                                        .body.sm.fontSize,
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            ...
+                                        </PrimitiveButton>
                                     }
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                    padding={FOUNDATION_THEME.unit[4]}
-                                >
-                                    {page}
-                                </PrimitiveText>
+                                />
                             )
                         )}
                     </Block>
@@ -303,6 +442,12 @@ export function DataTablePagination({
                             currentPage === totalPages || !hasData
                                 ? 'transparent'
                                 : FOUNDATION_THEME.colors.gray[50],
+                    }}
+                    style={{
+                        cursor:
+                            currentPage === totalPages || isLoading || !hasData
+                                ? 'not-allowed'
+                                : 'pointer',
                     }}
                 >
                     <ArrowRight size={FOUNDATION_THEME.unit[16]} />
