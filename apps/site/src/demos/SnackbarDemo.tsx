@@ -255,6 +255,95 @@ const SnackbarDemo = () => {
                 </div>
             </div>
 
+            {/* Position Examples */}
+            <div className="flex flex-col gap-4">
+                <h2 className="text-lg font-semibold">Position Options</h2>
+                <p className="text-sm text-gray-600">
+                    Control where snackbars appear on the screen.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Left',
+                                description: 'Snackbar appears at top left',
+                                variant: SnackbarVariant.INFO,
+                                position: 'top-left',
+                            })
+                        }
+                        text="Top Left"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Center',
+                                description: 'Snackbar appears at top center',
+                                variant: SnackbarVariant.SUCCESS,
+                                position: 'top-center',
+                            })
+                        }
+                        text="Top Center"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Right',
+                                description: 'Snackbar appears at top right',
+                                variant: SnackbarVariant.WARNING,
+                                position: 'top-right',
+                            })
+                        }
+                        text="Top Right"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Left',
+                                description: 'Snackbar appears at bottom left',
+                                variant: SnackbarVariant.ERROR,
+                                position: 'bottom-left',
+                            })
+                        }
+                        text="Bottom Left"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Center',
+                                description:
+                                    'Snackbar appears at bottom center',
+                                variant: SnackbarVariant.INFO,
+                                position: 'bottom-center',
+                            })
+                        }
+                        text="Bottom Center"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Right',
+                                description: 'Snackbar appears at bottom right',
+                                variant: SnackbarVariant.SUCCESS,
+                                position: 'bottom-right',
+                            })
+                        }
+                        text="Bottom Right"
+                    />
+                </div>
+            </div>
+
             {/* Usage Examples */}
             <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-semibold">Usage Examples</h2>

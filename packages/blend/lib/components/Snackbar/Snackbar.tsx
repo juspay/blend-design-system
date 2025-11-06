@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { toast as sonnerToast, Toaster as Snackbar } from 'sonner'
+import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
     Info,
@@ -16,6 +16,7 @@ import {
     type AddToastOptions,
     type CustomToastProps,
     SnackbarVariant,
+    type SnackbarPosition,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
@@ -176,7 +177,11 @@ export const addSnackbar = ({
     onClose,
     actionButton,
     duration,
+    position,
 }: AddToastOptions) => {
+    // Determine if position includes "center" for proper alignment
+    const isCenter = position?.includes('center')
+
     return sonnerToast.custom(
         (t) => (
             <StyledToast
@@ -193,9 +198,49 @@ export const addSnackbar = ({
         ),
         {
             duration,
+            position,
+            unstyled: true,
+            style: {
+                display: 'flex',
+                justifyContent: 'center',
+                width: isCenter ? '100%' : 'fit-content',
+                maxWidth: 'calc(100vw - 32px)',
+                margin: 0,
+                padding: 0,
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+            },
         }
     )
 }
 
-// Export the Toaster component
+type SnackbarProps = {
+    position?: SnackbarPosition
+}
+
+const Snackbar: React.FC<SnackbarProps> = ({ position = 'bottom-right' }) => {
+    const isCenter = position?.includes('center')
+
+    return (
+        <Toaster
+            position={position}
+            toastOptions={{
+                unstyled: true,
+                style: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: isCenter ? '100%' : 'fit-content',
+                    maxWidth: 'calc(100vw - 32px)',
+                    margin: 0,
+                    padding: 0,
+                    background: 'transparent',
+                    border: 'none',
+                    boxShadow: 'none',
+                },
+            }}
+        />
+    )
+}
+
 export default Snackbar

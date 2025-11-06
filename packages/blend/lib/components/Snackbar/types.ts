@@ -5,6 +5,14 @@ export enum SnackbarVariant {
     ERROR = 'error',
 }
 
+export type SnackbarPosition =
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'top-center'
+    | 'bottom-center'
+
 export type AddToastOptions = {
     header: string
     description?: string
@@ -16,6 +24,7 @@ export type AddToastOptions = {
         autoDismiss?: boolean
     }
     duration?: number
+    position?: SnackbarPosition
 }
 
 export type CustomToastProps = {
