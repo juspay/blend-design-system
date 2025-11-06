@@ -93,6 +93,7 @@ import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
+import CodeEditorDemo from './CodeEditorDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
@@ -153,6 +154,7 @@ const SidebarDemo = () => {
         | 'virtualList'
         | 'upload'
         | 'codeBlock'
+        | 'codeEditor'
         | 'workflowCanvas'
         | 'formElements'
     >('chatInput')
@@ -415,6 +417,8 @@ const SidebarDemo = () => {
                 return <UploadDemo />
             case 'codeBlock':
                 return <CodeBlockDemo />
+            case 'codeEditor':
+                return <CodeEditorDemo />
             case 'workflowCanvas':
                 return <WorkflowCanvasDemo />
             case 'formElements':
@@ -858,6 +862,14 @@ const SidebarDemo = () => {
                         <Code style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('codeBlock'),
+                },
+                {
+                    label: 'Code Editor',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditor',
+                    onClick: () => setActiveComponent('codeEditor'),
                 },
                 {
                     label: 'Workflow Canvas',
