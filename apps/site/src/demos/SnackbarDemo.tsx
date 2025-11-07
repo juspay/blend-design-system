@@ -5,6 +5,7 @@ import {
 } from '../../../../packages/blend/lib/components/Button'
 import {
     addSnackbar,
+    SnackbarPosition,
     SnackbarVariant,
 } from '../../../../packages/blend/lib/components/Snackbar'
 import { StyledToast } from '../../../../packages/blend/lib/components/Snackbar/Snackbar'
@@ -270,7 +271,7 @@ const SnackbarDemo = () => {
                                 header: 'Top Left',
                                 description: 'Snackbar appears at top left',
                                 variant: SnackbarVariant.INFO,
-                                position: 'top-left',
+                                position: SnackbarPosition.TOP_LEFT,
                             })
                         }
                         text="Top Left"
@@ -283,7 +284,7 @@ const SnackbarDemo = () => {
                                 header: 'Top Center',
                                 description: 'Snackbar appears at top center',
                                 variant: SnackbarVariant.SUCCESS,
-                                position: 'top-center',
+                                position: SnackbarPosition.TOP_CENTER,
                             })
                         }
                         text="Top Center"
@@ -296,7 +297,7 @@ const SnackbarDemo = () => {
                                 header: 'Top Right',
                                 description: 'Snackbar appears at top right',
                                 variant: SnackbarVariant.WARNING,
-                                position: 'top-right',
+                                position: SnackbarPosition.TOP_RIGHT,
                             })
                         }
                         text="Top Right"
@@ -309,7 +310,7 @@ const SnackbarDemo = () => {
                                 header: 'Bottom Left',
                                 description: 'Snackbar appears at bottom left',
                                 variant: SnackbarVariant.ERROR,
-                                position: 'bottom-left',
+                                position: SnackbarPosition.BOTTOM_LEFT,
                             })
                         }
                         text="Bottom Left"
@@ -323,7 +324,7 @@ const SnackbarDemo = () => {
                                 description:
                                     'Snackbar appears at bottom center',
                                 variant: SnackbarVariant.INFO,
-                                position: 'bottom-center',
+                                position: SnackbarPosition.BOTTOM_CENTER,
                             })
                         }
                         text="Bottom Center"
@@ -336,7 +337,7 @@ const SnackbarDemo = () => {
                                 header: 'Bottom Right',
                                 description: 'Snackbar appears at bottom right',
                                 variant: SnackbarVariant.SUCCESS,
-                                position: 'bottom-right',
+                                position: SnackbarPosition.BOTTOM_RIGHT,
                             })
                         }
                         text="Bottom Right"
