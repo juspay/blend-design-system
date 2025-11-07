@@ -135,7 +135,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                             tokens.indicator.backgroundColor.online
                         }
                         borderRadius={tokens.indicator.borderRadius}
-                        border={`${tokens.indicator.border.online.width} solid ${tokens.indicator.border.online.color}`}
+                        border={`${tokens.indicator.border[size].online.width} solid ${tokens.indicator.border[size].online.color}`}
                         z-index="1"
                         boxShadow={tokens.indicator.boxShadow}
                     />
