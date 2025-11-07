@@ -34,13 +34,17 @@ import type { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
 import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
-import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import {
+    getTopbarTokens,
+    type ResponsiveTopbarTokens,
+} from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import type { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
+import type { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
-import { BREAKPOINTS } from '../breakpoints/breakPoints'
 import { getTagTokens } from '../components/Tags/tag.tokens'
 import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
 import { getTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
@@ -76,10 +80,20 @@ import {
     getSkeletonTokens,
     ResponsiveSkeletonTokens,
 } from '../components/Skeleton/skeleton.tokens'
-import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { BREAKPOINTS } from '../breakpoints/breakPoints'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { getUploadTokens } from '../components/Upload/upload.tokens'
+import {
+    getStepperTokens,
+    ResponsiveStepperTokens,
+} from '../components/Stepper/stepper.tokens'
+import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import {
+    getWorkflowTokens,
+    type ResponsiveWorkflowTokens,
+} from '../components/WorkflowCanvas/workflow.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -112,6 +126,7 @@ export type ComponentTokenType = {
     DRAWER?: ResponsiveDrawerTokens
     CHARTS?: ResponsiveChartTokens
     SNACKBAR?: ResponsiveSnackbarTokens
+    STEPPER?: ResponsiveStepperTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
@@ -119,6 +134,9 @@ export type ComponentTokenType = {
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
+    UPLOAD?: ResponsiveUploadTokens
+    CODE_BLOCK?: ResponsiveCodeBlockTokens
+    WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
 type ThemeContextType = {
@@ -160,13 +178,17 @@ const ThemeContext = createContext<ThemeContextType>({
         DRAWER: getDrawerComponentTokens(FOUNDATION_THEME),
         CHARTS: getChartTokens(FOUNDATION_THEME),
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
+        STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
-        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
+        UPLOAD: getUploadTokens(FOUNDATION_THEME),
+        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
+        WORKFLOW_CANVAS: getWorkflowTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
 })

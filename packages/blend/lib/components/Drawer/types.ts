@@ -72,18 +72,6 @@ export type DrawerProps = {
         right?: string
     }
     /**
-     * Custom class name for the drawer content
-     */
-    className?: string
-    /**
-     * Custom class name for the overlay
-     */
-    overlayClassName?: string
-    /**
-     * Custom styles for the drawer content
-     */
-    style?: React.CSSProperties
-    /**
      * Children content
      */
     children: ReactNode
@@ -165,6 +153,10 @@ export type DrawerFooterProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * The direction of the drawer (used to apply appropriate border radius)
+     */
+    direction?: 'top' | 'bottom' | 'left' | 'right'
 }
 
 export type DrawerCloseProps = {

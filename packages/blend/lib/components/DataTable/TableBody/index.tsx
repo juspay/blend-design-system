@@ -24,7 +24,6 @@ import {
     CheckboxSize,
     TableTokenType,
 } from '../../../main'
-import { foundationToken } from '../../../foundationToken'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 
 const TableRow = styled.tr<{
@@ -492,6 +491,7 @@ const TableBody = forwardRef<
             currentData,
             visibleColumns,
             idField,
+            tableTitle,
             selectedRows,
             editingRows,
             editValues,
@@ -601,8 +601,8 @@ const TableBody = forwardRef<
                                                       zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
-                                                          foundationToken.colors
-                                                              .gray[0],
+                                                          FOUNDATION_THEME
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -666,8 +666,8 @@ const TableBody = forwardRef<
                                                       zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
-                                                          foundationToken.colors
-                                                              .gray[0],
+                                                          FOUNDATION_THEME
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -827,6 +827,8 @@ const TableBody = forwardRef<
                                                               : row
                                                       }
                                                       rowIndex={index}
+                                                      colIndex={colIndex}
+                                                      tableTitle={tableTitle}
                                                       isEditing={isEditing}
                                                       currentValue={
                                                           currentValue
@@ -972,7 +974,7 @@ const TableBody = forwardRef<
                                                   right: 0,
                                                   backgroundColor:
                                                       rowStyling.backgroundColor ||
-                                                      foundationToken.colors
+                                                      FOUNDATION_THEME.colors
                                                           .gray[0],
                                               }}
                                           />

@@ -7,7 +7,6 @@ import { AccordionType, AccordionChevronPosition } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { foundationToken } from '../../foundationToken'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
@@ -17,6 +16,7 @@ import {
     ChevronAnimationVariant,
     ChevronAnimationSize,
 } from '../animations/ChevronAnimation'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionType: AccordionType
@@ -125,8 +125,8 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     }),
 
     '&:focus-visible': {
-        outline: `2px solid ${foundationToken.colors.primary[500]}`,
-        outlineOffset: foundationToken.spacing[2],
+        outline: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+        outlineOffset: FOUNDATION_THEME.unit[2],
     },
 
     ...(props.$accordionType === AccordionType.NO_BORDER &&
@@ -207,7 +207,7 @@ const StyledSeparator = styled.hr<{
 }>((props) => ({
     margin: 0,
     border: 'none',
-    height: foundationToken.borderWidth[1],
+    height: FOUNDATION_THEME.border.width[1],
     backgroundColor:
         props.$accordionToken.separator.color[props.$accordionType],
 }))
@@ -219,6 +219,7 @@ const AccordionItem = forwardRef<
         isFirst?: boolean
         isLast?: boolean
         isIntermediate?: boolean
+        currentValue?: string | string[]
     }
 >(
     (
@@ -232,12 +233,13 @@ const AccordionItem = forwardRef<
             subtextSlot,
             isDisabled = false,
             chevronPosition = AccordionChevronPosition.RIGHT,
-            className,
             accordionType = AccordionType.NO_BORDER,
             // Position props
             isFirst,
             isLast,
             isIntermediate,
+            currentValue,
+            ...props
         },
         ref
     ) => {
@@ -246,10 +248,16 @@ const AccordionItem = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
+        // Determine if this item is expanded
+        const isExpanded = Array.isArray(currentValue)
+            ? currentValue.includes(value)
+            : currentValue === value
+
         const getChevronIcon = () => {
             const iconColor = isDisabled
-                ? foundationToken.colors.gray[300]
-                : foundationToken.colors.gray[500]
+                ? FOUNDATION_THEME.colors.gray[300]
+                : FOUNDATION_THEME.colors.gray[500]
+            const iconSize = FOUNDATION_THEME.unit[16]
 
             return (
                 <ChevronAnimation
@@ -270,11 +278,17 @@ const AccordionItem = forwardRef<
                 >
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
-                            style={{ width: '100%', height: '100%' }}
+                            style={{ width: iconSize, height: iconSize }}
+                            transform={
+                                isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                            }
                         />
                     ) : (
                         <ChevronRight
-                            style={{ width: '100%', height: '100%' }}
+                            style={{ width: iconSize, height: iconSize }}
+                            transform={
+                                isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'
+                            }
                         />
                     )}
                 </ChevronAnimation>
@@ -285,13 +299,13 @@ const AccordionItem = forwardRef<
             <StyledAccordionItem
                 value={value}
                 disabled={isDisabled}
-                className={className}
                 ref={ref}
                 data-disabled={isDisabled || undefined}
                 $isSmallScreen={isSmallScreen}
                 $accordionType={accordionType}
                 $isDisabled={isDisabled}
                 $accordionToken={accordionToken}
+                {...props}
             >
                 <StyledAccordionHeader>
                     <StyledAccordionTrigger
@@ -301,6 +315,7 @@ const AccordionItem = forwardRef<
                         disabled={isDisabled}
                         data-type={accordionType}
                         data-disabled={isDisabled || undefined}
+                        data-accordion-expanded={isExpanded ? 'true' : 'false'}
                         $isSmallScreen={isSmallScreen}
                         $isFirst={isFirst}
                         $isLast={isLast}
@@ -312,7 +327,7 @@ const AccordionItem = forwardRef<
                                 alignItems="flex-start"
                                 width="100%"
                                 position="relative"
-                                gap={foundationToken.spacing[8]}
+                                gap={FOUNDATION_THEME.unit[8]}
                             >
                                 {chevronPosition ===
                                     AccordionChevronPosition.LEFT && (
@@ -353,7 +368,7 @@ const AccordionItem = forwardRef<
                                     <Block
                                         display="flex"
                                         alignItems="center"
-                                        gap={foundationToken.spacing[8]}
+                                        gap={FOUNDATION_THEME.unit[8]}
                                     >
                                         <PrimitiveText
                                             fontSize={
@@ -373,6 +388,7 @@ const AccordionItem = forwardRef<
                                                           .text.title.color
                                                           .default
                                             }
+                                            data-header-text={title}
                                         >
                                             {title}
                                         </PrimitiveText>

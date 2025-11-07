@@ -282,6 +282,10 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                 ref={ref}
                 role="group"
                 aria-label={`Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
+                data-avatar-group="true"
+                data-avatar-group-count={avatars.length}
+                data-avatar-group-selected-count={internalSelectedIds.length}
+                data-avatar-group-max-count={safeMaxCount}
                 {...props}
             >
                 {visibleAvatars.map((avatar, index) => (
@@ -295,6 +299,12 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                         tabIndex={0}
                         aria-pressed={internalSelectedIds.includes(avatar.id)}
                         aria-label={`Select avatar ${avatar.alt || (typeof avatar.fallback === 'string' ? avatar.fallback : avatar.id)}`}
+                        data-avatar-group-item="true"
+                        data-avatar-group-item-id={avatar.id}
+                        data-avatar-group-item-index={index}
+                        data-avatar-group-item-selected={internalSelectedIds.includes(
+                            avatar.id
+                        )}
                         onClick={() => handleSelect(avatar.id)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -328,6 +338,9 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                                 : undefined
                         }
                         aria-label={`+${overflowCount} more avatars, click to view and select`}
+                        data-avatar-group-overflow="true"
+                        data-avatar-group-overflow-count={overflowCount}
+                        data-avatar-group-overflow-open={isMenuOpen}
                         onClick={toggleMenu}
                         onMouseDown={(e) => e.preventDefault()}
                     >
@@ -340,6 +353,8 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                     <StyledMenuContainer
                         ref={menuRef}
                         id="avatar-group-overflow-menu"
+                        data-avatar-group-menu="true"
+                        data-avatar-group-menu-open={isMenuOpen}
                     >
                         <Menu
                             items={menuItems}

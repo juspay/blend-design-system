@@ -98,7 +98,10 @@ export const ActiveItemProvider: React.FC<{ children: React.ReactNode }> = ({
 const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false)
     const { activeItem, setActiveItem } = useContext(ActiveItemContext)
-    const isActive = activeItem === item.label
+    const isActive =
+        item.isSelected !== undefined
+            ? item.isSelected
+            : activeItem === item.label
 
     const hasChildren = item.items && item.items.length > 0
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
@@ -114,7 +117,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
         if (hasChildren) {
             setIsExpanded(!isExpanded)
         } else if (item.onClick) {
-            setActiveItem(item.label)
+            if (item.isSelected === undefined) {
+                setActiveItem(item.label)
+            }
             item.onClick()
         }
     }
@@ -144,6 +149,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 aria-expanded={hasChildren ? isExpanded : undefined}
                 role={!item.href ? 'button' : undefined}
                 tabIndex={0}
+                data-sidebar-selected={isActive}
+                data-sidebar-sub-option={item.label}
+                data-sidebar-expanded={hasChildren ? isExpanded : undefined}
             >
                 <Block
                     display="flex"

@@ -85,7 +85,7 @@ export const BasicDrawerExample = () => {
                             can have, just a simple drawer with a trigger.
                         </p>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <DrawerClose>
                             <button
                                 style={{
@@ -407,7 +407,7 @@ export const SideDrawerExample = () => {
                             </div>
                         </div>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="right">
                         <DrawerClose>
                             <button
                                 style={{
@@ -1454,7 +1454,7 @@ export const NonDismissibleExample = () => {
                         </p>
                         <p>You must use the close button below to close it.</p>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <button
                             onClick={() => setIsOpen(false)}
                             style={{
@@ -3828,7 +3828,7 @@ export const ZIndexTestDrawerExample = () => {
                             </div>
                         </div>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <DrawerClose>
                             <button
                                 style={{

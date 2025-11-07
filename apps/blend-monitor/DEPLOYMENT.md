@@ -1,10 +1,26 @@
 # Blend Monitor - Google Cloud Run Deployment Guide
 
+## ⚠️ CRITICAL SECURITY WARNING
+
+**NEVER commit real credentials to version control!**
+
+This documentation contains placeholder values only. You MUST:
+
+1. **Replace ALL placeholder values** with your actual credentials
+2. **Store secrets in Google Secret Manager** or environment variables
+3. **Use strong, unique passwords** for all services
+4. **Rotate credentials regularly**
+5. **Review access logs** for unauthorized usage
+
+**Before proceeding, ensure you understand proper credential management practices.**
+
+---
+
 ## Prerequisites
 
 Before deploying, ensure you have:
 
-1. **Google Cloud Project**: Project ID `storybook-452807` (or your own)
+1. **Google Cloud Project**: Your Google Cloud Project ID
 2. **Cloud SQL Instance**: PostgreSQL database configured
 3. **gcloud CLI**: Installed and authenticated
 4. **GitHub Repository**: With deployment workflow
@@ -24,8 +40,8 @@ gcloud services enable sqladmin.googleapis.com
 ### Step 2: Create Secrets in GCP Secret Manager
 
 ```bash
-# Database Password
-echo -n "Juspay@123" | gcloud secrets create blend-monitor-db-password --data-file=-
+# Database Password (REPLACE WITH YOUR SECURE PASSWORD)
+echo -n "YOUR_SECURE_DB_PASSWORD" | gcloud secrets create blend-monitor-db-password --data-file=-
 
 # Firebase Private Key (save your key to a file first)
 gcloud secrets create blend-monitor-firebase-key --data-file=firebase-private-key.txt
@@ -39,33 +55,35 @@ gcloud iam service-accounts create blend-monitor-sa \
   --display-name="Blend Monitor Service Account"
 
 # Grant necessary permissions
-gcloud projects add-iam-policy-binding storybook-452807 \
-  --member="serviceAccount:blend-monitor-sa@storybook-452807.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:blend-monitor-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/cloudsql.client"
 
-gcloud projects add-iam-policy-binding storybook-452807 \
-  --member="serviceAccount:blend-monitor-sa@storybook-452807.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:blend-monitor-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/secretmanager.secretAccessor"
 ```
 
 ### Step 4: Configure GitHub Secrets
 
+⚠️ **IMPORTANT**: The values below are placeholders. Replace them with your actual credentials.
+
 Add these secrets to your GitHub repository:
 
-| Secret Name                    | Value                                                                        |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| `GCP_SA_KEY`                   | Service account JSON key                                                     |
-| `CLOUD_SQL_CONNECTION_NAME`    | `storybook-452807:us-central1:your-instance`                                 |
-| `DATABASE_NAME`                | `blend_monitor`                                                              |
-| `DATABASE_USER`                | `admin`                                                                      |
-| `FIREBASE_API_KEY`             | `AIzaSyD2aRkOI4iCwiZOW5kEejrL9jv9JvytKpo`                                    |
-| `FIREBASE_AUTH_DOMAIN`         | `storybook-452807.firebaseapp.com`                                           |
-| `FIREBASE_PROJECT_ID`          | `storybook-452807`                                                           |
-| `FIREBASE_STORAGE_BUCKET`      | `storybook-452807.firebasestorage.app`                                       |
-| `FIREBASE_MESSAGING_SENDER_ID` | `567047894553`                                                               |
-| `FIREBASE_APP_ID`              | `1:567047894553:web:1cd999e1c9bf9b81ff5c88`                                  |
-| `FIREBASE_DATABASE_URL`        | `https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app` |
-| `FIREBASE_CLIENT_EMAIL`        | `firebase-adminsdk-fbsvc@storybook-452807.iam.gserviceaccount.com`           |
+| Secret Name                    | Value                                                              |
+| ------------------------------ | ------------------------------------------------------------------ |
+| `GCP_SA_KEY`                   | Service account JSON key (from GCP Console)                        |
+| `CLOUD_SQL_CONNECTION_NAME`    | `YOUR_PROJECT_ID:REGION:YOUR_INSTANCE_NAME`                        |
+| `DATABASE_NAME`                | `your_database_name`                                               |
+| `DATABASE_USER`                | `your_db_username`                                                 |
+| `FIREBASE_API_KEY`             | `your_firebase_api_key_here`                                       |
+| `FIREBASE_AUTH_DOMAIN`         | `your_project_id.firebaseapp.com`                                  |
+| `FIREBASE_PROJECT_ID`          | `your_firebase_project_id`                                         |
+| `FIREBASE_STORAGE_BUCKET`      | `your_project_id.firebasestorage.app`                              |
+| `FIREBASE_MESSAGING_SENDER_ID` | `your_messaging_sender_id`                                         |
+| `FIREBASE_APP_ID`              | `your_firebase_app_id`                                             |
+| `FIREBASE_DATABASE_URL`        | `https://your_project_id-default-rtdb.REGION.firebasedatabase.app` |
+| `FIREBASE_CLIENT_EMAIL`        | `firebase-adminsdk-xxxxx@your_project_id.iam.gserviceaccount.com`  |
 
 ### Step 5: Manual Deployment (First Time)
 
@@ -74,18 +92,18 @@ Add these secrets to your GitHub repository:
 cd /path/to/blend-design-system
 
 # Build and push Docker image
-docker build -t gcr.io/storybook-452807/blend-monitor apps/blend-monitor/
-docker push gcr.io/storybook-452807/blend-monitor
+docker build -t gcr.io/YOUR_PROJECT_ID/blend-monitor apps/blend-monitor/
+docker push gcr.io/YOUR_PROJECT_ID/blend-monitor
 
 # Deploy to Cloud Run
 gcloud run deploy blend-monitor \
-  --image gcr.io/storybook-452807/blend-monitor \
-  --region us-central1 \
+  --image gcr.io/YOUR_PROJECT_ID/blend-monitor \
+  --region YOUR_REGION \
   --platform managed \
   --allow-unauthenticated \
-  --add-cloudsql-instances=storybook-452807:us-central1:your-instance \
-  --service-account=blend-monitor-sa@storybook-452807.iam.gserviceaccount.com \
-  --set-env-vars="NODE_ENV=production,INSTANCE_CONNECTION_NAME=storybook-452807:us-central1:your-instance,DATABASE_NAME=blend_monitor,DATABASE_USER=admin" \
+  --add-cloudsql-instances=YOUR_PROJECT_ID:YOUR_REGION:YOUR_INSTANCE_NAME \
+  --service-account=blend-monitor-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+  --set-env-vars="NODE_ENV=production,INSTANCE_CONNECTION_NAME=YOUR_PROJECT_ID:YOUR_REGION:YOUR_INSTANCE_NAME,DATABASE_NAME=your_database_name,DATABASE_USER=your_db_username" \
   --set-secrets="DATABASE_PASSWORD=blend-monitor-db-password:latest,FIREBASE_PRIVATE_KEY=blend-monitor-firebase-key:latest" \
   --memory 512Mi \
   --cpu 1 \
@@ -165,6 +183,25 @@ gcloud builds submit --config=apps/blend-monitor/cloudbuild.yaml
 3. **Restrict Cloud SQL** connections to Cloud Run only
 4. **Enable audit logging** for production
 5. **Set up alerts** for errors and high latency
+6. **Rotate credentials regularly** (every 90 days minimum)
+7. **Use strong passwords** (minimum 16 characters, mixed case, numbers, symbols)
+8. **Enable 2FA** on all administrative accounts
+9. **Monitor access logs** for suspicious activity
+10. **Implement IP restrictions** where possible
+11. **Regular security audits** of deployed resources
+12. **Keep dependencies updated** to patch vulnerabilities
+
+### 🔐 Credential Management Checklist
+
+Before deployment, verify:
+
+- [ ] All placeholder values have been replaced
+- [ ] Strong, unique passwords are used
+- [ ] Secrets are stored in Secret Manager, not environment variables
+- [ ] Service account has minimal required permissions
+- [ ] Database access is restricted to Cloud Run instances
+- [ ] Firewall rules are properly configured
+- [ ] SSL/TLS is enforced for all connections
 
 ## 📝 Environment Variables Reference
 

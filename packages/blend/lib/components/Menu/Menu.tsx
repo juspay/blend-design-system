@@ -180,6 +180,7 @@ const Menu = ({
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <Content
+                data-dropdown="dropdown"
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
                 side={side}
@@ -247,73 +248,7 @@ const Menu = ({
                         />
                     </Block>
                 )}
-                {filteredItems &&
-                    filteredItems.map((group, groupId) => (
-                        <React.Fragment key={groupId}>
-                            {group.label && (
-                                <RadixMenu.Label asChild>
-                                    <PrimitiveText
-                                        fontSize={
-                                            menuTokens.item.optionsLabel
-                                                .fontSize
-                                        }
-                                        paddingY={
-                                            menuTokens.item.optionsLabel.padding
-                                                .y
-                                        }
-                                        paddingX={
-                                            menuTokens.item.optionsLabel.padding
-                                                .x
-                                        }
-                                        userSelect="none"
-                                        marginY={
-                                            menuTokens.item.optionsLabel.margin
-                                                .y
-                                        }
-                                        marginX={
-                                            menuTokens.item.optionsLabel.margin
-                                                .x
-                                        }
-                                        textTransform="uppercase"
-                                        color={
-                                            menuTokens.item.optionsLabel.color
-                                        }
-                                    >
-                                        {group.label}
-                                    </PrimitiveText>
-                                </RadixMenu.Label>
-                            )}
-                            {group.items.map((item, itemIndex) => (
-                                <MenuItem
-                                    key={`${groupId}-${itemIndex}`}
-                                    item={item}
-                                    idx={itemIndex}
-                                    maxHeight={maxHeight}
-                                />
-                            ))}
-                            {groupId !== filteredItems.length - 1 &&
-                                group.showSeparator && (
-                                    <RadixMenu.Separator asChild>
-                                        <Block
-                                            height={
-                                                menuTokens.item.seperator.height
-                                            }
-                                            backgroundColor={
-                                                menuTokens.item.seperator.color
-                                            }
-                                            marginY={
-                                                menuTokens.item.seperator.margin
-                                                    .y
-                                            }
-                                            marginX={
-                                                menuTokens.item.seperator.margin
-                                                    .x
-                                            }
-                                        ></Block>
-                                    </RadixMenu.Separator>
-                                )}
-                        </React.Fragment>
-                    ))}
+
                 {shouldUseVirtualScrolling ? (
                     <Block
                         padding={FOUNDATION_THEME.unit[6]}
@@ -339,11 +274,10 @@ const Menu = ({
                     </Block>
                 ) : (
                     <Block
-                        padding={FOUNDATION_THEME.unit[6]}
                         style={{
                             paddingTop: enableSearch
-                                ? 0
-                                : FOUNDATION_THEME.unit[6],
+                                ? FOUNDATION_THEME.unit[6]
+                                : 0,
                         }}
                     >
                         {filteredItems &&
@@ -352,14 +286,31 @@ const Menu = ({
                                     {group.label && (
                                         <RadixMenu.Label asChild>
                                             <PrimitiveText
-                                                fontSize={12}
-                                                padding="6px 8px"
+                                                fontSize={
+                                                    menuTokens.item.optionsLabel
+                                                        .fontSize
+                                                }
+                                                paddingY={
+                                                    menuTokens.item.optionsLabel
+                                                        .padding.y
+                                                }
+                                                paddingX={
+                                                    menuTokens.item.optionsLabel
+                                                        .padding.x
+                                                }
                                                 userSelect="none"
-                                                margin="0px 6px"
+                                                marginY={
+                                                    menuTokens.item.optionsLabel
+                                                        .margin.y
+                                                }
+                                                marginX={
+                                                    menuTokens.item.optionsLabel
+                                                        .margin.x
+                                                }
                                                 textTransform="uppercase"
                                                 color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[400]
+                                                    menuTokens.item.optionsLabel
+                                                        .color
                                                 }
                                             >
                                                 {group.label}

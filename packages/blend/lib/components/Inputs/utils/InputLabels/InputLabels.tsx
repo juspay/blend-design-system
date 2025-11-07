@@ -55,6 +55,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
+                    data-form-label={label}
                     as="label"
                     htmlFor={name}
                     // variant="body.md"
@@ -80,6 +81,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                             color:
                                 tokens?.required?.color ||
                                 FOUNDATION_THEME.colors.red[600],
+                            top: '-1px',
+                            left: '-1px',
                         }}
                     >
                         *

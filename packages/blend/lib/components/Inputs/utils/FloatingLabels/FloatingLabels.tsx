@@ -14,7 +14,13 @@ const FloatingLabels = ({
     isFocused: boolean
 }) => {
     return (
-        <Block display="flex" alignItems="center" gap={4} width={'100%'}>
+        <Block
+            display="flex"
+            alignItems="center"
+            gap={4}
+            width={'100%'}
+            data-form-label={label}
+        >
             <Text
                 as="label"
                 htmlFor={name}

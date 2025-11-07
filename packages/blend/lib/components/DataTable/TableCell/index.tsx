@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useEffect, useState } from 'react'
+import React, { forwardRef, useRef, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { TableCellProps } from './types'
 import { TableTokenType } from '../dataTable.tokens'
@@ -25,6 +25,42 @@ const StyledTableCell = styled.td<{
     max-width: 0;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
 `
+
+const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
+    if (value == null) return true
+
+    if (typeof value === 'string' && value.trim() === '') return true
+
+    if (typeof value === 'number' && value === 0) return true
+
+    if (columnType === ColumnType.DROPDOWN) {
+        const dropdownData = value as DropdownColumnProps
+        if (
+            !dropdownData ||
+            !dropdownData.options ||
+            !dropdownData.selectedValue ||
+            (typeof dropdownData.selectedValue === 'string' &&
+                dropdownData.selectedValue.trim() === '')
+        ) {
+            return true
+        }
+    }
+
+    if (columnType === ColumnType.DATE) {
+        const dateData = value as DateColumnProps
+        if (
+            !dateData ||
+            !dateData.date ||
+            (typeof dateData.date === 'string' &&
+                dateData.date.trim() === '') ||
+            isNaN(new Date(dateData.date).getTime())
+        ) {
+            return true
+        }
+    }
+
+    return false
+}
 
 const TruncatedTextWithTooltip = ({
     text,
@@ -91,6 +127,8 @@ const TableCell = forwardRef<
             column,
             row,
             rowIndex,
+            colIndex,
+            tableTitle,
             isEditing,
             currentValue,
             width,
@@ -108,6 +146,90 @@ const TableCell = forwardRef<
             !isEditing && getDisplayValue
                 ? getDisplayValue(currentValue, column)
                 : currentValue
+
+        const generateDataAttributes = () => {
+            const attrs: Record<string, string | number | boolean> = {}
+
+            if (
+                tableTitle &&
+                typeof rowIndex === 'number' &&
+                typeof colIndex === 'number'
+            ) {
+                attrs['data-table-location'] =
+                    `${tableTitle}_tr${rowIndex + 1}_td${colIndex + 1}`
+            }
+
+            const valueToCheck = displayValue || currentValue
+
+            if (
+                valueToCheck == null ||
+                React.isValidElement(valueToCheck) ||
+                (typeof valueToCheck === 'object' &&
+                    valueToCheck.constructor === Object)
+            ) {
+                if (row.id) {
+                    attrs['data-order-customer-id'] = String(row.id)
+                }
+                return attrs
+            }
+
+            if (
+                column.type === ColumnType.NUMBER ||
+                typeof valueToCheck === 'number'
+            ) {
+                attrs['data-cell-type'] = 'numeric'
+                attrs['data-numeric'] = String(valueToCheck || 0)
+            } else if (column.type === ColumnType.DATE) {
+                attrs['data-cell-type'] = 'date'
+                const dateData = valueToCheck as DateColumnProps
+                if (dateData && dateData.date) {
+                    const date = new Date(dateData.date)
+                    if (!isNaN(date.getTime())) {
+                        attrs['data-date'] = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                            hour: dateData.showTime ? '2-digit' : undefined,
+                            minute: dateData.showTime ? '2-digit' : undefined,
+                        })
+                    }
+                }
+            } else if (
+                typeof valueToCheck === 'string' &&
+                valueToCheck.trim() !== ''
+            ) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                const moneyPattern = /[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]/
+                const numberPattern =
+                    /^\s*[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]?[\d,]+\.?\d*\s*$/
+
+                if (emailPattern.test(valueToCheck)) {
+                    attrs['data-cell-type'] = 'email'
+                    attrs['data-email'] = valueToCheck
+                } else if (
+                    moneyPattern.test(valueToCheck) ||
+                    (numberPattern.test(valueToCheck) &&
+                        column.header?.toLowerCase().includes('amount'))
+                ) {
+                    attrs['data-cell-type'] = 'money'
+                    attrs['data-money-cell'] = valueToCheck
+                } else {
+                    attrs['data-cell-type'] = 'text'
+                    attrs['data-text'] = valueToCheck
+                }
+            } else if (typeof valueToCheck === 'boolean') {
+                attrs['data-cell-type'] = 'boolean'
+                attrs['data-boolean'] = String(valueToCheck)
+            }
+
+            if (row.id) {
+                attrs['data-order-customer-id'] = String(row.id)
+            }
+
+            return attrs
+        }
+
+        const dataAttributes = generateDataAttributes()
 
         const renderContent = () => {
             if (isEditing && column.isEditable) {
@@ -193,78 +315,8 @@ const TableCell = forwardRef<
 
             if (column.type === ColumnType.DROPDOWN && !isEditing) {
                 const dropdownData = displayValue as DropdownColumnProps
-                if (dropdownData && dropdownData.options) {
-                    const selectedOption = dropdownData.options.find(
-                        (opt) => opt.value === dropdownData.selectedValue
-                    )
 
-                    const selectItems: SelectMenuGroupType[] = [
-                        {
-                            items: dropdownData.options.map((option) => ({
-                                label: option.label,
-                                value: String(option.value),
-                                slot1: option.icon || undefined,
-                            })),
-                            showSeparator: false,
-                        },
-                    ]
-
-                    return (
-                        <div style={{ width: '100%', minWidth: '150px' }}>
-                            <SingleSelect
-                                label=""
-                                placeholder={
-                                    dropdownData.placeholder || 'Select...'
-                                }
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                                items={selectItems}
-                                selected={String(
-                                    dropdownData.selectedValue || ''
-                                )}
-                                slot={selectedOption?.icon}
-                                onSelect={(value) => {
-                                    const updatedDropdownData: DropdownColumnProps =
-                                        {
-                                            ...dropdownData,
-                                            selectedValue: value,
-                                        }
-                                    if (onFieldChange) {
-                                        onFieldChange(updatedDropdownData)
-                                    }
-                                }}
-                                minMenuWidth={150}
-                                maxMenuWidth={250}
-                            />
-                        </div>
-                    )
-                }
-            }
-
-            if (column.type === ColumnType.DATE && !isEditing) {
-                const dateData = displayValue as DateColumnProps
-                if (dateData && dateData.date) {
-                    const date = new Date(dateData.date)
-                    const showTime = dateData.showTime || false
-
-                    const formatDate = (date: Date): string => {
-                        if (isNaN(date.getTime())) return 'Invalid Date'
-
-                        const options: Intl.DateTimeFormatOptions = {
-                            year: 'numeric',
-                            month: 'short',
-                            day: '2-digit',
-                        }
-
-                        if (showTime) {
-                            options.hour = '2-digit'
-                            options.minute = '2-digit'
-                        }
-
-                        return new Intl.DateTimeFormat('en-US', options).format(
-                            date
-                        )
-                    }
-
+                if (isEmptyValue(dropdownData, ColumnType.DROPDOWN)) {
                     return (
                         <Block
                             style={{
@@ -273,18 +325,111 @@ const TableCell = forwardRef<
                                 cursor: 'default',
                             }}
                         >
-                            <TruncatedTextWithTooltip
-                                text={formatDate(date)}
-                                style={{
-                                    fontSize:
-                                        FOUNDATION_THEME.font.size.body.sm
-                                            .fontSize,
-                                    color: FOUNDATION_THEME.colors.gray[700],
-                                }}
-                            />
+                            <TruncatedTextWithTooltip text="-" />
                         </Block>
                     )
                 }
+
+                const selectedOption = dropdownData.options.find(
+                    (opt) => opt.value === dropdownData.selectedValue
+                )
+
+                const selectItems: SelectMenuGroupType[] = [
+                    {
+                        items: dropdownData.options.map((option) => ({
+                            label: option.label,
+                            value: String(option.value),
+                            slot1: option.icon || undefined,
+                        })),
+                        showSeparator: false,
+                    },
+                ]
+
+                return (
+                    <div style={{ width: '100%', minWidth: '150px' }}>
+                        <SingleSelect
+                            label=""
+                            placeholder={
+                                dropdownData.placeholder || 'Select...'
+                            }
+                            variant={SelectMenuVariant.NO_CONTAINER}
+                            items={selectItems}
+                            selected={String(dropdownData.selectedValue || '')}
+                            slot={selectedOption?.icon}
+                            onSelect={(value) => {
+                                const updatedDropdownData: DropdownColumnProps =
+                                    {
+                                        ...dropdownData,
+                                        selectedValue: value,
+                                    }
+                                if (onFieldChange) {
+                                    onFieldChange(updatedDropdownData)
+                                }
+                            }}
+                            minMenuWidth={150}
+                            maxMenuWidth={250}
+                        />
+                    </div>
+                )
+            }
+
+            if (column.type === ColumnType.DATE && !isEditing) {
+                const dateData = displayValue as DateColumnProps
+
+                if (isEmptyValue(dateData, ColumnType.DATE)) {
+                    return (
+                        <Block
+                            style={{
+                                width: '100%',
+                                lineHeight: '1.5',
+                                cursor: 'default',
+                            }}
+                        >
+                            <TruncatedTextWithTooltip text="-" />
+                        </Block>
+                    )
+                }
+
+                const date = new Date(dateData.date)
+                const showTime = dateData.showTime || false
+
+                const formatDate = (date: Date): string => {
+                    if (isNaN(date.getTime())) return '-'
+
+                    const options: Intl.DateTimeFormatOptions = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                    }
+
+                    if (showTime) {
+                        options.hour = '2-digit'
+                        options.minute = '2-digit'
+                    }
+
+                    return new Intl.DateTimeFormat('en-US', options).format(
+                        date
+                    )
+                }
+
+                return (
+                    <Block
+                        style={{
+                            width: '100%',
+                            lineHeight: '1.5',
+                            cursor: 'default',
+                        }}
+                    >
+                        <TruncatedTextWithTooltip
+                            text={formatDate(date)}
+                            style={{
+                                fontSize:
+                                    FOUNDATION_THEME.font.size.body.sm.fontSize,
+                                color: FOUNDATION_THEME.colors.gray[700],
+                            }}
+                        />
+                    </Block>
+                )
             }
 
             if (column.renderCell) {
@@ -301,6 +446,20 @@ const TableCell = forwardRef<
                 )
             }
 
+            if (isEmptyValue(displayValue, column.type)) {
+                return (
+                    <Block
+                        style={{
+                            width: '100%',
+                            lineHeight: '1.5',
+                            cursor: 'default',
+                        }}
+                    >
+                        <TruncatedTextWithTooltip text="-" />
+                    </Block>
+                )
+            }
+
             return (
                 <Block
                     style={{
@@ -309,9 +468,7 @@ const TableCell = forwardRef<
                         cursor: 'default',
                     }}
                 >
-                    <TruncatedTextWithTooltip
-                        text={displayValue != null ? String(displayValue) : ''}
-                    />
+                    <TruncatedTextWithTooltip text={String(displayValue)} />
                 </Block>
             )
         }
@@ -332,6 +489,7 @@ const TableCell = forwardRef<
                     verticalAlign: 'middle',
                     position: frozenStyles?.position || 'relative',
                 }}
+                {...dataAttributes}
             >
                 <Block
                     style={{

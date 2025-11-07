@@ -56,7 +56,10 @@ const ModalDemo = () => {
             case 'basic':
                 return (
                     <div>
-                        <p className="text-base text-gray-600">
+                        <p
+                            className="text-base text-gray-600"
+                            data-description-text="popUp Confirmation"
+                        >
                             This is a configurable modal for demonstration
                             purposes. You can adjust various settings using the
                             controls. This is a configurable modal for
@@ -833,6 +836,7 @@ const ModalDemo = () => {
 
             {/* Modal with current configuration */}
             <Modal
+                data-component="popUpConfirm Some PopUp6"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={config.title}
@@ -842,7 +846,7 @@ const ModalDemo = () => {
                         ? {
                               text: config.primaryButtonText,
                               onClick: () => alert('Primary action clicked!'),
-                              isDisabled: config.primaryButtonDisabled,
+                              disabled: config.primaryButtonDisabled,
                               buttonType: config.primaryButtonType,
                           }
                         : undefined
@@ -852,7 +856,7 @@ const ModalDemo = () => {
                         ? {
                               text: config.secondaryButtonText,
                               onClick: () => alert('Secondary action clicked!'),
-                              isDisabled: config.secondaryButtonDisabled,
+                              disabled: config.secondaryButtonDisabled,
                               buttonType: config.secondaryButtonType,
                           }
                         : undefined

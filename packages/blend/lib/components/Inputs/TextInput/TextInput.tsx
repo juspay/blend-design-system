@@ -53,7 +53,7 @@ const TextInput = ({
     const paddingX = toPixels(textInputTokens.inputContainer.padding.x[size])
     const paddingY =
         toPixels(textInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(textInputTokens.gap)
 
     const paddingInlineStart = leftSlot
@@ -77,9 +77,16 @@ const TextInput = ({
     }, [leftSlot, rightSlot])
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={8}
+            width={'100%'}
+            data-component-field-wrapper={`field-${name}`}
+        >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
+                    tokens={textInputTokens}
                     label={label}
                     sublabel={sublabel}
                     helpIconHintText={helpIconHintText}
@@ -126,6 +133,7 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
                     type="text"
@@ -151,7 +159,6 @@ const TextInput = ({
                     borderRadius={
                         textInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={textInputTokens.inputContainer.boxShadow}
                     border={
                         textInputTokens.inputContainer.border[
                             error ? 'error' : 'default'

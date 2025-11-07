@@ -19,6 +19,7 @@ export type TabItem = {
     content: ReactNode
     closable?: boolean
     isDefault?: boolean
+    disable?: boolean
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
@@ -32,6 +33,7 @@ export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     dropdownTooltip?: string
     addButtonTooltip?: string
     maxDisplayTabs?: number
+    disable?: boolean
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<
@@ -51,6 +53,7 @@ export type TabsListProps = ComponentPropsWithoutRef<
     maxDisplayTabs?: number
     onTabChange?: (value: string) => void
     activeTab?: string
+    disable?: boolean
 }
 
 export type TabsTriggerProps = ComponentPropsWithoutRef<
@@ -64,6 +67,7 @@ export type TabsTriggerProps = ComponentPropsWithoutRef<
     children: string | number
     closable?: boolean
     onClose?: () => void
+    disable?: boolean
 }
 
 export type TabsContentProps = ComponentPropsWithoutRef<

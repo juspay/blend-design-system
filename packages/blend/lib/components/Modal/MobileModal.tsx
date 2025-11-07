@@ -29,7 +29,6 @@ const MobileModal: React.FC<MobileModalProps> = ({
     children,
     primaryAction,
     secondaryAction,
-    className,
     showCloseButton = true,
     closeOnBackdropClick = true,
     headerRightSlot,
@@ -49,7 +48,6 @@ const MobileModal: React.FC<MobileModalProps> = ({
             <DrawerPortal>
                 <DrawerOverlay />
                 <DrawerContent
-                    className={className}
                     direction="bottom"
                     showHandle={true}
                     contentDriven={true}

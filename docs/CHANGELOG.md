@@ -1,23 +1,24 @@
-# Changelog for v0.0.20 (Stable)
+# Changelog for v0.0.24-beta (Beta)
 
-This is a stable release. Changes since last stable release:
+> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
 
-- Merge pull request #475 from juspay/staging (4f0131d)
-- Dev to Staging (#474) (10c4da9)
-- Token revamp (#392) (7b77a25)
-- feat: add isFirstRow prop to TableCell and update styling for first row (#472) (28776fe)
-- Bug fix/chart ticks (#467) (92a3ecb)
-- refactor: simplify VirtualList and Select components (#465) (d799803)
-- Merge pull request #464 from juspay/fix/calendar-preset-month-selection (56bb11f)
-- Merge pull request #463 from juspay/dev (0df5612)
-- Merge pull request #462 from juspay/release/update-beta-version-0.0.20-beta (f92ee2e)
-- chore(release): v0.0.20-beta [BETA] (b9b376d)
-- Dev to staging (#461) (09fb391)
-- feat: add virtualization and infinite scroll options to SingleSelect and mutliselect (#460) (1b4fc98)
-- Bug fix/chart ticks (#459) (f0e9c2c)
-- feat: add VirtualList component for efficient rendering of large lists (#455) (24dd1b6)
-- Merge pull request #452 from juspay/staging (e97398e)
-- Merge pull request #451 from juspay/dev (9450687)
-- chore(release): v0.0.19 [STABLE] (#449) (7ae83ed)
-- Merge pull request #450 from juspay/fix/table-columnmanager (4e3cf0b)
-- chore(release): v0.0.19 [STABLE] (0f77e35)
+## 🔧 Chores
+
+- Feat/workflow (#553) ([3928966](../../commit/3928966))
+- **release**: v0.0.23 [STABLE] ([bc36d5e](../../commit/bc36d5e))
+
+---
+
+**Release Date**: 2025-11-05
+**Commit Range**: v0.0.23..HEAD
+**Total Changes**: 2 commits
+
+## Beta Installation
+
+```bash
+npm install @juspay/blend-design-system@beta
+# or specific beta version
+npm install @juspay/blend-design-system@0.0.24-beta
+```
+
+> **Note**: Beta versions are for testing only. Use stable versions in production.

@@ -66,6 +66,7 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 <Text
                     fontSize={tagTokens.text.fontSize[size]}
                     fontWeight={tagTokens.text.fontWeight[size]}
+                    data-label={text}
                 >
                     {text}
                 </Text>
