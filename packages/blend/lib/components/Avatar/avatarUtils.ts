@@ -31,49 +31,72 @@ export const hexToRgb = (hex: string) => {
         : null
 }
 
-// Color palette for A-Z avatar backgrounds
-const LETTER_COLORS: Record<string, string> = {
-    A: '#FF6B6B', // Red
-    B: '#4ECDC4', // Teal
-    C: '#45B7D1', // Sky Blue
-    D: '#FFA07A', // Light Salmon
-    E: '#98D8C8', // Mint
-    F: '#F7DC6F', // Yellow
-    G: '#BB8FCE', // Purple
-    H: '#85C1E2', // Light Blue
-    I: '#F8B739', // Orange
-    J: '#52B788', // Green
-    K: '#E85D75', // Pink
-    L: '#6C5CE7', // Indigo
-    M: '#00B894', // Emerald
-    N: '#FDCB6E', // Amber
-    O: '#E17055', // Terra Cotta
-    P: '#74B9FF', // Blue
-    Q: '#A29BFE', // Lavender
-    R: '#FD79A8', // Rose
-    S: '#00CEC9', // Cyan
-    T: '#FF7675', // Coral
-    U: '#55EFC4', // Aqua
-    V: '#FDA7DF', // Light Pink
-    W: '#6C5B7B', // Plum
-    X: '#81C784', // Soft Green
-    Y: '#FFB74D', // Peach
-    Z: '#9575CD', // Violet
+// Color palette for avatars (expanded for better variety)
+const AVATAR_COLORS = [
+    '#FF6B6B', // Red
+    '#4ECDC4', // Teal
+    '#45B7D1', // Sky Blue
+    '#FFA07A', // Light Salmon
+    '#98D8C8', // Mint
+    '#F7DC6F', // Yellow
+    '#BB8FCE', // Purple
+    '#85C1E2', // Light Blue
+    '#F8B739', // Orange
+    '#52B788', // Green
+    '#E85D75', // Pink
+    '#6C5CE7', // Indigo
+    '#00B894', // Emerald
+    '#FDCB6E', // Amber
+    '#E17055', // Terra Cotta
+    '#74B9FF', // Blue
+    '#A29BFE', // Lavender
+    '#FD79A8', // Rose
+    '#00CEC9', // Cyan
+    '#FF7675', // Coral
+    '#55EFC4', // Aqua
+    '#FDA7DF', // Light Pink
+    '#6C5B7B', // Plum
+    '#81C784', // Soft Green
+    '#FFB74D', // Peach
+    '#9575CD', // Violet
+    '#E74C3C', // Crimson
+    '#3498DB', // Ocean Blue
+    '#2ECC71', // Emerald Green
+    '#F39C12', // Carrot Orange
+]
+
+/**
+ * Simple hash function to convert a string into a number
+ * @param str - The string to hash
+ * @returns A hash number
+ */
+const hashString = (str: string): number => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i)
+        hash = (hash << 5) - hash + char
+        hash = hash & hash // Convert to 32-bit integer
+    }
+    return Math.abs(hash)
 }
 
 /**
- * Get a consistent color for an avatar based on the first letter of the name
- * @param text - The text to extract the first letter from (e.g., name or alt text)
+ * Get a consistent color for an avatar based on the full name/text
+ * Uses hash of the entire text to ensure unique colors for different names
+ * @param text - The text to generate color from (e.g., name or alt text)
  * @returns A hex color code
  */
 export const getColorFromText = (text: string): string => {
-    if (!text) return '#94A3B8' // Default gray color
-
-    const firstLetter = text.trim()[0]?.toUpperCase()
-
-    if (!firstLetter || !firstLetter.match(/[A-Z]/)) {
-        return '#94A3B8' // Default gray for non-alphabetic characters
+    if (!text || !text.trim()) {
+        return '#94A3B8' // Default gray color
     }
 
-    return LETTER_COLORS[firstLetter] || '#94A3B8'
+    // Normalize the text (trim and lowercase for consistency)
+    const normalizedText = text.trim().toLowerCase()
+
+    // Hash the full text and map to a color index
+    const hash = hashString(normalizedText)
+    const colorIndex = hash % AVATAR_COLORS.length
+
+    return AVATAR_COLORS[colorIndex]
 }
