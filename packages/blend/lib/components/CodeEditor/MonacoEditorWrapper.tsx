@@ -458,18 +458,22 @@ export const MonacoEditorWrapper = ({
             backgroundColor={tokens.body.backgroundColor}
             style={containerStyle}
         >
-            {showLineNumbers && (
-                <style>
-                    {`
+            <style>
+                {showLineNumbers
+                    ? `
                         .monaco-editor .margin {
                             padding-right: ${metrics.codePaddingLeft}px !important;
                         }
                         .monaco-editor .monaco-editor-background {
                             padding-left: 0 !important;
                         }
+                    `
+                    : `
+                        .monaco-editor .monaco-editor-background {
+                            padding-left: ${metrics.codePaddingLeft}px !important;
+                        }
                     `}
-                </style>
-            )}
+            </style>
 
             <Editor
                 value={value}

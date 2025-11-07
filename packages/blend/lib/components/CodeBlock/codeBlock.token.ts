@@ -111,14 +111,14 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[12],
-                    y: foundationToken.unit[12],
+                    y: foundationToken.unit[10],
                 },
                 gap: foundationToken.unit[8],
                 icon: {
                     width: 16,
                 },
                 text: {
-                    fontSize: '14px',
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '18px',
                     color: foundationToken.colors.gray[900],
@@ -191,14 +191,14 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[16],
-                    y: foundationToken.unit[12],
+                    y: foundationToken.unit[10],
                 },
                 gap: foundationToken.unit[12],
                 icon: {
                     width: 20,
                 },
                 text: {
-                    fontSize: '16px',
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '20px',
                     color: foundationToken.colors.gray[900],
