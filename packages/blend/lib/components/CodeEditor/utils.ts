@@ -1,4 +1,4 @@
-import type { CodeEditorVariant } from './types'
+import { CodeEditorVariant } from './types'
 
 /**
  * Determines if line numbers should be shown
@@ -10,7 +10,7 @@ export const shouldShowLineNumbers = (
     if (showLineNumbers !== undefined) {
         return showLineNumbers
     }
-    return variant === 'default'
+    return variant === CodeEditorVariant.DEFAULT
 }
 
 /**

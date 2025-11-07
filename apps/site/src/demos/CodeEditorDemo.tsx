@@ -114,8 +114,6 @@ def process_transactions(transactions):
     const languageOptions = [
         { value: 'javascript', label: 'JavaScript' },
         { value: 'typescript', label: 'TypeScript' },
-        { value: 'jsx', label: 'JSX' },
-        { value: 'tsx', label: 'TSX' },
         { value: 'json', label: 'JSON' },
         { value: 'python', label: 'Python' },
         { value: 'css', label: 'CSS' },

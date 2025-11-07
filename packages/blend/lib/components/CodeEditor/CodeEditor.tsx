@@ -26,6 +26,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             disabled = false,
             minHeight = '300px',
             maxHeight,
+            height,
             className,
             onBlur,
             onFocus,
@@ -80,6 +81,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                     showLineNumbers={shouldShowLineNumbersValue}
                     minHeight={minHeight}
                     maxHeight={maxHeight}
+                    height={height}
                     tokens={tokens}
                     onFocus={onFocus}
                     onBlur={onBlur}

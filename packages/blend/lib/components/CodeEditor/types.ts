@@ -22,6 +22,7 @@ export type CodeEditorProps = {
     disabled?: boolean
     minHeight?: string | number
     maxHeight?: string | number
+    height?: string | number
     className?: string
     onBlur?: () => void
     onFocus?: () => void

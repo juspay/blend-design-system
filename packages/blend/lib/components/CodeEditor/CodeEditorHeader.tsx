@@ -24,25 +24,43 @@ export const CodeEditorHeader = ({
     onCopy,
     tokens,
 }: CodeEditorHeaderProps) => {
+    const headerPaddingX =
+        typeof tokens.header.padding.x === 'number'
+            ? `${tokens.header.padding.x}px`
+            : tokens.header.padding.x
+
+    const headerPaddingY =
+        typeof tokens.header.padding.y === 'number'
+            ? `${tokens.header.padding.y}px`
+            : tokens.header.padding.y
+
+    const headerGap =
+        typeof tokens.header.gap === 'number'
+            ? `${tokens.header.gap}px`
+            : tokens.header.gap
+
+    const iconSize =
+        typeof tokens.header.icon.width === 'number'
+            ? tokens.header.icon.width
+            : parseInt(String(tokens.header.icon.width || '16'))
     return (
         <Block
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            padding="10px 16px"
+            padding={`${headerPaddingY} ${headerPaddingX}`}
             backgroundColor={tokens.header.backgroundColor}
             borderBottom={tokens.header.borderBottom}
-            style={{ minHeight: '44px' }}
         >
             <Block
                 display="flex"
                 alignItems="center"
-                gap="8px"
+                gap={headerGap}
                 style={{ flex: 1 }}
             >
                 {headerLeftSlot || (
                     <FileCode
-                        size={16}
+                        size={iconSize}
                         style={{
                             flexShrink: 0,
                             color: tokens.header.text.color,
@@ -52,12 +70,11 @@ export const CodeEditorHeader = ({
                 )}
                 <Block
                     as="span"
-                    fontSize="13px"
-                    fontWeight="500"
+                    fontSize={tokens.header.text.fontSize}
+                    fontWeight={tokens.header.text.fontWeight}
+                    lineHeight={tokens.header.text.lineHeight}
                     color={tokens.header.text.color}
                     style={{
-                        fontFamily:
-                            "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                         letterSpacing: '-0.01em',
                     }}
                 >
@@ -74,7 +91,6 @@ export const CodeEditorHeader = ({
                 )}
             </Block>
 
-            {/* Right side: Copy button */}
             {showCopyButton && (
                 <Block
                     style={{
