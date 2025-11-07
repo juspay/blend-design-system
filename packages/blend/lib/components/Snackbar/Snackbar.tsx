@@ -16,7 +16,7 @@ import {
     type AddToastOptions,
     type CustomToastProps,
     SnackbarVariant,
-    type SnackbarPosition,
+    SnackbarPosition,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
@@ -219,7 +219,9 @@ type SnackbarProps = {
     position?: SnackbarPosition
 }
 
-const Snackbar: React.FC<SnackbarProps> = ({ position = 'bottom-right' }) => {
+const Snackbar: React.FC<SnackbarProps> = ({
+    position = SnackbarPosition.BOTTOM_RIGHT,
+}) => {
     const isCenter = position?.includes('center')
 
     return (

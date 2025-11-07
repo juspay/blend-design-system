@@ -5,13 +5,14 @@ export enum SnackbarVariant {
     ERROR = 'error',
 }
 
-export type SnackbarPosition =
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right'
-    | 'top-center'
-    | 'bottom-center'
+export enum SnackbarPosition {
+    TOP_LEFT = 'top-left',
+    TOP_RIGHT = 'top-right',
+    BOTTOM_LEFT = 'bottom-left',
+    BOTTOM_RIGHT = 'bottom-right',
+    TOP_CENTER = 'top-center',
+    BOTTOM_CENTER = 'bottom-center',
+}
 
 export type AddToastOptions = {
     header: string
