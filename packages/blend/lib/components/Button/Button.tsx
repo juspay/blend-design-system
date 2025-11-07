@@ -8,6 +8,14 @@ import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useRipple, RippleContainer } from '../animations/Ripple'
+import { FOUNDATION_THEME } from '../../tokens'
+
+const formatLineHeight = (
+    value?: number | string | null
+): string | undefined => {
+    if (value === undefined || value === null) return undefined
+    return typeof value === 'number' ? `${value}px` : value
+}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -51,6 +59,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             return `0px 0px 0px 0px`
         }
 
+        const lineHeight = formatLineHeight(
+            FOUNDATION_THEME.font.size.body.md.lineHeight
+        )
+
         return (
             <PrimitiveButton
                 ref={ref}
@@ -69,9 +81,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={disabled}
                 color={buttonTokens.text.color[buttonType][subType].default}
                 borderRadius={getBorderRadius()}
-                padding={buttonTokens.padding[size][buttonType][subType]}
+                paddingX={buttonTokens.padding[size][buttonType][subType].x}
+                paddingY={buttonTokens.padding[size][buttonType][subType].y}
                 border={buttonTokens.border[buttonType][subType].default}
-                outline={buttonTokens.border[buttonType][subType].default}
                 position="relative"
                 overflow="hidden"
                 _active={
@@ -90,15 +102,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         : undefined
                 }
                 _hover={{
-                    border: buttonTokens.border[buttonType][subType].hover,
                     background:
                         buttonTokens.backgroundColor[buttonType][subType].hover,
-                    outline: buttonTokens.outline[buttonType][subType].hover,
                     color: buttonTokens.text.color[buttonType][subType].hover,
                 }}
                 _focusVisible={{
                     border: buttonTokens.border[buttonType][subType].default,
-                    outline: buttonTokens.outline[buttonType][subType].active,
                 }}
                 _disabled={{
                     background:
@@ -134,6 +143,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                             <Text
                                 fontSize={buttonTokens.text.fontSize[size]}
                                 fontWeight={buttonTokens.text.fontWeight[size]}
+                                lineHeight={lineHeight}
                                 as="span"
                                 color={
                                     buttonTokens.text.color[buttonType][
