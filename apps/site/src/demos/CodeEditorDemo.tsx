@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -114,11 +114,19 @@ def process_transactions(transactions):
     const languageOptions = [
         { value: 'javascript', label: 'JavaScript' },
         { value: 'typescript', label: 'TypeScript' },
+        { value: 'jsx', label: 'JSX' },
+        { value: 'tsx', label: 'TSX' },
         { value: 'json', label: 'JSON' },
         { value: 'python', label: 'Python' },
         { value: 'css', label: 'CSS' },
         { value: 'html', label: 'HTML' },
     ]
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'auto' })
+        }
+    }, [])
 
     return (
         <div className="p-8 space-y-12">
@@ -364,6 +372,50 @@ def process_transactions(transactions):
                             header="process.py"
                             language="python"
                             disabled={true}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Height Demo */}
+            <div className="space-y-6" id="height-demo">
+                <h2 className="text-2xl font-bold">Height Demo</h2>
+                <p className="text-gray-600">
+                    Use the <code>height</code> prop to lock the editor to a
+                    fixed height, or rely on <code>minHeight</code> for natural
+                    expansion.
+                </p>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">Fixed Height</h3>
+                        <p className="text-sm text-gray-600">
+                            The editor stays exactly 200px tall regardless of
+                            the content.
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.payment}
+                            onChange={() => {}}
+                            variant={CodeEditorVariant.DEFAULT}
+                            header="fixed-height.js"
+                            language="javascript"
+                            height="200px"
+                        />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">Min Height</h3>
+                        <p className="text-sm text-gray-600">
+                            The editor starts at 180px tall and grows as the
+                            content expands.
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.react}
+                            onChange={() => {}}
+                            variant={CodeEditorVariant.DEFAULT}
+                            header="auto-grow.jsx"
+                            language="jsx"
+                            minHeight="180px"
                         />
                     </div>
                 </div>
