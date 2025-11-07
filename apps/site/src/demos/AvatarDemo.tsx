@@ -27,8 +27,8 @@ const AvatarDemo = () => {
 
     // Options for selects
     const sizeOptions = [
-        { value: AvatarSize.XS, label: 'Extra Small' },
         { value: AvatarSize.SM, label: 'Small' },
+        { value: AvatarSize.REGULAR, label: 'Regular' },
         { value: AvatarSize.MD, label: 'Medium' },
         { value: AvatarSize.LG, label: 'Large' },
         { value: AvatarSize.XL, label: 'Extra Large' },
@@ -492,10 +492,10 @@ const AvatarDemo = () => {
                                                     <User
                                                         size={
                                                             size ===
-                                                            AvatarSize.XS
+                                                            AvatarSize.SM
                                                                 ? 10
                                                                 : size ===
-                                                                    AvatarSize.SM
+                                                                    AvatarSize.REGULAR
                                                                   ? 12
                                                                   : size ===
                                                                       AvatarSize.MD
@@ -503,7 +503,10 @@ const AvatarDemo = () => {
                                                                     : size ===
                                                                         AvatarSize.LG
                                                                       ? 20
-                                                                      : 24
+                                                                      : size ===
+                                                                          AvatarSize.XL
+                                                                        ? 24
+                                                                        : 28
                                                         }
                                                     />
                                                 }

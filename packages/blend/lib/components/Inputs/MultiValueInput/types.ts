@@ -15,6 +15,7 @@ export enum MultiValueInputState {
 }
 
 export type MultiValueInputProps = {
+    value?: string
     label?: string
     sublabel?: string
     helpIconHintText?: string
@@ -29,5 +30,5 @@ export type MultiValueInputProps = {
     size?: TextInputSize
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'onChange'
+    'size' | 'style' | 'className' | 'onChange' | 'value'
 >

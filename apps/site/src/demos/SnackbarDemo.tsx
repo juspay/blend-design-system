@@ -5,6 +5,7 @@ import {
 } from '../../../../packages/blend/lib/components/Button'
 import {
     addSnackbar,
+    SnackbarPosition,
     SnackbarVariant,
 } from '../../../../packages/blend/lib/components/Snackbar'
 import { StyledToast } from '../../../../packages/blend/lib/components/Snackbar/Snackbar'
@@ -251,6 +252,95 @@ const SnackbarDemo = () => {
                         size={ButtonSize.MEDIUM}
                         onClick={showSnackbarWithCustomClose}
                         text="Custom Close Handler"
+                    />
+                </div>
+            </div>
+
+            {/* Position Examples */}
+            <div className="flex flex-col gap-4">
+                <h2 className="text-lg font-semibold">Position Options</h2>
+                <p className="text-sm text-gray-600">
+                    Control where snackbars appear on the screen.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Left',
+                                description: 'Snackbar appears at top left',
+                                variant: SnackbarVariant.INFO,
+                                position: SnackbarPosition.TOP_LEFT,
+                            })
+                        }
+                        text="Top Left"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Center',
+                                description: 'Snackbar appears at top center',
+                                variant: SnackbarVariant.SUCCESS,
+                                position: SnackbarPosition.TOP_CENTER,
+                            })
+                        }
+                        text="Top Center"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Top Right',
+                                description: 'Snackbar appears at top right',
+                                variant: SnackbarVariant.WARNING,
+                                position: SnackbarPosition.TOP_RIGHT,
+                            })
+                        }
+                        text="Top Right"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Left',
+                                description: 'Snackbar appears at bottom left',
+                                variant: SnackbarVariant.ERROR,
+                                position: SnackbarPosition.BOTTOM_LEFT,
+                            })
+                        }
+                        text="Bottom Left"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Center',
+                                description:
+                                    'Snackbar appears at bottom center',
+                                variant: SnackbarVariant.INFO,
+                                position: SnackbarPosition.BOTTOM_CENTER,
+                            })
+                        }
+                        text="Bottom Center"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Bottom Right',
+                                description: 'Snackbar appears at bottom right',
+                                variant: SnackbarVariant.SUCCESS,
+                                position: SnackbarPosition.BOTTOM_RIGHT,
+                            })
+                        }
+                        text="Bottom Right"
                     />
                 </div>
             </div>

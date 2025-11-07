@@ -5,8 +5,23 @@ import {
 } from '../../../../packages/blend/lib/components/ChatInput'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { Camera, FileText, Upload, Mic, Send, Hash, Star } from 'lucide-react'
+import {
+    Camera,
+    FileText,
+    Upload,
+    Mic,
+    Send,
+    Hash,
+    Star,
+    AudioLines,
+} from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import {
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+    Button,
+} from '../../../../packages/blend/lib/components/Button'
 
 const ChatInputDemo = () => {
     // Playground state
@@ -196,6 +211,27 @@ const ChatInputDemo = () => {
                     <div className="min-h-32 rounded-2xl w-full flex justify-center items-center bg-gray-50 p-8">
                         <div style={{ width: playgroundWidth }}>
                             <ChatInput
+                                onKeyDown={(
+                                    e: React.KeyboardEvent<HTMLTextAreaElement>
+                                ) => {
+                                    console.log('onKeyDown', e.key)
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        handlePlaygroundSend(
+                                            playgroundMessage,
+                                            playgroundFiles
+                                        )
+                                    }
+                                }}
+                                slot1={
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.SMALL}
+                                        subType={ButtonSubType.ICON_ONLY}
+                                        leadingIcon={<AudioLines size={14} />}
+                                        onClick={handlePlaygroundVoiceRecord}
+                                    />
+                                }
                                 value={playgroundMessage}
                                 onChange={setPlaygroundMessage}
                                 onSend={handlePlaygroundSend}

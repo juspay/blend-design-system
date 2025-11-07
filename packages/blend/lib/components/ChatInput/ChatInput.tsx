@@ -15,21 +15,12 @@ import { Menu } from '../Menu'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
-import {
-    Paperclip,
-    X,
-    Plus,
-    AudioLines,
-    FileMinus,
-    Image,
-    FileText,
-} from 'lucide-react'
+import { Paperclip, X, Plus, FileMinus, Image, FileText } from 'lucide-react'
 import { getChatInputTokens } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     createOverflowMenuItems,
     handleAutoResize,
-    shouldSendOnEnter,
     isValidMessageLength,
 } from './utils'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
@@ -74,10 +65,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
     (
         {
             value = '',
+            slot1,
             onChange,
-            onSend,
             onAttachFiles,
-            onVoiceRecord,
             onFileRemove,
             onFileClick,
             placeholder = 'Type a message...',
@@ -89,10 +79,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             onTopQuerySelect,
             topQueriesMaxHeight = 200,
             attachButtonIcon,
-            voiceButtonIcon,
             overflowMenuProps,
             'aria-label': ariaLabel,
             'aria-describedby': ariaDescribedBy,
+            ...textAreaProps
         },
         ref
     ) => {
@@ -229,40 +219,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             [onChange, maxLength, autoResize, textareaElement]
         )
 
-        const handleKeyDown = useCallback(
-            (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                // Handle Cmd+Enter or Ctrl+Enter for line breaks
-                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                    e.preventDefault()
-                    const textarea = e.currentTarget
-                    const start = textarea.selectionStart
-                    const end = textarea.selectionEnd
-                    const newValue =
-                        value.substring(0, start) + '\n' + value.substring(end)
-                    onChange?.(newValue)
-
-                    // Set cursor position after the inserted newline
-                    setTimeout(() => {
-                        textarea.selectionStart = textarea.selectionEnd =
-                            start + 1
-                        handleAutoResize(textarea, autoResize)
-                    }, 0)
-                    return
-                }
-
-                // Handle plain Enter for sending
-                if (
-                    shouldSendOnEnter(e.key, e.shiftKey, e.metaKey, e.ctrlKey)
-                ) {
-                    e.preventDefault()
-                    if (onSend && value.trim()) {
-                        onSend(value, attachedFiles)
-                    }
-                }
-            },
-            [onSend, value, attachedFiles, onChange, autoResize]
-        )
-
         const handleAttachClick = useCallback(() => {
             if (disabled) return
             fileInputRef.current?.click()
@@ -279,11 +235,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             },
             [onAttachFiles]
         )
-
-        const handleVoiceClick = useCallback(() => {
-            if (disabled) return
-            onVoiceRecord?.()
-        }, [disabled, onVoiceRecord])
 
         const handleFileRemove = useCallback(
             (fileId: string) => {
@@ -349,13 +300,11 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     style={{ display: 'none' }}
                     accept="image/*,.pdf,.csv,.txt,.doc,.docx"
                 />
-
                 {/* Files container */}
                 {attachedFiles.length > 0 && (
                     <Block
                         ref={filesContainerRef}
                         display="flex"
-                        flexWrap="wrap"
                         gap={tokens.filesContainer.gap}
                         maxHeight={tokens.filesContainer.maxHeight}
                         overflowY={tokens.filesContainer.overflowY}
@@ -411,181 +360,94 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     </Block>
                 )}
 
-                {attachedFiles.length > 0 ? (
+                <Block
+                    backgroundColor={
+                        attachedFiles.length > 0
+                            ? tokens.attachmentContainer.backgroundColor
+                            : 'transparent'
+                    }
+                    borderRadius={
+                        attachedFiles.length > 0
+                            ? tokens.attachmentContainer.borderRadius
+                            : 0
+                    }
+                    padding={
+                        attachedFiles.length > 0
+                            ? tokens.attachmentContainer.padding
+                            : 0
+                    }
+                >
+                    <textarea
+                        ref={textareaElement}
+                        value={value}
+                        onChange={handleTextareaChange}
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        maxLength={maxLength}
+                        aria-label={ariaLabel}
+                        aria-describedby={ariaDescribedBy}
+                        rows={1}
+                        style={{
+                            backgroundColor: tokens.textarea.backgroundColor,
+                            color: tokens.textarea.color,
+                            fontSize: tokens.textarea.fontSize,
+                            lineHeight: tokens.textarea.lineHeight,
+                            padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
+                            border: tokens.textarea.border,
+                            borderRadius: tokens.textarea.borderRadius,
+                            outline: 'none',
+                            resize: tokens.textarea.resize,
+                            fontFamily: tokens.textarea.fontFamily,
+                            width: '100%',
+                            minHeight: tokens.textarea.minHeight,
+                            maxHeight: tokens.textarea.maxHeight,
+                            overflowY: tokens.textarea.overflowY,
+                            cursor: disabled ? 'not-allowed' : 'text',
+                        }}
+                        onFocus={(e) => {
+                            setIsTextareaFocused(true)
+                            const container =
+                                e.currentTarget.parentElement!.parentElement!
+                            container.style.boxShadow = tokens.container
+                                .boxShadow.focus as string
+                            container.style.border = tokens.container.border
+                                .focus as string
+                        }}
+                        onBlur={(e) => {
+                            setIsTextareaFocused(false)
+                            const container =
+                                e.currentTarget.parentElement!.parentElement!
+                            container.style.boxShadow = tokens.container
+                                .boxShadow.default as string
+                            container.style.border = tokens.container.border
+                                .default as string
+                        }}
+                        {...textAreaProps}
+                    />
                     <Block
-                        backgroundColor={
-                            tokens.attachmentContainer.backgroundColor
-                        }
-                        borderRadius={tokens.attachmentContainer.borderRadius}
-                        padding={tokens.attachmentContainer.padding}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent={tokens.bottomActions.justifyContent}
+                        paddingX={tokens.bottomActions.paddingX}
+                        paddingY={tokens.bottomActions.paddingY}
+                        gap={tokens.bottomActions.gap}
+                        marginTop={tokens.bottomActions.gap}
                     >
-                        <textarea
-                            ref={textareaElement}
-                            value={value}
-                            onChange={handleTextareaChange}
-                            onKeyDown={handleKeyDown}
-                            placeholder={placeholder}
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            subType={ButtonSubType.ICON_ONLY}
+                            leadingIcon={
+                                attachButtonIcon || <Paperclip size={14} />
+                            }
+                            onClick={handleAttachClick}
                             disabled={disabled}
-                            maxLength={maxLength}
-                            aria-label={ariaLabel}
-                            aria-describedby={ariaDescribedBy}
-                            rows={1}
-                            style={{
-                                backgroundColor:
-                                    tokens.textarea.backgroundColor,
-                                color: tokens.textarea.color,
-                                fontSize: tokens.textarea.fontSize,
-                                lineHeight: tokens.textarea.lineHeight,
-                                padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
-                                border: tokens.textarea.border,
-                                borderRadius: tokens.textarea.borderRadius,
-                                outline: 'none',
-                                resize: tokens.textarea.resize,
-                                fontFamily: tokens.textarea.fontFamily,
-                                width: '100%',
-                                minHeight: tokens.textarea.minHeight,
-                                maxHeight: tokens.textarea.maxHeight,
-                                overflowY: tokens.textarea.overflowY,
-                                cursor: disabled ? 'not-allowed' : 'text',
-                            }}
-                            onFocus={(e) => {
-                                setIsTextareaFocused(true)
-                                const container =
-                                    e.currentTarget.parentElement!
-                                        .parentElement!
-                                container.style.boxShadow = tokens.container
-                                    .boxShadow.focus as string
-                                container.style.border = tokens.container.border
-                                    .focus as string
-                            }}
-                            onBlur={(e) => {
-                                setIsTextareaFocused(false)
-                                const container =
-                                    e.currentTarget.parentElement!
-                                        .parentElement!
-                                container.style.boxShadow = tokens.container
-                                    .boxShadow.default as string
-                                container.style.border = tokens.container.border
-                                    .default as string
-                            }}
+                            aria-label="Attach files"
                         />
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            justifyContent={tokens.bottomActions.justifyContent}
-                            paddingX={tokens.bottomActions.paddingX}
-                            paddingY={tokens.bottomActions.paddingY}
-                            gap={tokens.bottomActions.gap}
-                            marginTop={tokens.bottomActions.gap}
-                        >
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                subType={ButtonSubType.ICON_ONLY}
-                                leadingIcon={
-                                    attachButtonIcon || <Paperclip size={14} />
-                                }
-                                onClick={handleAttachClick}
-                                disabled={disabled}
-                                aria-label="Attach files"
-                            />
 
-                            <Button
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.SMALL}
-                                subType={ButtonSubType.ICON_ONLY}
-                                leadingIcon={
-                                    voiceButtonIcon || <AudioLines size={14} />
-                                }
-                                onClick={handleVoiceClick}
-                                disabled={disabled}
-                                aria-label="Record voice message"
-                            />
-                        </Block>
+                        {slot1}
                     </Block>
-                ) : (
-                    <>
-                        {/* Textarea */}
-                        <textarea
-                            ref={textareaElement}
-                            value={value}
-                            onChange={handleTextareaChange}
-                            onKeyDown={handleKeyDown}
-                            placeholder={placeholder}
-                            disabled={disabled}
-                            maxLength={maxLength}
-                            aria-label={ariaLabel}
-                            aria-describedby={ariaDescribedBy}
-                            rows={1}
-                            style={{
-                                backgroundColor:
-                                    tokens.textarea.backgroundColor,
-                                color: tokens.textarea.color,
-                                fontSize: tokens.textarea.fontSize,
-                                lineHeight: tokens.textarea.lineHeight,
-                                padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
-                                border: tokens.textarea.border,
-                                borderRadius: tokens.textarea.borderRadius,
-                                outline: 'none',
-                                resize: tokens.textarea.resize,
-                                fontFamily: tokens.textarea.fontFamily,
-                                width: '100%',
-                                minHeight: tokens.textarea.minHeight,
-                                maxHeight: tokens.textarea.maxHeight,
-                                overflowY: tokens.textarea.overflowY,
-                                cursor: disabled ? 'not-allowed' : 'text',
-                            }}
-                            onFocus={(e) => {
-                                setIsTextareaFocused(true)
-                                const container = e.currentTarget.parentElement!
-                                container.style.boxShadow = tokens.container
-                                    .boxShadow.focus as string
-                                container.style.border = tokens.container.border
-                                    .focus as string
-                            }}
-                            onBlur={(e) => {
-                                setIsTextareaFocused(false)
-                                const container = e.currentTarget.parentElement!
-                                container.style.boxShadow = tokens.container
-                                    .boxShadow.default as string
-                                container.style.border = tokens.container.border
-                                    .default as string
-                            }}
-                        />
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            justifyContent={tokens.bottomActions.justifyContent}
-                            paddingX={tokens.bottomActions.paddingX}
-                            paddingY={tokens.bottomActions.paddingY}
-                            gap={tokens.bottomActions.gap}
-                        >
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                subType={ButtonSubType.ICON_ONLY}
-                                leadingIcon={
-                                    attachButtonIcon || <Paperclip size={14} />
-                                }
-                                onClick={handleAttachClick}
-                                disabled={disabled}
-                                aria-label="Attach files"
-                            />
-
-                            <Button
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.SMALL}
-                                subType={ButtonSubType.ICON_ONLY}
-                                leadingIcon={
-                                    voiceButtonIcon || <AudioLines size={14} />
-                                }
-                                onClick={handleVoiceClick}
-                                disabled={disabled}
-                                aria-label="Record voice message"
-                            />
-                        </Block>
-                    </>
-                )}
+                </Block>
 
                 {topQueries && topQueries.length > 0 && isTextareaFocused && (
                     <Block
