@@ -5,7 +5,6 @@ import {
     TagSize,
     TagShape,
 } from '../../../../packages/blend/lib/components/Tags'
-import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -42,8 +41,9 @@ const TagDemo = () => {
     )
     const [skeletonLeftSlot, setSkeletonLeftSlot] = useState(false)
     const [skeletonRightSlot, setSkeletonRightSlot] = useState(false)
+    const skeletonVariants = ['pulse', 'wave', 'shimmer'] as const
     const [skeletonAnimationVariant, setSkeletonAnimationVariant] =
-        useState<SkeletonVariant>('pulse')
+        useState<(typeof skeletonVariants)[number]>('pulse')
     const [skeletonSplitPosition, setSkeletonSplitPosition] =
         useState<string>('none')
 
@@ -75,11 +75,10 @@ const TagDemo = () => {
         { value: TagShape.ROUNDED, label: 'Rounded' },
     ]
 
-    const skeletonVariantOptions = [
-        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
-        { value: 'wave' as SkeletonVariant, label: 'Wave' },
-        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
-    ]
+    const skeletonVariantOptions = skeletonVariants.map((variant) => ({
+        value: variant,
+        label: variant.charAt(0).toUpperCase() + variant.slice(1),
+    }))
 
     const splitPositionOptions = [
         { value: 'none', label: 'None' },
@@ -263,7 +262,7 @@ const TagDemo = () => {
                             selected={skeletonAnimationVariant}
                             onSelect={(value) =>
                                 setSkeletonAnimationVariant(
-                                    value as SkeletonVariant
+                                    value as (typeof skeletonVariants)[number]
                                 )
                             }
                             placeholder="Select animation"
@@ -330,32 +329,32 @@ const TagDemo = () => {
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {skeletonVariantOptions.map(({ value, label }) => (
+                    {skeletonVariants.map((variant) => (
                         <div
-                            key={value}
+                            key={variant}
                             className="space-y-3 p-4 border rounded-lg bg-white"
                         >
-                            <h3 className="text-lg font-semibold">{label}</h3>
+                            <h3 className="text-lg font-semibold">{variant}</h3>
                             <div className="flex flex-wrap gap-2">
                                 <Tag
                                     text="Loading Tag"
                                     color={TagColor.PRIMARY}
                                     showSkeleton
-                                    skeletonVariant={value}
+                                    skeletonVariant={variant}
                                 />
                                 <Tag
                                     text="With Icon"
                                     color={TagColor.SUCCESS}
                                     leftSlot={<Hash size={12} />}
                                     showSkeleton
-                                    skeletonVariant={value}
+                                    skeletonVariant={variant}
                                 />
                                 <Tag
                                     text="Different Size"
                                     color={TagColor.WARNING}
                                     size={TagSize.LG}
                                     showSkeleton
-                                    skeletonVariant={value}
+                                    skeletonVariant={variant}
                                 />
                             </div>
                         </div>

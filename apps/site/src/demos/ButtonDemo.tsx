@@ -8,7 +8,6 @@ import {
     ButtonState,
 } from '../../../../packages/blend/lib/components/Button'
 
-import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -41,8 +40,6 @@ const ButtonDemo = () => {
     )
     const [skeletonLeadingIcon, setSkeletonLeadingIcon] = useState(false)
     const [skeletonTrailingIcon, setSkeletonTrailingIcon] = useState(false)
-    const [skeletonVariant, setSkeletonVariant] =
-        useState<SkeletonVariant>('pulse')
     const [skeletonFullWidth, setSkeletonFullWidth] = useState(false)
 
     // Options for selects
@@ -65,11 +62,14 @@ const ButtonDemo = () => {
         { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
-    const skeletonVariantOptions = [
-        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
-        { value: 'wave' as SkeletonVariant, label: 'Wave' },
-        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
-    ]
+    const animationVariants = ['pulse', 'wave', 'shimmer'] as const
+    const [skeletonAnimationVariant, setSkeletonAnimationVariant] =
+        useState<(typeof animationVariants)[number]>('pulse')
+
+    const skeletonVariantOptions = animationVariants.map((variant) => ({
+        value: variant,
+        label: variant.charAt(0).toUpperCase() + variant.slice(1),
+    }))
 
     return (
         <div className="p-8 space-y-12">
@@ -288,9 +288,11 @@ const ButtonDemo = () => {
                         <SingleSelect
                             label="Animation Variant"
                             items={[{ items: skeletonVariantOptions }]}
-                            selected={skeletonVariant}
+                            selected={skeletonAnimationVariant}
                             onSelect={(value) =>
-                                setSkeletonVariant(value as SkeletonVariant)
+                                setSkeletonAnimationVariant(
+                                    value as (typeof animationVariants)[number]
+                                )
                             }
                             placeholder="Select animation"
                         />
@@ -316,7 +318,7 @@ const ButtonDemo = () => {
                             skeletonTrailingIcon ? <X size={16} /> : undefined
                         }
                         showSkeleton
-                        skeletonVariant={skeletonVariant}
+                        skeletonVariant={skeletonAnimationVariant}
                     />
                 </div>
             </div>

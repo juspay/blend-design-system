@@ -203,7 +203,7 @@ const ButtonWithLoading = ({ loading, ...props }) => {
 ```
 /components/Skeleton/
 ├── Skeleton.tsx                    # Base component with animations
-├── ButtonSkeleton.tsx             # Button-specific token mirroring
+├── (built-in) Button showSkeleton # Button-specific token mirroring via Button component
 ├── SkeletonText.tsx               # Multi-line text handling
 ├── SkeletonAvatar.tsx             # Profile picture skeletons
 ├── SkeletonCard.tsx               # Complete card layouts

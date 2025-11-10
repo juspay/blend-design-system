@@ -1,71 +1,11 @@
-import { forwardRef } from 'react'
-import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
-import { TagSkeleton } from './TagSkeleton'
+import { forwardRef, type CSSProperties } from 'react'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import type { TagProps, TagWithSkeletonProps } from './types'
+import type { TagWithSkeletonProps } from './types'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
 import { getSkeletonState } from '../Skeleton/utils'
-
-const TagBase = forwardRef<HTMLDivElement, TagProps>((props, ref) => {
-    const {
-        text,
-        variant = TagVariant.SUBTLE,
-        color = TagColor.PRIMARY,
-        size = TagSize.SM,
-        shape = TagShape.SQUARICAL,
-        leftSlot,
-        rightSlot,
-        splitTagPosition,
-        ...rawBlockProps
-    } = props
-
-    const { width, onClick, ...blockProps } = rawBlockProps
-    const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
-
-    const isSplitTag = splitTagPosition !== undefined
-    let borderRadius = tagTokens.borderRadius[size][shape]
-    if (isSplitTag) {
-        const radius = tagTokens.borderRadius[size][shape]
-        borderRadius =
-            splitTagPosition === 'left'
-                ? `${radius} 0 0 ${radius}`
-                : `0 ${radius} ${radius} 0`
-    }
-
-    const hasClickHandler = typeof onClick === 'function'
-
-    return (
-        <Block
-            {...blockProps}
-            ref={ref}
-            onClick={onClick}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width={width ?? 'fit-content'}
-            gap={tagTokens.gap}
-            padding={tagTokens.padding[size]}
-            backgroundColor={tagTokens.backgroundColor[variant][color]}
-            color={tagTokens.text.color[variant][color]}
-            border={tagTokens.border[variant][color]}
-            borderRadius={borderRadius}
-            cursor={hasClickHandler ? 'pointer' : 'default'}
-        >
-            {leftSlot && <Block contentCentered>{leftSlot}</Block>}
-            <Text
-                fontSize={tagTokens.text.fontSize[size]}
-                fontWeight={tagTokens.text.fontWeight[size]}
-            >
-                {text}
-            </Text>
-            {rightSlot && <Block contentCentered>{rightSlot}</Block>}
-        </Block>
-    )
-})
-
-TagBase.displayName = 'TagBase'
+import Skeleton from '../Skeleton/Skeleton'
+import TagBase from './TagBase'
 
 const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
     const {
@@ -79,26 +19,66 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
         leftSlot,
         rightSlot,
         splitTagPosition,
+        style: inlineStyle,
+        className,
         ...blockProps
     } = props
 
+    const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
     const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
+
+    const { width: blockWidth, ...restBlockProps } = blockProps as {
+        width?: string | number
+        pointerEvents?: CSSProperties['pointerEvents']
+        [key: string]: unknown
+    }
+    const { pointerEvents, ...layoutBlockProps } = restBlockProps
+
+    const baseRadius = tagTokens.borderRadius[size][shape]
+    const skeletonRadius =
+        splitTagPosition === undefined
+            ? baseRadius
+            : splitTagPosition === 'left'
+              ? `${baseRadius} 0 0 ${baseRadius}`
+              : `0 ${baseRadius} ${baseRadius} 0`
+
+    const skeletonWidth = blockWidth ?? inlineStyle?.width ?? 'fit-content'
 
     if (shouldShowSkeleton) {
         return (
-            <TagSkeleton
+            <Skeleton
                 ref={ref}
-                text={text}
-                variant={variant}
-                color={color}
-                size={size}
-                shape={shape}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                splitTagPosition={splitTagPosition}
-                skeletonVariant={skeletonVariant}
-                {...blockProps}
-            />
+                variant={skeletonVariant}
+                loading
+                padding="0"
+                borderRadius={skeletonRadius}
+                width={skeletonWidth}
+                display="inline-flex"
+                alignItems="stretch"
+                justifyContent="center"
+                pointerEvents="none"
+                className={className}
+                style={{
+                    ...inlineStyle,
+                    width: skeletonWidth,
+                    pointerEvents: 'none',
+                }}
+                {...layoutBlockProps}
+            >
+                <TagBase
+                    text={text ?? ''}
+                    variant={variant}
+                    color={color}
+                    size={size}
+                    shape={shape}
+                    leftSlot={leftSlot}
+                    rightSlot={rightSlot}
+                    splitTagPosition={splitTagPosition}
+                    width={skeletonWidth}
+                    tokens={tagTokens}
+                    isSkeleton
+                />
+            </Skeleton>
         )
     }
 
@@ -113,7 +93,12 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
             leftSlot={leftSlot}
             rightSlot={rightSlot}
             splitTagPosition={splitTagPosition}
-            {...blockProps}
+            tokens={tagTokens}
+            style={inlineStyle}
+            className={className}
+            width={blockWidth}
+            pointerEvents={pointerEvents}
+            {...layoutBlockProps}
         />
     )
 })
