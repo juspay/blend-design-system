@@ -8,7 +8,10 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
-export type ButtonBaseProps = Omit<ButtonProps, 'showSkeleton' | 'skeletonVariant'> & {
+export type ButtonBaseProps = Omit<
+    ButtonProps,
+    'showSkeleton' | 'skeletonVariant'
+> & {
     isSkeleton?: boolean
     tokens?: ButtonTokensType
 }
@@ -212,4 +215,3 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
 ButtonBase.displayName = 'ButtonBase'
 
 export default ButtonBase
-
