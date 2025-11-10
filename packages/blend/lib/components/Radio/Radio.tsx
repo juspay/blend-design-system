@@ -121,6 +121,7 @@ const RadioContent: React.FC<{
                 >
                     <label htmlFor={uniqueId} style={labelStyles}>
                         <PrimitiveText
+                            data-text={children}
                             as="span"
                             fontSize={textProps.fontSize}
                             fontWeight={textProps.fontWeight}
@@ -149,6 +150,7 @@ const RadioContent: React.FC<{
             )}
             {subtext && (
                 <PrimitiveText
+                    data-description-text={subtext}
                     as="span"
                     fontSize={subtextProps.fontSize}
                     fontWeight={subtextProps.fontWeight}

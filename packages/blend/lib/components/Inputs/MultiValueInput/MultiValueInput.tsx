@@ -9,8 +9,10 @@ import type { MultiValueInputProps } from './types'
 import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 import { X } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const MultiValueInput = ({
+    value = '',
     label,
     sublabel,
     disabled,
@@ -21,21 +23,19 @@ const MultiValueInput = ({
     tags = [],
     onTagAdd,
     onTagRemove,
+    onChange,
     size = TextInputSize.MEDIUM,
     ...rest
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const [isFocused, setIsFocused] = useState(false)
-    const [inputValue, setInputValue] = useState('')
-
     const inputRef = useRef<HTMLInputElement>(null)
 
     const addTag = (value: string) => {
         const trimmedValue = value.trim()
         if (trimmedValue && !tags.includes(trimmedValue)) {
             onTagAdd?.(trimmedValue)
-            setInputValue('')
         }
     }
 
@@ -47,12 +47,8 @@ const MultiValueInput = ({
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault()
-            addTag(inputValue)
-        } else if (
-            e.key === 'Backspace' &&
-            inputValue === '' &&
-            tags.length > 0
-        ) {
+            addTag(value)
+        } else if (e.key === 'Backspace' && value === '' && tags.length > 0) {
             const lastTag = tags[tags.length - 1]
             if (lastTag) {
                 removeTag(lastTag)
@@ -67,7 +63,12 @@ const MultiValueInput = ({
     const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
     const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
     return (
-        <Block display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-component-field-wrapper={`field-multi-value-input`}
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             <InputLabels
                 label={label}
                 sublabel={sublabel}
@@ -84,9 +85,6 @@ const MultiValueInput = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                boxShadow={
-                    multiValueInputTokens.inputContainer.boxShadow.default
-                }
                 border={
                     error
                         ? multiValueInputTokens.inputContainer.border.error
@@ -98,19 +96,11 @@ const MultiValueInput = ({
                     border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'hover'
                     ],
-                    boxShadow:
-                        multiValueInputTokens.inputContainer.boxShadow[
-                            error ? 'error' : 'hover'
-                        ],
                 }}
                 _focus={{
                     border: multiValueInputTokens.inputContainer.border[
                         error ? 'error' : 'focus'
                     ],
-                    boxShadow:
-                        multiValueInputTokens.inputContainer.boxShadow[
-                            error ? 'error' : 'focus'
-                        ],
                 }}
             >
                 {tags?.map((tag) => (
@@ -129,6 +119,7 @@ const MultiValueInput = ({
                     />
                 ))}
                 <PrimitiveInput
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     fontSize={
                         multiValueInputTokens.inputContainer.fontSize[size]
                     }
@@ -143,8 +134,12 @@ const MultiValueInput = ({
                     }
                     outline="none"
                     border="none"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    value={value}
+                    onChange={(e) => {
+                        const newValue = e.target.value
+
+                        onChange?.(newValue)
+                    }}
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}

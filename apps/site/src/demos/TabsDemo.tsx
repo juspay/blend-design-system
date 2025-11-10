@@ -104,6 +104,9 @@ const TabsDemo = () => {
     const [selectedTabsToAdd, setSelectedTabsToAdd] = useState<string[]>([])
     const [showMultiSelect, setShowMultiSelect] = useState(false)
 
+    // Disabled state demo
+    const [globalDisable, setGlobalDisable] = useState(false)
+
     // Options for selects
     const variantOptions = [
         { value: TabsVariant.BOXED, label: 'Boxed' },
@@ -378,6 +381,342 @@ const TabsDemo = () => {
                                 are concatenated
                             </p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Disabled State Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Disabled State</h2>
+                <div className="space-y-8">
+                    {/* Individual Disabled Tabs */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Individual Disabled Tabs
+                        </h3>
+                        <p className="text-gray-600">
+                            Specific tabs can be disabled individually using the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                disable
+                            </code>{' '}
+                            property on each tab item.
+                        </p>
+                        <Tabs
+                            defaultValue="tab1"
+                            items={[
+                                {
+                                    value: 'tab1',
+                                    label: 'Active Tab',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Active Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is active and
+                                                clickable.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab2',
+                                    label: 'Disabled Tab',
+                                    disable: true,
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Disabled Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This content won't be
+                                                accessible.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab3',
+                                    label: 'Another Active Tab',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Another Active Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is also active and
+                                                clickable.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab4',
+                                    label: 'Also Disabled',
+                                    disable: true,
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Also Disabled Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is disabled too.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Global Disabled State */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Global Disabled State
+                        </h3>
+                        <p className="text-gray-600">
+                            All tabs can be disabled at once using the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                disable
+                            </code>{' '}
+                            property on the Tabs component.
+                        </p>
+                        <div className="flex items-center gap-4 mb-4">
+                            <Switch
+                                label="Disable All Tabs"
+                                checked={globalDisable}
+                                onChange={() =>
+                                    setGlobalDisable(!globalDisable)
+                                }
+                            />
+                        </div>
+                        <Tabs
+                            defaultValue="overview"
+                            disable={globalDisable}
+                            items={[
+                                {
+                                    value: 'overview',
+                                    label: 'Overview',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Overview Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                All tabs are{' '}
+                                                {globalDisable
+                                                    ? 'disabled'
+                                                    : 'enabled'}{' '}
+                                                based on the global state.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'analytics',
+                                    label: 'Analytics',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Analytics Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Analytics data and charts.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'reports',
+                                    label: 'Reports',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Reports Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Generated reports and exports.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Disabled with Children Pattern */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Disabled State with Children Pattern
+                        </h3>
+                        <p className="text-gray-600">
+                            The disable prop works with the children pattern as
+                            well, following the Accordion component pattern.
+                        </p>
+                        <Tabs defaultValue="tab1" disable={globalDisable}>
+                            <TabsList>
+                                <TabsTrigger
+                                    value="tab1"
+                                    leftSlot={<Home size={16} />}
+                                >
+                                    Home
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab2"
+                                    leftSlot={<User size={16} />}
+                                >
+                                    Profile
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab3"
+                                    leftSlot={<Settings size={16} />}
+                                >
+                                    Settings
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="tab1" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Home Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Toggle the switch above to see all tabs
+                                        disabled.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab2" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Profile Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Profile information and settings.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab3" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Settings Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Application settings and preferences.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    {/* Disabled Across Variants */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Disabled State Across Variants
+                        </h3>
+                        <p className="text-gray-600">
+                            The disabled state styling works consistently across
+                            all tab variants.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {Object.values(TabsVariant).map((variant) => (
+                                <div key={variant} className="space-y-2">
+                                    <h4 className="font-medium capitalize">
+                                        {variant} Variant
+                                    </h4>
+                                    <Tabs
+                                        disable={globalDisable}
+                                        defaultValue="tab1"
+                                    >
+                                        <TabsList variant={variant}>
+                                            <TabsTrigger
+                                                disable={true}
+                                                value="tab1"
+                                                variant={variant}
+                                            >
+                                                Active
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab2"
+                                                variant={variant}
+                                                disable={true}
+                                            >
+                                                Disabled
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab3"
+                                                variant={variant}
+                                            >
+                                                Active
+                                            </TabsTrigger>
+                                        </TabsList>
+
+                                        <TabsContent
+                                            value="tab1"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Active tab in {variant}{' '}
+                                                    variant
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab3"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Another active tab
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Disabled State Features:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Individual tabs can be disabled using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    disable
+                                </code>{' '}
+                                prop on TabItem
+                            </li>
+                            <li>
+                                • All tabs can be disabled globally using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    disable
+                                </code>{' '}
+                                prop on Tabs component
+                            </li>
+                            <li>
+                                • Works with both items pattern and children
+                                pattern
+                            </li>
+                            <li>
+                                • Disabled tabs show reduced opacity and are not
+                                clickable
+                            </li>
+                            <li>
+                                • Consistent styling across all variants and
+                                sizes
+                            </li>
+                            <li>
+                                • Follows the same pattern as Accordion
+                                component
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

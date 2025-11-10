@@ -126,6 +126,7 @@ const SwitchContent: React.FC<{
     return (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
+                data-text={label}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -157,6 +158,7 @@ const SwitchSubtext: React.FC<{
 
     return (
         <PrimitiveText
+            data-description-text={children}
             as="span"
             color={subtextProps.color}
             fontSize={subtextProps.fontSize}

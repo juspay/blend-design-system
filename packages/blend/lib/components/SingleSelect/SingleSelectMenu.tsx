@@ -237,11 +237,13 @@ const Item = ({
     onSelect,
     selected,
     singleSelectTokens,
+    index,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
     singleSelectTokens?: SingleSelectTokensType
+    index?: number
 }) => {
     if (item.subMenu) {
         return (
@@ -261,6 +263,7 @@ const Item = ({
             selected={selected}
             type={SelectItemType.SINGLE}
             showCheckmark={true}
+            index={index}
         />
     )
 }
@@ -363,6 +366,8 @@ const SingleSelectMenu = ({
         onOpenChange(newOpen)
     }
 
+    let itemCounter = 0
+
     const renderVirtualItem = ({
         item: flatItem,
     }: {
@@ -400,12 +405,15 @@ const SingleSelectMenu = ({
         }
 
         if (flatItem.type === 'item' && flatItem.item) {
+            const currentIndex = itemCounter
+            itemCounter++
             return (
                 <Item
                     selected={selected}
                     item={flatItem.item}
                     onSelect={onSelect}
                     singleSelectTokens={singleSelectTokens}
+                    index={currentIndex}
                 />
             )
         }
@@ -423,6 +431,7 @@ const SingleSelectMenu = ({
                 {trigger}
             </RadixMenu.Trigger>
             <Content
+                data-dropdown="dropdown"
                 align={alignment}
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
@@ -574,15 +583,26 @@ const SingleSelectMenu = ({
                                         </Text>
                                     </Label>
                                 )}
-                                {group.items.map((item, itemIndex) => (
-                                    <Item
-                                        key={`${groupId}-${itemIndex}`}
-                                        selected={selected}
-                                        item={item}
-                                        onSelect={onSelect}
-                                        singleSelectTokens={singleSelectTokens}
-                                    />
-                                ))}
+                                {group.items.map((item, itemIndex) => {
+                                    let itemIdx = 0
+                                    // Count items in previous groups
+                                    for (let i = 0; i < groupId; i++) {
+                                        itemIdx += filteredItems[i].items.length
+                                    }
+                                    itemIdx += itemIndex
+                                    return (
+                                        <Item
+                                            key={`${groupId}-${itemIndex}`}
+                                            selected={selected}
+                                            item={item}
+                                            onSelect={onSelect}
+                                            singleSelectTokens={
+                                                singleSelectTokens
+                                            }
+                                            index={itemIdx}
+                                        />
+                                    )
+                                })}
                                 {groupId !== filteredItems.length - 1 &&
                                     group.showSeparator && (
                                         <RadixMenu.Separator asChild>

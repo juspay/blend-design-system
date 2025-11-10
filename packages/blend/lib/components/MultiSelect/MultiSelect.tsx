@@ -267,12 +267,14 @@ const MultiSelect = ({
                                     ]
                                 ),
                             })}
+                            data-selectbox-value={placeholder}
                         >
                             <Block
                                 width={fullWidth ? '100%' : 'fit-content'}
                                 maxWidth={fullWidth ? '100%' : 'fit-content'}
                                 display="flex"
                                 alignItems="center"
+                                data-dropdown-for={placeholder}
                             >
                                 <Tooltip
                                     content={
@@ -284,6 +286,11 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
+                                        data-value={placeholder}
+                                        data-custom-value={placeholder}
+                                        data-button-status={
+                                            disabled ? 'disabled' : 'enabled'
+                                        }
                                         type="button"
                                         position="relative"
                                         width={
@@ -295,11 +302,6 @@ const MultiSelect = ({
                                         justifyContent="space-between"
                                         gap={8}
                                         borderRadius={appliedBorderRadius}
-                                        boxShadow={
-                                            multiSelectTokens.trigger.boxShadow[
-                                                variant
-                                            ]
-                                        }
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
@@ -411,17 +413,21 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens.label
-                                                            .color.default
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                                     }
                                                     fontWeight={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontWeight
                                                     }
                                                     fontSize={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontSize
                                                     }
+                                                    data-button-text={label}
                                                 >
                                                     {label}
                                                 </Text>
@@ -487,17 +493,24 @@ const MultiSelect = ({
                                                         // variant="body.md"
                                                         color={
                                                             multiSelectTokens
-                                                                .label.color
-                                                                .default
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
-                                                                .label
+                                                                .trigger
+                                                                .placeholder
                                                                 .fontWeight
                                                         }
                                                         fontSize={
                                                             multiSelectTokens
-                                                                .label.fontSize
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
+                                                        }
+                                                        data-button-text={
+                                                            placeholder
                                                         }
                                                     >
                                                         {placeholder}
@@ -537,6 +550,19 @@ const MultiSelect = ({
                                                             'ellipsis',
                                                         whiteSpace: 'nowrap',
                                                     }}
+                                                    data-badge-value={
+                                                        selectionTagType ===
+                                                        MultiSelectSelectionTagType.COUNT
+                                                            ? selectedValues.length
+                                                            : selectedValues
+                                                                  .map(
+                                                                      (v) =>
+                                                                          valueLabelMap[
+                                                                              v
+                                                                          ]
+                                                                  )
+                                                                  .join(', ')
+                                                    }
                                                 >
                                                     {selectionTagType ===
                                                     MultiSelectSelectionTagType.COUNT

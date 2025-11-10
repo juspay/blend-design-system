@@ -212,9 +212,13 @@ const CheckboxDemo = () => {
                                     <Heart size={16} className="text-red-500" />
                                 ) : undefined
                             }
-                            data-selected-checkbox="NotSelected"
-                            data-checkbox-value="SUCCESS"
-                            data-checkbox-status="enabled"
+                            data-selected-checkbox={
+                                playgroundChecked ? 'Selected' : 'NotSelected'
+                            }
+                            data-checkbox-value={playgroundLabel}
+                            data-checkbox-status={
+                                playgroundDisabled ? 'disabled' : 'enabled'
+                            }
                         >
                             {playgroundLabel}
                         </Checkbox>

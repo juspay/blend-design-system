@@ -4,6 +4,8 @@ export type TableCellProps<T extends Record<string, unknown>> = {
     column: ColumnDefinition<T>
     row: T
     rowIndex: number
+    colIndex?: number
+    tableTitle?: string
     isEditing: boolean
     currentValue: unknown
     width: React.CSSProperties

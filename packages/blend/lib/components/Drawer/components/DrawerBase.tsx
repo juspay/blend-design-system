@@ -207,6 +207,25 @@ const StyledDescription = styled(VaulDrawer.Description)`
     opacity: 0.7;
 `
 
+const getDrawerBorderRadius = (
+    direction: 'top' | 'bottom' | 'left' | 'right',
+    tokens: DrawerTokensType
+) => {
+    if (direction === 'bottom') {
+        return `0 0 ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}`
+    }
+    if (direction === 'top') {
+        return `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} 0 0`
+    }
+    if (direction === 'left') {
+        return `0 0 0 ${tokens.borderRadius.bottomLeft}`
+    }
+    if (direction === 'right') {
+        return `0 0 ${tokens.borderRadius.bottomRight} 0`
+    }
+    return undefined
+}
+
 export const Drawer = ({
     open,
     onOpenChange,
@@ -320,7 +339,7 @@ export const DrawerContent = forwardRef<
         return (
             <StyledContent
                 ref={ref}
-                className={className}
+                className={`drawer-content ${className || ''}`}
                 style={style}
                 tokens={tokens}
                 direction={direction}
@@ -417,6 +436,7 @@ export const DrawerBody = forwardRef<
         overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
         noPadding?: boolean
         hasFooter?: boolean
+        direction?: 'top' | 'bottom' | 'left' | 'right'
     }
 >(
     (
@@ -425,6 +445,8 @@ export const DrawerBody = forwardRef<
             className,
             overflowY = 'auto',
             noPadding = false,
+            hasFooter = false,
+            direction = 'bottom',
             ...props
         },
         ref
@@ -434,7 +456,7 @@ export const DrawerBody = forwardRef<
         return (
             <Block
                 ref={ref}
-                className={className}
+                className={`drawer-body ${className || ''}`}
                 padding={
                     noPadding
                         ? 0
@@ -443,6 +465,11 @@ export const DrawerBody = forwardRef<
                           tokens.content.padding.y
                 }
                 backgroundColor={tokens.content.backgroundColor}
+                borderRadius={
+                    hasFooter
+                        ? undefined
+                        : getDrawerBorderRadius(direction, tokens)
+                }
                 flexGrow={1}
                 overflowY={overflowY}
                 {...props}
@@ -455,30 +482,32 @@ export const DrawerBody = forwardRef<
 
 DrawerBody.displayName = 'DrawerBody'
 
-export const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
-    ({ children, className, ...props }, ref) => {
-        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
-
-        return (
-            <Block
-                ref={ref}
-                className={className}
-                padding={
-                    tokens.content.padding.x + ' ' + tokens.content.padding.y
-                }
-                backgroundColor={tokens.content.backgroundColor}
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
-                gap="12px"
-                flexShrink={0}
-                {...props}
-            >
-                {children}
-            </Block>
-        )
+export const DrawerFooter = forwardRef<
+    HTMLDivElement,
+    DrawerFooterProps & {
+        direction?: 'top' | 'bottom' | 'left' | 'right'
     }
-)
+>(({ children, className, direction = 'bottom', ...props }, ref) => {
+    const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
+
+    return (
+        <Block
+            ref={ref}
+            className={className}
+            padding={tokens.content.padding.x + ' ' + tokens.content.padding.y}
+            backgroundColor={tokens.content.backgroundColor}
+            borderRadius={getDrawerBorderRadius(direction, tokens)}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            gap="12px"
+            flexShrink={0}
+            {...props}
+        >
+            {children}
+        </Block>
+    )
+})
 
 DrawerFooter.displayName = 'DrawerFooter'
 

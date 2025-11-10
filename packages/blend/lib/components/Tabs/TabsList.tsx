@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
     forwardRef,
     useMemo,
@@ -41,6 +42,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             addButtonTooltip = 'Add new tab',
             onTabChange,
             activeTab = '',
+            disable = false,
             children,
             ...props
         },
@@ -170,10 +172,16 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     size={size}
                                     closable={item.closable && !item.isDefault}
                                     onClose={() => handleTabClose(item.value)}
+                                    disabled={item.disable}
                                     style={{
                                         flexShrink: 0,
                                         whiteSpace: 'nowrap',
                                     }}
+                                    data-tabs={item.label}
+                                    data-tab-selected={item.value === activeTab}
+                                    data-tabs-disabled={
+                                        item.disable ? 'true' : 'false'
+                                    }
                                 >
                                     {item.label}
                                 </TabsTrigger>
@@ -247,6 +255,26 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             )
         }
 
+        // Clone children and pass disable prop (similar to Accordion pattern)
+        const renderChildren = () => {
+            return React.Children.map(children, (child) => {
+                if (!React.isValidElement(child)) return child
+
+                // Merge disable prop: if either parent or child has disable, it should be disabled
+                const existingProps = child.props as Record<string, unknown>
+                const childDisable =
+                    'disable' in existingProps
+                        ? (existingProps.disable as boolean | undefined)
+                        : undefined
+                const childProps = {
+                    ...existingProps,
+                    disable: childDisable || disable,
+                }
+
+                return React.cloneElement(child, childProps)
+            })
+        }
+
         return (
             <Block
                 style={{
@@ -267,7 +295,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     $tabsToken={tabsToken}
                     {...props}
                 >
-                    {children}
+                    {renderChildren()}
                 </StyledTabsList>
             </Block>
         )

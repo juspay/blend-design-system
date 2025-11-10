@@ -1,7 +1,34 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system'
-import { CreditCard, DollarSign, Smartphone, Shield } from 'lucide-react'
+import {
+    CreditCard,
+    DollarSign,
+    Smartphone,
+    Shield,
+    Star,
+    Info,
+    Settings,
+} from 'lucide-react'
+
+// Helper function for slot content rendering
+const getSlotContent = (slotType: string) => {
+    switch (slotType) {
+        case 'star':
+            return <Star size={16} color="#ffd700" />
+        case 'info':
+            return <Info size={16} color="#0ea5e9" />
+        case 'settings':
+            return <Settings size={16} color="#6b7280" />
+        case 'creditCard':
+            return <CreditCard size={16} color="#4f46e5" />
+        case 'dollar':
+            return <DollarSign size={16} color="#10b981" />
+        case 'none':
+        default:
+            return undefined
+    }
+}
 
 const meta: Meta<typeof Radio> = {
     title: 'Components/Radio',
@@ -44,6 +71,10 @@ import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
         },
     },
     argTypes: {
+        id: {
+            control: 'text',
+            description: 'Unique identifier for the radio input element',
+        },
         checked: {
             control: 'boolean',
             description: 'Controlled checked state of the radio',
@@ -85,6 +116,18 @@ import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
             control: 'text',
             description: 'Name attribute for grouping radios',
         },
+        slot: {
+            control: 'select',
+            options: [
+                'none',
+                'star',
+                'info',
+                'settings',
+                'creditCard',
+                'dollar',
+            ],
+            description: 'Additional content slot displayed next to the label',
+        },
         onChange: {
             action: 'changed',
             description: 'Callback fired when the radio state changes',
@@ -98,6 +141,18 @@ type Story = StoryObj<typeof Radio>
 
 // Default story
 export const Default: Story = {
+    render: function DefaultRadio(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
+
+        return (
+            <Radio
+                {...args}
+                checked={checked}
+                onChange={(newChecked) => setChecked(newChecked)}
+                slot={getSlotContent(args.slot)}
+            />
+        )
+    },
     args: {
         children: 'Default radio',
         value: 'default',
@@ -107,6 +162,8 @@ export const Default: Story = {
         disabled: false,
         required: false,
         error: false,
+        id: '',
+        slot: 'none',
     },
 }
 
@@ -614,6 +671,42 @@ export const UncontrolledRadioGroup: Story = {
         docs: {
             description: {
                 story: 'Uncontrolled radio groups that manage their own state internally. Click to select options - the first group starts with no selection, the second has a default selection.',
+            },
+        },
+    },
+}
+
+// Interactive playground
+export const Interactive: Story = {
+    render: function InteractiveRadio(args) {
+        const [checked, setChecked] = useState(args.defaultChecked || false)
+
+        return (
+            <Radio
+                {...args}
+                checked={checked}
+                onChange={(newChecked) => setChecked(newChecked)}
+                slot={getSlotContent(args.slot)}
+            />
+        )
+    },
+    args: {
+        children: 'Interactive radio playground',
+        value: 'interactive',
+        name: 'interactive-group',
+        size: RadioSize.MEDIUM,
+        defaultChecked: false,
+        disabled: false,
+        required: false,
+        error: false,
+        subtext: 'Customize all props using controls',
+        id: 'interactive-radio',
+        slot: 'none',
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interactive playground to test all radio props and combinations. Use the controls panel to modify any property.',
             },
         },
     },

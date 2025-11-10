@@ -38,59 +38,68 @@ export const Tooltip = ({
             <RadixTooltip.Root open={open}>
                 <RadixTooltip.Trigger asChild>{trigger}</RadixTooltip.Trigger>
                 {content && (
-                    <RadixTooltip.Content
-                        side={side}
-                        align={align}
-                        sideOffset={offset}
-                        style={{ zIndex: 1000 }}
-                    >
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            overflow="hidden"
-                            backgroundColor={tooltipTokens.background}
-                            padding={tooltipTokens.padding[size]}
-                            borderRadius={tooltipTokens.borderRadius[size]}
-                            maxWidth={maxWidth || tooltipTokens.maxWidth[size]}
-                            width="fit-content"
-                            gap={tooltipTokens.gap[size]}
+                    <RadixTooltip.Portal>
+                        <RadixTooltip.Content
+                            data-tooltip={'tooltip'}
+                            side={side}
+                            align={align}
+                            sideOffset={offset}
+                            style={{ zIndex: 9999 }}
                         >
-                            {slot &&
-                                slotDirection === TooltipSlotDirection.LEFT && (
-                                    <Block contentCentered flexShrink={0}>
-                                        {slot}
-                                    </Block>
-                                )}
-                            <Block flexGrow={1} overflow="hidden">
-                                <PrimitiveText
-                                    color={tooltipTokens.text.color}
-                                    fontSize={tooltipTokens.text.fontSize[size]}
-                                    fontWeight={
-                                        tooltipTokens.text.fontWeight[size]
-                                    }
-                                    lineHeight={
-                                        tooltipTokens.text.lineHeight[size]
-                                    }
-                                >
-                                    {content}
-                                </PrimitiveText>
-                            </Block>
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                overflow="hidden"
+                                backgroundColor={tooltipTokens.background}
+                                padding={tooltipTokens.padding[size]}
+                                borderRadius={tooltipTokens.borderRadius[size]}
+                                maxWidth={
+                                    maxWidth || tooltipTokens.maxWidth[size]
+                                }
+                                width="fit-content"
+                                gap={tooltipTokens.gap[size]}
+                            >
+                                {slot &&
+                                    slotDirection ===
+                                        TooltipSlotDirection.LEFT && (
+                                        <Block contentCentered flexShrink={0}>
+                                            {slot}
+                                        </Block>
+                                    )}
+                                <Block flexGrow={1} overflow="hidden">
+                                    <PrimitiveText
+                                        data-text={content}
+                                        color={tooltipTokens.text.color}
+                                        fontSize={
+                                            tooltipTokens.text.fontSize[size]
+                                        }
+                                        fontWeight={
+                                            tooltipTokens.text.fontWeight[size]
+                                        }
+                                        lineHeight={
+                                            tooltipTokens.text.lineHeight[size]
+                                        }
+                                    >
+                                        {content}
+                                    </PrimitiveText>
+                                </Block>
 
-                            {slot &&
-                                slotDirection ===
-                                    TooltipSlotDirection.RIGHT && (
-                                    <Block contentCentered flexShrink={0}>
-                                        {slot}
-                                    </Block>
-                                )}
-                        </Block>
-                        {showArrow && (
-                            <Arrow
-                                offset={8}
-                                $color={tooltipTokens.background}
-                            />
-                        )}
-                    </RadixTooltip.Content>
+                                {slot &&
+                                    slotDirection ===
+                                        TooltipSlotDirection.RIGHT && (
+                                        <Block contentCentered flexShrink={0}>
+                                            {slot}
+                                        </Block>
+                                    )}
+                            </Block>
+                            {showArrow && (
+                                <Arrow
+                                    offset={8}
+                                    $color={tooltipTokens.background}
+                                />
+                            )}
+                        </RadixTooltip.Content>
+                    </RadixTooltip.Portal>
                 )}
             </RadixTooltip.Root>
         </RadixTooltip.Provider>

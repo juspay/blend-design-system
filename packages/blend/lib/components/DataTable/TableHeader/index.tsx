@@ -64,6 +64,7 @@ const TableHeader = forwardRef<
             allVisibleColumns,
             initialColumns,
             selectAll,
+            sortConfig,
             enableInlineEdit = false,
             enableColumnManager = true,
             columnManagerMaxSelections,
@@ -80,6 +81,8 @@ const TableHeader = forwardRef<
             mobileOverflowColumns = [],
             onMobileOverflowClick,
             onSort,
+            onSortAscending,
+            onSortDescending,
             onSelectAll,
             onColumnChange,
             onHeaderChange,
@@ -94,8 +97,8 @@ const TableHeader = forwardRef<
         const editableRef = useRef<HTMLDivElement>(null)
 
         const [sortState, setSortState] = useState<SortState>({
-            currentSortField: null,
-            currentSortDirection: SortDirection.NONE,
+            currentSortField: sortConfig?.field || null,
+            currentSortDirection: sortConfig?.direction || SortDirection.NONE,
         })
 
         const [filterState, setFilterState] = useState<FilterState>({
@@ -111,12 +114,109 @@ const TableHeader = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
 
-        const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
+        const sortHandlers = createSortHandlers(
+            sortState,
+            onSort,
+            onSortAscending,
+            onSortDescending
+        )
         const filterHandlers = createFilterHandlers(setFilterState)
 
         useEffect(() => {
             setLocalColumns(visibleColumns)
         }, [visibleColumns])
+
+        useEffect(() => {
+            setSortState({
+                currentSortField: sortConfig?.field || null,
+                currentSortDirection:
+                    sortConfig?.direction || SortDirection.NONE,
+            })
+        }, [sortConfig])
+
+        useEffect(() => {
+            const handleScroll = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
+                setOpenPopovers({})
+            }
+
+            const handleWheel = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
+                setOpenPopovers({})
+            }
+
+            const scrollContainers: Element[] = []
+
+            if (ref && typeof ref === 'object' && ref.current) {
+                const thead = ref.current
+                const table = thead.closest('table')
+
+                if (table) {
+                    let parent = table.parentElement
+                    while (parent && parent !== document.body) {
+                        const styles = window.getComputedStyle(parent)
+                        if (
+                            styles.overflow === 'auto' ||
+                            styles.overflow === 'scroll' ||
+                            styles.overflowX === 'auto' ||
+                            styles.overflowX === 'scroll' ||
+                            styles.overflowY === 'auto' ||
+                            styles.overflowY === 'scroll'
+                        ) {
+                            scrollContainers.push(parent)
+                        }
+                        parent = parent.parentElement
+                    }
+                }
+            }
+            const listeners: (() => void)[] = []
+
+            scrollContainers.forEach((container) => {
+                container.addEventListener('scroll', handleScroll, {
+                    passive: true,
+                })
+                container.addEventListener('wheel', handleWheel, {
+                    passive: true,
+                })
+                listeners.push(() => {
+                    container.removeEventListener('scroll', handleScroll)
+                    container.removeEventListener('wheel', handleWheel)
+                })
+            })
+
+            document.addEventListener('scroll', handleScroll, { passive: true })
+            document.addEventListener('wheel', handleWheel, { passive: true })
+            window.addEventListener('scroll', handleScroll, { passive: true })
+            window.addEventListener('wheel', handleWheel, { passive: true })
+
+            listeners.push(() => {
+                document.removeEventListener('scroll', handleScroll)
+                document.removeEventListener('wheel', handleWheel)
+                window.removeEventListener('scroll', handleScroll)
+                window.removeEventListener('wheel', handleWheel)
+            })
+            return () => {
+                listeners.forEach((cleanup) => cleanup())
+            }
+        }, [ref])
 
         useEffect(() => {
             if (editingField && editableRef.current) {
@@ -201,6 +301,8 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                borderTopLeftRadius:
+                                    tableToken.dataTable.borderRadius,
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: '0px',
@@ -233,6 +335,10 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                ...(!enableRowExpansion && {
+                                    borderTopLeftRadius:
+                                        tableToken.dataTable.borderRadius,
+                                }),
                                 ...(columnFreeze > 0 && {
                                     position: 'sticky',
                                     left: enableRowExpansion ? '50px' : '0px',
@@ -248,6 +354,14 @@ const TableHeader = forwardRef<
                                 alignItems="center"
                                 justifyContent="center"
                                 width={FOUNDATION_THEME.unit[40]}
+                                style={{
+                                    height: '100%',
+                                    ...(!enableRowExpansion && {
+                                        borderTopLeftRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
+                                    overflow: 'hidden',
+                                }}
                             >
                                 <Checkbox
                                     checked={selectAll}
@@ -276,6 +390,21 @@ const TableHeader = forwardRef<
                                 '#ffffff'
                         )
 
+                        const isLastColumn =
+                            !enableColumnManager &&
+                            !(
+                                (enableInlineEdit || rowActions) &&
+                                !(
+                                    mobileConfig?.isMobile &&
+                                    mobileConfig?.enableColumnOverflow
+                                )
+                            ) &&
+                            !(
+                                mobileConfig?.enableColumnOverflow &&
+                                mobileOverflowColumns.length > 0
+                            ) &&
+                            index === localColumns.length - 1
+
                         return (
                             <th
                                 key={String(column.field)}
@@ -290,7 +419,12 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(isLastColumn && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
+                                data-table-column-heading={column.header}
                             >
                                 <Block
                                     display="flex"
@@ -498,7 +632,70 @@ const TableHeader = forwardRef<
                                             onClick={(e) => e.stopPropagation()}
                                             _focus={{ outline: 'none' }}
                                             _focusVisible={{ outline: 'none' }}
+                                            position="relative"
                                         >
+                                            {(() => {
+                                                const fieldKey = String(
+                                                    column.field
+                                                )
+                                                const hasSort =
+                                                    sortState.currentSortField ===
+                                                        fieldKey &&
+                                                    sortState.currentSortDirection !==
+                                                        SortDirection.NONE
+                                                const hasFilter = (() => {
+                                                    const selectedValues =
+                                                        filterState
+                                                            .columnSelectedValues[
+                                                            fieldKey
+                                                        ]
+                                                    if (!selectedValues)
+                                                        return false
+
+                                                    if (
+                                                        Array.isArray(
+                                                            selectedValues
+                                                        )
+                                                    ) {
+                                                        return (
+                                                            selectedValues.length >
+                                                            0
+                                                        )
+                                                    }
+                                                    if (
+                                                        typeof selectedValues ===
+                                                            'object' &&
+                                                        selectedValues !==
+                                                            null &&
+                                                        'min' in
+                                                            selectedValues &&
+                                                        'max' in selectedValues
+                                                    ) {
+                                                        return true // Range filter
+                                                    }
+                                                    return false
+                                                })()
+
+                                                return (
+                                                    (hasSort || hasFilter) && (
+                                                        <Block
+                                                            position="absolute"
+                                                            top="-2px"
+                                                            right="-2px"
+                                                            width="6px"
+                                                            height="6px"
+                                                            borderRadius="50%"
+                                                            backgroundColor={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[500]
+                                                            }
+                                                            zIndex={1}
+                                                        />
+                                                    )
+                                                )
+                                            })()}
+
                                             {isMobile ? (
                                                 // Mobile: Use Drawer wrapper
                                                 <Drawer
@@ -657,6 +854,15 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(!enableColumnManager &&
+                                        !(
+                                            mobileConfig?.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                        ) && {
+                                            borderTopRightRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
                                 }}
                             >
                                 <Block
@@ -694,6 +900,10 @@ const TableHeader = forwardRef<
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
+                                    ...(!enableColumnManager && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
                                 }}
                             ></th>
                         )}
@@ -717,6 +927,8 @@ const TableHeader = forwardRef<
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
                             }}
                         >
                             <Block position="relative">
