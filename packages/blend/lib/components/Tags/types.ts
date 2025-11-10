@@ -41,6 +41,6 @@ export type TagProps = Omit<BlockProps, 'children'> & {
 }
 
 export type TagWithSkeletonProps = TagProps & {
-    loading?: boolean
+    showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
 }

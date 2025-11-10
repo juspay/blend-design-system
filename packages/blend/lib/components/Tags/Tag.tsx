@@ -1,16 +1,12 @@
-import {
-    forwardRef,
-    useEffect,
-    useState,
-    type ForwardRefExoticComponent,
-    type RefAttributes,
-} from 'react'
+import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
+import { TagSkeleton } from './TagSkeleton'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { TagProps, TagWithSkeletonProps } from './types'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
+import { getSkeletonState } from '../Skeleton/utils'
 
 const TagBase = forwardRef<HTMLDivElement, TagProps>((props, ref) => {
     const {
@@ -71,28 +67,9 @@ const TagBase = forwardRef<HTMLDivElement, TagProps>((props, ref) => {
 
 TagBase.displayName = 'TagBase'
 
-type TagSkeletonComponent = ForwardRefExoticComponent<
-    Omit<TagWithSkeletonProps, 'loading'> & RefAttributes<HTMLDivElement>
->
-
-let skeletonComponentPromise: Promise<TagSkeletonComponent> | null = null
-
-const loadTagSkeleton = async (): Promise<TagSkeletonComponent> => {
-    if (!skeletonComponentPromise) {
-        skeletonComponentPromise = import('./TagSkeleton.js').then((module) => {
-            const mod = module as unknown as {
-                TagSkeleton: TagSkeletonComponent
-            }
-            return mod.TagSkeleton
-        })
-    }
-
-    return skeletonComponentPromise
-}
-
 const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
     const {
-        loading = false,
+        showSkeleton = false,
         skeletonVariant = 'pulse',
         text,
         variant = TagVariant.SUBTLE,
@@ -105,39 +82,11 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
         ...blockProps
     } = props
 
-    const [SkeletonComponent, setSkeletonComponent] =
-        useState<TagSkeletonComponent | null>(null)
+    const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
-    useEffect(() => {
-        if (!loading) {
-            return
-        }
-
-        let isMounted = true
-
-        loadTagSkeleton()
-            .then((component) => {
-                if (!isMounted) return
-                setSkeletonComponent(() => component)
-            })
-            .catch(() => {
-                if (isMounted) {
-                    setSkeletonComponent(null)
-                }
-            })
-
-        return () => {
-            isMounted = false
-        }
-    }, [loading])
-
-    if (loading) {
-        if (!SkeletonComponent) {
-            return null
-        }
-
+    if (shouldShowSkeleton) {
         return (
-            <SkeletonComponent
+            <TagSkeleton
                 ref={ref}
                 text={text}
                 variant={variant}

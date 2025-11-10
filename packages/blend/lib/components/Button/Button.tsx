@@ -1,16 +1,20 @@
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
+import Text from '../Text/Text'
+import { ButtonSkeleton } from './ButtonSkeleton'
 import type { ButtonProps } from './types'
 import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
-import Text from '../Text/Text'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { getSkeletonState } from '../Skeleton/utils'
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    (
-        {
+type ButtonBaseProps = Omit<ButtonProps, 'showSkeleton' | 'skeletonVariant'>
+
+const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
+    (props, ref) => {
+        const {
             buttonType = ButtonType.PRIMARY,
             size = ButtonSize.SMALL,
             subType = ButtonSubType.DEFAULT,
@@ -22,12 +26,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             loading,
             buttonGroupPosition,
             fullWidth,
+            width,
             justifyContent = 'center',
             state = ButtonState.DEFAULT,
             ...htmlProps
-        },
-        ref
-    ) => {
+        } = props
+
         const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
 
         const getBorderRadius = () => {
@@ -49,7 +53,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 display="flex"
                 alignItems="center"
                 justifyContent={justifyContent}
-                width={fullWidth ? '100%' : 'fit-content'}
+                width={fullWidth ? '100%' : (width ?? 'fit-content')}
                 height={
                     subType === ButtonSubType.INLINE ? 'fit-content' : 'auto'
                 }
@@ -149,6 +153,29 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )
     }
 )
+
+ButtonBase.displayName = 'ButtonBase'
+
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+    const {
+        showSkeleton = false,
+        skeletonVariant = 'pulse',
+        ...buttonProps
+    } = props
+
+    const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
+
+    if (shouldShowSkeleton) {
+        return (
+            <ButtonSkeleton
+                skeletonVariant={skeletonVariant}
+                {...buttonProps}
+            />
+        )
+    }
+
+    return <ButtonBase ref={ref} {...buttonProps} />
+})
 
 Button.displayName = 'Button'
 

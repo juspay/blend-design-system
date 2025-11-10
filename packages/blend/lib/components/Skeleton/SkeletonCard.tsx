@@ -2,9 +2,9 @@ import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import Skeleton from './Skeleton'
 import SkeletonAvatar from './SkeletonAvatar'
-import SkeletonButton from './SkeletonButton'
 import type { SkeletonCardProps } from './types'
-import { ButtonSize } from '../Button/types'
+import { ButtonSize, ButtonType } from '../Button/types'
+import Button from '../Button/Button'
 import { useSkeletonBase } from './hooks/useSkeletonBase'
 import FOUNDATION_THEME from '../../tokens/theme.token'
 
@@ -94,16 +94,19 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                     gap={skeletonTokens!.spacing.gap}
                     marginTop="16px"
                 >
-                    <SkeletonButton
-                        variant={variant}
-                        loading={loading}
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
+                        text="Cancel"
+                        showSkeleton
+                        skeletonVariant={variant}
                     />
-                    <SkeletonButton
-                        variant={variant}
-                        loading={loading}
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
                         size={ButtonSize.SMALL}
-                        width="80px"
+                        text="Confirm"
+                        showSkeleton
+                        skeletonVariant={variant}
                     />
                 </Block>
             </>

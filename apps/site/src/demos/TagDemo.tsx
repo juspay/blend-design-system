@@ -97,7 +97,7 @@ const TagDemo = () => {
                         <strong>Simple Approach:</strong> Tag component handles
                         both normal and loading states. Just pass{' '}
                         <code className="bg-blue-100 px-1 rounded">
-                            loading={true}
+                            showSkeleton
                         </code>{' '}
                         to show skeleton styling - no separate component needed!
                     </p>
@@ -203,7 +203,7 @@ const TagDemo = () => {
                     🔄 Tag with Loading State
                 </h2>
                 <p className="text-gray-600">
-                    Test Tag with <code>loading={true}</code> - skeleton styling
+                    Test Tag with <code>showSkeleton</code> - skeleton styling
                     wraps the component automatically
                 </p>
 
@@ -316,7 +316,7 @@ const TagDemo = () => {
                                 ? undefined
                                 : (skeletonSplitPosition as 'left' | 'right')
                         }
-                        loading={true}
+                        showSkeleton
                         skeletonVariant={skeletonAnimationVariant}
                     />
                 </div>
@@ -340,21 +340,21 @@ const TagDemo = () => {
                                 <Tag
                                     text="Loading Tag"
                                     color={TagColor.PRIMARY}
-                                    loading={true}
+                                    showSkeleton
                                     skeletonVariant={value}
                                 />
                                 <Tag
                                     text="With Icon"
                                     color={TagColor.SUCCESS}
                                     leftSlot={<Hash size={12} />}
-                                    loading={true}
+                                    showSkeleton
                                     skeletonVariant={value}
                                 />
                                 <Tag
                                     text="Different Size"
                                     color={TagColor.WARNING}
                                     size={TagSize.LG}
-                                    loading={true}
+                                    showSkeleton
                                     skeletonVariant={value}
                                 />
                             </div>
@@ -404,7 +404,7 @@ const TagDemo = () => {
                                                 }
                                             />
                                         }
-                                        loading={true}
+                                        showSkeleton
                                         skeletonVariant="pulse"
                                     />
                                 </div>

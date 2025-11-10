@@ -6,7 +6,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TagShape, TagSize } from './types'
 import { useSkeletonBase } from '../Skeleton/hooks/useSkeletonBase'
 
-export type TagSkeletonProps = Omit<TagWithSkeletonProps, 'loading'>
+export type TagSkeletonProps = Omit<TagWithSkeletonProps, 'showSkeleton'>
 
 const TagSkeleton = forwardRef<HTMLDivElement, TagSkeletonProps>(
     (props, ref) => {
@@ -45,7 +45,6 @@ const TagSkeleton = forwardRef<HTMLDivElement, TagSkeletonProps>(
             <Skeleton
                 ref={ref}
                 variant={skeletonVariant}
-                loading
                 width={resolvedWidth}
                 padding={tagTokens.padding[size]}
                 borderRadius={borderRadius}
