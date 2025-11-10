@@ -10,7 +10,6 @@ export { default as SkeletonBase } from './Skeleton'
 export { default as SkeletonAvatar } from './SkeletonAvatar'
 export { default as SkeletonButton } from './SkeletonButton'
 export { default as SkeletonCard } from './SkeletonCard'
-export { default as SkeletonTag } from './SkeletonTag'
 
 // Shared utilities
 export { useSkeletonBase } from './hooks/useSkeletonBase'
@@ -21,7 +20,6 @@ export type {
     SkeletonAvatarProps,
     SkeletonButtonProps,
     SkeletonCardProps,
-    SkeletonTagProps,
     SkeletonSize,
     BaseSkeletonProps,
     SkeletonVariant,

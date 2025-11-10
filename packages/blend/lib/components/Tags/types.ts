@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
+import type { BlockProps } from '../Primitives/Block/Block'
 
 export enum TagVariant {
     NO_FILL = 'noFill',
@@ -27,7 +29,7 @@ export enum TagShape {
     SQUARICAL = 'squarical',
 }
 
-export type TagProps = {
+export type TagProps = Omit<BlockProps, 'children'> & {
     text: string
     variant?: TagVariant
     color?: TagColor
@@ -35,6 +37,10 @@ export type TagProps = {
     shape?: TagShape
     leftSlot?: ReactNode
     rightSlot?: ReactNode
-    onClick?: () => void
     splitTagPosition?: 'left' | 'right'
+}
+
+export type TagWithSkeletonProps = TagProps & {
+    loading?: boolean
+    skeletonVariant?: SkeletonVariant
 }

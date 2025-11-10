@@ -5,7 +5,6 @@ import {
     TagSize,
     TagShape,
 } from '../../../../packages/blend/lib/components/Tags'
-import { SkeletonTag } from '../../../../packages/blend/lib/components/Skeleton'
 import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -29,7 +28,7 @@ const TagDemo = () => {
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
 
-    // SkeletonTag Playground State
+    // Tag loading state playground
     const [skeletonText, setSkeletonText] = useState('Loading Tag...')
     const [skeletonColor, setSkeletonColor] = useState<TagColor>(
         TagColor.PRIMARY
@@ -95,9 +94,12 @@ const TagDemo = () => {
                 <h1 className="text-3xl font-bold">Tag Component Demo</h1>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <p className="text-blue-800">
-                        <strong>Hybrid Approach:</strong> Tag is now pure (no
-                        skeleton logic). SkeletonTag handles loading states with
-                        perfect token mirroring.
+                        <strong>Simple Approach:</strong> Tag component handles
+                        both normal and loading states. Just pass{' '}
+                        <code className="bg-blue-100 px-1 rounded">
+                            loading={true}
+                        </code>{' '}
+                        to show skeleton styling - no separate component needed!
                     </p>
                 </div>
             </div>
@@ -195,14 +197,14 @@ const TagDemo = () => {
                 </div>
             </div>
 
-            {/* SkeletonTag Playground */}
+            {/* Tag with Loading State Playground */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">
-                    🔄 SkeletonTag Playground
+                    🔄 Tag with Loading State
                 </h2>
                 <p className="text-gray-600">
-                    Test SkeletonTag with perfect token mirroring - should match
-                    Tag dimensions exactly
+                    Test Tag with <code>loading={true}</code> - skeleton styling
+                    wraps the component automatically
                 </p>
 
                 {/* Controls */}
@@ -296,9 +298,9 @@ const TagDemo = () => {
                     </div>
                 </div>
 
-                {/* SkeletonTag Demo */}
+                {/* Tag with Loading Demo */}
                 <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
-                    <SkeletonTag
+                    <Tag
                         text={skeletonText}
                         color={skeletonColor}
                         size={skeletonSize}
@@ -335,20 +337,20 @@ const TagDemo = () => {
                         >
                             <h3 className="text-lg font-semibold">{label}</h3>
                             <div className="flex flex-wrap gap-2">
-                                <SkeletonTag
+                                <Tag
                                     text="Loading Tag"
                                     color={TagColor.PRIMARY}
                                     loading={true}
                                     skeletonVariant={value}
                                 />
-                                <SkeletonTag
+                                <Tag
                                     text="With Icon"
                                     color={TagColor.SUCCESS}
                                     leftSlot={<Hash size={12} />}
                                     loading={true}
                                     skeletonVariant={value}
                                 />
-                                <SkeletonTag
+                                <Tag
                                     text="Different Size"
                                     color={TagColor.WARNING}
                                     size={TagSize.LG}
@@ -367,7 +369,7 @@ const TagDemo = () => {
                     🔍 Perfect Token Mirroring
                 </h2>
                 <p className="text-gray-600">
-                    Compare SkeletonTag with actual Tag - dimensions should
+                    Compare Tag (loading) with actual Tag - dimensions should
                     match exactly
                 </p>
 
@@ -385,7 +387,7 @@ const TagDemo = () => {
                                     <span className="text-sm text-gray-600 w-16">
                                         Skeleton:
                                     </span>
-                                    <SkeletonTag
+                                    <Tag
                                         text="Sample Tag"
                                         size={size}
                                         color={TagColor.PRIMARY}

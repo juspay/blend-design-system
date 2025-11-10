@@ -12,7 +12,7 @@ import {
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
-import Tag from '../../../../packages/blend/lib/components/Tags/Tags'
+import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
     TagColor,
     TagVariant,

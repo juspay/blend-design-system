@@ -3,7 +3,6 @@ import Skeleton from './Skeleton'
 import SkeletonAvatar from './SkeletonAvatar'
 import SkeletonButton from './SkeletonButton'
 import SkeletonCard from './SkeletonCard'
-import SkeletonTag from './SkeletonTag'
 
 import type { SkeletonProps } from './types'
 
@@ -41,11 +40,6 @@ const SkeletonCompound = Object.assign(
         Card: SkeletonCard,
 
         /**
-         * Tag skeleton with perfect token mirroring and dynamic sizing
-         */
-        Tag: SkeletonTag,
-
-        /**
          * Base skeleton component for custom shapes and layouts
          */
         Base: Skeleton,
@@ -70,7 +64,6 @@ SkeletonCompound.displayName = 'Skeleton'
 SkeletonCompound.Avatar.displayName = 'Skeleton.Avatar'
 SkeletonCompound.Button.displayName = 'Skeleton.Button'
 SkeletonCompound.Card.displayName = 'Skeleton.Card'
-SkeletonCompound.Tag.displayName = 'Skeleton.Tag'
 SkeletonCompound.Base.displayName = 'Skeleton.Base'
 SkeletonCompound.Circle.displayName = 'Skeleton.Circle'
 SkeletonCompound.Rectangle.displayName = 'Skeleton.Rectangle'

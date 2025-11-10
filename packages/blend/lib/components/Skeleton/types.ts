@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import type { BlockProps } from '../Primitives/Block/Block'
 import type { SkeletonVariant, SkeletonShape } from './skeleton.tokens'
 import type { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
-import type { TagSize, TagShape } from '../Tags/types'
 
 export type SkeletonSize = 'sm' | 'md' | 'lg'
 
@@ -46,18 +45,6 @@ export type SkeletonCardProps = BaseSkeletonProps &
     Omit<BlockProps, 'children'> & {
         children?: ReactNode
         padding?: string | number
-    }
-
-export type SkeletonTagProps = Omit<BaseSkeletonProps, 'variant'> &
-    Omit<BlockProps, 'children'> & {
-        text?: string
-        size?: TagSize
-        shape?: TagShape
-        leftSlot?: React.ReactNode
-        rightSlot?: React.ReactNode
-        splitTagPosition?: 'left' | 'right'
-        width?: string | number
-        skeletonVariant?: SkeletonVariant
     }
 
 export { SkeletonVariant, SkeletonShape }
