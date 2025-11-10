@@ -1,154 +1,111 @@
 import { forwardRef } from 'react'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import Block from '../Primitives/Block/Block'
 import type { ButtonProps } from './types'
 import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
-import Text from '../Text/Text'
-import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { getSkeletonState } from '../Skeleton/utils'
+import Skeleton from '../Skeleton/Skeleton'
+import ButtonBase from './ButtonBase'
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    (
-        {
-            buttonType = ButtonType.PRIMARY,
-            size = ButtonSize.SMALL,
-            subType = ButtonSubType.DEFAULT,
-            text,
-            leadingIcon,
-            trailingIcon,
-            disabled,
-            onClick,
-            loading,
-            buttonGroupPosition,
-            fullWidth,
-            justifyContent = 'center',
-            state = ButtonState.DEFAULT,
-            ...htmlProps
-        },
-        ref
-    ) => {
-        const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+    const {
+        showSkeleton = false,
+        skeletonVariant = 'pulse',
+        buttonType = ButtonType.PRIMARY,
+        size = ButtonSize.SMALL,
+        subType = ButtonSubType.DEFAULT,
+        text,
+        leadingIcon,
+        trailingIcon,
+        disabled,
+        onClick,
+        loading,
+        buttonGroupPosition,
+        fullWidth,
+        width,
+        justifyContent = 'center',
+        state = ButtonState.DEFAULT,
+        id,
+        ...restHtmlProps
+    } = props
 
-        const getBorderRadius = () => {
-            const variantBorderRadius =
-                buttonTokens.borderRadius[size][buttonType][subType].default
-            if (buttonGroupPosition === undefined) return variantBorderRadius
-            if (buttonGroupPosition === 'left') {
-                return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
-            } else if (buttonGroupPosition === 'right') {
-                return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
-            }
-            return `0px 0px 0px 0px`
-        }
+    const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+    const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
+    const baseRadius =
+        buttonTokens.borderRadius[size][buttonType][subType].default
+    const skeletonRadius =
+        buttonGroupPosition === undefined
+            ? baseRadius
+            : buttonGroupPosition === 'left'
+              ? `${baseRadius} 0 0 ${baseRadius}`
+              : buttonGroupPosition === 'right'
+                ? `0 ${baseRadius} ${baseRadius} 0`
+                : '0px 0px 0px 0px'
+
+    const skeletonWidth = fullWidth ? '100%' : (width ?? 'fit-content')
+
+    if (shouldShowSkeleton) {
         return (
-            <PrimitiveButton
-                ref={ref}
-                onClick={onClick}
-                display="flex"
-                alignItems="center"
-                justifyContent={justifyContent}
-                width={fullWidth ? '100%' : 'fit-content'}
-                height={
-                    subType === ButtonSubType.INLINE ? 'fit-content' : 'auto'
-                }
-                gap={buttonTokens.gap}
-                background={
-                    buttonTokens.backgroundColor[buttonType][subType].default
-                }
-                disabled={disabled}
-                color={buttonTokens.text.color[buttonType][subType].default}
-                borderRadius={getBorderRadius()}
-                padding={buttonTokens.padding[size][buttonType][subType]}
-                border={buttonTokens.border[buttonType][subType].default}
-                outline={buttonTokens.outline[buttonType][subType].default}
-                _active={
-                    !disabled
-                        ? {
-                              background:
-                                  buttonTokens.backgroundColor[buttonType][
-                                      subType
-                                  ].active,
-                              border: buttonTokens.border[buttonType][subType]
-                                  .active,
-                              boxShadow:
-                                  buttonTokens.shadow[buttonType][subType]
-                                      .active,
-                          }
-                        : undefined
-                }
-                _hover={{
-                    border: buttonTokens.border[buttonType][subType].hover,
-                    background:
-                        buttonTokens.backgroundColor[buttonType][subType].hover,
-                    outline: buttonTokens.outline[buttonType][subType].hover,
-                    color: buttonTokens.text.color[buttonType][subType].hover,
-                }}
-                _focusVisible={{
-                    border: buttonTokens.border[buttonType][subType].default,
-                    outline: buttonTokens.outline[buttonType][subType].active,
-                }}
-                _disabled={{
-                    background:
-                        buttonTokens.backgroundColor[buttonType][subType]
-                            .disabled,
-                    border: buttonTokens.border[buttonType][subType].disabled,
-                    cursor: 'not-allowed',
-                }}
-                {...htmlProps}
+            <Skeleton
+                ref={ref as unknown as React.Ref<HTMLDivElement>}
+                variant={skeletonVariant}
+                loading
+                padding="0"
+                borderRadius={skeletonRadius}
+                width={skeletonWidth}
+                display="inline-flex"
+                alignItems="stretch"
+                justifyContent="center"
+                pointerEvents="none"
+                id={id}
+                {...restHtmlProps}
             >
-                {loading ? (
-                    <LoaderCircle
-                        size={16}
-                        color={
-                            buttonTokens.text.color[buttonType][subType].default
-                        }
-                        style={{
-                            animation: 'spin 1s linear infinite',
-                        }}
-                    />
-                ) : (
-                    <>
-                        {leadingIcon && (
-                            <Block
-                                as="span"
-                                contentCentered
-                                data-button-left-slot
-                            >
-                                {leadingIcon}
-                            </Block>
-                        )}
-                        {text && (
-                            <Text
-                                fontSize={buttonTokens.text.fontSize[size]}
-                                fontWeight={buttonTokens.text.fontWeight[size]}
-                                as="span"
-                                color={
-                                    buttonTokens.text.color[buttonType][
-                                        subType
-                                    ][state]
-                                }
-                                data-button-text={text}
-                            >
-                                {text}
-                            </Text>
-                        )}
-                        {trailingIcon && (
-                            <Block
-                                as="span"
-                                contentCentered
-                                data-button-right-slot
-                            >
-                                {trailingIcon}
-                            </Block>
-                        )}
-                    </>
-                )}
-            </PrimitiveButton>
+                <ButtonBase
+                    buttonType={buttonType}
+                    size={size}
+                    subType={subType}
+                    text={text}
+                    leadingIcon={leadingIcon}
+                    trailingIcon={trailingIcon}
+                    disabled={disabled}
+                    onClick={undefined}
+                    loading={false}
+                    buttonGroupPosition={buttonGroupPosition}
+                    fullWidth={fullWidth}
+                    width={skeletonWidth}
+                    justifyContent={justifyContent}
+                    state={state}
+                    isSkeleton
+                    tokens={buttonTokens}
+                />
+            </Skeleton>
         )
     }
-)
+
+    return (
+        <ButtonBase
+            ref={ref}
+            buttonType={buttonType}
+            size={size}
+            subType={subType}
+            text={text}
+            leadingIcon={leadingIcon}
+            trailingIcon={trailingIcon}
+            disabled={disabled}
+            onClick={onClick}
+            loading={loading}
+            buttonGroupPosition={buttonGroupPosition}
+            fullWidth={fullWidth}
+            width={width}
+            justifyContent={justifyContent}
+            state={state}
+            id={id}
+            tokens={buttonTokens}
+            {...restHtmlProps}
+        />
+    )
+})
 
 Button.displayName = 'Button'
 

@@ -84,8 +84,8 @@ export const getAvatarGroupTokens = (
 
             container: {
                 marginLeft: {
-                    [AvatarSize.XS]: foundationToken.unit[4],
-                    [AvatarSize.SM]: foundationToken.unit[6],
+                    [AvatarSize.SM]: foundationToken.unit[4],
+                    [AvatarSize.REGULAR]: foundationToken.unit[6],
                     [AvatarSize.MD]: foundationToken.unit[8],
                     [AvatarSize.LG]: foundationToken.unit[12],
                     [AvatarSize.XL]: foundationToken.unit[16],
@@ -118,12 +118,12 @@ export const getAvatarGroupTokens = (
                     color: foundationToken.colors.gray[0],
                 },
                 size: {
-                    [AvatarSize.XS]: {
+                    [AvatarSize.SM]: {
                         width: foundationToken.unit[24], // 24px - matches avatar xs size
                         height: foundationToken.unit[24], // 24px
                         fontSize: foundationToken.font.size.body.xs.fontSize, // body xs
                     },
-                    [AvatarSize.SM]: {
+                    [AvatarSize.REGULAR]: {
                         width: foundationToken.unit[32], // 32px - matches avatar sm size
                         height: foundationToken.unit[32], // 32px
                         fontSize: foundationToken.font.size.body.sm.fontSize, // body sm
@@ -159,8 +159,8 @@ export const getAvatarGroupTokens = (
 
             container: {
                 marginLeft: {
-                    [AvatarSize.XS]: foundationToken.unit[3],
-                    [AvatarSize.SM]: foundationToken.unit[4],
+                    [AvatarSize.SM]: foundationToken.unit[3],
+                    [AvatarSize.REGULAR]: foundationToken.unit[4],
                     [AvatarSize.MD]: foundationToken.unit[6],
                     [AvatarSize.LG]: foundationToken.unit[8],
                     [AvatarSize.XL]: foundationToken.unit[12],
@@ -193,12 +193,12 @@ export const getAvatarGroupTokens = (
                     color: foundationToken.colors.gray[0],
                 },
                 size: {
-                    [AvatarSize.XS]: {
+                    [AvatarSize.SM]: {
                         width: foundationToken.unit[20], // 20px - matches avatar xs size for lg breakpoint
                         height: foundationToken.unit[20], // 20px
                         fontSize: foundationToken.font.size.body.xs.fontSize, // body xs
                     },
-                    [AvatarSize.SM]: {
+                    [AvatarSize.REGULAR]: {
                         width: foundationToken.unit[28], // 28px - matches avatar sm size for lg breakpoint
                         height: foundationToken.unit[28], // 28px
                         fontSize: foundationToken.font.size.body.sm.fontSize, // body sm

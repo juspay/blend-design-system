@@ -12,6 +12,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
 
 const MultiValueInput = ({
+    value = '',
     label,
     sublabel,
     disabled,
@@ -22,21 +23,19 @@ const MultiValueInput = ({
     tags = [],
     onTagAdd,
     onTagRemove,
+    onChange,
     size = TextInputSize.MEDIUM,
     ...rest
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const [isFocused, setIsFocused] = useState(false)
-    const [inputValue, setInputValue] = useState('')
-
     const inputRef = useRef<HTMLInputElement>(null)
 
     const addTag = (value: string) => {
         const trimmedValue = value.trim()
         if (trimmedValue && !tags.includes(trimmedValue)) {
             onTagAdd?.(trimmedValue)
-            setInputValue('')
         }
     }
 
@@ -48,12 +47,8 @@ const MultiValueInput = ({
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault()
-            addTag(inputValue)
-        } else if (
-            e.key === 'Backspace' &&
-            inputValue === '' &&
-            tags.length > 0
-        ) {
+            addTag(value)
+        } else if (e.key === 'Backspace' && value === '' && tags.length > 0) {
             const lastTag = tags[tags.length - 1]
             if (lastTag) {
                 removeTag(lastTag)
@@ -139,8 +134,12 @@ const MultiValueInput = ({
                     }
                     outline="none"
                     border="none"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    value={value}
+                    onChange={(e) => {
+                        const newValue = e.target.value
+
+                        onChange?.(newValue)
+                    }}
                     onKeyDown={handleKeyDown}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}

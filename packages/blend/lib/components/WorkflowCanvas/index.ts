@@ -9,3 +9,13 @@ export * from './types'
 export * from './workflow.tokens'
 export * from './constants'
 export * from './utils'
+
+export {
+    BaseEdge,
+    EdgeLabelRenderer,
+    getBezierPath,
+    getStraightPath,
+    getSmoothStepPath,
+    Handle,
+    Position,
+} from 'reactflow'
