@@ -9,7 +9,7 @@ import React, {
 import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import Tag from '../Tags/Tags'
+import { Tag } from '../../main'
 import { TagColor, TagSize, TagVariant } from '../Tags/types'
 import { Menu } from '../Menu'
 import Button from '../Button/Button'

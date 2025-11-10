@@ -1,7 +1,7 @@
 import React from 'react'
 import Block from '../../Primitives/Block/Block'
 import Text from '../../Text/Text'
-import Tag from '../../Tags/Tags'
+import { Tag } from '../../../main'
 import { TagColor, TagVariant, TagShape } from '../../Tags/types'
 import { X } from 'lucide-react'
 import type { UploadedFileWithStatus } from '../types'
