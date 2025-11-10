@@ -19,7 +19,7 @@
         "firebase-admin": "^12.7.0",
         "googleapis": "^153.0.0",
         "lucide-react": "^0.525.0",
-        "next": "15.4.1",
+        "next": "15.4.7",
         "pg": "^8.16.3",
         "react": "19.1.0",
         "react-dom": "19.1.0",
