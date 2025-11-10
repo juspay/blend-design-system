@@ -31,13 +31,3 @@ export const useSkeletonBase = (loading: boolean, children?: ReactNode) => {
         prefersReducedMotion,
     }
 }
-
-/**
- * Common skeleton component props validation and defaults
- */
-export const useSkeletonDefaults = <T extends Record<string, unknown>>(
-    props: T,
-    defaults: Partial<T>
-): T => {
-    return { ...defaults, ...props }
-}

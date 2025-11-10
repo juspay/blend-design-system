@@ -1,7 +1,6 @@
 import { forwardRef } from 'react'
 import Skeleton from './Skeleton'
 import SkeletonAvatar from './SkeletonAvatar'
-import SkeletonButton from './SkeletonButton'
 import SkeletonCard from './SkeletonCard'
 
 import type { SkeletonProps } from './types'
@@ -13,7 +12,6 @@ import type { SkeletonProps } from './types'
  * <Skeleton loading={true}>
  *   <Skeleton.Avatar size="md" />
  *   <Skeleton.Text lines={2} />
- *   <Skeleton.Button />
  * </Skeleton>
  *
  * Or traditional:
@@ -28,11 +26,6 @@ const SkeletonCompound = Object.assign(
          * Avatar skeleton with circular or square shapes and multiple sizes
          */
         Avatar: SkeletonAvatar,
-
-        /**
-         * Button skeleton with perfect token mirroring and dynamic sizing
-         */
-        Button: SkeletonButton,
 
         /**
          * Card skeleton with default layout or custom children
@@ -62,7 +55,6 @@ const SkeletonCompound = Object.assign(
 // Display names for better debugging
 SkeletonCompound.displayName = 'Skeleton'
 SkeletonCompound.Avatar.displayName = 'Skeleton.Avatar'
-SkeletonCompound.Button.displayName = 'Skeleton.Button'
 SkeletonCompound.Card.displayName = 'Skeleton.Card'
 SkeletonCompound.Base.displayName = 'Skeleton.Base'
 SkeletonCompound.Circle.displayName = 'Skeleton.Circle'

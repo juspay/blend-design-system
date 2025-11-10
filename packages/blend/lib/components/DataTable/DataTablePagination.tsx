@@ -167,7 +167,14 @@ export function DataTablePagination({
                         selected={String(pageSize)}
                         onSelect={(value) => {
                             if (typeof value === 'string' && hasData) {
-                                onPageSizeChange(Number(value))
+                                const newSize = Number(value)
+                                if (
+                                    newSize > 0 &&
+                                    Number.isInteger(newSize) &&
+                                    newSize !== pageSize
+                                ) {
+                                    onPageSizeChange(newSize)
+                                }
                             }
                         }}
                         enableSearch={false}
@@ -293,6 +300,7 @@ export function DataTablePagination({
                                     onClick={() =>
                                         hasData &&
                                         page <= totalPages &&
+                                        page !== currentPage &&
                                         onPageChange(page)
                                     }
                                     _hover={{

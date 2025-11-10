@@ -624,19 +624,23 @@ const DataTable = forwardRef(
         }
 
         const handlePageChange = (page: number) => {
-            setCurrentPage(page)
+            if (page !== currentPage) {
+                setCurrentPage(page)
 
-            if (onPageChange) {
-                onPageChange(page)
+                if (onPageChange) {
+                    onPageChange(page)
+                }
             }
         }
 
         const handlePageSizeChange = (size: number) => {
-            setPageSize(size)
-            setCurrentPage(1)
+            if (size !== pageSize) {
+                setPageSize(size)
+                setCurrentPage(1)
 
-            if (onPageSizeChange) {
-                onPageSizeChange(size)
+                if (onPageSizeChange) {
+                    onPageSizeChange(size)
+                }
             }
         }
 

@@ -8,17 +8,20 @@ export { default as Skeleton } from './SkeletonCompound'
 // Individual components (for backward compatibility and tree-shaking)
 export { default as SkeletonBase } from './Skeleton'
 export { default as SkeletonAvatar } from './SkeletonAvatar'
-export { default as SkeletonButton } from './SkeletonButton'
 export { default as SkeletonCard } from './SkeletonCard'
 
 // Shared utilities
 export { useSkeletonBase } from './hooks/useSkeletonBase'
+export {
+    getSkeletonState,
+    mergeSkeletonProps,
+    getSkeletonDefaults,
+} from './utils'
 
 // Types (tree-shakable type-only exports)
 export type {
     SkeletonProps,
     SkeletonAvatarProps,
-    SkeletonButtonProps,
     SkeletonCardProps,
     SkeletonSize,
     BaseSkeletonProps,

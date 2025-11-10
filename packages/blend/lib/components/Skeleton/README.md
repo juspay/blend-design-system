@@ -13,7 +13,7 @@ Unlike traditional skeleton libraries that use generic shapes, our implementatio
 <Skeleton variant="rectangular" width={200} height={40} />
 
 // ✅ Our approach - Perfect component mirroring
-<Skeleton.Button text="Download File" hasLeadingIcon={true} />
+<Button showSkeleton text="Download File" />
 ```
 
 ---
@@ -29,7 +29,7 @@ Unlike traditional skeleton libraries that use generic shapes, our implementatio
 ### Key Innovation: Token Mirroring
 
 ```typescript
-// SkeletonButton mirrors actual Button tokens exactly
+// Button skeleton mirrors actual Button tokens exactly via <Button showSkeleton />
 const getMirroredButtonStyles = () => ({
     padding: buttonTokens.padding[size][subType], // ✅ Exact match
     borderRadius: buttonTokens.borderRadius[buttonType][subType], // ✅ Exact match
@@ -50,17 +50,11 @@ import { Skeleton } from '@blend/components'
 <Skeleton loading={isLoading}>
     <Skeleton.Avatar size="md" />
     <Skeleton.Text lines={2} />
-    <Skeleton.Button />
+    {/* Button skeleton is now available via <Button showSkeleton /> */}
 </Skeleton>
 
 // Individual components with perfect sizing
-<Skeleton.Button
-    text="Download File"        // Dynamic width calculation
-    hasLeadingIcon={true}       // +24px width (icon + gap)
-    size="large"               // Character scaling: 9px per char
-    buttonType="primary"       // Exact token mirroring
-    loading={isLoading}
-/>
+<Button showSkeleton text="Download File" fullWidth />
 
 // Convenience shapes
 <Skeleton.Circle width="40px" height="40px" />
@@ -70,9 +64,9 @@ import { Skeleton } from '@blend/components'
 ### Traditional API (Tree-shaking optimized)
 
 ```typescript
-import { SkeletonButton, SkeletonText } from '@blend/components'
+import { Button } from '@blend/components'
 
-<SkeletonButton loading={isLoading} text="Submit" />
+<Button showSkeleton text="Submit" />
 <SkeletonText loading={isLoading} lines={3} />
 ```
 
@@ -84,9 +78,9 @@ import { SkeletonButton, SkeletonText } from '@blend/components'
 
 ```typescript
 // Width adapts to text length + icons
-<Skeleton.Button text="Save" />                    // ~60px (minimum)
-<Skeleton.Button text="Download File" />           // ~120px
-<Skeleton.Button text="Export to Excel" />         // ~180px
+<Button showSkeleton text="Save" />                    // ~60px (minimum)
+<Button showSkeleton text="Download File" />           // ~120px
+<Button showSkeleton text="Export to Excel" />         // ~180px
 
 // Height = padding + content + padding (exact calculation)
 // Small: 6px + 20px + 6px = 32px
@@ -114,7 +108,6 @@ import { SkeletonButton, SkeletonText } from '@blend/components'
 ### Available Components
 
 ```typescript
-<Skeleton.Button />     // Perfect Button token mirroring
 <Skeleton.Text />       // Multi-line text with font size variants
 <Skeleton.Avatar />     // Circle/square avatars with size variants
 <Skeleton.Card />       // Complete card layouts with default content
@@ -124,17 +117,8 @@ import { SkeletonButton, SkeletonText } from '@blend/components'
 ### Specialized Props
 
 ```typescript
-// SkeletonButton - mirrors Button exactly
-interface SkeletonButtonProps {
-    text?: string // For dynamic width calculation
-    hasLeadingIcon?: boolean // For width + spacing calculation
-    hasTrailingIcon?: boolean // For width + spacing calculation
-    buttonType?: ButtonType // Token mirroring: padding, radius, etc.
-    size?: ButtonSize // Character width scaling (7px/8px/9px)
-    subType?: ButtonSubType // default | iconOnly | inline
-    buttonGroupPosition?: string // Border radius adjustments
-    fullWidth?: boolean // 100% width override
-}
+// Button skeleton usage
+<Button showSkeleton text="Download" buttonType="primary" />
 ```
 
 ---
@@ -164,7 +148,7 @@ if (!shouldRender) return null
 ### Dynamic Calculations
 
 ```typescript
-// Width calculation (SkeletonButton)
+// Width calculation (Button showSkeleton)
 const estimatedWidth = text.length * getCharacterWidth(size)
 if (hasLeadingIcon) estimatedWidth += 24 // 16px icon + 8px gap
 if (hasTrailingIcon) estimatedWidth += 24
@@ -193,14 +177,14 @@ return `${verticalPadding * 2 + contentHeight}px`
 
 ```typescript
 // 1. Use specialized skeletons when available
-<Skeleton.Button text="Download" hasLeadingIcon={true} />
+<Button showSkeleton text="Download" />
 
 // 2. Provide actual content dimensions
 <Skeleton.Text lines={3} fontSize="lg" />
 
 // 3. Match real component props exactly
 const ButtonWithLoading = ({ loading, ...props }) => {
-    if (loading) return <Skeleton.Button {...props} loading={true} />
+    if (loading) return <Button showSkeleton {...props} />
     return <Button {...props} />
 }
 ```
@@ -219,7 +203,7 @@ const ButtonWithLoading = ({ loading, ...props }) => {
 ```
 /components/Skeleton/
 ├── Skeleton.tsx                    # Base component with animations
-├── SkeletonButton.tsx             # Button-specific token mirroring
+├── (built-in) Button showSkeleton # Button-specific token mirroring via Button component
 ├── SkeletonText.tsx               # Multi-line text handling
 ├── SkeletonAvatar.tsx             # Profile picture skeletons
 ├── SkeletonCard.tsx               # Complete card layouts
