@@ -7,8 +7,7 @@ import {
     ButtonSubType,
     ButtonState,
 } from '../../../../packages/blend/lib/components/Button'
-import { SkeletonButton } from '../../../../packages/blend/lib/components/Skeleton'
-import type { SkeletonVariant } from '../../../../packages/blend/lib/components/Skeleton/skeleton.tokens'
+
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -28,7 +27,7 @@ const ButtonDemo = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [fullWidth, setFullWidth] = useState(false)
 
-    // SkeletonButton Playground State
+    // Button skeleton playground state
     const [skeletonText, setSkeletonText] = useState('Loading...')
     const [skeletonType, setSkeletonType] = useState<ButtonType>(
         ButtonType.PRIMARY
@@ -41,8 +40,6 @@ const ButtonDemo = () => {
     )
     const [skeletonLeadingIcon, setSkeletonLeadingIcon] = useState(false)
     const [skeletonTrailingIcon, setSkeletonTrailingIcon] = useState(false)
-    const [skeletonVariant, setSkeletonVariant] =
-        useState<SkeletonVariant>('pulse')
     const [skeletonFullWidth, setSkeletonFullWidth] = useState(false)
 
     // Options for selects
@@ -65,11 +62,14 @@ const ButtonDemo = () => {
         { value: ButtonSubType.INLINE, label: 'Inline' },
     ]
 
-    const skeletonVariantOptions = [
-        { value: 'pulse' as SkeletonVariant, label: 'Pulse' },
-        { value: 'wave' as SkeletonVariant, label: 'Wave' },
-        { value: 'shimmer' as SkeletonVariant, label: 'Shimmer' },
-    ]
+    const animationVariants = ['pulse', 'wave', 'shimmer'] as const
+    const [skeletonAnimationVariant, setSkeletonAnimationVariant] =
+        useState<(typeof animationVariants)[number]>('pulse')
+
+    const skeletonVariantOptions = animationVariants.map((variant) => ({
+        value: variant,
+        label: variant.charAt(0).toUpperCase() + variant.slice(1),
+    }))
 
     return (
         <div className="p-8 space-y-12">
@@ -78,9 +78,12 @@ const ButtonDemo = () => {
                 <h1 className="text-3xl font-bold">Button Component Demo</h1>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <p className="text-blue-800">
-                        <strong>Hybrid Approach:</strong> Button is now pure (no
-                        skeleton logic). SkeletonButton handles loading states
-                        with perfect token mirroring.
+                        <strong>Simple Approach:</strong> Use
+                        <code className="bg-blue-100 px-1 rounded">
+                            {' showSkeleton '}
+                        </code>
+                        on Button to render the skeleton placeholder with token
+                        perfect mirroring.
                     </p>
                 </div>
             </div>
@@ -208,14 +211,14 @@ const ButtonDemo = () => {
                 </div>
             </div>
 
-            {/* SkeletonButton Playground */}
+            {/* Button Skeleton Playground */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">
-                    🔄 SkeletonButton Playground
+                    🔄 Button Skeleton Playground
                 </h2>
                 <p className="text-gray-600">
-                    Test SkeletonButton with perfect token mirroring - should
-                    match Button dimensions exactly
+                    Test Button with <code>showSkeleton</code> for perfect token
+                    mirroring - it should match Button dimensions exactly
                 </p>
 
                 {/* Controls */}
@@ -285,31 +288,37 @@ const ButtonDemo = () => {
                         <SingleSelect
                             label="Animation Variant"
                             items={[{ items: skeletonVariantOptions }]}
-                            selected={skeletonVariant}
+                            selected={skeletonAnimationVariant}
                             onSelect={(value) =>
-                                setSkeletonVariant(value as SkeletonVariant)
+                                setSkeletonAnimationVariant(
+                                    value as (typeof animationVariants)[number]
+                                )
                             }
                             placeholder="Select animation"
                         />
                     </div>
                 </div>
 
-                {/* SkeletonButton Demo */}
+                {/* Button Skeleton Demo */}
                 <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
-                    <SkeletonButton
+                    <Button
+                        buttonType={skeletonType}
+                        size={skeletonSize}
+                        subType={skeletonSubType}
+                        fullWidth={skeletonFullWidth}
                         text={
                             skeletonSubType === ButtonSubType.ICON_ONLY
                                 ? undefined
                                 : skeletonText
                         }
-                        buttonType={skeletonType}
-                        size={skeletonSize}
-                        subType={skeletonSubType}
-                        hasLeadingIcon={skeletonLeadingIcon}
-                        hasTrailingIcon={skeletonTrailingIcon}
-                        fullWidth={skeletonFullWidth}
-                        loading={true}
-                        variant={skeletonVariant}
+                        leadingIcon={
+                            skeletonLeadingIcon ? <Hash size={16} /> : undefined
+                        }
+                        trailingIcon={
+                            skeletonTrailingIcon ? <X size={16} /> : undefined
+                        }
+                        showSkeleton
+                        skeletonVariant={skeletonAnimationVariant}
                     />
                 </div>
             </div>
@@ -328,11 +337,11 @@ const ButtonDemo = () => {
                             className="space-y-3 p-4 border rounded-lg bg-white"
                         >
                             <h3 className="text-lg font-semibold">{label}</h3>
-                            <SkeletonButton
+                            <Button
                                 text="Loading Button"
                                 buttonType={ButtonType.PRIMARY}
-                                loading={true}
-                                variant={value}
+                                showSkeleton
+                                skeletonVariant={value}
                             />
                         </div>
                     ))}

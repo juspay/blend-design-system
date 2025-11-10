@@ -151,6 +151,7 @@ const SidebarDemo = () => {
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
+        | 'skeleton'
         | 'upload'
         | 'codeBlock'
         | 'workflowCanvas'
