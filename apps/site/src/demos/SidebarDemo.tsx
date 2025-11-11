@@ -967,8 +967,8 @@ const SidebarDemo = () => {
         },
     ]
 
-    const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
-    const [isDarkMode, setIsDarkMode] = useState(false)
+    const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [colorTheme, setColorTheme] = useState<'light' | 'dark'>('light')
 
     const breakpoints = {
         sm: 480,
@@ -976,13 +976,13 @@ const SidebarDemo = () => {
     }
 
     const themeProps =
-        theme === 'EULER'
-            ? { darkMode: isDarkMode }
+        brandTheme === 'EULER'
+            ? { theme: colorTheme }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
-                  darkMode: isDarkMode,
+                  theme: colorTheme,
               }
 
     return (
@@ -1075,20 +1075,28 @@ const SidebarDemo = () => {
                             </Block>
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => setIsDarkMode(!isDarkMode)}
+                                    onClick={() =>
+                                        setColorTheme(
+                                            colorTheme === 'light'
+                                                ? 'dark'
+                                                : 'light'
+                                        )
+                                    }
                                     className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
                                     title={
-                                        isDarkMode
+                                        colorTheme === 'dark'
                                             ? 'Switch to Light Mode'
                                             : 'Switch to Dark Mode'
                                     }
                                     style={{
-                                        backgroundColor: isDarkMode
-                                            ? FOUNDATION_THEME.colors.gray[100]
-                                            : 'transparent',
+                                        backgroundColor:
+                                            colorTheme === 'dark'
+                                                ? FOUNDATION_THEME.colors
+                                                      .gray[100]
+                                                : 'transparent',
                                     }}
                                 >
-                                    {isDarkMode ? (
+                                    {colorTheme === 'dark' ? (
                                         <Sun
                                             color={
                                                 FOUNDATION_THEME.colors
@@ -1108,13 +1116,13 @@ const SidebarDemo = () => {
                                 </button>
                                 <div>
                                     <SingleSelect
-                                        label="Theme"
-                                        placeholder="Select Theme"
+                                        label="Brand"
+                                        placeholder="Select Brand"
                                         minMenuWidth={200}
                                         alignment={SelectMenuAlignment.END}
-                                        selected={theme}
+                                        selected={brandTheme}
                                         onSelect={(value) =>
-                                            setTheme(
+                                            setBrandTheme(
                                                 value as 'EULER' | 'JUSBIZ'
                                             )
                                         }

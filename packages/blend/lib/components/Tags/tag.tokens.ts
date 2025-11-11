@@ -5,6 +5,8 @@ import { FoundationTokenType } from '../../tokens/theme.token'
 import { getTagLightTokens } from './tag.light.tokens'
 import { getTagDarkTokens } from './tag.dark.tokens'
 
+export type Theme = 'light' | 'dark' | string
+
 /**
  * Tag Tokens following the pattern: [target].CSSProp.[size].[variant].[subType]
  *
@@ -70,11 +72,12 @@ export type ResponsiveTagTokens = {
 
 export const getTagTokens = (
     foundationToken: FoundationTokenType,
-    darkMode: boolean = false
+    theme: Theme = 'light'
 ): ResponsiveTagTokens => {
-    if (darkMode) {
+    if (theme === 'dark') {
         return getTagDarkTokens(foundationToken)
     }
+
     return getTagLightTokens(foundationToken)
 }
 
