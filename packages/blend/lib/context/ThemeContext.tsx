@@ -139,19 +139,19 @@ export type ComponentTokenType = {
     WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
-export type Theme = 'light' | 'dark' | string
+import { Theme } from './ThemeProvider'
 
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
     breakpoints: typeof BREAKPOINTS
-    theme: Theme
+    theme: Theme | string
 }
 
 const ThemeContext = createContext<ThemeContextType>({
     foundationTokens: FOUNDATION_THEME,
     componentTokens: {
-        TAGS: getTagTokens(FOUNDATION_THEME, 'light'),
+        TAGS: getTagTokens(FOUNDATION_THEME, Theme.LIGHT),
         SEARCH_INPUT: getSearchInputTokens(FOUNDATION_THEME),
         TEXT_AREA: getTextAreaTokens(FOUNDATION_THEME),
         RADIO: getRadioTokens(FOUNDATION_THEME),

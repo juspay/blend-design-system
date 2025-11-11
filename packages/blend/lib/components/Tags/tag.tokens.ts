@@ -4,8 +4,7 @@ import { type BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { getTagLightTokens } from './tag.light.tokens'
 import { getTagDarkTokens } from './tag.dark.tokens'
-
-export type Theme = 'light' | 'dark' | string
+import { Theme } from '../../context/ThemeProvider'
 
 /**
  * Tag Tokens following the pattern: [target].CSSProp.[size].[variant].[subType]
@@ -72,9 +71,9 @@ export type ResponsiveTagTokens = {
 
 export const getTagTokens = (
     foundationToken: FoundationTokenType,
-    theme: Theme = 'light'
+    theme: Theme | string = Theme.LIGHT
 ): ResponsiveTagTokens => {
-    if (theme === 'dark') {
+    if (theme === Theme.DARK || theme === 'dark') {
         return getTagDarkTokens(foundationToken)
     }
 

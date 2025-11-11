@@ -59,7 +59,7 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import ProgressBarDemo from './ProgressBarDemo'
-import { ThemeProvider } from '../../../../packages/blend/lib/context'
+import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
 import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -968,7 +968,7 @@ const SidebarDemo = () => {
     ]
 
     const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
-    const [colorTheme, setColorTheme] = useState<'light' | 'dark'>('light')
+    const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
 
     const breakpoints = {
         sm: 480,
@@ -1077,26 +1077,26 @@ const SidebarDemo = () => {
                                 <button
                                     onClick={() =>
                                         setColorTheme(
-                                            colorTheme === 'light'
-                                                ? 'dark'
-                                                : 'light'
+                                            colorTheme === Theme.LIGHT
+                                                ? Theme.DARK
+                                                : Theme.LIGHT
                                         )
                                     }
                                     className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
                                     title={
-                                        colorTheme === 'dark'
+                                        colorTheme === Theme.DARK
                                             ? 'Switch to Light Mode'
                                             : 'Switch to Dark Mode'
                                     }
                                     style={{
                                         backgroundColor:
-                                            colorTheme === 'dark'
+                                            colorTheme === Theme.DARK
                                                 ? FOUNDATION_THEME.colors
                                                       .gray[100]
                                                 : 'transparent',
                                     }}
                                 >
-                                    {colorTheme === 'dark' ? (
+                                    {colorTheme === Theme.DARK ? (
                                         <Sun
                                             color={
                                                 FOUNDATION_THEME.colors

@@ -9,7 +9,8 @@ import { getSwitchTokens } from '../components/Switch/switch.token'
 import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import { type ThemeType } from '../tokens'
-import { type ComponentTokenType, type Theme } from './ThemeContext'
+import { type ComponentTokenType } from './ThemeContext'
+import { Theme } from './ThemeProvider'
 import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
@@ -45,7 +46,7 @@ import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
-    theme: Theme = 'light'
+    theme: Theme | string = Theme.LIGHT
 ): Required<ComponentTokenType> => {
     return {
         TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens, theme),

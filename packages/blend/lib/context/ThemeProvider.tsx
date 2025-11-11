@@ -3,13 +3,16 @@ import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
 import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 
-export type Theme = 'light' | 'dark' | string
+export enum Theme {
+    LIGHT = 'light',
+    DARK = 'dark',
+}
 
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
     componentTokens?: ComponentTokenType
     breakpoints?: BreakpointType
-    theme?: Theme
+    theme?: Theme | string
     children: React.ReactNode
 }
 
@@ -17,7 +20,7 @@ const ThemeProvider = ({
     foundationTokens = FOUNDATION_THEME,
     componentTokens = {},
     breakpoints = BREAKPOINTS,
-    theme = 'light',
+    theme = Theme.LIGHT,
     children,
 }: ThemeProviderProps) => {
     const defaultThemeContextValue = {
