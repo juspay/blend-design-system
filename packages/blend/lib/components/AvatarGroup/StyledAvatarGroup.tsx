@@ -67,7 +67,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
 
             width: ${tokens.overflowCounter.size[props.$size].width};
             height: ${tokens.overflowCounter.size[props.$size].height};
-            font-size: ${tokens.overflowCounter.size[props.$size].fontSize};
+            font-size: ${tokens.overflowCounter.size[props.$size].fontSize}px;
             font-weight: ${FOUNDATION_THEME.font.weight[500]};
 
             color: ${tokens.overflowCounter.text.color};

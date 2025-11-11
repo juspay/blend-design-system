@@ -110,15 +110,15 @@ export const getCodeBlockTokens = (
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
-                    x: foundationToken.unit[16],
-                    y: foundationToken.unit[12],
+                    x: foundationToken.unit[12],
+                    y: foundationToken.unit[10],
                 },
                 gap: foundationToken.unit[8],
                 icon: {
                     width: 16,
                 },
                 text: {
-                    fontSize: '14px',
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '18px',
                     color: foundationToken.colors.gray[900],
@@ -172,7 +172,7 @@ export const getCodeBlockTokens = (
                 syntax: {
                     keyword: foundationToken.colors.purple[600],
                     function: foundationToken.colors.primary[600],
-                    string: foundationToken.colors.green[500],
+                    string: foundationToken.colors.green[600],
                     number: foundationToken.colors.orange[500],
                     operator: foundationToken.colors.gray[600],
                     variable: foundationToken.colors.gray[800],
@@ -190,15 +190,15 @@ export const getCodeBlockTokens = (
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
-                    x: foundationToken.unit[20],
-                    y: foundationToken.unit[16],
+                    x: foundationToken.unit[16],
+                    y: foundationToken.unit[10],
                 },
                 gap: foundationToken.unit[12],
                 icon: {
                     width: 20,
                 },
                 text: {
-                    fontSize: '16px',
+                    fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '20px',
                     color: foundationToken.colors.gray[900],
@@ -252,7 +252,7 @@ export const getCodeBlockTokens = (
                 syntax: {
                     keyword: foundationToken.colors.purple[600],
                     function: foundationToken.colors.primary[600],
-                    string: foundationToken.colors.green[500],
+                    string: foundationToken.colors.green[600],
                     number: foundationToken.colors.orange[500],
                     operator: foundationToken.colors.gray[600],
                     variable: foundationToken.colors.gray[800],
