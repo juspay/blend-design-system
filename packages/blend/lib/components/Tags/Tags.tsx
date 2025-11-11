@@ -25,11 +25,12 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
     ) => {
         const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
         const { ripples, createRipple } = useRipple()
+        const isInteractive = typeof onClick === 'function'
 
         const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-            if (onClick) {
+            if (isInteractive && onClick) {
                 createRipple(event)
-                onClick()
+                onClick(event)
             }
         }
 
@@ -57,10 +58,10 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 color={tagTokens.text.color[variant][color]}
                 border={tagTokens.border[variant][color]}
                 borderRadius={borderRadius}
-                cursor={onClick ? 'pointer' : 'default'}
-                position={onClick ? 'relative' : undefined}
-                overflow={onClick ? 'hidden' : undefined}
-                onClick={onClick ? handleClick : undefined}
+                cursor={isInteractive ? 'pointer' : 'default'}
+                position={isInteractive ? 'relative' : undefined}
+                overflow={isInteractive ? 'hidden' : undefined}
+                onClick={isInteractive ? handleClick : undefined}
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
@@ -71,7 +72,7 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                     {text}
                 </Text>
                 {rightSlot && <Block contentCentered>{rightSlot}</Block>}
-                {onClick && <RippleContainer ripples={ripples} />}
+                {isInteractive && <RippleContainer ripples={ripples} />}
             </Block>
         )
     }
