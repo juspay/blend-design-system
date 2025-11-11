@@ -44,10 +44,11 @@ import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
-    foundationTokens: ThemeType
+    foundationTokens: ThemeType,
+    darkMode: boolean = false
 ): Required<ComponentTokenType> => {
     return {
-        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens),
+        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens, darkMode),
         SEARCH_INPUT:
             componentTokens.SEARCH_INPUT ??
             getSearchInputTokens(foundationTokens),

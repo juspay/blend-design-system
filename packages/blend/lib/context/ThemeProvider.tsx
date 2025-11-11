@@ -7,6 +7,7 @@ type ThemeProviderProps = {
     foundationTokens?: ThemeType
     componentTokens?: ComponentTokenType
     breakpoints?: BreakpointType
+    darkMode?: boolean
     children: React.ReactNode
 }
 
@@ -14,12 +15,18 @@ const ThemeProvider = ({
     foundationTokens = FOUNDATION_THEME,
     componentTokens = {},
     breakpoints = BREAKPOINTS,
+    darkMode = false,
     children,
 }: ThemeProviderProps) => {
     const defaultThemeContextValue = {
         foundationTokens,
-        componentTokens: initTokens(componentTokens, foundationTokens),
+        componentTokens: initTokens(
+            componentTokens,
+            foundationTokens,
+            darkMode
+        ),
         breakpoints,
+        darkMode,
     }
 
     return (

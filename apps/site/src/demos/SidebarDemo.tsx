@@ -33,6 +33,8 @@ import {
     TrendingUp,
     Upload,
     Workflow,
+    Moon,
+    Sun,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -966,6 +968,7 @@ const SidebarDemo = () => {
     ]
 
     const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [isDarkMode, setIsDarkMode] = useState(false)
 
     const breakpoints = {
         sm: 480,
@@ -974,11 +977,12 @@ const SidebarDemo = () => {
 
     const themeProps =
         theme === 'EULER'
-            ? {}
+            ? { darkMode: isDarkMode }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
+                  darkMode: isDarkMode,
               }
 
     return (
@@ -1069,32 +1073,68 @@ const SidebarDemo = () => {
                                     }
                                 />
                             </Block>
-                            <div>
-                                <SingleSelect
-                                    label="Theme"
-                                    placeholder="Select Theme"
-                                    minMenuWidth={200}
-                                    alignment={SelectMenuAlignment.END}
-                                    selected={theme}
-                                    onSelect={(value) =>
-                                        setTheme(value as 'EULER' | 'JUSBIZ')
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setIsDarkMode(!isDarkMode)}
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        isDarkMode
+                                            ? 'Switch to Light Mode'
+                                            : 'Switch to Dark Mode'
                                     }
-                                    variant={SelectMenuVariant.NO_CONTAINER}
-                                    items={[
-                                        {
-                                            items: [
-                                                {
-                                                    value: 'EULER',
-                                                    label: 'EULER',
-                                                },
-                                                {
-                                                    value: 'JUSBIZ',
-                                                    label: 'JUSBIZ',
-                                                },
-                                            ],
-                                        },
-                                    ]}
-                                />
+                                    style={{
+                                        backgroundColor: isDarkMode
+                                            ? FOUNDATION_THEME.colors.gray[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    {isDarkMode ? (
+                                        <Sun
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .orange[500]
+                                            }
+                                            size={20}
+                                        />
+                                    ) : (
+                                        <Moon
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    )}
+                                </button>
+                                <div>
+                                    <SingleSelect
+                                        label="Theme"
+                                        placeholder="Select Theme"
+                                        minMenuWidth={200}
+                                        alignment={SelectMenuAlignment.END}
+                                        selected={theme}
+                                        onSelect={(value) =>
+                                            setTheme(
+                                                value as 'EULER' | 'JUSBIZ'
+                                            )
+                                        }
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        items={[
+                                            {
+                                                items: [
+                                                    {
+                                                        value: 'EULER',
+                                                        label: 'EULER',
+                                                    },
+                                                    {
+                                                        value: 'JUSBIZ',
+                                                        label: 'JUSBIZ',
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                    />
+                                </div>
                             </div>
                         </div>
                     }

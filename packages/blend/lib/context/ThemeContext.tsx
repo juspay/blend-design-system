@@ -143,6 +143,7 @@ type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
     breakpoints: typeof BREAKPOINTS
+    darkMode: boolean
 }
 
 const ThemeContext = createContext<ThemeContextType>({
@@ -191,6 +192,7 @@ const ThemeContext = createContext<ThemeContextType>({
         WORKFLOW_CANVAS: getWorkflowTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
+    darkMode: false,
 })
 
 export const useTheme = () => {
