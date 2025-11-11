@@ -12,7 +12,7 @@ import {
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
-import Tag from '../../../../packages/blend/lib/components/Tags/Tags'
+import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
     TagColor,
     TagVariant,
@@ -1987,8 +1987,28 @@ const DataTableDemo = () => {
         searchQuery: string,
         filters: FilterRule[],
         page: number,
-        size: number
+        size: number,
+        sortField?: string,
+        sortDirection?: SortDirection
     ) => {
+        if (!size || size <= 0 || !Number.isInteger(size)) {
+            console.warn(
+                '🚫 Invalid page size in fetchServerData:',
+                size,
+                'aborting API call'
+            )
+            return
+        }
+
+        if (!page || page <= 0 || !Number.isInteger(page)) {
+            console.warn(
+                '🚫 Invalid page number in fetchServerData:',
+                page,
+                'aborting API call'
+            )
+            return
+        }
+
         setIsLoading(true)
 
         // Simulate API delay
@@ -2047,7 +2067,58 @@ const DataTableDemo = () => {
             }
         })
 
-        // Apply server-side pagination
+        // Apply server-side sorting
+        if (
+            sortField &&
+            sortDirection &&
+            sortDirection !== SortDirection.NONE
+        ) {
+            filteredData.sort((a, b) => {
+                let aValue = (a as Record<string, unknown>)[sortField]
+                let bValue = (b as Record<string, unknown>)[sortField]
+
+                // Handle complex object fields for sorting
+                if (
+                    sortField === 'name' &&
+                    aValue &&
+                    typeof aValue === 'object'
+                ) {
+                    aValue = (aValue as AvatarColumnProps).label
+                    bValue = (bValue as AvatarColumnProps).label
+                } else if (
+                    sortField === 'status' &&
+                    aValue &&
+                    typeof aValue === 'object'
+                ) {
+                    aValue = (aValue as TagColumnProps).text
+                    bValue = (bValue as TagColumnProps).text
+                }
+
+                // Convert to string for comparison if not a number
+                let aCompareValue: string | number
+                let bCompareValue: string | number
+
+                if (typeof aValue !== 'number' && typeof bValue !== 'number') {
+                    aCompareValue = String(aValue || '').toLowerCase()
+                    bCompareValue = String(bValue || '').toLowerCase()
+                } else {
+                    aCompareValue = typeof aValue === 'number' ? aValue : 0
+                    bCompareValue = typeof bValue === 'number' ? bValue : 0
+                }
+
+                let result = 0
+                if (aCompareValue < bCompareValue) {
+                    result = -1
+                } else if (aCompareValue > bCompareValue) {
+                    result = 1
+                }
+
+                return sortDirection === SortDirection.DESCENDING
+                    ? -result
+                    : result
+            })
+        }
+
         const startIndex = (page - 1) * size
         const paginatedData = filteredData.slice(startIndex, startIndex + size)
 
@@ -2094,7 +2165,9 @@ const DataTableDemo = () => {
                 searchConfig.query,
                 serverState.filters,
                 1,
-                pageSize
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
             )
         } else {
             // Local: Let DataTable handle it internally
@@ -2118,7 +2191,14 @@ const DataTableDemo = () => {
 
         if (isServerSideMode || switched) {
             // Server-side: Make API call (either already in server mode or just switched)
-            fetchServerData(serverState.searchQuery, typedFilters, 1, pageSize)
+            fetchServerData(
+                serverState.searchQuery,
+                typedFilters,
+                1,
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
+            )
         } else {
             // Local: Just update the server state for consistency
             setServerState((prev) => ({ ...prev, filters: typedFilters }))
@@ -2140,7 +2220,9 @@ const DataTableDemo = () => {
                 serverState.searchQuery,
                 serverState.filters,
                 page,
-                pageSize
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
             )
         } else {
             console.log('💻 Local pagination - no server call needed')
@@ -2150,22 +2232,37 @@ const DataTableDemo = () => {
     const handlePageSizeChange = (size: number) => {
         console.log('🔄 Page size change requested:', {
             size,
+            currentPageSize: pageSize,
             isServerSideMode,
         })
-        setPageSize(size)
-        setCurrentPage(1)
 
-        if (isServerSideMode) {
-            // For server-side mode, fetch new data with new page size
-            console.log('📡 Fetching server data with new page size:', size)
-            fetchServerData(
-                serverState.searchQuery,
-                serverState.filters,
-                1,
-                size
-            )
+        // Validate page size - must be a positive number
+        if (!size || size <= 0 || !Number.isInteger(size)) {
+            console.log('🚫 Invalid page size:', size, 'skipping operation')
+            return
+        }
+
+        // Only proceed if the page size actually changed
+        if (size !== pageSize) {
+            setPageSize(size)
+            setCurrentPage(1)
+
+            if (isServerSideMode) {
+                // For server-side mode, fetch new data with new page size
+                console.log('📡 Fetching server data with new page size:', size)
+                fetchServerData(
+                    serverState.searchQuery,
+                    serverState.filters,
+                    1,
+                    size,
+                    sortConfig.field,
+                    sortConfig.direction
+                )
+            } else {
+                console.log('💻 Local pagination - no server call needed')
+            }
         } else {
-            console.log('💻 Local pagination - no server call needed')
+            console.log('🚫 Page size unchanged, skipping operation')
         }
     }
 
@@ -2197,6 +2294,35 @@ const DataTableDemo = () => {
                 pageSize: 10,
                 totalRecords: 3000,
             })
+        }
+    }
+
+    const handleSortChange = (newSortConfig: {
+        field: string
+        direction: SortDirection
+    }) => {
+        console.log(
+            '🔄 Sort change requested:',
+            newSortConfig,
+            'Mode:',
+            isServerSideMode ? 'server' : 'local'
+        )
+        setSortConfig(newSortConfig)
+
+        if (isServerSideMode) {
+            console.log('📡 Fetching server data with new sort:', newSortConfig)
+            // Use serverState.pageSize to maintain current page size, and reset to page 1 for new sort
+            setCurrentPage(1)
+            fetchServerData(
+                serverState.searchQuery,
+                serverState.filters,
+                1,
+                serverState.pageSize, // Use server state page size, not local
+                newSortConfig.field,
+                newSortConfig.direction
+            )
+        } else {
+            console.log('💻 Local sorting - handled by DataTable component')
         }
     }
 
@@ -2655,7 +2781,7 @@ const DataTableDemo = () => {
                             }}
                         >
                             {isServerSideMode
-                                ? `🚀 Server-side mode: Simulating 3,000 records with API calls for search/filter. Currently showing ${data.length} records.`
+                                ? `🚀 Server-side mode: Simulating 3,000 records with API calls for search/filter/sorting. Currently showing ${data.length} records.`
                                 : `💻 Local mode: All operations handled client-side with ${data.length} records. Both column filters and advanced filters work locally.`}
                             <span style={{ marginLeft: '8px' }}>
                                 {columnFreeze > 0 ? (
@@ -2933,7 +3059,7 @@ const DataTableDemo = () => {
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 defaultSort={sortConfig}
-                onSortChange={(newSortConfig) => setSortConfig(newSortConfig)}
+                onSortChange={handleSortChange}
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
                 onAdvancedFiltersChange={handleAdvancedFiltersChange}

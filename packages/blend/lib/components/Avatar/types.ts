@@ -1,8 +1,8 @@
 import type { HTMLAttributes } from 'react'
 
 export enum AvatarSize {
-    XS = 'xs',
     SM = 'sm',
+    REGULAR = 'regular',
     MD = 'md',
     LG = 'lg',
     XL = 'xl',

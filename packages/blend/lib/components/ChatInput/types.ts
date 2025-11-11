@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, TextareaHTMLAttributes } from 'react'
 import type { MenuProps } from '../Menu/types'
 
 export type AttachedFile = {
@@ -15,8 +15,12 @@ export type TopQuery = {
     text: string
 }
 
-export type ChatInputProps = {
+export type ChatInputProps = Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    'onChange' | 'value'
+> & {
     value?: string
+    slot1?: ReactNode
     onChange?: (value: string) => void
     onSend?: (message: string, files: AttachedFile[]) => void
     onAttachFiles?: (files: File[]) => void
@@ -43,10 +47,6 @@ export type ChatInputProps = {
 
     // Menu props for overflow files
     overflowMenuProps?: Partial<MenuProps>
-
-    // Accessibility
-    'aria-label'?: string
-    'aria-describedby'?: string
 }
 
 export type ChatInputTokens = {

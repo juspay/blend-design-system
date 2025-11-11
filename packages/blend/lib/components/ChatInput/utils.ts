@@ -53,18 +53,6 @@ export const handleAutoResize = (
 }
 
 /**
- * Check if Enter key should trigger send
- */
-export const shouldSendOnEnter = (
-    key: string,
-    shiftKey: boolean,
-    metaKey: boolean,
-    ctrlKey: boolean
-): boolean => {
-    return key === 'Enter' && !shiftKey && !metaKey && !ctrlKey
-}
-
-/**
  * Validate message length against maxLength
  */
 export const isValidMessageLength = (

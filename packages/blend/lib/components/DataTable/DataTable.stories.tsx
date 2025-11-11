@@ -10,7 +10,7 @@ import {
 import { ColumnType } from './types'
 import { AvatarData, TagData } from './columnTypes'
 import { Avatar } from '../Avatar'
-import Tag from '../Tags/Tags'
+import { Tag } from '../Tags'
 import { TagColor, TagVariant, TagSize } from '../Tags/types'
 import { Button, ButtonType, ButtonSize } from '../Button'
 import { RefreshCw, Plus, Download, Settings } from 'lucide-react'

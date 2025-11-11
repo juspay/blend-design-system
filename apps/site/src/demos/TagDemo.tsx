@@ -12,6 +12,7 @@ import { Hash, X, Plus, Star } from 'lucide-react'
 import { useState } from 'react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 const TagDemo = () => {
+    // Pure Tag Playground State
     const [playgroundText, setPlaygroundText] = useState('Playground Tag')
     const [playgroundColor, setPlaygroundColor] = useState<TagColor>(
         TagColor.PRIMARY
@@ -25,6 +26,26 @@ const TagDemo = () => {
     )
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
+
+    // Tag loading state playground
+    const [skeletonText, setSkeletonText] = useState('Loading Tag...')
+    const [skeletonColor, setSkeletonColor] = useState<TagColor>(
+        TagColor.PRIMARY
+    )
+    const [skeletonVariant, setSkeletonVariant] = useState<TagVariant>(
+        TagVariant.SUBTLE
+    )
+    const [skeletonSize, setSkeletonSize] = useState<TagSize>(TagSize.SM)
+    const [skeletonShape, setSkeletonShape] = useState<TagShape>(
+        TagShape.SQUARICAL
+    )
+    const [skeletonLeftSlot, setSkeletonLeftSlot] = useState(false)
+    const [skeletonRightSlot, setSkeletonRightSlot] = useState(false)
+    const skeletonVariants = ['pulse', 'wave', 'shimmer'] as const
+    const [skeletonAnimationVariant, setSkeletonAnimationVariant] =
+        useState<(typeof skeletonVariants)[number]>('pulse')
+    const [skeletonSplitPosition, setSkeletonSplitPosition] =
+        useState<string>('none')
 
     // Options for selects
     const colorOptions = [
@@ -54,11 +75,40 @@ const TagDemo = () => {
         { value: TagShape.ROUNDED, label: 'Rounded' },
     ]
 
+    const skeletonVariantOptions = skeletonVariants.map((variant) => ({
+        value: variant,
+        label: variant.charAt(0).toUpperCase() + variant.slice(1),
+    }))
+
+    const splitPositionOptions = [
+        { value: 'none', label: 'None' },
+        { value: 'left', label: 'Left' },
+        { value: 'right', label: 'Right' },
+    ]
+
     return (
         <div className="p-8 space-y-12">
-            {/* Playground Section */}
+            {/* Header */}
+            <div className="space-y-4">
+                <h1 className="text-3xl font-bold">Tag Component Demo</h1>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-blue-800">
+                        <strong>Simple Approach:</strong> Tag component handles
+                        both normal and loading states. Just pass{' '}
+                        <code className="bg-blue-100 px-1 rounded">
+                            showSkeleton
+                        </code>{' '}
+                        to show skeleton styling - no separate component needed!
+                    </p>
+                </div>
+            </div>
+
+            {/* Pure Tag Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">✅ Pure Tag Playground</h2>
+                <p className="text-gray-600">
+                    Test the pure Tag component focused only on UI rendering
+                </p>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TextInput
@@ -122,7 +172,7 @@ const TagDemo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
                         <Tag
                             text={playgroundText}
                             color={playgroundColor}
@@ -143,6 +193,246 @@ const TagDemo = () => {
                             }}
                         />
                     </div>
+                </div>
+            </div>
+
+            {/* Tag with Loading State Playground */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔄 Tag with Loading State
+                </h2>
+                <p className="text-gray-600">
+                    Test Tag with <code>showSkeleton</code> - skeleton styling
+                    wraps the component automatically
+                </p>
+
+                {/* Controls */}
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <TextInput
+                            label="Text (for sizing)"
+                            value={skeletonText}
+                            onChange={(e) => setSkeletonText(e.target.value)}
+                            placeholder="Enter text for sizing"
+                        />
+
+                        <SingleSelect
+                            label="Color"
+                            items={[{ items: colorOptions }]}
+                            selected={skeletonColor}
+                            onSelect={(value) =>
+                                setSkeletonColor(value as TagColor)
+                            }
+                            placeholder="Select color"
+                        />
+
+                        <SingleSelect
+                            label="Variant"
+                            items={[{ items: variantOptions }]}
+                            selected={skeletonVariant}
+                            onSelect={(value) =>
+                                setSkeletonVariant(value as TagVariant)
+                            }
+                            placeholder="Select variant"
+                        />
+
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={skeletonSize}
+                            onSelect={(value) =>
+                                setSkeletonSize(value as TagSize)
+                            }
+                            placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Shape"
+                            items={[{ items: shapeOptions }]}
+                            selected={skeletonShape}
+                            onSelect={(value) =>
+                                setSkeletonShape(value as TagShape)
+                            }
+                            placeholder="Select shape"
+                        />
+
+                        <SingleSelect
+                            label="Animation Variant"
+                            items={[{ items: skeletonVariantOptions }]}
+                            selected={skeletonAnimationVariant}
+                            onSelect={(value) =>
+                                setSkeletonAnimationVariant(
+                                    value as (typeof skeletonVariants)[number]
+                                )
+                            }
+                            placeholder="Select animation"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-6 flex-wrap">
+                        <Switch
+                            label="Has Left Slot"
+                            checked={skeletonLeftSlot}
+                            onChange={() =>
+                                setSkeletonLeftSlot(!skeletonLeftSlot)
+                            }
+                        />
+                        <Switch
+                            label="Has Right Slot"
+                            checked={skeletonRightSlot}
+                            onChange={() =>
+                                setSkeletonRightSlot(!skeletonRightSlot)
+                            }
+                        />
+
+                        <SingleSelect
+                            label="Split Position"
+                            items={[{ items: splitPositionOptions }]}
+                            selected={skeletonSplitPosition}
+                            onSelect={(value) =>
+                                setSkeletonSplitPosition(value as string)
+                            }
+                            placeholder="Select split position"
+                        />
+                    </div>
+                </div>
+
+                {/* Tag with Loading Demo */}
+                <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                    <Tag
+                        text={skeletonText}
+                        color={skeletonColor}
+                        size={skeletonSize}
+                        shape={skeletonShape}
+                        leftSlot={
+                            skeletonLeftSlot ? <Hash size={12} /> : undefined
+                        }
+                        rightSlot={
+                            skeletonRightSlot ? <X size={12} /> : undefined
+                        }
+                        splitTagPosition={
+                            skeletonSplitPosition === 'none'
+                                ? undefined
+                                : (skeletonSplitPosition as 'left' | 'right')
+                        }
+                        showSkeleton
+                        skeletonVariant={skeletonAnimationVariant}
+                    />
+                </div>
+            </div>
+
+            {/* Animation Variants Showcase */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">✨ Animation Variants</h2>
+                <p className="text-gray-600">
+                    Different skeleton animation options
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {skeletonVariants.map((variant) => (
+                        <div
+                            key={variant}
+                            className="space-y-3 p-4 border rounded-lg bg-white"
+                        >
+                            <h3 className="text-lg font-semibold">{variant}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                <Tag
+                                    text="Loading Tag"
+                                    color={TagColor.PRIMARY}
+                                    showSkeleton
+                                    skeletonVariant={variant}
+                                />
+                                <Tag
+                                    text="With Icon"
+                                    color={TagColor.SUCCESS}
+                                    leftSlot={<Hash size={12} />}
+                                    showSkeleton
+                                    skeletonVariant={variant}
+                                />
+                                <Tag
+                                    text="Different Size"
+                                    color={TagColor.WARNING}
+                                    size={TagSize.LG}
+                                    showSkeleton
+                                    skeletonVariant={variant}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Side-by-Side Comparison */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🔍 Perfect Token Mirroring
+                </h2>
+                <p className="text-gray-600">
+                    Compare Tag (loading) with actual Tag - dimensions should
+                    match exactly
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Object.values(TagSize).map((size) => (
+                        <div
+                            key={size}
+                            className="space-y-4 p-4 border rounded-lg bg-white"
+                        >
+                            <h3 className="text-lg font-semibold capitalize">
+                                {size} Size
+                            </h3>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600 w-16">
+                                        Skeleton:
+                                    </span>
+                                    <Tag
+                                        text="Sample Tag"
+                                        size={size}
+                                        color={TagColor.PRIMARY}
+                                        leftSlot={
+                                            <Hash
+                                                size={
+                                                    size === TagSize.XS
+                                                        ? 10
+                                                        : size === TagSize.SM
+                                                          ? 12
+                                                          : size === TagSize.MD
+                                                            ? 14
+                                                            : 16
+                                                }
+                                            />
+                                        }
+                                        showSkeleton
+                                        skeletonVariant="pulse"
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600 w-16">
+                                        Actual:
+                                    </span>
+                                    <Tag
+                                        text="Sample Tag"
+                                        size={size}
+                                        color={TagColor.PRIMARY}
+                                        leftSlot={
+                                            <Hash
+                                                size={
+                                                    size === TagSize.XS
+                                                        ? 10
+                                                        : size === TagSize.SM
+                                                          ? 12
+                                                          : size === TagSize.MD
+                                                            ? 14
+                                                            : 16
+                                                }
+                                            />
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 

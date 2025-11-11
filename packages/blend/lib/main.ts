@@ -37,6 +37,7 @@ export * from './components/Upload'
 export * from './components/WorkflowCanvas'
 export * from './components/ChatInput'
 export * from './components/CodeBlock'
+export * from './components/CodeEditor'
 
 // V2 Components with Theme Support
 export * from './components/ButtonGroup'
