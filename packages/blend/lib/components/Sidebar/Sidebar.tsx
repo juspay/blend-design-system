@@ -19,6 +19,8 @@ import {
     useTopbarAutoHide,
     isControlledSidebar,
     getMobileNavigationItems,
+    MOBILE_NAVIGATION_COLLAPSED_HEIGHT,
+    MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import SidebarMobileNavigation from './SidebarMobileNavigation'
@@ -46,6 +48,8 @@ const MainContentContainer = styled(Block)`
     -ms-overflow-style: none;
     scrollbar-width: none;
 `
+
+const COLLAPSED_MOBILE_PADDING = `calc(${MOBILE_NAVIGATION_COLLAPSED_HEIGHT} + ${MOBILE_NAVIGATION_SAFE_AREA})`
 
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
     (
@@ -158,6 +162,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+        const [mobileNavigationHeight, setMobileNavigationHeight] =
+            useState<string>()
 
         const getSidebarState = () => {
             if (isExpanded) return 'expanded'
@@ -174,6 +180,19 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const mobileNavigationItems = useMemo(
             () => getMobileNavigationItems(data),
             [data]
+        )
+
+        useEffect(() => {
+            if (!isMobile || mobileNavigationItems.length === 0) {
+                setMobileNavigationHeight(undefined)
+            }
+        }, [isMobile, mobileNavigationItems])
+
+        const handleMobileNavigationHeightChange = useCallback(
+            (height: string) => {
+                setMobileNavigationHeight(height)
+            },
+            []
         )
 
         return (
@@ -279,7 +298,15 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                 </Block>
 
-                <MainContentContainer data-main-content>
+                <MainContentContainer
+                    data-main-content
+                    paddingBottom={
+                        isMobile && mobileNavigationItems.length > 0
+                            ? (mobileNavigationHeight ??
+                              COLLAPSED_MOBILE_PADDING)
+                            : undefined
+                    }
+                >
                     <Block
                         position="sticky"
                         top="0"
@@ -306,8 +333,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                 {isMobile && mobileNavigationItems.length > 0 && (
                     <SidebarMobileNavigation
-                        data={data}
                         items={mobileNavigationItems}
+                        onHeightChange={handleMobileNavigationHeightChange}
                     />
                 )}
             </Block>

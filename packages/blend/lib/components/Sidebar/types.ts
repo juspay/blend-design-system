@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
 
 export type LeftPanelItem = {
@@ -61,4 +61,13 @@ export type SidebarProps = {
      * Only used when isExpanded is not provided
      */
     defaultIsExpanded?: boolean
+}
+
+export type MobileNavigationItem = NavbarItem & {
+    sectionLabel?: string
+}
+
+export type SidebarMobileNavigationProps = {
+    items: MobileNavigationItem[]
+    onHeightChange?: (height: string) => void
 }
