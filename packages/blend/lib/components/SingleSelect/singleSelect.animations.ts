@@ -2,37 +2,36 @@ import { css } from 'styled-components'
 
 const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-// Main dropdown content animations (Shadcn-style with zoom + slide + fade)
+// Main dropdown content animations
 export const dropdownContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
-    /* Opening animations - Shadcn style with zoom */
     &[data-side='bottom'][data-state='open'] {
-        animation: slideInFromTop 200ms ${easing};
+        animation: slideInFromTop 400ms ${easing};
     }
     &[data-side='bottom'][data-state='closed'] {
-        animation: slideOutToTop 200ms ${easing};
+        animation: slideOutToTop 300ms ${easing};
     }
 
     &[data-side='top'][data-state='open'] {
-        animation: slideInFromBottom 200ms ${easing};
+        animation: slideInFromBottom 400ms ${easing};
     }
     &[data-side='top'][data-state='closed'] {
-        animation: slideOutToBottom 200ms ${easing};
+        animation: slideOutToBottom 300ms ${easing};
     }
 
     &[data-side='right'][data-state='open'] {
-        animation: slideInFromLeft 200ms ${easing};
+        animation: slideInFromLeft 400ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation: slideOutToLeft 200ms ${easing};
+        animation: slideOutToLeft 300ms ${easing};
     }
 
     &[data-side='left'][data-state='open'] {
-        animation: slideInFromRight 200ms ${easing};
+        animation: slideInFromRight 400ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation: slideOutToRight 200ms ${easing};
+        animation: slideOutToRight 300ms ${easing};
     }
 
     /* Shadcn-style keyframes with zoom + slide + fade */
@@ -125,22 +124,22 @@ export const dropdownContentAnimations = css`
     }
 `
 
-// Submenu animations (Shadcn-style with zoom)
+// Submenu animations
 export const submenuContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
     &[data-side='right'][data-state='open'] {
-        animation: slideInFromLeft 200ms ${easing};
+        animation: slideInFromLeft 400ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation: slideOutToLeft 200ms ${easing};
+        animation: slideOutToLeft 300ms ${easing};
     }
 
     &[data-side='left'][data-state='open'] {
-        animation: slideInFromRight 200ms ${easing};
+        animation: slideInFromRight 400ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation: slideOutToRight 200ms ${easing};
+        animation: slideOutToRight 300ms ${easing};
     }
 `
 
