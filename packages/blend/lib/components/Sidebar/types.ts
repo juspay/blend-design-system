@@ -61,6 +61,18 @@ export type SidebarProps = {
      * Only used when isExpanded is not provided
      */
     defaultIsExpanded?: boolean
+    /**
+     * Show primary action button in mobile navigation
+     */
+    showPrimaryActionButton?: boolean
+    /**
+     * Props for the primary action button in mobile navigation
+     * Extends HTML button attributes
+     */
+    primaryActionButtonProps?: Omit<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        'type'
+    >
 }
 
 export type MobileNavigationItem = NavbarItem & {
@@ -70,4 +82,9 @@ export type MobileNavigationItem = NavbarItem & {
 export type SidebarMobileNavigationProps = {
     items: MobileNavigationItem[]
     onHeightChange?: (height: string) => void
+    showPrimaryActionButton?: boolean
+    primaryActionButtonProps?: Omit<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        'type'
+    >
 }

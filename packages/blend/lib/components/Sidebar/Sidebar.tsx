@@ -67,6 +67,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             isExpanded: controlledIsExpanded,
             onExpandedChange,
             defaultIsExpanded = true,
+            showPrimaryActionButton,
+            primaryActionButtonProps,
         },
         ref
     ) => {
@@ -335,6 +337,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     <SidebarMobileNavigation
                         items={mobileNavigationItems}
                         onHeightChange={handleMobileNavigationHeightChange}
+                        showPrimaryActionButton={showPrimaryActionButton}
+                        primaryActionButtonProps={primaryActionButtonProps}
                     />
                 )}
             </Block>

@@ -1126,6 +1126,14 @@ const SidebarDemo = () => {
                             </Text>
                         </div>
                     }
+                    showPrimaryActionButton={true}
+                    primaryActionButtonProps={{
+                        onClick: () => {
+                            console.log('Primary action button clicked!')
+                            alert('Primary action button clicked!')
+                        },
+                        'aria-label': 'Create new item',
+                    }}
                 >
                     <div className="w-full h-full">{renderContent()}</div>
                 </Sidebar>

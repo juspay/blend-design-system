@@ -234,15 +234,23 @@ const calculateMobileNavigationSnapPoints = (
 
 export const getMobileNavigationLayout = (
     items: MobileNavigationItem[],
-    viewportHeight?: number
+    viewportHeight?: number,
+    options?: {
+        primaryReservedSlots?: number
+    }
 ) => {
-    const visiblePrimaryItems =
-        items.length > MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT
-            ? MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT - 1
-            : items.length
+    const reservedSlots = Math.max(0, options?.primaryReservedSlots ?? 0)
+    const hasOverflow = items.length > MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT
+    const primaryCapacity = hasOverflow
+        ? Math.max(0, MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT - 1)
+        : MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT
+    const effectivePrimaryCapacity = Math.max(
+        0,
+        primaryCapacity - reservedSlots
+    )
 
-    const primaryItems = items.slice(0, visiblePrimaryItems)
-    const secondaryItems = items.slice(visiblePrimaryItems)
+    const primaryItems = items.slice(0, effectivePrimaryCapacity)
+    const secondaryItems = items.slice(effectivePrimaryCapacity)
     const hasSecondaryItems = secondaryItems.length > 0
     const secondaryRowCount = hasSecondaryItems
         ? Math.ceil(
