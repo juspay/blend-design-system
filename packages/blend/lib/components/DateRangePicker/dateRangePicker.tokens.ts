@@ -100,7 +100,8 @@ export type CalendarTokenType = {
         boxShadow: CSSObject['boxShadow'] // Calendar shadow
 
         // Date input section at top of calendar
-        inputs: {
+        //  make it header and remove width form lable and use input not primitive input
+        header: {
             padding: {
                 x: CSSObject['padding'] // Input section horizontal padding
                 y: CSSObject['padding'] // Input section vertical padding
@@ -145,6 +146,7 @@ export type CalendarTokenType = {
                     x: CSSObject['padding'] // Week cell horizontal padding
                     y: CSSObject['padding'] // Week cell vertical padding
                 }
+                //  check if this is needed
                 row: {
                     gap: CSSObject['gap'] // Gap between days in row
                 }
@@ -161,6 +163,7 @@ export type CalendarTokenType = {
                     fontSize: CSSObject['fontSize'] // Day cell font size
                     lineHeight: CSSObject['lineHeight'] // Day cell line height
                     // Outline depends on state
+                    //  make it border
                     outline: {
                         [key in CalendarState]: CSSObject['outline'] // Outline for each state
                     }
@@ -193,18 +196,19 @@ export type CalendarTokenType = {
                     todayDay: {
                         fontWeight: CSSObject['fontWeight'] // Today font weight
                     }
-                    hoverState: {
-                        boxShadow: CSSObject['boxShadow'] // Hover box shadow
-                        borderRadius: CSSObject['borderRadius'] // Hover border radius
-                    }
+                    //  remove this as we can take the same border as the single day cell
+                    // hoverState: {
+                    //     boxShadow: CSSObject['boxShadow'] // Hover box shadow
+                    //     borderRadius: CSSObject['borderRadius'] // Hover border radius
+                    // }
+                    // remove opacity and cursor and pointer events and use color only gray 300
                     disabledDay: {
-                        opacity: CSSObject['opacity'] // Disabled opacity
-                        cursor: CSSObject['cursor'] // Disabled cursor
-                        pointerEvents: CSSObject['pointerEvents'] // Disabled pointer events
+                        color: CSSObject['color'] // Disabled color
                     }
                 }
 
                 // Text colors for different day types
+                //  make it date and add a disable date and color is gray 400
                 text: {
                     dayNumber: {
                         color: CSSObject['color'] // Regular day number color
@@ -221,6 +225,7 @@ export type CalendarTokenType = {
                 }
 
                 // Today indicator dot
+                // remove unnecessary value  and make width only height is same
                 todayIndicator: {
                     width: CSSObject['width'] // Indicator width
                     height: CSSObject['height'] // Indicator height
@@ -235,6 +240,7 @@ export type CalendarTokenType = {
         }
 
         // Calendar footer with time range and actions
+        // make
         footer: {
             padding: {
                 x: CSSObject['padding'] // Footer horizontal padding
@@ -362,7 +368,7 @@ export const getCalendarToken = (
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: foundationToken.shadows.xs,
-            inputs: {
+            header: {
                 padding: {
                     x: foundationToken.unit[16],
                     y: foundationToken.unit[16],
@@ -451,14 +457,12 @@ export const getCalendarToken = (
                         todayDay: {
                             fontWeight: foundationToken.font.weight[500],
                         },
-                        hoverState: {
-                            boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
-                            borderRadius: foundationToken.border.radius[8],
-                        },
+                        // hoverState: {
+                        //     boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
+                        //     borderRadius: foundationToken.border.radius[8],
+                        // },
                         disabledDay: {
-                            opacity: 0.4,
-                            cursor: 'not-allowed',
-                            pointerEvents: 'none',
+                            color: foundationToken.colors.gray[400],
                         },
                     },
                     text: {

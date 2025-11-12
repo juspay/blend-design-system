@@ -270,11 +270,11 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 placeholder="12:00 PM"
                 width="118px"
                 height="32px"
-                paddingX={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                paddingX={calendarToken?.calendar?.header?.dateInput?.gap}
                 paddingY={FOUNDATION_THEME.unit[6]}
-                fontSize={calendarToken?.calendar?.inputs?.dateInput?.fontSize}
+                fontSize={calendarToken?.calendar?.header?.dateInput?.fontSize}
                 fontWeight={
-                    calendarToken?.calendar?.inputs?.dateInput?.fontWeight
+                    calendarToken?.calendar?.header?.dateInput?.fontWeight
                 }
                 lineHeight={FOUNDATION_THEME.unit[20]}
                 borderRadius={FOUNDATION_THEME.border.radius[6]}
