@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { TenantItem } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import type { DirectoryData, NavbarItem } from '../Directory/types'
 
 export const arrangeTenants = (
     tenants: TenantItem[],
@@ -132,4 +133,23 @@ export const isControlledSidebar = (
     isExpanded: boolean | undefined
 ): boolean => {
     return isExpanded !== undefined
+}
+
+export type MobileNavigationItem = NavbarItem & {
+    sectionLabel?: string
+}
+
+export const getMobileNavigationItems = (
+    directory: DirectoryData[]
+): MobileNavigationItem[] => {
+    return directory.flatMap((section) => {
+        if (!section.items?.length) return []
+
+        return section.items
+            .filter((item) => item.showOnMobile)
+            .map((item) => ({
+                ...item,
+                sectionLabel: section.label,
+            }))
+    })
 }

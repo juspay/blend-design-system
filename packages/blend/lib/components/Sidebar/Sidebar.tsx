@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback } from 'react'
+import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -18,8 +18,10 @@ import {
     getDefaultMerchantInfo,
     useTopbarAutoHide,
     isControlledSidebar,
+    getMobileNavigationItems,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import SidebarMobileNavigation from './SidebarMobileNavigation'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -169,6 +171,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             return '48'
         }
 
+        const mobileNavigationItems = useMemo(
+            () => getMobileNavigationItems(data),
+            [data]
+        )
+
         return (
             <Block
                 ref={ref}
@@ -296,6 +303,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                     <Block>{children}</Block>
                 </MainContentContainer>
+
+                {isMobile && mobileNavigationItems.length > 0 && (
+                    <SidebarMobileNavigation
+                        data={data}
+                        items={mobileNavigationItems}
+                    />
+                )}
             </Block>
         )
     }

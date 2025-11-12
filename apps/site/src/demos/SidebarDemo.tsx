@@ -491,6 +491,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'buttons',
                     onClick: () => setActiveComponent('buttons'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Button Group',
@@ -499,6 +500,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'buttonGroups',
                     onClick: () => setActiveComponent('buttonGroups'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Tag',
@@ -507,6 +509,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tags',
                     onClick: () => setActiveComponent('tags'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Avatar',
@@ -515,6 +518,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'avatars',
                     onClick: () => setActiveComponent('avatars'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Avatar Group',
@@ -523,6 +527,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'avatarGroup',
                     onClick: () => setActiveComponent('avatarGroup'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Breadcrumb',
@@ -531,6 +536,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Virtual List',
@@ -539,6 +545,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'virtualList',
                     onClick: () => setActiveComponent('virtualList'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'File Upload',
@@ -648,6 +655,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'topbar',
                     onClick: () => setActiveComponent('topbar'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Menu',
@@ -761,6 +769,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'alerts',
                     onClick: () => setActiveComponent('alerts'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Snackbar',
@@ -799,6 +808,7 @@ const SidebarDemo = () => {
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'drawer',
                     onClick: () => setActiveComponent('drawer'),
+                    showOnMobile: true,
                 },
             ],
         },
@@ -814,6 +824,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'charts',
                     onClick: () => setActiveComponent('charts'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Stat Card',
