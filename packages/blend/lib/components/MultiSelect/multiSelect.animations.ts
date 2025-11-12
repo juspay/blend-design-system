@@ -1,83 +1,135 @@
+/**
+ * MultiSelect Dropdown Animations
+ *
+ * Shadcn-style animations with zoom + slide + fade
+ * - Combined animation in single keyframe
+ * - Side-aware based on dropdown position
+ * - Smooth spring easing
+ */
+
 const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-// Reusable opacity keyframes
-const opacityKeyframes = `
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-`
-
-// Reusable transform keyframes
-const transformKeyframes = `
-  @keyframes slideUp {
-    from { transform: translateY(8px); }
-    to { transform: translateY(0); }
-  }
-
-  @keyframes slideDown {
-    from { transform: translateY(-8px); }
-    to { transform: translateY(0); }
-  }
-
-  @keyframes slideLeft {
-    from { transform: translateX(8px); }
-    to { transform: translateX(0); }
-  }
-
-  @keyframes slideRight {
-    from { transform: translateX(-8px); }
-    to { transform: translateX(0); }
-  }
-`
-
 /**
- * Main dropdown content animations
- * Applied based on the dropdown's position (data-side attribute)
+ * Main dropdown content animations (Shadcn-style)
  */
 export const dropdownContentAnimations = `
-  ${opacityKeyframes}
-  ${transformKeyframes}
-
-  /* Side-aware opening animations */
-  &[data-state="open"][data-side="top"] {
-    animation: fadeIn 550ms ${easing}, slideDown 350ms ${easing};
-  }
-
-  &[data-state="open"][data-side="bottom"] {
-    animation: fadeIn 550ms ${easing}, slideUp 350ms ${easing};
-  }
-
-  &[data-state="open"][data-side="left"] {
-    animation: fadeIn 550ms ${easing}, slideRight 350ms ${easing};
-  }
-
-  &[data-state="open"][data-side="right"] {
-    animation: fadeIn 550ms ${easing}, slideLeft 350ms ${easing};
-  }
-
-  /* Side-aware closing animations */
-  &[data-state="closed"][data-side="top"] {
-    animation: fadeOut 350ms ${easing}, slideUp 250ms ${easing};
-  }
-
-  &[data-state="closed"][data-side="bottom"] {
-    animation: fadeOut 350ms ${easing}, slideDown 250ms ${easing};
-  }
-
-  &[data-state="closed"][data-side="left"] {
-    animation: fadeOut 350ms ${easing}, slideLeft 250ms ${easing};
-  }
-
-  &[data-state="closed"][data-side="right"] {
-    animation: fadeOut 350ms ${easing}, slideRight 250ms ${easing};
-  }
-
-  /* Initial state */
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+
+  /* Opening animations - Shadcn style with zoom */
+  &[data-side='bottom'][data-state='open'] {
+    animation: slideInFromTop 200ms ${easing};
+  }
+  &[data-side='bottom'][data-state='closed'] {
+    animation: slideOutToTop 150ms ${easing};
+  }
+
+  &[data-side='top'][data-state='open'] {
+    animation: slideInFromBottom 200ms ${easing};
+  }
+  &[data-side='top'][data-state='closed'] {
+    animation: slideOutToBottom 150ms ${easing};
+  }
+
+  &[data-side='right'][data-state='open'] {
+    animation: slideInFromLeft 200ms ${easing};
+  }
+  &[data-side='right'][data-state='closed'] {
+    animation: slideOutToLeft 150ms ${easing};
+  }
+
+  &[data-side='left'][data-state='open'] {
+    animation: slideInFromRight 200ms ${easing};
+  }
+  &[data-side='left'][data-state='closed'] {
+    animation: slideOutToRight 150ms ${easing};
+  }
+
+  /* Shadcn-style keyframes with zoom + slide + fade */
+  @keyframes slideInFromTop {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes slideOutToTop {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+    }
+  }
+
+  @keyframes slideInFromBottom {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes slideOutToBottom {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(8px) scale(0.95);
+    }
+  }
+
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes slideOutToLeft {
+    from {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-8px) scale(0.95);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(8px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes slideOutToRight {
+    from {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(8px) scale(0.95);
+    }
+  }
 `

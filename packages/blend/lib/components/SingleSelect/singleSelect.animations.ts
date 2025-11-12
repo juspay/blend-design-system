@@ -2,136 +2,145 @@ import { css } from 'styled-components'
 
 const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-// Main dropdown content animations (side-aware with staggered timing)
+// Main dropdown content animations (Shadcn-style with zoom + slide + fade)
 export const dropdownContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
-    /* Side-aware animations with staggered timing */
-    &[data-side='bottom'] {
-        animation:
-            fadeIn 550ms ${easing},
-            slideDown 350ms ${easing};
+    /* Opening animations - Shadcn style with zoom */
+    &[data-side='bottom'][data-state='open'] {
+        animation: slideInFromTop 200ms ${easing};
     }
     &[data-side='bottom'][data-state='closed'] {
-        animation:
-            fadeOut 350ms ${easing},
-            slideUp 250ms ${easing};
+        animation: slideOutToTop 150ms ${easing};
     }
 
-    &[data-side='top'] {
-        animation:
-            fadeIn 550ms ${easing},
-            slideUp 350ms ${easing};
+    &[data-side='top'][data-state='open'] {
+        animation: slideInFromBottom 200ms ${easing};
     }
     &[data-side='top'][data-state='closed'] {
-        animation:
-            fadeOut 350ms ${easing},
-            slideDown 250ms ${easing};
+        animation: slideOutToBottom 150ms ${easing};
     }
 
-    &[data-side='right'] {
-        animation:
-            fadeIn 550ms ${easing},
-            slideRight 350ms ${easing};
+    &[data-side='right'][data-state='open'] {
+        animation: slideInFromLeft 200ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation:
-            fadeOut 350ms ${easing},
-            slideLeft 250ms ${easing};
+        animation: slideOutToLeft 150ms ${easing};
     }
 
-    &[data-side='left'] {
-        animation:
-            fadeIn 550ms ${easing},
-            slideLeft 350ms ${easing};
+    &[data-side='left'][data-state='open'] {
+        animation: slideInFromRight 200ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation:
-            fadeOut 350ms ${easing},
-            slideRight 250ms ${easing};
+        animation: slideOutToRight 150ms ${easing};
     }
 
-    /* Reusable opacity keyframes */
-    @keyframes fadeIn {
+    /* Shadcn-style keyframes with zoom + slide + fade */
+    @keyframes slideInFromTop {
         from {
             opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-
-    /* Reusable transform keyframes */
-    @keyframes slideDown {
-        from {
             transform: translateY(-8px) scale(0.95);
         }
         to {
+            opacity: 1;
             transform: translateY(0) scale(1);
         }
     }
 
-    @keyframes slideUp {
+    @keyframes slideOutToTop {
         from {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromBottom {
+        from {
+            opacity: 0;
             transform: translateY(8px) scale(0.95);
         }
         to {
+            opacity: 1;
             transform: translateY(0) scale(1);
         }
     }
 
-    @keyframes slideRight {
+    @keyframes slideOutToBottom {
         from {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            opacity: 0;
             transform: translateX(-8px) scale(0.95);
         }
         to {
+            opacity: 1;
             transform: translateX(0) scale(1);
         }
     }
 
-    @keyframes slideLeft {
+    @keyframes slideOutToLeft {
         from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
             transform: translateX(8px) scale(0.95);
         }
         to {
+            opacity: 1;
             transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes slideOutToRight {
+        from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(8px) scale(0.95);
         }
     }
 `
 
-// Submenu animations (reuses main keyframes)
+// Submenu animations (Shadcn-style with zoom)
 export const submenuContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
-    &[data-side='right'] {
-        animation:
-            fadeIn 400ms ${easing},
-            slideRight 400ms ${easing};
+    &[data-side='right'][data-state='open'] {
+        animation: slideInFromLeft 200ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation:
-            fadeOut 300ms ${easing},
-            slideLeft 300ms ${easing};
+        animation: slideOutToLeft 150ms ${easing};
     }
 
-    &[data-side='left'] {
-        animation:
-            fadeIn 400ms ${easing},
-            slideLeft 400ms ${easing};
+    &[data-side='left'][data-state='open'] {
+        animation: slideInFromRight 200ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation:
-            fadeOut 300ms ${easing},
-            slideRight 300ms ${easing};
+        animation: slideOutToRight 150ms ${easing};
     }
 `
 
