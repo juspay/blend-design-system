@@ -19,53 +19,11 @@ function MyComponent() {
     />
   );
 }`
-
-    const reCode = `@react.component
-let make = () => {
-  let (value, setValue) = React.useState(() => "")
-  
-  <TextInputBinding
-    label="Full Name"
-    placeholder="Enter your full name"
-    value
-    onChange={e => {
-      let value = ReactEvent.Form.target(e)["value"]
-      setValue(_ => value)
-    }}
-    hintText="This will be used for your profile"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~label: string=?,
-  ~sublabel: string=?,
-  ~hintText: string=?,
-  ~helpIconHintText: string=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~size: [#sm | #md | #lg]=?,
-  ~leftSlot: React.element=?,
-  ~rightSlot: React.element=?,
-  ~value: string,
-  ~onChange: ReactEvent.Form.t => unit,
-  ~onBlur: ReactEvent.Focus.t => unit=?,
-  ~onFocus: ReactEvent.Focus.t => unit=?,
-  ~disabled: bool=?,
-  ~placeholder: string=?,
-  ~required: bool=?,
-  ~name: string=?,
-) => React.element = "TextInput"`
-
     const [basicValue, setBasicValue] = useState('')
     const [errorValue, setErrorValue] = useState('')
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

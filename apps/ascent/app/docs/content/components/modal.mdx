@@ -71,228 +71,271 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'isOpen',
-                hintText: 'Controls whether the modal is visible',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onClose',
+                content: 'Modal.isOpen',
                 hintText:
-                    'Callback function called when the modal should close',
+                    'Required boolean that controls whether the modal is visible. When true, the modal is displayed with a backdrop overlay. When false, the modal is hidden. Use this for controlled modal state management. The modal appears centered on the screen with proper z-index layering.',
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: 'boolean',
+                hintText: 'true shows modal, false hides modal',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'title',
-                hintText: 'The title displayed in the modal header',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'subtitle',
-                hintText: 'Optional subtitle displayed below the title',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'children',
-                hintText: 'The content to display in the modal body',
-            },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'primaryAction',
-                hintText: 'Primary action button configuration',
-            },
-            { content: 'ModalButtonAction', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'secondaryAction',
-                hintText: 'Secondary action button configuration',
-            },
-            { content: 'ModalButtonAction', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'className',
-                hintText: 'Additional CSS class for the modal container',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'showCloseButton',
-                hintText: 'Whether to show the X close button in header',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'showHeader',
-                hintText: 'Whether to display the modal header section',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'showFooter',
-                hintText: 'Whether to display the modal footer section',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'closeOnBackdropClick',
-                hintText: 'Whether clicking the backdrop closes the modal',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'customHeader',
+                content: 'Modal.onClose',
                 hintText:
-                    'Custom React component to replace the default header',
+                    'Required callback function invoked when the modal should close. This is called when the user clicks the close button, clicks the backdrop (if closeOnBackdropClick is true), or presses Escape. Use this to update the isOpen state to false.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: '() => void',
+                hintText: 'Function called when modal should close',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'customFooter',
+                content: 'Modal.title',
                 hintText:
-                    'Custom React component to replace the default footer',
+                    "Optional title string displayed prominently in the modal header. Provides context and description of the modal's purpose. Should be concise and descriptive. The title is styled as a prominent heading and appears above the subtitle (if provided).",
             },
-            { content: 'ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
             {
-                content: 'headerRightSlot',
+                content: 'string',
                 hintText:
-                    'Additional content displayed in the header right area',
+                    'Text content for the modal title displayed in the header',
             },
-            { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'showDivider',
-                hintText: 'Whether to show divider line below header',
+                content: 'Modal.subtitle',
+                hintText:
+                    "Optional subtitle string displayed below the title in the modal header. Provides additional context, instructions, or explanation about the modal's purpose. Styled with smaller, lighter text than the title. Useful for clarifying the modal's intent.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'minWidth',
-                hintText: 'Minimum width of the modal',
+                content: 'string',
+                hintText:
+                    'Descriptive text shown below the title in the header',
             },
-            { content: 'string', hintText: 'CSS value' },
             { content: '' },
         ],
         [
             {
-                content: 'useDrawerOnMobile',
-                hintText: 'Whether to use drawer style on mobile devices',
+                content: 'Modal.children',
+                hintText:
+                    'Required React elements representing the main content to display in the modal body. This is the primary content area and can contain any custom components, forms, text, images, or other interactive elements. The content is scrollable if it exceeds the modal height.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### ModalButtonAction
-
-Action buttons use the Button component configuration:
-
-<DocsTypeTable
-    data={[
-        [
             {
-                content: 'text',
-                hintText: 'Text displayed on the button',
+                content: 'ReactNode',
+                hintText: 'React elements for the main modal body content',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'buttonType',
-                hintText: 'Visual style of the button',
+                content: 'Modal.primaryAction',
+                hintText:
+                    'Optional ModalButtonAction object that configures the primary action button displayed in the modal footer. The primary action is typically the main action (e.g., "Confirm", "Save", "Delete"). It appears on the right side of the footer and is styled prominently. If not provided, no primary button is shown.',
             },
-            { content: 'ButtonType', hintText: 'enum' },
+            {
+                content: 'ModalButtonAction',
+                hintText:
+                    'Object with button configuration properties (see ModalButtonAction below)',
+            },
+            {
+                content: 'ModalButtonAction: see ModalButtonAction props below',
+            },
+        ],
+        [
+            {
+                content: 'Modal.secondaryAction',
+                hintText:
+                    'Optional ModalButtonAction object that configures the secondary action button displayed in the modal footer. The secondary action is typically the cancel or alternative action (e.g., "Cancel", "Close"). It appears on the left side of the footer. If not provided, no secondary button is shown.',
+            },
+            {
+                content: 'ModalButtonAction',
+                hintText:
+                    'Object with button configuration properties (see ModalButtonAction below)',
+            },
+            {
+                content: 'ModalButtonAction: see ModalButtonAction props below',
+            },
+        ],
+        [
+            {
+                content: 'Modal.showCloseButton',
+                hintText:
+                    'When true, displays an X close button in the top-right corner of the modal header. Users can click this button to close the modal. When false, the close button is hidden, and users must use the backdrop click or Escape key (if enabled) to close. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows close button, false hides close button',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'size',
-                hintText: 'Size of the button',
+                content: 'Modal.closeOnBackdropClick',
+                hintText:
+                    'When true, allows users to close the modal by clicking on the backdrop/overlay area outside the modal content. When false, the backdrop click does nothing, and users must use the close button or Escape key. Useful for preventing accidental dismissal of important modals. Defaults to true.',
             },
-            { content: 'ButtonSize', hintText: 'enum' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows backdrop click to close, false disables backdrop click',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'onClick',
+                content: 'Modal.headerRightSlot',
+                hintText:
+                    'Optional React element displayed in the right area of the modal header, typically after the title/subtitle but before the close button. Useful for adding action buttons, icons, badges, or other supplementary content in the header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the header right area',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.showDivider',
+                hintText:
+                    'When true, displays a horizontal divider line below the modal header, visually separating the header from the body content. When false, no divider is shown, creating a seamless transition. Useful for visual hierarchy. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows divider below header, false hides divider',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.minWidth',
+                hintText:
+                    'Optional CSS width string that sets the minimum width constraint for the modal. Accepts any valid CSS width value (e.g., "500px", "50%", "40rem"). The modal will not shrink below this width, ensuring readability and proper layout. Defaults to "500px".',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS width value for minimum modal width constraint',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.useDrawerOnMobile',
+                hintText:
+                    'When true, renders the modal as a mobile drawer (full-screen slide-up panel) on mobile devices (typically screen width < 1024px). On desktop, it still appears as a centered modal. Drawers provide better mobile UX with more space and native-like interactions. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true uses drawer on mobile, false uses modal on all devices',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.text',
+                hintText:
+                    'Required string representing the text displayed on the button. Should be concise and action-oriented, clearly describing what the button does (e.g., "Confirm", "Save", "Delete", "Cancel"). The text is the primary visual element users see.',
+            },
+            {
+                content: 'string',
+                hintText: 'Button label text displayed to users',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.buttonType',
+                hintText:
+                    'Optional ButtonType enum value that determines the visual style of the button. Common values include PRIMARY (prominent, typically blue), SECONDARY (less prominent), DANGER (warning/destructive, typically red), etc. If not provided, primaryAction defaults to PRIMARY and secondaryAction defaults to SECONDARY.',
+            },
+            {
+                content: 'ButtonType',
+                hintText:
+                    'Enum that determines the visual style variant of the button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.size',
+                hintText:
+                    'Optional ButtonSize enum value that controls the physical dimensions of the button. Common values include SMALL, MEDIUM, LARGE. Size affects padding, font size, and overall height. If not provided, uses default button size.',
+            },
+            {
+                content: 'ButtonSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.onClick',
+                hintText:
+                    'Required callback function invoked when the button is clicked. Receives no parameters. Use this to perform the action associated with the button, such as form submission, data processing, or navigation. Typically, the modal should be closed after the action completes (call onClose).',
+            },
+            {
+                content: '() => void',
                 hintText: 'Function called when button is clicked',
             },
-            { content: '() => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether the button is disabled',
+                content: 'ModalButtonAction.disabled',
+                hintText:
+                    "When true, disables the button, making it non-clickable and visually muted. Disabled buttons show reduced opacity and cannot be clicked. Useful for preventing actions when prerequisites aren't met or during validation. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'isLoading',
-                hintText: 'Whether the button shows loading state',
+                content: 'boolean',
+                hintText:
+                    'true disables button, false allows normal button interaction',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'leadingIcon',
-                hintText: 'Icon displayed before the button text',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'trailingIcon',
-                hintText: 'Icon displayed after the button text',
+                content: 'ModalButtonAction.loading',
+                hintText:
+                    'When true, displays a loading indicator on the button and typically disables interaction. The button shows a spinner or loading animation, indicating that an async operation is in progress. Useful for API calls or form submissions. Defaults to false.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows loading state, false shows normal button state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.leadingIcon',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed before the button text. Icons help users quickly identify the action. Common examples include Check, Save, Trash, or X icons. The icon is properly spaced from the text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed before button text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ModalButtonAction.trailingIcon',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed after the button text. Icons help users understand the action or indicate direction (e.g., arrow icons for navigation). The icon is properly spaced from the text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed after button text',
+            },
             { content: '' },
         ],
     ]}
@@ -300,288 +343,6 @@ Action buttons use the Button component configuration:
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Overlay Management**: Full-screen overlay with backdrop blur and click-to-close options
-- **Responsive Design**: Automatic mobile drawer mode for better mobile experience
-- **Flexible Actions**: Primary and secondary actions with full Button component configuration
-- **Custom Layouts**: Support for custom headers, footers, and header right slots
-- **Scroll Lock**: Automatically prevents body scroll when modal is open
-- **Accessibility First**: Full keyboard navigation, focus management, and ARIA compliance
-- **Animation Support**: Smooth enter/exit animations with backdrop transitions
-- **Header Control**: Show/hide header, dividers, and close button as needed
-- **Footer Control**: Show/hide footer or replace with custom footer content
-- **Size Control**: Configurable minimum width and responsive sizing
-- **Mobile Optimization**: Drawer-style presentation on mobile devices
-- **Backdrop Interaction**: Configurable backdrop click behavior
-
-## Usage Examples
-
-### Basic Confirmation Modal
-
-Simple modal for confirming actions
-
-```tsx
-const [showConfirm, setShowConfirm] = useState(false)
-
-<Modal
-    isOpen={showConfirm}
-    onClose={() => setShowConfirm(false)}
-    title="Delete Item"
-    subtitle="This action cannot be undone"
-    primaryAction={{
-        text: 'Delete',
-        buttonType: ButtonType.DANGER,
-        onClick: () => {
-            console.log('Item deleted')
-            setShowConfirm(false)
-        },
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => setShowConfirm(false),
-    }}
->
-    <p>Are you sure you want to delete this item? This action is permanent.</p>
-</Modal>
-```
-
-### Form Modal with Loading State
-
-Modal containing a form with loading action
-
-```tsx
-const [showForm, setShowForm] = useState(false)
-const [isSubmitting, setIsSubmitting] = useState(false)
-
-const handleSubmit = async () => {
-    setIsSubmitting(true)
-    try {
-        await submitForm()
-        setShowForm(false)
-    } finally {
-        setIsSubmitting(false)
-    }
-}
-
-;<Modal
-    isOpen={showForm}
-    onClose={() => setShowForm(false)}
-    title="Create New Project"
-    subtitle="Enter project details below"
-    primaryAction={{
-        text: 'Create Project',
-        buttonType: ButtonType.PRIMARY,
-        isLoading: isSubmitting,
-        onClick: handleSubmit,
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        disabled: isSubmitting,
-        onClick: () => setShowForm(false),
-    }}
-    closeOnBackdropClick={false}
->
-    <form className="space-y-4">
-        <div>
-            <label htmlFor="name">Project Name</label>
-            <input id="name" type="text" placeholder="Enter project name" />
-        </div>
-        <div>
-            <label htmlFor="description">Description</label>
-            <textarea id="description" placeholder="Project description" />
-        </div>
-    </form>
-</Modal>
-```
-
-### Modal without Footer
-
-Content-only modal without action buttons
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Information"
-    showFooter={false}
-    closeOnBackdropClick={true}
->
-    <div className="space-y-4">
-        <p>
-            This is an informational modal that displays content without action
-            buttons.
-        </p>
-        <p>Users can close it by clicking the X button or clicking outside.</p>
-    </div>
-</Modal>
-```
-
-### Modal with Custom Header
-
-Modal with custom header content and right slot
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Settings"
-    headerRightSlot={
-        <span className="text-sm text-gray-500">Last saved: 2 min ago</span>
-    }
-    showDivider={true}
->
-    <div className="grid grid-cols-2 gap-4">
-        <div>
-            <h4>Preferences</h4>
-            <div>Settings content here</div>
-        </div>
-        <div>
-            <h4>Account</h4>
-            <div>Account settings here</div>
-        </div>
-    </div>
-</Modal>
-```
-
-### Mobile Drawer Modal
-
-Modal that becomes a drawer on mobile
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Mobile Friendly"
-    subtitle="This modal becomes a drawer on mobile"
-    useDrawerOnMobile={true}
-    primaryAction={{
-        text: 'Save',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => console.log('Saved'),
-    }}
->
-    <div className="space-y-4">
-        <p>
-            This modal automatically adapts to mobile devices by showing as a
-            drawer.
-        </p>
-        <p>The drawer slides up from the bottom on mobile screens.</p>
-    </div>
-</Modal>
-```
-
-### Modal with Custom Footer
-
-Modal with completely custom footer
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Custom Footer"
-    customFooter={
-        <div className="flex justify-between items-center w-full p-4 bg-gray-50">
-            <div className="text-sm text-gray-600">
-                Changes will be auto-saved
-            </div>
-            <div className="flex gap-2">
-                <button className="px-4 py-2 text-blue-600">Save Draft</button>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded">
-                    Publish
-                </button>
-            </div>
-        </div>
-    }
->
-    <div>Content with custom footer actions</div>
-</Modal>
-```
-
-### Large Content Modal
-
-Modal with minimum width and scrollable content
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Large Content Modal"
-    minWidth="800px"
-    primaryAction={{
-        text: 'Close',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => setIsOpen(false),
-    }}
->
-    <div className="space-y-6">
-        <div className="grid grid-cols-3 gap-4">
-            {Array.from({ length: 9 }, (_, i) => (
-                <div key={i} className="p-4 border rounded">
-                    <h4>Section {i + 1}</h4>
-                    <p>Content for section {i + 1}</p>
-                </div>
-            ))}
-        </div>
-    </div>
-</Modal>
-```
-
-### Modal with Icons in Actions
-
-Modal with icons in action buttons
-
-```tsx
-import { Save, X } from 'lucide-react'
-;<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    title="Save Changes"
-    primaryAction={{
-        text: 'Save',
-        buttonType: ButtonType.PRIMARY,
-        leadingIcon: <Save size={16} />,
-        onClick: () => console.log('Saved'),
-    }}
-    secondaryAction={{
-        text: 'Discard',
-        buttonType: ButtonType.DANGER,
-        leadingIcon: <X size={16} />,
-        onClick: () => setIsOpen(false),
-    }}
->
-    <p>You have unsaved changes. What would you like to do?</p>
-</Modal>
-```
-
-### Completely Custom Modal
-
-Modal with custom header and no default styling
-
-```tsx
-<Modal
-    isOpen={isOpen}
-    onClose={() => setIsOpen(false)}
-    customHeader={
-        <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-            <div>
-                <h2 className="text-xl font-bold">Custom Design</h2>
-                <p className="text-purple-100">Completely custom header</p>
-            </div>
-            <button onClick={() => setIsOpen(false)}>✕</button>
-        </div>
-    }
-    showHeader={false}
-    showFooter={false}
->
-    <div className="p-6">
-        <p>This modal uses a completely custom header and no footer.</p>
-    </div>
-</Modal>
-```
 
 ## Component Tokens
 
@@ -589,138 +350,40 @@ You can style the Modal component using the following tokens:
 
 ```tsx
 export type ModalTokensType = {
-    backdrop: {
+    boxShadow: CSSObject['boxShadow']
+    borderRadius: CSSObject['borderRadius']
+    header: {
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderBottom: CSSObject['border']
         backgroundColor: CSSObject['backgroundColor']
-        backdropFilter: CSSObject['backdropFilter']
-        zIndex: CSSObject['zIndex']
-    }
-
-    container: {
-        backgroundColor: CSSObject['backgroundColor']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        maxWidth: CSSObject['maxWidth']
-        maxHeight: CSSObject['maxHeight']
-        margin: CSSObject['margin']
-    }
-
-    headerContainer: {
-        padding: CSSObject['padding']
-        borderBottom: CSSObject['borderBottom']
-        backgroundColor: CSSObject['backgroundColor']
-    }
-
-    title: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-        lineHeight: CSSObject['lineHeight']
-    }
-
-    subtitle: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-        marginTop: CSSObject['marginTop']
-        lineHeight: CSSObject['lineHeight']
-    }
-
-    content: {
-        padding: CSSObject['padding']
-        maxHeight: CSSObject['maxHeight']
-        overflow: CSSObject['overflow']
-    }
-
-    footer: {
-        padding: CSSObject['padding']
-        borderTop: CSSObject['borderTop']
-        backgroundColor: CSSObject['backgroundColor']
-        display: CSSObject['display']
-        justifyContent: CSSObject['justifyContent']
-        gap: CSSObject['gap']
-    }
-
-    closeButton: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
-        color: CSSObject['color']
-        '&:hover': {
-            backgroundColor: CSSObject['backgroundColor']
+        text: {
+            title: {
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+            subtitle: {
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
         }
     }
-
-    mobileDrawer: {
-        borderRadius: CSSObject['borderRadius']
-        maxHeight: CSSObject['maxHeight']
-        transform: CSSObject['transform']
+    body: {
+        padding: CSSObject['padding']
+        backgroundColor: CSSObject['backgroundColor']
+    }
+    footer: {
+        padding: CSSObject['padding']
+        borderTop: CSSObject['border']
+        backgroundColor: CSSObject['backgroundColor']
+        gap: CSSObject['gap']
+    }
+    closeButton: {
+        color: CSSObject['color']
     }
 }
 ```
-
-## Behavior
-
-### Modal Lifecycle
-
-- **Open Animation**: Smooth fade-in animation for backdrop and modal content
-- **Close Animation**: Fade-out animation when closing
-- **Scroll Lock**: Body scroll is locked when modal is open
-- **Focus Management**: Focus is trapped within the modal
-
-### Interaction Patterns
-
-- **Backdrop Click**: Configurable backdrop click-to-close behavior
-- **Escape Key**: Escape key closes the modal by default
-- **Close Button**: Optional X button in header for closing
-- **Action Buttons**: Primary and secondary actions in footer
-
-### Mobile Behavior
-
-- **Responsive Layout**: Adapts to smaller screens automatically
-- **Drawer Mode**: Optional drawer-style presentation on mobile
-- **Touch Interactions**: Optimized for touch interactions
-- **Safe Areas**: Respects mobile safe areas and notches
-
-### Content Management
-
-- **Scrollable Content**: Content area scrolls when content exceeds viewport
-- **Header Pinning**: Header stays fixed when content scrolls
-- **Footer Pinning**: Footer stays fixed at bottom
-- **Responsive Sizing**: Modal adapts to content size with constraints
-
-## Accessibility
-
-- **Focus Management**: Focus is trapped within modal and restored on close
-- **Keyboard Navigation**: Full keyboard support with Tab, Shift+Tab, and Escape
-- **Screen Reader Support**: Proper ARIA roles, labels, and live regions
-- **ARIA Compliance**: Uses `role="dialog"`, `aria-modal`, and `aria-labelledby`
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Motion Preferences**: Respects user's reduced motion preferences
-
-## Best Practices
-
-### When to Use Modals
-
-- **Important Decisions**: For critical actions that need user confirmation
-- **Form Dialogs**: For forms that interrupt the main workflow
-- **Information Display**: For detailed information that needs focus
-- **Error Messages**: For critical error messages that need attention
-
-### Modal Design Guidelines
-
-- **Clear Purpose**: Modal should have a clear, single purpose
-- **Concise Content**: Keep content focused and concise
-- **Clear Actions**: Action buttons should clearly indicate what will happen
-- **Escape Routes**: Always provide a way to close the modal
-
-### Mobile Considerations
-
-- **Use Drawer Mode**: Enable drawer mode for better mobile experience
-- **Touch Targets**: Ensure buttons are large enough for touch interaction
-- **Content Length**: Keep content length appropriate for mobile screens
-- **Safe Areas**: Consider mobile safe areas when positioning content
-
-### Action Button Guidelines
-
-- **Primary Action**: Use for the main action user should take
-- **Secondary Action**: Use for alternative or cancel actions
-- **Dangerous Actions**: Use danger button type for destructive actions
-- **Loading States**: Show loading state for async operations

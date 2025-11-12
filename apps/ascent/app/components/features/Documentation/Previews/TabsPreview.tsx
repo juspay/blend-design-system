@@ -28,50 +28,8 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `type tabsVariant = [#underline | #boxed | #floating]
-type tabsSize = [#md | #lg]
-
-@react.component
-let make = (
-  ~defaultValue: option<string>=?,
-  ~value: option<string>=?,
-  ~onValueChange: option<string => unit>=?,
-  ~variant: option<tabsVariant>=?,
-  ~size: option<tabsSize>=?,
-  ~expanded: option<bool>=?,
-  ~fitContent: option<bool>=?,
-  ~children: React.element,
-) => {
-  <TabsBinding
-    ?defaultValue
-    ?value
-    ?onValueChange
-    ?variant
-    ?size
-    ?expanded
-    ?fitContent
-    children
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~defaultValue: string=?,
-  ~value: string=?,
-  ~onValueChange: string => unit=?,
-  ~variant: [#underline | #boxed | #floating]=?,
-  ~size: [#md | #lg]=?,
-  ~expanded: bool=?,
-  ~fitContent: bool=?,
-  ~children: React.element,
-) => React.element = "Tabs"`
-
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div className="m-4 min-w-100">
                 <Tabs defaultValue="account">
                     <TabsList

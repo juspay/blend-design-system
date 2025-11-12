@@ -18,7 +18,7 @@ Blend is a comprehensive design system that provides:
 
 - **React Components**: Production-ready components with TypeScript support
 - **Design Tokens**: Consistent design tokens for colors, typography, spacing, and more
-- **Figma Integration**: Direct sync between Figma designs and code components
+- **Customizable Theming**: Flexible design tokens and theme system
 
 ## Installation
 
@@ -37,68 +37,133 @@ pnpm add @juspay/blend-design-system
 
 ## Basic Setup
 
-### 1. Start Using Components
+### 1. Import Styles
+
+Import the required CSS file in your application entry point:
 
 ```tsx
-import { Button, Alert, TextInput } from '@juspay/blend-design-system'
-
-function MyApp() {
-    return (
-        <div>
-            <Alert variant="info" title="Welcome">
-                Your Blend setup is complete!
-            </Alert>
-
-            <TextInput
-                label="Email"
-                placeholder="Enter your email"
-                type="email"
-            />
-
-            <Button variant="primary" size="md">
-                Get Started
-            </Button>
-        </div>
-    )
-}
+import '@juspay/blend-design-system/style.css'
 ```
 
-### 2. Theme Configuration (Optional)
+### 2. Wrap Your App with ThemeProvider
 
-Configure your application theme:
+Wrap your application with the `ThemeProvider` to enable theming:
 
 ```tsx
 import { ThemeProvider } from '@juspay/blend-design-system'
 
 function App() {
     return (
-        <ThemeProvider theme="light">
-            {' '}
-            {/* or "dark" */}
+        <ThemeProvider>
             <YourAppContent />
         </ThemeProvider>
     )
 }
 ```
 
-## Framework-Specific Setup
+### 3. Start Using Components
 
-### Next.js Configuration
+Import and use components in your application:
 
-For Next.js applications, add this to your `next.config.js`:
+```tsx
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
+import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system'
+import { TextInput } from '@juspay/blend-design-system'
 
-```javascript
-module.exports = {
-    transpilePackages: ['@juspay/blend-design-system'],
-    experimental: {
-        esmExternals: 'loose',
-    },
+function MyApp() {
+    return (
+        <div>
+            <Alert
+                heading="Welcome"
+                description="Your Blend setup is complete!"
+                variant={AlertVariant.PRIMARY}
+                style={AlertStyle.SUBTLE}
+            />
+
+            <TextInput
+                label="Email"
+                placeholder="Enter your email"
+                value=""
+                onChange={(e) => console.log(e.target.value)}
+            />
+
+            <Button
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.MEDIUM}
+                text="Get Started"
+                onClick={() => console.log('Button clicked')}
+            />
+        </div>
+    )
 }
 ```
 
-### TypeScript Configuration
+### 4. Custom Theme (Optional)
 
-Ensure your `tsconfig.json` includes:
+Customize the design system to match your brand:
+
+```tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+import { FOUNDATION_THEME } from '@juspay/blend-design-system'
+
+const customTheme = {
+    ...FOUNDATION_THEME,
+    colors: {
+        ...FOUNDATION_THEME.colors,
+        primary: {
+            ...FOUNDATION_THEME.colors.primary,
+            500: '#your-brand-color',
+        },
+    },
+}
+
+function App() {
+    return (
+        <ThemeProvider foundationTokens={customTheme}>
+            <YourAppContent />
+        </ThemeProvider>
+    )
+}
+```
+
+## Design Tokens
+
+Blend includes a comprehensive set of design tokens for consistent styling:
+
+```tsx
+import { FOUNDATION_THEME } from '@juspay/blend-design-system'
+
+// Colors
+FOUNDATION_THEME.colors.primary[500] // #2B7FFF
+FOUNDATION_THEME.colors.gray[100] // #F2F4F8
+
+// Typography
+FOUNDATION_THEME.fontSize.headingLG // 24px
+FOUNDATION_THEME.fontWeight[600] // 600
+
+// Spacing
+FOUNDATION_THEME.spacing[16] // 16px
+FOUNDATION_THEME.borderRadius[8] // 8px
+```
+
+## Best Practices
+
+### Component Usage
+
+- Always refer to our [component documentation](/docs/components) for complete API reference
+- Use TypeScript for better development experience and type safety
+- Follow established patterns for consistent implementation
+- Import only what you need - Blend is tree-shakeable
+
+### Design Tokens
+
+- Use design tokens instead of hardcoded values
+- Maintain consistency with the design system guidelines
+- Customize tokens through ThemeProvider for brand-specific styling
+
+### TypeScript Support
+
+All components are fully typed with TypeScript. Ensure your `tsconfig.json` includes:
 
 ```json
 {
@@ -135,26 +200,15 @@ pnpm build
 
 # Start development mode
 pnpm dev
+
+# Run tests
+pnpm test
 ```
-
-## Best Practices
-
-### Component Usage
-
-- Always refer to our [component documentation](/docs/components) for API reference
-- Use TypeScript for better development experience and type safety
-- Follow established patterns for consistent implementation
-
-### Design Tokens
-
-- Use design tokens instead of hardcoded values
-- Reference our [design tokens guide](/docs/foundation/tokens) for available tokens
-- Maintain consistency with the design system guidelines
 
 ## Next Steps
 
-1. **Explore Components**: Browse our [component library](/docs/components)
-2. **Learn Design Tokens**: Understand our [foundation system](/docs/foundation)
+1. **Explore Components**: Browse our [component library](/docs/components) to see all available components
+2. **Read Documentation**: Check individual component documentation for detailed API reference and examples
 3. **Contributing**: Check our [contribution guide](/docs/contributing) to contribute to the project
 4. **Get Support**: Join our community discussions for help and feedback
 

@@ -89,293 +89,440 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'heading',
-                hintText: 'The main title text displayed in the popover header',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'description',
+                content: 'Popover.heading',
                 hintText:
-                    'Optional descriptive text displayed below the heading',
+                    "Optional title string displayed prominently in the popover header. Provides context and description of the popover's purpose. Should be concise and descriptive. The heading is styled as a prominent heading and appears above the description (if provided).",
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
             {
-                content: 'trigger',
+                content: 'string',
                 hintText:
-                    'The element that triggers the popover to open when clicked',
+                    'Text content for the popover title displayed in the header',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'children',
-                hintText: 'The content to display inside the popover body',
-            },
-            { content: 'React.ReactNode', hintText: 'React node' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'showCloseButton',
-                hintText: 'Whether to show the X close button in the header',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'onOpenChange',
-                hintText: 'Callback fired when the popover open state changes',
-            },
-            { content: '(open: boolean) => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'open',
-                hintText: 'Controlled state for the popover visibility',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'asModal',
-                hintText: 'Whether the popover should behave as a modal dialog',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'primaryAction',
+                content: 'Popover.description',
                 hintText:
-                    'Configuration for the primary action button in footer',
+                    "Optional descriptive text string displayed below the heading in the popover header. Provides additional context, instructions, or explanation about the popover's purpose. Styled with smaller, lighter text than the heading. Useful for clarifying the popover's intent.",
             },
-            { content: 'PopoverActionType', hintText: 'object' },
+            {
+                content: 'string',
+                hintText:
+                    'Descriptive text shown below the heading in the header',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'secondaryAction',
+                content: 'Popover.trigger',
                 hintText:
-                    'Configuration for the secondary action button in footer',
+                    'Required React element that serves as the clickable trigger to open the popover. Typically a Button component, but can be any interactive element. When clicked, it opens the popover. The trigger element should be visually clear that it opens a popover.',
             },
-            { content: 'PopoverActionType', hintText: 'object' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically a button) that opens the popover when clicked',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'sideOffset',
+                content: 'Popover.children',
                 hintText:
-                    'Distance in pixels between the popover and trigger element',
+                    'Required React elements representing the main content to display in the popover body. This is the primary content area and can contain any custom components, forms, text, images, or other interactive elements. The content is scrollable if it exceeds the popover height.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '8' },
+            {
+                content: 'React.ReactNode',
+                hintText: 'React elements for the main popover body content',
+            },
+            { content: '' },
         ],
         [
             {
-                content: 'side',
-                hintText: 'Which side of the trigger the popover appears on',
+                content: 'Popover.showCloseButton',
+                hintText:
+                    'When true, displays an X close button in the top-right corner of the popover header. Users can click this button to close the popover. When false, the close button is hidden, and users must use outside clicks or Escape key (if enabled) to close. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows close button, false hides close button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.onOpenChange',
+                hintText:
+                    'Optional callback function invoked when the popover open state changes (when user opens or closes it). Receives a boolean indicating the new open state. Required when using controlled mode (providing open prop). Use this to synchronize popover state with your application.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText:
+                    'Function called with new open state when popover visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.open',
+                hintText:
+                    'Optional boolean that controls whether the popover is open (visible). When true, the popover is displayed. When false, the popover is hidden. Use this for controlled popover state management. If not provided, the popover manages its own state internally.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows popover, false hides popover',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.asModal',
+                hintText:
+                    'When true, renders the popover as a modal dialog with a backdrop overlay that blocks interaction with the rest of the page. When false, the popover appears as a floating element without blocking interaction. Useful for important actions that require focus. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true renders as modal with backdrop, false renders as floating popover',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.primaryAction',
+                hintText:
+                    'Optional PopoverActionType object that configures the primary action button displayed in the popover footer. The primary action is typically the main action (e.g., "Save", "Confirm", "Delete"). It appears on the right side of the footer and is styled prominently. If not provided, no primary button is shown.',
+            },
+            {
+                content: 'PopoverActionType',
+                hintText:
+                    'Object with button configuration properties (see PopoverActionType below)',
+            },
+            {
+                content: 'PopoverActionType: see PopoverActionType props below',
+            },
+        ],
+        [
+            {
+                content: 'Popover.secondaryAction',
+                hintText:
+                    'Optional PopoverActionType object that configures the secondary action button displayed in the popover footer. The secondary action is typically the cancel or alternative action (e.g., "Cancel", "Close"). It appears on the left side of the footer. If not provided, no secondary button is shown.',
+            },
+            {
+                content: 'PopoverActionType',
+                hintText:
+                    'Object with button configuration properties (see PopoverActionType below)',
+            },
+            {
+                content: 'PopoverActionType: see PopoverActionType props below',
+            },
+        ],
+        [
+            {
+                content: 'Popover.sideOffset',
+                hintText:
+                    'Optional distance in pixels between the popover and the trigger element along the side axis. Positive values create space, negative values bring them closer. Useful for fine-tuning the visual spacing. Defaults to 8 pixels.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing distance in pixels from trigger (can be negative)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.side',
+                hintText:
+                    'Optional string that determines which side of the trigger the popover appears on. Valid values: "top" (appears above), "bottom" (appears below), "left" (appears to the left), "right" (appears to the right). The popover automatically flips if there\'s not enough space (when avoidCollisions is true). Defaults to "bottom".',
             },
             {
                 content: "'top' | 'right' | 'bottom' | 'left'",
-                hintText: 'union type',
-            },
-            { content: "'bottom'" },
-        ],
-        [
-            {
-                content: 'align',
                 hintText:
-                    'How the popover aligns relative to the trigger element',
+                    'String that determines which side of trigger the popover appears on',
             },
-            { content: "'start' | 'center' | 'end'", hintText: 'union type' },
-            { content: "'center'" },
+            { content: 'top, right, bottom, left' },
         ],
         [
             {
-                content: 'alignOffset',
+                content: 'Popover.align',
                 hintText:
-                    'Offset in pixels for fine-tuning the alignment position',
+                    'Optional string that determines how the popover aligns relative to the trigger element. Valid values: "start" (aligns to start edge), "center" (centers the popover), "end" (aligns to end edge). The alignment direction depends on the side prop. Defaults to "center".',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '0' },
+            {
+                content: "'start' | 'center' | 'end'",
+                hintText:
+                    'String that determines horizontal/vertical alignment relative to trigger',
+            },
+            { content: 'start, center, end' },
         ],
         [
             {
-                content: 'width',
-                hintText: 'Fixed width of the popover in pixels',
+                content: 'Popover.alignOffset',
+                hintText:
+                    'Optional offset in pixels for fine-tuning the alignment along the alignment axis. Positive values shift in one direction, negative values shift in the opposite direction. Useful for precise positioning adjustments. Defaults to 0.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing alignment offset in pixels (can be negative)',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'minWidth',
-                hintText: 'Minimum width of the popover in pixels',
+                content: 'Popover.width',
+                hintText:
+                    'Optional fixed width in pixels for the popover. When provided, sets a fixed width constraint. If not provided, the popover width adapts to content within minWidth and maxWidth constraints. Useful for precise layout control.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '300' },
-        ],
-        [
             {
-                content: 'maxWidth',
-                hintText: 'Maximum width of the popover in pixels',
+                content: 'number',
+                hintText:
+                    'Positive number representing fixed popover width in pixels',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '400' },
-        ],
-        [
-            {
-                content: 'height',
-                hintText: 'Fixed height of the popover in pixels',
-            },
-            { content: 'number', hintText: 'number' },
             { content: '' },
         ],
         [
             {
-                content: 'minHeight',
-                hintText: 'Minimum height of the popover in pixels',
+                content: 'Popover.minWidth',
+                hintText:
+                    'Optional minimum width in pixels for the popover. The popover will not shrink below this width, ensuring readability and proper layout. Useful for preventing popovers from becoming too narrow. Defaults to 300 pixels.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing minimum popover width in pixels',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'maxHeight',
-                hintText: 'Maximum height of the popover in pixels',
+                content: 'Popover.maxWidth',
+                hintText:
+                    'Optional maximum width in pixels for the popover. The popover will not grow beyond this width, preventing it from becoming too wide. Useful for maintaining consistent popover sizing. Defaults to 400 pixels.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum popover width in pixels',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'zIndex',
-                hintText: 'Z-index value for the popover overlay layer',
+                content: 'Popover.height',
+                hintText:
+                    'Optional fixed height in pixels for the popover. When provided, sets a fixed height constraint. If not provided, the popover height adapts to content within minHeight and maxHeight constraints. Useful for precise layout control.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '1000' },
-        ],
-        [
             {
-                content: 'size',
-                hintText: 'The size variant affecting typography and spacing',
+                content: 'number',
+                hintText:
+                    'Positive number representing fixed popover height in pixels',
             },
-            { content: 'PopoverSize', hintText: 'enum' },
-            { content: 'PopoverSize.MEDIUM' },
-        ],
-        [
-            {
-                content: 'onClose',
-                hintText: 'Callback function called when the popover is closed',
-            },
-            { content: '() => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'shadow',
-                hintText: 'Box shadow variant for the popover',
+                content: 'Popover.minHeight',
+                hintText:
+                    'Optional minimum height in pixels for the popover. The popover will not shrink below this height, ensuring minimum visibility. Useful for maintaining consistent popover sizing. If not provided, the popover height adapts to content.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing minimum popover height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.maxHeight',
+                hintText:
+                    'Optional maximum height in pixels for the popover. When the popover content exceeds this height, a scrollbar appears. Useful for controlling the vertical space taken by the popover. If not provided, the popover height adapts to content.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum popover height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.zIndex',
+                hintText:
+                    'Optional z-index value for the popover overlay layer. Controls the stacking order of the popover relative to other elements. Higher values appear above lower values. Useful for ensuring the popover appears above other UI elements. Defaults to 999.',
+            },
+            {
+                content: 'number',
+                hintText: 'Number representing the z-index stacking order',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.size',
+                hintText:
+                    'Optional PopoverSize enum value that determines the size variant affecting typography, spacing, padding, and overall dimensions. SMALL creates a compact popover, MEDIUM creates a standard-sized popover. Defaults to MEDIUM.',
+            },
+            {
+                content: 'PopoverSize',
+                hintText:
+                    'Enum that determines the size variant of the popover',
+            },
+            { content: 'SMALL, MEDIUM' },
+        ],
+        [
+            {
+                content: 'Popover.avoidCollisions',
+                hintText:
+                    "When true, automatically repositions the popover to avoid viewport collisions and ensure it remains fully visible. The popover will flip to the opposite side or adjust its position if there's not enough space. Useful for maintaining visibility. Defaults to true.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables collision avoidance, false disables repositioning',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.onClose',
+                hintText:
+                    'Optional callback function invoked when the popover is closed. Receives no parameters. Called when the user clicks the close button, clicks outside, or presses Escape. Useful for cleanup or tracking popover closure.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when popover is closed',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.shadow',
+                hintText:
+                    'Optional box shadow variant string for the popover. Controls the depth and visual prominence of the shadow. Valid values: "xs", "sm", "md", "lg", "xl", "2xl", "full". Larger values create more prominent shadows. Defaults to "lg".',
             },
             {
                 content: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'",
-                hintText: 'union type',
+                hintText: 'String that determines the box shadow variant',
             },
-            { content: "'lg'" },
+            { content: 'xs, sm, md, lg, xl, 2xl, full' },
         ],
         [
             {
-                content: 'useDrawerOnMobile',
-                hintText: 'Whether to render as drawer on mobile devices',
+                content: 'Popover.useDrawerOnMobile',
+                hintText:
+                    'When true, renders the popover as a mobile drawer (full-screen slide-up panel) on mobile devices (typically screen width < 1024px). On desktop, it still appears as a floating popover. Drawers provide better mobile UX with more space and native-like interactions. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Data Types
-
-### PopoverActionType
-
-Action buttons in popovers use the Button component configuration, excluding certain properties:
-
-<DocsTypeTable
-    data={[
-        [
             {
-                content: 'text',
-                hintText: 'Text displayed on the button',
+                content: 'boolean',
+                hintText:
+                    'true uses drawer on mobile, false uses popover on all devices',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'buttonType',
-                hintText: 'Visual style of the button',
+                content: 'PopoverActionType.text',
+                hintText:
+                    'Required string representing the text displayed on the button. Should be concise and action-oriented, clearly describing what the button does (e.g., "Save", "Confirm", "Delete", "Cancel"). The text is the primary visual element users see.',
             },
-            { content: 'ButtonType', hintText: 'enum' },
+            {
+                content: 'string',
+                hintText: 'Button label text displayed to users',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'onClick',
+                content: 'PopoverActionType.buttonType',
+                hintText:
+                    'Optional ButtonType enum value that determines the visual style of the button. Common values include PRIMARY (prominent, typically blue), SECONDARY (less prominent), DANGER (warning/destructive, typically red), etc. If not provided, uses default button styling.',
+            },
+            {
+                content: 'ButtonType',
+                hintText:
+                    'Enum that determines the visual style variant of the button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'PopoverActionType.onClick',
+                hintText:
+                    'Required callback function invoked when the button is clicked. Receives no parameters. Use this to perform the action associated with the button, such as form submission, data processing, or navigation. Typically, the popover should be closed after the action completes.',
+            },
+            {
+                content: '() => void',
                 hintText: 'Function called when button is clicked',
             },
-            { content: '() => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether the button is disabled',
+                content: 'PopoverActionType.disabled',
+                hintText:
+                    "When true, disables the button, making it non-clickable and visually muted. Disabled buttons show reduced opacity and cannot be clicked. Useful for preventing actions when prerequisites aren't met or during validation. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'loading',
-                hintText: 'Whether the button shows loading state',
+                content: 'boolean',
+                hintText:
+                    'true disables button, false allows normal button interaction',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'size',
-                hintText: 'Size of the button',
-            },
-            { content: 'ButtonSize', hintText: 'enum' },
             { content: '' },
         ],
         [
             {
-                content: 'leadingIcon',
-                hintText: 'Icon displayed before the button text',
+                content: 'PopoverActionType.loading',
+                hintText:
+                    'When true, displays a loading indicator on the button and typically disables interaction. The button shows a spinner or loading animation, indicating that an async operation is in progress. Useful for API calls or form submissions. Defaults to false.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows loading state, false shows normal button state',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'trailingIcon',
-                hintText: 'Icon displayed after the button text',
+                content: 'PopoverActionType.size',
+                hintText:
+                    'Optional ButtonSize enum value that controls the physical dimensions of the button. Common values include SMALL, MEDIUM, LARGE. Size affects padding, font size, and overall height. If not provided, uses default button size.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'ButtonSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'PopoverActionType.leadingIcon',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed before the button text. Icons help users quickly identify the action. Common examples include Check, Save, Trash, or X icons. The icon is properly spaced from the text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed before button text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'PopoverActionType.trailingIcon',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed after the button text. Icons help users understand the action or indicate direction (e.g., arrow icons for navigation). The icon is properly spaced from the text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed after button text',
+            },
             { content: '' },
         ],
     ]}
@@ -383,400 +530,6 @@ Action buttons in popovers use the Button component configuration, excluding cer
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Flexible Positioning**: 4 sides (top, right, bottom, left) with 3 alignment options (start, center, end)
-- **Size Variants**: Two size options (small, medium) for different content types
-- **Action Buttons**: Primary and secondary action buttons with full Button component support
-- **Header Management**: Optional header with title and description text
-- **Close Button**: Optional X button for dismissing the popover
-- **Controlled State**: Support for both controlled and uncontrolled open states
-- **Modal Behavior**: Option to render as modal dialog for critical interactions
-- **Custom Dimensions**: Configurable width, height, and size constraints
-- **Mobile Optimization**: Automatic drawer mode on mobile devices for better UX
-- **Shadow Options**: 7 shadow variants for different visual emphasis levels
-- **Built on Radix UI**: Leverages Radix UI Popover for robust accessibility and positioning
-- **Collision Detection**: Automatic repositioning to stay within viewport boundaries
-- **Custom Styling**: Comprehensive component token system for styling customization
-- **Responsive Design**: Adapts to different screen sizes and device types
-- **Accessibility First**: Full keyboard navigation, focus management, and screen reader support
-
-## Usage Examples
-
-### Basic Information Popover
-
-Simple popover displaying contextual information
-
-```tsx
-import { Popover, PopoverSize, Button, ButtonType } from 'blend-v1'
-import { Info } from 'lucide-react'
-;<Popover
-    heading="Feature Information"
-    description="Learn more about this feature"
-    trigger={
-        <Button
-            text="Learn More"
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<Info size={16} />}
-        />
-    }
-    size={PopoverSize.MEDIUM}
-    side="bottom"
-    align="center"
->
-    <div className="space-y-3">
-        <p>This feature helps you manage your workspace more efficiently.</p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-            <li>Organize your projects</li>
-            <li>Collaborate with team members</li>
-            <li>Track progress in real-time</li>
-        </ul>
-    </div>
-</Popover>
-```
-
-### Confirmation Popover
-
-Popover for confirming destructive actions
-
-```tsx
-import { Trash2 } from 'lucide-react'
-;<Popover
-    heading="Delete Project"
-    description="This action cannot be undone"
-    trigger={
-        <Button
-            text="Delete"
-            buttonType={ButtonType.DANGER}
-            leadingIcon={<Trash2 size={16} />}
-        />
-    }
-    primaryAction={{
-        text: 'Delete Project',
-        buttonType: ButtonType.DANGER,
-        onClick: () => {
-            console.log('Project deleted')
-            // Handle deletion logic
-        },
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => console.log('Deletion cancelled'),
-    }}
->
-    <div className="space-y-2">
-        <p className="text-sm text-gray-600">
-            The project "My Awesome Project" will be permanently deleted.
-        </p>
-        <p className="text-sm text-gray-600">
-            All associated files and data will be lost.
-        </p>
-    </div>
-</Popover>
-```
-
-### Form Popover
-
-Popover containing a form for quick actions
-
-```tsx
-import { Plus } from 'lucide-react'
-
-const [taskName, setTaskName] = useState('')
-
-<Popover
-    heading="Add New Task"
-    description="Create a task for your project"
-    trigger={
-        <Button
-            text="Add Task"
-            buttonType={ButtonType.PRIMARY}
-            leadingIcon={<Plus size={16} />}
-        />
-    }
-    primaryAction={{
-        text: 'Create Task',
-        buttonType: ButtonType.PRIMARY,
-        disabled: !taskName.trim(),
-        onClick: () => {
-            console.log('Creating task:', taskName)
-            setTaskName('')
-        },
-    }}
-    secondaryAction={{
-        text: 'Cancel',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => setTaskName(''),
-    }}
-    minWidth={350}
->
-    <div className="space-y-4">
-        <div>
-            <label className="block text-sm font-medium mb-2">
-                Task Name
-            </label>
-            <input
-                type="text"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                placeholder="Enter task name"
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-        </div>
-        <div>
-            <label className="block text-sm font-medium mb-2">
-                Priority
-            </label>
-            <select className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-        </div>
-    </div>
-</Popover>
-```
-
-### Small Quick Actions Popover
-
-Compact popover for quick actions
-
-```tsx
-import { MoreHorizontal, Edit2, Copy, Archive } from 'lucide-react'
-;<Popover
-    trigger={
-        <Button
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<MoreHorizontal size={16} />}
-        />
-    }
-    size={PopoverSize.SMALL}
-    side="bottom"
-    align="end"
-    showCloseButton={false}
-    minWidth={200}
->
-    <div className="space-y-1">
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Edit2 size={14} className="mr-2" />
-            Edit
-        </button>
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Copy size={14} className="mr-2" />
-            Duplicate
-        </button>
-        <button className="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 rounded">
-            <Archive size={14} className="mr-2" />
-            Archive
-        </button>
-    </div>
-</Popover>
-```
-
-### Positioned Popover
-
-Popover with specific positioning and alignment
-
-```tsx
-import { ChevronDown } from 'lucide-react'
-;<Popover
-    heading="Filter Options"
-    description="Customize your view"
-    trigger={
-        <Button
-            text="Filters"
-            buttonType={ButtonType.SECONDARY}
-            trailingIcon={<ChevronDown size={16} />}
-        />
-    }
-    side="top"
-    align="start"
-    sideOffset={12}
-    alignOffset={-8}
-    shadow="xl"
->
-    <div className="space-y-3">
-        <div>
-            <h4 className="font-medium mb-2">Status</h4>
-            <div className="space-y-1">
-                {['Active', 'Pending', 'Completed'].map((status) => (
-                    <label key={status} className="flex items-center">
-                        <input type="checkbox" className="mr-2" />
-                        <span className="text-sm">{status}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-        <div>
-            <h4 className="font-medium mb-2">Date Range</h4>
-            <input
-                type="date"
-                className="w-full px-2 py-1 border rounded text-sm"
-            />
-        </div>
-    </div>
-</Popover>
-```
-
-### Controlled State Popover
-
-Popover with external state management
-
-```tsx
-import { Settings } from 'lucide-react'
-
-const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-const [theme, setTheme] = useState('light')
-
-<Popover
-    heading="Appearance Settings"
-    description="Customize your interface"
-    trigger={
-        <Button
-            text="Settings"
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<Settings size={16} />}
-        />
-    }
-    open={isSettingsOpen}
-    onOpenChange={setIsSettingsOpen}
-    primaryAction={{
-        text: 'Apply',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => {
-            console.log('Settings applied:', { theme })
-            setIsSettingsOpen(false)
-        },
-    }}
-    secondaryAction={{
-        text: 'Reset',
-        buttonType: ButtonType.SECONDARY,
-        onClick: () => setTheme('light'),
-    }}
->
-    <div className="space-y-4">
-        <div>
-            <label className="block text-sm font-medium mb-2">Theme</label>
-            <div className="space-y-2">
-                {['light', 'dark', 'auto'].map((option) => (
-                    <label key={option} className="flex items-center">
-                        <input
-                            type="radio"
-                            name="theme"
-                            value={option}
-                            checked={theme === option}
-                            onChange={(e) => setTheme(e.target.value)}
-                            className="mr-2"
-                        />
-                        <span className="text-sm capitalize">{option}</span>
-                    </label>
-                ))}
-            </div>
-        </div>
-    </div>
-</Popover>
-```
-
-### Content-Only Popover
-
-Popover without header for custom layouts
-
-```tsx
-import { HelpCircle } from 'lucide-react'
-;<Popover
-    trigger={
-        <Button
-            buttonType={ButtonType.SECONDARY}
-            leadingIcon={<HelpCircle size={16} />}
-        />
-    }
-    showCloseButton={false}
-    minWidth={300}
-    maxWidth={400}
->
-    <div className="p-4">
-        <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <HelpCircle size={16} className="text-blue-600" />
-            </div>
-            <div className="flex-1">
-                <h3 className="font-medium text-gray-900 mb-1">Need Help?</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                    Check out our documentation or contact support for
-                    assistance.
-                </p>
-                <div className="flex space-x-2">
-                    <Button
-                        text="Documentation"
-                        buttonType={ButtonType.SECONDARY}
-                        size="small"
-                    />
-                    <Button
-                        text="Contact Support"
-                        buttonType={ButtonType.PRIMARY}
-                        size="small"
-                    />
-                </div>
-            </div>
-        </div>
-    </div>
-</Popover>
-```
-
-### Modal-Style Popover
-
-Popover that behaves as a modal for critical interactions
-
-```tsx
-import { AlertTriangle } from 'lucide-react'
-;<Popover
-    heading="System Maintenance"
-    description="Scheduled maintenance window"
-    trigger={
-        <Button
-            text="View Maintenance"
-            buttonType={ButtonType.WARNING}
-            leadingIcon={<AlertTriangle size={16} />}
-        />
-    }
-    asModal={true}
-    primaryAction={{
-        text: 'Acknowledge',
-        buttonType: ButtonType.PRIMARY,
-        onClick: () => console.log('Maintenance acknowledged'),
-    }}
-    showCloseButton={true}
->
-    <div className="space-y-4">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-            <div className="flex">
-                <AlertTriangle
-                    size={16}
-                    className="text-yellow-600 mr-2 mt-0.5"
-                />
-                <div>
-                    <h4 className="text-sm font-medium text-yellow-800">
-                        Scheduled Maintenance
-                    </h4>
-                    <p className="text-sm text-yellow-700 mt-1">
-                        System will be unavailable from 2:00 AM to 4:00 AM UTC
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div>
-            <h4 className="font-medium mb-2">What to expect:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Temporary service interruption</li>
-                <li>• Data backup and system updates</li>
-                <li>• Improved performance after completion</li>
-            </ul>
-        </div>
-    </div>
-</Popover>
-```
 
 ## Component Tokens
 
@@ -786,159 +539,58 @@ You can style the Popover component using the following tokens:
 export type PopoverTokenType = {
     background: CSSObject['backgroundColor']
     border: CSSObject['border']
-    borderRadius: CSSObject['borderRadius']
-    shadow: {
-        xs: CSSObject['boxShadow']
-        sm: CSSObject['boxShadow']
-        md: CSSObject['boxShadow']
-        lg: CSSObject['boxShadow']
-        xl: CSSObject['boxShadow']
-        '2xl': CSSObject['boxShadow']
-        full: CSSObject['boxShadow']
+    shadow: FoundationTokenType['shadows']
+    gap: {
+        [key in PopoverSize]: CSSObject['gap']
     }
-    gap: CSSObject['gap']
     zIndex: CSSObject['zIndex']
-
-    padding: {
-        top: CSSObject['paddingTop']
-        bottom: CSSObject['paddingBottom']
-        horizontal: CSSObject['paddingLeft']
+    borderRadius: {
+        [key in PopoverSize]: CSSObject['borderRadius']
     }
-
+    padding: {
+        left: {
+            [key in PopoverSize]: CSSObject['paddingLeft']
+        }
+        right: {
+            [key in PopoverSize]: CSSObject['paddingRight']
+        }
+        top: {
+            [key in PopoverSize]: CSSObject['paddingTop']
+        }
+        bottom: {
+            [key in PopoverSize]: CSSObject['paddingBottom']
+        }
+    }
     headerContainer: {
         heading: {
+            color: CSSObject['color']
             fontSize: {
                 [key in PopoverSize]: CSSObject['fontSize']
             }
             fontWeight: {
                 [key in PopoverSize]: CSSObject['fontWeight']
-            }
-            color: {
-                [key in PopoverSize]: CSSObject['color']
             }
             lineHeight: {
                 [key in PopoverSize]: CSSObject['lineHeight']
             }
         }
         description: {
+            color: CSSObject['color']
             fontSize: {
                 [key in PopoverSize]: CSSObject['fontSize']
-            }
-            color: {
-                [key in PopoverSize]: CSSObject['color']
             }
             fontWeight: {
                 [key in PopoverSize]: CSSObject['fontWeight']
             }
-            marginTop: {
-                [key in PopoverSize]: CSSObject['marginTop']
-            }
-        }
-        closeButton: {
-            padding: CSSObject['padding']
-            borderRadius: CSSObject['borderRadius']
-            color: CSSObject['color']
-            '&:hover': {
-                backgroundColor: CSSObject['backgroundColor']
+            lineHeight: {
+                [key in PopoverSize]: CSSObject['lineHeight']
             }
         }
     }
-
     footer: {
-        justifyContent: CSSObject['justifyContent']
-        gap: CSSObject['gap']
-        marginTop: CSSObject['marginTop']
-    }
-
-    mobileDrawer: {
-        borderRadius: CSSObject['borderRadius']
-        maxHeight: CSSObject['maxHeight']
-        transform: CSSObject['transform']
+        gap: {
+            [key in PopoverSize]: CSSObject['gap']
+        }
     }
 }
 ```
-
-## Behavior
-
-### Positioning Logic
-
-- **Side Placement**: Popover appears on specified side of trigger (top, right, bottom, left)
-- **Alignment Options**: Aligns to start, center, or end of trigger element
-- **Collision Detection**: Automatically repositions if popover would overflow viewport
-- **Offset Controls**: Fine-tune positioning with side and align offsets
-
-### Interaction Patterns
-
-- **Click to Open**: Trigger click opens the popover
-- **Click Outside**: Clicking outside the popover closes it
-- **Escape Key**: Escape key closes the popover
-- **Action Execution**: Action buttons execute their onClick handlers and close popover
-
-### State Management
-
-- **Controlled Mode**: Use `open` and `onOpenChange` props for external state control
-- **Uncontrolled Mode**: Component manages its own open/closed state internally
-- **Close Events**: Multiple ways to close including actions, close button, escape key, and backdrop click
-
-### Mobile Behavior
-
-- **Drawer Mode**: When `useDrawerOnMobile` is true, renders as drawer on mobile devices
-- **Touch Interactions**: Optimized for touch interactions and gestures
-- **Responsive Sizing**: Adapts to mobile screen constraints and safe areas
-
-### Content Management
-
-- **Flexible Content**: Supports any React content in children
-- **Header Control**: Optional header with title and description
-- **Footer Actions**: Optional action buttons in footer area
-- **Custom Padding**: Automatic padding handling with override options for custom content
-
-## Accessibility
-
-- **Focus Management**: Focus is trapped within popover when open and restored on close
-- **Keyboard Navigation**: Full keyboard support with Tab, Shift+Tab, and Escape keys
-- **Screen Reader Support**: Proper ARIA roles, labels, and live regions
-- **ARIA Compliance**: Uses `aria-expanded`, `aria-haspopup`, and proper dialog semantics
-- **High Contrast**: Supports high contrast mode and respects user color preferences
-- **Motion Preferences**: Respects user's reduced motion preferences for animations
-
-## Enums
-
-### PopoverSize
-
-```tsx
-enum PopoverSize {
-    SMALL = 'small', // Compact popover with smaller typography and spacing
-    MEDIUM = 'medium', // Standard popover with regular typography and spacing
-}
-```
-
-## Best Practices
-
-### When to Use Popovers
-
-- **Contextual Information**: For displaying additional information without navigation
-- **Quick Actions**: For forms or actions that don't require full page navigation
-- **Settings and Preferences**: For configuration options that are secondary to main flow
-- **Help and Documentation**: For providing contextual help or feature explanations
-
-### Popover Design Guidelines
-
-- **Clear Purpose**: Each popover should have a focused, single purpose
-- **Appropriate Trigger**: Use clear, descriptive triggers that indicate popover content
-- **Concise Content**: Keep content focused and avoid overwhelming users
-- **Consistent Positioning**: Use consistent positioning patterns throughout your application
-
-### Content Guidelines
-
-- **Scannable Layout**: Organize content with clear hierarchy and spacing
-- **Action Clarity**: Make action buttons clearly indicate what will happen
-- **Error Handling**: Provide clear feedback for form validation and errors
-- **Loading States**: Show loading states for async operations in actions
-
-### Mobile Considerations
-
-- **Use Drawer Mode**: Enable drawer mode for better mobile experience
-- **Touch Targets**: Ensure interactive elements meet minimum touch target sizes
-- **Content Length**: Keep content appropriate for mobile screen sizes
-- **Safe Areas**: Consider mobile safe areas and keyboard interactions
