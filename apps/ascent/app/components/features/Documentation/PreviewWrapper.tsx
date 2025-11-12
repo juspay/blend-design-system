@@ -121,6 +121,27 @@ const previewComponents = {
             ssr: false,
         }
     ),
+    CodeBlockPreview: dynamic(() => import('./Previews/CodeBlockPreview'), {
+        ssr: false,
+    }),
+    CardPreview: dynamic(() => import('./Previews/CardPreview'), {
+        ssr: false,
+    }),
+    UploadPreview: dynamic(() => import('./Previews/UploadPreview'), {
+        ssr: false,
+    }),
+    KeyValuePairPreview: dynamic(
+        () => import('./Previews/KeyValuePairPreview'),
+        {
+            ssr: false,
+        }
+    ),
+    StepperPreview: dynamic(() => import('./Previews/StepperPreview'), {
+        ssr: false,
+    }),
+    ChatInputPreview: dynamic(() => import('./Previews/ChatInputPreview'), {
+        ssr: false,
+    }),
 }
 
 interface PreviewWrapperProps {

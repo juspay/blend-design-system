@@ -28,45 +28,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (otp, setOtp) = React.useState(() => "")
-  
-  let handleOTPChange = value => {
-    setOtp(_ => value)
-    if String.length(value) === 6 {
-      Js.log("Complete OTP: " ++ value)
-    }
-  }
-  
-  <OTPInputBinding
-    label="Verification Code"
-    value=otp
-    onChange=handleOTPChange
-    length=6
-    autoFocus=true
-    hintText="Enter the 6-digit code sent to your phone"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~label: string=?,
-  ~sublabel: string=?,
-  ~helpIconHintText: string=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~hintText: string=?,
-  ~value: string=?,
-  ~length: int=?,
-  ~autoFocus: bool=?,
-  ~onChange: string => unit=?,
-  ~form: string=?,
-  ~disabled: bool=?,
-  ~required: bool=?,
-  ~name: string=?,
-) => React.element = "OTPInput"`
-
     const [otp, setOtp] = useState('')
 
     const handleOTPChange = (value: string) => {
@@ -74,11 +35,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

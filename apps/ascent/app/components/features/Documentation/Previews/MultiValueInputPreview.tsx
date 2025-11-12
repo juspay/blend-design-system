@@ -29,46 +29,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (tags, setTags) = React.useState(() => ["react", "typescript"])
-  
-  let handleTagAdd = tag => {
-    setTags(prev => Array.concat(prev, [tag]))
-  }
-  
-  let handleTagRemove = tagToRemove => {
-    setTags(prev => Array.filter(prev, tag => tag !== tagToRemove))
-  }
-  
-  <MultiValueInputBinding
-    label="Skills"
-    placeholder="Type a skill and press Enter"
-    tags
-    onTagAdd=handleTagAdd
-    onTagRemove=handleTagRemove
-    hintText="Add your technical skills"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~label: string=?,
-  ~sublabel: string=?,
-  ~helpIconHintText: string=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~hintText: string=?,
-  ~disabled: bool=?,
-  ~tags: array<string>=?,
-  ~onTagAdd: string => unit=?,
-  ~onTagRemove: string => unit=?,
-  ~size: [#sm | #md | #lg]=?,
-  ~required: bool=?,
-  ~placeholder: string=?,
-  ~name: string=?,
-) => React.element = "MultiValueInput"`
-
     const [tags, setTags] = useState(['React'])
 
     const handleTagAdd = (tag: string) => {
@@ -80,11 +40,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

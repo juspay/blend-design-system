@@ -42,46 +42,65 @@ function MyComponent() {
 <DocsTypeTable
     data={[
         [
-            { content: 'id', hintText: 'Unique identifier for the checkbox' },
-            { content: 'string', hintText: 'string' },
-            { content: 'auto-generated' },
+            {
+                content: 'id',
+                hintText:
+                    "Optional unique identifier string for the checkbox. If not provided, the component automatically generates a unique ID using React's useId hook. The ID is used for form association, accessibility, and linking labels to the checkbox input.",
+            },
+            {
+                content: 'string',
+                hintText: 'Unique identifier string for the checkbox element',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'value',
                 hintText:
-                    'The value associated with the checkbox when used in forms',
+                    'Optional value string associated with the checkbox when used in forms. When the checkbox is checked and submitted in a form, this value is included in the form data. Useful for identifying which checkbox option was selected.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Value submitted with form data when checkbox is checked',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'checked',
-                hintText: 'The controlled checked state of the checkbox',
+                hintText:
+                    'Optional controlled state for whether the checkbox is checked. Can be true (checked), false (unchecked), or "indeterminate" (partially checked, typically for parent checkboxes with mixed child states). When provided, the component works in controlled mode, requiring onCheckedChange.',
             },
             {
                 content: "boolean | 'indeterminate'",
-                hintText: 'boolean or string',
+                hintText:
+                    'true for checked, false for unchecked, "indeterminate" for mixed state',
             },
             { content: '' },
         ],
         [
             {
                 content: 'defaultChecked',
-                hintText: 'The default checked state for uncontrolled usage',
+                hintText:
+                    "Optional initial checked state for uncontrolled usage. Sets whether the checkbox starts checked or unchecked when the component first mounts. Use this for uncontrolled components where you don't need to manage state externally. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true starts checked, false starts unchecked',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'onCheckedChange',
-                hintText: 'Callback function when the checkbox state changes',
+                hintText:
+                    'Optional callback function invoked when the checkbox state changes (user clicks or programmatically changed). Receives the new checked state (boolean or "indeterminate") as a parameter. Required for controlled usage to update state.',
             },
             {
                 content: "(checked: boolean | 'indeterminate') => void",
-                hintText: 'function',
+                hintText:
+                    'Function called with new checked state when it changes',
             },
             { content: '' },
         ],
@@ -89,58 +108,89 @@ function MyComponent() {
             {
                 content: 'disabled',
                 hintText:
-                    'Whether the checkbox is disabled and non-interactive',
+                    "When true, disables the checkbox, making it non-interactive and visually muted. Disabled checkboxes cannot be clicked and are excluded from form submissions. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables interaction, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'required',
                 hintText:
-                    'Whether the checkbox is required for form validation',
+                    'When true, marks the checkbox as required for form validation. Browsers and form libraries will validate that the checkbox is checked before allowing form submission. Visual indicators (asterisk) may be displayed. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true makes checkbox required, false makes it optional',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'error',
-                hintText: 'Whether the checkbox is in an error state',
+                hintText:
+                    'When true, displays the checkbox in an error state with error styling (typically red border/indicator). Useful for form validation feedback when the checkbox is required but unchecked, or when validation fails. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'size',
-                hintText: 'The size variant of the checkbox',
+                hintText:
+                    'Controls the dimensions of the checkbox indicator. SMALL creates a compact checkbox suitable for dense layouts, MEDIUM provides standard sizing for most use cases. Size affects both the checkbox box and the checkmark icon. Defaults to MEDIUM.',
             },
-            { content: 'CheckboxSize', hintText: 'enum' },
-            { content: 'CheckboxSize.MEDIUM' },
+            {
+                content: 'CheckboxSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the checkbox',
+            },
+            { content: 'SMALL, MEDIUM' },
         ],
         [
             {
                 content: 'children',
-                hintText: 'The label content displayed next to the checkbox',
+                hintText:
+                    'Optional React node displayed as the label text next to the checkbox. Typically a string but can be any React content. Clicking the label text also toggles the checkbox. The label is associated with the checkbox for accessibility.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React content (text, elements) to display as the label',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'subtext',
-                hintText: 'Optional descriptive text displayed below the label',
+                hintText:
+                    'Optional descriptive text string displayed below the main label. Provides additional context, explanation, or clarification about the checkbox option. Styled with smaller, lighter text than the main label.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Secondary descriptive text shown below the label',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'slot',
-                hintText: 'Optional content slot for additional elements',
+                hintText:
+                    'Optional React element displayed to the right of the label and subtext. Useful for adding icons, badges, links, or other supplementary content that should appear after the checkbox label area.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display after the label content',
+            },
             { content: '' },
         ],
     ]}
@@ -149,257 +199,6 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Features
-
-- **3 Checkbox States**: Checked, unchecked, and indeterminate states for complex scenarios
-- **2 Size Options**: Small and medium sizes for different interface contexts
-- **Interactive States**: Hover, disabled, and error states with visual feedback
-- **Controlled/Uncontrolled**: Support for both controlled and uncontrolled component patterns
-- **Form Integration**: Seamless integration with forms including validation support
-- **Accessibility First**: Full ARIA compliance and keyboard navigation support
-- **Custom Content**: Support for labels, subtext, and additional content slots
-- **Responsive Design**: Consistent sizing and spacing across different screen sizes
-- **Error Handling**: Built-in error state styling for form validation
-- **Icon Integration**: Uses Lucide React icons for consistent check and indeterminate indicators
-- **Theme Integration**: Fully styled using design tokens for consistent theming
-
-## Usage Examples
-
-### Basic Checkbox
-
-Simple checkbox with label text
-
-```tsx
-const [accepted, setAccepted] = useState(false)
-
-<Checkbox
-    checked={accepted}
-    onCheckedChange={setAccepted}
->
-    I accept the terms of service
-</Checkbox>
-```
-
-### Checkbox with Subtext
-
-Checkbox with additional descriptive text
-
-```tsx
-const [notifications, setNotifications] = useState(true)
-
-<Checkbox
-    checked={notifications}
-    onCheckedChange={setNotifications}
-    subtext="Receive email notifications about account activity and updates"
->
-    Enable notifications
-</Checkbox>
-```
-
-### Small Size Checkbox
-
-Compact checkbox for dense layouts
-
-```tsx
-const [remember, setRemember] = useState(false)
-
-<Checkbox
-    checked={remember}
-    onCheckedChange={setRemember}
-    size={CheckboxSize.SMALL}
->
-    Remember me
-</Checkbox>
-```
-
-### Indeterminate Checkbox
-
-Checkbox in indeterminate state (partially selected)
-
-```tsx
-const [selectAll, setSelectAll] = useState<boolean | 'indeterminate'>('indeterminate')
-
-<Checkbox
-    checked={selectAll}
-    onCheckedChange={setSelectAll}
->
-    Select all items
-</Checkbox>
-```
-
-### Disabled Checkbox
-
-Non-interactive checkbox in disabled state
-
-```tsx
-<Checkbox checked={true} disabled={true}>
-    This option is disabled
-</Checkbox>
-```
-
-### Required Checkbox
-
-Checkbox marked as required for form validation
-
-```tsx
-const [terms, setTerms] = useState(false)
-
-<Checkbox
-    checked={terms}
-    onCheckedChange={setTerms}
-    required={true}
->
-    I agree to the terms and conditions *
-</Checkbox>
-```
-
-### Error State Checkbox
-
-Checkbox in error state for validation feedback
-
-```tsx
-const [privacy, setPrivacy] = useState(false)
-
-<Checkbox
-    checked={privacy}
-    onCheckedChange={setPrivacy}
-    error={!privacy}
-    required={true}
->
-    I accept the privacy policy
-</Checkbox>
-```
-
-### Checkbox with Custom Slot
-
-Checkbox with additional content in the slot
-
-```tsx
-const [premium, setPremium] = useState(false)
-
-<Checkbox
-    checked={premium}
-    onCheckedChange={setPremium}
-    slot={<span className="text-blue-500 font-semibold">RECOMMENDED</span>}
->
-    Upgrade to Premium
-</Checkbox>
-```
-
-### Uncontrolled Checkbox
-
-Checkbox with default state (uncontrolled)
-
-```tsx
-<Checkbox
-    defaultChecked={true}
-    onCheckedChange={(checked) => console.log('Checkbox changed:', checked)}
->
-    Subscribe to newsletter
-</Checkbox>
-```
-
-### Checkbox List
-
-Multiple checkboxes for option selection
-
-```tsx
-const [selectedOptions, setSelectedOptions] = useState({
-    option1: false,
-    option2: true,
-    option3: false,
-})
-
-<div className="space-y-3">
-    <Checkbox
-        checked={selectedOptions.option1}
-        onCheckedChange={(checked) =>
-            setSelectedOptions(prev => ({ ...prev, option1: !!checked }))
-        }
-    >
-        Enable dark mode
-    </Checkbox>
-    <Checkbox
-        checked={selectedOptions.option2}
-        onCheckedChange={(checked) =>
-            setSelectedOptions(prev => ({ ...prev, option2: !!checked }))
-        }
-    >
-        Show desktop notifications
-    </Checkbox>
-    <Checkbox
-        checked={selectedOptions.option3}
-        onCheckedChange={(checked) =>
-            setSelectedOptions(prev => ({ ...prev, option3: !!checked }))
-        }
-    >
-        Auto-save documents
-    </Checkbox>
-</div>
-```
-
-### Form Integration Example
-
-Checkbox integrated with form handling
-
-```tsx
-interface FormData {
-    marketing: boolean
-    updates: boolean
-    terms: boolean
-}
-
-const [formData, setFormData] = useState<FormData>({
-    marketing: false,
-    updates: true,
-    terms: false,
-})
-
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.terms) {
-        // Handle validation error
-        return
-    }
-    console.log('Form submitted:', formData)
-}
-
-;<form onSubmit={handleSubmit} className="space-y-4">
-    <Checkbox
-        checked={formData.marketing}
-        onCheckedChange={(checked) =>
-            setFormData((prev) => ({ ...prev, marketing: !!checked }))
-        }
-        subtext="Receive promotional emails and special offers"
-    >
-        Marketing communications
-    </Checkbox>
-
-    <Checkbox
-        checked={formData.updates}
-        onCheckedChange={(checked) =>
-            setFormData((prev) => ({ ...prev, updates: !!checked }))
-        }
-        subtext="Important product updates and security notifications"
-    >
-        Product updates
-    </Checkbox>
-
-    <Checkbox
-        checked={formData.terms}
-        onCheckedChange={(checked) =>
-            setFormData((prev) => ({ ...prev, terms: !!checked }))
-        }
-        required={true}
-        error={!formData.terms}
-    >
-        I agree to the terms of service and privacy policy
-    </Checkbox>
-
-    <button type="submit">Submit</button>
-</form>
-```
-
 ## Component Tokens
 
 You can style the Checkbox component using the following tokens:
@@ -407,131 +206,63 @@ You can style the Checkbox component using the following tokens:
 ```tsx
 export type CheckboxTokensType = {
     gap: CSSObject['gap']
-
-    root: {
-        [key in CheckboxSize]: {
-            width: CSSObject['width']
-            height: CSSObject['height']
-            borderRadius: CSSObject['borderRadius']
-        }
+    slot: {
+        marginLeft: CSSObject['marginLeft']
     }
-
     indicator: {
-        [key in CheckboxSize]: {
-            width: CSSObject['width']
-            height: CSSObject['height']
+        width: { [key in CheckboxSize]: CSSObject['width'] }
+        height: { [key in CheckboxSize]: CSSObject['height'] }
+        backgroundColor: {
+            [key in CheckboxCheckedState]?: {
+                [key in CheckboxInteractionState]?: CSSObject['backgroundColor']
+            }
+        }
+        borderRadius: { [key in CheckboxSize]: CSSObject['borderRadius'] }
+        border: {
+            [key in CheckboxCheckedState]?: {
+                [key in CheckboxInteractionState]?: CSSObject['border']
+            }
+        }
+        outline: CSSObject['outline']
+        outlineOffset: CSSObject['outlineOffset']
+        boxShadow: CSSObject['boxShadow']
+        icon: {
+            color: {
+                [key in CheckboxCheckedState]?: {
+                    [key in Extract<
+                        CheckboxInteractionState,
+                        'default' | 'disabled'
+                    >]?: CSSObject['color']
+                }
+            }
+            width: { [key in CheckboxSize]: CSSObject['width'] }
+            height: { [key in CheckboxSize]: CSSObject['height'] }
+            strokeWidth: { [key in CheckboxSize]: CSSObject['strokeWidth'] }
         }
     }
-
-    colors: {
-        [key in CheckboxInteractionState]: {
-            background: CSSObject['backgroundColor']
-            border: CSSObject['borderColor']
-            icon: CSSObject['color']
+    content: {
+        gap: CSSObject['gap']
+        label: {
+            color: {
+                [key in CheckboxInteractionState]: CSSObject['color']
+            }
+            fontSize: { [key in CheckboxSize]: CSSObject['fontSize'] }
+            fontWeight: { [key in CheckboxSize]: CSSObject['fontWeight'] }
+        }
+        subtext: {
+            color: {
+                [key in CheckboxInteractionState]: CSSObject['color']
+            }
+            fontSize: { [key in CheckboxSize]: CSSObject['fontSize'] }
+            fontWeight: { [key in CheckboxSize]: CSSObject['fontWeight'] }
         }
     }
-
-    label: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        lineHeight: CSSObject['lineHeight']
-        color: {
-            default: CSSObject['color']
-            disabled: CSSObject['color']
-            error: CSSObject['color']
-        }
-    }
-
-    subtext: {
-        fontSize: CSSObject['fontSize']
-        color: {
-            default: CSSObject['color']
-            disabled: CSSObject['color']
-            error: CSSObject['color']
-        }
-        marginTop: CSSObject['marginTop']
+    required: {
+        color: CSSObject['color']
     }
 }
-```
 
-## Behavior
-
-### State Management
-
-- **Controlled**: Use `checked` and `onCheckedChange` props for external state control
-- **Uncontrolled**: Use `defaultChecked` for internal state management
-- **Indeterminate**: Special state for partial selection scenarios
-
-### Interactive States
-
-- **Default**: Normal interactive state with hover effects
-- **Hover**: Visual feedback on mouse hover
-- **Disabled**: Non-interactive state with reduced opacity
-- **Error**: Red styling to indicate validation errors
-
-### Form Integration
-
-- **Required Field**: Visual indicators and validation support
-- **Value Handling**: Proper value attribute for form submissions
-- **Validation**: Error state styling for failed validation
-
-### Accessibility Features
-
-- **Keyboard Navigation**: Tab navigation and Space key activation
-- **Screen Reader**: Proper labeling and state announcements
-- **Focus Indicators**: Clear visual focus indicators
-
-## Accessibility
-
-- **ARIA Compliance**: Proper `aria-checked`, `aria-disabled`, and `aria-required` attributes
-- **Keyboard Navigation**: Full keyboard support with Tab and Space key activation
-- **Screen Reader Support**: Descriptive labels and state announcements
-- **Focus Management**: Clear focus indicators with proper contrast
-- **Label Association**: Proper label-input association using `htmlFor` attributes
-- **Error Announcements**: Screen reader announcements for error states
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### CheckboxSize
-
-```tsx
-enum CheckboxSize {
-    SMALL = 'sm', // Compact size for dense layouts (16px)
-    MEDIUM = 'md', // Standard size for most use cases (20px)
+export type ResponsiveCheckboxTokens = {
+    [key in keyof BreakpointType]: CheckboxTokensType
 }
 ```
-
-### Checkbox States
-
-```tsx
-type CheckboxCheckedState = 'checked' | 'unchecked' | 'indeterminate'
-
-type CheckboxInteractionState =
-    | 'default' // Normal interactive state
-    | 'hover' // Mouse hover state
-    | 'disabled' // Non-interactive disabled state
-    | 'error' // Validation error state
-```
-
-## Best Practices
-
-### When to Use
-
-- **Multiple Selection**: When users need to select multiple options
-- **Terms Acceptance**: For accepting terms, conditions, or agreements
-- **Settings/Preferences**: For enabling/disabling features or options
-- **Form Controls**: As part of larger forms for data collection
-
-### Label Guidelines
-
-- **Clear and Concise**: Use descriptive labels that clearly explain what will happen
-- **Action-Oriented**: Frame labels as actions (e.g., "Enable notifications")
-- **Positive Language**: Use positive phrasing when possible
-- **Context Specific**: Provide additional context through subtext when needed
-
-### Indeterminate State
-
-- **Partial Selection**: Use when representing a partially selected state
-- **Parent-Child Relationships**: Common in hierarchical lists or tree structures
-- **Group Selection**: When some but not all items in a group are selected
