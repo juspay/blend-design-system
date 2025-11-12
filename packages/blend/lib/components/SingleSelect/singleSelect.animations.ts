@@ -11,28 +11,28 @@ export const dropdownContentAnimations = css`
         animation: slideInFromTop 200ms ${easing};
     }
     &[data-side='bottom'][data-state='closed'] {
-        animation: slideOutToTop 150ms ${easing};
+        animation: slideOutToTop 200ms ${easing};
     }
 
     &[data-side='top'][data-state='open'] {
         animation: slideInFromBottom 200ms ${easing};
     }
     &[data-side='top'][data-state='closed'] {
-        animation: slideOutToBottom 150ms ${easing};
+        animation: slideOutToBottom 200ms ${easing};
     }
 
     &[data-side='right'][data-state='open'] {
         animation: slideInFromLeft 200ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation: slideOutToLeft 150ms ${easing};
+        animation: slideOutToLeft 200ms ${easing};
     }
 
     &[data-side='left'][data-state='open'] {
         animation: slideInFromRight 200ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation: slideOutToRight 150ms ${easing};
+        animation: slideOutToRight 200ms ${easing};
     }
 
     /* Shadcn-style keyframes with zoom + slide + fade */
@@ -133,14 +133,14 @@ export const submenuContentAnimations = css`
         animation: slideInFromLeft 200ms ${easing};
     }
     &[data-side='right'][data-state='closed'] {
-        animation: slideOutToLeft 150ms ${easing};
+        animation: slideOutToLeft 200ms ${easing};
     }
 
     &[data-side='left'][data-state='open'] {
         animation: slideInFromRight 200ms ${easing};
     }
     &[data-side='left'][data-state='closed'] {
-        animation: slideOutToRight 150ms ${easing};
+        animation: slideOutToRight 200ms ${easing};
     }
 `
 
