@@ -37,6 +37,8 @@ import {
     Smartphone,
     Watch,
     Settings,
+    Download,
+    Trash2,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -2740,6 +2742,32 @@ const DataTableDemo = () => {
         )
     }
 
+    // Handle row selection change
+    const handleRowSelectionChange = (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: Record<string, unknown>
+    ) => {
+        const userData = rowData as UserRow
+        const userName = (userData.name as AvatarColumnProps).label
+
+        console.log('🔄 Row selection changed:', {
+            action: isSelected ? 'SELECTED' : 'DESELECTED',
+            rowId,
+            userName,
+            email: userData.email,
+            role: userData.role,
+            totalSelectedCount: selectedRowIds.length,
+            allSelectedRowIds: selectedRowIds,
+        })
+
+        console.log(
+            `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
+        )
+        console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+    }
+
     return (
         <div>
             {/* Mode Toggle and Controls */}
@@ -2807,6 +2835,15 @@ const DataTableDemo = () => {
                             to see the full text in a tooltip! Visual elements
                             like avatars and tags don't show tooltips as they're
                             not text-based content.
+                            <br />
+                            <strong>🎯 BULK ACTIONS DEMO:</strong> Enable row
+                            selection to see the new bulk actions bar with React
+                            elements (icons)! The bulk actions include Export,
+                            Send Email, Archive, Share, Add to Favorites, and
+                            Delete - each with beautiful leading icons and some
+                            with trailing icons. Select rows to activate the
+                            bulk action bar and try the different action
+                            buttons.
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -3067,6 +3104,92 @@ const DataTableDemo = () => {
                 onRowCancel={handleRowCancel}
                 onRowExpansionChange={handleRowExpansionChange}
                 onRowClick={handleRowClick}
+                onRowSelectionChange={handleRowSelectionChange}
+                bulkActions={{
+                    showSelectAll: true,
+                    showDeselectAll: true,
+                    onSelectAll: () => {
+                        console.log('🔄 Select All clicked')
+                        // Select all rows on current page
+                        const newSelectedRows: Record<string, boolean> = {}
+                        data.forEach((row) => {
+                            const rowId = String(row.id)
+                            newSelectedRows[rowId] = true
+                        })
+                        // This would be handled by the DataTable internally, this is just for demo logging
+                        alert('Selected all rows on current page!')
+                    },
+                    onDeselectAll: () => {
+                        console.log('🔄 Deselect All clicked')
+                        alert('Deselected all rows!')
+                    },
+                    customActions: (
+                        <>
+                            <Button
+                                key="download"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Download size={16} />}
+                                onClick={() => {
+                                    const selectedRowIds = Object.entries({}) // Get actual selected rows
+                                        .filter(([, selected]) => selected)
+                                        .map(([rowId]) => rowId)
+                                    console.log(
+                                        '📥 Download clicked with selected rows:',
+                                        selectedRowIds
+                                    )
+                                    alert(
+                                        `Downloading selected users to CSV format.`
+                                    )
+                                }}
+                            >
+                                Download
+                            </Button>
+                            <Button
+                                key="send-email"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Calendar size={16} />}
+                                onClick={() => {
+                                    console.log('📧 Send Email clicked')
+                                    alert('Sending email to selected users!')
+                                }}
+                            >
+                                Send Email
+                            </Button>
+                            <Button
+                                key="archive"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Package size={16} />}
+                                onClick={() => {
+                                    console.log('📦 Archive clicked')
+                                    alert('Archiving selected users!')
+                                }}
+                            >
+                                Archive
+                            </Button>
+                            <Button
+                                key="delete"
+                                buttonType={ButtonType.DANGER}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Trash2 size={16} />}
+                                onClick={() => {
+                                    console.log('🗑️ Delete clicked')
+                                    if (
+                                        confirm(
+                                            'Are you sure you want to delete the selected users?'
+                                        )
+                                    ) {
+                                        alert('Deleted selected users!')
+                                    }
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </>
+                    ),
+                }}
                 headerSlot1={
                     <Button
                         buttonType={ButtonType.SECONDARY}

@@ -249,11 +249,12 @@ export type PaginationConfig = {
     pageSizeOptions?: number[]
 }
 
-export type BulkAction = {
-    id: string
-    label: string
-    variant: 'primary' | 'secondary' | 'danger'
-    onClick: (selectedRowIds: string[]) => void
+export type BulkActionsConfig = {
+    showSelectAll?: boolean
+    showDeselectAll?: boolean
+    onSelectAll?: () => void
+    onDeselectAll?: () => void
+    customActions?: ReactNode
 }
 
 export type RowActionConfig<T extends Record<string, unknown>> = {
@@ -346,8 +347,14 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     enableRowSelection?: boolean
+    onRowSelectionChange?: (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: T
+    ) => void
 
-    bulkActions?: BulkAction[]
+    bulkActions?: BulkActionsConfig
 
     rowActions?: RowActionsConfig<T>
 

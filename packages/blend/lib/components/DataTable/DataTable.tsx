@@ -88,6 +88,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
+            onRowSelectionChange,
             renderExpandedRow,
             isRowExpandable,
             pagination = {
@@ -475,18 +476,58 @@ const DataTable = forwardRef(
 
             setSelectedRows(newSelectedRows)
             updateSelectAllState(newSelectedRows)
+
+            if (onRowSelectionChange) {
+                const selectedRowIds = Object.entries(newSelectedRows)
+                    .filter(([, selected]) => selected)
+                    .map(([id]) => id)
+
+                currentData.forEach((row) => {
+                    const rowId = String(row[idField])
+                    const wasSelected = selectedRows[rowId] || false
+                    const isSelected = newSelectedRows[rowId] || false
+
+                    if (wasSelected !== isSelected) {
+                        onRowSelectionChange(
+                            selectedRowIds,
+                            isSelected,
+                            rowId,
+                            row as T
+                        )
+                    }
+                })
+            }
         }
 
         const handleRowSelect = (rowId: unknown) => {
             const rowIdStr = String(rowId)
+            const isSelected = !selectedRows[rowIdStr]
 
             const newSelectedRows = {
                 ...selectedRows,
-                [rowIdStr]: !selectedRows[rowIdStr],
+                [rowIdStr]: isSelected,
             }
             setSelectedRows(newSelectedRows)
 
             updateSelectAllState(newSelectedRows)
+
+            if (onRowSelectionChange) {
+                const selectedRowIds = Object.entries(newSelectedRows)
+                    .filter(([, selected]) => selected)
+                    .map(([id]) => id)
+
+                const rowData = currentData.find(
+                    (row) => String(row[idField]) === rowIdStr
+                )
+                if (rowData) {
+                    onRowSelectionChange(
+                        selectedRowIds,
+                        isSelected,
+                        rowIdStr,
+                        rowData as T
+                    )
+                }
+            }
         }
 
         const exportToCSV = () => {
@@ -716,28 +757,8 @@ const DataTable = forwardRef(
         }
 
         const renderBulkActions = () => {
-            if (!bulkActions?.length) return null
-
-            const selectedRowIds = Object.entries(selectedRows)
-                .filter(([, selected]) => selected)
-                .map(([rowId]) => rowId)
-
-            return bulkActions.map((action) => (
-                <Button
-                    key={action.id}
-                    buttonType={
-                        action.variant === 'danger'
-                            ? ButtonType.DANGER
-                            : action.variant === 'primary'
-                              ? ButtonType.PRIMARY
-                              : ButtonType.SECONDARY
-                    }
-                    size={ButtonSize.SMALL}
-                    onClick={() => action.onClick(selectedRowIds)}
-                >
-                    {action.label}
-                </Button>
-            ))
+            if (!bulkActions?.customActions) return null
+            return bulkActions.customActions
         }
 
         const getColumnWidth = (

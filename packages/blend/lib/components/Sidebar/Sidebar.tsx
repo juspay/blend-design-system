@@ -23,7 +23,7 @@ import {
     MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
-import SidebarMobileNavigation from './SidebarMobileNavigation'
+import SidebarMobileNavigation from './SidebarMobile'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
