@@ -152,7 +152,11 @@ export const getMobileNavigationItems = (
 
 const MOBILE_NAVIGATION_PRIMARY_VISIBLE_LIMIT = 5
 
-const parseUnitValue = (value: string | number | undefined): number => {
+/**
+ * Parse CSS unit values to numbers (e.g., "16px" -> 16)
+ * Returns 0 for invalid values
+ */
+export const parseUnitValue = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
         return value
     }
@@ -162,6 +166,25 @@ const parseUnitValue = (value: string | number | undefined): number => {
 
     const numericValue = Number.parseFloat(String(value))
     return Number.isNaN(numericValue) ? 0 : numericValue
+}
+
+/**
+ * Parse CSS values to numbers, allowing null for invalid values
+ * Returns null for invalid values (more flexible than parseUnitValue)
+ */
+export const parseCssValue = (
+    value: string | number | null | undefined
+): number | null => {
+    if (typeof value === 'number') {
+        return value
+    }
+
+    if (value == null) {
+        return null
+    }
+
+    const parsed = Number.parseFloat(String(value))
+    return Number.isNaN(parsed) ? null : parsed
 }
 
 const MOBILE_PRIMARY_ROW_VERTICAL_PADDING = {

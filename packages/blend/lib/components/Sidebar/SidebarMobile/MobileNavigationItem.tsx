@@ -30,13 +30,13 @@ const MobileNavigationItem = forwardRef<
             display="flex"
             alignItems="center"
             justifyContent="center"
-            gap={tokens.item.gap}
-            width={tokens.item.width}
-            height={tokens.item.height}
-            borderRadius={tokens.item.borderRadius}
-            backgroundColor={tokens.item.backgroundColor[state]}
-            color={String(tokens.item.color[state])}
-            fontWeight={tokens.item.fontWeight}
+            gap={tokens.row.item.gap}
+            width={tokens.row.item.width}
+            height={tokens.row.item.height}
+            borderRadius={tokens.row.item.borderRadius}
+            backgroundColor={tokens.row.item.backgroundColor[state]}
+            color={String(tokens.row.item.color[state])}
+            fontWeight={tokens.row.item.fontWeight}
             flexShrink={0}
             aria-pressed={isActive}
             aria-label={item.label}
@@ -47,18 +47,18 @@ const MobileNavigationItem = forwardRef<
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                gap={tokens.item.gap}
+                gap={tokens.row.item.gap}
             >
                 <Block
                     as="span"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    width={tokens.item.icon.width}
-                    height={tokens.item.icon.height}
-                    borderRadius={tokens.item.icon.borderRadius}
-                    transition={tokens.item.icon.transition}
-                    color={String(tokens.item.color[state])}
+                    width={tokens.row.item.icon.width}
+                    height={tokens.row.item.icon.height}
+                    borderRadius={tokens.row.item.icon.borderRadius}
+                    transition={tokens.row.item.icon.transition}
+                    color={String(tokens.row.item.color[state])}
                     aria-hidden="true"
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot)
@@ -67,7 +67,7 @@ const MobileNavigationItem = forwardRef<
                                   React.SVGProps<SVGSVGElement>
                               >,
                               {
-                                  color: String(tokens.item.color[state]),
+                                  color: String(tokens.row.item.color[state]),
                                   width: ICON_SIZE,
                                   height: ICON_SIZE,
                               }
@@ -77,14 +77,14 @@ const MobileNavigationItem = forwardRef<
 
                 <PrimitiveText
                     as="span"
-                    fontSize={tokens.item.text.fontSize}
-                    fontWeight={tokens.item.text.fontWeight}
-                    textAlign={tokens.item.text.textAlign}
+                    fontSize={tokens.row.item.text.fontSize}
+                    fontWeight={tokens.row.item.text.fontWeight}
+                    textAlign={tokens.row.item.text.textAlign}
                     truncate
-                    color={String(tokens.item.color[state])}
+                    color={String(tokens.row.item.color[state])}
                     style={{
                         width: '100%',
-                        maxWidth: String(tokens.item.width),
+                        maxWidth: String(tokens.row.item.width),
                     }}
                 >
                     {item.label}

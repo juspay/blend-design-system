@@ -3,7 +3,6 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { Grip } from 'lucide-react'
-import { FOUNDATION_THEME } from '../../../tokens'
 import type { MobileNavigationTokenType } from './mobile.tokens'
 
 const ICON_SIZE = 20
@@ -15,8 +14,7 @@ type MoreButtonProps = {
 
 const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
     ({ tokens, onClick }, ref) => {
-        // More button uses item tokens but with gray[500] color for text
-        const moreButtonColor = String(FOUNDATION_THEME.colors.gray[500])
+        const moreButtonColor = String(tokens.row.item.color.default)
 
         return (
             <PrimitiveButton
@@ -26,13 +24,13 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                gap={tokens.item.gap}
-                width={tokens.item.width}
-                height={tokens.item.height}
-                borderRadius={tokens.item.borderRadius}
-                backgroundColor={tokens.item.backgroundColor.default}
+                gap={tokens.row.item.gap}
+                width={tokens.row.item.width}
+                height={tokens.row.item.height}
+                borderRadius={tokens.row.item.borderRadius}
+                backgroundColor={tokens.row.item.backgroundColor.default}
                 color={moreButtonColor}
-                fontWeight={tokens.item.fontWeight}
+                fontWeight={tokens.row.item.fontWeight}
                 flexShrink={0}
                 aria-label="More options"
                 onClick={onClick}
@@ -42,7 +40,7 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                     flexDirection="column"
                     alignItems="center"
                     justifyContent="center"
-                    gap={tokens.item.gap}
+                    gap={tokens.row.item.gap}
                     color={moreButtonColor}
                 >
                     <Block
@@ -50,9 +48,9 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        width={tokens.item.icon.width}
-                        height={tokens.item.icon.height}
-                        borderRadius={tokens.item.icon.borderRadius}
+                        width={tokens.row.item.icon.width}
+                        height={tokens.row.item.icon.height}
+                        borderRadius={tokens.row.item.icon.borderRadius}
                         color="currentColor"
                         aria-hidden="true"
                     >
@@ -60,9 +58,9 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                     </Block>
                     <PrimitiveText
                         as="span"
-                        fontSize={tokens.item.text.fontSize}
-                        fontWeight={tokens.item.fontWeight}
-                        textAlign={tokens.item.text.textAlign}
+                        fontSize={tokens.row.item.text.fontSize}
+                        fontWeight={tokens.row.item.fontWeight}
+                        textAlign={tokens.row.item.text.textAlign}
                         truncate
                         color={moreButtonColor}
                     >

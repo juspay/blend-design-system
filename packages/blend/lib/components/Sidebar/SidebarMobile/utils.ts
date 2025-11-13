@@ -1,17 +1,6 @@
 import type { MobileNavigationItem } from '../types'
 import type { MobileNavigationTokenType } from './mobile.tokens'
-
-const parseUnitValue = (value: string | number | undefined): number => {
-    if (typeof value === 'number') {
-        return value
-    }
-    if (!value) {
-        return 0
-    }
-
-    const numericValue = Number.parseFloat(String(value))
-    return Number.isNaN(numericValue) ? 0 : numericValue
-}
+import { parseUnitValue } from '../utils'
 
 export const calculateMobileNavigationSnapPoints = (
     secondaryRowCount: number,
@@ -137,4 +126,40 @@ export const splitPrimaryItems = (
         leftItems: primaryItems.slice(0, midpoint),
         rightItems: primaryItems.slice(midpoint),
     }
+}
+
+/**
+ * Swap two items in an array by their labels
+ */
+export const swapItemsByLabel = <T extends { label: string }>(
+    items: T[],
+    itemLabel1: string,
+    itemLabel2: string
+): T[] => {
+    const newItems = [...items]
+    const index1 = newItems.findIndex((i) => i.label === itemLabel1)
+    const index2 = newItems.findIndex((i) => i.label === itemLabel2)
+
+    if (index1 !== -1 && index2 !== -1 && index1 !== index2) {
+        const temp = newItems[index1]
+        newItems[index1] = newItems[index2]
+        newItems[index2] = temp
+    }
+
+    return newItems
+}
+
+/**
+ * Update item properties without changing order
+ */
+export const updateItemProperties = <T extends { label: string }>(
+    orderedItems: T[],
+    newItems: T[]
+): T[] => {
+    return orderedItems.map((orderedItem) => {
+        const updatedItem = newItems.find(
+            (item) => item.label === orderedItem.label
+        )
+        return updatedItem || orderedItem
+    })
 }

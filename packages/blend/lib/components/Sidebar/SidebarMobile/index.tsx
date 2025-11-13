@@ -22,6 +22,8 @@ import {
     getMobileNavigationFillerCount,
     splitPrimaryItems,
 } from './utils'
+import { parseCssValue } from '../utils'
+import { useOrderedItems, useItemSelection } from './hooks'
 import MobileNavigationItem from './MobileNavigationItem'
 import PrimaryActionButton from './PrimaryActionButton'
 import MoreButton from './MoreButton'
@@ -29,21 +31,6 @@ import MoreButton from './MoreButton'
 const PRIMARY_VISIBLE_LIMIT = 5
 const SAFE_AREA_OFFSET = Number.parseFloat(String(FOUNDATION_THEME.unit[8]))
 const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
-
-const parseCssValue = (
-    value: string | number | null | undefined
-): number | null => {
-    if (typeof value === 'number') {
-        return value
-    }
-
-    if (value == null) {
-        return null
-    }
-
-    const parsed = Number.parseFloat(String(value))
-    return Number.isNaN(parsed) ? null : parsed
-}
 
 const SidebarMobileNavigation = forwardRef<
     HTMLDivElement,
@@ -58,119 +45,123 @@ const SidebarMobileNavigation = forwardRef<
         },
         ref
     ) => {
+        const tokens = useMemo(
+            () => getMobileNavigationTokens(FOUNDATION_THEME).sm,
+            []
+        )
+
+        // Track viewport height for layout calculations
         const [viewportHeight, setViewportHeight] = useState<
             number | undefined
         >(() =>
             typeof window === 'undefined' ? undefined : window.innerHeight
         )
 
-        const tokens = useMemo(
-            () => getMobileNavigationTokens(FOUNDATION_THEME).sm,
-            []
-        )
-
-        const primaryActionMargin = String(FOUNDATION_THEME.unit[14])
-
         useEffect(() => {
-            if (typeof window === 'undefined') {
-                return
-            }
+            if (typeof window === 'undefined') return
 
-            const handleResize = () => {
-                setViewportHeight(window.innerHeight)
-            }
-
+            const handleResize = () => setViewportHeight(window.innerHeight)
             window.addEventListener('resize', handleResize)
             return () => window.removeEventListener('resize', handleResize)
         }, [])
 
-        const { primaryItems, secondaryItems, hasSecondaryItems, snapPoints } =
-            useMemo(
-                () =>
-                    getMobileNavigationLayout(
-                        items,
-                        viewportHeight,
-                        tokens,
-                        PRIMARY_VISIBLE_LIMIT,
-                        VIEWPORT_HEIGHT_MULTIPLIER,
-                        {
-                            primaryReservedSlots: showPrimaryActionButton
-                                ? 1
-                                : 0,
-                        }
-                    ),
-                [items, showPrimaryActionButton, viewportHeight, tokens]
-            )
+        // Use custom hook for ordered items (complex state logic)
+        const [orderedItems, setOrderedItems] = useOrderedItems(items)
 
+        // Calculate layout from ordered items
+        const layout = useMemo(
+            () =>
+                getMobileNavigationLayout(
+                    orderedItems,
+                    viewportHeight,
+                    tokens,
+                    PRIMARY_VISIBLE_LIMIT,
+                    VIEWPORT_HEIGHT_MULTIPLIER,
+                    {
+                        primaryReservedSlots: showPrimaryActionButton ? 1 : 0,
+                    }
+                ),
+            [orderedItems, showPrimaryActionButton, viewportHeight, tokens]
+        )
+
+        // Drawer expansion state
         const [activeSnapPoint, setActiveSnapPoint] = useState<
             number | string | null
-        >(snapPoints[0])
+        >(layout.snapPoints[0])
 
         useEffect(() => {
-            setActiveSnapPoint(snapPoints[0])
-        }, [snapPoints])
+            setActiveSnapPoint(layout.snapPoints[0])
+        }, [layout.snapPoints])
 
-        const isExpanded = activeSnapPoint !== snapPoints[0]
+        const isExpanded = activeSnapPoint !== layout.snapPoints[0]
 
+        // Drawer event handlers
         const handleOpenChange = useCallback(
             (open: boolean) => {
-                if (!open) {
-                    setActiveSnapPoint(snapPoints[0])
-                }
+                if (!open) setActiveSnapPoint(layout.snapPoints[0])
             },
-            [snapPoints]
+            [layout.snapPoints]
         )
 
         const handleSnapChange = useCallback(
             (snap: number | string | null) => {
-                setActiveSnapPoint(snap ?? snapPoints[0])
+                setActiveSnapPoint(snap ?? layout.snapPoints[0])
             },
-            [snapPoints]
+            [layout.snapPoints]
         )
 
-        const handleItemSelect = useCallback(
-            (item: (typeof items)[0]) => {
-                item.onClick?.()
-                setActiveSnapPoint(snapPoints[0])
-            },
-            [snapPoints]
-        )
-
-        const handleMoreToggle = useCallback(() => {
-            setActiveSnapPoint(
-                isExpanded ? snapPoints[0] : (snapPoints[1] ?? snapPoints[0])
+        const toggleExpansion = useCallback(() => {
+            setActiveSnapPoint((current) =>
+                current === layout.snapPoints[0]
+                    ? (layout.snapPoints[1] ?? layout.snapPoints[0])
+                    : layout.snapPoints[0]
             )
-        }, [isExpanded, snapPoints])
+        }, [layout.snapPoints])
+
+        const collapse = useCallback(() => {
+            setActiveSnapPoint(layout.snapPoints[0])
+        }, [layout.snapPoints])
 
         const navigationHeight = useMemo(() => {
-            const fallbackHeight = parseCssValue(snapPoints[0]) ?? 0
+            const fallbackHeight = parseCssValue(layout.snapPoints[0]) ?? 0
             const currentHeight = parseCssValue(activeSnapPoint)
-
             const computedHeight =
                 currentHeight == null ? fallbackHeight : currentHeight
-
             return `${computedHeight + SAFE_AREA_OFFSET}px`
-        }, [activeSnapPoint, snapPoints])
+        }, [activeSnapPoint, layout.snapPoints])
 
         useEffect(() => {
             onHeightChange?.(navigationHeight)
         }, [navigationHeight, onHeightChange])
 
-        useEffect(() => () => onHeightChange?.('0px'), [onHeightChange])
+        useEffect(() => {
+            return () => onHeightChange?.('0px')
+        }, [onHeightChange])
 
         const { leftItems, rightItems } = useMemo(
-            () => splitPrimaryItems(primaryItems, showPrimaryActionButton),
-            [primaryItems, showPrimaryActionButton]
+            () =>
+                splitPrimaryItems(layout.primaryItems, showPrimaryActionButton),
+            [layout.primaryItems, showPrimaryActionButton]
+        )
+
+        const handleItemSelect = useItemSelection(
+            orderedItems,
+            setOrderedItems,
+            layout.primaryItems,
+            layout.hasSecondaryItems,
+            collapse
         )
 
         const secondaryRows = useMemo(
             () =>
                 getMobileNavigationSecondaryRows(
-                    secondaryItems,
+                    layout.secondaryItems,
                     PRIMARY_VISIBLE_LIMIT
                 ),
-            [secondaryItems]
+            [layout.secondaryItems]
         )
+
+        const primaryActionMargin = String(FOUNDATION_THEME.unit[14])
 
         const primaryRowElements = useMemo(() => {
             const elements: ReactNode[] = []
@@ -216,27 +207,27 @@ const SidebarMobileNavigation = forwardRef<
                 )
             })
 
-            if (hasSecondaryItems) {
+            if (layout.hasSecondaryItems) {
                 elements.push(
                     <MoreButton
                         key="sidebar-mobile-more"
                         tokens={tokens}
-                        onClick={handleMoreToggle}
+                        onClick={toggleExpansion}
                     />
                 )
             }
 
             return elements
         }, [
-            handleItemSelect,
-            handleMoreToggle,
-            hasSecondaryItems,
             leftItems,
-            primaryActionButtonProps,
             rightItems,
             showPrimaryActionButton,
+            layout.hasSecondaryItems,
             primaryActionMargin,
             tokens,
+            primaryActionButtonProps,
+            handleItemSelect,
+            toggleExpansion,
         ])
 
         return (
@@ -245,10 +236,10 @@ const SidebarMobileNavigation = forwardRef<
                 onOpenChange={handleOpenChange}
                 modal={false}
                 dismissible={false}
-                snapPoints={snapPoints}
+                snapPoints={layout.snapPoints}
                 activeSnapPoint={activeSnapPoint}
                 onSnapPointChange={handleSnapChange}
-                fadeFromIndex={hasSecondaryItems ? 1 : 0}
+                fadeFromIndex={layout.hasSecondaryItems ? 1 : 0}
                 snapToSequentialPoint
             >
                 <DrawerPortal>
@@ -324,7 +315,12 @@ const SidebarMobileNavigation = forwardRef<
                                                         rowIndex * row.length
                                                     }
                                                     tokens={tokens}
-                                                    onSelect={handleItemSelect}
+                                                    onSelect={(selectedItem) =>
+                                                        handleItemSelect(
+                                                            selectedItem,
+                                                            true
+                                                        )
+                                                    }
                                                 />
                                             )),
                                             ...Array.from({
