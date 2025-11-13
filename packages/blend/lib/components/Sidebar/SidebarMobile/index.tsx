@@ -1,4 +1,11 @@
-import { useState, useMemo, useCallback, useEffect, forwardRef } from 'react'
+import {
+    useState,
+    useMemo,
+    useCallback,
+    useEffect,
+    forwardRef,
+    type ReactNode,
+} from 'react'
 import Drawer, {
     DrawerBody,
     DrawerContent,
@@ -12,10 +19,12 @@ import { getMobileNavigationTokens } from './mobile.tokens'
 import {
     getMobileNavigationLayout,
     getMobileNavigationSecondaryRows,
+    getMobileNavigationFillerCount,
     splitPrimaryItems,
 } from './utils'
-import PrimaryRow from './PrimaryRow'
-import SecondaryRow from './SecondaryRow'
+import MobileNavigationItem from './MobileNavigationItem'
+import PrimaryActionButton from './PrimaryActionButton'
+import MoreButton from './MoreButton'
 
 const PRIMARY_VISIBLE_LIMIT = 5
 const SAFE_AREA_OFFSET = Number.parseFloat(String(FOUNDATION_THEME.unit[8]))
@@ -59,6 +68,8 @@ const SidebarMobileNavigation = forwardRef<
             () => getMobileNavigationTokens(FOUNDATION_THEME).sm,
             []
         )
+
+        const primaryActionMargin = String(FOUNDATION_THEME.unit[14])
 
         useEffect(() => {
             if (typeof window === 'undefined') {
@@ -161,6 +172,73 @@ const SidebarMobileNavigation = forwardRef<
             [secondaryItems]
         )
 
+        const primaryRowElements = useMemo(() => {
+            const elements: ReactNode[] = []
+
+            leftItems.forEach((item, index) => {
+                elements.push(
+                    <MobileNavigationItem
+                        key={`${item.label}-primary-left-${index}`}
+                        item={item}
+                        index={index}
+                        tokens={tokens}
+                        onSelect={handleItemSelect}
+                    />
+                )
+            })
+
+            if (showPrimaryActionButton) {
+                elements.push(
+                    <Block
+                        key="sidebar-mobile-primary-action-wrapper"
+                        display="flex"
+                        marginLeft={primaryActionMargin}
+                        marginRight={primaryActionMargin}
+                    >
+                        <PrimaryActionButton
+                            tokens={tokens}
+                            buttonProps={primaryActionButtonProps}
+                        />
+                    </Block>
+                )
+            }
+
+            rightItems.forEach((item, index) => {
+                const absoluteIndex = index + leftItems.length
+                elements.push(
+                    <MobileNavigationItem
+                        key={`${item.label}-primary-right-${index}`}
+                        item={item}
+                        index={absoluteIndex}
+                        tokens={tokens}
+                        onSelect={handleItemSelect}
+                    />
+                )
+            })
+
+            if (hasSecondaryItems) {
+                elements.push(
+                    <MoreButton
+                        key="sidebar-mobile-more"
+                        tokens={tokens}
+                        onClick={handleMoreToggle}
+                    />
+                )
+            }
+
+            return elements
+        }, [
+            handleItemSelect,
+            handleMoreToggle,
+            hasSecondaryItems,
+            leftItems,
+            primaryActionButtonProps,
+            rightItems,
+            showPrimaryActionButton,
+            primaryActionMargin,
+            tokens,
+        ])
+
         return (
             <Drawer
                 open
@@ -180,7 +258,6 @@ const SidebarMobileNavigation = forwardRef<
                             left: '0px',
                             right: '0px',
                             bottom: '0px',
-                            // maxWidth: String(tokens.drawer.maxWidth),
                             margin: '0 auto',
                             borderTop: tokens.drawer.borderTop,
                             borderTopLeftRadius: tokens.drawer.borderRadius,
@@ -191,7 +268,6 @@ const SidebarMobileNavigation = forwardRef<
                             top: '0px',
                             left: '0px',
                             right: '0px',
-                            // bottom: String(tokens.drawer.mobileOffset.bottom),
                         }}
                         showHandle={false}
                     >
@@ -211,37 +287,87 @@ const SidebarMobileNavigation = forwardRef<
                                 flexDirection="column"
                                 width="100%"
                                 backgroundColor={String(tokens.backgroundColor)}
+                                gap={tokens.gap}
+                                paddingTop={tokens.padding.y}
+                                paddingRight={tokens.padding.x}
+                                paddingBottom={tokens.padding.y}
+                                paddingLeft={tokens.padding.x}
                             >
-                                <PrimaryRow
-                                    leftItems={leftItems}
-                                    rightItems={rightItems}
-                                    showPrimaryAction={showPrimaryActionButton}
-                                    hasSecondaryItems={hasSecondaryItems}
-                                    tokens={tokens}
-                                    onItemSelect={handleItemSelect}
-                                    onMoreToggle={handleMoreToggle}
-                                    primaryActionButtonProps={
-                                        primaryActionButtonProps
-                                    }
-                                />
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    width="100%"
+                                    paddingTop={tokens.row.padding.y}
+                                    paddingRight={tokens.row.padding.x}
+                                    paddingBottom={tokens.row.padding.y}
+                                    paddingLeft={tokens.row.padding.x}
+                                >
+                                    {primaryRowElements}
+                                </Block>
 
                                 {isExpanded &&
-                                    secondaryRows.map((row, rowIndex) => (
-                                        <SecondaryRow
-                                            key={`secondary-row-${rowIndex}`}
-                                            row={row}
-                                            rowIndex={rowIndex}
-                                            isLastRow={
-                                                rowIndex ===
-                                                secondaryRows.length - 1
-                                            }
-                                            tokens={tokens}
-                                            onItemSelect={handleItemSelect}
-                                            primaryVisibleLimit={
+                                    secondaryRows.map((row, rowIndex) => {
+                                        const fillerCount =
+                                            getMobileNavigationFillerCount(
+                                                row.length,
                                                 PRIMARY_VISIBLE_LIMIT
-                                            }
-                                        />
-                                    ))}
+                                            )
+
+                                        const rowElements: ReactNode[] = [
+                                            ...row.map((item, index) => (
+                                                <MobileNavigationItem
+                                                    key={`${item.label}-secondary-${rowIndex}-${index}`}
+                                                    item={item}
+                                                    index={
+                                                        index +
+                                                        rowIndex * row.length
+                                                    }
+                                                    tokens={tokens}
+                                                    onSelect={handleItemSelect}
+                                                />
+                                            )),
+                                            ...Array.from({
+                                                length: fillerCount,
+                                            }).map((_, fillerIndex) => (
+                                                <Block
+                                                    key={`secondary-row-${rowIndex}-filler-${fillerIndex}`}
+                                                    width={
+                                                        tokens.row.item.width
+                                                    }
+                                                    height={
+                                                        tokens.row.item.height
+                                                    }
+                                                    flexShrink={0}
+                                                    aria-hidden="true"
+                                                />
+                                            )),
+                                        ]
+
+                                        return (
+                                            <Block
+                                                key={`secondary-row-${rowIndex}`}
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                width="100%"
+                                                paddingTop={
+                                                    tokens.row.padding.y
+                                                }
+                                                paddingRight={
+                                                    tokens.row.padding.x
+                                                }
+                                                paddingBottom={
+                                                    tokens.row.padding.y
+                                                }
+                                                paddingLeft={
+                                                    tokens.row.padding.x
+                                                }
+                                            >
+                                                {rowElements}
+                                            </Block>
+                                        )
+                                    })}
                             </Block>
                         </DrawerBody>
                     </DrawerContent>

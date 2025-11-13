@@ -19,53 +19,33 @@ export const calculateMobileNavigationSnapPoints = (
     tokens: MobileNavigationTokenType,
     viewportHeightMultiplier: number
 ): Array<string | number> => {
-    const primaryPaddingTop = parseUnitValue(
-        tokens.primaryRow.padding.default.top
-    )
-    const primaryPaddingBottom = parseUnitValue(
-        tokens.primaryRow.padding.default.bottom
-    )
-    const itemHeight = parseUnitValue(tokens.item.height)
+    const containerPaddingY = parseUnitValue(tokens.padding.y)
+    const containerGap = parseUnitValue(tokens.gap)
+    const rowPaddingY = parseUnitValue(tokens.row.padding.y)
+    const itemHeight = parseUnitValue(tokens.row.item.height)
     const containerBorder = parseUnitValue('1px')
 
-    const primaryRowHeight =
-        primaryPaddingTop + itemHeight + primaryPaddingBottom
-    const primaryHeight = primaryRowHeight + containerBorder
+    const rowHeight = rowPaddingY * 2 + itemHeight
+    const collapsedHeight = containerPaddingY * 2 + rowHeight + containerBorder
 
     if (secondaryRowCount === 0) {
-        return [`${primaryHeight}px`]
+        return [`${collapsedHeight}px`]
     }
 
-    const secondaryPaddingTop = parseUnitValue(
-        tokens.secondaryRow.padding.default.top
-    )
-    const secondaryPaddingBottom = parseUnitValue(
-        tokens.secondaryRow.padding.default.bottom
-    )
-    const rowGap = parseUnitValue(tokens.secondaryRow.rowGap)
-    const lastRowExtraPadding = parseUnitValue(
-        tokens.secondaryRow.padding.last.bottom
-    )
-
-    const secondaryRowHeight =
-        secondaryPaddingTop + itemHeight + secondaryPaddingBottom
-
-    const totalSecondaryHeight =
-        secondaryRowCount * secondaryRowHeight +
-        Math.max(secondaryRowCount - 1, 0) * rowGap +
-        (lastRowExtraPadding - secondaryPaddingBottom) +
-        rowGap
-
-    const totalExpandedHeight = primaryHeight + totalSecondaryHeight
+    const totalRows = 1 + secondaryRowCount
+    const totalRowHeights = totalRows * rowHeight
+    const totalRowGaps = secondaryRowCount * containerGap
+    const totalExpandedHeight =
+        containerPaddingY * 2 + containerBorder + totalRowHeights + totalRowGaps
 
     if (!viewportHeight) {
-        return [`${primaryHeight}px`, `${totalExpandedHeight}px`]
+        return [`${collapsedHeight}px`, `${totalExpandedHeight}px`]
     }
 
     const viewportLimit = viewportHeight * viewportHeightMultiplier
     const maxHeight = Math.min(totalExpandedHeight, viewportLimit)
 
-    return [`${primaryHeight}px`, `${maxHeight}px`]
+    return [`${collapsedHeight}px`, `${maxHeight}px`]
 }
 
 export const getMobileNavigationLayout = (

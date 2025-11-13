@@ -360,6 +360,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 
+    tableBodyHeight?: string | number
+
     // Mobile configuration
     mobileColumnsToShow?: number
 }

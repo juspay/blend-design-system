@@ -113,6 +113,7 @@ const DataTable = forwardRef(
             bulkActions,
             rowActions,
             getRowStyle,
+            tableBodyHeight,
             mobileColumnsToShow,
             ...rest
         }: DataTableProps<T>,
@@ -948,7 +949,16 @@ const DataTable = forwardRef(
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                flex: 1,
+                                ...(tableBodyHeight
+                                    ? {
+                                          height:
+                                              typeof tableBodyHeight ===
+                                              'number'
+                                                  ? `${tableBodyHeight}px`
+                                                  : tableBodyHeight,
+                                          overflowY: 'auto',
+                                      }
+                                    : { flex: 1 }),
                                 position: 'relative',
                                 minHeight:
                                     currentData.length > 0 ? '0' : 'auto',

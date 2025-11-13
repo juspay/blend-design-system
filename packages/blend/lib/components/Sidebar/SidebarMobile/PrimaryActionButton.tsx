@@ -4,8 +4,8 @@ import type { MobileNavigationTokenType } from './mobile.tokens'
 
 const PrimaryActionIcon = () => (
     <svg
-        width="24"
-        height="24"
+        width="20"
+        height="20"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -46,6 +46,7 @@ const PrimaryActionButton = forwardRef<
             background={tokens.primaryAction.background}
             boxShadow={tokens.primaryAction.boxShadow}
             color={String(tokens.primaryAction.color)}
+            flexShrink={0}
             aria-label="Primary action"
             {...buttonProps}
         >
