@@ -83,7 +83,12 @@ import {
     AvatarShape,
     AvatarSize,
     TextInput,
+    Button,
 } from '../../../../packages/blend/lib/main'
+import {
+    ButtonType,
+    ButtonSize,
+} from '../../../../packages/blend/lib/components/Button/types'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import StepperDemo from './StepperDemo'
@@ -164,6 +169,10 @@ const SidebarDemo = () => {
     const [activeMerchant, setActiveMerchant] =
         useState<string>('design-system')
     const [search, setSearch] = useState<string>('')
+
+    // Topbar visibility control states
+    const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
+    const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
 
     const tenants = [
         {
@@ -428,9 +437,95 @@ const SidebarDemo = () => {
                 return (
                     <div className="p-8">
                         <h2 className="text-2xl font-bold mb-6">
-                            Sidebar Auto-Hide Topbar Demo
+                            Topbar Controlled/Uncontrolled Demo
                         </h2>
                         <div className="space-y-6">
+                            <div className="p-6 border-2 border-blue-200 rounded-lg bg-blue-50">
+                                <h3 className="text-lg font-semibold mb-4">
+                                    Topbar Visibility Controls
+                                </h3>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-sm font-medium mb-2">
+                                            Mode:{' '}
+                                            {isTopbarControlled
+                                                ? 'Controlled'
+                                                : 'Uncontrolled'}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mb-3">
+                                            {isTopbarControlled
+                                                ? 'In controlled mode, the parent component manages topbar visibility state.'
+                                                : 'In uncontrolled mode, the topbar manages its own visibility state internally.'}
+                                        </p>
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.MEDIUM}
+                                            onClick={() =>
+                                                setIsTopbarControlled(
+                                                    !isTopbarControlled
+                                                )
+                                            }
+                                        >
+                                            Switch to{' '}
+                                            {isTopbarControlled
+                                                ? 'Uncontrolled'
+                                                : 'Controlled'}{' '}
+                                            Mode
+                                        </Button>
+                                    </div>
+
+                                    {isTopbarControlled && (
+                                        <div className="pt-4 border-t border-blue-300">
+                                            <p className="text-sm font-medium mb-2">
+                                                Current Topbar State:{' '}
+                                                {topbarVisible
+                                                    ? 'Visible ✓'
+                                                    : 'Hidden ✗'}
+                                            </p>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.PRIMARY
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(true)
+                                                    }
+                                                    disabled={topbarVisible}
+                                                >
+                                                    Show Topbar
+                                                </Button>
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.DANGER
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(false)
+                                                    }
+                                                    disabled={!topbarVisible}
+                                                >
+                                                    Hide Topbar
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-6 border border-gray-200 rounded-lg">
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Navigation Item Integration
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Click on "Virtual List" in the sidebar to
+                                    see how navigation items can hide the
+                                    topbar. This is useful for full-screen
+                                    views.
+                                </p>
+                            </div>
+
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">
                                     Scroll Test
@@ -490,7 +585,13 @@ const SidebarDemo = () => {
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'buttons',
-                    onClick: () => setActiveComponent('buttons'),
+                    onClick: () => {
+                        setActiveComponent('buttons')
+                        // Show topbar when navigating to regular components (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
                     showOnMobile: true,
                 },
                 {
@@ -544,7 +645,13 @@ const SidebarDemo = () => {
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'virtualList',
-                    onClick: () => setActiveComponent('virtualList'),
+                    onClick: () => {
+                        setActiveComponent('virtualList')
+                        // Hide topbar when navigating to Virtual List (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(false)
+                        }
+                    },
                     showOnMobile: true,
                 },
                 {
@@ -823,7 +930,13 @@ const SidebarDemo = () => {
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'charts',
-                    onClick: () => setActiveComponent('charts'),
+                    onClick: () => {
+                        setActiveComponent('charts')
+                        // Show topbar when navigating to Chart (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
                     showOnMobile: true,
                 },
                 {
@@ -997,6 +1110,14 @@ const SidebarDemo = () => {
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     enableTopbarAutoHide={true}
+                    {...(isTopbarControlled
+                        ? {
+                              isTopbarVisible: topbarVisible,
+                              onTopbarVisibilityChange: setTopbarVisible,
+                          }
+                        : {
+                              defaultIsTopbarVisible: true,
+                          })}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,

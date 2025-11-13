@@ -64,6 +64,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             merchantInfo,
             rightActions,
             enableTopbarAutoHide = false,
+            isTopbarVisible,
+            onTopbarVisibilityChange,
+            defaultIsTopbarVisible = true,
             isExpanded: controlledIsExpanded,
             onExpandedChange,
             defaultIsExpanded = true,
@@ -327,6 +330,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             leftPanel={leftPanel}
                             merchantInfo={merchantInfo || defaultMerchantInfo}
                             rightActions={rightActions}
+                            isVisible={isTopbarVisible}
+                            onVisibilityChange={onTopbarVisibilityChange}
+                            defaultIsVisible={defaultIsTopbarVisible}
                         />
                     </Block>
 

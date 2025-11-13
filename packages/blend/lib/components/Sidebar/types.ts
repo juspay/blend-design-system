@@ -44,6 +44,25 @@ export type SidebarProps = {
     enableTopbarAutoHide?: boolean
 
     /**
+     * Controlled state: Show/hide topbar
+     * When provided, topbar operates in controlled mode - parent must handle visibility updates
+     */
+    isTopbarVisible?: boolean
+
+    /**
+     * Callback fired when topbar visibility should change
+     * In controlled mode: Parent should update isTopbarVisible prop based on this callback
+     * In uncontrolled mode: Optional callback for visibility change notifications
+     */
+    onTopbarVisibilityChange?: (isVisible: boolean) => void
+
+    /**
+     * Uncontrolled mode: Initial topbar visibility (defaults to true)
+     * Only used when isTopbarVisible is not provided
+     */
+    defaultIsTopbarVisible?: boolean
+
+    /**
      * Controlled state: Current expanded state of the sidebar
      * When provided, sidebar operates in controlled mode - parent must handle state updates
      */
