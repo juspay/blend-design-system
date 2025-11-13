@@ -200,12 +200,35 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         const [isMounted, setIsMounted] = useState(false)
         const [portalContainer, setPortalContainer] =
             useState<HTMLElement | null>(null)
+        const [shouldRender, setShouldRender] = useState(false)
+        const [isAnimatingIn, setIsAnimatingIn] = useState(false)
 
         useScrollLock(isOpen)
 
         useEffect(() => {
             setIsMounted(true)
         }, [])
+
+        // Handle modal animation lifecycle
+        useEffect(() => {
+            if (isOpen) {
+                // Start rendering
+                setShouldRender(true)
+                // Trigger enter animation on next frame
+                const timer = setTimeout(() => {
+                    setIsAnimatingIn(true)
+                }, 10)
+                return () => clearTimeout(timer)
+            } else {
+                // Start exit animation
+                setIsAnimatingIn(false)
+                // Wait for animation to complete before unmounting
+                const timer = setTimeout(() => {
+                    setShouldRender(false)
+                }, 250)
+                return () => clearTimeout(timer)
+            }
+        }, [isOpen])
 
         useEffect(() => {
             const handleEscapeKey = (event: KeyboardEvent) => {
@@ -224,16 +247,16 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         }, [isOpen, onClose])
 
         useEffect(() => {
-            if (isMounted && isOpen) {
+            if (isMounted && shouldRender) {
                 const container = getPortalContainer()
                 setPortalContainer(container)
-            } else if (!isOpen && portalContainer) {
+            } else if (!shouldRender && portalContainer) {
                 setPortalContainer(null)
                 setTimeout(() => {
                     cleanupPortalContainer()
                 }, 0)
             }
-        }, [isMounted, isOpen, portalContainer])
+        }, [isMounted, shouldRender, portalContainer])
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -241,7 +264,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             }
         }, [closeOnBackdropClick, onClose])
 
-        if (!isMounted || !isOpen || !portalContainer) return null
+        if (!isMounted || !shouldRender || !portalContainer) return null
 
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
@@ -284,10 +307,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         position="fixed"
                         inset={0}
                         backgroundColor={FOUNDATION_THEME.colors.gray[700]}
-                        opacity={0.5}
                         pointerEvents="auto"
                         role="presentation"
                         aria-hidden="true"
+                        style={{
+                            opacity: isAnimatingIn ? 0.5 : 0,
+                            transition:
+                                'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        }}
                     />
 
                     <Block
@@ -304,6 +331,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="modal-title"
+                        style={{
+                            opacity: isAnimatingIn ? 1 : 0,
+                            transform: isAnimatingIn
+                                ? 'scale(1) translateY(0px)'
+                                : 'scale(0.92) translateY(-8px)',
+                            transition:
+                                'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        }}
                     >
                         <ModalHeader
                             title={title}
