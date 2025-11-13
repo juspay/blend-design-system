@@ -15,15 +15,10 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ## Before You Start
 
-### Code of Conduct
-
-Please read and follow our [Code of Conduct](https://github.com/juspay/blend-design-system/blob/main/CODE_OF_CONDUCT.md). We're committed to maintaining a welcoming and inclusive community.
-
 ### Getting Help
 
 - **GitHub Discussions**: Ask questions and share ideas
 - **Issues**: Report bugs and request features
-- **Discord**: Join our community for real-time chat
 
 ## Development Setup
 
@@ -32,7 +27,6 @@ Please read and follow our [Code of Conduct](https://github.com/juspay/blend-des
 - **Node.js** 18+
 - **pnpm** (recommended package manager)
 - **Git** for version control
-- **Code Editor** (VS Code recommended with ReScript extension)
 
 ### Fork and Clone
 
@@ -67,12 +61,6 @@ git checkout -b feature/your-feature-name
 # Make your changes
 # ...
 
-# Run tests
-pnpm test
-
-# Run linting
-pnpm lint
-
 # Build to ensure everything works
 pnpm build
 ```
@@ -87,24 +75,21 @@ blend-design-system/
 │   └── blend/                 # Main design system package
 │       ├── lib/
 │       │   ├── components/    # React components
-│       │   ├── foundation/    # Design tokens and themes
-│       │   └── utils/         # Utility functions
-│       └── src/               # ReScript source files
+│       │   ├── tokens/        # Design tokens
+│       │   ├── hooks/         # Custom hooks
+│       │   └── context/       # Theme context and providers
 ├── apps/
 │   ├── ascent/               # Documentation site
-│   ├── storybook/            # Component playground
-│   └── playground/           # Development testing
-└── tools/                    # Build tools and utilities
+│   └── storybook/            # Component playground
 ```
 
 ## Types of Contributions
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 1. **Check existing issues** before creating new ones
 2. **Include reproduction steps** and expected vs actual behavior
-3. **Add tests** to prevent regression
-4. **Update documentation** if needed
+3. **Update documentation** if needed
 
 **Example Bug Fix Process:**
 
@@ -121,7 +106,7 @@ git commit -m "fix: button disabled state styling"
 git push origin fix/button-disabled-state
 ```
 
-### ✨ New Components
+### New Components
 
 Creating new components requires careful planning and implementation:
 
@@ -130,12 +115,8 @@ Creating new components requires careful planning and implementation:
 ```
 components/YourComponent/
 ├── YourComponent.tsx         # Main React component
-├── YourComponent.res         # ReScript implementation
 ├── types.ts                  # TypeScript definitions
-├── index.ts                  # Exports
-├── YourComponent.stories.tsx # Storybook stories
-└── __tests__/
-    └── YourComponent.test.tsx
+└── yourComponent.tokens.ts   # Component-specific tokens
 ```
 
 #### Component Template
@@ -143,7 +124,7 @@ components/YourComponent/
 ```tsx
 import { ComponentTokens } from './types'
 
-export interface YourComponentProps {
+export type YourComponentProps = {
     children?: React.ReactNode
     variant?: 'primary' | 'secondary'
     size?: 'sm' | 'md' | 'lg'
@@ -161,28 +142,13 @@ export const YourComponent = ({
 }
 ```
 
-#### ReScript Bindings
-
-```rescript
-@module("@juspay/blend-design-system") @react.component
-external make: (
-    ~children: React.element=?,
-    ~variant: [#primary | #secondary]=?,
-    ~size: [#sm | #md | #lg]=?,
-    ~className: string=?,
-) => React.element = "YourComponent"
-```
-
 #### Requirements for New Components
 
-- **Accessibility**: WCAG 2.1 AA compliance
 - **TypeScript**: Full type definitions
-- **ReScript**: Complete bindings
-- **Tests**: Unit and integration tests
-- **Stories**: Comprehensive Storybook stories
+- **Theme Integration**: Use theme tokens for styling
 - **Documentation**: Usage examples and API reference
 
-### 📚 Documentation
+### Documentation
 
 Documentation improvements are always welcome:
 
@@ -190,9 +156,8 @@ Documentation improvements are always welcome:
 - Add usage examples and best practices
 - Update getting started guides
 - Fix typos and improve clarity
-- Add troubleshooting sections
 
-### 🎨 Design Tokens
+### Design Tokens
 
 When proposing design token changes:
 
@@ -200,44 +165,6 @@ When proposing design token changes:
 2. **Ensure backward compatibility** where possible
 3. **Update all affected components**
 4. **Include design rationale** and use cases
-5. **Test across all themes**
-
-## Testing Requirements
-
-### Unit Tests
-
-- Test all component variants and states
-- Test accessibility features
-- Test error boundaries and edge cases
-- Maintain minimum 80% code coverage
-
-### Integration Tests
-
-- Test component interactions
-- Test theme switching
-- Test responsive behavior
-
-### Visual Regression Tests
-
-- Use Storybook for visual testing
-- Test all component stories
-- Include different themes and screen sizes
-
-### Running Tests
-
-```bash
-# Run all tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test:watch
-
-# Run tests with coverage
-pnpm test:coverage
-
-# Run visual tests
-pnpm test:visual
-```
 
 ## Documentation Standards
 
@@ -249,34 +176,19 @@ Each component should include:
 - **Usage Examples**: Common use cases
 - **Accessibility**: ARIA labels, keyboard navigation
 - **Do's and Don'ts**: Best practices and anti-patterns
-- **Troubleshooting**: Common issues and solutions
 
 ### Code Comments
 
 - Document complex logic and business rules
 - Explain design decisions and trade-offs
 - Include links to relevant design specifications
-- Use JSDoc for public APIs
 
 ## Submission Guidelines
 
 ### Before Submitting
 
-1. **Ensure all tests pass**: `pnpm test`
-2. **Run linting**: `pnpm lint`
-3. **Check TypeScript**: `pnpm type-check`
-4. **Update documentation** if needed
-5. **Add changeset** for versioning
-
-### Changeset Creation
-
-```bash
-# Add changeset for your changes
-pnpm changeset
-
-# Follow prompts to describe your changes
-# Choose appropriate semver bump (patch/minor/major)
-```
+1. **Build successfully**: `pnpm build`
+2. **Update documentation** if needed
 
 ### Pull Request Guidelines
 
@@ -307,9 +219,8 @@ Brief description of changes
 
 ## Testing
 
-- [ ] Tests pass locally
-- [ ] Added tests for new functionality
-- [ ] Visual tests updated
+- [ ] Manually tested the changes
+- [ ] Verified in Storybook (if applicable)
 
 ## Screenshots (if applicable)
 
@@ -351,19 +262,6 @@ Contributors are recognized in release notes:
 - Breaking changes
 - Special thanks to contributors
 
-## Community Recognition
-
-### Contributor Levels
-
-- **First-time Contributor**: Welcome badge
-- **Regular Contributor**: Community member badge
-- **Core Contributor**: Maintainer consideration
-- **Maintainer**: Repository access and responsibilities
-
-### Showcase
-
-Projects using Blend are featured in our community showcase. Share your implementations to inspire others!
-
 ## Troubleshooting
 
 ### Common Development Issues
@@ -380,13 +278,7 @@ pnpm install
 
 - Check component exports in `index.ts`
 - Verify type definitions are complete
-- Ensure ReScript bindings match TypeScript interfaces
-
-**Test failures:**
-
-- Check for async operations in tests
-- Verify mocks are properly configured
-- Ensure clean test environment
+- Ensure all imports are properly typed
 
 ### Getting Unstuck
 
@@ -394,8 +286,7 @@ If you're stuck:
 
 1. Check existing documentation and issues
 2. Ask in GitHub Discussions
-3. Join our Discord community
-4. Reach out to maintainers
+3. Reach out to maintainers
 
 ## Resources
 
@@ -403,22 +294,17 @@ If you're stuck:
 
 - **Storybook**: Component development and testing
 - **TypeScript**: Type safety and IntelliSense
-- **ReScript**: Functional programming support
-- **Jest**: Testing framework
 - **ESLint**: Code linting
 
 ### Design Resources
 
 - **Figma**: Design files and specifications
 - **Design Tokens**: Token definitions and usage
-- **Accessibility**: WCAG guidelines and tools
 
 ### Learning Materials
 
 - **React**: Component development
 - **TypeScript**: Type system
-- **ReScript**: Functional programming
-- **Testing**: Best practices
 
 ## Thank You
 

@@ -37,15 +37,7 @@ pnpm add @juspay/blend-design-system
 
 ## Basic Setup
 
-### 1. Import Styles
-
-Import the required CSS file in your application entry point:
-
-```tsx
-import '@juspay/blend-design-system/style.css'
-```
-
-### 2. Wrap Your App with ThemeProvider
+### 1. Wrap Your App with ThemeProvider
 
 Wrap your application with the `ThemeProvider` to enable theming:
 
@@ -61,7 +53,7 @@ function App() {
 }
 ```
 
-### 3. Start Using Components
+### 2. Start Using Components
 
 Import and use components in your application:
 
@@ -98,7 +90,7 @@ function MyApp() {
 }
 ```
 
-### 4. Custom Theme (Optional)
+### 3. Custom Theme (Optional)
 
 Customize the design system to match your brand:
 
@@ -138,7 +130,7 @@ FOUNDATION_THEME.colors.primary[500] // #2B7FFF
 FOUNDATION_THEME.colors.gray[100] // #F2F4F8
 
 // Typography
-FOUNDATION_THEME.fontSize.headingLG // 24px
+FOUNDATION_THEME.fontSize.heading.lg // 24px
 FOUNDATION_THEME.fontWeight[600] // 600
 
 // Spacing
@@ -151,7 +143,6 @@ FOUNDATION_THEME.borderRadius[8] // 8px
 ### Component Usage
 
 - Always refer to our [component documentation](/docs/components) for complete API reference
-- Use TypeScript for better development experience and type safety
 - Follow established patterns for consistent implementation
 - Import only what you need - Blend is tree-shakeable
 
@@ -160,21 +151,6 @@ FOUNDATION_THEME.borderRadius[8] // 8px
 - Use design tokens instead of hardcoded values
 - Maintain consistency with the design system guidelines
 - Customize tokens through ThemeProvider for brand-specific styling
-
-### TypeScript Support
-
-All components are fully typed with TypeScript. Ensure your `tsconfig.json` includes:
-
-```json
-{
-    "compilerOptions": {
-        "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "jsx": "react-jsx"
-    }
-}
-```
 
 ## Development Environment Setup
 
@@ -200,9 +176,6 @@ pnpm build
 
 # Start development mode
 pnpm dev
-
-# Run tests
-pnpm test
 ```
 
 ## Next Steps
@@ -210,6 +183,5 @@ pnpm test
 1. **Explore Components**: Browse our [component library](/docs/components) to see all available components
 2. **Read Documentation**: Check individual component documentation for detailed API reference and examples
 3. **Contributing**: Check our [contribution guide](/docs/contributing) to contribute to the project
-4. **Get Support**: Join our community discussions for help and feedback
 
 That's it! You're ready to start building with Blend Design System. 🚀
