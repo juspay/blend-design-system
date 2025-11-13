@@ -1,6 +1,6 @@
 {
     "name": "blend-design-system",
-    "packageManager": "pnpm@10.12.4",
+    "packageManager": "pnpm@10.21.0",
     "private": true,
     "scripts": {
         "dev": "turbo run dev",

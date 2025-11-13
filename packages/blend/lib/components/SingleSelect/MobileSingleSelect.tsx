@@ -72,6 +72,9 @@ const SingleSelectItem = ({
             backgroundColor={
                 isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
             }
+            style={{
+                transition: 'background-color 0.15s ease-in-out',
+            }}
             _hover={{
                 backgroundColor: FOUNDATION_THEME.colors.gray[50],
             }}

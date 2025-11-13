@@ -17,6 +17,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
+import { menuContentAnimations } from './menu.animations'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
@@ -31,9 +32,20 @@ export const contentBaseStyle: CSSObject = {
     border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
 }
 
-const Content = styled(RadixMenu.Content)(() => ({
-    ...contentBaseStyle,
-}))
+const Content = styled(RadixMenu.Content)`
+    background-color: white;
+    box-shadow: ${FOUNDATION_THEME.shadows.sm};
+    z-index: 99;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+    padding-bottom: 6px;
+    border-radius: 8px;
+    border: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
+
+    ${menuContentAnimations}
+`
 
 const Menu = ({
     trigger,

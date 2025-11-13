@@ -57,115 +57,166 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'variant',
-                hintText: 'Visual style variant of the slider',
+                content: 'Slider.variant',
+                hintText:
+                    'Optional SliderVariant enum value that determines the visual style variant of the slider. PRIMARY creates a prominent slider with emphasized styling, SECONDARY creates a more subtle slider. The variant affects the track and thumb colors. Defaults to PRIMARY.',
             },
-            { content: 'SliderVariant', hintText: 'enum' },
-            { content: 'SliderVariant.PRIMARY' },
+            {
+                content: 'SliderVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the slider',
+            },
+            { content: 'PRIMARY, SECONDARY' },
         ],
         [
             {
-                content: 'size',
-                hintText: 'Size variant affecting dimensions and spacing',
+                content: 'Slider.size',
+                hintText:
+                    'Optional SliderSize enum value that determines the size variant affecting dimensions, spacing, track height, and thumb size. SMALL creates a compact slider, MEDIUM creates a standard size, LARGE creates a prominent size. Defaults to MEDIUM.',
             },
-            { content: 'SliderSize', hintText: 'enum' },
-            { content: 'SliderSize.MEDIUM' },
+            {
+                content: 'SliderSize',
+                hintText: 'Enum that determines the size variant of the slider',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
         ],
         [
             {
-                content: 'value',
-                hintText: 'Controlled value(s) for the slider',
+                content: 'Slider.value',
+                hintText:
+                    'Optional array of numbers representing the controlled value(s) for the slider. For single-thumb sliders, provide an array with one value (e.g., [50]). For range sliders, provide two values (e.g., [25, 75]). The array length determines the number of thumbs. Use this for controlled state management. If not provided, use defaultValue.',
             },
-            { content: 'number[]', hintText: 'array' },
+            {
+                content: 'number[]',
+                hintText: 'Array of numbers representing slider value(s)',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'defaultValue',
-                hintText: 'Default value(s) for uncontrolled usage',
+                content: 'Slider.defaultValue',
+                hintText:
+                    'Optional array of numbers representing the default value(s) for uncontrolled usage. For single-thumb sliders, provide an array with one value (e.g., [50]). For range sliders, provide two values (e.g., [25, 75]). The slider manages its own state internally. Defaults to [0] (single thumb at minimum).',
             },
-            { content: 'number[]', hintText: 'array' },
-            { content: '[0]' },
-        ],
-        [
             {
-                content: 'onValueChange',
-                hintText: 'Callback fired when the slider value changes',
+                content: 'number[]',
+                hintText:
+                    'Array of numbers representing default slider value(s)',
             },
-            { content: '(value: number[]) => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'min',
-                hintText: 'Minimum value of the slider range',
+                content: 'Slider.onValueChange',
+                hintText:
+                    'Optional callback function invoked when the slider value changes. Receives an array of numbers representing the new value(s). Use this to update your state when using controlled mode. The function is called as the user drags the thumb(s) or clicks on the track.',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '0' },
-        ],
-        [
             {
-                content: 'max',
-                hintText: 'Maximum value of the slider range',
+                content: '(value: number[]) => void',
+                hintText:
+                    'Function called with new value array when slider value changes',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '100' },
-        ],
-        [
-            {
-                content: 'step',
-                hintText: 'Step increment for value changes',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: '1' },
-        ],
-        [
-            {
-                content: 'showValueLabels',
-                hintText: 'Whether to display value labels on thumbs',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'labelPosition',
-                hintText: 'Position of value labels relative to thumbs',
-            },
-            { content: "'top' | 'bottom' | 'inline'", hintText: 'union type' },
-            { content: "'top'" },
-        ],
-        [
-            {
-                content: 'valueFormat',
-                hintText: 'Configuration for value formatting and display',
-            },
-            { content: 'SliderValueFormatConfig', hintText: 'object' },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether the slider is disabled',
+                content: 'Slider.min',
+                hintText:
+                    'Optional minimum value number for the slider range. The slider cannot go below this value. The thumb(s) will be constrained to values >= min. Useful for setting lower bounds. Defaults to 0.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'orientation',
-                hintText: 'Orientation of the slider',
+                content: 'number',
+                hintText:
+                    'Number representing the minimum value of the slider range',
             },
-            { content: "'horizontal' | 'vertical'", hintText: 'union type' },
-            { content: "'horizontal'" },
-        ],
-        [
-            {
-                content: 'className',
-                hintText: 'Additional CSS class for the slider',
-            },
-            { content: 'string', hintText: 'string' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.max',
+                hintText:
+                    'Optional maximum value number for the slider range. The slider cannot go above this value. The thumb(s) will be constrained to values <= max. Useful for setting upper bounds. Defaults to 100.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing the maximum value of the slider range',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.step',
+                hintText:
+                    'Optional step increment number for value changes. When the user drags the thumb or uses arrow keys, the value changes by this increment. Useful for discrete value selection (e.g., step={5} for multiples of 5). Must be a positive number. Defaults to 1.',
+            },
+            {
+                content: 'number',
+                hintText: 'Positive number representing the step increment',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.showValueLabels',
+                hintText:
+                    'When true, displays value labels on or near the thumb(s) showing the current value. The labels appear based on the labelPosition prop. Useful for providing precise feedback about the selected value. The labels are formatted according to valueFormat if provided. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows value labels, false hides value labels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.labelPosition',
+                hintText:
+                    'Optional string that determines the position of value labels relative to thumbs. Valid values: "top" (labels appear above thumbs), "bottom" (labels appear below thumbs), "inline" (labels appear on the thumb itself). Only applies when showValueLabels is true. Defaults to "top".',
+            },
+            {
+                content: "'top' | 'bottom' | 'inline'",
+                hintText: 'String that determines the position of value labels',
+            },
+            { content: 'top, bottom, inline' },
+        ],
+        [
+            {
+                content: 'Slider.valueFormat',
+                hintText:
+                    'Optional SliderValueFormatConfig object that configures how values are formatted and displayed. Can specify number type (NUMBER, DECIMAL), decimal places, prefix/suffix strings (e.g., "$", "%"), custom formatter function, and whether to show labels. Useful for currency, percentage, or custom formatting. If not provided, values are displayed as plain numbers.',
+            },
+            {
+                content: 'SliderValueFormatConfig',
+                hintText:
+                    'Object with value formatting configuration properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.disabled',
+                hintText:
+                    "When true, disables the slider, making it non-interactive and visually muted. Users cannot drag the thumb(s) or change values. Disabled sliders show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables slider, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Slider.orientation',
+                hintText:
+                    'Optional string that determines the orientation of the slider. Valid values: "horizontal" (slider extends left-to-right, default), "vertical" (slider extends top-to-bottom). Vertical sliders are useful for height, volume, or other vertical metrics. Defaults to "horizontal".',
+            },
+            {
+                content: "'horizontal' | 'vertical'",
+                hintText: 'String that determines the slider orientation',
+            },
+            { content: 'horizontal, vertical' },
         ],
     ]}
     className="mb-8"
@@ -173,314 +224,46 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Data Types
+## Component Tokens
 
-### SliderValueFormatConfig
-
-Configuration object for value formatting and display:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'type',
-                hintText: 'Type of value formatting to apply',
-            },
-            { content: 'SliderValueType', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'decimalPlaces',
-                hintText: 'Number of decimal places to display',
-            },
-            { content: 'number', hintText: 'number' },
-            { content: '0' },
-        ],
-        [
-            {
-                content: 'prefix',
-                hintText: 'Text to display before the value',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'suffix',
-                hintText: 'Text to display after the value',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'formatter',
-                hintText: 'Custom function to format the value',
-            },
-            { content: '(value: number) => string', hintText: 'function' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- **Range Selection**: Support for single and multi-thumb configurations for range selection
-- **Value Formatting**: Flexible value formatting with numbers, percentages, decimals, and custom formatters
-- **Visual Variants**: Primary and secondary styling variants for different contexts
-- **Size Options**: Three size variants (small, medium, large) for different design needs
-- **Value Labels**: Optional value labels with configurable positioning (top, bottom, inline)
-- **Accessibility First**: Full keyboard navigation, ARIA compliance, and screen reader support
-- **Touch Support**: Optimized for touch interactions on mobile devices
-- **Built on Radix UI**: Leverages Radix UI Slider for robust functionality and accessibility
-- **Custom Styling**: Comprehensive token system for complete visual customization
-- **Orientation Support**: Horizontal and vertical slider orientations
-- **Precise Control**: Configurable step increments and min/max ranges
-- **Responsive Design**: Adapts to different screen sizes and input methods
-
-## Enums
-
-### SliderVariant
+You can style the Slider component using the following tokens:
 
 ```tsx
-enum SliderVariant {
-    PRIMARY = 'primary', // Primary brand color styling
-    SECONDARY = 'secondary', // Secondary neutral styling
+export type SliderTokensType = {
+    root: {
+        height: CSSObject['height']
+        cursor: CSSObject['cursor']
+    }
+    track: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        height: CSSObject['height']
+    }
+    range: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        height: CSSObject['height']
+    }
+    thumb: {
+        width: CSSObject['width']
+        height: CSSObject['height']
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        cursor: CSSObject['cursor']
+        outline: CSSObject['outline']
+        outlineOffset: CSSObject['outlineOffset']
+    }
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        boxShadow: CSSObject['boxShadow']
+    }
 }
 ```
-
-### SliderSize
-
-```tsx
-enum SliderSize {
-    SMALL = 'sm', // Compact size for dense layouts
-    MEDIUM = 'md', // Standard size for general use
-    LARGE = 'lg', // Larger size for emphasis
-}
-```
-
-### SliderValueType
-
-```tsx
-enum SliderValueType {
-    NUMBER = 'number', // Integer or float numbers
-    PERCENTAGE = 'percentage', // Percentage values (0-1 → 0%-100%)
-    DECIMAL = 'decimal', // Decimal numbers with precision
-}
-```
-
-## Usage Examples
-
-### Basic Single Value Slider
-
-Simple slider for single value selection
-
-```tsx
-import { Slider, SliderVariant, SliderSize } from 'blend-v1'
-import { useState } from 'react'
-
-const [volume, setVolume] = useState([50])
-
-<div>
-    <label>Volume: {volume[0]}%</label>
-    <Slider
-        variant={SliderVariant.PRIMARY}
-        size={SliderSize.MEDIUM}
-        value={volume}
-        onValueChange={setVolume}
-        min={0}
-        max={100}
-        step={1}
-    />
-</div>
-```
-
-### Range Slider
-
-Multi-thumb slider for range selection
-
-```tsx
-import { SliderValueType } from 'blend-v1'
-
-const [priceRange, setPriceRange] = useState([200, 800])
-
-<div>
-    <label>Price Range: ${priceRange[0]} - ${priceRange[1]}</label>
-    <Slider
-        variant={SliderVariant.SECONDARY}
-        value={priceRange}
-        onValueChange={setPriceRange}
-        min={0}
-        max={1000}
-        step={10}
-        showValueLabels={true}
-        labelPosition="bottom"
-        valueFormat={{
-            type: SliderValueType.NUMBER,
-            prefix: '$'
-        }}
-    />
-</div>
-```
-
-### Percentage Slider
-
-Slider with percentage formatting
-
-```tsx
-const [opacity, setOpacity] = useState([0.75])
-
-<div>
-    <label>Opacity</label>
-    <Slider
-        value={opacity}
-        onValueChange={setOpacity}
-        min={0}
-        max={1}
-        step={0.01}
-        showValueLabels={true}
-        labelPosition="inline"
-        valueFormat={{
-            type: SliderValueType.PERCENTAGE,
-            decimalPlaces: 0
-        }}
-    />
-</div>
-```
-
-### Custom Formatted Slider
-
-Slider with custom value formatting
-
-```tsx
-const [temperature, setTemperature] = useState([22])
-
-<div>
-    <label>Temperature</label>
-    <Slider
-        value={temperature}
-        onValueChange={setTemperature}
-        min={-10}
-        max={40}
-        step={0.5}
-        showValueLabels={true}
-        valueFormat={{
-            type: SliderValueType.DECIMAL,
-            decimalPlaces: 1,
-            suffix: '°C',
-            formatter: (value) => `${value.toFixed(1)}°C`
-        }}
-    />
-</div>
-```
-
-### Vertical Slider
-
-Vertical orientation slider
-
-```tsx
-<div style={{ height: '200px', display: 'flex', alignItems: 'center' }}>
-    <Slider
-        orientation="vertical"
-        defaultValue={[30]}
-        min={0}
-        max={100}
-        step={1}
-        showValueLabels={true}
-        labelPosition="inline"
-        valueFormat={{
-            type: SliderValueType.NUMBER,
-            suffix: '%',
-        }}
-    />
-</div>
-```
-
-### Disabled Slider
-
-Slider in disabled state
-
-```tsx
-<Slider
-    defaultValue={[60]}
-    min={0}
-    max={100}
-    disabled={true}
-    showValueLabels={true}
-    valueFormat={{
-        type: SliderValueType.NUMBER,
-        suffix: '%',
-    }}
-/>
-```
-
-## Behavior
-
-### Value Management
-
-- **Controlled Mode**: Use `value` and `onValueChange` props for external state control
-- **Uncontrolled Mode**: Use `defaultValue` for component-managed state
-- **Multi-thumb**: Array values create multiple thumbs for range selection
-- **Value Constraints**: Values are automatically constrained to min/max bounds
-
-### Interaction Patterns
-
-- **Thumb Dragging**: Click and drag thumbs to adjust values
-- **Track Clicking**: Click on track to jump thumb to that position
-- **Keyboard Navigation**: Arrow keys for precise value adjustment
-- **Touch Support**: Optimized touch interactions for mobile devices
-
-### Formatting System
-
-- **Type-based**: Different formatting based on SliderValueType
-- **Custom Formatters**: Use custom functions for complex formatting
-- **Prefix/Suffix**: Add text before or after values
-- **Precision Control**: Configurable decimal places for display
-
-### Accessibility Features
-
-- **Keyboard Navigation**: Full keyboard support with arrow keys, Page Up/Down, Home/End
-- **ARIA Labels**: Proper ARIA roles and labels for screen readers
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Value Announcements**: Screen reader announcements for value changes
-
-## Best Practices
-
-### When to Use Sliders
-
-- **Range Selection**: For selecting values within a continuous range
-- **Settings Adjustment**: For adjusting settings like volume, brightness, or opacity
-- **Filtering**: For range-based filtering in search or data views
-- **Quantity Selection**: For selecting quantities with clear min/max bounds
-
-### Slider Design Guidelines
-
-- **Clear Labels**: Always provide clear labels indicating what the slider controls
-- **Appropriate Ranges**: Choose meaningful min/max values and step increments
-- **Value Feedback**: Show current values either in labels or through formatting
-- **Consistent Sizing**: Use consistent slider sizes throughout your application
-
-### Value Formatting
-
-- **Meaningful Units**: Use appropriate units (%, $, °C) that users understand
-- **Precision Levels**: Match decimal precision to the use case (whole numbers vs decimals)
-- **Custom Formatters**: Use custom formatters for complex business logic
-- **Visual Feedback**: Consider showing formatted values in real-time
-
-### Accessibility Considerations
-
-- **Keyboard Support**: Ensure all functionality is available via keyboard
-- **Screen Readers**: Test with screen readers to verify announcements
-- **Color Independence**: Don't rely solely on color to convey state
-- **Touch Targets**: Ensure thumb areas are large enough for touch interaction
-
-### Mobile Considerations
-
-- **Touch Targets**: Ensure thumbs are large enough for accurate touch interaction
-- **Gesture Support**: Test drag gestures on various mobile devices
-- **Orientation**: Consider how sliders work in both portrait and landscape modes
-- **Performance**: Optimize for smooth animations on lower-powered devices

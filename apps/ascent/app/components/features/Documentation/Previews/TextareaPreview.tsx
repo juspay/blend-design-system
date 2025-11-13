@@ -26,48 +26,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (description, setDescription) = React.useState(() => "")
-  
-  let handleDescriptionChange = evt => {
-    let value = ReactEvent.Form.target(evt)["value"]
-    setDescription(_ => value)
-  }
-  
-  <TextAreaBinding
-    label="Description"
-    placeholder="Enter your description..."
-    value=description
-    onChange=handleDescriptionChange
-    rows=4
-    hintText="Provide a detailed description"
-    required=true
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~value: string,
-  ~placeholder: string,
-  ~disabled: bool=?,
-  ~autoFocus: bool=?,
-  ~onChange: ReactEvent.Form.t => unit,
-  ~onFocus: ReactEvent.Focus.t => unit=?,
-  ~onBlur: ReactEvent.Focus.t => unit=?,
-  ~rows: int=?,
-  ~cols: int=?,
-  ~label: string=?,
-  ~sublabel: string=?,
-  ~hintText: string=?,
-  ~helpIconHintText: string=?,
-  ~required: bool=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~resize: string=?,
-  ~wrap: string=?,
-) => React.element = "TextArea"`
-
     const [description, setDescription] = useState('')
 
     const handleDescriptionChange = (
@@ -77,11 +35,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

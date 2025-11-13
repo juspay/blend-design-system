@@ -1,0 +1,462 @@
+---
+title: Chat Input
+description: The ChatInput component provides a rich text input interface for chat applications with file attachments, voice recording, auto-resize functionality, top queries suggestions, and comprehensive keyboard navigation.
+category: components
+tags:
+    - chat-input
+    - component
+    - input
+    - textarea
+    - file-upload
+    - chat
+    - messaging
+RepoFolderName: ChatInput
+StorybookLink: components-chatinput--docs
+---
+
+<ChatInputPreview />
+
+## Usage
+
+```tsx
+import { ChatInput } from 'blend-v1'
+
+function MyComponent() {
+    const [message, setMessage] = useState('')
+
+    const handleSend = (message: string, files: AttachedFile[]) => {
+        console.log('Sending message:', message)
+        console.log('Attached files:', files)
+    }
+
+    return (
+        <ChatInput
+            value={message}
+            onChange={setMessage}
+            onSend={handleSend}
+            placeholder="Type a message..."
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText:
+                    'Optional controlled value string for the text input. When provided, the component works in controlled mode, requiring onChange to update state. When undefined, the component manages its own state internally. Defaults to empty string.',
+            },
+            {
+                content: 'string',
+                hintText: 'Current text content of the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText:
+                    'Optional callback function invoked whenever the input value changes. Receives the new string value as a parameter. Required when using controlled mode (providing value prop). Use this to synchronize state with your application.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with new input value when it changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSend',
+                hintText:
+                    'Optional callback function invoked when the user sends a message. Triggered by pressing Enter (or Shift+Enter for new lines) or clicking the send button. Receives the message string and array of attached files as parameters.',
+            },
+            {
+                content: '(message: string, files: AttachedFile[]) => void',
+                hintText:
+                    'Function called with message text and attached files when sending',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onAttachFiles',
+                hintText:
+                    'Optional callback function invoked when files are selected via the attach button. Receives an array of native File objects. Use this to handle file uploads, validation, or conversion to AttachedFile format for the attachedFiles prop.',
+            },
+            {
+                content: '(files: File[]) => void',
+                hintText: 'Function called with array of selected files',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onVoiceRecord',
+                hintText:
+                    'Optional callback function invoked when the voice recording button is clicked. Use this to trigger voice recording functionality, open recording dialogs, or handle voice input features.',
+            },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when voice recording button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileRemove',
+                hintText:
+                    'Optional callback function invoked when a user removes an attached file (via remove button or overflow menu). Receives the fileId string of the removed file. Use this to update your attachedFiles array.',
+            },
+            {
+                content: '(fileId: string) => void',
+                hintText:
+                    'Function called with the ID of the file being removed',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileClick',
+                hintText:
+                    'Optional callback function invoked when a user clicks on an attached file. Receives the AttachedFile object. Use this to open file previews, download files, or navigate to file details.',
+            },
+            {
+                content: '(file: AttachedFile) => void',
+                hintText: 'Function called with the clicked file object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText:
+                    'Optional placeholder text displayed in the input field when it\'s empty. Provides guidance to users about what to type. Should be concise and actionable. Defaults to "Type a message...".',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when input is empty',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the entire chat input, making it non-interactive. Disabled inputs cannot be typed in, and all buttons (attach, voice, send) are disabled. Useful for preventing input during loading states or when user actions are not allowed. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables all interactions, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText:
+                    'Optional maximum character length for the message input. When provided, the input enforces this limit and prevents typing beyond it. Useful for API constraints or database field limits. If not provided, no length restriction is applied.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing maximum allowed characters',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoResize',
+                hintText:
+                    'When true, the textarea automatically adjusts its height based on content, growing vertically as the user types. When false, the textarea maintains a fixed height with scrolling. Provides a better UX for longer messages. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables auto-resizing, false uses fixed height with scroll',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'attachedFiles',
+                hintText:
+                    'Optional array of AttachedFile objects representing files currently attached to the message. Each file should have id, name, type, and optionally size, url, and preview properties. Files are displayed as tags with overflow handling when many are attached. Defaults to empty array.',
+            },
+            {
+                content: 'AttachedFile[]',
+                hintText:
+                    'Array of objects with id, name, type, and optional file metadata',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topQueries',
+                hintText:
+                    'Optional array of TopQuery objects representing suggested queries or frequently asked questions. Displayed in a collapsible section below the input. Each query should have id and text properties. Useful for quick replies or common questions. Defaults to empty array.',
+            },
+            {
+                content: 'TopQuery[]',
+                hintText:
+                    'Array of objects with id and text properties for query suggestions',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTopQuerySelect',
+                hintText:
+                    'Optional callback function invoked when a user clicks on a top query suggestion. Receives the selected TopQuery object. Use this to populate the input with the query text or trigger related actions.',
+            },
+            {
+                content: '(query: TopQuery) => void',
+                hintText: 'Function called with the selected query object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topQueriesMaxHeight',
+                hintText:
+                    'Maximum height in pixels for the top queries container before scrolling. When the queries list exceeds this height, a scrollbar appears. Useful for limiting the vertical space taken by suggestions. Defaults to 200 pixels.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'attachButtonIcon',
+                hintText:
+                    'Optional custom React element (typically an icon) to replace the default attach file button icon. Allows branding customization or using different icon libraries. If not provided, uses default Paperclip icon.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) for the attach button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'voiceButtonIcon',
+                hintText:
+                    'Optional custom React element (typically an icon) to replace the default voice recording button icon. Allows branding customization or using different icon libraries. If not provided, uses default AudioLines icon.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) for the voice button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sendButtonIcon',
+                hintText:
+                    'Optional custom React element (typically an icon) to replace the default send button icon. Allows branding customization or using different icon libraries. If not provided, uses default send icon.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) for the send button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'overflowMenuProps',
+                hintText:
+                    'Optional partial MenuProps object for customizing the overflow menu that appears when many files are attached. Allows styling, positioning, and behavior customization of the menu component used to display hidden files.',
+            },
+            {
+                content: 'Partial<MenuProps>',
+                hintText:
+                    'Partial Menu component props for overflow menu customization',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'aria-label',
+                hintText:
+                    'Optional ARIA label string for accessibility. Provides an accessible name for the chat input component when the visible label is not sufficient. Important for screen reader users.',
+            },
+            {
+                content: 'string',
+                hintText: 'Accessible label text for screen readers',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'aria-describedby',
+                hintText:
+                    'Optional ARIA describedby string for accessibility. References the ID of an element that provides additional descriptive information about the chat input. Helps screen reader users understand context or requirements.',
+            },
+            {
+                content: 'string',
+                hintText: 'ID of element providing additional description',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ChatInput component using the following tokens:
+
+```tsx
+export type ChatInputTokensType = {
+    container: {
+        backgroundColor: {
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            disabled: CSSObject['backgroundColor']
+        }
+        border: {
+            default: CSSObject['border']
+            focus: CSSObject['border']
+        }
+        borderRadius: CSSObject['borderRadius']
+        paddingTop: CSSObject['paddingTop']
+        paddingRight: CSSObject['paddingRight']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        gap: CSSObject['gap']
+        minHeight: CSSObject['minHeight']
+        transition: CSSObject['transition']
+        boxShadow: {
+            default: CSSObject['boxShadow']
+            hover: CSSObject['boxShadow']
+            focus: CSSObject['boxShadow']
+        }
+    }
+
+    attachmentContainer: {
+        backgroundColor: CSSObject['backgroundColor']
+        borderRadius: CSSObject['borderRadius']
+        padding: CSSObject['padding']
+    }
+
+    textarea: {
+        backgroundColor: CSSObject['backgroundColor']
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        lineHeight: CSSObject['lineHeight']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        placeholder: {
+            color: CSSObject['color']
+        }
+        resize: CSSObject['resize']
+        fontFamily: CSSObject['fontFamily']
+        minHeight: CSSObject['minHeight']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
+    }
+
+    filesContainer: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        maxHeight: CSSObject['maxHeight']
+        overflowY: CSSObject['overflowY']
+    }
+
+    bottomActions: {
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        gap: CSSObject['gap']
+        justifyContent: CSSObject['justifyContent']
+    }
+
+    overflowTag: {
+        backgroundColor: {
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            active: CSSObject['backgroundColor']
+        }
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
+        }
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+        transition: CSSObject['transition']
+        cursor: CSSObject['cursor']
+    }
+
+    topQueries: {
+        container: {
+            borderTop: CSSObject['borderTop']
+            paddingTop: CSSObject['paddingTop']
+        }
+        header: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            textTransform: CSSObject['textTransform']
+            backgroundColor: CSSObject['backgroundColor']
+            flexShrink: CSSObject['flexShrink']
+        }
+        scrollContainer: {
+            overflowY: CSSObject['overflowY']
+            maxHeightOffset: number
+        }
+        item: {
+            backgroundColor: {
+                default: CSSObject['backgroundColor']
+                hover: CSSObject['backgroundColor']
+                active: CSSObject['backgroundColor']
+                disabled: CSSObject['backgroundColor']
+            }
+            color: {
+                default: CSSObject['color']
+                hover: CSSObject['color']
+                active: CSSObject['color']
+                disabled: CSSObject['color']
+            }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            paddingX: CSSObject['padding']
+            paddingY: CSSObject['padding']
+            border: CSSObject['border']
+            transition: CSSObject['transition']
+            cursor: CSSObject['cursor']
+            opacity: {
+                default: CSSObject['opacity']
+                disabled: CSSObject['opacity']
+            }
+        }
+    }
+}
+
+export type ResponsiveChatInputTokensType = {
+    [key in keyof BreakpointType]: ChatInputTokensType
+}
+```

@@ -62,201 +62,330 @@ function MyComponent() {
         [
             {
                 content: 'value',
-                hintText: 'Current value of the input field',
+                hintText:
+                    'Optional controlled string value for the text input field. When provided, the input works in controlled mode, requiring onChange to update state. The value represents the current text entered by the user. If undefined, the input manages its own state internally.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Current text value in the input field',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onChange',
-                hintText: 'Callback when input value changes',
+                hintText:
+                    'Optional callback function invoked when the user types or modifies the input value. Receives a React.ChangeEvent<HTMLInputElement> containing the new input value. Required when using controlled mode (providing value prop). Use this to synchronize input state with your application.',
             },
             {
-                content: '(e: ChangeEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with change event when input value changes',
             },
             { content: '' },
         ],
         [
             {
                 content: 'dropDownValue',
-                hintText: 'Current selected value in dropdown',
+                hintText:
+                    'Optional controlled string value for the dropdown selection. When provided, the dropdown works in controlled mode, requiring onDropDownChange to update state. The value should match one of the option IDs in dropDownItems. If undefined, the dropdown manages its own state.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Current selected value ID from the dropdown options',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onDropDownChange',
-                hintText: 'Callback when dropdown selection changes',
+                hintText:
+                    'Optional callback function invoked when the user selects a different option from the dropdown. Receives the selected value (string ID). Required when using controlled mode for the dropdown. Use this to synchronize dropdown state with your application.',
             },
-            { content: '(value: string) => void', hintText: 'function' },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with selected value ID when dropdown selection changes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'dropDownItems',
-                hintText: 'Items and groups for the dropdown menu',
+                hintText:
+                    'Required array of SelectMenuGroupType objects that define the dropdown menu options. Each group can contain multiple items organized under a label. Items can be grouped for better organization (e.g., "Popular Currencies", "All Currencies"). Each item must have id, label, and value properties.',
             },
-            { content: 'SelectMenuGroupType[]', hintText: 'array' },
-            { content: 'Required' },
+            {
+                content: 'SelectMenuGroupType[]',
+                hintText:
+                    'Array of menu group objects with items for dropdown options',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'dropdownPosition',
-                hintText: 'Position of dropdown relative to input',
+                hintText:
+                    'Optional DropdownPosition enum value that determines where the dropdown selector appears relative to the input field. LEFT positions the dropdown on the left side of the input, RIGHT positions it on the right side. Right positioning is common for currency selectors. Defaults to RIGHT.',
             },
-            { content: 'DropdownPosition', hintText: 'enum' },
-            { content: 'RIGHT' },
+            {
+                content: 'DropdownPosition',
+                hintText:
+                    'Enum that determines dropdown position relative to input',
+            },
+            { content: 'LEFT, RIGHT' },
         ],
         [
             {
                 content: 'label',
-                hintText: 'Primary label for the input field',
+                hintText:
+                    "Optional primary label text string displayed above the input field. Provides context about what information the input expects. Should be concise and descriptive. The label is prominently displayed and helps users understand the input's purpose.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the input',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'sublabel',
-                hintText: 'Secondary label or description',
+                hintText:
+                    'Optional secondary label text string displayed below the primary label. Provides additional context, instructions, or clarification about the input. Styled with smaller, lighter text than the primary label. Useful for detailed explanations.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the primary label',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty. Provides guidance to users about what value to enter. Should be concise and example-oriented (e.g., "Enter amount", "0.00"). The placeholder disappears when the user starts typing.',
+            },
+            {
+                content: 'string',
                 hintText: 'Placeholder text shown when input is empty',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
                 content: 'size',
-                hintText: 'Size variant of the input field',
+                hintText:
+                    'Optional TextInputSize enum value that controls the physical dimensions of the input field and dropdown. SMALL creates a compact input, MEDIUM provides standard sizing, LARGE creates a more prominent input. Size affects padding, font size, and overall height. Defaults to MEDIUM.',
             },
-            { content: 'TextInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            {
+                content: 'TextInputSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the input',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
         ],
         [
             {
                 content: 'error',
-                hintText: 'Whether the input is in error state',
+                hintText:
+                    'When true, displays the input in an error state with red border and error styling. The error state indicates validation failure or incorrect input. When true, errorMessage should be provided to explain the error. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'errorMessage',
-                hintText: 'Error message to display when in error state',
+                hintText:
+                    'Optional error message text string displayed below the input when error is true. Should clearly explain what went wrong and how to fix it. The message appears in red text and helps users correct their input. Should be provided when error is true.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Error message text displayed when input is in error state',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'hintText',
-                hintText: 'Helper text displayed below the input',
+                hintText:
+                    'Optional helper text string displayed below the input field. Provides additional guidance, examples, or instructions about the expected input format. Shown in a muted color and helps users understand how to use the input correctly.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Helper text displayed below the input for guidance',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'helpIconHintText',
-                hintText: 'Tooltip text for the help icon',
+                hintText:
+                    'Optional tooltip text string that appears when users hover over or click the help icon next to the label. Provides detailed information, explanations, or examples. Useful for complex inputs that need additional context. The help icon appears next to the label when this prop is provided.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Tooltip text shown when help icon is hovered/clicked',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'disabled',
-                hintText: 'Whether the input and dropdown are disabled',
+                hintText:
+                    "When true, disables both the input field and dropdown, making them non-interactive. Disabled inputs show reduced visual opacity and cannot receive focus or be edited. Useful for preventing interaction when prerequisites aren't met or during loading states. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input and dropdown, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'required',
-                hintText: 'Whether the input is required',
+                hintText:
+                    'When true, indicates that the input is required and must be filled before form submission. The label typically shows a required indicator (asterisk). Useful for form validation and accessibility. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks input as required, false makes it optional',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'slot',
-                hintText: 'Content to display as an additional slot',
+                hintText:
+                    'Optional React element displayed as an additional slot within the input container. Useful for adding icons, badges, or other visual elements that complement the input. The slot appears inside the input field area, typically before or after the text input depending on dropdown position.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (icon, badge, etc.) for additional visual content',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'name',
-                hintText: 'Name attribute for the input field',
+                hintText:
+                    "Optional name attribute string for the HTML input element. Used for form submission and accessibility. The name is included in form data when the input is part of a form. Should be unique within the form and descriptive of the input's purpose.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'HTML name attribute for form submission and identification',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'dropdownName',
-                hintText: 'Name attribute for the dropdown',
+                hintText:
+                    'Optional name attribute string for the dropdown select element. Used for form submission when the dropdown is part of a form. Should be unique within the form and descriptive of what the dropdown represents (e.g., "currency", "unit").',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'HTML name attribute for the dropdown in form submission',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'maxDropdownHeight',
-                hintText: 'Maximum height for dropdown menu',
+                content: 'maxMenuHeight',
+                hintText:
+                    'Optional maximum height in pixels for the dropdown menu. When the menu content exceeds this height, a scrollbar appears. Useful for controlling the vertical space taken by the dropdown menu. If not provided, uses default height based on content.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum menu height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minMenuWidth',
+                hintText:
+                    'Optional minimum width in pixels for the dropdown menu. The menu will not shrink below this width, ensuring readability of menu items. Useful for preventing menus from becoming too narrow. If not provided, menu width adapts to content.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing minimum menu width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxMenuWidth',
+                hintText:
+                    'Optional maximum width in pixels for the dropdown menu. The menu will not grow beyond this width, preventing it from becoming too wide. Useful for maintaining consistent menu sizing. If not provided, menu width adapts to content.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum menu width in pixels',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onDropdownOpen',
-                hintText: 'Callback when dropdown opens',
+                hintText:
+                    'Optional callback function invoked when the dropdown menu opens (becomes visible). Receives no parameters. Use this to track dropdown interactions, perform side effects when the dropdown opens, or trigger analytics events.',
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: '() => void',
+                hintText: 'Function called when dropdown menu opens',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onDropdownClose',
-                hintText: 'Callback when dropdown closes',
+                hintText:
+                    'Optional callback function invoked when the dropdown menu closes (becomes hidden). Receives no parameters. Use this to track dropdown interactions, perform cleanup, or trigger side effects when the dropdown closes.',
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: '() => void',
+                hintText: 'Function called when dropdown menu closes',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'onFocus',
-                hintText: 'Callback when input receives focus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus (user clicks or tabs into it). Receives a React.FocusEvent<HTMLInputElement>. Use this to track focus events, show additional UI, or trigger validation.',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input receives focus',
             },
             { content: '' },
         ],
         [
             {
                 content: 'onBlur',
-                hintText: 'Callback when input loses focus',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus (user clicks away or tabs out). Receives a React.FocusEvent<HTMLInputElement>. Use this to trigger validation, save data, or perform cleanup when the user finishes editing.',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input loses focus',
             },
             { content: '' },
         ],
@@ -266,129 +395,73 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Enums
-
-### DropdownPosition
-
-Position of the dropdown relative to the input field:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'LEFT',
-                hintText: 'Dropdown positioned on the left side',
-            },
-            { content: '"left"', hintText: 'value' },
-            { content: 'Useful for prefix selections like country codes' },
-        ],
-        [
-            {
-                content: 'RIGHT',
-                hintText: 'Dropdown positioned on the right side',
-            },
-            { content: '"right"', hintText: 'value' },
-            {
-                content:
-                    'Common for suffix selections like currencies or units',
-            },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No positions available"
-    loadingMessage="Loading positions..."
-/>
-
-### DropdownInputSize
-
-Size variants (inherits from TextInputSize):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'SM', hintText: 'Small input size' },
-            { content: '"sm"', hintText: 'value' },
-            { content: 'Compact for tight layouts' },
-        ],
-        [
-            { content: 'MD', hintText: 'Medium input size' },
-            { content: '"md"', hintText: 'value' },
-            { content: 'Default size for most use cases' },
-        ],
-        [
-            { content: 'LG', hintText: 'Large input size' },
-            { content: '"lg"', hintText: 'value' },
-            { content: 'Prominent with floating label on mobile' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No sizes available"
-    loadingMessage="Loading sizes..."
-/>
-
-### DropdownInputState
-
-Internal state variants (for styling):
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'DEFAULT', hintText: 'Default state' },
-            { content: '"default"', hintText: 'value' },
-            { content: 'Normal input appearance' },
-        ],
-        [
-            { content: 'HOVER', hintText: 'Hover state' },
-            { content: '"hover"', hintText: 'value' },
-            { content: 'Enhanced border on hover' },
-        ],
-        [
-            { content: 'FOCUS', hintText: 'Focus state' },
-            { content: '"focus"', hintText: 'value' },
-            { content: 'Primary border and shadow when focused' },
-        ],
-        [
-            { content: 'ERROR', hintText: 'Error state' },
-            { content: '"error"', hintText: 'value' },
-            { content: 'Red border and error styling' },
-        ],
-        [
-            { content: 'DISABLED', hintText: 'Disabled state' },
-            { content: '"disabled"', hintText: 'value' },
-            { content: 'Muted appearance with no interaction' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No states available"
-    loadingMessage="Loading states..."
-/>
-
 ## Component Tokens
 
 You can style the DropdownInput component using the following tokens:
 
 ```tsx
 export type DropdownInputTokensType = {
-    input: {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in DropdownInputState]: CSSObject['color']
+        }
+    }
+    inputContainer: {
         gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in DropdownInputState]: CSSObject['boxShadow']
+        fontSize: {
+            [key in DropdownInputSize]: CSSObject['fontSize']
         }
-        paddingX: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        paddingY: {
-            [key in DropdownInputSize]: CSSObject['padding']
-        }
-        border: {
-            [key in DropdownInputState]: CSSObject['border']
+        fontWeight: {
+            [key in DropdownInputSize]: CSSObject['fontWeight']
         }
         color: {
             [key in DropdownInputState]: CSSObject['color']
         }
-        outline: {
-            [key in DropdownInputState]: CSSObject['outline']
+        borderRadius?: {
+            [key in DropdownInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in DropdownInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in DropdownInputState]: CSSObject['border']
         }
         backgroundColor: {
             [key in DropdownInputState]: CSSObject['backgroundColor']
@@ -399,195 +472,12 @@ export type DropdownInputTokensType = {
 export type ResponsiveDropdownInputTokens = {
     [key in keyof BreakpointType]: DropdownInputTokensType
 }
+
+export type DropdownInputSize = 'sm' | 'md' | 'lg'
+export type DropdownInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
-
-The component uses responsive tokens that adapt to different breakpoints:
-
-- **sm**: Mobile-optimized with floating label behavior for large size
-- **lg**: Desktop layout with consistent behavior across all sizes
-
-## Features
-
-- **Dual Input System**: Combined text input and dropdown selection in one component
-- **Flexible Positioning**: Dropdown can be positioned on left or right side
-- **Responsive Design**: Adaptive layout with floating labels on mobile for large size
-- **Integrated SingleSelect**: Uses SingleSelect component for dropdown functionality
-- **Dynamic Spacing**: Automatic padding adjustment based on dropdown and slot content
-- **Validation States**: Built-in error styling with custom error messages
-- **Form Integration**: Native HTML input attributes and form compatibility
-- **Accessibility**: Full keyboard navigation and screen reader support
-- **State Management**: Coordinated state between input and dropdown components
-
-## Usage Examples
-
-### Currency Input
-
-Input field with currency selector:
-
-```tsx
-import { DropdownInput, DropdownPosition } from '@juspay/blend-design-system'
-
-const [amount, setAmount] = useState('')
-const [currency, setCurrency] = useState('USD')
-
-const currencies = [
-    {
-        group: 'Major Currencies',
-        items: [
-            { id: 'USD', label: '$ USD', value: 'USD' },
-            { id: 'EUR', label: '€ EUR', value: 'EUR' },
-            { id: 'GBP', label: '£ GBP', value: 'GBP' },
-            { id: 'JPY', label: '¥ JPY', value: 'JPY' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Amount"
-    placeholder="0.00"
-    value={amount}
-    onChange={(e) => setAmount(e.target.value)}
-    dropDownValue={currency}
-    onDropDownChange={setCurrency}
-    dropDownItems={currencies}
-    dropdownPosition={DropdownPosition.RIGHT}
-    hintText="Enter amount and select currency"
-/>
-```
-
-### Unit Measurement Input
-
-Input with unit selector on the left:
-
-```tsx
-const [value, setValue] = useState('')
-const [unit, setUnit] = useState('px')
-
-const units = [
-    {
-        group: 'CSS Units',
-        items: [
-            { id: 'px', label: 'px', value: 'px' },
-            { id: 'rem', label: 'rem', value: 'rem' },
-            { id: 'em', label: 'em', value: 'em' },
-            { id: '%', label: '%', value: '%' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Width"
-    placeholder="Enter value"
-    value={value}
-    onChange={(e) => setValue(e.target.value)}
-    dropDownValue={unit}
-    onDropDownChange={setUnit}
-    dropDownItems={units}
-    dropdownPosition={DropdownPosition.LEFT}
-    hintText="Select unit and enter width value"
-/>
-```
-
-### Phone Number Input
-
-Phone input with country code selector:
-
-```tsx
-const [phoneNumber, setPhoneNumber] = useState('')
-const [countryCode, setCountryCode] = useState('+1')
-
-const countryCodes = [
-    {
-        group: 'Country Codes',
-        items: [
-            { id: 'us', label: '+1 🇺🇸', value: '+1' },
-            { id: 'uk', label: '+44 🇬🇧', value: '+44' },
-            { id: 'de', label: '+49 🇩🇪', value: '+49' },
-            { id: 'fr', label: '+33 🇫🇷', value: '+33' },
-        ],
-    },
-]
-
-<DropdownInput
-    label="Phone Number"
-    placeholder="Enter phone number"
-    value={phoneNumber}
-    onChange={(e) => setPhoneNumber(e.target.value)}
-    dropDownValue={countryCode}
-    onDropDownChange={setCountryCode}
-    dropDownItems={countryCodes}
-    dropdownPosition={DropdownPosition.LEFT}
-    hintText="Select country code and enter phone number"
-/>
-```
-
-## Behavior
-
-### Responsive Layout
-
-- **Large Size on Mobile**: Floating label animation for enhanced mobile experience
-- **Dynamic Padding**: Automatic adjustment based on dropdown and slot positions
-- **Touch Optimization**: Enhanced mobile interactions for both input and dropdown
-
-### Dropdown Integration
-
-- **SingleSelect Component**: Uses internal SingleSelect for dropdown functionality
-- **NO_CONTAINER Variant**: Seamless integration with minimal visual separation
-- **Inline Mode**: Dropdown rendered inline with input field
-- **Alignment Control**: Precise positioning relative to input boundaries
-
-### State Coordination
-
-- **Independent Controls**: Input and dropdown maintain separate values and callbacks
-- **Coordinated Focus**: Proper focus management between input and dropdown
-- **Error Handling**: Unified error state affects both input and dropdown styling
-- **Disabled State**: Disabling affects both components consistently
-
-### Dynamic Spacing
-
-- **Width Calculation**: Automatic measurement of dropdown width for padding adjustment
-- **Gap Management**: Consistent spacing between input content and dropdown
-- **Position Adaptation**: Padding adjusts based on left or right dropdown positioning
-
-## Best Practices
-
-### When to Use DropdownInput
-
-- **Currency Inputs**: Amount entry with currency selection
-- **Unit Values**: Measurements with unit selection (px, rem, %, etc.)
-- **Phone Numbers**: Number entry with country code selection
-- **Prefixed/Suffixed Data**: Any input requiring both text and categorical selection
-
-### Dropdown Item Structure
-
-- **Clear Labels**: Use descriptive labels that are easy to scan
-- **Logical Grouping**: Group related items together with clear group names
-- **Consistent Formatting**: Maintain consistent label format across items
-- **Appropriate Icons**: Use icons or symbols when they add clarity
-
-### Position Selection
-
-- **Left Position**: Use for prefixes like country codes, protocols, or categories
-- **Right Position**: Use for suffixes like currencies, units, or file extensions
-- **User Expectations**: Follow conventional patterns for your domain
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled inputs with proper state management
-- **Validation**: Validate both input value and dropdown selection
-- **Error Messages**: Provide clear error messages for validation failures
-- **Required Fields**: Clearly indicate when both input and dropdown are required
-
-### Accessibility Considerations
-
-- **Label Association**: Ensure proper labeling for both input and dropdown
-- **Keyboard Navigation**: Test tab order and arrow key navigation
-- **Screen Readers**: Verify that both components are properly announced
-- **Focus Indicators**: Maintain visible focus indicators for keyboard users
-
-### Performance Optimization
-
-- **Item Lists**: Optimize large dropdown item lists with appropriate grouping
-- **State Updates**: Debounce input changes if triggering expensive operations
-- **Memory Management**: Properly clean up event listeners and refs
-- **Render Optimization**: Use React.memo for dropdown items if needed

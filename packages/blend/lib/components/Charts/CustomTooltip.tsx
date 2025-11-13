@@ -14,6 +14,7 @@ import {
 } from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
+import { useEffect, useRef } from 'react'
 
 import {
     Payload,
@@ -294,13 +295,23 @@ const LineChartTooltip = ({
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
 }) => {
-    if (active && hoveredKey == null) {
-        if (selectedKeys.length > 0) {
-            setHoveredKey(selectedKeys[0])
-        } else {
-            setHoveredKey(Object.keys(originalData[0].data)[0])
+    const updateScheduledRef = useRef(false)
+
+    useEffect(() => {
+        if (active && hoveredKey == null && !updateScheduledRef.current) {
+            updateScheduledRef.current = true
+            queueMicrotask(() => {
+                updateScheduledRef.current = false
+                if (selectedKeys.length > 0) {
+                    setHoveredKey(selectedKeys[0])
+                } else if (originalData.length > 0 && originalData[0].data) {
+                    setHoveredKey(Object.keys(originalData[0].data)[0])
+                }
+            })
+        } else if (!active) {
+            updateScheduledRef.current = false
         }
-    }
+    }, [active, hoveredKey, selectedKeys, setHoveredKey])
 
     if (!active || !payload || !payload.length || !hoveredKey || !label) {
         return null
@@ -432,13 +443,23 @@ const PieChartTooltip = ({
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
 }) => {
-    if (active && hoveredKey == null) {
-        if (selectedKeys.length > 0) {
-            setHoveredKey(selectedKeys[0])
-        } else {
-            setHoveredKey(Object.keys(originalData[0].data)[0])
+    const updateScheduledRef = useRef(false)
+
+    useEffect(() => {
+        if (active && hoveredKey == null && !updateScheduledRef.current) {
+            updateScheduledRef.current = true
+            queueMicrotask(() => {
+                updateScheduledRef.current = false
+                if (selectedKeys.length > 0) {
+                    setHoveredKey(selectedKeys[0])
+                } else if (originalData.length > 0 && originalData[0].data) {
+                    setHoveredKey(Object.keys(originalData[0].data)[0])
+                }
+            })
+        } else if (!active) {
+            updateScheduledRef.current = false
         }
-    }
+    }, [active, hoveredKey, selectedKeys, setHoveredKey])
 
     if (!active || !payload || !payload.length || !hoveredKey) {
         return null

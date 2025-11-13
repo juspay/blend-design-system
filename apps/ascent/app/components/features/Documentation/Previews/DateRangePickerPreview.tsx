@@ -26,45 +26,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (dateRange, setDateRange) = React.useState(() => None)
-  
-  let handleDateRangeChange = range => {
-    setDateRange(_ => Some(range))
-    Js.log2("Selected date range:", range)
-  }
-  
-  <DateRangePickerBinding
-    value=?dateRange
-    onChange=handleDateRangeChange
-    showDateTimePicker=true
-    showPresets=true
-    allowSingleDateSelection=false
-    dateFormat="dd/MM/yyyy"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~value: 'dateRange=?,
-  ~onChange: 'dateRange => unit=?,
-  ~showDateTimePicker: bool=?,
-  ~showPresets: bool=?,
-  ~placeholder: string=?,
-  ~isDisabled: bool=?,
-  ~icon: React.element=?,
-  ~minDate: Js.Date.t=?,
-  ~maxDate: Js.Date.t=?,
-  ~dateFormat: string=?,
-  ~allowSingleDateSelection: bool=?,
-  ~disableFutureDates: bool=?,
-  ~disablePastDates: bool=?,
-  ~triggerElement: React.element=?,
-  ~useDrawerOnMobile: bool=?,
-  ~skipQuickFiltersOnMobile: bool=?,
-) => React.element = "DateRangePicker"`
-
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
 
     const handleDateRangeChange = (range: DateRange) => {
@@ -93,11 +54,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

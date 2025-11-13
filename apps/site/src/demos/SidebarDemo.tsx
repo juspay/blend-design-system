@@ -33,6 +33,8 @@ import {
     TrendingUp,
     Upload,
     Workflow,
+    Moon,
+    Sun,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -57,7 +59,7 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import ProgressBarDemo from './ProgressBarDemo'
-import { ThemeProvider } from '../../../../packages/blend/lib/context'
+import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
 import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -1089,7 +1091,8 @@ const SidebarDemo = () => {
         },
     ]
 
-    const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
 
     const breakpoints = {
         sm: 480,
@@ -1097,12 +1100,13 @@ const SidebarDemo = () => {
     }
 
     const themeProps =
-        theme === 'EULER'
-            ? {}
+        brandTheme === 'EULER'
+            ? { theme: colorTheme }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
+                  theme: colorTheme,
               }
 
     return (
@@ -1201,32 +1205,76 @@ const SidebarDemo = () => {
                                     }
                                 />
                             </Block>
-                            <div>
-                                <SingleSelect
-                                    label="Theme"
-                                    placeholder="Select Theme"
-                                    minMenuWidth={200}
-                                    alignment={SelectMenuAlignment.END}
-                                    selected={theme}
-                                    onSelect={(value) =>
-                                        setTheme(value as 'EULER' | 'JUSBIZ')
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setColorTheme(
+                                            colorTheme === Theme.LIGHT
+                                                ? Theme.DARK
+                                                : Theme.LIGHT
+                                        )
                                     }
-                                    variant={SelectMenuVariant.NO_CONTAINER}
-                                    items={[
-                                        {
-                                            items: [
-                                                {
-                                                    value: 'EULER',
-                                                    label: 'EULER',
-                                                },
-                                                {
-                                                    value: 'JUSBIZ',
-                                                    label: 'JUSBIZ',
-                                                },
-                                            ],
-                                        },
-                                    ]}
-                                />
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        colorTheme === Theme.DARK
+                                            ? 'Switch to Light Mode'
+                                            : 'Switch to Dark Mode'
+                                    }
+                                    style={{
+                                        backgroundColor:
+                                            colorTheme === Theme.DARK
+                                                ? FOUNDATION_THEME.colors
+                                                      .gray[100]
+                                                : 'transparent',
+                                    }}
+                                >
+                                    {colorTheme === Theme.DARK ? (
+                                        <Sun
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .orange[500]
+                                            }
+                                            size={20}
+                                        />
+                                    ) : (
+                                        <Moon
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    )}
+                                </button>
+                                <div>
+                                    <SingleSelect
+                                        label="Brand"
+                                        placeholder="Select Brand"
+                                        minMenuWidth={200}
+                                        alignment={SelectMenuAlignment.END}
+                                        selected={brandTheme}
+                                        onSelect={(value) =>
+                                            setBrandTheme(
+                                                value as 'EULER' | 'JUSBIZ'
+                                            )
+                                        }
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        items={[
+                                            {
+                                                items: [
+                                                    {
+                                                        value: 'EULER',
+                                                        label: 'EULER',
+                                                    },
+                                                    {
+                                                        value: 'JUSBIZ',
+                                                        label: 'JUSBIZ',
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                    />
+                                </div>
                             </div>
                         </div>
                     }

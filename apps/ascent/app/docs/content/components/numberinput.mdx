@@ -53,154 +53,226 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'value',
-                hintText: 'Current numeric value of the input',
-            },
-            { content: 'number | undefined', hintText: 'number' },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'onChange',
-                hintText: 'Callback when input value changes',
+                content: 'NumberInput.value',
+                hintText:
+                    'Required numeric value or undefined representing the current input value. Use undefined to represent an empty input. The value is controlled by your component state and updates when the user types or uses the stepper buttons. Required for controlled input.',
             },
             {
-                content: '(e: ChangeEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: 'number | undefined',
+                hintText: 'Number value or undefined for empty state',
             },
-            { content: 'Required' },
-        ],
-        [
-            {
-                content: 'min',
-                hintText: 'Minimum allowed value',
-            },
-            { content: 'number', hintText: 'number' },
             { content: '' },
         ],
         [
             {
-                content: 'max',
-                hintText: 'Maximum allowed value',
+                content: 'NumberInput.onChange',
+                hintText:
+                    'Required callback function invoked when the input value changes. Receives a React.ChangeEvent<HTMLInputElement> as a parameter. Use event.target.value to get the new string value, then convert to number if needed. Update your state in this handler.',
             },
-            { content: 'number', hintText: 'number' },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with change event when value changes',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'step',
-                hintText: 'Increment/decrement step value',
+                content: 'NumberInput.min',
+                hintText:
+                    'Optional minimum allowed numeric value. Users cannot enter values below this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., negative quantities).',
             },
-            { content: 'number', hintText: 'number' },
-            { content: '1' },
-        ],
-        [
             {
-                content: 'label',
-                hintText: 'Primary label for the input field',
+                content: 'number',
+                hintText: 'Number representing the minimum allowed value',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '"Number Input"' },
-        ],
-        [
-            {
-                content: 'sublabel',
-                hintText: 'Secondary label or description',
-            },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'placeholder',
+                content: 'NumberInput.max',
+                hintText:
+                    'Optional maximum allowed numeric value. Users cannot enter values above this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., stock limits).',
+            },
+            {
+                content: 'number',
+                hintText: 'Number representing the maximum allowed value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.step',
+                hintText:
+                    'Optional increment/decrement step value used by the stepper buttons and arrow keys. When users click the up/down buttons or press arrow keys, the value changes by this amount. Defaults to 1 if not provided.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing the step increment/decrement',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.label',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what users should input. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',
+            },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.sublabel',
+                hintText:
+                    "Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the input field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex input requirements.",
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty or when value is undefined. Provides guidance to users about what they can input. Should be concise and action-oriented (e.g., "Enter quantity").',
+            },
+            {
+                content: 'string',
                 hintText: 'Placeholder text shown when input is empty',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'size',
-                hintText: 'Size variant of the input field',
+                content: 'NumberInput.size',
+                hintText:
+                    'Optional NumberInputSize enum value that determines the size variant of the input field. Affects padding, height, font size, and overall dimensions. MEDIUM is the default size, LARGE provides a prominent input with floating label on mobile. Defaults to MEDIUM.',
             },
-            { content: 'NumberInputSize', hintText: 'enum' },
-            { content: 'MEDIUM' },
+            {
+                content: 'NumberInputSize',
+                hintText:
+                    'Enum that determines the size variant of the input field',
+            },
+            { content: 'MEDIUM, LARGE' },
         ],
         [
             {
-                content: 'error',
-                hintText: 'Whether the input is in error state',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'errorMessage',
-                hintText: 'Error message to display when in error state',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'hintText',
-                hintText: 'Helper text displayed below the input',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'helpIconHintText',
-                hintText: 'Tooltip text for the help icon',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disabled',
-                hintText: 'Whether the input is disabled',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'required',
-                hintText: 'Whether the input is required',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'name',
-                hintText: 'Name attribute for the input field',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onFocus',
-                hintText: 'Callback when input receives focus',
+                content: 'NumberInput.error',
+                hintText:
+                    'When true, displays the input field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
             },
             { content: '' },
         ],
         [
             {
-                content: 'onBlur',
-                hintText: 'Callback when input loses focus',
+                content: 'NumberInput.errorMessage',
+                hintText:
+                    'Optional error message string displayed below the input field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',
             },
             {
-                content: '(e: FocusEvent<HTMLInputElement>) => void',
-                hintText: 'function',
+                content: 'string',
+                hintText: 'Error message text displayed when error is true',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.hintText',
+                hintText:
+                    'Optional helper text string displayed below the input field. Provides guidance, examples, or additional information about the input. Styled with smaller, lighter text. Useful for clarifying complex input requirements or providing examples.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text shown below the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.helpIconHintText',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the input field. Should be concise and helpful. If not provided, no help icon is shown.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tooltip text shown when hovering over the help icon',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot type, use stepper buttons, or change the value. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.required',
+                hintText:
+                    'When true, marks the input field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure values are provided. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks field as required, false allows optional input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.name',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.onFocus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for tracking user interaction or showing additional UI.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input gains focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.onBlur',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for validation, cleanup, or tracking user interaction.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input loses focus',
             },
             { content: '' },
         ],
@@ -210,60 +282,91 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Enums
-
-### NumberInputSize
-
-Size variants for the number input:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'MEDIUM', hintText: 'Medium input size' },
-            { content: '"md"', hintText: 'value' },
-            { content: 'Default size for most use cases' },
-        ],
-        [
-            { content: 'LARGE', hintText: 'Large input size' },
-            { content: '"lg"', hintText: 'value' },
-            { content: 'Prominent input with floating label on mobile' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No sizes available"
-    loadingMessage="Loading sizes..."
-/>
-
 ## Component Tokens
 
 You can style the NumberInput component using the following tokens:
 
 ```tsx
 export type NumberInputTokensType = {
-    input: {
-        gap: CSSObject['gap']
-        borderRadius?: CSSObject['borderRadius']
-        boxShadow: {
-            [key in TextInputState]: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        paddingX: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        paddingY: {
-            [key in TextInputSize]: CSSObject['padding']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
         }
-        border: {
-            [key in TextInputState]: CSSObject['border']
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in NumberInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in NumberInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in NumberInputSize]: CSSObject['fontWeight']
         }
         color: {
-            [key in TextInputState]: CSSObject['color']
+            [key in NumberInputState]: CSSObject['color']
         }
-        outline: {
-            [key in TextInputState]: CSSObject['outline']
+        borderRadius: {
+            [key in NumberInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in NumberInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in NumberInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in NumberInputState]: CSSObject['border']
         }
         backgroundColor: {
-            default: CSSObject['backgroundColor']
-            disabled: CSSObject['backgroundColor']
+            [key in NumberInputState]: CSSObject['backgroundColor']
+        }
+        stepperButton: {
+            width: {
+                [key in NumberInputSize]: CSSObject['width']
+            }
+            backgroundColor: {
+                [key in NumberInputState]: CSSObject['backgroundColor']
+            }
+            icon: {
+                color: {
+                    [key in NumberInputState]: CSSObject['color']
+                }
+                width: {
+                    [key in NumberInputSize]: CSSObject['width']
+                }
+            }
         }
     }
 }
@@ -271,247 +374,11 @@ export type NumberInputTokensType = {
 export type ResponsiveNumberInputTokens = {
     [key in keyof BreakpointType]: NumberInputTokensType
 }
+
+export type NumberInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
 ```
-
-The component uses responsive tokens that adapt to different breakpoints:
-
-- **sm**: Mobile-optimized with floating label behavior for large size
-- **lg**: Desktop layout with consistent behavior across all sizes
-
-## Features
-
-- **Stepper Controls**: Built-in increment/decrement buttons with triangle indicators
-- **Numeric Validation**: Enforces numeric input with proper value handling
-- **Min/Max Constraints**: Automatic validation and button disabling at limits
-- **Step Intervals**: Configurable step size for increment/decrement operations
-- **Responsive Design**: Adaptive layout with floating labels on mobile for large size
-- **Visual Controls**: Intuitive up/down arrow buttons positioned on the right
-- **Keyboard Support**: Standard numeric input keyboard interactions
-- **Validation States**: Built-in error styling with custom error messages
-- **Form Integration**: Native HTML input attributes and form compatibility
-- **Accessibility**: Full keyboard navigation and screen reader support
-
-## Usage Examples
-
-### Basic Quantity Input
-
-Simple number input for quantity selection:
-
-```tsx
-import { NumberInput } from '@juspay/blend-design-system'
-
-const [quantity, setQuantity] = useState<number | undefined>(1)
-
-const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setQuantity(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Quantity"
-    placeholder="Enter quantity"
-    value={quantity}
-    onChange={handleQuantityChange}
-    min={1}
-    max={99}
-    step={1}
-    hintText="Select between 1 and 99 items"
-/>
-```
-
-### Price Input with Decimal Steps
-
-Number input for price with decimal precision:
-
-```tsx
-const [price, setPrice] = useState<number | undefined>(10.0)
-
-const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setPrice(value === '' ? undefined : parseFloat(value))
-}
-
-;<NumberInput
-    label="Price"
-    sublabel="Set your product price"
-    placeholder="0.00"
-    value={price}
-    onChange={handlePriceChange}
-    min={0.01}
-    max={9999.99}
-    step={0.01}
-    hintText="Price in USD"
-/>
-```
-
-### Age Input with Validation
-
-Number input with custom validation and error handling:
-
-```tsx
-const [age, setAge] = useState<number | undefined>()
-const [ageError, setAgeError] = useState('')
-
-const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    const numericAge = value === '' ? undefined : Number(value)
-
-    setAge(numericAge)
-
-    if (numericAge && (numericAge < 18 || numericAge > 120)) {
-        setAgeError('Age must be between 18 and 120')
-    } else {
-        setAgeError('')
-    }
-}
-
-;<NumberInput
-    label="Age"
-    placeholder="Enter your age"
-    value={age}
-    onChange={handleAgeChange}
-    min={18}
-    max={120}
-    step={1}
-    error={!!ageError}
-    errorMessage={ageError}
-    required
-/>
-```
-
-### Temperature Input
-
-Number input for temperature with negative values:
-
-```tsx
-const [temperature, setTemperature] = useState<number | undefined>(20)
-
-const handleTempChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setTemperature(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Temperature"
-    sublabel="Room temperature setting"
-    placeholder="Enter temperature"
-    value={temperature}
-    onChange={handleTempChange}
-    min={-20}
-    max={50}
-    step={0.5}
-    hintText="Temperature in Celsius (-20°C to 50°C)"
-/>
-```
-
-### Percentage Input
-
-Number input for percentage values:
-
-```tsx
-const [percentage, setPercentage] = useState<number | undefined>(50)
-
-const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setPercentage(value === '' ? undefined : Number(value))
-}
-
-;<NumberInput
-    label="Completion Percentage"
-    placeholder="Enter percentage"
-    value={percentage}
-    onChange={handlePercentageChange}
-    min={0}
-    max={100}
-    step={5}
-    size="large"
-    hintText="Progress completion (0% to 100%)"
-/>
-```
-
-## Behavior
-
-### Stepper Controls
-
-- **Increment Button**: Increases value by step amount (top arrow)
-- **Decrement Button**: Decreases value by step amount (bottom arrow)
-- **Auto-disable**: Buttons disable when reaching min/max limits
-- **Visual Feedback**: Hover and focus states for better interaction
-- **Click Handling**: Triggers onChange with synthetic events
-
-### Value Management
-
-- **Undefined Values**: Supports undefined for empty states
-- **Number Parsing**: Automatic conversion from string to number
-- **Step Validation**: Ensures increments follow step intervals
-- **Boundary Checking**: Prevents values outside min/max range
-- **Decimal Support**: Handles decimal values with proper precision
-
-### Responsive Layout
-
-- **Large Size on Mobile**: Floating label animation for enhanced mobile experience
-- **Dynamic Spacing**: Automatic adjustment of stepper button positioning
-- **Touch Optimization**: Enhanced mobile interactions for stepper controls
-- **Consistent Styling**: Maintains visual consistency across screen sizes
-
-### Keyboard Interactions
-
-- **Arrow Keys**: Native browser support for up/down arrow increment/decrement
-- **Direct Input**: Standard numeric keyboard input
-- **Tab Navigation**: Proper tab order through input and stepper controls
-- **Focus Management**: Clear focus indicators for accessibility
-
-## Best Practices
-
-### When to Use NumberInput
-
-- **Quantity Selection**: Product quantities, item counts, etc.
-- **Numeric Settings**: Configuration values, limits, thresholds
-- **Measurements**: Dimensions, weights, temperatures, percentages
-- **Financial Inputs**: Prices, amounts, budgets (with appropriate step values)
-- **Range Inputs**: Values within specific numeric ranges
-
-### Value Handling
-
-- **Type Safety**: Use proper TypeScript types (number | undefined)
-- **Validation**: Implement client-side validation for business rules
-- **Error Handling**: Provide clear error messages for invalid values
-- **Default Values**: Consider appropriate default values for better UX
-- **Precision**: Use appropriate step values for decimal precision
-
-### Min/Max Configuration
-
-- **Logical Ranges**: Set realistic min/max values for your use case
-- **User Feedback**: Clearly communicate value constraints
-- **Progressive Enhancement**: Allow manual typing beyond stepper limits
-- **Edge Cases**: Handle edge cases like negative numbers appropriately
-
-### Step Configuration
-
-- **Appropriate Increments**: Choose step values that make sense for your data
-- **Decimal Precision**: Use decimal steps (0.01, 0.1) for precise values
-- **User Expectations**: Match step values to user mental models
-- **Performance**: Consider reasonable step sizes for good UX
-
-### Accessibility Considerations
-
-- **Label Association**: Ensure proper labeling for screen readers
-- **Stepper Announcement**: Verify stepper controls are accessible
-- **Keyboard Navigation**: Test all keyboard interactions
-- **Value Changes**: Ensure value changes are announced appropriately
-- **Error Communication**: Provide clear, accessible error messages
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled inputs with proper state
-- **Validation Libraries**: Compatible with React Hook Form, Formik, etc.
-- **Submission Handling**: Handle undefined values appropriately in forms
-- **Reset Functionality**: Implement proper form reset behavior
-- **Loading States**: Consider loading states for async operations
-
-### Performance Optimization
-
-- **Debouncing**: Consider debouncing for expensive validation operations
-- **State Management**: Use appropriate state management patterns
-- **Re-rendering**: Optimize for minimal unnecessary re-renders
-- **Memory Cleanup**: Properly clean up event listeners and timers
