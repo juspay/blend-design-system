@@ -277,14 +277,13 @@ const StatCard = ({
     }, [chartData])
 
     const handleBarMouseEnter = useCallback(
-        (data: any) => {
+        (data: { index: number }) => {
             if (data.index !== hoveredBarIndex) {
                 setHoveredBarIndex(data.index)
             }
         },
         [hoveredBarIndex]
     )
-
     const handleBarMouseLeave = useCallback(() => {
         setHoveredBarIndex(null)
     }, [])
@@ -1180,25 +1179,19 @@ const StatCard = ({
                                                 .default,
                                         }}
                                     >
-                                        {indexedChartData?.map(
-                                            (entry, index) => (
-                                                <Cell
-                                                    key={`cell-${index}`}
-                                                    fill={
-                                                        hoveredBarIndex !==
-                                                            null &&
-                                                        hoveredBarIndex !==
-                                                            index
-                                                            ? statCardToken
-                                                                  .chart.bar
-                                                                  .fill.hover
-                                                            : statCardToken
-                                                                  .chart.bar
-                                                                  .fill.default
-                                                    }
-                                                />
-                                            )
-                                        )}
+                                        {indexedChartData?.map((_, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={
+                                                    hoveredBarIndex !== null &&
+                                                    hoveredBarIndex !== index
+                                                        ? statCardToken.chart
+                                                              .bar.fill.hover
+                                                        : statCardToken.chart
+                                                              .bar.fill.default
+                                                }
+                                            />
+                                        ))}
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
