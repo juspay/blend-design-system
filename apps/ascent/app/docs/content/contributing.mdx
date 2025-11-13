@@ -98,55 +98,12 @@ blend-design-system/
 git checkout -b fix/button-disabled-state
 
 # Make your fix
-# Add tests
 # Update docs if needed
 
 # Commit and push
 git commit -m "fix: button disabled state styling"
 git push origin fix/button-disabled-state
 ```
-
-### New Components
-
-Creating new components requires careful planning and implementation:
-
-#### Component Structure
-
-```
-components/YourComponent/
-├── YourComponent.tsx         # Main React component
-├── types.ts                  # TypeScript definitions
-└── yourComponent.tokens.ts   # Component-specific tokens
-```
-
-#### Component Template
-
-```tsx
-import { ComponentTokens } from './types'
-
-export type YourComponentProps = {
-    children?: React.ReactNode
-    variant?: 'primary' | 'secondary'
-    size?: 'sm' | 'md' | 'lg'
-    className?: string
-}
-
-export const YourComponent = ({
-    children,
-    variant = 'primary',
-    size = 'md',
-    className,
-    ...props
-}: YourComponentProps) => {
-    // Implementation
-}
-```
-
-#### Requirements for New Components
-
-- **TypeScript**: Full type definitions
-- **Theme Integration**: Use theme tokens for styling
-- **Documentation**: Usage examples and API reference
 
 ### Documentation
 
