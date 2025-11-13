@@ -21,18 +21,22 @@ import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
+import { dropdownContentAnimations } from './multiSelect.animations'
 
-const Content = styled(RadixMenu.Content)(() => ({
-    position: 'relative',
-    backgroundColor: FOUNDATION_THEME.colors.gray[0],
-    borderRadius: FOUNDATION_THEME.border.radius[8],
-    boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 49,
-    border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-}))
+const Content = styled(RadixMenu.Content)`
+    position: relative;
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
+    border-radius: ${FOUNDATION_THEME.border.radius[8]};
+    box-shadow: ${FOUNDATION_THEME.shadows.sm};
+    z-index: 49;
+    border: ${FOUNDATION_THEME.border.width[1]} solid
+        ${FOUNDATION_THEME.colors.gray[200]};
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ${dropdownContentAnimations}
+`
 
 const StickyHeader = styled(Block)(() => ({
     position: 'sticky',

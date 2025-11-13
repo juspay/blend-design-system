@@ -88,6 +88,8 @@ const SingleSelect = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
+    const isContainer = variant === SelectMenuVariant.CONTAINER
+
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const [open, setOpen] = useState(false)
@@ -158,7 +160,7 @@ const SingleSelect = ({
             gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
-            {variant === SelectMenuVariant.CONTAINER &&
+            {isContainer &&
                 (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
                     <InputLabels
                         label={label}
@@ -172,7 +174,7 @@ const SingleSelect = ({
                 )}
             <Block
                 display="flex"
-                {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
+                {...((!inline || isContainer) && {
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
@@ -247,9 +249,7 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
-                                    {...((!inline ||
-                                        variant ===
-                                            SelectMenuVariant.CONTAINER) && {
+                                    {...((!inline || isContainer) && {
                                         paddingX: paddingX,
                                         paddingY: paddingY,
                                         backgroundColor:
@@ -307,8 +307,7 @@ const SingleSelect = ({
                                             </Block>
                                         )}
                                         {isSmallScreenWithLargeSize &&
-                                        variant ===
-                                            SelectMenuVariant.CONTAINER ? (
+                                        isContainer ? (
                                             <Block
                                                 as="span"
                                                 textAlign="left"
@@ -480,7 +479,7 @@ const SingleSelect = ({
                     />
                 </Block>
             </Block>
-            {variant === SelectMenuVariant.CONTAINER && (
+            {isContainer && (
                 <InputFooter
                     hintText={hintText}
                     error={error}
