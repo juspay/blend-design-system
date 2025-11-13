@@ -29,12 +29,8 @@ export type MobileNavigationTokenType = {
 
     // Drawer properties
     drawer: {
-        maxWidth: CSSObject['maxWidth']
         borderRadius: CSSObject['borderRadius']
         borderTop: CSSObject['border']
-        mobileOffset: {
-            bottom: CSSObject['padding']
-        }
     }
 
     // Primary row (first visible row)
@@ -85,7 +81,6 @@ export type MobileNavigationTokenType = {
             [key in MobileNavigationState]: CSSObject['color']
         }
         fontWeight: CSSObject['fontWeight']
-        flexShrink: CSSObject['flexShrink']
         icon: {
             width: CSSObject['width']
             height: CSSObject['height']
@@ -124,12 +119,8 @@ export const getMobileNavigationTokens = (
     const baseTokens: MobileNavigationTokenType = {
         backgroundColor: foundationToken.colors.gray[0],
         drawer: {
-            maxWidth: '640px',
             borderRadius: foundationToken.border.radius[24],
             borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
-            mobileOffset: {
-                bottom: foundationToken.unit[8],
-            },
         },
         primaryRow: {
             minHeight: `calc(${String(foundationToken.unit[48])} + ${String(foundationToken.unit[16])} * 2)`,
@@ -176,7 +167,6 @@ export const getMobileNavigationTokens = (
                 active: foundationToken.colors.gray[800],
             },
             fontWeight: foundationToken.font.weight[500],
-            flexShrink: 0,
             icon: {
                 width: foundationToken.unit[20],
                 height: foundationToken.unit[20],
@@ -192,9 +182,7 @@ export const getMobileNavigationTokens = (
         primaryAction: {
             width: foundationToken.unit[48],
             height: foundationToken.unit[48],
-            borderRadius:
-                foundationToken.border.radius[28] ??
-                foundationToken.border.radius.full,
+            borderRadius: foundationToken.border.radius[28],
             background: `linear-gradient(135deg, ${foundationToken.colors.primary[400]} 0%, ${foundationToken.colors.primary[600]} 100%)`,
             boxShadow: foundationToken.shadows['2xl'],
             color: foundationToken.colors.gray[0],

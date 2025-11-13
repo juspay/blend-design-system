@@ -37,7 +37,7 @@ const MobileNavigationItem = forwardRef<
             backgroundColor={tokens.item.backgroundColor[state]}
             color={String(tokens.item.color[state])}
             fontWeight={tokens.item.fontWeight}
-            flexShrink={tokens.item.flexShrink}
+            flexShrink={0}
             aria-pressed={isActive}
             aria-label={item.label}
             onClick={() => onSelect(item)}

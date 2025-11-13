@@ -180,7 +180,7 @@ const SidebarMobileNavigation = forwardRef<
                             left: '0px',
                             right: '0px',
                             bottom: '0px',
-                            maxWidth: String(tokens.drawer.maxWidth),
+                            // maxWidth: String(tokens.drawer.maxWidth),
                             margin: '0 auto',
                             borderTop: tokens.drawer.borderTop,
                             borderTopLeftRadius: tokens.drawer.borderRadius,
@@ -191,7 +191,7 @@ const SidebarMobileNavigation = forwardRef<
                             top: '0px',
                             left: '0px',
                             right: '0px',
-                            bottom: String(tokens.drawer.mobileOffset.bottom),
+                            // bottom: String(tokens.drawer.mobileOffset.bottom),
                         }}
                         showHandle={false}
                     >

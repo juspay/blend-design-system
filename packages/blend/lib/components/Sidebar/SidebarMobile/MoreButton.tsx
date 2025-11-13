@@ -33,7 +33,7 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                 backgroundColor={tokens.item.backgroundColor.default}
                 color={moreButtonColor}
                 fontWeight={tokens.item.fontWeight}
-                flexShrink={tokens.item.flexShrink}
+                flexShrink={0}
                 aria-label="More options"
                 onClick={onClick}
             >
