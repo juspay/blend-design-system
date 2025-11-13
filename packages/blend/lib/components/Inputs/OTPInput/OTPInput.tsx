@@ -35,7 +35,17 @@ const OTPInput = ({
     const otpInputTokens = useResponsiveTokens<OTPInputTokensType>('OTP_INPUT')
     const [otp, setOtp] = useState<string[]>(new Array(length).fill(''))
     const [, setActiveIndex] = useState<number>(-1)
+    const [shouldShake, setShouldShake] = useState(false)
     const inputRefs = useRef<HTMLInputElement[]>([])
+
+    // Trigger shake animation when error changes to true
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 500)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
 
     useEffect(() => {
         if (value) {
@@ -161,77 +171,98 @@ const OTPInput = ({
                 tokens={otpInputTokens}
             />
             <Block
-                display="flex"
-                gap={otpInputTokens.inputContainer.gap}
-                width={'100%'}
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
+                }}
             >
-                {otp.map((digit, index) => (
-                    <PrimitiveInput
-                        placeholder={placeholder}
-                        placeholderColor={'transparent'}
-                        form={form}
-                        width={otpInputTokens.inputContainer.input.width}
-                        height={otpInputTokens.inputContainer.input.height}
-                        borderRadius={
-                            otpInputTokens.inputContainer.input.borderRadius
+                <style>
+                    {`
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                            20%, 40%, 60%, 80% { transform: translateX(4px); }
                         }
-                        style={{
-                            textAlign: 'center',
-                        }}
-                        fontSize={otpInputTokens.inputContainer.input.fontSize}
-                        fontWeight={
-                            otpInputTokens.inputContainer.input.fontWeight
-                        }
-                        ref={(el: HTMLInputElement) => {
-                            inputRefs.current[index] = el
-                        }}
-                        key={index}
-                        border={
-                            otpInputTokens.inputContainer.input.border[
-                                error ? 'error' : 'default'
-                            ]
-                        }
-                        outline="none"
-                        _hover={{
-                            border: otpInputTokens.inputContainer.input.border
-                                .hover,
-                        }}
-                        color={
-                            otpInputTokens.inputContainer.input.color[
-                                disabled ? 'disabled' : 'default'
-                            ]
-                        }
-                        _focus={{
-                            border: otpInputTokens.inputContainer.input.border[
-                                error ? 'error' : 'focus'
-                            ],
-                        }}
-                        disabled={disabled}
-                        _disabled={{
-                            backgroundColor:
-                                otpInputTokens.inputContainer.input
-                                    .backgroundColor.disabled,
-                            border: otpInputTokens.inputContainer.input.border
-                                .disabled,
-                            cursor: 'not-allowed',
-                        }}
-                        value={digit}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            handleChange(index, e.target.value)
-                        }
-                        maxLength={1}
-                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
-                            handleKeyDown(index, e)
-                        }
-                        onFocus={(e) => {
-                            e.target.select()
-                            setActiveIndex(index)
-                        }}
-                        onBlur={() => setActiveIndex(-1)}
-                        onPaste={index === 0 ? handlePaste : undefined}
-                        {...rest}
-                    />
-                ))}
+                    `}
+                </style>
+                <Block
+                    display="flex"
+                    gap={otpInputTokens.inputContainer.gap}
+                    width={'100%'}
+                >
+                    {otp.map((digit, index) => (
+                        <PrimitiveInput
+                            placeholder={placeholder}
+                            placeholderColor={'transparent'}
+                            form={form}
+                            width={otpInputTokens.inputContainer.input.width}
+                            height={otpInputTokens.inputContainer.input.height}
+                            borderRadius={
+                                otpInputTokens.inputContainer.input.borderRadius
+                            }
+                            style={{
+                                textAlign: 'center',
+                            }}
+                            fontSize={
+                                otpInputTokens.inputContainer.input.fontSize
+                            }
+                            fontWeight={
+                                otpInputTokens.inputContainer.input.fontWeight
+                            }
+                            ref={(el: HTMLInputElement) => {
+                                inputRefs.current[index] = el
+                            }}
+                            key={index}
+                            border={
+                                otpInputTokens.inputContainer.input.border[
+                                    error ? 'error' : 'default'
+                                ]
+                            }
+                            outline="none"
+                            transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                            _hover={{
+                                border: otpInputTokens.inputContainer.input
+                                    .border.hover,
+                            }}
+                            color={
+                                otpInputTokens.inputContainer.input.color[
+                                    disabled ? 'disabled' : 'default'
+                                ]
+                            }
+                            _focus={{
+                                border: otpInputTokens.inputContainer.input
+                                    .border[error ? 'error' : 'focus'],
+                                boxShadow: '0 0 0 3px #EFF6FF',
+                                backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                            }}
+                            disabled={disabled}
+                            _disabled={{
+                                backgroundColor:
+                                    otpInputTokens.inputContainer.input
+                                        .backgroundColor.disabled,
+                                border: otpInputTokens.inputContainer.input
+                                    .border.disabled,
+                                cursor: 'not-allowed',
+                            }}
+                            value={digit}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                handleChange(index, e.target.value)
+                            }
+                            maxLength={1}
+                            onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
+                                handleKeyDown(index, e)
+                            }
+                            onFocus={(e) => {
+                                e.target.select()
+                                setActiveIndex(index)
+                            }}
+                            onBlur={() => setActiveIndex(-1)}
+                            onPaste={index === 0 ? handlePaste : undefined}
+                            {...rest}
+                        />
+                    ))}
+                </Block>
             </Block>
             <InputFooter
                 hintText={hintText}

@@ -37,6 +37,7 @@ const TextInput = ({
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const [shouldShake, setShouldShake] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -62,6 +63,15 @@ const TextInput = ({
     const paddingInlineEnd = rightSlot
         ? paddingX + rightSlotWidth + GAP
         : paddingX
+
+    // Trigger shake animation on error
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 400)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -95,7 +105,24 @@ const TextInput = ({
                     required={required}
                 />
             )}
-            <Block position="relative" width={'100%'}>
+            <Block
+                position="relative"
+                width={'100%'}
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
+                }}
+            >
+                <style>
+                    {`
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                            20%, 40%, 60%, 80% { transform: translateX(4px); }
+                        }
+                    `}
+                </style>
                 {leftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -104,6 +131,12 @@ const TextInput = ({
                         left={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {leftSlot}
                     </Block>
@@ -167,6 +200,8 @@ const TextInput = ({
                     fontSize={textInputTokens.inputContainer.fontSize[size]}
                     fontWeight={textInputTokens.inputContainer.fontWeight[size]}
                     lineHeight={FOUNDATION_THEME.unit[20]}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -181,6 +216,12 @@ const TextInput = ({
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
                     }}
                     _disabled={{
                         backgroundColor:
@@ -207,6 +248,12 @@ const TextInput = ({
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {rightSlot}
                     </Block>

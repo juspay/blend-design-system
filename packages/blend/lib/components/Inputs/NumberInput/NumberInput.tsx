@@ -8,7 +8,7 @@ import { NumberInputSize } from './types'
 import type { NumberInputTokensType } from './numberInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -40,6 +40,7 @@ const NumberInput = ({
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const [shouldShake, setShouldShake] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -51,6 +52,15 @@ const NumberInput = ({
     const paddingY =
         toPixels(numberInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 1)
+
+    // Trigger shake animation on error
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 400)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
 
     return (
         <Block
@@ -78,7 +88,21 @@ const NumberInput = ({
                 borderRadius={
                     numberInputTokens.inputContainer.borderRadius[size]
                 }
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
+                }}
             >
+                <style>
+                    {`
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                            20%, 40%, 60%, 80% { transform: translateX(4px); }
+                        }
+                    `}
+                </style>
                 {label && isSmallScreenWithLargeSize && (
                     <Block
                         position="absolute"
@@ -143,6 +167,12 @@ const NumberInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -152,6 +182,11 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    _focusVisible={{
+                        placeholderColor: 'transparent',
                     }}
                     disabled={disabled}
                     _disabled={{

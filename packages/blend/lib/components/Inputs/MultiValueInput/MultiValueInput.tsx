@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState, useEffect } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooter from '../utils/InputFooter/InputFooter'
@@ -30,7 +30,17 @@ const MultiValueInput = ({
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const [isFocused, setIsFocused] = useState(false)
+    const [shouldShake, setShouldShake] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
+
+    // Trigger shake animation when error changes to true
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 500)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
 
     const addTag = (value: string) => {
         const trimmedValue = value.trim()
@@ -77,74 +87,109 @@ const MultiValueInput = ({
                 tokens={multiValueInputTokens}
             />
             <Block
-                display="flex"
-                flexWrap="wrap"
-                flexDirection="row"
-                gap={8}
-                borderRadius={8}
-                paddingX={paddingX}
-                paddingY={paddingY}
-                onClick={handleContainerClick}
-                border={
-                    error
-                        ? multiValueInputTokens.inputContainer.border.error
-                        : isFocused
-                          ? multiValueInputTokens.inputContainer.border.focus
-                          : multiValueInputTokens.inputContainer.border.default
-                }
-                _hover={{
-                    border: multiValueInputTokens.inputContainer.border[
-                        error ? 'error' : 'hover'
-                    ],
-                }}
-                _focus={{
-                    border: multiValueInputTokens.inputContainer.border[
-                        error ? 'error' : 'focus'
-                    ],
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
                 }}
             >
-                {tags?.map((tag) => (
-                    <Tag
-                        key={tag}
-                        text={tag}
-                        size={TagSize.XS}
-                        shape={TagShape.ROUNDED}
-                        rightSlot={
-                            <X
-                                size={12}
-                                onClick={() => removeTag(tag)}
-                                style={{ cursor: 'pointer' }}
-                            />
+                <style>
+                    {`
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                            20%, 40%, 60%, 80% { transform: translateX(4px); }
                         }
-                    />
-                ))}
-                <PrimitiveInput
-                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
-                    fontSize={
-                        multiValueInputTokens.inputContainer.fontSize[size]
+                    `}
+                </style>
+                <Block
+                    display="flex"
+                    flexWrap="wrap"
+                    flexDirection="row"
+                    gap={8}
+                    borderRadius={8}
+                    paddingX={paddingX}
+                    paddingY={paddingY}
+                    onClick={handleContainerClick}
+                    border={
+                        error
+                            ? multiValueInputTokens.inputContainer.border.error
+                            : isFocused
+                              ? multiValueInputTokens.inputContainer.border
+                                    .focus
+                              : multiValueInputTokens.inputContainer.border
+                                    .default
                     }
-                    fontWeight={
-                        multiValueInputTokens.inputContainer.fontWeight[size]
-                    }
-                    ref={inputRef}
-                    paddingInlineStart={2}
-                    paddingInlineEnd={paddingX}
-                    borderRadius={
-                        multiValueInputTokens.inputContainer.borderRadius
-                    }
-                    outline="none"
-                    border="none"
-                    value={value}
-                    onChange={(e) => {
-                        const newValue = e.target.value
-
-                        onChange?.(newValue)
+                    style={{
+                        transition:
+                            'border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out',
+                        backgroundColor: isFocused
+                            ? 'rgba(239, 246, 255, 0.15)'
+                            : 'transparent',
+                        boxShadow: isFocused
+                            ? '0 0 0 3px #EFF6FF'
+                            : '0 0 0 0 transparent',
                     }}
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    {...rest}
-                />
+                    _focus={{
+                        border: multiValueInputTokens.inputContainer.border[
+                            error ? 'error' : 'focus'
+                        ],
+                    }}
+                    _hover={{
+                        border: multiValueInputTokens.inputContainer.border[
+                            error ? 'error' : isFocused ? 'focus' : 'hover'
+                        ],
+                    }}
+                >
+                    {tags?.map((tag) => (
+                        <Tag
+                            key={tag}
+                            text={tag}
+                            size={TagSize.XS}
+                            shape={TagShape.ROUNDED}
+                            rightSlot={
+                                <X
+                                    size={12}
+                                    onClick={() => removeTag(tag)}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            }
+                        />
+                    ))}
+                    <PrimitiveInput
+                        placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                        fontSize={
+                            multiValueInputTokens.inputContainer.fontSize[size]
+                        }
+                        fontWeight={
+                            multiValueInputTokens.inputContainer.fontWeight[
+                                size
+                            ]
+                        }
+                        ref={inputRef}
+                        paddingInlineStart={2}
+                        paddingInlineEnd={paddingX}
+                        borderRadius={
+                            multiValueInputTokens.inputContainer.borderRadius
+                        }
+                        outline="none"
+                        border="none"
+                        value={value}
+                        placeholderStyles={{
+                            transition: 'opacity 150ms ease-out',
+                            opacity: isFocused ? 0 : 1,
+                        }}
+                        onChange={(e) => {
+                            const newValue = e.target.value
+
+                            onChange?.(newValue)
+                        }}
+                        onKeyDown={handleKeyDown}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        {...rest}
+                    />
+                </Block>
             </Block>
             <InputFooter
                 error={error}

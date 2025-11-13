@@ -46,6 +46,7 @@ const UnitInput = ({
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
     const [unitWidth, setUnitWidth] = useState(0)
     const [isFocused, setIsFocused] = useState(false)
+    const [shouldShake, setShouldShake] = useState(false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -61,6 +62,15 @@ const UnitInput = ({
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
     const unitRef = useRef<HTMLDivElement>(null)
+
+    // Trigger shake animation when error changes to true
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 500)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -185,7 +195,21 @@ const UnitInput = ({
                 width={'100%'}
                 display="flex"
                 borderRadius={8}
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
+                }}
             >
+                <style>
+                    {`
+                        @keyframes shake {
+                            0%, 100% { transform: translateX(0); }
+                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                            20%, 40%, 60%, 80% { transform: translateX(4px); }
+                        }
+                    `}
+                </style>
                 {leftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -278,6 +302,11 @@ const UnitInput = ({
                     fontWeight={unitInputTokens.inputContainer.fontWeight[size]}
                     outline="none"
                     width={'100%'}
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -293,12 +322,16 @@ const UnitInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     _focus={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}
                     _disabled={{

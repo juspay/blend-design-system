@@ -53,6 +53,15 @@ const DropdownInput = ({
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const [shouldShake, setShouldShake] = useState(false)
+
+    useEffect(() => {
+        if (error) {
+            setShouldShake(true)
+            const timer = setTimeout(() => setShouldShake(false), 400)
+            return () => clearTimeout(timer)
+        }
+    }, [error])
     const [slotWidth, setSlotWidth] = useState<number>(0)
     const [dropdownWidth, setDropdownWidth] = useState<number>(0)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -116,7 +125,24 @@ const DropdownInput = ({
                     tokens={dropdownInputTokens}
                 />
             )}
-            <Block position="relative" width={'100%'}>
+            <Block
+                position="relative"
+                width={'100%'}
+                style={{
+                    animation: shouldShake
+                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
+                        : undefined,
+                }}
+            >
+                <style>
+                    {`
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                        20%, 40%, 60%, 80% { transform: translateX(4px); }
+                    }
+                `}
+                </style>
                 {slot && (
                     <Block
                         ref={slotRef}
@@ -232,6 +258,11 @@ const DropdownInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -247,6 +278,8 @@ const DropdownInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}
                     _disabled={{

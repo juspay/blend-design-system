@@ -74,6 +74,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
         const [leftSlotWidth, setLeftSlotWidth] = useState(0)
         const [rightSlotWidth, setRightSlotWidth] = useState(0)
+        const [isFocused, setIsFocused] = useState(false)
 
         useEffect(() => {
             if (leftSlotRef.current) {
@@ -127,6 +128,12 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                         left={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {styledLeftSlot}
                     </Block>
@@ -140,6 +147,12 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {styledRightSlot}
                     </Block>
@@ -177,6 +190,11 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                     }
                     fontSize={searchInputTokens.inputContainer.fontSize}
                     fontWeight={searchInputTokens.inputContainer.fontWeight}
+                    transition="border-bottom 200ms ease-in-out, color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         borderBottom: rest.disabled
                             ? searchInputTokens.inputContainer.borderBottom
@@ -201,6 +219,14 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                             : error
                               ? searchInputTokens.inputContainer.color.error
                               : searchInputTokens.inputContainer.color.focus,
+                    }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        rest.onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        rest.onBlur?.(e)
                     }}
                     {...rest}
                 />
