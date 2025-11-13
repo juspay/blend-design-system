@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
     BarChart,
     Bar,
+    Cell,
     ResponsiveContainer,
     XAxis,
     YAxis,
@@ -79,6 +80,7 @@ const StatCard = ({
         numberVariantStatsContainerHeight,
         setNumberVariantStatsContainerHeight,
     ] = useState(0)
+    const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
 
     const actionIconDynamciPostition =
         (numberVariantContainerHeight -
@@ -273,6 +275,19 @@ const StatCard = ({
             index,
         }))
     }, [chartData])
+
+    const handleBarMouseEnter = useCallback(
+        (data: any) => {
+            if (data.index !== hoveredBarIndex) {
+                setHoveredBarIndex(data.index)
+            }
+        },
+        [hoveredBarIndex]
+    )
+
+    const handleBarMouseLeave = useCallback(() => {
+        setHoveredBarIndex(null)
+    }, [])
 
     if (!value && !change && !progressValue && !chartData?.length) {
         return (
@@ -1136,9 +1151,6 @@ const StatCard = ({
                                     />
                                     <Bar
                                         dataKey="value"
-                                        fill={
-                                            statCardToken.chart.bar.fill.default
-                                        }
                                         radius={[
                                             toPixels(
                                                 statCardToken.chart.bar
@@ -1158,11 +1170,36 @@ const StatCard = ({
                                             ),
                                         ]}
                                         isAnimationActive={false}
+                                        onMouseEnter={handleBarMouseEnter}
+                                        onMouseLeave={handleBarMouseLeave}
+                                        fill={
+                                            statCardToken.chart.bar.fill.default
+                                        }
                                         activeBar={{
                                             fill: statCardToken.chart.bar.fill
-                                                .hover,
+                                                .default,
                                         }}
-                                    />
+                                    >
+                                        {indexedChartData?.map(
+                                            (entry, index) => (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={
+                                                        hoveredBarIndex !==
+                                                            null &&
+                                                        hoveredBarIndex !==
+                                                            index
+                                                            ? statCardToken
+                                                                  .chart.bar
+                                                                  .fill.hover
+                                                            : statCardToken
+                                                                  .chart.bar
+                                                                  .fill.default
+                                                    }
+                                                />
+                                            )
+                                        )}
+                                    </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
