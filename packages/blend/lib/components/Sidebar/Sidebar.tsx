@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback } from 'react'
+import { forwardRef, useState, useEffect, useCallback, useRef } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -71,6 +71,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
+        const directoryRef = useRef<HTMLDivElement | null>(null)
+        const mainContentRef = useRef<HTMLDivElement | null>(null)
 
         const isExpanded = isControlled
             ? controlledIsExpanded!
@@ -80,7 +82,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const isMobile = innerWidth < BREAKPOINTS.lg
 
         // Use custom hook for topbar auto-hide
-        const showTopbar = useTopbarAutoHide(enableTopbarAutoHide)
+        const showTopbar = useTopbarAutoHide(
+            enableTopbarAutoHide,
+            mainContentRef
+        )
 
         const toggleSidebar = useCallback(() => {
             const newValue = !isExpanded
@@ -105,8 +110,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     toggleSidebar()
                 }
             }
-            document.addEventListener('keydown', handleKeyPress)
-            return () => document.removeEventListener('keydown', handleKeyPress)
+            const target = typeof document !== 'undefined' ? document : null
+            target?.addEventListener('keydown', handleKeyPress)
+            return () => target?.removeEventListener('keydown', handleKeyPress)
         }, [isMobile, sidebarCollapseKey, toggleSidebar])
 
         // Mobile and toggle button logic
@@ -140,12 +146,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
         // Directory scroll detection
         useEffect(() => {
-            const directoryContainer = document.querySelector(
-                '[data-directory-container]'
-            )
+            const directoryContainer = directoryRef.current
             if (!directoryContainer) return
             const handleScroll = () =>
                 setIsScrolled(directoryContainer.scrollTop > 0)
+            handleScroll()
             directoryContainer.addEventListener('scroll', handleScroll)
             return () =>
                 directoryContainer.removeEventListener('scroll', handleScroll)
@@ -261,6 +266,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                                     <DirectoryContainer
                                         data-directory-container
+                                        ref={directoryRef}
                                     >
                                         <Directory directoryData={data} />
                                     </DirectoryContainer>
@@ -272,7 +278,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                 </Block>
 
-                <MainContentContainer data-main-content>
+                <MainContentContainer data-main-content ref={mainContentRef}>
                     <Block
                         position="sticky"
                         top="0"
