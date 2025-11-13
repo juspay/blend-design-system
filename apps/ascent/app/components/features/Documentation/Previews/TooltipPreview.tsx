@@ -27,62 +27,8 @@ function MyComponent() {
     </Tooltip>
   );
 }`
-
-    const reCode = `type tooltipSide = [#top | #right | #bottom | #left]
-type tooltipAlign = [#start | #center | #end]
-type tooltipSize = [#sm | #lg]
-type tooltipSlotDirection = [#left | #right]
-
-@react.component
-let make = (
-  ~content: React.element,
-  ~children: React.element,
-  ~side: option<tooltipSide>=?,
-  ~align: option<tooltipAlign>=?,
-  ~showArrow: option<bool>=?,
-  ~size: option<tooltipSize>=?,
-  ~slot: option<React.element>=?,
-  ~slotDirection: option<tooltipSlotDirection>=?,
-  ~delayDuration: option<int>=?,
-  ~offset: option<int>=?,
-  ~open: option<bool>=?,
-) => {
-  <TooltipBinding
-    content
-    ?side
-    ?align
-    ?showArrow
-    ?size
-    ?slot
-    ?slotDirection
-    ?delayDuration
-    ?offset
-    ?open
-    children
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~content: React.element,
-  ~children: React.element,
-  ~side: [#top | #right | #bottom | #left]=?,
-  ~align: [#start | #center | #end]=?,
-  ~showArrow: bool=?,
-  ~size: [#sm | #lg]=?,
-  ~slot: React.element=?,
-  ~slotDirection: [#left | #right]=?,
-  ~delayDuration: int=?,
-  ~offset: int=?,
-  ~open: bool=?,
-) => React.element = "Tooltip"`
-
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div style={{ minWidth: '300px', textAlign: 'center' }}>
                 <Tooltip
                     content="Click to save your changes"

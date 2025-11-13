@@ -38,101 +38,165 @@ function MyComponent() {
         [
             {
                 content: 'buttonType',
-                hintText: 'The visual type/variant of the button',
+                hintText:
+                    'Defines the visual style and semantic meaning of the button. PRIMARY (blue) for main actions, SECONDARY (outlined) for secondary actions, DANGER (red) for destructive actions, and SUCCESS (green) for positive actions. Defaults to PRIMARY.',
             },
-            { content: 'ButtonType', hintText: 'enum' },
-            { content: 'ButtonType.PRIMARY' },
+            {
+                content: 'ButtonType',
+                hintText:
+                    'Enum that determines the color scheme and visual styling',
+            },
+            { content: 'PRIMARY, SECONDARY, DANGER, SUCCESS' },
         ],
         [
-            { content: 'size', hintText: 'The size of the button' },
-            { content: 'ButtonSize', hintText: 'enum' },
-            { content: 'ButtonSize.MEDIUM' },
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions and padding of the button. SMALL is compact, MEDIUM is standard, and LARGE is prominent. Size affects padding, font size, and overall button dimensions. Defaults to SMALL.',
+            },
+            {
+                content: 'ButtonSize',
+                hintText:
+                    'Enum that controls the physical dimensions of the button',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
         ],
         [
             {
                 content: 'subType',
                 hintText:
-                    'The subtype that affects button styling and behavior',
+                    "Controls the button's layout and content arrangement. DEFAULT is standard with text and optional icons, ICON_ONLY displays only an icon (no text), and INLINE is a text-only variant for inline contexts. Defaults to DEFAULT.",
             },
-            { content: 'ButtonSubType', hintText: 'enum' },
-            { content: 'ButtonSubType.DEFAULT' },
+            {
+                content: 'ButtonSubType',
+                hintText:
+                    "Enum that determines the button's content layout style",
+            },
+            { content: 'DEFAULT, ICON_ONLY, INLINE' },
         ],
         [
             {
                 content: 'text',
-                hintText: 'The text content displayed in the button',
+                hintText:
+                    'Optional text string displayed inside the button. Required for DEFAULT and INLINE subtypes. For ICON_ONLY subtype, this is typically omitted. The text should be concise and action-oriented.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content displayed as the button label',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'leadingIcon',
-                hintText: 'Icon element to display before the button text',
+                hintText:
+                    'Optional React element (typically an icon) displayed before the button text. Useful for providing visual context or indicating the action type. Works well with DEFAULT subtype buttons.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) to display before the text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'trailingIcon',
-                hintText: 'Icon element to display after the button text',
+                hintText:
+                    'Optional React element (typically an icon) displayed after the button text. Useful for indicating direction (arrows), status, or additional information. Works well with DEFAULT subtype buttons.',
             },
-            { content: 'React.ReactNode', hintText: 'React node' },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) to display after the text',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'disabled',
-                hintText: 'Alternative prop for disabling the button',
+                hintText:
+                    "When true, the button becomes non-interactive and appears visually muted. Disabled buttons cannot be clicked and typically show reduced opacity. Useful for preventing actions when prerequisites aren't met. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables interaction, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'onClick',
-                hintText: 'Callback function called when the button is clicked',
+                hintText:
+                    "Optional callback function invoked when the button is clicked. Receives no parameters and should handle the button's primary action. The button will be disabled during loading state.",
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: '() => void',
+                hintText: 'Function called when the user clicks the button',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'loading',
-                hintText: 'Alternative prop for loading state',
+                hintText:
+                    'When true, the button displays a loading spinner and becomes non-interactive. Useful for async operations like form submissions or API calls. The button automatically disables itself during loading. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true shows loading state, false shows normal state',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'fullWidth',
                 hintText:
-                    'Whether the button should take full width of its container',
+                    "When true, the button expands to fill 100% of its container's width. Useful for full-width buttons in forms, modals, or narrow containers. Defaults to false (button only takes width needed for content).",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true makes button full-width, false uses content-based width',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'buttonGroupPosition',
-                hintText: 'Position when used within a button group',
+                hintText:
+                    'Controls border radius when used within a ButtonGroup. "left" removes right border radius, "right" removes left border radius, "center" removes both (for middle buttons). Undefined uses normal border radius. Used automatically by ButtonGroup.',
             },
-            { content: "'center' | 'left' | 'right'", hintText: 'string' },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText: 'Union type that positions the button within a group',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'justifyContent',
                 hintText:
-                    'CSS justify-content property for button content alignment',
+                    'CSS justify-content value for aligning button content horizontally. Controls how text and icons are positioned within the button. Common values: "center", "flex-start", "flex-end", "space-between". Defaults to "center".',
             },
             {
                 content: 'CSSObject["justifyContent"]',
-                hintText: 'CSS property',
+                hintText: 'CSS property value for horizontal content alignment',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'state',
+                hintText:
+                    'Manually controls the visual state of the button for styling purposes. DEFAULT is normal, HOVER is hovered, ACTIVE is pressed/active, DISABLED is disabled. Typically controlled automatically by user interaction, but can be set manually. Defaults to DEFAULT.',
+            },
+            {
+                content: 'ButtonState',
+                hintText: 'Enum that determines the visual state styling',
+            },
+            { content: 'DEFAULT, HOVER, ACTIVE, DISABLED' },
         ],
     ]}
     className="mb-8"
@@ -140,303 +204,95 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Features
-
-- **4 Button Types**: Primary, Secondary, Danger, and Success variants for different actions
-- **3 Size Options**: Small, Medium, and Large sizes for various interface contexts
-- **3 Sub-Types**: Default, Icon Only, and Inline styles for different use cases
-- **Icon Support**: Leading and trailing icons with proper spacing and alignment
-- **Loading States**: Built-in loading spinner with text replacement
-- **Disabled States**: Visual and interactive disabled state support
-- **Full Width Option**: Expandable to container width when needed
-- **Button Group Support**: Integrated positioning for button group components
-- **Flexible Alignment**: Customizable content justification
-- **Accessible Design**: Full keyboard navigation and screen reader support
-- **Consistent Styling**: Design token integration for consistent theming
-
-## Usage Examples
-
-### Basic Button
-
-Simple primary button with text only
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Save Changes"
-    onClick={() => console.log('Save clicked')}
-/>
-```
-
-### Button with Leading Icon
-
-Button with an icon positioned before the text
-
-```tsx
-import { Download } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.MEDIUM}
-    text="Download"
-    leadingIcon={<Download size={16} />}
-    onClick={() => console.log('Download clicked')}
-/>
-```
-
-### Button with Trailing Icon
-
-Button with an icon positioned after the text
-
-```tsx
-import { ChevronRight } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Continue"
-    trailingIcon={<ChevronRight size={16} />}
-    onClick={() => console.log('Continue clicked')}
-/>
-```
-
-### Icon Only Button
-
-Button displaying only an icon without text
-
-```tsx
-import { Settings } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.MEDIUM}
-    subType={ButtonSubType.ICON_ONLY}
-    leadingIcon={<Settings size={20} />}
-    onClick={() => console.log('Settings clicked')}
-/>
-```
-
-### Loading Button
-
-Button in loading state with spinner
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Processing..."
-    isLoading={true}
-    onClick={() => console.log('Processing')}
-/>
-```
-
-### Disabled Button
-
-Button in disabled state
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.MEDIUM}
-    text="Submit"
-    isDisabled={true}
-    onClick={() => console.log('This will not fire')}
-/>
-```
-
-### Danger Button
-
-Button for destructive actions
-
-```tsx
-<Button
-    buttonType={ButtonType.DANGER}
-    size={ButtonSize.MEDIUM}
-    text="Delete Account"
-    onClick={() => console.log('Delete clicked')}
-/>
-```
-
-### Success Button
-
-Button for positive confirmation actions
-
-```tsx
-import { Check } from 'lucide-react'
-;<Button
-    buttonType={ButtonType.SUCCESS}
-    size={ButtonSize.MEDIUM}
-    text="Confirm"
-    leadingIcon={<Check size={16} />}
-    onClick={() => console.log('Confirmed')}
-/>
-```
-
-### Full Width Button
-
-Button that expands to fill container width
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.LARGE}
-    text="Sign Up Now"
-    fullWidth={true}
-    onClick={() => console.log('Sign up clicked')}
-/>
-```
-
-### Inline Button
-
-Button with inline styling for text-like appearance
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.SMALL}
-    subType={ButtonSubType.INLINE}
-    text="Learn more"
-    onClick={() => console.log('Learn more clicked')}
-/>
-```
-
-### Small Size Button
-
-Compact button for tight spaces
-
-```tsx
-<Button
-    buttonType={ButtonType.SECONDARY}
-    size={ButtonSize.SMALL}
-    text="Cancel"
-    onClick={() => console.log('Cancel clicked')}
-/>
-```
-
-### Large Size Button
-
-Prominent button for primary actions
-
-```tsx
-<Button
-    buttonType={ButtonType.PRIMARY}
-    size={ButtonSize.LARGE}
-    text="Get Started"
-    onClick={() => console.log('Get started clicked')}
-/>
-```
-
 ## Component Tokens
 
 You can style the Button component using the following tokens:
 
 ```tsx
-export type ButtonTokenType = {
-    width: CSSObject['width']
-    height: CSSObject['height']
-    padding: CSSObject['padding']
-    borderRadius: CSSObject['borderRadius']
-    fontSize: CSSObject['fontSize']
-    fontWeight: CSSObject['fontWeight']
-    lineHeight: CSSObject['lineHeight']
-    border: CSSObject['border']
-
-    colors: {
+export type ButtonTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
         [key in ButtonType]: {
-            background: {
-                default: CSSObject['backgroundColor']
-                hover: CSSObject['backgroundColor']
-                active: CSSObject['backgroundColor']
-                disabled: CSSObject['backgroundColor']
-            }
-            text: {
-                default: CSSObject['color']
-                hover: CSSObject['color']
-                active: CSSObject['color']
-                disabled: CSSObject['color']
-            }
-            border: {
-                default: CSSObject['borderColor']
-                hover: CSSObject['borderColor']
-                active: CSSObject['borderColor']
-                disabled: CSSObject['borderColor']
+            [key in ButtonSubType]: {
+                [key in
+                    | 'default'
+                    | 'hover'
+                    | 'active'
+                    | 'disabled']: CSSObject['background']
             }
         }
     }
-
-    sizes: {
+    borderRadius: {
         [key in ButtonSize]: {
-            height: CSSObject['height']
-            padding: CSSObject['padding']
-            fontSize: CSSObject['fontSize']
-            iconSize: number
+            [key in ButtonType]: {
+                [key in ButtonSubType]: {
+                    [key in
+                        | 'default'
+                        | 'hover'
+                        | 'active'
+                        | 'disabled']: CSSObject['borderRadius']
+                }
+            }
         }
     }
-}
-```
-
-## Behavior
-
-### Loading State
-
-- **Spinner Display**: Shows loading spinner and hides text content
-- **Disabled Interaction**: Button becomes non-interactive during loading
-- **Visual Feedback**: Provides clear indication of ongoing process
-
-### Disabled State
-
-- **Visual Changes**: Reduced opacity and muted colors
-- **Interaction Prevention**: Click events are prevented
-- **Focus Management**: Button cannot receive keyboard focus
-
-### Icon Positioning
-
-- **Leading Icons**: Positioned before text with proper spacing
-- **Trailing Icons**: Positioned after text with proper spacing
-- **Icon Only**: Centers icon when no text is present
-
-### Size Scaling
-
-- **Proportional Scaling**: All elements scale proportionally with size
-- **Icon Sizing**: Icons automatically resize based on button size
-- **Padding Adjustment**: Internal spacing adjusts for optimal proportions
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support with Enter and Space key activation
-- **Focus Indicators**: Clear visual focus indicators for keyboard users
-- **Screen Reader Support**: Proper labeling and state announcements
-- **ARIA Attributes**: Appropriate `aria-disabled` and `aria-pressed` attributes
-- **Color Independence**: Button functionality conveyed through more than color alone
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### ButtonType
-
-```tsx
-enum ButtonType {
-    PRIMARY = 'primary', // Main action button with prominent styling
-    SECONDARY = 'secondary', // Secondary action with subtle styling
-    DANGER = 'danger', // Destructive action with red styling
-    SUCCESS = 'success', // Positive action with green styling
-}
-```
-
-### ButtonSize
-
-```tsx
-enum ButtonSize {
-    SMALL = 'sm', // Compact size for tight spaces (32px height)
-    MEDIUM = 'md', // Standard size for most use cases (40px height)
-    LARGE = 'lg', // Prominent size for primary actions (48px height)
-}
-```
-
-### ButtonSubType
-
-```tsx
-enum ButtonSubType {
-    DEFAULT = 'default', // Standard button with background and text
-    ICON_ONLY = 'iconOnly', // Button displaying only an icon
-    INLINE = 'inline', // Text-like button for inline usage
+    padding: {
+        [key in ButtonSize]: {
+            [key in ButtonType]: {
+                [key in ButtonSubType]: CSSObject['padding']
+            }
+        }
+    }
+    border: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in
+                    | 'default'
+                    | 'hover'
+                    | 'active'
+                    | 'disabled']: CSSObject['border']
+            }
+        }
+    }
+    shadow: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in
+                    | 'default'
+                    | 'hover'
+                    | 'active'
+                    | 'disabled']: CSSObject['boxShadow']
+            }
+        }
+    }
+    outline: {
+        [key in ButtonType]: {
+            [key in ButtonSubType]: {
+                [key in
+                    | 'default'
+                    | 'hover'
+                    | 'active'
+                    | 'disabled']: CSSObject['outline']
+            }
+        }
+    }
+    text: {
+        color: {
+            [key in ButtonType]: {
+                [key in ButtonSubType]: {
+                    [key in
+                        | 'default'
+                        | 'hover'
+                        | 'active'
+                        | 'disabled']: CSSObject['color']
+                }
+            }
+        }
+        fontSize: {
+            [key in ButtonSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in ButtonSize]: CSSObject['fontWeight']
+        }
+    }
 }
 ```

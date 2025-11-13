@@ -81,108 +81,166 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'id',
-                hintText: 'Unique identifier for the radio button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'value',
-                hintText: 'The value associated with the radio button',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'checked',
-                hintText: 'Whether the radio button is selected',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'defaultChecked',
-                hintText: 'The default checked state for uncontrolled usage',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'onChange',
-                hintText: 'Callback when the radio button state changes',
-            },
-            { content: '(checked: boolean) => void', hintText: 'function' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'disabled',
+                content: 'Radio.id',
                 hintText:
-                    'Whether the radio button is disabled and non-interactive',
+                    'Optional unique identifier string for the radio button. Used for form identification, accessibility, and linking labels. If not provided, an ID is automatically generated. Should be unique within the form.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the radio button element',
+            },
+            { content: '' },
         ],
         [
             {
-                content: 'required',
+                content: 'Radio.value',
                 hintText:
-                    'Whether the radio button is required (shows asterisk)',
+                    "Required string value associated with the radio button. This value is used to track which radio button is selected within a RadioGroup. Must be unique within the group. The value is returned in the RadioGroup's onChange callback when this radio is selected.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
             {
-                content: 'error',
-                hintText: 'Whether the radio button is in an error state',
+                content: 'string',
+                hintText: 'Unique value identifier for the radio button',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
-        ],
-        [
-            {
-                content: 'size',
-                hintText: 'The size variant of the radio button',
-            },
-            { content: 'RadioSize', hintText: 'enum' },
-            { content: 'RadioSize.MEDIUM' },
-        ],
-        [
-            {
-                content: 'children',
-                hintText: 'The label text for the radio button',
-            },
-            { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'subtext',
-                hintText: 'Optional descriptive text displayed below the label',
+                content: 'Radio.checked',
+                hintText:
+                    "Optional boolean that controls whether the radio button is selected. When true, the radio appears checked. When false or undefined, the checked state is determined by whether the value matches the RadioGroup's selected value. Useful for controlled state management.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows checked state, false shows unchecked state',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'slot',
-                hintText: 'Optional element to display alongside the label',
+                content: 'Radio.defaultChecked',
+                hintText:
+                    'Optional boolean that sets the default checked state for uncontrolled usage. Used when the RadioGroup is uncontrolled (no value prop). When true, this radio is initially selected. Only one radio in a group should have defaultChecked. Defaults to false.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial checked state, false sets initial unchecked state',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for form grouping',
+                content: 'Radio.onChange',
+                hintText:
+                    'Optional callback function invoked when the radio button state changes. Receives a boolean indicating the new checked state. Typically not needed when using RadioGroup, as RadioGroup handles selection. Useful for standalone radio buttons.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: '(checked: boolean) => void',
+                hintText:
+                    'Function called with new checked state when radio state changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.disabled',
+                hintText:
+                    "When true, disables the radio button, making it non-interactive and visually muted. Disabled radios show reduced opacity and cannot be selected. Useful for preventing selection when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables radio button, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.required',
+                hintText:
+                    'When true, marks the radio button as required and displays an asterisk (*) next to the label. Useful for form validation. At least one radio in a required group must be selected. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks radio as required, false allows optional selection',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.error',
+                hintText:
+                    'When true, displays the radio button in an error state with red border and error styling. Useful for form validation feedback when the selection is invalid or missing (for required groups). Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.size',
+                hintText:
+                    'Optional RadioSize enum value that determines the size variant of the radio button. Affects the indicator size, label font size, and overall dimensions. SMALL creates a compact radio, MEDIUM creates a standard size. Defaults to MEDIUM.',
+            },
+            {
+                content: 'RadioSize',
+                hintText:
+                    'Enum that determines the size variant of the radio button',
+            },
+            { content: 'SMALL, MEDIUM' },
+        ],
+        [
+            {
+                content: 'Radio.children',
+                hintText:
+                    'Required React node representing the label text displayed next to the radio button. Can be a string or React element. The label is clickable and toggles the radio button. Should clearly describe the option (e.g., "Basic Plan", "Professional Plan").',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically text) displayed as the radio label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.subtext',
+                hintText:
+                    'Optional descriptive text string displayed below the main label. Provides additional context, explanation, or clarification about the radio option. Styled with smaller, lighter text. Useful for explaining complex options.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.slot',
+                hintText:
+                    'Optional React element displayed alongside the label, typically on the right side. Can be used for badges, prices, icons, or other supplementary content that complements the radio option. Useful for displaying additional information.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed alongside the radio label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Radio.name',
+                hintText:
+                    "Optional name attribute string for form grouping. When used within a RadioGroup, this is typically inherited from the RadioGroup's name prop. Required for proper form submission and accessibility. Should match the RadioGroup's name.",
+            },
+            {
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
+            },
             { content: '' },
         ],
     ]}
@@ -197,506 +255,109 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'id',
-                hintText: 'Unique identifier for the radio group',
+                content: 'RadioGroup.id',
+                hintText:
+                    'Optional unique identifier string for the radio group container. Used for form identification, accessibility, and linking labels. Should be unique within the form. If not provided, an ID may be auto-generated.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the radio group element',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'label',
-                hintText: 'The label text for the radio group',
+                content: 'RadioGroup.label',
+                hintText:
+                    'Optional label string displayed above the radio group. Provides context and description of what users should select. Should be concise and descriptive (e.g., "Choose your subscription plan"). The label is styled prominently and helps users understand the selection.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Label text displayed above the radio group',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'name',
-                hintText: 'The name attribute for the radio group (required)',
+                content: 'RadioGroup.name',
+                hintText:
+                    'Required name attribute string for the radio group. All Radio components within this group must share this name value. Used for form identification, form submission, and ensuring only one radio can be selected at a time. Must be unique within the form.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Name attribute for form grouping and identification',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'defaultValue',
-                hintText: 'The default selected value for uncontrolled usage',
+                content: 'RadioGroup.defaultValue',
+                hintText:
+                    'Optional default selected value string for uncontrolled usage. When provided, the RadioGroup manages its own state internally. The radio button with a matching value will be initially selected. Only one value should be provided.',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            { content: 'value', hintText: 'The controlled selected value' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            { content: 'children', hintText: 'The radio buttons to render' },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'string',
+                hintText: 'Default value string for initially selected radio',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'onChange',
-                hintText: 'Callback when the selected value changes',
+                content: 'RadioGroup.value',
+                hintText:
+                    'Optional controlled selected value string. When provided, the RadioGroup is controlled and selection is managed by your component state. The value should match the value prop of one of the Radio children. Required for controlled mode.',
             },
-            { content: '(value: string) => void', hintText: 'function' },
+            {
+                content: 'string',
+                hintText:
+                    'Controlled value string representing the selected radio',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'disabled',
-                hintText: 'Whether all radio buttons in the group are disabled',
+                content: 'RadioGroup.children',
+                hintText:
+                    'Required React nodes representing the Radio components to render within the group. Each Radio should have a unique value prop. The RadioGroup manages the selection state and ensures only one radio can be selected at a time.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (Radio components) to render in the group',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.onChange',
+                hintText:
+                    'Optional callback function invoked when the selected value changes. Receives the new selected value string as a parameter. Use this to update your state when using controlled mode. The function is called whenever a different radio is selected.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with new selected value when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.disabled',
+                hintText:
+                    "When true, disables all radio buttons within the group, making them non-interactive and visually muted. Disabled radios show reduced opacity and cannot be selected. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables all radios in group, false allows normal interaction',
+            },
+            { content: '' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Size Variants**: Two size options (small, medium) for different contexts
-- **Group Management**: Automatic mutual exclusivity within RadioGroup containers
-- **Rich Content Support**: Optional subtext and slot elements for enhanced context
-- **State Management**: Support for controlled and uncontrolled modes
-- **Form Integration**: Native HTML radio input with proper form binding
-- **Visual States**: Required field indicators, error states, and disabled states
-- **Keyboard Navigation**: Full arrow key navigation within groups with auto-selection
-- **Individual Controls**: Can be used standalone outside of groups
-- **Automatic IDs**: Generated unique IDs when not provided
-- **Accessibility First**: ARIA compliance, screen reader support, and proper semantics
-- **Custom Styling**: Comprehensive token system for visual customization
-- **Focus Management**: Clear focus indicators and keyboard interaction patterns
-- **Error Handling**: Visual and programmatic error state communication
-- **Responsive Design**: Consistent behavior across different screen sizes
-- **Type Safety**: Full TypeScript support with proper type definitions
-
-## Usage Examples
-
-### Basic Radio Selection
-
-Simple radio group for basic option selection
-
-```tsx
-import { Radio, RadioGroup, RadioSize } from 'blend-v1'
-import { useState } from 'react'
-
-const [selectedSize, setSelectedSize] = useState('medium')
-
-<RadioGroup
-    name="product-size"
-    value={selectedSize}
-    onChange={setSelectedSize}
-    label="Select product size"
->
-    <Radio value="small">Small</Radio>
-    <Radio value="medium">Medium</Radio>
-    <Radio value="large">Large</Radio>
-    <Radio value="extra-large">Extra Large</Radio>
-</RadioGroup>
-```
-
-### Radio with Enhanced Content
-
-Radio buttons with descriptive text and visual elements
-
-```tsx
-import { Star, Crown, Gem } from 'lucide-react'
-
-const [selectedTier, setSelectedTier] = useState('standard')
-
-<RadioGroup
-    name="service-tier"
-    value={selectedTier}
-    onChange={setSelectedTier}
-    label="Choose your service tier"
->
-    <Radio
-        value="basic"
-        subtext="Essential features for getting started"
-        slot={<Star size={16} className="text-gray-400" />}
-    >
-        Basic Tier
-    </Radio>
-    <Radio
-        value="standard"
-        subtext="Most popular choice with advanced features"
-        slot={<Crown size={16} className="text-blue-500" />}
-    >
-        Standard Tier
-    </Radio>
-    <Radio
-        value="premium"
-        subtext="All features with priority support"
-        slot={<Gem size={16} className="text-purple-500" />}
-    >
-        Premium Tier
-    </Radio>
-</RadioGroup>
-```
-
-### Size Variants
-
-Radio buttons in different sizes for various contexts
-
-```tsx
-const [compactChoice, setCompactChoice] = useState('option1')
-const [standardChoice, setStandardChoice] = useState('option1')
-
-// Small size for compact interfaces
-<RadioGroup
-    name="compact-options"
-    value={compactChoice}
-    onChange={setCompactChoice}
-    label="Compact Options"
->
-    <Radio value="option1" size={RadioSize.SMALL}>
-        Compact Option 1
-    </Radio>
-    <Radio value="option2" size={RadioSize.SMALL}>
-        Compact Option 2
-    </Radio>
-</RadioGroup>
-
-// Medium size for standard interfaces
-<RadioGroup
-    name="standard-options"
-    value={standardChoice}
-    onChange={setStandardChoice}
-    label="Standard Options"
->
-    <Radio value="option1" size={RadioSize.MEDIUM}>
-        Standard Option 1
-    </Radio>
-    <Radio value="option2" size={RadioSize.MEDIUM}>
-        Standard Option 2
-    </Radio>
-</RadioGroup>
-```
-
-### Form Validation States
-
-Radio buttons with validation and required states
-
-```tsx
-const [paymentMethod, setPaymentMethod] = useState('')
-const [hasError, setHasError] = useState(false)
-
-<RadioGroup
-    name="payment-method"
-    value={paymentMethod}
-    onChange={(value) => {
-        setPaymentMethod(value)
-        setHasError(false)
-    }}
-    label="Select payment method"
->
-    <Radio
-        value="credit-card"
-        required
-        error={hasError && !paymentMethod}
-        subtext="Visa, Mastercard, American Express"
-    >
-        Credit Card
-    </Radio>
-    <Radio
-        value="paypal"
-        subtext="Pay securely with your PayPal account"
-    >
-        PayPal
-    </Radio>
-    <Radio
-        value="bank-transfer"
-        subtext="Direct bank transfer (2-3 business days)"
-    >
-        Bank Transfer
-    </Radio>
-    <Radio
-        value="apple-pay"
-        disabled
-        subtext="Currently unavailable"
-    >
-        Apple Pay
-    </Radio>
-</RadioGroup>
-
-{hasError && !paymentMethod && (
-    <p className="text-red-500 text-sm mt-2">
-        Please select a payment method
-    </p>
-)}
-```
-
-### Pricing Options
-
-Radio group for subscription plan selection
-
-```tsx
-const [billingCycle, setBillingCycle] = useState('monthly')
-
-<RadioGroup
-    name="billing-cycle"
-    value={billingCycle}
-    onChange={setBillingCycle}
-    label="Choose billing cycle"
->
-    <Radio
-        value="monthly"
-        subtext="Flexible monthly payments"
-        slot={<span className="text-sm text-gray-600">$29/month</span>}
-    >
-        Monthly Billing
-    </Radio>
-    <Radio
-        value="yearly"
-        subtext="Save 20% with annual billing"
-        slot={
-            <div className="text-right">
-                <span className="text-sm text-gray-400 line-through">$348</span>
-                <span className="text-sm text-green-600 ml-2">$279/year</span>
-            </div>
-        }
-    >
-        Annual Billing
-    </Radio>
-</RadioGroup>
-```
-
-### Controlled vs Uncontrolled
-
-Different state management approaches for radio groups
-
-```tsx
-// Controlled example
-const [controlledValue, setControlledValue] = useState('option-b')
-
-<RadioGroup
-    name="controlled-example"
-    value={controlledValue}
-    onChange={setControlledValue}
-    label="Controlled Radio Group"
->
-    <Radio value="option-a">Option A</Radio>
-    <Radio value="option-b">Option B</Radio>
-    <Radio value="option-c">Option C</Radio>
-</RadioGroup>
-
-// Uncontrolled example with default value
-<RadioGroup
-    name="uncontrolled-example"
-    defaultValue="default-option"
-    label="Uncontrolled Radio Group"
-    onChange={(value) => console.log('Selected:', value)}
->
-    <Radio value="default-option">Default Option</Radio>
-    <Radio value="alternative-option">Alternative Option</Radio>
-</RadioGroup>
-```
-
-### Individual Radio Usage
-
-Standalone radio buttons for specific use cases
-
-```tsx
-const [termsAccepted, setTermsAccepted] = useState(false)
-const [newsletterSubscription, setNewsletterSubscription] = useState('weekly')
-
-// Single radio for agreement
-<Radio
-    name="terms-agreement"
-    value="accepted"
-    checked={termsAccepted}
-    onChange={setTermsAccepted}
-    required
->
-    I agree to the Terms of Service and Privacy Policy
-</Radio>
-
-// Individual radios for newsletter frequency
-<div className="space-y-3">
-    <h4 className="font-medium">Newsletter Frequency</h4>
-
-    <Radio
-        name="newsletter-frequency"
-        value="daily"
-        checked={newsletterSubscription === 'daily'}
-        onChange={(checked) => checked && setNewsletterSubscription('daily')}
-        subtext="Daily updates and news"
-    >
-        Daily
-    </Radio>
-
-    <Radio
-        name="newsletter-frequency"
-        value="weekly"
-        checked={newsletterSubscription === 'weekly'}
-        onChange={(checked) => checked && setNewsletterSubscription('weekly')}
-        subtext="Weekly digest of important updates"
-    >
-        Weekly
-    </Radio>
-
-    <Radio
-        name="newsletter-frequency"
-        value="never"
-        checked={newsletterSubscription === 'never'}
-        onChange={(checked) => checked && setNewsletterSubscription('never')}
-        subtext="No newsletter emails"
-    >
-        Never
-    </Radio>
-</div>
-```
-
-### Complex Configuration Form
-
-Complete configuration form with multiple radio groups
-
-```tsx
-function ConfigurationForm() {
-    const [serverRegion, setServerRegion] = useState('us-east')
-    const [instanceType, setInstanceType] = useState('standard')
-    const [backupFrequency, setBackupFrequency] = useState('daily')
-
-    return (
-        <form className="space-y-8">
-            <RadioGroup
-                name="server-region"
-                value={serverRegion}
-                onChange={setServerRegion}
-                label="Server Region"
-            >
-                <Radio
-                    value="us-east"
-                    subtext="Virginia, USA - Lowest latency for East Coast"
-                    slot={
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                            Recommended
-                        </span>
-                    }
-                >
-                    US East (Virginia)
-                </Radio>
-                <Radio
-                    value="us-west"
-                    subtext="California, USA - Optimal for West Coast"
-                >
-                    US West (California)
-                </Radio>
-                <Radio
-                    value="eu-central"
-                    subtext="Frankfurt, Germany - GDPR compliant"
-                >
-                    EU Central (Frankfurt)
-                </Radio>
-                <Radio
-                    value="asia-pacific"
-                    subtext="Singapore - Best for Asian markets"
-                >
-                    Asia Pacific (Singapore)
-                </Radio>
-            </RadioGroup>
-
-            <RadioGroup
-                name="instance-type"
-                value={instanceType}
-                onChange={setInstanceType}
-                label="Instance Type"
-            >
-                <Radio
-                    value="basic"
-                    subtext="1 CPU, 1GB RAM - For testing and development"
-                    slot={
-                        <span className="text-sm text-gray-600">$5/month</span>
-                    }
-                >
-                    Basic
-                </Radio>
-                <Radio
-                    value="standard"
-                    subtext="2 CPU, 4GB RAM - For small to medium applications"
-                    slot={
-                        <span className="text-sm text-gray-600">$20/month</span>
-                    }
-                >
-                    Standard
-                </Radio>
-                <Radio
-                    value="performance"
-                    subtext="4 CPU, 8GB RAM - For high-traffic applications"
-                    slot={
-                        <span className="text-sm text-gray-600">$40/month</span>
-                    }
-                >
-                    Performance
-                </Radio>
-            </RadioGroup>
-
-            <RadioGroup
-                name="backup-frequency"
-                value={backupFrequency}
-                onChange={setBackupFrequency}
-                label="Backup Frequency"
-            >
-                <Radio value="hourly" subtext="Every hour - Maximum protection">
-                    Hourly Backups
-                </Radio>
-                <Radio value="daily" subtext="Once per day - Recommended">
-                    Daily Backups
-                </Radio>
-                <Radio
-                    value="weekly"
-                    subtext="Once per week - Basic protection"
-                >
-                    Weekly Backups
-                </Radio>
-                <Radio value="manual" subtext="Only when requested">
-                    Manual Backups
-                </Radio>
-            </RadioGroup>
-        </form>
-    )
-}
-```
-
-### Disabled State Management
-
-Radio groups with conditional disabling
-
-```tsx
-const [isAdvancedMode, setIsAdvancedMode] = useState(false)
-const [selectedOption, setSelectedOption] = useState('basic')
-
-<div className="space-y-6">
-    <Radio
-        name="advanced-toggle"
-        value="advanced"
-        checked={isAdvancedMode}
-        onChange={setIsAdvancedMode}
-    >
-        Enable Advanced Mode
-    </Radio>
-
-    <RadioGroup
-        name="configuration-options"
-        value={selectedOption}
-        onChange={setSelectedOption}
-        label="Configuration Options"
-        disabled={!isAdvancedMode}
-    >
-        <Radio value="basic">Basic Configuration</Radio>
-        <Radio value="intermediate">Intermediate Setup</Radio>
-        <Radio value="advanced">Advanced Setup</Radio>
-        <Radio value="expert">Expert Mode</Radio>
-    </RadioGroup>
-</div>
-```
 
 ## Component Tokens
 
@@ -705,26 +366,22 @@ You can style the Radio component using the following tokens:
 ```tsx
 export type RadioTokensType = {
     gap: CSSObject['gap']
-    slotGap: CSSObject['gap']
-    groupGap: CSSObject['gap']
-
+    group: {
+        gap: CSSObject['gap']
+    }
     indicator: {
         [key in RadioIndicatorState]: {
-            background: {
-                [key in Exclude<
-                    RadioState,
-                    'error'
-                >]: CSSObject['backgroundColor']
+            backgroundColor: {
+                [key in RadioState]: CSSObject['backgroundColor']
             }
-            border: {
-                [key in Exclude<RadioState, 'error'>]: CSSObject['borderColor']
+            borderColor: {
+                [key in RadioState]: CSSObject['borderColor']
             }
         }
     }
-
     activeIndicator: {
         active: {
-            background: {
+            backgroundColor: {
                 [key in Exclude<
                     RadioState,
                     'hover' | 'error'
@@ -732,155 +389,44 @@ export type RadioTokensType = {
             }
         }
     }
-
     content: {
         label: {
+            gap: CSSObject['gap']
             color: {
                 [key in RadioState]: CSSObject['color']
             }
-            font: {
-                [key in RadioSize]: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
+            fontSize: {
+                [key in RadioSize]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in RadioSize]: CSSObject['fontWeight']
             }
         }
         sublabel: {
             color: {
                 [key in RadioState]: CSSObject['color']
             }
-            font: {
-                [key in RadioSize]: {
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
+            fontSize: {
+                [key in RadioSize]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in RadioSize]: CSSObject['fontWeight']
             }
         }
     }
-
     height: {
         [key in RadioSize]: CSSObject['height']
     }
-
     borderWidth: {
         [key in RadioIndicatorState]: {
-            [key in Exclude<RadioState, 'error'>]: number
+            [key in RadioState]: number
         }
     }
-
     slot: {
-        size: {
-            [key in RadioSize]: CSSObject['width']
-        }
+        [key in RadioSize]: CSSObject['width']
     }
-
     required: {
         color: CSSObject['color']
-        spacing: CSSObject['marginLeft']
     }
 }
 ```
-
-## Behavior
-
-### Selection Behavior
-
-- **Mutual Exclusivity**: Only one radio button can be selected within a group
-- **Group Management**: RadioGroup automatically manages selection state
-- **Value Tracking**: Selected value is tracked and propagated through onChange callbacks
-- **Default Selection**: Support for default selected values in uncontrolled mode
-
-### Keyboard Navigation
-
-- **Arrow Keys**: Navigate between radio buttons within a group
-- **Auto-Selection**: Arrow key navigation automatically selects the focused radio
-- **Tab Behavior**: Tab moves focus between radio groups, not individual radios
-- **Space/Enter**: Activates the currently focused radio button
-
-### State Management
-
-- **Controlled Mode**: External state management with value and onChange props
-- **Uncontrolled Mode**: Internal state management with defaultValue prop
-- **Individual Controls**: Can be used standalone outside of groups
-- **Validation Support**: Built-in support for required and error states
-
-### Focus Management
-
-- **Group Focus**: Only the selected radio (or first radio) in a group is focusable
-- **Focus Indicators**: Clear visual focus indicators for keyboard users
-- **Focus Restoration**: Focus is properly managed during dynamic updates
-- **Skip Navigation**: Proper tab order through radio groups
-
-### Content Management
-
-- **Label Association**: Proper label association with radio inputs
-- **Subtext Support**: Optional descriptive text below main labels
-- **Slot Content**: Support for additional content like badges or icons
-- **Required Indicators**: Automatic asterisk display for required fields
-
-## Accessibility
-
-- **ARIA Compliance**: Uses proper `role="radiogroup"` and `aria-checked` attributes
-- **Keyboard Navigation**: Full keyboard support with arrow keys for navigation
-- **Screen Reader Support**: Proper announcements of state changes and group structure
-- **Focus Management**: Focus is trapped within radio groups during navigation
-- **Label Association**: Each radio is properly associated with its label
-- **Group Semantics**: Radio groups are announced as groups to screen readers
-- **State Communication**: Current selection and states are communicated to assistive technologies
-- **Required Field Support**: Required fields are announced to screen readers
-- **Error State Support**: Error states are communicated through ARIA attributes
-
-## Enums
-
-### RadioSize
-
-```tsx
-enum RadioSize {
-    SMALL = 'sm', // Compact radio for dense interfaces
-    MEDIUM = 'md', // Standard radio size for most use cases
-}
-```
-
-## Type Definitions
-
-### RadioState
-
-```tsx
-type RadioState = 'default' | 'hover' | 'disabled' | 'error'
-```
-
-### RadioIndicatorState
-
-```tsx
-type RadioIndicatorState = 'active' | 'inactive'
-```
-
-## Best Practices
-
-### When to Use Radio Buttons
-
-- **Mutually Exclusive Choices**: When users must select exactly one option from a list
-- **Visible Options**: When all options should be visible at once (typically 2-7 options)
-- **Single Selection**: When only one choice is allowed, unlike checkboxes
-- **Form Controls**: As part of forms where a selection is required
-
-### Radio Group Design Guidelines
-
-- **Clear Labels**: Use descriptive labels that clearly explain each option
-- **Logical Ordering**: Order options logically (alphabetical, by importance, or frequency)
-- **Default Selection**: Consider providing a sensible default selection
-- **Group Related Options**: Keep related radio buttons together in groups
-
-### Content Guidelines
-
-- **Concise Labels**: Keep radio button labels brief but descriptive
-- **Helpful Subtext**: Use subtext to provide additional context when needed
-- **Consistent Formatting**: Maintain consistent label and subtext formatting
-- **Clear Hierarchy**: Use typography and spacing to establish clear content hierarchy
-
-### Form Integration
-
-- **Validation**: Implement proper validation for required radio groups
-- **Error Messaging**: Provide clear error messages for validation failures
-- **Default Values**: Set appropriate default values for better user experience
-- **State Persistence**: Consider persisting selections during form interactions

@@ -34,57 +34,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (weight, setWeight) = React.useState(() => None)
-  
-  let handleWeightChange = evt => {
-    let value = ReactEvent.Form.target(evt)["value"]
-    let floatValue = value == "" ? None : Some(Belt.Float.fromString(value))
-    setWeight(_ => floatValue)
-  }
-  
-  <UnitInputBinding
-    label="Weight"
-    placeholder="Enter weight"
-    value=?weight
-    onChange=handleWeightChange
-    unit="kg"
-    unitPosition="right"
-    size="medium"
-    min=0.0
-    max=1000.0
-    step=0.1
-    hintText="Enter weight in kilograms"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~value: float=?,
-  ~onChange: ReactEvent.Form.t => unit,
-  ~min: float=?,
-  ~max: float=?,
-  ~step: float=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~required: bool=?,
-  ~disabled: bool=?,
-  ~size: string=?,
-  ~placeholder: string=?,
-  ~sublabel: string=?,
-  ~helpIconHintText: string=?,
-  ~label: string=?,
-  ~hintText: string=?,
-  ~leftSlot: React.element=?,
-  ~rightSlot: React.element=?,
-  ~unit: string,
-  ~unitPosition: string=?,
-  ~name: string=?,
-  ~onFocus: ReactEvent.Focus.t => unit=?,
-  ~onBlur: ReactEvent.Focus.t => unit=?,
-) => React.element = "UnitInput"`
-
     const [weight, setWeight] = useState<number | undefined>(undefined)
 
     const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,11 +41,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

@@ -1,0 +1,379 @@
+---
+title: Card
+description: The Card component is a flexible container component used to display content in a structured format with multiple variants, alignment options, and customizable slots for headers, body content, and actions.
+category: components
+tags:
+    - card
+    - component
+    - container
+    - layout
+    - content
+RepoFolderName: Card
+StorybookLink: components-card--docs
+---
+
+<CardPreview />
+
+## Usage
+
+```tsx
+import { Card, CardVariant, CardAlignment } from 'blend-v1'
+import { Button, ButtonType } from 'blend-v1'
+
+function MyComponent() {
+    return (
+        <Card
+            variant={CardVariant.DEFAULT}
+            headerTitle="Card Title"
+            subHeader="Card subtitle"
+            bodyTitle="Body Title"
+            content="This is the card content"
+            actionButton={{
+                buttonType: ButtonType.PRIMARY,
+                children: 'Action',
+                onClick: () => console.log('Action clicked'),
+            }}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'variant',
+                hintText:
+                    "Determines the card's layout structure and available props. DEFAULT provides structured header/body sections with slots, ALIGNED allows custom card slot positioning (vertical/horizontal), and CUSTOM provides complete control with children. Defaults to DEFAULT.",
+            },
+            {
+                content: 'CardVariant',
+                hintText:
+                    "Enum that determines the card's layout and prop structure",
+            },
+            { content: 'DEFAULT, ALIGNED, CUSTOM' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Maximum width constraint for the card. Accepts any valid CSS width value (e.g., "400px", "50%", "100vw"). Useful for preventing cards from becoming too wide on large screens. Defaults to "auto" (no maximum constraint).',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (px, %, em, rem, vw, etc.) for maximum width',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText:
+                    'Maximum height constraint for the card. Accepts any valid CSS height value (e.g., "500px", "80vh", "100%"). Useful for scrollable card content. Note: Percentage heights require a parent with defined height.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS height value (px, %, em, rem, vh, etc.) for maximum height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minHeight',
+                hintText:
+                    'Minimum height for the card. Accepts any valid CSS height value. Useful when you want the card to grow with content but maintain a minimum height. Ensures consistent card sizing across different content lengths.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS height value (px, %, em, rem, vh, etc.) for minimum height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerSlot1',
+                hintText:
+                    'Optional custom React element displayed before the header title in DEFAULT variant. Useful for adding icons, badges, or other visual elements at the start of the header section.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display before the header title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerTitle',
+                hintText:
+                    'Optional main title text displayed in the card header section. Appears prominently at the top and is styled according to the variant. Used in both DEFAULT and ALIGNED variants.',
+            },
+            {
+                content: 'string',
+                hintText: 'Text content for the main header title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerTag',
+                hintText:
+                    'Optional React element (typically a Tag or Badge component) displayed in the header. Useful for showing status, categories, or labels alongside the header title. Used in DEFAULT and ALIGNED variants.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element (tag, badge, etc.) to display in the header',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'headerSlot2',
+                hintText:
+                    'Optional custom React element displayed after the header title in DEFAULT and ALIGNED variants. Useful for action buttons, icons, or other controls in the header area.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React element to display after the header title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subHeader',
+                hintText:
+                    'Optional subtitle text displayed below the header title. Provides secondary context or description. Typically styled with smaller, lighter text than the header title. Used in DEFAULT and ALIGNED variants.',
+            },
+            {
+                content: 'string',
+                hintText: 'Text content for the header subtitle',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodySlot1',
+                hintText:
+                    'Optional custom React element displayed before the body title in the card body section. Useful for adding visual elements, charts, or content that should appear before the body title.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React element to display before the body title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodyTitle',
+                hintText:
+                    'Optional title text displayed in the card body section. Provides structure and hierarchy within the body content. Styled differently from the header title to create visual distinction.',
+            },
+            {
+                content: 'string',
+                hintText: 'Text content for the body section title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'content',
+                hintText:
+                    'Optional main content displayed in the card body section. Can be any React node including text, components, images, or complex layouts. This is the primary content area of the card.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React content (text, components, layouts) for the body',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bodySlot2',
+                hintText:
+                    'Optional custom React element displayed after the body content in DEFAULT variant. Useful for adding supplementary content, metadata, or visual elements at the end of the body section.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React element to display after the body content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionButton',
+                hintText:
+                    "Optional Button configuration object for the card's primary action. When provided, displays a button in the card body (or header depending on variant) that users can click to perform the main action related to the card content.",
+            },
+            {
+                content: 'ButtonProps',
+                hintText:
+                    'Button component props object with text, onClick, buttonType, etc.',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignment',
+                hintText:
+                    'Required when variant is ALIGNED. Controls the layout direction of the cardSlot. VERTICAL stacks the slot above or below the content, HORIZONTAL places it side-by-side. Determines how the custom card slot is positioned relative to the main content.',
+            },
+            {
+                content: 'CardAlignment',
+                hintText:
+                    'Enum that determines the layout direction for ALIGNED variant',
+            },
+            { content: 'VERTICAL, HORIZONTAL' },
+        ],
+        [
+            {
+                content: 'centerAlign',
+                hintText:
+                    'Optional flag for ALIGNED variant that centers the card content vertically or horizontally depending on the alignment direction. When true, content is centered within the card for better visual balance.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true centers content, false uses default alignment',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'cardSlot',
+                hintText:
+                    "Optional custom React element displayed in the ALIGNED variant's special slot area. Positioned according to the alignment prop (VERTICAL or HORIZONTAL). Useful for images, charts, or other content that should be separated from the main card content.",
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the aligned card slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    "Required when variant is CUSTOM. Provides complete control over the card's content structure. All card content is rendered through children, allowing for fully custom layouts and compositions without using the predefined slots.",
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React content for completely custom card layout',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Card component using the following tokens:
+
+```tsx
+export type CardTokenType = {
+    maxWidth: CSSObject['maxWidth']
+    borderRadius: CSSObject['borderRadius']
+    border: CSSObject['border']
+    boxShadow: CSSObject['boxShadow']
+    backgroundColor: CSSObject['backgroundColor']
+    padding: {
+        [key in CardVariant]: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+    }
+
+    header: {
+        [CardVariant.DEFAULT]: {
+            backgroundColor: CSSObject['backgroundColor']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            borderBottom: CSSObject['borderBottom']
+        }
+        [CardVariant.ALIGNED]: undefined
+        [CardVariant.CUSTOM]: undefined
+
+        text: {
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+                gap: CSSObject['gap']
+            }
+            subTitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            gap: CSSObject['gap']
+        }
+    }
+
+    body: {
+        padding: {
+            [CardVariant.DEFAULT]: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            [CardVariant.ALIGNED]: undefined
+            [CardVariant.CUSTOM]: undefined
+        }
+
+        gap: {
+            [key in CardVariant]: CSSObject['gap']
+        }
+
+        text: {
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            content: {
+                fontSize: CSSObject['fontSize']
+                color: CSSObject['color']
+                fontWeight: CSSObject['fontWeight']
+            }
+            gap: CSSObject['gap']
+        }
+
+        actions: {
+            gap: CSSObject['gap']
+            centerAlignGap: CSSObject['gap']
+        }
+
+        alignment: {
+            [CardVariant.ALIGNED]: {
+                cardSlot: {
+                    vertical: {
+                        marginBottom: CSSObject['marginBottom']
+                        minHeight: CSSObject['minHeight']
+                    }
+                    horizontal: {
+                        marginRight: CSSObject['marginRight']
+                        width: CSSObject['width']
+                        height: CSSObject['height']
+                    }
+                }
+            }
+            [CardVariant.DEFAULT]: undefined
+            [CardVariant.CUSTOM]: undefined
+        }
+    }
+}
+
+export type ResponsiveCardTokens = {
+    [key in keyof BreakpointType]: CardTokenType
+}
+```
