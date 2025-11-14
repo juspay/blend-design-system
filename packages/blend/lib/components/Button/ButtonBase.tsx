@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, type MouseEvent } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -7,6 +7,8 @@ import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRipple, RippleContainer } from '../animations/Ripple'
+import { FOUNDATION_THEME } from '../../tokens'
 
 export type ButtonBaseProps = Omit<
     ButtonProps,
@@ -14,6 +16,13 @@ export type ButtonBaseProps = Omit<
 > & {
     isSkeleton?: boolean
     tokens?: ButtonTokensType
+}
+
+const formatLineHeight = (
+    value?: number | string | null
+): string | undefined => {
+    if (value === undefined || value === null) return undefined
+    return typeof value === 'number' ? `${value}px` : value
 }
 
 const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
@@ -41,6 +50,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const defaultButtonTokens =
             useResponsiveTokens<ButtonTokensType>('BUTTON')
         const buttonTokens = tokens ?? defaultButtonTokens
+        const { ripples, createRipple } = useRipple()
 
         const getBorderRadius = () => {
             const variantBorderRadius =
@@ -56,11 +66,21 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
 
         const isLoading = loading && !isSkeleton
         const isDisabled = isSkeleton ? true : disabled
+        const paddingTokens = buttonTokens.padding[size][buttonType][subType]
+        const lineHeight = formatLineHeight(
+            FOUNDATION_THEME.font.size.body.md.lineHeight
+        )
+
+        const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+            if (isSkeleton || isDisabled || isLoading) return
+            createRipple(event)
+            onClick?.()
+        }
 
         return (
             <PrimitiveButton
                 ref={ref}
-                onClick={isSkeleton ? undefined : onClick}
+                onClick={handleClick}
                 display="flex"
                 alignItems="center"
                 justifyContent={justifyContent}
@@ -82,7 +102,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         : buttonTokens.text.color[buttonType][subType].default
                 }
                 borderRadius={getBorderRadius()}
-                padding={buttonTokens.padding[size][buttonType][subType]}
                 border={
                     isSkeleton
                         ? 'transparent'
@@ -93,6 +112,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         ? 'transparent'
                         : buttonTokens.outline[buttonType][subType].default
                 }
+                position={!isSkeleton ? 'relative' : undefined}
+                overflow={!isSkeleton ? 'hidden' : undefined}
                 _active={
                     isSkeleton || isDisabled
                         ? undefined
@@ -154,6 +175,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               cursor: 'not-allowed',
                           }
                 }
+                paddingX={paddingTokens.x}
+                paddingY={paddingTokens.y}
                 {...htmlProps}
             >
                 {isLoading ? (
@@ -191,6 +214,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                           ][state]
                                 }
                                 aria-hidden={isSkeleton ? true : undefined}
+                                lineHeight={lineHeight}
                             >
                                 {text}
                             </Text>
@@ -207,6 +231,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         )}
                     </>
                 )}
+                {!isSkeleton && <RippleContainer ripples={ripples} />}
             </PrimitiveButton>
         )
     }
