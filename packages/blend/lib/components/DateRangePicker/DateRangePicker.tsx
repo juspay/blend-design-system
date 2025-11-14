@@ -99,11 +99,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         calendarToken?.calendar?.header?.dateInput?.label
                             ?.fontSize
                     }
-                    style={{
-                        minWidth:
-                            calendarToken?.calendar?.header?.dateInput?.label
-                                ?.width,
-                    }}
                 >
                     Start
                 </PrimitiveText>
@@ -131,7 +126,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             onChange={onStartTimeChange}
                             autoFocus={false}
                             tabIndex={-1}
-                            calendarToken={calendarToken}
                         />
                     )}
                 </Block>
@@ -160,11 +154,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontSize
                         }
-                        style={{
-                            minWidth:
-                                calendarToken?.calendar?.header?.dateInput
-                                    ?.label?.width,
-                        }}
                     >
                         End
                     </PrimitiveText>
@@ -192,7 +181,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 onChange={onEndTimeChange}
                                 autoFocus={false}
                                 tabIndex={-1}
-                                calendarToken={calendarToken}
                             />
                         )}
                     </Block>

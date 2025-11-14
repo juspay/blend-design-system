@@ -54,7 +54,7 @@ const StyledDayCell = styled(Block)<{
         !props.$isDisabled &&
         `
     &:hover {
-      outline: ${props.$calendarToken.calendar.calendarGrid.day.cell.outline.hover};
+      border: ${props.$calendarToken.calendar.calendarGrid.day.cell.border.hover};
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.cell.borderRadius};
       z-index: 10;
       position: relative;
@@ -453,11 +453,34 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         {cellProps.showTodayIndicator && (
                                                             <Block
                                                                 style={{
-                                                                    ...calendarToken
+                                                                    width: calendarToken
                                                                         .calendar
                                                                         .calendarGrid
                                                                         .day
-                                                                        .todayIndicator,
+                                                                        .todayIndicator
+                                                                        .width,
+                                                                    height: calendarToken
+                                                                        .calendar
+                                                                        .calendarGrid
+                                                                        .day
+                                                                        .todayIndicator
+                                                                        .width,
+                                                                    backgroundColor:
+                                                                        calendarToken
+                                                                            .calendar
+                                                                            .calendarGrid
+                                                                            .day
+                                                                            .todayIndicator
+                                                                            .backgroundColor,
+                                                                    borderRadius:
+                                                                        '50%',
+                                                                    position:
+                                                                        'absolute',
+                                                                    bottom: FOUNDATION_THEME
+                                                                        .unit[2],
+                                                                    left: '50%',
+                                                                    transform:
+                                                                        'translateX(-50%)',
                                                                 }}
                                                             />
                                                         )}
