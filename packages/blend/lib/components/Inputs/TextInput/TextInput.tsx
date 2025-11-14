@@ -11,6 +11,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const TextInput = ({
     size = TextInputSize.MEDIUM,
@@ -37,7 +47,7 @@ const TextInput = ({
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -63,15 +73,6 @@ const TextInput = ({
     const paddingInlineEnd = rightSlot
         ? paddingX + rightSlotWidth + GAP
         : paddingX
-
-    // Trigger shake animation on error
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 400)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -105,24 +106,11 @@ const TextInput = ({
                     required={required}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
+                style={getErrorShakeStyle(shouldShake)}
             >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
                 {leftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -258,7 +246,7 @@ const TextInput = ({
                         {rightSlot}
                     </Block>
                 )}
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

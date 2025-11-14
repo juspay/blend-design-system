@@ -13,6 +13,16 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { OTPProps } from './types'
 import type { OTPInputTokensType } from './otpInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const OTPInput = ({
     label,
@@ -35,17 +45,8 @@ const OTPInput = ({
     const otpInputTokens = useResponsiveTokens<OTPInputTokensType>('OTP_INPUT')
     const [otp, setOtp] = useState<string[]>(new Array(length).fill(''))
     const [, setActiveIndex] = useState<number>(-1)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error || false)
     const inputRefs = useRef<HTMLInputElement[]>([])
-
-    // Trigger shake animation when error changes to true
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 500)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     useEffect(() => {
         if (value) {
@@ -170,22 +171,7 @@ const OTPInput = ({
                 required={required}
                 tokens={otpInputTokens}
             />
-            <Block
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
-            >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
+            <Wrapper style={getErrorShakeStyle(shouldShake)}>
                 <Block
                     display="flex"
                     gap={otpInputTokens.inputContainer.gap}
@@ -263,7 +249,7 @@ const OTPInput = ({
                         />
                     ))}
                 </Block>
-            </Block>
+            </Wrapper>
             <InputFooter
                 hintText={hintText}
                 error={error}

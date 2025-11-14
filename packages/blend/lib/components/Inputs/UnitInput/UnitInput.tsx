@@ -13,6 +13,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const UnitInput = ({
     value,
@@ -46,7 +56,7 @@ const UnitInput = ({
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
     const [unitWidth, setUnitWidth] = useState(0)
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -62,15 +72,6 @@ const UnitInput = ({
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
     const unitRef = useRef<HTMLDivElement>(null)
-
-    // Trigger shake animation when error changes to true
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 500)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     useEffect(() => {
         if (leftSlotRef.current) {
@@ -190,26 +191,13 @@ const UnitInput = ({
                     required={required}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={8}
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
+                style={getErrorShakeStyle(shouldShake)}
             >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
                 {leftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -351,7 +339,7 @@ const UnitInput = ({
                     }}
                     {...rest}
                 />
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

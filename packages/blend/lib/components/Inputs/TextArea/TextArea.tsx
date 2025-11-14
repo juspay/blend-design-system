@@ -5,11 +5,21 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
 import type { TextAreaTokensType } from './textarea.token'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const TextArea = ({
     value,
@@ -34,7 +44,7 @@ const TextArea = ({
 }: TextAreaProps) => {
     const textAreaTokens = useResponsiveTokens<TextAreaTokensType>('TEXT_AREA')
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error || false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -42,15 +52,6 @@ const TextArea = ({
 
     const paddingX = toPixels(textAreaTokens.inputContainer.padding.x)
     const paddingY = toPixels(textAreaTokens.inputContainer.padding.y)
-
-    // Trigger shake animation on error
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 400)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     return (
         <Block
@@ -71,24 +72,11 @@ const TextArea = ({
                     required={required}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width="100%"
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
+                style={getErrorShakeStyle(shouldShake)}
             >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
                 {label && isSmallScreen && (
                     <Block
                         position="absolute"
@@ -181,7 +169,7 @@ const TextArea = ({
                     }}
                     {...rest}
                 />
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

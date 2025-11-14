@@ -19,6 +19,16 @@ import {
     SingleSelect,
 } from '../../SingleSelect'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const DropdownInput = ({
     label,
@@ -53,15 +63,7 @@ const DropdownInput = ({
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
-
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 400)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
+    const shouldShake = useErrorShake(error)
     const [slotWidth, setSlotWidth] = useState<number>(0)
     const [dropdownWidth, setDropdownWidth] = useState<number>(0)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -125,24 +127,11 @@ const DropdownInput = ({
                     tokens={dropdownInputTokens}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
+                style={getErrorShakeStyle(shouldShake)}
             >
-                <style>
-                    {`
-                    @keyframes shake {
-                        0%, 100% { transform: translateX(0); }
-                        10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                        20%, 40%, 60%, 80% { transform: translateX(4px); }
-                    }
-                `}
-                </style>
                 {slot && (
                     <Block
                         ref={slotRef}
@@ -344,7 +333,7 @@ const DropdownInput = ({
                         />
                     </Block>
                 )}
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

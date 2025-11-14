@@ -22,6 +22,16 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
+import { useErrorShake } from '../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const MultiSelect = ({
     selectedValues,
@@ -120,6 +130,8 @@ const MultiSelect = ({
     )
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
+
+    const shouldShake = useErrorShake(error || false)
 
     if (isMobile && useDrawerOnMobile) {
         return (
@@ -269,7 +281,9 @@ const MultiSelect = ({
                             })}
                             data-selectbox-value={placeholder}
                         >
-                            <Block
+                            <Wrapper
+                                position="relative"
+                                style={getErrorShakeStyle(shouldShake)}
                                 width={fullWidth ? '100%' : 'fit-content'}
                                 maxWidth={fullWidth ? '100%' : 'fit-content'}
                                 display="flex"
@@ -631,7 +645,7 @@ const MultiSelect = ({
                                             />
                                         </PrimitiveButton>
                                     )}
-                            </Block>
+                            </Wrapper>
                         </Block>
                     )
                 }

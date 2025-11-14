@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useRef, useState, useEffect } from 'react'
+import { type KeyboardEvent, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooter from '../utils/InputFooter/InputFooter'
@@ -10,6 +10,16 @@ import type { MultiValueInputTokensType } from './multiValueInput.tokens'
 import { X } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const MultiValueInput = ({
     value = '',
@@ -30,17 +40,8 @@ const MultiValueInput = ({
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error || false)
     const inputRef = useRef<HTMLInputElement>(null)
-
-    // Trigger shake animation when error changes to true
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 500)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     const addTag = (value: string) => {
         const trimmedValue = value.trim()
@@ -86,22 +87,7 @@ const MultiValueInput = ({
                 required={required}
                 tokens={multiValueInputTokens}
             />
-            <Block
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
-            >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
+            <Wrapper style={getErrorShakeStyle(shouldShake)}>
                 <Block
                     display="flex"
                     flexWrap="wrap"
@@ -190,7 +176,7 @@ const MultiValueInput = ({
                         {...rest}
                     />
                 </Block>
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

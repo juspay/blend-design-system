@@ -8,12 +8,22 @@ import { NumberInputSize } from './types'
 import type { NumberInputTokensType } from './numberInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { Triangle } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const NumberInput = ({
     value,
@@ -40,7 +50,7 @@ const NumberInput = ({
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
-    const [shouldShake, setShouldShake] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -52,15 +62,6 @@ const NumberInput = ({
     const paddingY =
         toPixels(numberInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 1)
-
-    // Trigger shake animation on error
-    useEffect(() => {
-        if (error) {
-            setShouldShake(true)
-            const timer = setTimeout(() => setShouldShake(false), 400)
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     return (
         <Block
@@ -81,28 +82,15 @@ const NumberInput = ({
                     tokens={numberInputTokens}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={
                     numberInputTokens.inputContainer.borderRadius[size]
                 }
-                style={{
-                    animation: shouldShake
-                        ? 'shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)'
-                        : undefined,
-                }}
+                style={getErrorShakeStyle(shouldShake)}
             >
-                <style>
-                    {`
-                        @keyframes shake {
-                            0%, 100% { transform: translateX(0); }
-                            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-                            20%, 40%, 60%, 80% { transform: translateX(4px); }
-                        }
-                    `}
-                </style>
                 {label && isSmallScreenWithLargeSize && (
                     <Block
                         position="absolute"
@@ -379,7 +367,7 @@ const NumberInput = ({
                         />
                     </PrimitiveButton>
                 </Block>
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}
