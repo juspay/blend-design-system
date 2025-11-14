@@ -5,7 +5,7 @@ import { ChangeType, StatCardVariant } from './types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
-export type StatCardState = 'default' | 'hover' | 'loading'
+export type StatCardState = 'default' | 'hover'
 
 export type StatCardTokenType = {
     height: CSSObject['height']
@@ -168,17 +168,16 @@ export const getStatCardToken = (
                         color: foundationToken.colors.gray[400],
                     },
                     helpIcon: {
-                        width: foundationToken.unit[16],
+                        width: foundationToken.unit[14],
                         color: {
                             default: foundationToken.colors.gray[400],
                             hover: foundationToken.colors.gray[400],
-                            loading: foundationToken.colors.gray[400],
                         },
                     },
                 },
 
                 stats: {
-                    gap: foundationToken.unit[8],
+                    gap: foundationToken.unit[6],
                     title: {
                         gap: foundationToken.unit[8],
                         value: {
@@ -255,7 +254,7 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: foundationToken.unit[2],
+                    strokeWidth: foundationToken.unit[1.5],
                     activeDot: {
                         width: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
@@ -269,7 +268,6 @@ export const getStatCardToken = (
                     fill: {
                         default: foundationToken.colors.primary[500],
                         hover: foundationToken.colors.primary[100],
-                        loading: foundationToken.colors.primary[500],
                     },
                 },
                 progressBar: {
@@ -309,7 +307,7 @@ export const getStatCardToken = (
             height: 'auto',
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
 
-            borderRadius: foundationToken.border.radius[8],
+            borderRadius: foundationToken.border.radius[12],
             backgroundColor: foundationToken.colors.gray[0],
 
             boxShadow: foundationToken.shadows.xs,
@@ -332,17 +330,16 @@ export const getStatCardToken = (
                         color: foundationToken.colors.gray[400],
                     },
                     helpIcon: {
-                        width: foundationToken.unit[16],
+                        width: foundationToken.unit[14],
                         color: {
                             default: foundationToken.colors.gray[400],
                             hover: foundationToken.colors.gray[400],
-                            loading: foundationToken.colors.gray[400],
                         },
                     },
                 },
 
                 stats: {
-                    gap: foundationToken.unit[8],
+                    gap: foundationToken.unit[6],
                     title: {
                         gap: foundationToken.unit[8],
                         value: {
@@ -418,7 +415,7 @@ export const getStatCardToken = (
                     },
                 },
                 line: {
-                    strokeWidth: foundationToken.unit[2],
+                    strokeWidth: foundationToken.unit[1.5],
                     activeDot: {
                         width: foundationToken.border.radius[4],
                         fill: foundationToken.colors.gray[0],
@@ -427,13 +424,12 @@ export const getStatCardToken = (
                 bar: {
                     borderTopRightRadius: foundationToken.border.radius[2],
                     borderTopLeftRadius: foundationToken.border.radius[2],
-                    borderBottomRightRadius: foundationToken.border.radius[0],
-                    borderBottomLeftRadius: foundationToken.border.radius[0],
+                    borderBottomRightRadius: foundationToken.border.radius[2],
+                    borderBottomLeftRadius: foundationToken.border.radius[2],
 
                     fill: {
                         default: foundationToken.colors.primary[500],
                         hover: foundationToken.colors.primary[100],
-                        loading: foundationToken.colors.primary[500],
                     },
                 },
                 progressBar: {
