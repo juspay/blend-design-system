@@ -214,10 +214,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             if (isOpen) {
                 // Start rendering
                 setShouldRender(true)
-                // Trigger enter animation on next frame
+                // Reset animation state first
+                setIsAnimatingIn(false)
+                // Small delay to ensure DOM renders initial state before animation
                 const timer = setTimeout(() => {
-                    setIsAnimatingIn(true)
-                }, 10)
+                    // Use requestAnimationFrame for smooth animation start
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            setIsAnimatingIn(true)
+                        })
+                    })
+                }, 16) // ~1 frame delay to ensure initial render
                 return () => clearTimeout(timer)
             } else {
                 // Start exit animation
@@ -225,7 +232,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 // Wait for animation to complete before unmounting
                 const timer = setTimeout(() => {
                     setShouldRender(false)
-                }, 250)
+                }, 650)
                 return () => clearTimeout(timer)
             }
         }, [isOpen])
@@ -313,7 +320,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         style={{
                             opacity: isAnimatingIn ? 0.5 : 0,
                             transition:
-                                'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                                'opacity 650ms cubic-bezier(0.22, 1, 0.36, 1)',
                         }}
                     />
 
@@ -335,9 +342,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             opacity: isAnimatingIn ? 1 : 0,
                             transform: isAnimatingIn
                                 ? 'scale(1) translateY(0px)'
-                                : 'scale(0.92) translateY(-8px)',
+                                : 'scale(0.88) translateY(-20px)',
                             transition:
-                                'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                                'opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 650ms cubic-bezier(0.22, 1, 0.36, 1)',
+                            willChange: 'opacity, transform',
                         }}
                     >
                         <ModalHeader
