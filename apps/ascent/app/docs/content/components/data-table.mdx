@@ -739,13 +739,27 @@ function MyComponent() {
         ],
         [
             {
-                content: 'bulkActions',
+                content: 'onRowSelectionChange',
                 hintText:
-                    'Optional array of BulkAction objects that define actions available when one or more rows are selected. Each action appears as a button in the bulk actions bar that appears above the table when rows are selected. Actions receive the array of selected row IDs when clicked.',
+                    'Optional callback function invoked when row selection state changes (row selected or deselected). Receives selectedRowIds (array of all currently selected row IDs), isSelected (whether the triggering row was selected or deselected), rowId (the ID of the row that triggered the change), and rowData (the complete row object). Use this to track selection state or trigger side effects.',
             },
             {
-                content: 'BulkAction[]',
-                hintText: 'Array of bulk action configuration objects',
+                content:
+                    '(selectedRowIds: string[], isSelected: boolean, rowId: string, rowData: T) => void',
+                hintText:
+                    'Function called with selection state when row selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bulkActions',
+                hintText:
+                    'Optional BulkActionsConfig object that configures the bulk actions bar displayed when rows are selected. Contains showSelectAll, showDeselectAll, onSelectAll, onDeselectAll callbacks, and customActions (React element for custom action buttons). The bulk actions bar appears above the table when one or more rows are selected.',
+            },
+            {
+                content: 'BulkActionsConfig',
+                hintText: 'Object with bulk action configuration properties',
             },
             { content: '' },
         ],
@@ -823,6 +837,45 @@ function MyComponent() {
                     'Function that returns CSS properties for custom row styling',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'tableBodyHeight',
+                hintText:
+                    'Optional fixed height for the table body (scrollable content area). Accepts CSS values as string (e.g., "400px", "50vh") or numbers (interpreted as pixels). When set, the table body becomes scrollable with a fixed height. Useful for maintaining consistent layout in dashboards or constrained spaces.',
+            },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS height value (px, vh, rem) as string or number for pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rowHeight',
+                hintText:
+                    'Approximate height of a single row in pixels. Used to calculate minimum table height based on page size, helping maintain consistent layout and preventing layout shifts when data changes (e.g., during loading or empty states). Adjust this value to match your row design. Defaults to 52.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing approximate row height in pixels',
+            },
+            { content: '52' },
+        ],
+        [
+            {
+                content: 'maintainMinHeight',
+                hintText:
+                    'When true, the table maintains a minimum height based on pageSize × rowHeight, preventing layout shifts when switching between data states (loading, empty, populated). When false, table height adjusts dynamically to content. Set to false if you prefer dynamic height behavior. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true maintains consistent height, false allows dynamic height adjustment',
+            },
+            { content: 'true' },
         ],
         [
             {

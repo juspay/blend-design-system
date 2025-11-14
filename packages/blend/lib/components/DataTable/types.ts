@@ -362,6 +362,22 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     tableBodyHeight?: string | number
 
+    /**
+     * Approximate height of a single row in pixels.
+     * Used to calculate minimum table height based on page size.
+     * Helps maintain consistent layout and prevent shifting.
+     * @default 52
+     */
+    rowHeight?: number
+
+    /**
+     * Whether to maintain minimum height based on page size.
+     * When true, table maintains consistent height preventing layout shifts.
+     * When false, table height adjusts to content.
+     * @default true
+     */
+    maintainMinHeight?: boolean
+
     // Mobile configuration
     mobileColumnsToShow?: number
 }
