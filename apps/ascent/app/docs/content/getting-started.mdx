@@ -37,15 +37,7 @@ pnpm add @juspay/blend-design-system
 
 ## Basic Setup
 
-### 1. Import Styles
-
-Import the required CSS file in your application entry point:
-
-```tsx
-import '@juspay/blend-design-system/style.css'
-```
-
-### 2. Wrap Your App with ThemeProvider
+### 1. Wrap Your App with ThemeProvider
 
 Wrap your application with the `ThemeProvider` to enable theming:
 
@@ -61,7 +53,7 @@ function App() {
 }
 ```
 
-### 3. Start Using Components
+### 2. Start Using Components
 
 Import and use components in your application:
 
@@ -98,15 +90,18 @@ function MyApp() {
 }
 ```
 
-### 4. Custom Theme (Optional)
+### 3. Custom Theme (Optional)
 
-Customize the design system to match your brand:
+`ThemeProvider` ([source](https://github.com/juspay/blend-design-system/blob/dev/packages/blend/lib/context/ThemeProvider.tsx)) automatically loads Blend’s `FOUNDATION_THEME` and generates component tokens if you don’t pass anything. When you want to tailor the look and feel, pick the approach that fits your needs:
+
+#### Option 1: Extend Blend foundation tokens
+
+Use the exported `FOUNDATION_THEME` as a baseline and update only the values you need—colors, typography, spacing, and more:
 
 ```tsx
-import { ThemeProvider } from '@juspay/blend-design-system'
-import { FOUNDATION_THEME } from '@juspay/blend-design-system'
+import { ThemeProvider, FOUNDATION_THEME } from '@juspay/blend-design-system'
 
-const customTheme = {
+const customFoundation = {
     ...FOUNDATION_THEME,
     colors: {
         ...FOUNDATION_THEME.colors,
@@ -119,12 +114,82 @@ const customTheme = {
 
 function App() {
     return (
-        <ThemeProvider foundationTokens={customTheme}>
+        <ThemeProvider foundationTokens={customFoundation}>
             <YourAppContent />
         </ThemeProvider>
     )
 }
 ```
+
+#### Option 2: Provide a complete theme
+
+Define your own foundation + component tokens (and optionally breakpoints) when you want 100% control over the design language. The `SidebarDemo` ([source](https://github.com/juspay/blend-design-system/blob/dev/apps/site/src/demos/SidebarDemo.tsx)) shows this pattern in action.
+
+```tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+import { ALT_FOUNDATION_TOKENS } from './themes/ALT_FOUNDATION_TOKENS'
+import { HDFC_COMPONENT_TOKENS } from './themes/HDFC_COMPONENT_TOKENS'
+import { CUSTOM_BREAKPOINTS } from './themes/breakpoints'
+
+function App() {
+    return (
+        <ThemeProvider
+            foundationTokens={ALT_FOUNDATION_TOKENS}
+            componentTokens={HDFC_COMPONENT_TOKENS}
+            breakpoints={CUSTOM_BREAKPOINTS}
+            theme="light"
+        >
+            <YourAppContent />
+        </ThemeProvider>
+    )
+}
+```
+
+Use whichever option matches your project’s branding needs—start simple, then opt in to deeper customization as required. For complete examples of custom token sets, check out the theme definitions in our [GitHub repo](https://github.com/juspay/blend-design-system/blob/dev/apps/site/src/themes).
+
+> **Component-level tokens**
+>
+> Every component ships with its own `ComponentNameComponentTokens` type (documented on each component page under **Component Tokens**). To adapt a component:
+>
+> 1. Open the component doc and review the token table—it shows the exact shape (`backgroundColor.primary.default.default`, etc.).
+> 2. Import the token type so TypeScript guides you while editing.
+> 3. Spread the existing token object and override just the keys you need. Values accept any valid CSS string—use foundation tokens for consistency or drop in a custom color/gradient for brand-specific styling.
+
+```tsx
+import { ThemeProvider, FOUNDATION_THEME } from '@juspay/blend-design-system'
+import { ButtonComponentTokens } from '@juspay/blend-design-system/components/Button/button.tokens'
+import { HDFC_COMPONENT_TOKENS } from './themes/HDFC_COMPONENT_TOKENS'
+
+const customButtonTokens: ButtonComponentTokens = {
+    ...HDFC_COMPONENT_TOKENS.button,
+    backgroundColor: {
+        ...HDFC_COMPONENT_TOKENS.button.backgroundColor,
+        primary: {
+            ...HDFC_COMPONENT_TOKENS.button.backgroundColor.primary,
+            default: {
+                ...HDFC_COMPONENT_TOKENS.button.backgroundColor.primary.default,
+                default: '#1F2933', // direct brand color
+                hover: FOUNDATION_THEME.colors.gray[900], // still reference foundation if you prefer
+            },
+        },
+    },
+}
+
+function App() {
+    return (
+        <ThemeProvider
+            componentTokens={{
+                ...HDFC_COMPONENT_TOKENS,
+                button: customButtonTokens,
+            }}
+        >
+            <YourAppContent />
+        </ThemeProvider>
+    )
+}
+```
+
+Any updates you make to component tokens immediately reflect in the UI—ideal for tweaking spacing, typography, states, or colors on a per-component basis while leaving the global foundation tokens untouched.
 
 ## Design Tokens
 
@@ -138,7 +203,7 @@ FOUNDATION_THEME.colors.primary[500] // #2B7FFF
 FOUNDATION_THEME.colors.gray[100] // #F2F4F8
 
 // Typography
-FOUNDATION_THEME.fontSize.headingLG // 24px
+FOUNDATION_THEME.fontSize.heading.lg // 24px
 FOUNDATION_THEME.fontWeight[600] // 600
 
 // Spacing
@@ -151,7 +216,6 @@ FOUNDATION_THEME.borderRadius[8] // 8px
 ### Component Usage
 
 - Always refer to our [component documentation](/docs/components) for complete API reference
-- Use TypeScript for better development experience and type safety
 - Follow established patterns for consistent implementation
 - Import only what you need - Blend is tree-shakeable
 
@@ -160,21 +224,6 @@ FOUNDATION_THEME.borderRadius[8] // 8px
 - Use design tokens instead of hardcoded values
 - Maintain consistency with the design system guidelines
 - Customize tokens through ThemeProvider for brand-specific styling
-
-### TypeScript Support
-
-All components are fully typed with TypeScript. Ensure your `tsconfig.json` includes:
-
-```json
-{
-    "compilerOptions": {
-        "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "jsx": "react-jsx"
-    }
-}
-```
 
 ## Development Environment Setup
 
@@ -200,9 +249,6 @@ pnpm build
 
 # Start development mode
 pnpm dev
-
-# Run tests
-pnpm test
 ```
 
 ## Next Steps
@@ -210,6 +256,5 @@ pnpm test
 1. **Explore Components**: Browse our [component library](/docs/components) to see all available components
 2. **Read Documentation**: Check individual component documentation for detailed API reference and examples
 3. **Contributing**: Check our [contribution guide](/docs/contributing) to contribute to the project
-4. **Get Support**: Join our community discussions for help and feedback
 
-That's it! You're ready to start building with Blend Design System. 🚀
+That's it! You're ready to start building with Blend Design System.
