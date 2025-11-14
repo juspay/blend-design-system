@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import styled from 'styled-components'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
 import { PopoverProps, PopoverSize } from './types'
@@ -8,6 +9,11 @@ import { PopoverTokenType } from './popover.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobilePopover from './MobilePopover'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { popoverContentAnimations } from './popover.animations'
+
+const AnimatedPopoverSurface = styled(Block)`
+    ${popoverContentAnimations}
+`
 
 const Popover = ({
     heading,
@@ -104,7 +110,7 @@ const Popover = ({
                 alignOffset={alignOffset}
                 avoidCollisions={avoidCollisions}
             >
-                <Block
+                <AnimatedPopoverSurface
                     zIndex={999}
                     backgroundColor={popoverTokens.background}
                     boxShadow={
@@ -153,7 +159,7 @@ const Popover = ({
                         secondaryAction={secondaryAction}
                         size={size}
                     />
-                </Block>
+                </AnimatedPopoverSurface>
             </RadixPopover.Content>
         </RadixPopover.Root>
     )

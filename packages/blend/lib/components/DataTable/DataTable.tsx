@@ -30,7 +30,7 @@ import BulkActionBar from './TableBody/BulkActionBar'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
-import { Settings, Check } from 'lucide-react'
+import { Settings, Check, Loader2 } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
@@ -88,6 +88,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
+            onRowSelectionChange,
             renderExpandedRow,
             isRowExpandable,
             pagination = {
@@ -112,6 +113,9 @@ const DataTable = forwardRef(
             bulkActions,
             rowActions,
             getRowStyle,
+            tableBodyHeight,
+            rowHeight = 52,
+            maintainMinHeight = true,
             mobileColumnsToShow,
             ...rest
         }: DataTableProps<T>,
@@ -251,6 +255,19 @@ const DataTable = forwardRef(
         const effectiveVisibleColumns = mobileConfig.enableColumnOverflow
             ? mobileVisibleColumns
             : visibleColumns
+
+        // Calculate minimum height for table body based on page size
+        // This helps maintain consistent layout and prevents shifting when data changes
+        const tableBodyMinHeight = useMemo(() => {
+            // Don't apply min height if:
+            // 1. User has set a custom tableBodyHeight
+            // 2. maintainMinHeight is disabled
+            if (tableBodyHeight || !maintainMinHeight) {
+                return undefined
+            }
+            // Calculate based on page size and row height
+            return `${pageSize * rowHeight}px`
+        }, [pageSize, rowHeight, tableBodyHeight, maintainMinHeight])
 
         const formatOptions: MenuGroupType[] = [
             {
@@ -475,18 +492,58 @@ const DataTable = forwardRef(
 
             setSelectedRows(newSelectedRows)
             updateSelectAllState(newSelectedRows)
+
+            if (onRowSelectionChange) {
+                const selectedRowIds = Object.entries(newSelectedRows)
+                    .filter(([, selected]) => selected)
+                    .map(([id]) => id)
+
+                currentData.forEach((row) => {
+                    const rowId = String(row[idField])
+                    const wasSelected = selectedRows[rowId] || false
+                    const isSelected = newSelectedRows[rowId] || false
+
+                    if (wasSelected !== isSelected) {
+                        onRowSelectionChange(
+                            selectedRowIds,
+                            isSelected,
+                            rowId,
+                            row as T
+                        )
+                    }
+                })
+            }
         }
 
         const handleRowSelect = (rowId: unknown) => {
             const rowIdStr = String(rowId)
+            const isSelected = !selectedRows[rowIdStr]
 
             const newSelectedRows = {
                 ...selectedRows,
-                [rowIdStr]: !selectedRows[rowIdStr],
+                [rowIdStr]: isSelected,
             }
             setSelectedRows(newSelectedRows)
 
             updateSelectAllState(newSelectedRows)
+
+            if (onRowSelectionChange) {
+                const selectedRowIds = Object.entries(newSelectedRows)
+                    .filter(([, selected]) => selected)
+                    .map(([id]) => id)
+
+                const rowData = currentData.find(
+                    (row) => String(row[idField]) === rowIdStr
+                )
+                if (rowData) {
+                    onRowSelectionChange(
+                        selectedRowIds,
+                        isSelected,
+                        rowIdStr,
+                        rowData as T
+                    )
+                }
+            }
         }
 
         const exportToCSV = () => {
@@ -716,28 +773,8 @@ const DataTable = forwardRef(
         }
 
         const renderBulkActions = () => {
-            if (!bulkActions?.length) return null
-
-            const selectedRowIds = Object.entries(selectedRows)
-                .filter(([, selected]) => selected)
-                .map(([rowId]) => rowId)
-
-            return bulkActions.map((action) => (
-                <Button
-                    key={action.id}
-                    buttonType={
-                        action.variant === 'danger'
-                            ? ButtonType.DANGER
-                            : action.variant === 'primary'
-                              ? ButtonType.PRIMARY
-                              : ButtonType.SECONDARY
-                    }
-                    size={ButtonSize.SMALL}
-                    onClick={() => action.onClick(selectedRowIds)}
-                >
-                    {action.label}
-                </Button>
-            ))
+            if (!bulkActions?.customActions) return null
+            return bulkActions.customActions
         }
 
         const getColumnWidth = (
@@ -927,10 +964,20 @@ const DataTable = forwardRef(
                         <ScrollableContainer
                             ref={scrollContainerRef}
                             style={{
-                                flex: 1,
+                                ...(tableBodyHeight
+                                    ? {
+                                          height:
+                                              typeof tableBodyHeight ===
+                                              'number'
+                                                  ? `${tableBodyHeight}px`
+                                                  : tableBodyHeight,
+                                          overflowY: 'auto',
+                                      }
+                                    : {
+                                          flex: 1,
+                                          minHeight: tableBodyMinHeight,
+                                      }),
                                 position: 'relative',
-                                minHeight:
-                                    currentData.length > 0 ? '0' : 'auto',
                             }}
                         >
                             <table
@@ -947,6 +994,10 @@ const DataTable = forwardRef(
                                             .borderSpacing,
                                     position:
                                         tableToken.dataTable.table.position,
+                                    height:
+                                        currentData.length === 0
+                                            ? '100%'
+                                            : 'auto',
                                 }}
                             >
                                 <TableHeader
@@ -1133,8 +1184,8 @@ const DataTable = forwardRef(
                                         }
                                     />
                                 ) : (
-                                    <tbody>
-                                        <tr>
+                                    <tbody style={{ height: '100%' }}>
+                                        <tr style={{ height: '100%' }}>
                                             <td
                                                 colSpan={
                                                     visibleColumns.length +
@@ -1151,7 +1202,9 @@ const DataTable = forwardRef(
                                                 }
                                                 style={{
                                                     textAlign: 'center',
-                                                    padding: '40px 20px',
+                                                    verticalAlign: 'middle',
+                                                    padding: '0',
+                                                    height: '100%',
                                                     color: tableToken.dataTable
                                                         .table.body.cell.color,
                                                     fontSize:
@@ -1163,7 +1216,46 @@ const DataTable = forwardRef(
                                                             .gray[0],
                                                 }}
                                             >
-                                                No data available
+                                                <Block
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        minHeight:
+                                                            tableBodyMinHeight,
+                                                    }}
+                                                >
+                                                    {isLoading ? (
+                                                        <Block
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                            gap={
+                                                                FOUNDATION_THEME
+                                                                    .unit[8]
+                                                            }
+                                                        >
+                                                            <Loader2
+                                                                size={
+                                                                    FOUNDATION_THEME
+                                                                        .unit[20]
+                                                                }
+                                                                className="animate-spin"
+                                                                style={{
+                                                                    animation:
+                                                                        'spin 1s linear infinite',
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                Loading data...
+                                                            </span>
+                                                        </Block>
+                                                    ) : (
+                                                        'No data available'
+                                                    )}
+                                                </Block>
                                             </td>
                                         </tr>
                                     </tbody>

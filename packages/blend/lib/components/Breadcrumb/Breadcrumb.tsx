@@ -19,6 +19,14 @@ const BreadcrumbItem = ({
 }) => {
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
+
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (item.onClick) {
+            event.preventDefault()
+            item.onClick(event)
+        }
+    }
+
     return (
         <>
             <PrimitiveLink
@@ -37,6 +45,7 @@ const BreadcrumbItem = ({
                 }}
                 href={isActive ? undefined : item.href}
                 textDecoration="none"
+                onClick={!isActive && item.onClick ? handleClick : undefined}
             >
                 {item.leftSlot && (
                     <Block contentCentered>{item.leftSlot}</Block>

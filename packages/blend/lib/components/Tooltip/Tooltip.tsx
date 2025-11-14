@@ -11,11 +11,16 @@ import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { tooltipContentAnimations } from './tooltip.animations'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
     $color: CSSObject['backgroundColor']
 }>`
     fill: ${({ $color }) => $color};
+`
+
+const AnimatedTooltipContent = styled(RadixTooltip.Content)`
+    ${tooltipContentAnimations}
 `
 
 export const Tooltip = ({
@@ -39,7 +44,7 @@ export const Tooltip = ({
                 <RadixTooltip.Trigger asChild>{trigger}</RadixTooltip.Trigger>
                 {content && (
                     <RadixTooltip.Portal>
-                        <RadixTooltip.Content
+                        <AnimatedTooltipContent
                             data-tooltip={'tooltip'}
                             side={side}
                             align={align}
@@ -98,7 +103,7 @@ export const Tooltip = ({
                                     $color={tooltipTokens.background}
                                 />
                             )}
-                        </RadixTooltip.Content>
+                        </AnimatedTooltipContent>
                     </RadixTooltip.Portal>
                 )}
             </RadixTooltip.Root>

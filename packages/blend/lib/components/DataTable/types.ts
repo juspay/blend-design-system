@@ -249,11 +249,12 @@ export type PaginationConfig = {
     pageSizeOptions?: number[]
 }
 
-export type BulkAction = {
-    id: string
-    label: string
-    variant: 'primary' | 'secondary' | 'danger'
-    onClick: (selectedRowIds: string[]) => void
+export type BulkActionsConfig = {
+    showSelectAll?: boolean
+    showDeselectAll?: boolean
+    onSelectAll?: () => void
+    onDeselectAll?: () => void
+    customActions?: ReactNode
 }
 
 export type RowActionConfig<T extends Record<string, unknown>> = {
@@ -346,12 +347,36 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     enableRowSelection?: boolean
+    onRowSelectionChange?: (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: T
+    ) => void
 
-    bulkActions?: BulkAction[]
+    bulkActions?: BulkActionsConfig
 
     rowActions?: RowActionsConfig<T>
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
+
+    tableBodyHeight?: string | number
+
+    /**
+     * Approximate height of a single row in pixels.
+     * Used to calculate minimum table height based on page size.
+     * Helps maintain consistent layout and prevent shifting.
+     * @default 52
+     */
+    rowHeight?: number
+
+    /**
+     * Whether to maintain minimum height based on page size.
+     * When true, table maintains consistent height preventing layout shifts.
+     * When false, table height adjusts to content.
+     * @default true
+     */
+    maintainMinHeight?: boolean
 
     // Mobile configuration
     mobileColumnsToShow?: number

@@ -11,6 +11,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const TextInput = ({
     size = TextInputSize.MEDIUM,
@@ -37,6 +47,7 @@ const TextInput = ({
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -95,7 +106,11 @@ const TextInput = ({
                     required={required}
                 />
             )}
-            <Block position="relative" width={'100%'}>
+            <Wrapper
+                position="relative"
+                width={'100%'}
+                style={getErrorShakeStyle(shouldShake)}
+            >
                 {leftSlot && (
                     <Block
                         ref={leftSlotRef}
@@ -104,6 +119,12 @@ const TextInput = ({
                         left={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {leftSlot}
                     </Block>
@@ -167,6 +188,8 @@ const TextInput = ({
                     fontSize={textInputTokens.inputContainer.fontSize[size]}
                     fontWeight={textInputTokens.inputContainer.fontWeight[size]}
                     lineHeight={FOUNDATION_THEME.unit[20]}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -181,6 +204,12 @@ const TextInput = ({
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
                     }}
                     _disabled={{
                         backgroundColor:
@@ -207,11 +236,17 @@ const TextInput = ({
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {rightSlot}
                     </Block>
                 )}
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

@@ -30,34 +30,9 @@ function MyComponent() {
     )
 }`
 
-const reCode = `type buttonGroupProps = {
-  stacked?: bool,
-  children: React.element,
-}
-
-@react.component
-let make = (
-  ~stacked: option<bool>=?,
-  ~children: React.element,
-) => {
-  <ButtonGroupBinding ?stacked>
-    {children}
-  </ButtonGroupBinding>
-}`
-
-const bindingCode = `@module("blend-v1") @react.component
-external make: (
-  ~stacked: bool=?,
-  ~children: React.element,
-) => React.element = "ButtonGroup"`
-
 const ButtonGroupPreview = () => {
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <ButtonGroup stacked={false}>
                 <Button
                     text="Cancel"

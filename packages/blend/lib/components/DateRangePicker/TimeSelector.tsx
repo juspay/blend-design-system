@@ -4,10 +4,10 @@ import React, {
     useMemo,
     useCallback,
     useEffect,
-    useRef,
 } from 'react'
 import Block from '../Primitives/Block/Block'
-import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import TextInput from '../Inputs/TextInput/TextInput'
+import { TextInputSize } from '../Inputs/TextInput/types'
 import Menu from '../Menu/Menu'
 import {
     MenuItemType,
@@ -15,8 +15,6 @@ import {
     MenuAlignment,
     MenuSide,
 } from '../Menu/types'
-import { CalendarTokenType } from './dateRangePicker.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
 
 type TimeSelectorProps = {
     value: string
@@ -24,7 +22,6 @@ type TimeSelectorProps = {
     className?: string
     autoFocus?: boolean
     tabIndex?: number
-    calendarToken?: CalendarTokenType
 }
 
 const formatTimeFor12Hour = (hour: number, minute: number): string => {
@@ -132,13 +129,12 @@ const generateTimeOptions = (
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange, autoFocus = true, tabIndex, calendarToken }, ref) => {
+    ({ value, onChange, autoFocus = true, tabIndex }, ref) => {
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
         const [isProcessingSelection, setIsProcessingSelection] =
             useState(false)
-        const inputRef = useRef<HTMLInputElement>(null)
 
         useEffect(() => {
             if (value) {
@@ -158,7 +154,6 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
 
                 setTimeout(() => {
                     setIsProcessingSelection(false)
-                    inputRef.current?.blur()
                 }, 100)
             },
             [onChange]
@@ -181,23 +176,12 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         const handleInputChange = useCallback(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const newValue = e.target.value
-                const cursorPosition = e.target.selectionStart || 0
 
-                // Allow better typing experience by preserving cursor position
+                // Allow better typing experience
                 setInputValue(newValue)
 
                 const parsed = parseTimeInput(newValue)
                 setIsValidTime(parsed.isValid || newValue.trim() === '')
-
-                // Restore cursor position after state update
-                requestAnimationFrame(() => {
-                    if (inputRef.current) {
-                        inputRef.current.setSelectionRange(
-                            cursorPosition,
-                            cursorPosition
-                        )
-                    }
-                })
             },
             []
         )
@@ -246,64 +230,34 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 if (e.key === 'Enter') {
                     e.preventDefault()
                     setIsOpen(false)
-                    inputRef.current?.blur()
+                    e.currentTarget.blur()
                 } else if (e.key === 'Escape') {
                     e.preventDefault()
                     setInputValue(formatTimeStringFor12Hour(value))
                     setIsValidTime(true)
                     setIsOpen(false)
-                    inputRef.current?.blur()
+                    e.currentTarget.blur()
                 }
             },
             [value]
         )
 
         const triggerElement = (
-            <PrimitiveInput
-                ref={inputRef}
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                onBlur={handleInputBlur}
-                onFocus={handleInputFocus}
-                onKeyDown={handleInputKeyDown}
-                placeholder="12:00 PM"
-                width="118px"
-                height="32px"
-                paddingX={calendarToken?.calendar?.inputs?.dateInput?.gap}
-                paddingY={FOUNDATION_THEME.unit[6]}
-                fontSize={calendarToken?.calendar?.inputs?.dateInput?.fontSize}
-                fontWeight={
-                    calendarToken?.calendar?.inputs?.dateInput?.fontWeight
-                }
-                lineHeight={FOUNDATION_THEME.unit[20]}
-                borderRadius={FOUNDATION_THEME.border.radius[6]}
-                border="none"
-                tabIndex={tabIndex}
-                outline={
-                    isValidTime
-                        ? `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`
-                        : `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.red[500]}`
-                }
-                boxShadow={FOUNDATION_THEME.shadows.sm}
-                backgroundColor={FOUNDATION_THEME.colors.gray[0]}
-                color={FOUNDATION_THEME.colors.gray[800]}
-                cursor="text"
-                _hover={{
-                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                    boxShadow: FOUNDATION_THEME.shadows.sm,
-                }}
-                _focus={{
-                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                    boxShadow: FOUNDATION_THEME.shadows.focusPrimary,
-                }}
-                _disabled={{
-                    backgroundColor: FOUNDATION_THEME.colors.gray[50],
-                    color: FOUNDATION_THEME.colors.gray[300],
-                    outline: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                    cursor: 'not-allowed',
-                }}
-            />
+            <Block style={{ width: '118px', flexShrink: 0 }}>
+                <TextInput
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
+                    onFocus={handleInputFocus}
+                    onKeyDown={handleInputKeyDown}
+                    placeholder="12:00 PM"
+                    size={TextInputSize.SMALL}
+                    error={!isValidTime}
+                    tabIndex={tabIndex}
+                    label=""
+                />
+            </Block>
         )
 
         return (

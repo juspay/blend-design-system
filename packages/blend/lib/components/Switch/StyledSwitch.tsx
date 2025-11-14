@@ -3,6 +3,10 @@ import { SwitchSize } from './types'
 import type { SwitchTokensType } from './switch.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    switchRootAnimations,
+    switchThumbAnimations,
+} from './switch.animations'
 
 export const StyledSwitchRoot = styled.button<{
     size: SwitchSize
@@ -14,12 +18,13 @@ export const StyledSwitchRoot = styled.button<{
         const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
 
         return css`
+            ${switchRootAnimations}
+
             position: relative;
             border-radius: ${tokens.switchContainer.borderRadius[size]};
             border: none;
             outline: none;
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};
-            transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
             margin-top: ${tokens.switchContainer.thumb.marginTop};
             padding: 0;
@@ -68,6 +73,8 @@ export const StyledSwitchThumb = styled.div<{
         const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
 
         return css`
+            ${switchThumbAnimations}
+
             position: absolute;
             top: ${tokens.switchContainer.thumb.size[size].top};
             left: ${$isChecked
@@ -77,7 +84,6 @@ export const StyledSwitchThumb = styled.div<{
             background-color: ${tokens.switchContainer.thumb.backgroundColor};
             border: ${tokens.switchContainer.thumb.border.width} solid
                 ${tokens.switchContainer.thumb.border.color};
-            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
             width: ${tokens.switchContainer.thumb.size[size].width};
             height: ${tokens.switchContainer.thumb.size[size].height};

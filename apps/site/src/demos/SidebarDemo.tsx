@@ -33,6 +33,8 @@ import {
     TrendingUp,
     Upload,
     Workflow,
+    Moon,
+    Sun,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -57,7 +59,7 @@ import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
 import SwitchDemo from './SwitchDemo'
 import ProgressBarDemo from './ProgressBarDemo'
-import { ThemeProvider } from '../../../../packages/blend/lib/context'
+import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
 import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
 import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -83,7 +85,12 @@ import {
     AvatarShape,
     AvatarSize,
     TextInput,
+    Button,
 } from '../../../../packages/blend/lib/main'
+import {
+    ButtonType,
+    ButtonSize,
+} from '../../../../packages/blend/lib/components/Button/types'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import StepperDemo from './StepperDemo'
@@ -164,6 +171,10 @@ const SidebarDemo = () => {
     const [activeMerchant, setActiveMerchant] =
         useState<string>('design-system')
     const [search, setSearch] = useState<string>('')
+
+    // Topbar visibility control states
+    const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
+    const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
 
     const tenants = [
         {
@@ -428,9 +439,95 @@ const SidebarDemo = () => {
                 return (
                     <div className="p-8">
                         <h2 className="text-2xl font-bold mb-6">
-                            Sidebar Auto-Hide Topbar Demo
+                            Topbar Controlled/Uncontrolled Demo
                         </h2>
                         <div className="space-y-6">
+                            <div className="p-6 border-2 border-blue-200 rounded-lg bg-blue-50">
+                                <h3 className="text-lg font-semibold mb-4">
+                                    Topbar Visibility Controls
+                                </h3>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-sm font-medium mb-2">
+                                            Mode:{' '}
+                                            {isTopbarControlled
+                                                ? 'Controlled'
+                                                : 'Uncontrolled'}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mb-3">
+                                            {isTopbarControlled
+                                                ? 'In controlled mode, the parent component manages topbar visibility state.'
+                                                : 'In uncontrolled mode, the topbar manages its own visibility state internally.'}
+                                        </p>
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.MEDIUM}
+                                            onClick={() =>
+                                                setIsTopbarControlled(
+                                                    !isTopbarControlled
+                                                )
+                                            }
+                                        >
+                                            Switch to{' '}
+                                            {isTopbarControlled
+                                                ? 'Uncontrolled'
+                                                : 'Controlled'}{' '}
+                                            Mode
+                                        </Button>
+                                    </div>
+
+                                    {isTopbarControlled && (
+                                        <div className="pt-4 border-t border-blue-300">
+                                            <p className="text-sm font-medium mb-2">
+                                                Current Topbar State:{' '}
+                                                {topbarVisible
+                                                    ? 'Visible ✓'
+                                                    : 'Hidden ✗'}
+                                            </p>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.PRIMARY
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(true)
+                                                    }
+                                                    disabled={topbarVisible}
+                                                >
+                                                    Show Topbar
+                                                </Button>
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.DANGER
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(false)
+                                                    }
+                                                    disabled={!topbarVisible}
+                                                >
+                                                    Hide Topbar
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-6 border border-gray-200 rounded-lg">
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Navigation Item Integration
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Click on "Virtual List" in the sidebar to
+                                    see how navigation items can hide the
+                                    topbar. This is useful for full-screen
+                                    views.
+                                </p>
+                            </div>
+
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">
                                     Scroll Test
@@ -490,7 +587,14 @@ const SidebarDemo = () => {
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'buttons',
-                    onClick: () => setActiveComponent('buttons'),
+                    onClick: () => {
+                        setActiveComponent('buttons')
+                        // Show topbar when navigating to regular components (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
                 },
                 {
                     label: 'Button Group',
@@ -499,6 +603,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'buttonGroups',
                     onClick: () => setActiveComponent('buttonGroups'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Tag',
@@ -507,6 +612,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tags',
                     onClick: () => setActiveComponent('tags'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Avatar',
@@ -515,6 +621,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'avatars',
                     onClick: () => setActiveComponent('avatars'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Avatar Group',
@@ -523,6 +630,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'avatarGroup',
                     onClick: () => setActiveComponent('avatarGroup'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Breadcrumb',
@@ -531,6 +639,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Virtual List',
@@ -538,7 +647,14 @@ const SidebarDemo = () => {
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'virtualList',
-                    onClick: () => setActiveComponent('virtualList'),
+                    onClick: () => {
+                        setActiveComponent('virtualList')
+                        // Hide topbar when navigating to Virtual List (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(false)
+                        }
+                    },
+                    showOnMobile: true,
                 },
                 {
                     label: 'File Upload',
@@ -648,6 +764,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'topbar',
                     onClick: () => setActiveComponent('topbar'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Menu',
@@ -761,6 +878,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'alerts',
                     onClick: () => setActiveComponent('alerts'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Snackbar',
@@ -799,6 +917,7 @@ const SidebarDemo = () => {
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'drawer',
                     onClick: () => setActiveComponent('drawer'),
+                    showOnMobile: true,
                 },
             ],
         },
@@ -813,7 +932,14 @@ const SidebarDemo = () => {
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'charts',
-                    onClick: () => setActiveComponent('charts'),
+                    onClick: () => {
+                        setActiveComponent('charts')
+                        // Show topbar when navigating to Chart (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
                 },
                 {
                     label: 'Stat Card',
@@ -965,7 +1091,8 @@ const SidebarDemo = () => {
         },
     ]
 
-    const [theme, setTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
 
     const breakpoints = {
         sm: 480,
@@ -973,12 +1100,13 @@ const SidebarDemo = () => {
     }
 
     const themeProps =
-        theme === 'EULER'
-            ? {}
+        brandTheme === 'EULER'
+            ? { theme: colorTheme }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
+                  theme: colorTheme,
               }
 
     return (
@@ -986,6 +1114,14 @@ const SidebarDemo = () => {
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     enableTopbarAutoHide={true}
+                    {...(isTopbarControlled
+                        ? {
+                              isTopbarVisible: topbarVisible,
+                              onTopbarVisibilityChange: setTopbarVisible,
+                          }
+                        : {
+                              defaultIsTopbarVisible: true,
+                          })}
                     leftPanel={{
                         items: tenants,
                         selected: activeTenant,
@@ -1069,32 +1205,76 @@ const SidebarDemo = () => {
                                     }
                                 />
                             </Block>
-                            <div>
-                                <SingleSelect
-                                    label="Theme"
-                                    placeholder="Select Theme"
-                                    minMenuWidth={200}
-                                    alignment={SelectMenuAlignment.END}
-                                    selected={theme}
-                                    onSelect={(value) =>
-                                        setTheme(value as 'EULER' | 'JUSBIZ')
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setColorTheme(
+                                            colorTheme === Theme.LIGHT
+                                                ? Theme.DARK
+                                                : Theme.LIGHT
+                                        )
                                     }
-                                    variant={SelectMenuVariant.NO_CONTAINER}
-                                    items={[
-                                        {
-                                            items: [
-                                                {
-                                                    value: 'EULER',
-                                                    label: 'EULER',
-                                                },
-                                                {
-                                                    value: 'JUSBIZ',
-                                                    label: 'JUSBIZ',
-                                                },
-                                            ],
-                                        },
-                                    ]}
-                                />
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        colorTheme === Theme.DARK
+                                            ? 'Switch to Light Mode'
+                                            : 'Switch to Dark Mode'
+                                    }
+                                    style={{
+                                        backgroundColor:
+                                            colorTheme === Theme.DARK
+                                                ? FOUNDATION_THEME.colors
+                                                      .gray[100]
+                                                : 'transparent',
+                                    }}
+                                >
+                                    {colorTheme === Theme.DARK ? (
+                                        <Sun
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .orange[500]
+                                            }
+                                            size={20}
+                                        />
+                                    ) : (
+                                        <Moon
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    )}
+                                </button>
+                                <div>
+                                    <SingleSelect
+                                        label="Brand"
+                                        placeholder="Select Brand"
+                                        minMenuWidth={200}
+                                        alignment={SelectMenuAlignment.END}
+                                        selected={brandTheme}
+                                        onSelect={(value) =>
+                                            setBrandTheme(
+                                                value as 'EULER' | 'JUSBIZ'
+                                            )
+                                        }
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        items={[
+                                            {
+                                                items: [
+                                                    {
+                                                        value: 'EULER',
+                                                        label: 'EULER',
+                                                    },
+                                                    {
+                                                        value: 'JUSBIZ',
+                                                        label: 'JUSBIZ',
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                    />
+                                </div>
                             </div>
                         </div>
                     }
@@ -1115,6 +1295,14 @@ const SidebarDemo = () => {
                             </Text>
                         </div>
                     }
+                    showPrimaryActionButton={true}
+                    primaryActionButtonProps={{
+                        onClick: () => {
+                            console.log('Primary action button clicked!')
+                            alert('Primary action button clicked!')
+                        },
+                        'aria-label': 'Create new item',
+                    }}
                 >
                     <div className="w-full h-full">{renderContent()}</div>
                 </Sidebar>

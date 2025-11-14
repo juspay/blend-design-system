@@ -28,50 +28,6 @@ function MyComponent() {
     return <Breadcrumb items={breadcrumbItems} />
 }`
 
-const reCode = `@module("blend-v1") external breadcrumb: React.component<{
-  "items": array<breadcrumbItemType>
-}> = "Breadcrumb"
-
-@module("lucide-react") external homeIcon: React.component<{
-  "size": int
-}> = "HomeIcon"
-
-@module("lucide-react") external folderIcon: React.component<{
-  "size": int
-}> = "FolderIcon"
-
-let make = () => {
-  let breadcrumbItems = [
-    {
-      "label": "Home",
-      "href": "/",
-      "leftSlot": React.createElement(homeIcon, {"size": 14})
-    },
-    {
-      "label": "Documents", 
-      "href": "/documents",
-      "leftSlot": React.createElement(folderIcon, {"size": 14})
-    },
-    {
-      "label": "Projects",
-      "href": "/documents/projects"
-    }
-  ]
-
-  React.createElement(breadcrumb, {"items": breadcrumbItems})
-}`
-
-const bindingCode = `type breadcrumbItemType = {
-  "label": string,
-  "href": string,
-  "leftSlot"?: React.element,
-  "rightSlot"?: React.element
-}
-
-@module("blend-v1") external breadcrumb: React.component<{
-  "items": array<breadcrumbItemType>
-}> = "Breadcrumb"`
-
 const BreadcrumbPreview = () => {
     const breadcrumbItems: BreadcrumbItemType[] = [
         {
@@ -106,11 +62,7 @@ const BreadcrumbPreview = () => {
     ]
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div className="space-y-6">
                 <div>
                     <h4 className="text-sm font-medium text-gray-700 mb-2">

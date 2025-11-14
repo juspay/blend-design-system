@@ -10,6 +10,7 @@ import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import { type ThemeType } from '../tokens'
 import { type ComponentTokenType } from './ThemeContext'
+import { Theme } from './ThemeProvider'
 import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
@@ -38,16 +39,18 @@ import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
-    foundationTokens: ThemeType
+    foundationTokens: ThemeType,
+    theme: Theme | string = Theme.LIGHT
 ): Required<ComponentTokenType> => {
     return {
-        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens),
+        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens, theme),
         SEARCH_INPUT:
             componentTokens.SEARCH_INPUT ??
             getSearchInputTokens(foundationTokens),
@@ -117,6 +120,9 @@ const initTokens = (
             componentTokens.AVATAR_GROUP ??
             getAvatarGroupTokens(foundationTokens),
         SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
+        MOBILE_NAVIGATION:
+            componentTokens.MOBILE_NAVIGATION ??
+            getMobileNavigationTokens(foundationTokens),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),

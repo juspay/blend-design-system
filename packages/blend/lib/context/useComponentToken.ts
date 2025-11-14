@@ -40,6 +40,7 @@ import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { ResponsiveWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
+import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -84,7 +85,8 @@ export const useComponentToken = (
     | ResponsiveSidebarTokens
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
-    | ResponsiveWorkflowTokens => {
+    | ResponsiveWorkflowTokens
+    | ResponsiveMobileNavigationTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -170,6 +172,8 @@ export const useComponentToken = (
             return componentTokens.CODE_BLOCK
         case 'WORKFLOW_CANVAS':
             return componentTokens.WORKFLOW_CANVAS
+        case 'MOBILE_NAVIGATION':
+            return componentTokens.MOBILE_NAVIGATION
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

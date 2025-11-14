@@ -44,6 +44,12 @@ const PREVIEW_COMPONENT_NAMES = [
     'Textarea',
     'UnitInput',
     'DateRangePicker',
+    'CodeBlock',
+    'Card',
+    'Upload',
+    'KeyValuePair',
+    'Stepper',
+    'ChatInput',
 ] as const
 
 // Generate all preview components programmatically
@@ -92,3 +98,9 @@ export const SearchInputPreview = PreviewComponents.SearchInputPreview
 export const TextareaPreview = PreviewComponents.TextareaPreview
 export const UnitInputPreview = PreviewComponents.UnitInputPreview
 export const DateRangePickerPreview = PreviewComponents.DateRangePickerPreview
+export const CodeBlockPreview = PreviewComponents.CodeBlockPreview
+export const CardPreview = PreviewComponents.CardPreview
+export const UploadPreview = PreviewComponents.UploadPreview
+export const KeyValuePairPreview = PreviewComponents.KeyValuePairPreview
+export const StepperPreview = PreviewComponents.StepperPreview
+export const ChatInputPreview = PreviewComponents.ChatInputPreview

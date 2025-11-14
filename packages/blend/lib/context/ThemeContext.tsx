@@ -84,6 +84,10 @@ import { BREAKPOINTS } from '../breakpoints/breakPoints'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import {
+    getMobileNavigationTokens,
+    type ResponsiveMobileNavigationTokens,
+} from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import {
     getStepperTokens,
@@ -134,21 +138,25 @@ export type ComponentTokenType = {
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
+    MOBILE_NAVIGATION?: ResponsiveMobileNavigationTokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
+import { Theme } from './ThemeProvider'
+
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
     breakpoints: typeof BREAKPOINTS
+    theme: Theme | string
 }
 
 const ThemeContext = createContext<ThemeContextType>({
     foundationTokens: FOUNDATION_THEME,
     componentTokens: {
-        TAGS: getTagTokens(FOUNDATION_THEME),
+        TAGS: getTagTokens(FOUNDATION_THEME, Theme.LIGHT),
         SEARCH_INPUT: getSearchInputTokens(FOUNDATION_THEME),
         TEXT_AREA: getTextAreaTokens(FOUNDATION_THEME),
         RADIO: getRadioTokens(FOUNDATION_THEME),
@@ -186,11 +194,13 @@ const ThemeContext = createContext<ThemeContextType>({
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
+        MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         WORKFLOW_CANVAS: getWorkflowTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
+    theme: 'light',
 })
 
 export const useTheme = () => {
