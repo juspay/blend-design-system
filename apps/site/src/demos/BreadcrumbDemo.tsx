@@ -60,19 +60,19 @@ const BreadcrumbDemo = () => {
             label: 'Home',
             href: '/',
             leftSlot: <Home size={16} />,
-            onClick: (e) => handleNavigation('/'),
+            onClick: () => handleNavigation('/'),
         },
         {
             label: 'Products',
             href: '/products',
             leftSlot: <Folder size={16} />,
-            onClick: (e) => handleNavigation('/products'),
+            onClick: () => handleNavigation('/products'),
         },
         {
             label: 'Electronics',
             href: '/products/electronics',
             leftSlot: <Database size={16} />,
-            onClick: (e) => handleNavigation('/products/electronics'),
+            onClick: () => handleNavigation('/products/electronics'),
         },
         {
             label: 'Smartphones',
