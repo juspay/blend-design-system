@@ -16,6 +16,8 @@ StorybookLink: components-breadcrumb--docs
 
 ## Usage
 
+### Basic Usage
+
 ```tsx
 import { Breadcrumb, BreadcrumbItemType } from 'blend-v1'
 
@@ -25,6 +27,47 @@ function MyComponent() {
         { label: 'Products', href: '/products' },
         { label: 'Electronics', href: '/products/electronics' },
         { label: 'Smartphones', href: '/products/electronics/smartphones' },
+    ]
+
+    return <Breadcrumb items={breadcrumbItems} />
+}
+```
+
+### With Custom Routing (React Router)
+
+```tsx
+import { Breadcrumb, BreadcrumbItemType } from 'blend-v1'
+import { useNavigate } from 'react-router-dom'
+
+function MyComponent() {
+    const navigate = useNavigate()
+
+    const breadcrumbItems: BreadcrumbItemType[] = [
+        {
+            label: 'Home',
+            href: '/',
+            onClick: (e) => {
+                navigate('/')
+            },
+        },
+        {
+            label: 'Products',
+            href: '/products',
+            onClick: (e) => {
+                navigate('/products')
+            },
+        },
+        {
+            label: 'Electronics',
+            href: '/products/electronics',
+            onClick: (e) => {
+                navigate('/products/electronics')
+            },
+        },
+        {
+            label: 'Smartphones',
+            href: '/products/electronics/smartphones',
+        },
     ]
 
     return <Breadcrumb items={breadcrumbItems} />
@@ -105,6 +148,19 @@ Each item in the `items` array should have the following structure:
             {
                 content: 'React.ReactNode',
                 hintText: 'Any React element to display after the label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Optional click handler function for custom routing without page reloads. When provided, prevents the default link behavior and calls this handler instead. Perfect for integrating with client-side routing libraries like React Router (use navigate()), Next.js router (use router.push()), or other SPA routing solutions. This avoids full page reloads and prevents unnecessary API calls (e.g., session APIs). The handler receives the click event as a parameter.',
+            },
+            {
+                content: '(event: React.MouseEvent<HTMLAnchorElement>) => void',
+                hintText:
+                    'Function called when breadcrumb item is clicked, receives mouse event',
             },
             { content: '' },
         ],
