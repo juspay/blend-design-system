@@ -1,6 +1,7 @@
-import { forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import useScrollLock from '../../hooks/useScrollLock'
 import type { ModalProps } from './types'
@@ -11,30 +12,19 @@ import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
+import {
+    modalBackdropAnimations,
+    modalContentAnimations,
+} from './modal.animations'
+import { useModal } from './useModal'
 
-const getPortalContainer = (): HTMLElement => {
-    const PORTAL_ID = 'blend-modal-portal'
-    let portalContainer = document.getElementById(PORTAL_ID)
+const AnimatedBackdrop = styled(Block)<{ $isAnimatingIn: boolean }>`
+    ${({ $isAnimatingIn }) => modalBackdropAnimations($isAnimatingIn)}
+`
 
-    if (!portalContainer) {
-        portalContainer = document.createElement('div')
-        portalContainer.id = PORTAL_ID
-        portalContainer.style.position = 'relative'
-        portalContainer.style.zIndex = '99'
-        document.body.appendChild(portalContainer)
-    }
-
-    return portalContainer
-}
-
-const cleanupPortalContainer = (): void => {
-    const PORTAL_ID = 'blend-modal-portal'
-    const portalContainer = document.getElementById(PORTAL_ID)
-
-    if (portalContainer && portalContainer.children.length === 0) {
-        document.body.removeChild(portalContainer)
-    }
-}
+const AnimatedModalContent = styled(Block)<{ $isAnimatingIn: boolean }>`
+    ${({ $isAnimatingIn }) => modalContentAnimations($isAnimatingIn)}
+`
 
 const ModalHeader = ({
     title,
@@ -197,73 +187,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const [isMounted, setIsMounted] = useState(false)
-        const [portalContainer, setPortalContainer] =
-            useState<HTMLElement | null>(null)
-        const [shouldRender, setShouldRender] = useState(false)
-        const [isAnimatingIn, setIsAnimatingIn] = useState(false)
+        const { shouldRender, isAnimatingIn, portalContainer } = useModal(
+            isOpen,
+            onClose
+        )
 
         useScrollLock(isOpen)
-
-        useEffect(() => {
-            setIsMounted(true)
-        }, [])
-
-        // Handle modal animation lifecycle
-        useEffect(() => {
-            if (isOpen) {
-                // Start rendering
-                setShouldRender(true)
-                // Reset animation state first
-                setIsAnimatingIn(false)
-                // Small delay to ensure DOM renders initial state before animation
-                const timer = setTimeout(() => {
-                    // Use requestAnimationFrame for smooth animation start
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            setIsAnimatingIn(true)
-                        })
-                    })
-                }, 16) // ~1 frame delay to ensure initial render
-                return () => clearTimeout(timer)
-            } else {
-                // Start exit animation
-                setIsAnimatingIn(false)
-                // Wait for animation to complete before unmounting
-                const timer = setTimeout(() => {
-                    setShouldRender(false)
-                }, 500)
-                return () => clearTimeout(timer)
-            }
-        }, [isOpen])
-
-        useEffect(() => {
-            const handleEscapeKey = (event: KeyboardEvent) => {
-                if (event.key === 'Escape' && isOpen) {
-                    onClose()
-                }
-            }
-
-            if (isOpen) {
-                document.addEventListener('keydown', handleEscapeKey)
-            }
-
-            return () => {
-                document.removeEventListener('keydown', handleEscapeKey)
-            }
-        }, [isOpen, onClose])
-
-        useEffect(() => {
-            if (isMounted && shouldRender) {
-                const container = getPortalContainer()
-                setPortalContainer(container)
-            } else if (!shouldRender && portalContainer) {
-                setPortalContainer(null)
-                setTimeout(() => {
-                    cleanupPortalContainer()
-                }, 0)
-            }
-        }, [isMounted, shouldRender, portalContainer])
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -271,7 +200,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             }
         }, [closeOnBackdropClick, onClose])
 
-        if (!isMounted || !shouldRender || !portalContainer) return null
+        if (!shouldRender || !portalContainer) return null
 
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
@@ -306,7 +235,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     boxShadow={modalTokens.boxShadow}
                     {...props}
                 >
-                    <Block
+                    <AnimatedBackdrop
                         onClick={handleBackdropClick}
                         display="flex"
                         alignItems="center"
@@ -317,17 +246,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         pointerEvents="auto"
                         role="presentation"
                         aria-hidden="true"
-                        style={{
-                            opacity: isAnimatingIn ? 0.5 : 0,
-                            transition:
-                                'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1)',
-                            willChange: 'opacity',
-                            backfaceVisibility: 'hidden',
-                            transform: 'translateZ(0)',
-                        }}
+                        $isAnimatingIn={isAnimatingIn}
                     />
 
-                    <Block
+                    <AnimatedModalContent
                         ref={ref}
                         display="flex"
                         flexDirection="column"
@@ -341,16 +263,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="modal-title"
-                        style={{
-                            opacity: isAnimatingIn ? 1 : 0,
-                            transform: isAnimatingIn
-                                ? 'translate3d(0, 0, 0) scale(1)'
-                                : 'translate3d(0, 0, 0) scale(0.95)',
-                            transition:
-                                'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1)',
-                            willChange: 'opacity, transform',
-                            backfaceVisibility: 'hidden',
-                        }}
+                        $isAnimatingIn={isAnimatingIn}
                     >
                         <ModalHeader
                             title={title}
@@ -379,7 +292,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             secondaryAction={secondaryAction}
                             showDivider={showDivider}
                         />
-                    </Block>
+                    </AnimatedModalContent>
                 </Block>
             )
         })()
