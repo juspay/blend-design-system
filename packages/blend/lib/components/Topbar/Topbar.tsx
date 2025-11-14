@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import { PanelsTopLeft, ArrowLeft, UserIcon, ChevronDown } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
@@ -10,6 +10,13 @@ import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+
+/**
+ * Helper to check if Topbar is in controlled mode
+ */
+const isControlledTopbar = (isVisible: boolean | undefined): boolean => {
+    return isVisible !== undefined
+}
 
 const ToggleButton = styled.button.withConfig({
     shouldForwardProp: (prop) => prop !== 'isMobile',
@@ -182,6 +189,11 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             isExpanded,
             onToggleExpansion,
             showToggleButton,
+            isVisible: controlledIsVisible,
+            // @ts-expect-error - onVisibilityChange is part of the controlled API but not used internally
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onVisibilityChange,
+            defaultIsVisible = true,
             sidebarTopSlot,
             topbar,
             title,
@@ -194,10 +206,19 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         },
         ref
     ) => {
+        const isControlled = isControlledTopbar(controlledIsVisible)
+        const [internalVisible] = useState<boolean>(defaultIsVisible)
+
+        const isVisible = isControlled ? controlledIsVisible! : internalVisible
+
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < BREAKPOINTS.lg
         const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
+
+        if (!isVisible) {
+            return null
+        }
 
         if (isMobile) {
             const renderLeftSection = () => {

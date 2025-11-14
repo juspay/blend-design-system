@@ -100,7 +100,7 @@ export type CalendarTokenType = {
         boxShadow: CSSObject['boxShadow'] // Calendar shadow
 
         // Date input section at top of calendar
-        inputs: {
+        header: {
             padding: {
                 x: CSSObject['padding'] // Input section horizontal padding
                 y: CSSObject['padding'] // Input section vertical padding
@@ -109,12 +109,9 @@ export type CalendarTokenType = {
                 gap: CSSObject['gap'] // Gap between input elements
                 label: {
                     color: CSSObject['color'] // Input label color
-                    width: CSSObject['width'] // Input label width
                     fontSize: CSSObject['fontSize'] // Input label font size
                     fontWeight: CSSObject['fontWeight'] // Input label font weight
                 }
-                fontSize: CSSObject['fontSize'] // Input text font size
-                fontWeight: CSSObject['fontWeight'] // Input text font weight
             }
         }
 
@@ -161,8 +158,8 @@ export type CalendarTokenType = {
                     fontSize: CSSObject['fontSize'] // Day cell font size
                     lineHeight: CSSObject['lineHeight'] // Day cell line height
                     // Outline depends on state
-                    outline: {
-                        [key in CalendarState]: CSSObject['outline'] // Outline for each state
+                    border: {
+                        [key in CalendarState]: CSSObject['border'] // Outline for each state
                     }
                     borderRadius: CSSObject['borderRadius'] // Cell border radius
                 }
@@ -193,14 +190,14 @@ export type CalendarTokenType = {
                     todayDay: {
                         fontWeight: CSSObject['fontWeight'] // Today font weight
                     }
-                    hoverState: {
-                        boxShadow: CSSObject['boxShadow'] // Hover box shadow
-                        borderRadius: CSSObject['borderRadius'] // Hover border radius
-                    }
+                    //  remove this as we can take the same border as the single day cell
+                    // hoverState: {
+                    //     boxShadow: CSSObject['boxShadow'] // Hover box shadow
+                    //     borderRadius: CSSObject['borderRadius'] // Hover border radius
+                    // }
+                    // remove opacity and cursor and pointer events and use color only gray 300
                     disabledDay: {
-                        opacity: CSSObject['opacity'] // Disabled opacity
-                        cursor: CSSObject['cursor'] // Disabled cursor
-                        pointerEvents: CSSObject['pointerEvents'] // Disabled pointer events
+                        color: CSSObject['color'] // Disabled color
                     }
                 }
 
@@ -218,23 +215,21 @@ export type CalendarTokenType = {
                     todayDay: {
                         color: CSSObject['color'] // Today text color
                     }
+                    disabledDate: {
+                        color: CSSObject['color'] // Disabled date text color
+                    }
                 }
 
                 // Today indicator dot
                 todayIndicator: {
-                    width: CSSObject['width'] // Indicator width
-                    height: CSSObject['height'] // Indicator height
+                    width: CSSObject['width'] // Indicator width (height is same as width)
                     backgroundColor: CSSObject['backgroundColor'] // Indicator background
-                    borderRadius: CSSObject['borderRadius'] // Indicator border radius
-                    position: CSSObject['position'] // Indicator position
-                    bottom: CSSObject['bottom'] // Indicator bottom position
-                    left: CSSObject['left'] // Indicator left position
-                    transform: CSSObject['transform'] // Indicator transform for centering
                 }
             }
         }
 
         // Calendar footer with time range and actions
+        // make
         footer: {
             padding: {
                 x: CSSObject['padding'] // Footer horizontal padding
@@ -257,9 +252,9 @@ export const getCalendarToken = (
         trigger: {
             quickSelector: {
                 borderRadius: {
-                    topLeft: foundationToken.border.radius[8],
+                    topLeft: foundationToken.border.radius[10],
                     topRight: foundationToken.border.radius[0],
-                    bottomLeft: foundationToken.border.radius[8],
+                    bottomLeft: foundationToken.border.radius[10],
                     bottomRight: foundationToken.border.radius[0],
                 },
                 backgroundColor: 'transparent',
@@ -318,8 +313,8 @@ export const getCalendarToken = (
 
             dateInput: {
                 borderRadius: {
-                    withQuickSelector: '0 8px 8px 0',
-                    withoutQuickSelector: foundationToken.border.radius[8],
+                    withQuickSelector: `0 ${foundationToken.border.radius[10]} ${foundationToken.border.radius[10]} 0`,
+                    withoutQuickSelector: foundationToken.border.radius[10],
                 },
                 padding: {
                     sm: {
@@ -362,7 +357,7 @@ export const getCalendarToken = (
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: foundationToken.shadows.xs,
-            inputs: {
+            header: {
                 padding: {
                     x: foundationToken.unit[16],
                     y: foundationToken.unit[16],
@@ -371,12 +366,9 @@ export const getCalendarToken = (
                     gap: foundationToken.unit[12],
                     label: {
                         color: foundationToken.colors.gray[500],
-                        width: foundationToken.unit[32],
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                     },
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    fontWeight: foundationToken.font.weight[500],
                 },
             },
             calendarGrid: {
@@ -415,7 +407,7 @@ export const getCalendarToken = (
                         fontWeight: foundationToken.font.weight[500],
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         lineHeight: foundationToken.unit[20],
-                        outline: {
+                        border: {
                             default: '1px solid transparent',
                             hover: `1px solid ${foundationToken.colors.primary[500]}`,
                             active: `1px solid ${foundationToken.colors.primary[500]}`,
@@ -451,14 +443,12 @@ export const getCalendarToken = (
                         todayDay: {
                             fontWeight: foundationToken.font.weight[500],
                         },
-                        hoverState: {
-                            boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
-                            borderRadius: foundationToken.border.radius[8],
-                        },
+                        // hoverState: {
+                        //     boxShadow: `inset 0 0 0 1px ${foundationToken.colors.primary[500]}`,
+                        //     borderRadius: foundationToken.border.radius[8],
+                        // },
                         disabledDay: {
-                            opacity: 0.4,
-                            cursor: 'not-allowed',
-                            pointerEvents: 'none',
+                            color: foundationToken.colors.gray[400],
                         },
                     },
                     text: {
@@ -474,16 +464,13 @@ export const getCalendarToken = (
                         todayDay: {
                             color: foundationToken.colors.primary[500],
                         },
+                        disabledDate: {
+                            color: foundationToken.colors.gray[400],
+                        },
                     },
                     todayIndicator: {
                         width: foundationToken.unit[4],
-                        height: foundationToken.unit[4],
                         backgroundColor: foundationToken.colors.primary[500],
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        bottom: foundationToken.unit[2],
-                        left: '50%',
-                        transform: 'translateX(-50%)',
                     },
                 },
             },

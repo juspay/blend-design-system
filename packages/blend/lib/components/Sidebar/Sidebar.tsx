@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback } from 'react'
+import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -18,8 +18,12 @@ import {
     getDefaultMerchantInfo,
     useTopbarAutoHide,
     isControlledSidebar,
+    getMobileNavigationItems,
+    MOBILE_NAVIGATION_COLLAPSED_HEIGHT,
+    MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import SidebarMobileNavigation from './SidebarMobile'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -45,6 +49,8 @@ const MainContentContainer = styled(Block)`
     scrollbar-width: none;
 `
 
+const COLLAPSED_MOBILE_PADDING = `calc(${MOBILE_NAVIGATION_COLLAPSED_HEIGHT} + ${MOBILE_NAVIGATION_SAFE_AREA})`
+
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
     (
         {
@@ -58,9 +64,14 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             merchantInfo,
             rightActions,
             enableTopbarAutoHide = false,
+            isTopbarVisible,
+            onTopbarVisibilityChange,
+            defaultIsTopbarVisible = true,
             isExpanded: controlledIsExpanded,
             onExpandedChange,
             defaultIsExpanded = true,
+            showPrimaryActionButton,
+            primaryActionButtonProps,
         },
         ref
     ) => {
@@ -156,6 +167,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+        const [mobileNavigationHeight, setMobileNavigationHeight] =
+            useState<string>()
 
         const getSidebarState = () => {
             if (isExpanded) return 'expanded'
@@ -168,6 +181,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             if (state === 'intermediate') return '98'
             return '48'
         }
+
+        const mobileNavigationItems = useMemo(
+            () => getMobileNavigationItems(data),
+            [data]
+        )
+
+        useEffect(() => {
+            if (!isMobile || mobileNavigationItems.length === 0) {
+                setMobileNavigationHeight(undefined)
+            }
+        }, [isMobile, mobileNavigationItems])
+
+        const handleMobileNavigationHeightChange = useCallback(
+            (height: string) => {
+                setMobileNavigationHeight(height)
+            },
+            []
+        )
 
         return (
             <Block
@@ -272,7 +303,15 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     )}
                 </Block>
 
-                <MainContentContainer data-main-content>
+                <MainContentContainer
+                    data-main-content
+                    paddingBottom={
+                        isMobile && mobileNavigationItems.length > 0
+                            ? (mobileNavigationHeight ??
+                              COLLAPSED_MOBILE_PADDING)
+                            : undefined
+                    }
+                >
                     <Block
                         position="sticky"
                         top="0"
@@ -291,11 +330,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             leftPanel={leftPanel}
                             merchantInfo={merchantInfo || defaultMerchantInfo}
                             rightActions={rightActions}
+                            isVisible={isTopbarVisible}
+                            onVisibilityChange={onTopbarVisibilityChange}
+                            defaultIsVisible={defaultIsTopbarVisible}
                         />
                     </Block>
 
                     <Block>{children}</Block>
                 </MainContentContainer>
+
+                {isMobile && mobileNavigationItems.length > 0 && (
+                    <SidebarMobileNavigation
+                        items={mobileNavigationItems}
+                        onHeightChange={handleMobileNavigationHeightChange}
+                        showPrimaryActionButton={showPrimaryActionButton}
+                        primaryActionButtonProps={primaryActionButtonProps}
+                    />
+                )}
             </Block>
         )
     }

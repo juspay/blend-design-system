@@ -37,6 +37,8 @@ import {
     Smartphone,
     Watch,
     Settings,
+    Download,
+    Trash2,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -2740,6 +2742,32 @@ const DataTableDemo = () => {
         )
     }
 
+    // Handle row selection change
+    const handleRowSelectionChange = (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: Record<string, unknown>
+    ) => {
+        const userData = rowData as UserRow
+        const userName = (userData.name as AvatarColumnProps).label
+
+        console.log('🔄 Row selection changed:', {
+            action: isSelected ? 'SELECTED' : 'DESELECTED',
+            rowId,
+            userName,
+            email: userData.email,
+            role: userData.role,
+            totalSelectedCount: selectedRowIds.length,
+            allSelectedRowIds: selectedRowIds,
+        })
+
+        console.log(
+            `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
+        )
+        console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+    }
+
     return (
         <div>
             {/* Mode Toggle and Controls */}
@@ -2807,6 +2835,15 @@ const DataTableDemo = () => {
                             to see the full text in a tooltip! Visual elements
                             like avatars and tags don't show tooltips as they're
                             not text-based content.
+                            <br />
+                            <strong>🎯 BULK ACTIONS DEMO:</strong> Enable row
+                            selection to see the new bulk actions bar with React
+                            elements (icons)! The bulk actions include Export,
+                            Send Email, Archive, Share, Add to Favorites, and
+                            Delete - each with beautiful leading icons and some
+                            with trailing icons. Select rows to activate the
+                            bulk action bar and try the different action
+                            buttons.
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -3067,6 +3104,92 @@ const DataTableDemo = () => {
                 onRowCancel={handleRowCancel}
                 onRowExpansionChange={handleRowExpansionChange}
                 onRowClick={handleRowClick}
+                onRowSelectionChange={handleRowSelectionChange}
+                bulkActions={{
+                    showSelectAll: true,
+                    showDeselectAll: true,
+                    onSelectAll: () => {
+                        console.log('🔄 Select All clicked')
+                        // Select all rows on current page
+                        const newSelectedRows: Record<string, boolean> = {}
+                        data.forEach((row) => {
+                            const rowId = String(row.id)
+                            newSelectedRows[rowId] = true
+                        })
+                        // This would be handled by the DataTable internally, this is just for demo logging
+                        alert('Selected all rows on current page!')
+                    },
+                    onDeselectAll: () => {
+                        console.log('🔄 Deselect All clicked')
+                        alert('Deselected all rows!')
+                    },
+                    customActions: (
+                        <>
+                            <Button
+                                key="download"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Download size={16} />}
+                                onClick={() => {
+                                    const selectedRowIds = Object.entries({}) // Get actual selected rows
+                                        .filter(([, selected]) => selected)
+                                        .map(([rowId]) => rowId)
+                                    console.log(
+                                        '📥 Download clicked with selected rows:',
+                                        selectedRowIds
+                                    )
+                                    alert(
+                                        `Downloading selected users to CSV format.`
+                                    )
+                                }}
+                            >
+                                Download
+                            </Button>
+                            <Button
+                                key="send-email"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Calendar size={16} />}
+                                onClick={() => {
+                                    console.log('📧 Send Email clicked')
+                                    alert('Sending email to selected users!')
+                                }}
+                            >
+                                Send Email
+                            </Button>
+                            <Button
+                                key="archive"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Package size={16} />}
+                                onClick={() => {
+                                    console.log('📦 Archive clicked')
+                                    alert('Archiving selected users!')
+                                }}
+                            >
+                                Archive
+                            </Button>
+                            <Button
+                                key="delete"
+                                buttonType={ButtonType.DANGER}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Trash2 size={16} />}
+                                onClick={() => {
+                                    console.log('🗑️ Delete clicked')
+                                    if (
+                                        confirm(
+                                            'Are you sure you want to delete the selected users?'
+                                        )
+                                    ) {
+                                        alert('Deleted selected users!')
+                                    }
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </>
+                    ),
+                }}
                 headerSlot1={
                     <Button
                         buttonType={ButtonType.SECONDARY}
@@ -3137,6 +3260,161 @@ const DataTableDemo = () => {
             />
 
             <SimpleDataTableExample />
+
+            {/* Table Body Height Control Demo */}
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0f4ff',
+                        borderRadius: '8px',
+                        border: '1px solid #c7d2fe',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        📏 Table Body Height Control Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#312e81',
+                        }}
+                    >
+                        🎯 <strong>NEW FEATURE:</strong> Control the height of
+                        the table body (where rows are displayed) using the{' '}
+                        <code>tableBodyHeight</code> property. This creates a
+                        fixed-height table with scrollable content, perfect for
+                        dashboard layouts or when you need consistent table
+                        dimensions. The table below has a fixed height of{' '}
+                        <strong>400px</strong> - try scrolling within the table
+                        body!
+                    </p>
+                </div>
+
+                <DataTable
+                    data={data.slice(0, 20)} // Show more rows to demonstrate scrolling
+                    columns={
+                        columns.slice(0, 5) as unknown as ColumnDefinition<
+                            Record<string, unknown>
+                        >[]
+                    } // Show fewer columns for demo
+                    idField="id"
+                    title="Fixed Height Table (400px)"
+                    description="This table has a fixed body height with scrollable content"
+                    enableSearch={true}
+                    enableFiltering={true}
+                    enableAdvancedFilter={false}
+                    enableInlineEdit={false}
+                    enableRowExpansion={false}
+                    enableRowSelection={true}
+                    enableColumnManager={false}
+                    showSettings={false}
+                    columnFreeze={0}
+                    tableBodyHeight={200} // Fixed height of 400px
+                    pagination={{
+                        currentPage: 1,
+                        pageSize: 50, // Show more rows to demonstrate scrolling
+                        totalRows: 20,
+                        pageSizeOptions: [20, 50, 100],
+                    }}
+                    onRowSelectionChange={handleRowSelectionChange}
+                    headerSlot1={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Settings size={16} />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => console.log('Settings clicked')}
+                        >
+                            Settings
+                        </Button>
+                    }
+                    headerSlot2={
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            leadingIcon={<Package size={16} />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => console.log('Add User clicked')}
+                        >
+                            Add User
+                        </Button>
+                    }
+                />
+
+                {/* Height with CSS units demo */}
+                <div style={{ marginTop: '30px' }}>
+                    <div
+                        style={{
+                            marginBottom: '20px',
+                            padding: '16px',
+                            backgroundColor: '#fef3c7',
+                            borderRadius: '8px',
+                            border: '1px solid #f59e0b',
+                        }}
+                    >
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                color: '#92400e',
+                            }}
+                        >
+                            📐 CSS Units Support Demo
+                        </h4>
+                        <p
+                            style={{
+                                margin: 0,
+                                fontSize: '14px',
+                                color: '#92400e',
+                            }}
+                        >
+                            The <code>tableBodyHeight</code> property supports
+                            both numbers (pixels) and CSS strings. This table
+                            uses <strong>"50vh"</strong> (50% of viewport
+                            height) to create a responsive height that adapts to
+                            the browser window size.
+                        </p>
+                    </div>
+
+                    <DataTable
+                        data={data.slice(0, 15)}
+                        columns={
+                            columns.slice(0, 4) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        title="Responsive Height Table (50vh)"
+                        description="This table uses viewport height units for responsive sizing"
+                        enableSearch={true}
+                        enableFiltering={false}
+                        enableAdvancedFilter={false}
+                        enableInlineEdit={false}
+                        enableRowExpansion={false}
+                        enableRowSelection={false}
+                        enableColumnManager={false}
+                        showSettings={false}
+                        columnFreeze={0}
+                        tableBodyHeight="50vh" // 50% of viewport height
+                        pagination={{
+                            currentPage: 1,
+                            pageSize: 50,
+                            totalRows: 15,
+                            pageSizeOptions: [15, 30, 50],
+                        }}
+                    />
+                </div>
+            </div>
+
             <EmptyDataTableExamples />
         </div>
     )

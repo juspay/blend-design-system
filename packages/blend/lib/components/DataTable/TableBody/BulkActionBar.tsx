@@ -194,6 +194,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                     left: tableToken.dataTable.bulkActions.left,
                     transform: tableToken.dataTable.bulkActions.transform,
                     height: tableToken.dataTable.bulkActions.height,
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
                 }}
             >
                 <PrimitiveText
@@ -207,6 +209,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         flex: tableToken.dataTable.bulkActions.selectText.flex,
                         color: tableToken.dataTable.bulkActions.selectText
                             .color,
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                     }}
                 >
                     {selectedCount} selected
@@ -216,21 +220,25 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                     height="24px"
                     width="1px"
                     backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                    style={{ flexShrink: 0 }}
                 />
 
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    leadingIcon={<Download />}
-                    size={ButtonSize.SMALL}
-                    onClick={onExport}
-                >
-                    Export
-                </Button>
+                <Block style={{ flexShrink: 0 }}>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={<Download />}
+                        size={ButtonSize.SMALL}
+                        onClick={onExport}
+                    >
+                        Export
+                    </Button>
+                </Block>
 
                 <Block
                     height="24px"
                     width="1px"
                     backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                    style={{ flexShrink: 0 }}
                 />
 
                 <PrimitiveButton
@@ -246,6 +254,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         background: 'none',
                         border: 'none',
                         cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                     }}
                 >
                     Deselect all
@@ -256,6 +266,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         display="flex"
                         alignItems="center"
                         gap={FOUNDATION_THEME.unit[8]}
+                        style={{ flexShrink: 0 }}
                     >
                         {customActions}
                     </Block>
