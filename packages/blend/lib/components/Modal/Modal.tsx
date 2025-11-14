@@ -232,7 +232,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 // Wait for animation to complete before unmounting
                 const timer = setTimeout(() => {
                     setShouldRender(false)
-                }, 650)
+                }, 500)
                 return () => clearTimeout(timer)
             }
         }, [isOpen])
@@ -320,7 +320,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         style={{
                             opacity: isAnimatingIn ? 0.5 : 0,
                             transition:
-                                'opacity 650ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1)',
+                            willChange: 'opacity',
+                            backfaceVisibility: 'hidden',
+                            transform: 'translateZ(0)',
                         }}
                     />
 
@@ -341,11 +344,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         style={{
                             opacity: isAnimatingIn ? 1 : 0,
                             transform: isAnimatingIn
-                                ? 'scale(1) translateY(0px)'
-                                : 'scale(0.88) translateY(-20px)',
+                                ? 'translate3d(0, 0, 0) scale(1)'
+                                : 'translate3d(0, 0, 0) scale(0.95)',
                             transition:
-                                'opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 650ms cubic-bezier(0.22, 1, 0.36, 1)',
+                                'opacity 500ms cubic-bezier(0.16, 1, 0.3, 1), transform 500ms cubic-bezier(0.16, 1, 0.3, 1)',
                             willChange: 'opacity, transform',
+                            backfaceVisibility: 'hidden',
                         }}
                     >
                         <ModalHeader
