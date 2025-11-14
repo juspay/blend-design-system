@@ -1,46 +1,125 @@
 import { css } from 'styled-components'
 
-const easing = 'cubic-bezier(0.22, 1, 0.36, 1)'
+const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
 export const popoverContentAnimations = css`
     transform-origin: var(--radix-popper-transform-origin);
     will-change: opacity, transform;
 
-    &[data-state='open'] {
-        animation: popover-show 550ms ${easing};
+    &[data-side='bottom'][data-state='open'] {
+        animation: slideInFromTop 400ms ${easing};
+    }
+    &[data-side='bottom'][data-state='closed'] {
+        animation: slideOutToTop 300ms ${easing};
     }
 
-    &[data-state='closed'] {
-        animation: popover-hide 450ms ${easing};
+    &[data-side='top'][data-state='open'] {
+        animation: slideInFromBottom 400ms ${easing};
+    }
+    &[data-side='top'][data-state='closed'] {
+        animation: slideOutToBottom 300ms ${easing};
     }
 
-    @keyframes popover-show {
-        0% {
+    &[data-side='right'][data-state='open'] {
+        animation: slideInFromLeft 400ms ${easing};
+    }
+    &[data-side='right'][data-state='closed'] {
+        animation: slideOutToLeft 300ms ${easing};
+    }
+
+    &[data-side='left'][data-state='open'] {
+        animation: slideInFromRight 400ms ${easing};
+    }
+    &[data-side='left'][data-state='closed'] {
+        animation: slideOutToRight 300ms ${easing};
+    }
+
+    /* Shadcn-style keyframes with zoom + slide + fade */
+    @keyframes slideInFromTop {
+        from {
             opacity: 0;
-            transform: translateY(16px) scale(0.88);
+            transform: translateY(-8px) scale(0.95);
         }
-        50% {
-            opacity: 0.8;
-            transform: translateY(-4px) scale(1.02);
-        }
-        75% {
-            opacity: 0.95;
-            transform: translateY(1px) scale(0.99);
-        }
-        100% {
+        to {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
     }
 
-    @keyframes popover-hide {
+    @keyframes slideOutToTop {
         from {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
         to {
             opacity: 0;
-            transform: translateY(12px) scale(0.9);
+            transform: translateY(-8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromBottom {
+        from {
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes slideOutToBottom {
+        from {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-8px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes slideOutToLeft {
+        from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-8px) scale(0.95);
+        }
+    }
+
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(8px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @keyframes slideOutToRight {
+        from {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(8px) scale(0.95);
         }
     }
 `
