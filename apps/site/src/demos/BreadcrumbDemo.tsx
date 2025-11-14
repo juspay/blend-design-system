@@ -652,8 +652,8 @@ const BreadcrumbDemo = () => {
                         </h3>
                         <ul className="space-y-2 text-sm text-gray-700">
                             <li>
-                                • Use onClick prop with React Router's navigate()
-                                or Next.js router.push()
+                                • Use onClick prop with React Router's
+                                navigate() or Next.js router.push()
                             </li>
                             <li>
                                 • Prevents full page reloads and improves
