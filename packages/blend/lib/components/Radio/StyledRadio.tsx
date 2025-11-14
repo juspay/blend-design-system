@@ -3,6 +3,7 @@ import { RadioSize } from './types'
 import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { radioAnimations } from './radio.animations'
 
 export const StyledRadioInput = styled.input<{
     size: RadioSize
@@ -28,6 +29,8 @@ export const StyledRadioInput = styled.input<{
         const indicatorState = $isChecked ? 'active' : 'inactive'
 
         return css`
+            ${radioAnimations}
+
             background-color: ${radioTokens.indicator[indicatorState]
                 .backgroundColor[state]};
             border: ${radioTokens.borderWidth[indicatorState][state]}px solid
@@ -44,7 +47,9 @@ export const StyledRadioInput = styled.input<{
                     ? radioTokens.activeIndicator.active.backgroundColor[state]
                     : 'transparent'};
                 transform: ${$isChecked ? 'scale(1)' : 'scale(0)'};
-                transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+                transition:
+                    transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                    background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             &:focus-visible {
@@ -61,7 +66,6 @@ export const StyledRadioInput = styled.input<{
             }
 
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
         `
     }}
 `

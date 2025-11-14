@@ -21,6 +21,16 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import MobileSingleSelect from './MobileSingleSelect'
+import { useErrorShake } from '../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -115,6 +125,7 @@ const SingleSelect = ({
         (val: string) => onSelect(selected === val ? '' : val),
         [onSelect, selected]
     )
+    const shouldShake = useErrorShake(error)
 
     if (isMobile && useDrawerOnMobile) {
         return (
@@ -180,7 +191,9 @@ const SingleSelect = ({
                 })}
                 data-selectbox-value={placeholder}
             >
-                <Block
+                <Wrapper
+                    position="relative"
+                    style={getErrorShakeStyle(shouldShake)}
                     width={fullWidth ? '100%' : 'fit-content'}
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
@@ -477,7 +490,7 @@ const SingleSelect = ({
                         size={size}
                         variant={variant}
                     />
-                </Block>
+                </Wrapper>
             </Block>
             {isContainer && (
                 <InputFooter

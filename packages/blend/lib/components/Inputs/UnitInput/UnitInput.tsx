@@ -13,6 +13,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const UnitInput = ({
     value,
@@ -46,6 +56,7 @@ const UnitInput = ({
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
     const [unitWidth, setUnitWidth] = useState(0)
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -180,11 +191,12 @@ const UnitInput = ({
                     required={required}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={8}
+                style={getErrorShakeStyle(shouldShake)}
             >
                 {leftSlot && (
                     <Block
@@ -278,6 +290,11 @@ const UnitInput = ({
                     fontWeight={unitInputTokens.inputContainer.fontWeight[size]}
                     outline="none"
                     width={'100%'}
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -293,12 +310,16 @@ const UnitInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     _focus={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -318,7 +339,7 @@ const UnitInput = ({
                     }}
                     {...rest}
                 />
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

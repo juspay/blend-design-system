@@ -14,6 +14,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { Triangle } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const NumberInput = ({
     value,
@@ -40,6 +50,7 @@ const NumberInput = ({
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -71,13 +82,14 @@ const NumberInput = ({
                     tokens={numberInputTokens}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={
                     numberInputTokens.inputContainer.borderRadius[size]
                 }
+                style={getErrorShakeStyle(shouldShake)}
             >
                 {label && isSmallScreenWithLargeSize && (
                     <Block
@@ -143,6 +155,12 @@ const NumberInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -152,6 +170,11 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    _focusVisible={{
+                        placeholderColor: 'transparent',
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -344,7 +367,7 @@ const NumberInput = ({
                         />
                     </PrimitiveButton>
                 </Block>
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

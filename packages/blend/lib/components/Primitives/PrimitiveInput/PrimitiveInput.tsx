@@ -111,6 +111,13 @@ type PrimitiveInputProps = StateStyles & {
     // Cursor
     cursor?: CSSObject['cursor']
 
+    // Transition
+    transition?: CSSObject['transition']
+    transitionProperty?: CSSObject['transitionProperty']
+    transitionDuration?: CSSObject['transitionDuration']
+    transitionTimingFunction?: CSSObject['transitionTimingFunction']
+    transitionDelay?: CSSObject['transitionDelay']
+
     // Placeholder
     placeholderStyles?: CSSObject
 }
@@ -192,6 +199,12 @@ const blockedProps = [
     'zIndex',
     'pointerEvents',
     'opacity',
+    // Transition
+    'transition',
+    'transitionProperty',
+    'transitionDuration',
+    'transitionTimingFunction',
+    'transitionDelay',
     // Pseudo states
     '_hover',
     '_focus',
@@ -340,7 +353,12 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
         styles.borderBottom = props.borderBottom
     if (props.borderLeft !== undefined) styles.borderLeft = props.borderLeft
     if (props.borderRight !== undefined) styles.borderRight = props.borderRight
-    if (props.boxShadow !== undefined) styles.boxShadow = props.boxShadow
+    if (props.boxShadow !== undefined) {
+        styles.boxShadow = props.boxShadow
+    } else {
+        // Set default to enable smooth transitions
+        styles.boxShadow = '0 0 0 0 transparent'
+    }
 
     if (props.outline !== undefined) styles.outline = props.outline
     if (props.outlineColor !== undefined)
@@ -357,6 +375,16 @@ const getStyles = (props: PrimitiveInputProps): CSSObject => {
     if (props.overflowY !== undefined) styles.overflowY = props.overflowY
 
     if (props.cursor !== undefined) styles.cursor = props.cursor
+
+    if (props.transition !== undefined) styles.transition = props.transition
+    if (props.transitionProperty !== undefined)
+        styles.transitionProperty = props.transitionProperty
+    if (props.transitionDuration !== undefined)
+        styles.transitionDuration = props.transitionDuration
+    if (props.transitionTimingFunction !== undefined)
+        styles.transitionTimingFunction = props.transitionTimingFunction
+    if (props.transitionDelay !== undefined)
+        styles.transitionDelay = props.transitionDelay
 
     return styles
 }
@@ -400,17 +428,17 @@ const StyledInput = styled.input.withConfig({
         },
     }
 
-    // const outline: CSSObject = {
-    //     '&:focus-visible': {
-    //         outline: 'none !important',
-    //     },
-    // }
+    const outline: CSSObject = {
+        '&:focus-visible': {
+            outline: 'none !important',
+        },
+    }
 
     return css({
         ...base,
         ...placeholderStyle,
         ...stateStyles,
-        // ...outline,
+        ...outline,
         ...hideSpinButton,
     })
 })
