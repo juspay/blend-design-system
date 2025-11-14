@@ -256,6 +256,71 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Sidebar.isTopbarVisible',
+                hintText:
+                    'Optional boolean that controls whether the topbar is visible (controlled mode). When true, the topbar is shown. When false, the topbar is hidden. Use this with onTopbarVisibilityChange for controlled state management. When combined with enableTopbarAutoHide, this prop takes precedence and allows parent components to manage topbar visibility state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows topbar, false hides topbar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.onTopbarVisibilityChange',
+                hintText:
+                    'Optional callback function invoked when the topbar visibility should change. Receives a boolean indicating the new visibility state. Required when using controlled mode (providing isTopbarVisible prop). Use this to update your isTopbarVisible state. Also called in uncontrolled mode for visibility change notifications when enableTopbarAutoHide triggers auto-hide behavior.',
+            },
+            {
+                content: '(isVisible: boolean) => void',
+                hintText:
+                    'Function called with new visibility state when topbar visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.defaultIsTopbarVisible',
+                hintText:
+                    'Optional boolean that sets the initial topbar visibility for uncontrolled usage. When provided, determines whether the topbar is initially visible. When true, the topbar starts visible. When false, it starts hidden. Only used when isTopbarVisible is not provided. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial visible state, false sets initial hidden state',
+            },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'Sidebar.showPrimaryActionButton',
+                hintText:
+                    'Optional boolean that controls whether to show a primary action button in the mobile navigation. When true, displays a primary action button (typically for CTA actions like "Create", "Add", etc.) in the mobile navigation drawer. The button appearance and behavior are controlled by primaryActionButtonProps. Useful for providing quick access to primary actions on mobile devices.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows primary action button in mobile nav, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.primaryActionButtonProps',
+                hintText:
+                    'Optional object containing HTML button attributes for the primary action button in mobile navigation. Extends standard button props (onClick, disabled, className, etc.) except for type. Use this to configure the primary action button behavior, styling, and event handlers. Only applies when showPrimaryActionButton is true. Common use cases include onClick for navigation, className for styling, and children for button content.',
+            },
+            {
+                content:
+                    'Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type">',
+                hintText:
+                    'Standard HTML button attributes excluding type property',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'DirectoryData.id',
                 hintText:
                     'Required unique identifier string for the navigation item. Used internally for tracking selection, navigation, and rendering. Must be unique within the data array. The ID is used to determine which navigation item is active or selected.',
