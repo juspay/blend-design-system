@@ -18,6 +18,8 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useErrorShake } from '../common/useErrorShake'
+import { getErrorShakeStyle } from '../common/error.animations'
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
@@ -45,6 +47,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
         const inputProps = createCheckboxInputProps(checked, defaultChecked)
         const currentChecked = getCurrentCheckedState(checked, defaultChecked)
+        const shouldShake = useErrorShake(error)
 
         return (
             <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
@@ -62,6 +65,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     $isDisabled={disabled}
                     $checked={currentChecked || false}
                     $error={error}
+                    style={getErrorShakeStyle(shouldShake)}
                     {...rest}
                 >
                     <CheckboxIndicator
