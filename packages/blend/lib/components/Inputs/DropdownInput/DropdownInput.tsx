@@ -63,7 +63,7 @@ const DropdownInput = ({
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
-    const shouldShake = useErrorShake(error)
+    const shouldShake = useErrorShake(error || false)
     const [slotWidth, setSlotWidth] = useState<number>(0)
     const [dropdownWidth, setDropdownWidth] = useState<number>(0)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
