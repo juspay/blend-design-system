@@ -299,6 +299,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onAdvancedFiltersChange?: (filters: unknown[]) => void
     columnFreeze?: number
     enableColumnManager?: boolean
+    enableColumnReordering?: boolean
+    onColumnReorder?: (columns: ColumnDefinition<T>[]) => void
     columnManagerMaxSelections?: number
     columnManagerAlwaysSelected?: (keyof T)[]
     columnManagerPrimaryAction?: {

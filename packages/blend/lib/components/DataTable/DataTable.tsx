@@ -77,6 +77,8 @@ const DataTable = forwardRef(
             serverSidePagination = false,
             isLoading = false,
             enableColumnManager = true,
+            enableColumnReordering = false,
+            onColumnReorder,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
@@ -1022,6 +1024,17 @@ const DataTable = forwardRef(
                                     enableColumnManager={
                                         effectiveEnableColumnManager
                                     }
+                                    enableColumnReordering={
+                                        enableColumnReordering
+                                    }
+                                    onColumnReorder={(columns) => {
+                                        setVisibleColumns(
+                                            columns as ColumnDefinition<T>[]
+                                        )
+                                        onColumnReorder?.(
+                                            columns as ColumnDefinition<T>[]
+                                        )
+                                    }}
                                     columnManagerMaxSelections={
                                         columnManagerMaxSelections
                                     }
