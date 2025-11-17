@@ -47,7 +47,7 @@ export type DirectoryTokenType = {
 
         // Section collapse/expand chevron icon
         chevron: {
-            size: CSSObject['width'] // Chevron icon size
+            width: CSSObject['width'] // Chevron icon width
             color: CSSObject['color'] // Chevron icon color
         }
 
@@ -73,12 +73,12 @@ export type DirectoryTokenType = {
 
             // Icon/leftSlot styling
             icon: {
-                size: CSSObject['width'] // Icon size
+                width: CSSObject['width'] // Icon size
             }
 
             // Chevron for expandable items
             chevron: {
-                size: CSSObject['width'] // Chevron icon size
+                width: CSSObject['width'] // Chevron icon size
             }
 
             // Nested/child items configuration
@@ -125,7 +125,7 @@ export const getDirectoryTokens = (
                 },
 
                 chevron: {
-                    size: foundationToken.unit[16],
+                    width: foundationToken.unit[16],
                     color: foundationToken.colors.gray[400],
                 },
 
@@ -151,11 +151,11 @@ export const getDirectoryTokens = (
                     },
 
                     icon: {
-                        size: foundationToken.unit[20],
+                        width: foundationToken.unit[20],
                     },
 
                     chevron: {
-                        size: foundationToken.unit[16],
+                        width: foundationToken.unit[16],
                     },
 
                     nested: {
@@ -192,7 +192,7 @@ export const getDirectoryTokens = (
                 },
 
                 chevron: {
-                    size: foundationToken.unit[16],
+                    width: foundationToken.unit[16],
                     color: foundationToken.colors.gray[400],
                 },
 
@@ -218,11 +218,11 @@ export const getDirectoryTokens = (
                     },
 
                     icon: {
-                        size: foundationToken.unit[20],
+                        width: foundationToken.unit[20],
                     },
 
                     chevron: {
-                        size: foundationToken.unit[16],
+                        width: foundationToken.unit[16],
                     },
 
                     nested: {

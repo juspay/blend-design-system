@@ -147,7 +147,7 @@ const Section = ({
                         <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
                             <ChevronDown
                                 color={tokens.section.chevron.color}
-                                size={tokens.section.chevron.size}
+                                size={tokens.section.chevron.width}
                             />
                         </ChevronWrapper>
                     )}

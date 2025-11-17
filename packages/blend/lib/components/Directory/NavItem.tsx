@@ -59,8 +59,8 @@ const ChevronWrapper = styled(Block)<{
     margin-left: auto;
 
     & > svg {
-        width: ${({ $tokens }) => $tokens.section.item.chevron.size};
-        height: ${({ $tokens }) => $tokens.section.item.chevron.size};
+        width: ${({ $tokens }) => $tokens.section.item.chevron.width};
+        height: ${({ $tokens }) => $tokens.section.item.chevron.width};
         transition: transform 150ms;
         transform: ${({ $isExpanded }) =>
             $isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
