@@ -120,7 +120,8 @@ const Section = ({
                 <Block
                     display="flex"
                     alignItems="center"
-                    padding={tokens.section.header.padding}
+                    paddingX={tokens.section.header.padding.x}
+                    paddingY={tokens.section.header.padding.y}
                     // userSelect="none"
                     cursor={isCollapsible ? 'pointer' : undefined}
                     ref={headerRef}
@@ -138,16 +139,16 @@ const Section = ({
                 >
                     <Text
                         variant="body.sm"
-                        color={tokens.section.label.color}
-                        fontWeight={tokens.section.label.fontWeight}
+                        color={tokens.section.header.label.color}
+                        fontWeight={tokens.section.header.label.fontWeight}
                     >
                         {section.label.toUpperCase()}
                     </Text>
                     {isCollapsible && (
                         <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
                             <ChevronDown
-                                color={tokens.section.chevron.color}
-                                size={tokens.section.chevron.width}
+                                color={tokens.section.header.chevron.color}
+                                size={tokens.section.header.chevron.width}
                             />
                         </ChevronWrapper>
                     )}
@@ -160,7 +161,7 @@ const Section = ({
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: tokens.section.item.gap,
+                        gap: tokens.section.itemList.gap,
                     }}
                     id={`section-content-${sectionIndex}`}
                     role="menu"

@@ -123,53 +123,60 @@ export const getDirectoryTokens = (
                 gap: foundationToken.unit[4],
 
                 header: {
-                    padding: `${foundationToken.unit[2]} ${foundationToken.unit[12]}`,
-                },
-
-                label: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    color: foundationToken.colors.gray[400],
-                    fontWeight: 500,
-                },
-
-                chevron: {
-                    width: foundationToken.unit[16],
-                    color: foundationToken.colors.gray[400],
-                },
-
-                item: {
-                    gap: foundationToken.unit[8],
-                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
-                    iconGap: foundationToken.unit[12],
-                    borderRadius: foundationToken.border.radius[4],
-                    fontWeight: 500,
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    transition: 'background-color 0.2s, color 0.2s',
-
-                    backgroundColor: {
-                        default: 'transparent',
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[150],
+                    padding: {
+                        x: foundationToken.unit[12],
+                        y: foundationToken.unit[2],
                     },
-
-                    color: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[1000],
+                    label: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        color: foundationToken.colors.gray[400],
+                        fontWeight: 500,
                     },
-
-                    icon: {
-                        width: foundationToken.unit[20],
-                    },
-
                     chevron: {
                         width: foundationToken.unit[16],
+                        color: foundationToken.colors.gray[400],
+                    },
+                },
+
+                itemList: {
+                    gap: foundationToken.unit[8],
+
+                    item: {
+                        padding: {
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[6],
+                        },
+                        gap: foundationToken.unit[12],
+                        borderRadius: foundationToken.border.radius[4],
+                        fontWeight: 500,
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        transition: 'background-color 0.2s, color 0.2s',
+
+                        backgroundColor: {
+                            default: 'transparent',
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[150],
+                        },
+
+                        color: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[1000],
+                        },
+
+                        icon: {
+                            width: foundationToken.unit[20],
+                        },
+
+                        chevron: {
+                            width: foundationToken.unit[16],
+                            color: foundationToken.colors.gray[600],
+                        },
                     },
 
                     nested: {
                         paddingLeft: foundationToken.unit[24],
                         marginTop: foundationToken.unit[8],
-                        gap: foundationToken.unit[8],
 
                         border: {
                             width: foundationToken.unit[1],
@@ -183,60 +190,67 @@ export const getDirectoryTokens = (
 
         lg: {
             gap: foundationToken.unit[24],
-            paddingX: foundationToken.unit[8],
-            paddingY: foundationToken.unit[8],
+            paddingX: foundationToken.unit[12],
+            paddingY: foundationToken.unit[12],
 
             section: {
                 gap: foundationToken.unit[4],
 
                 header: {
-                    padding: `${foundationToken.unit[2]} ${foundationToken.unit[12]}`,
-                },
-
-                label: {
-                    fontSize: foundationToken.font.size.body.sm.fontSize,
-                    color: foundationToken.colors.gray[400],
-                    fontWeight: 500,
-                },
-
-                chevron: {
-                    width: foundationToken.unit[16],
-                    color: foundationToken.colors.gray[400],
-                },
-
-                item: {
-                    gap: foundationToken.unit[8],
-                    padding: `${foundationToken.unit[6]} ${foundationToken.unit[12]}`,
-                    iconGap: foundationToken.unit[12],
-                    borderRadius: foundationToken.border.radius[4],
-                    fontWeight: 500,
-                    fontSize: foundationToken.font.size.body.md.fontSize,
-                    transition: 'background-color 0.2s, color 0.2s',
-
-                    backgroundColor: {
-                        default: 'transparent',
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[150],
+                    padding: {
+                        x: foundationToken.unit[12],
+                        y: foundationToken.unit[2],
                     },
-
-                    color: {
-                        default: foundationToken.colors.gray[600],
-                        hover: foundationToken.colors.gray[600],
-                        active: foundationToken.colors.gray[1000],
+                    label: {
+                        fontSize: foundationToken.font.size.body.sm.fontSize,
+                        color: foundationToken.colors.gray[400],
+                        fontWeight: 500,
                     },
-
-                    icon: {
-                        width: foundationToken.unit[20],
-                    },
-
                     chevron: {
                         width: foundationToken.unit[16],
+                        color: foundationToken.colors.gray[400],
+                    },
+                },
+
+                itemList: {
+                    gap: foundationToken.unit[8],
+
+                    item: {
+                        padding: {
+                            x: foundationToken.unit[12],
+                            y: foundationToken.unit[6],
+                        },
+                        gap: foundationToken.unit[12],
+                        borderRadius: foundationToken.border.radius[4],
+                        fontWeight: 500,
+                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        transition: 'background-color 0.2s, color 0.2s',
+
+                        backgroundColor: {
+                            default: 'transparent',
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[150],
+                        },
+
+                        color: {
+                            default: foundationToken.colors.gray[600],
+                            hover: foundationToken.colors.gray[600],
+                            active: foundationToken.colors.gray[1000],
+                        },
+
+                        icon: {
+                            width: foundationToken.unit[20],
+                        },
+
+                        chevron: {
+                            width: foundationToken.unit[16],
+                            color: foundationToken.colors.gray[600],
+                        },
                     },
 
                     nested: {
                         paddingLeft: foundationToken.unit[24],
                         marginTop: foundationToken.unit[8],
-                        gap: foundationToken.unit[8],
 
                         border: {
                             width: foundationToken.unit[1],

@@ -15,22 +15,24 @@ const StyledElement = styled(Block)<{
 }>`
     background-color: ${({ $isActive, $tokens }) =>
         $isActive
-            ? $tokens.section.item.backgroundColor.active
-            : $tokens.section.item.backgroundColor.default};
+            ? $tokens.section.itemList.item.backgroundColor.active
+            : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: ${({ $tokens }) => $tokens.section.item.gap};
-    padding: ${({ $tokens }) => $tokens.section.item.padding};
+    gap: ${({ $tokens }) => $tokens.section.itemList.item.gap};
+    padding: ${({ $tokens }) =>
+        `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
-            ? $tokens.section.item.color.active
-            : $tokens.section.item.color.default};
-    font-weight: ${({ $tokens }) => $tokens.section.item.fontWeight};
-    border-radius: ${({ $tokens }) => $tokens.section.item.borderRadius};
-    transition: ${({ $tokens }) => $tokens.section.item.transition};
+            ? $tokens.section.itemList.item.color.active
+            : $tokens.section.itemList.item.color.default};
+    font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
+    border-radius: ${({ $tokens }) =>
+        $tokens.section.itemList.item.borderRadius};
+    transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
     user-select: none;
     cursor: pointer;
 
@@ -38,12 +40,12 @@ const StyledElement = styled(Block)<{
     &:focus {
         background-color: ${({ $isActive, $tokens }) =>
             $isActive
-                ? $tokens.section.item.backgroundColor.active
-                : $tokens.section.item.backgroundColor.hover};
+                ? $tokens.section.itemList.item.backgroundColor.active
+                : $tokens.section.itemList.item.backgroundColor.hover};
         color: ${({ $isActive, $tokens }) =>
             $isActive
-                ? $tokens.section.item.color.active
-                : $tokens.section.item.color.hover};
+                ? $tokens.section.itemList.item.color.active
+                : $tokens.section.itemList.item.color.hover};
         outline: none;
         ring: 0;
     }
@@ -59,8 +61,8 @@ const ChevronWrapper = styled(Block)<{
     margin-left: auto;
 
     & > svg {
-        width: ${({ $tokens }) => $tokens.section.item.chevron.width};
-        height: ${({ $tokens }) => $tokens.section.item.chevron.width};
+        width: ${({ $tokens }) => $tokens.section.itemList.item.chevron.width};
+        height: ${({ $tokens }) => $tokens.section.itemList.item.chevron.width};
         transition: transform 150ms;
         transform: ${({ $isExpanded }) =>
             $isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
@@ -69,18 +71,20 @@ const ChevronWrapper = styled(Block)<{
 
 const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
     width: 100%;
-    padding-left: ${({ $tokens }) => $tokens.section.item.nested.paddingLeft};
-    margin-top: ${({ $tokens }) => $tokens.section.item.nested.marginTop};
+    padding-left: ${({ $tokens }) =>
+        $tokens.section.itemList.nested.paddingLeft};
+    margin-top: ${({ $tokens }) => $tokens.section.itemList.nested.marginTop};
     position: relative;
 
     & > div:first-child {
         position: absolute;
-        left: ${({ $tokens }) => $tokens.section.item.nested.border.leftOffset};
+        left: ${({ $tokens }) =>
+            $tokens.section.itemList.nested.border.leftOffset};
         top: 0;
         height: 100%;
-        width: ${({ $tokens }) => $tokens.section.item.nested.border.width};
+        width: ${({ $tokens }) => $tokens.section.itemList.nested.border.width};
         background-color: ${({ $tokens }) =>
-            $tokens.section.item.nested.border.color};
+            $tokens.section.itemList.nested.border.color};
     }
 `
 
@@ -178,8 +182,10 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                                 >,
                                 {
                                     color: isActive
-                                        ? tokens.section.item.color.active
-                                        : tokens.section.item.color.default,
+                                        ? tokens.section.itemList.item.color
+                                              .active
+                                        : tokens.section.itemList.item.color
+                                              .default,
                                 }
                             )}
                         </Block>
@@ -189,8 +195,8 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                         variant="body.md"
                         color={
                             isActive
-                                ? tokens.section.item.color.active
-                                : tokens.section.item.color.default
+                                ? tokens.section.itemList.item.color.active
+                                : tokens.section.itemList.item.color.default
                         }
                     >
                         {item.label}
@@ -206,11 +212,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                         aria-hidden="true"
                     >
                         <ChevronDown
-                            color={
-                                isActive
-                                    ? tokens.section.item.color.active
-                                    : tokens.section.item.color.default
-                            }
+                            color={tokens.section.itemList.item.chevron.color}
                         />
                     </ChevronWrapper>
                 )}
