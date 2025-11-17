@@ -101,7 +101,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     outline: 'none',
     position: 'relative',
     cursor: 'pointer',
-    overflow: 'hidden',
+    overflow: 'visible',
 
     "&:hover:not([data-state='active']):not(:disabled)": {
         color: props.$tabsToken.trigger.text.color[props.$variant].hover,

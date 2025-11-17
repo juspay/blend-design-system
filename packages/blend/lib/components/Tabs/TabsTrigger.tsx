@@ -71,7 +71,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             >
                 {shouldUseMotionAnimation && isActive && (
                     <motion.span
-                        layoutId={`tabs-active-background-${variant}`}
+                        layoutId="tabs-active-background"
                         style={{
                             position: 'absolute',
                             inset: 0,

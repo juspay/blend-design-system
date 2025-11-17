@@ -226,7 +226,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         style={{
                             flex: 1,
                             overflowX: 'auto',
-                            overflowY: 'hidden',
+                            overflowY: 'visible',
                             WebkitOverflowScrolling: 'touch',
                             scrollbarWidth: 'none',
                             msOverflowStyle: 'none',
