@@ -235,9 +235,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     >
                         <StyledTabsList
                             ref={(node) => {
-                                // Store in our local ref for animation tracking
                                 tabsListRef.current = node
-                                // Also forward the ref
                                 if (typeof ref === 'function') {
                                     ref(node)
                                 } else if (ref) {
@@ -265,7 +263,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     <TabsTrigger
                                         key={item.value}
                                         ref={(node) => {
-                                            // Track each tab element for position calculation
                                             if (node) {
                                                 tabRefsMap.current.set(
                                                     tabValue,
@@ -396,7 +393,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     size,
                     isActive: childValue === activeTab,
                     ref: (node: HTMLButtonElement) => {
-                        // Track each tab element for position calculation
                         if (node && childValue) {
                             tabRefsMap.current.set(childValue, node)
                         } else if (childValue) {
@@ -421,9 +417,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             >
                 <StyledTabsList
                     ref={(node) => {
-                        // Store in our local ref for animation tracking
                         tabsListRef.current = node
-                        // Also forward the ref
                         if (typeof ref === 'function') {
                             ref(node)
                         } else if (ref) {

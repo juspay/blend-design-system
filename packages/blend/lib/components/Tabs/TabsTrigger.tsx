@@ -27,7 +27,6 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
 
-        // Determine if this variant should use Framer Motion animation
         const shouldUseMotionAnimation = variant !== TabsVariant.UNDERLINE
 
         const handleCloseClick = useCallback(

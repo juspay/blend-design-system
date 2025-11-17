@@ -59,7 +59,6 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
             },
         }),
 
-    // Animated underline indicator for UNDERLINE variant (YouTube-style)
     ...(props.$variant === TabsVariant.UNDERLINE && {
         '&::after': {
             content: "''",
