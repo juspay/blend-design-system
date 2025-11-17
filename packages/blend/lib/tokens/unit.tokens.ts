@@ -9,7 +9,9 @@ type UnitType =
 
 export type UnitTokensType = Readonly<{
     0: UnitType
+    0.5: UnitType
     1: UnitType
+    1.5: UnitType
     2: UnitType
     3: UnitType
     4: UnitType
@@ -44,7 +46,9 @@ export type UnitTokensType = Readonly<{
 
 const unitTokens: UnitTokensType = {
     0: '0px',
+    0.5: '0.5px',
     1: '1px',
+    1.5: '1.5px',
     2: '2px',
     3: '3px',
     4: '4px',
