@@ -98,10 +98,11 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     backgroundColor: props.$tabsToken.backgroundColor[props.$variant].default,
     borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
     border: props.$tabsToken.border[props.$variant],
-    transition: 'all 0.2s ease-in-out',
+    transition: 'color 0.2s ease-in-out',
     outline: 'none',
     position: 'relative',
     cursor: 'pointer',
+    overflow: 'hidden',
 
     "&:hover:not([data-state='active']):not(:disabled)": {
         color: props.$tabsToken.trigger.text.color[props.$variant].hover,
@@ -110,12 +111,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
 
     "&[data-state='active']": {
         color: props.$tabsToken.trigger.text.color[props.$variant].active,
-        // For UNDERLINE variant, use transparent background (shared animated underline handles the visual)
-        // For other variants, keep the background color
-        backgroundColor:
-            props.$variant === TabsVariant.UNDERLINE
-                ? 'transparent'
-                : props.$tabsToken.backgroundColor[props.$variant].active,
+        backgroundColor: 'transparent',
         fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
         zIndex: 1,
     },

@@ -68,6 +68,7 @@ export type TabsTriggerProps = ComponentPropsWithoutRef<
     closable?: boolean
     onClose?: () => void
     disable?: boolean
+    isActive?: boolean
 }
 
 export type TabsContentProps = ComponentPropsWithoutRef<

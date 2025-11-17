@@ -1,4 +1,5 @@
 import { forwardRef, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { type TabsTriggerProps, TabsVariant, TabsSize } from './types'
 import { StyledTabsTrigger, IconContainer } from './StyledTabs'
 import type { TabsTokensType } from './tabs.token'
@@ -19,11 +20,15 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             closable = false,
             onClose,
             disable = false,
+            isActive = false,
             ...props
         },
         ref
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+
+        // Determine if this variant should use Framer Motion animation
+        const shouldUseMotionAnimation = variant !== TabsVariant.UNDERLINE
 
         const handleCloseClick = useCallback(
             (e: React.MouseEvent) => {
@@ -65,16 +70,43 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 disabled={disable}
                 {...props}
             >
+                {shouldUseMotionAnimation && isActive && (
+                    <motion.span
+                        layoutId={`tabs-active-background-${variant}`}
+                        style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor:
+                                tabsToken.backgroundColor[variant].active,
+                            borderRadius: tabsToken.borderRadius[size][variant],
+                            zIndex: 0,
+                        }}
+                        transition={{
+                            type: 'spring',
+                            bounce: 0.2,
+                            duration: 0.6,
+                        }}
+                    />
+                )}
+
                 {leftSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ position: 'relative', zIndex: 1 }}
+                    >
                         {leftSlot}
                     </IconContainer>
                 )}
 
-                <span style={{ flexGrow: 1 }}>{children}</span>
+                <span style={{ flexGrow: 1, position: 'relative', zIndex: 1 }}>
+                    {children}
+                </span>
 
                 {effectiveRightSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ position: 'relative', zIndex: 1 }}
+                    >
                         {effectiveRightSlot}
                     </IconContainer>
                 )}

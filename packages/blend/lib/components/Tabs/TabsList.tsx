@@ -280,6 +280,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         value={tabValue}
                                         variant={variant}
                                         size={size}
+                                        isActive={tabValue === activeTab}
                                         closable={
                                             item.closable && !item.isDefault
                                         }
@@ -391,6 +392,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 const childProps = {
                     ...existingProps,
                     disable: childDisable || disable,
+                    variant,
+                    size,
+                    isActive: childValue === activeTab,
                     ref: (node: HTMLButtonElement) => {
                         // Track each tab element for position calculation
                         if (node && childValue) {
