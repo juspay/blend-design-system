@@ -35,57 +35,65 @@ export type DirectoryTokenType = {
 
         // Section header (clickable area with label and chevron)
         header: {
-            padding: CSSObject['padding'] // Header padding
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            label: {
+                fontSize: CSSObject['fontSize'] // Label text size
+                color: CSSObject['color'] // Label text color
+                fontWeight: CSSObject['fontWeight'] // Label text weight
+            }
+            // Section collapse/expand chevron icon
+            chevron: {
+                width: CSSObject['width'] // Chevron icon width
+                color: CSSObject['color'] // Chevron icon color
+            }
         }
 
         // Section label text styling
-        label: {
-            fontSize: CSSObject['fontSize'] // Label text size
-            color: CSSObject['color'] // Label text color
-            fontWeight: CSSObject['fontWeight'] // Label text weight
-        }
-
-        // Section collapse/expand chevron icon
-        chevron: {
-            width: CSSObject['width'] // Chevron icon width
-            color: CSSObject['color'] // Chevron icon color
-        }
 
         // Navigation items within the section
-        item: {
+        itemList: {
             gap: CSSObject['gap'] // Space between items in the list
-            padding: CSSObject['padding'] // Item padding
-            iconGap: CSSObject['gap'] // Gap between icon and text within item
-            borderRadius: CSSObject['borderRadius'] // Item border radius
-            fontWeight: CSSObject['fontWeight'] // Item text weight
-            fontSize: CSSObject['fontSize'] // Item text size
-            transition: CSSObject['transition'] // Hover/active transitions
 
-            // Item background color for different states
-            backgroundColor: {
-                [key in DirectoryState]: CSSObject['backgroundColor']
-            }
+            item: {
+                padding: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+                gap: CSSObject['gap'] // Gap between icon and text within item
+                borderRadius: CSSObject['borderRadius'] // Item border radius
+                fontWeight: CSSObject['fontWeight'] // Item text weight
+                fontSize: CSSObject['fontSize'] // Item text size
+                transition: CSSObject['transition'] // Hover/active transitions
 
-            // Item text color for different states
-            color: {
-                [key in DirectoryState]: CSSObject['color']
-            }
+                // Item background color for different states
+                backgroundColor: {
+                    [key in DirectoryState]: CSSObject['backgroundColor']
+                }
 
-            // Icon/leftSlot styling
-            icon: {
-                width: CSSObject['width'] // Icon size
-            }
+                // Item text color for different states
+                color: {
+                    [key in DirectoryState]: CSSObject['color']
+                }
 
-            // Chevron for expandable items
-            chevron: {
-                width: CSSObject['width'] // Chevron icon size
+                // Icon/leftSlot styling
+                icon: {
+                    width: CSSObject['width'] // Icon size
+                }
+
+                // Chevron for expandable items
+                chevron: {
+                    width: CSSObject['width'] // Chevron icon size
+                    color: CSSObject['color'] // Chevron icon color
+                }
             }
 
             // Nested/child items configuration
             nested: {
                 paddingLeft: CSSObject['paddingLeft'] // Nested item indentation
                 marginTop: CSSObject['marginTop'] // Space above nested list
-                gap: CSSObject['gap'] // Space between nested items
 
                 // Vertical connector line for nested items
                 border: {
