@@ -4,74 +4,83 @@ import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import styled from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DirectoryTokenType } from './directory.tokens'
 import { handleKeyDown } from './utils'
 
-const StyledElement = styled(Block)<{ $isLink?: boolean; $isActive?: boolean }>`
-    background-color: ${({ $isActive }) =>
-        $isActive ? FOUNDATION_THEME.colors.gray[150] : 'inherit'};
+const StyledElement = styled(Block)<{
+    $isLink?: boolean
+    $isActive?: boolean
+    $tokens: DirectoryTokenType
+}>`
+    background-color: ${({ $isActive, $tokens }) =>
+        $isActive
+            ? $tokens.section.item.backgroundColor.active
+            : $tokens.section.item.backgroundColor.default};
     border: none;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 12px;
-    padding: 6px 12px;
-    color: ${({ $isActive }) =>
+    gap: ${({ $tokens }) => $tokens.section.item.gap};
+    padding: ${({ $tokens }) => $tokens.section.item.padding};
+    color: ${({ $isActive, $tokens }) =>
         $isActive
-            ? FOUNDATION_THEME.colors.gray[1000]
-            : FOUNDATION_THEME.colors.gray[600]};
-    font-weight: 500;
-    border-radius: ${FOUNDATION_THEME.border.radius[4]};
-    transition:
-        background-color 0.2s,
-        color 0.2s;
+            ? $tokens.section.item.color.active
+            : $tokens.section.item.color.default};
+    font-weight: ${({ $tokens }) => $tokens.section.item.fontWeight};
+    border-radius: ${({ $tokens }) => $tokens.section.item.borderRadius};
+    transition: ${({ $tokens }) => $tokens.section.item.transition};
     user-select: none;
     cursor: pointer;
 
     &:hover,
     &:focus {
-        background-color: ${({ $isActive }) =>
+        background-color: ${({ $isActive, $tokens }) =>
             $isActive
-                ? FOUNDATION_THEME.colors.gray[150]
-                : FOUNDATION_THEME.colors.gray[50]};
-        color: ${({ $isActive }) =>
+                ? $tokens.section.item.backgroundColor.active
+                : $tokens.section.item.backgroundColor.hover};
+        color: ${({ $isActive, $tokens }) =>
             $isActive
-                ? FOUNDATION_THEME.colors.gray[1000]
-                : FOUNDATION_THEME.colors.gray[600]};
+                ? $tokens.section.item.color.active
+                : $tokens.section.item.color.hover};
         outline: none;
         ring: 0;
     }
 `
 
-const ChevronWrapper = styled(Block)<{ $isExpanded: boolean }>`
+const ChevronWrapper = styled(Block)<{
+    $isExpanded: boolean
+    $tokens: DirectoryTokenType
+}>`
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: auto;
 
     & > svg {
-        width: 16px;
-        height: 16px;
+        width: ${({ $tokens }) => $tokens.section.item.chevron.size};
+        height: ${({ $tokens }) => $tokens.section.item.chevron.size};
         transition: transform 150ms;
         transform: ${({ $isExpanded }) =>
             $isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
     }
 `
 
-const NestedList = styled(Block)`
+const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
     width: 100%;
-    padding-left: 24px;
-    margin-top: 8px;
+    padding-left: ${({ $tokens }) => $tokens.section.item.nested.paddingLeft};
+    margin-top: ${({ $tokens }) => $tokens.section.item.nested.marginTop};
     position: relative;
 
     & > div:first-child {
         position: absolute;
-        left: 16px;
+        left: ${({ $tokens }) => $tokens.section.item.nested.border.leftOffset};
         top: 0;
         height: 100%;
-        width: 1px;
-        background-color: ${FOUNDATION_THEME.colors.gray[200]};
+        width: ${({ $tokens }) => $tokens.section.item.nested.border.width};
+        background-color: ${({ $tokens }) =>
+            $tokens.section.item.nested.border.color};
     }
 `
 
@@ -96,6 +105,7 @@ export const ActiveItemProvider: React.FC<{ children: React.ReactNode }> = ({
 }
 
 const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
+    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isExpanded, setIsExpanded] = React.useState(false)
     const { activeItem, setActiveItem } = useContext(ActiveItemContext)
     const isActive =
@@ -133,6 +143,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 as={Element}
                 $isLink={!!item.href}
                 $isActive={isActive}
+                $tokens={tokens}
                 {...elementProps}
                 ref={refCallback}
                 onClick={handleClick}
@@ -167,8 +178,8 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                                 >,
                                 {
                                     color: isActive
-                                        ? FOUNDATION_THEME.colors.gray[1000]
-                                        : FOUNDATION_THEME.colors.gray[600],
+                                        ? tokens.section.item.color.active
+                                        : tokens.section.item.color.default,
                                 }
                             )}
                         </Block>
@@ -178,8 +189,8 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                         variant="body.md"
                         color={
                             isActive
-                                ? FOUNDATION_THEME.colors.gray[1000]
-                                : FOUNDATION_THEME.colors.gray[600]
+                                ? tokens.section.item.color.active
+                                : tokens.section.item.color.default
                         }
                     >
                         {item.label}
@@ -189,12 +200,16 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     )}
                 </Block>
                 {hasChildren && (
-                    <ChevronWrapper $isExpanded={isExpanded} aria-hidden="true">
+                    <ChevronWrapper
+                        $isExpanded={isExpanded}
+                        $tokens={tokens}
+                        aria-hidden="true"
+                    >
                         <ChevronDown
                             color={
                                 isActive
-                                    ? FOUNDATION_THEME.colors.gray[1000]
-                                    : FOUNDATION_THEME.colors.gray[600]
+                                    ? tokens.section.item.color.active
+                                    : tokens.section.item.color.default
                             }
                         />
                     </ChevronWrapper>
@@ -204,6 +219,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
             {hasChildren && isExpanded && (
                 <NestedList
                     as="ul"
+                    $tokens={tokens}
                     role="group"
                     aria-label={`${item.label} submenu`}
                 >

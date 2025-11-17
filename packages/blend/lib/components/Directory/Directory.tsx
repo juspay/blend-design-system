@@ -8,14 +8,14 @@ import Block from '../Primitives/Block/Block'
 import { handleSectionNavigation } from './utils'
 import { ActiveItemProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { SidebarTokenType } from '../Sidebar/sidebar.tokens'
+import { DirectoryTokenType } from './directory.tokens'
 
 const Directory = ({ directoryData, className }: DirectoryProps) => {
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )
 
-    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     useEffect(() => {
         sectionRefs.current = directoryData.map(() =>
             createRef<HTMLDivElement | null>()
@@ -35,9 +35,9 @@ const Directory = ({ directoryData, className }: DirectoryProps) => {
                 overflow="auto"
                 className={className}
                 aria-label="Directory navigation"
-                gap={tokens.directory.gap}
-                paddingX={tokens.directory.paddingX}
-                paddingY={tokens.directory.paddingY}
+                gap={tokens.gap}
+                paddingX={tokens.paddingX}
+                paddingY={tokens.paddingY}
             >
                 {directoryData.map((section, sectionIndex) => (
                     <Section
