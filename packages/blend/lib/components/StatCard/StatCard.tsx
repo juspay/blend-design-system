@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import {
     BarChart,
     Bar,
@@ -22,6 +22,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import {
     ChangeType,
+    StatCardArrowDirection,
     StatCardDirection,
     StatCardVariant,
     type StatCardProps,
@@ -66,46 +67,8 @@ const StatCard = ({
     const isSmallScreen = breakPointLabel === 'sm'
     const titleIconRef = useRef<HTMLDivElement>(null)
     const titleIconWidth = titleIconRef.current?.offsetWidth || 0
-    const numberVariantContainerRef = useRef<HTMLDivElement>(null!)
-    const [numberVariantContainerHeight, setNumberVariantContainerHeight] =
-        useState(0)
 
-    const numberVariantTitleContainerRef = useRef<HTMLDivElement>(null!)
-    const [
-        numberVariantTitleContainerHeight,
-        setNumberVariantTitleContainerHeight,
-    ] = useState(0)
-    const numberVariantStatsContainerRef = useRef<HTMLDivElement>(null!)
-    const [
-        numberVariantStatsContainerHeight,
-        setNumberVariantStatsContainerHeight,
-    ] = useState(0)
     const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
-
-    const actionIconDynamciPostition =
-        (numberVariantContainerHeight -
-            (numberVariantTitleContainerHeight +
-                numberVariantStatsContainerHeight +
-                toPixels(statCardToken.textContainer.gap))) /
-        2
-
-    useEffect(() => {
-        if (numberVariantContainerRef.current) {
-            setNumberVariantContainerHeight(
-                numberVariantContainerRef.current?.offsetHeight || 0
-            )
-            setNumberVariantTitleContainerHeight(
-                numberVariantTitleContainerRef.current?.offsetHeight || 0
-            )
-            setNumberVariantStatsContainerHeight(
-                numberVariantStatsContainerRef.current?.offsetHeight || 0
-            )
-        }
-    }, [
-        numberVariantContainerRef.current?.offsetHeight,
-        numberVariantTitleContainerRef.current?.offsetHeight,
-        numberVariantStatsContainerRef.current?.offsetHeight,
-    ])
 
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
@@ -154,6 +117,12 @@ const StatCard = ({
     const normalizedVariant =
         variant === StatCardVariant.PROGRESS_BAR ? 'progress' : variant
 
+    const arrowDirection =
+        change?.arrowDirection ??
+        (change?.valueType === ChangeType.INCREASE
+            ? StatCardArrowDirection.UP
+            : StatCardArrowDirection.DOWN)
+
     const formattedChange = change ? (
         <Block
             display="flex"
@@ -166,7 +135,7 @@ const StatCard = ({
                           .decrease
             }
         >
-            {change.valueType === ChangeType.INCREASE ? (
+            {arrowDirection === StatCardArrowDirection.UP ? (
                 <ArrowUp
                     size={parseInt(
                         statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
@@ -801,7 +770,7 @@ const StatCard = ({
 
             {variant === StatCardVariant.NUMBER && (
                 <Block
-                    ref={numberVariantContainerRef}
+                    // ref={numberVariantContainerRef}
                     display="flex"
                     flexDirection="column"
                     height="100%"
@@ -818,14 +787,14 @@ const StatCard = ({
                             justifyContent="center"
                             position="absolute"
                             right={0}
-                            top={actionIconDynamciPostition}
+                            top={0}
                             flexShrink={0}
                         >
                             {actionIcon}
                         </Block>
                     )}
                     <Block
-                        ref={numberVariantTitleContainerRef}
+                        // ref={numberVariantTitleContainerRef}
                         display="flex"
                         flexDirection="column"
                         alignItems={'center'}
@@ -906,7 +875,7 @@ const StatCard = ({
                     </Block>
 
                     <Block
-                        ref={numberVariantStatsContainerRef}
+                        // ref={numberVariantStatsContainerRef}
                         display="flex"
                         flexDirection="column"
                         alignItems={isSmallScreen ? 'flex-start' : 'center'}
