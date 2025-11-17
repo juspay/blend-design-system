@@ -110,7 +110,6 @@ const SidebarDemo = () => {
         | 'buttons'
         | 'tooltips'
         | 'tags'
-        | 'splitTags'
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
