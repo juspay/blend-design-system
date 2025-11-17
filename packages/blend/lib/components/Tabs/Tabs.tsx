@@ -18,6 +18,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             addButtonTooltip = 'Add new tab',
             maxDisplayTabs = 6,
             value,
+            defaultValue,
             onValueChange,
             disable = false,
             children,
@@ -26,7 +27,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         ref
     ) => {
         const [activeTab, setActiveTab] = useState<string>(
-            value || items[0]?.value || ''
+            value || defaultValue || items[0]?.value || ''
         )
 
         useEffect(() => {
@@ -106,21 +107,34 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     'disable' in existingProps
                         ? (existingProps.disable as boolean | undefined)
                         : undefined
+
+                const isTabsList =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsList'
+
                 const childProps = {
                     ...existingProps,
                     disable: childDisable || disable,
+                    ...(isTabsList && { activeTab }),
                 }
 
                 return React.cloneElement(child, childProps)
             })
         }
 
+        const handleChildrenValueChange = (newValue: string) => {
+            setActiveTab(newValue)
+            onValueChange?.(newValue)
+        }
+
         return (
             <StyledTabs
                 ref={ref}
                 className={className}
-                value={value}
-                onValueChange={onValueChange}
+                value={activeTab}
+                defaultValue={defaultValue}
+                onValueChange={handleChildrenValueChange}
                 {...props}
             >
                 {renderChildren()}

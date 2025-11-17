@@ -31,16 +31,24 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
     border: 'none',
     position: 'relative',
     paddingTop:
-        props.$tabsToken.container.padding[props.$size][props.$variant].top,
+        props.$tabsToken.container?.padding?.[props.$size]?.[props.$variant]
+            ?.top || 0,
     paddingRight:
-        props.$tabsToken.container.padding[props.$size][props.$variant].right,
+        props.$tabsToken.container?.padding?.[props.$size]?.[props.$variant]
+            ?.right || 0,
     paddingBottom:
-        props.$tabsToken.container.padding[props.$size][props.$variant].bottom,
+        props.$tabsToken.container?.padding?.[props.$size]?.[props.$variant]
+            ?.bottom || 0,
     paddingLeft:
-        props.$tabsToken.container.padding[props.$size][props.$variant].left,
-    backgroundColor: props.$tabsToken.container.backgroundColor[props.$variant],
+        props.$tabsToken.container?.padding?.[props.$size]?.[props.$variant]
+            ?.left || 0,
+    backgroundColor:
+        props.$tabsToken.container?.backgroundColor?.[props.$variant] ||
+        'transparent',
     borderRadius:
-        props.$tabsToken.container.borderRadius[props.$size][props.$variant],
+        props.$tabsToken.container?.borderRadius?.[props.$size]?.[
+            props.$variant
+        ] || 0,
 
     ...(props.$expanded &&
         !props.$fitContent && {
@@ -50,6 +58,24 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
                 textAlign: 'center',
             },
         }),
+
+    // Animated underline indicator for UNDERLINE variant (YouTube-style)
+    ...(props.$variant === TabsVariant.UNDERLINE && {
+        '&::after': {
+            content: "''",
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: '-1px',
+            height: props.$tabsToken.trigger.activeIndicator.height,
+            backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
+            scale: 'var(--tabs-indicator-width, 0.125) 1',
+            translate: 'var(--tabs-indicator-left, 0) 0',
+            transformOrigin: 'left',
+            transition: 'scale 220ms, translate 220ms',
+            zIndex: 2,
+        },
+    }),
 }))
 
 export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
@@ -84,23 +110,14 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
 
     "&[data-state='active']": {
         color: props.$tabsToken.trigger.text.color[props.$variant].active,
+        // For UNDERLINE variant, use transparent background (shared animated underline handles the visual)
+        // For other variants, keep the background color
         backgroundColor:
-            props.$tabsToken.backgroundColor[props.$variant].active,
+            props.$variant === TabsVariant.UNDERLINE
+                ? 'transparent'
+                : props.$tabsToken.backgroundColor[props.$variant].active,
         fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
         zIndex: 1,
-
-        ...(props.$variant === TabsVariant.UNDERLINE && {
-            '&::after': {
-                content: "''",
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: '-1px',
-                height: props.$tabsToken.trigger.activeIndicator.height,
-                backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
-                zIndex: 2,
-            },
-        }),
     },
 
     '&:focus-visible:not(:disabled)': {
