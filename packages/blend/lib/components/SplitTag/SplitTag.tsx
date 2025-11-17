@@ -16,7 +16,7 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                 <Tag
                     {...primaryTag}
                     splitTagPosition="left"
-                    variant={TagVariant.NO_FILL}
+                    variant={primaryTag.variant ?? TagVariant.NO_FILL}
                     size={size}
                     shape={shape}
                     data-split-tag-left="true"
@@ -27,7 +27,7 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                 <Tag
                     {...secondaryTag}
                     splitTagPosition="right"
-                    variant={TagVariant.ATTENTIVE}
+                    variant={secondaryTag.variant ?? TagVariant.ATTENTIVE}
                     size={size}
                     shape={shape}
                     data-split-tag-right="true"
