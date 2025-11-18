@@ -1,5 +1,22 @@
 import { useState, useEffect, useMemo, forwardRef, useRef } from 'react'
 import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+    DragOverlay,
+} from '@dnd-kit/core'
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    horizontalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import {
     DataTableProps,
     SortDirection,
     SortConfig,
@@ -77,6 +94,8 @@ const DataTable = forwardRef(
             serverSidePagination = false,
             isLoading = false,
             enableColumnManager = true,
+            enableColumnReordering = false,
+            onColumnReorder,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
@@ -216,6 +235,65 @@ const DataTable = forwardRef(
             useState<T | null>(null)
         const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
             useState<number>(-1)
+
+        // Drag and drop for column reordering
+        const [activeId, setActiveId] = useState<string | null>(null)
+
+        const sensors = useSensors(
+            useSensor(PointerSensor),
+            useSensor(KeyboardSensor, {
+                coordinateGetter: sortableKeyboardCoordinates,
+            })
+        )
+
+        const handleDragStart = (event: DragEndEvent) => {
+            setActiveId(event.active.id as string)
+        }
+
+        const handleDragOver = (event: DragEndEvent) => {
+            const { active, over } = event
+
+            if (over && active.id !== over.id) {
+                const oldIndex = visibleColumns.findIndex(
+                    (col) => String(col.field) === active.id
+                )
+                const newIndex = visibleColumns.findIndex(
+                    (col) => String(col.field) === over.id
+                )
+
+                if (
+                    oldIndex !== -1 &&
+                    newIndex !== -1 &&
+                    oldIndex >= columnFreeze &&
+                    newIndex >= columnFreeze
+                ) {
+                    const reorderedColumns = arrayMove(
+                        visibleColumns,
+                        oldIndex,
+                        newIndex
+                    )
+                    setVisibleColumns(reorderedColumns)
+                }
+            }
+        }
+
+        const handleDragEnd = (event: DragEndEvent) => {
+            const { active, over } = event
+
+            if (over && active.id !== over.id) {
+                onColumnReorder?.(visibleColumns as ColumnDefinition<T>[])
+            }
+
+            setActiveId(null)
+        }
+
+        const handleDragCancel = () => {
+            setActiveId(null)
+        }
+
+        const columnIds = visibleColumns
+            .filter((_, index) => index >= columnFreeze)
+            .map((col) => String(col.field))
 
         // Apply mobile configurations
         const effectiveColumnFreeze = mobileConfig.disableColumnFreeze
@@ -961,307 +1039,424 @@ const DataTable = forwardRef(
                             flexDirection: 'column',
                         }}
                     >
-                        <ScrollableContainer
-                            ref={scrollContainerRef}
-                            style={{
-                                ...(tableBodyHeight
-                                    ? {
-                                          height:
-                                              typeof tableBodyHeight ===
-                                              'number'
-                                                  ? `${tableBodyHeight}px`
-                                                  : tableBodyHeight,
-                                          overflowY: 'auto',
-                                      }
-                                    : {
-                                          flex: 1,
-                                          minHeight: tableBodyMinHeight,
-                                      }),
-                                position: 'relative',
-                            }}
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
+                            onDragEnd={handleDragEnd}
+                            onDragCancel={handleDragCancel}
                         >
-                            <table
-                                style={{
-                                    width: tableToken.dataTable.table.width,
-                                    minWidth: 'auto',
-                                    tableLayout:
-                                        tableToken.dataTable.table.tableLayout,
-                                    borderCollapse:
-                                        tableToken.dataTable.table
-                                            .borderCollapse,
-                                    borderSpacing:
-                                        tableToken.dataTable.table
-                                            .borderSpacing,
-                                    position:
-                                        tableToken.dataTable.table.position,
-                                    height:
-                                        currentData.length === 0
-                                            ? '100%'
-                                            : 'auto',
-                                }}
+                            <SortableContext
+                                items={columnIds}
+                                strategy={horizontalListSortingStrategy}
                             >
-                                <TableHeader
-                                    visibleColumns={
-                                        effectiveVisibleColumns as ColumnDefinition<
-                                            Record<string, unknown>
-                                        >[]
-                                    }
-                                    allVisibleColumns={
-                                        visibleColumns as ColumnDefinition<
-                                            Record<string, unknown>
-                                        >[]
-                                    }
-                                    initialColumns={
-                                        initialColumns as ColumnDefinition<
-                                            Record<string, unknown>
-                                        >[]
-                                    }
-                                    selectAll={selectAll}
-                                    sortConfig={sortConfig}
-                                    enableInlineEdit={enableInlineEdit}
-                                    enableColumnManager={
-                                        effectiveEnableColumnManager
-                                    }
-                                    columnManagerMaxSelections={
-                                        columnManagerMaxSelections
-                                    }
-                                    columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
-                                        (field) => String(field)
-                                    )}
-                                    columnManagerPrimaryAction={
-                                        columnManagerPrimaryAction
-                                    }
-                                    columnManagerSecondaryAction={
-                                        columnManagerSecondaryAction
-                                    }
-                                    columnManagerWidth={columnManagerWidth}
-                                    enableRowExpansion={enableRowExpansion}
-                                    enableRowSelection={enableRowSelection}
-                                    rowActions={
-                                        rowActions as
-                                            | RowActionsConfig<
-                                                  Record<string, unknown>
-                                              >
-                                            | undefined
-                                    }
-                                    data={data}
-                                    mobileConfig={mobileConfig}
-                                    mobileOverflowColumns={
-                                        mobileOverflowColumns as ColumnDefinition<
-                                            Record<string, unknown>
-                                        >[]
-                                    }
-                                    onMobileOverflowClick={(row) =>
-                                        handleMobileOverflowClick(row as T)
-                                    }
-                                    onSort={handleSort}
-                                    onSortAscending={handleSortAscending}
-                                    onSortDescending={handleSortDescending}
-                                    onSelectAll={handleSelectAll}
-                                    onColumnChange={(columns) =>
-                                        setVisibleColumns(
-                                            columns as ColumnDefinition<T>[]
-                                        )
-                                    }
-                                    onColumnFilter={handleColumnFilter}
-                                    getColumnWidth={
-                                        getColumnWidth as (
-                                            column: ColumnDefinition<
-                                                Record<string, unknown>
-                                            >,
-                                            index: number
-                                        ) => React.CSSProperties
-                                    }
-                                    columnFreeze={effectiveColumnFreeze}
-                                />
-                                {currentData.length > 0 ? (
-                                    <TableBodyComponent
-                                        currentData={currentData}
-                                        visibleColumns={
-                                            effectiveVisibleColumns as ColumnDefinition<
-                                                Record<string, unknown>
-                                            >[]
-                                        }
-                                        mobileConfig={mobileConfig}
-                                        mobileOverflowColumns={
-                                            mobileOverflowColumns as ColumnDefinition<
-                                                Record<string, unknown>
-                                            >[]
-                                        }
-                                        onMobileOverflowClick={(row) =>
-                                            handleMobileOverflowClick(row as T)
-                                        }
-                                        idField={String(idField)}
-                                        tableTitle={title}
-                                        selectedRows={selectedRows}
-                                        editingRows={editingRows}
-                                        editValues={editValues}
-                                        expandedRows={expandedRows}
-                                        enableInlineEdit={enableInlineEdit}
-                                        enableColumnManager={
-                                            effectiveEnableColumnManager
-                                        }
-                                        enableRowExpansion={enableRowExpansion}
-                                        enableRowSelection={enableRowSelection}
-                                        columnFreeze={effectiveColumnFreeze}
-                                        renderExpandedRow={
-                                            renderExpandedRow as
-                                                | ((expandedData: {
-                                                      row: Record<
-                                                          string,
-                                                          unknown
-                                                      >
-                                                      index: number
-                                                      isExpanded: boolean
-                                                      toggleExpansion: () => void
-                                                  }) => React.ReactNode)
-                                                | undefined
-                                        }
-                                        isRowExpandable={
-                                            isRowExpandable as
-                                                | ((
-                                                      row: Record<
-                                                          string,
-                                                          unknown
-                                                      >,
-                                                      index: number
-                                                  ) => boolean)
-                                                | undefined
-                                        }
-                                        onRowSelect={handleRowSelect}
-                                        onEditRow={handleEditRow}
-                                        onSaveRow={handleSaveRow}
-                                        onCancelEdit={handleCancelEdit}
-                                        onRowExpand={handleRowExpand}
-                                        onFieldChange={handleFieldChange}
-                                        getColumnWidth={
-                                            getColumnWidth as (
-                                                column: ColumnDefinition<
+                                <ScrollableContainer
+                                    ref={scrollContainerRef}
+                                    style={{
+                                        ...(tableBodyHeight
+                                            ? {
+                                                  height:
+                                                      typeof tableBodyHeight ===
+                                                      'number'
+                                                          ? `${tableBodyHeight}px`
+                                                          : tableBodyHeight,
+                                                  overflowY: 'auto',
+                                              }
+                                            : {
+                                                  flex: 1,
+                                                  minHeight: tableBodyMinHeight,
+                                              }),
+                                        position: 'relative',
+                                    }}
+                                >
+                                    <table
+                                        style={{
+                                            width: tableToken.dataTable.table
+                                                .width,
+                                            minWidth: 'auto',
+                                            tableLayout:
+                                                tableToken.dataTable.table
+                                                    .tableLayout,
+                                            borderCollapse:
+                                                tableToken.dataTable.table
+                                                    .borderCollapse,
+                                            borderSpacing:
+                                                tableToken.dataTable.table
+                                                    .borderSpacing,
+                                            position:
+                                                tableToken.dataTable.table
+                                                    .position,
+                                            height:
+                                                currentData.length === 0
+                                                    ? '100%'
+                                                    : 'auto',
+                                        }}
+                                    >
+                                        <TableHeader
+                                            visibleColumns={
+                                                effectiveVisibleColumns as ColumnDefinition<
                                                     Record<string, unknown>
-                                                >,
-                                                index: number
-                                            ) => React.CSSProperties
-                                        }
-                                        onRowClick={
-                                            onRowClick as
-                                                | ((
-                                                      row: Record<
-                                                          string,
-                                                          unknown
-                                                      >,
-                                                      index: number
-                                                  ) => void)
-                                                | undefined
-                                        }
-                                        getRowStyle={
-                                            getRowStyle as
-                                                | ((
-                                                      row: Record<
-                                                          string,
-                                                          unknown
-                                                      >,
-                                                      index: number
-                                                  ) => React.CSSProperties)
-                                                | undefined
-                                        }
-                                        getDisplayValue={(
-                                            value: unknown,
-                                            column: ColumnDefinition<
-                                                Record<string, unknown>
-                                            >
-                                        ) =>
-                                            getDisplayValue(
-                                                value,
-                                                column as ColumnDefinition<T>
-                                            )
-                                        }
-                                        rowActions={
-                                            rowActions as
-                                                | RowActionsConfig<
-                                                      Record<string, unknown>
-                                                  >
-                                                | undefined
-                                        }
-                                    />
-                                ) : (
-                                    <tbody style={{ height: '100%' }}>
-                                        <tr style={{ height: '100%' }}>
-                                            <td
-                                                colSpan={
-                                                    visibleColumns.length +
-                                                    (enableRowSelection
-                                                        ? 1
-                                                        : 0) +
-                                                    (enableRowExpansion
-                                                        ? 1
-                                                        : 0) +
-                                                    (enableInlineEdit ? 1 : 0) +
-                                                    (enableColumnManager
-                                                        ? 1
-                                                        : 0)
+                                                >[]
+                                            }
+                                            allVisibleColumns={
+                                                visibleColumns as ColumnDefinition<
+                                                    Record<string, unknown>
+                                                >[]
+                                            }
+                                            initialColumns={
+                                                initialColumns as ColumnDefinition<
+                                                    Record<string, unknown>
+                                                >[]
+                                            }
+                                            selectAll={selectAll}
+                                            sortConfig={sortConfig}
+                                            enableInlineEdit={enableInlineEdit}
+                                            enableColumnManager={
+                                                effectiveEnableColumnManager
+                                            }
+                                            enableColumnReordering={
+                                                enableColumnReordering
+                                            }
+                                            onColumnReorder={(columns) => {
+                                                setVisibleColumns(
+                                                    columns as ColumnDefinition<T>[]
+                                                )
+                                                onColumnReorder?.(
+                                                    columns as ColumnDefinition<T>[]
+                                                )
+                                            }}
+                                            columnManagerMaxSelections={
+                                                columnManagerMaxSelections
+                                            }
+                                            columnManagerAlwaysSelected={columnManagerAlwaysSelected?.map(
+                                                (field) => String(field)
+                                            )}
+                                            columnManagerPrimaryAction={
+                                                columnManagerPrimaryAction
+                                            }
+                                            columnManagerSecondaryAction={
+                                                columnManagerSecondaryAction
+                                            }
+                                            columnManagerWidth={
+                                                columnManagerWidth
+                                            }
+                                            enableRowExpansion={
+                                                enableRowExpansion
+                                            }
+                                            enableRowSelection={
+                                                enableRowSelection
+                                            }
+                                            rowActions={
+                                                rowActions as
+                                                    | RowActionsConfig<
+                                                          Record<
+                                                              string,
+                                                              unknown
+                                                          >
+                                                      >
+                                                    | undefined
+                                            }
+                                            data={data}
+                                            mobileConfig={mobileConfig}
+                                            mobileOverflowColumns={
+                                                mobileOverflowColumns as ColumnDefinition<
+                                                    Record<string, unknown>
+                                                >[]
+                                            }
+                                            onMobileOverflowClick={(row) =>
+                                                handleMobileOverflowClick(
+                                                    row as T
+                                                )
+                                            }
+                                            onSort={handleSort}
+                                            onSortAscending={
+                                                handleSortAscending
+                                            }
+                                            onSortDescending={
+                                                handleSortDescending
+                                            }
+                                            onSelectAll={handleSelectAll}
+                                            onColumnChange={(columns) =>
+                                                setVisibleColumns(
+                                                    columns as ColumnDefinition<T>[]
+                                                )
+                                            }
+                                            onColumnFilter={handleColumnFilter}
+                                            getColumnWidth={
+                                                getColumnWidth as (
+                                                    column: ColumnDefinition<
+                                                        Record<string, unknown>
+                                                    >,
+                                                    index: number
+                                                ) => React.CSSProperties
+                                            }
+                                            columnFreeze={effectiveColumnFreeze}
+                                        />
+                                        {currentData.length > 0 ? (
+                                            <TableBodyComponent
+                                                currentData={currentData}
+                                                visibleColumns={
+                                                    effectiveVisibleColumns as ColumnDefinition<
+                                                        Record<string, unknown>
+                                                    >[]
                                                 }
-                                                style={{
-                                                    textAlign: 'center',
-                                                    verticalAlign: 'middle',
-                                                    padding: '0',
-                                                    height: '100%',
-                                                    color: tableToken.dataTable
-                                                        .table.body.cell.color,
-                                                    fontSize:
-                                                        tableToken.dataTable
-                                                            .table.body.cell
-                                                            .fontSize,
-                                                    backgroundColor:
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[0],
-                                                }}
-                                            >
-                                                <Block
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        minHeight:
-                                                            tableBodyMinHeight,
-                                                    }}
-                                                >
-                                                    {isLoading ? (
+                                                mobileConfig={mobileConfig}
+                                                mobileOverflowColumns={
+                                                    mobileOverflowColumns as ColumnDefinition<
+                                                        Record<string, unknown>
+                                                    >[]
+                                                }
+                                                onMobileOverflowClick={(row) =>
+                                                    handleMobileOverflowClick(
+                                                        row as T
+                                                    )
+                                                }
+                                                idField={String(idField)}
+                                                tableTitle={title}
+                                                selectedRows={selectedRows}
+                                                editingRows={editingRows}
+                                                editValues={editValues}
+                                                expandedRows={expandedRows}
+                                                enableInlineEdit={
+                                                    enableInlineEdit
+                                                }
+                                                enableColumnManager={
+                                                    effectiveEnableColumnManager
+                                                }
+                                                enableRowExpansion={
+                                                    enableRowExpansion
+                                                }
+                                                enableRowSelection={
+                                                    enableRowSelection
+                                                }
+                                                columnFreeze={
+                                                    effectiveColumnFreeze
+                                                }
+                                                renderExpandedRow={
+                                                    renderExpandedRow as
+                                                        | ((expandedData: {
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >
+                                                              index: number
+                                                              isExpanded: boolean
+                                                              toggleExpansion: () => void
+                                                          }) => React.ReactNode)
+                                                        | undefined
+                                                }
+                                                isRowExpandable={
+                                                    isRowExpandable as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => boolean)
+                                                        | undefined
+                                                }
+                                                onRowSelect={handleRowSelect}
+                                                onEditRow={handleEditRow}
+                                                onSaveRow={handleSaveRow}
+                                                onCancelEdit={handleCancelEdit}
+                                                onRowExpand={handleRowExpand}
+                                                onFieldChange={
+                                                    handleFieldChange
+                                                }
+                                                getColumnWidth={
+                                                    getColumnWidth as (
+                                                        column: ColumnDefinition<
+                                                            Record<
+                                                                string,
+                                                                unknown
+                                                            >
+                                                        >,
+                                                        index: number
+                                                    ) => React.CSSProperties
+                                                }
+                                                onRowClick={
+                                                    onRowClick as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => void)
+                                                        | undefined
+                                                }
+                                                getRowStyle={
+                                                    getRowStyle as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => React.CSSProperties)
+                                                        | undefined
+                                                }
+                                                getDisplayValue={(
+                                                    value: unknown,
+                                                    column: ColumnDefinition<
+                                                        Record<string, unknown>
+                                                    >
+                                                ) =>
+                                                    getDisplayValue(
+                                                        value,
+                                                        column as ColumnDefinition<T>
+                                                    )
+                                                }
+                                                rowActions={
+                                                    rowActions as
+                                                        | RowActionsConfig<
+                                                              Record<
+                                                                  string,
+                                                                  unknown
+                                                              >
+                                                          >
+                                                        | undefined
+                                                }
+                                            />
+                                        ) : (
+                                            <tbody style={{ height: '100%' }}>
+                                                <tr style={{ height: '100%' }}>
+                                                    <td
+                                                        colSpan={
+                                                            visibleColumns.length +
+                                                            (enableRowSelection
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableRowExpansion
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableInlineEdit
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableColumnManager
+                                                                ? 1
+                                                                : 0)
+                                                        }
+                                                        style={{
+                                                            textAlign: 'center',
+                                                            verticalAlign:
+                                                                'middle',
+                                                            padding: '0',
+                                                            height: '100%',
+                                                            color: tableToken
+                                                                .dataTable.table
+                                                                .body.cell
+                                                                .color,
+                                                            fontSize:
+                                                                tableToken
+                                                                    .dataTable
+                                                                    .table.body
+                                                                    .cell
+                                                                    .fontSize,
+                                                            backgroundColor:
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .gray[0],
+                                                        }}
+                                                    >
                                                         <Block
                                                             display="flex"
                                                             alignItems="center"
                                                             justifyContent="center"
-                                                            gap={
-                                                                FOUNDATION_THEME
-                                                                    .unit[8]
-                                                            }
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                minHeight:
+                                                                    tableBodyMinHeight,
+                                                            }}
                                                         >
-                                                            <Loader2
-                                                                size={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[20]
-                                                                }
-                                                                className="animate-spin"
-                                                                style={{
-                                                                    animation:
-                                                                        'spin 1s linear infinite',
-                                                                }}
-                                                            />
-                                                            <span>
-                                                                Loading data...
-                                                            </span>
+                                                            {isLoading ? (
+                                                                <Block
+                                                                    display="flex"
+                                                                    alignItems="center"
+                                                                    justifyContent="center"
+                                                                    gap={
+                                                                        FOUNDATION_THEME
+                                                                            .unit[8]
+                                                                    }
+                                                                >
+                                                                    <Loader2
+                                                                        size={
+                                                                            FOUNDATION_THEME
+                                                                                .unit[20]
+                                                                        }
+                                                                        className="animate-spin"
+                                                                        style={{
+                                                                            animation:
+                                                                                'spin 1s linear infinite',
+                                                                        }}
+                                                                    />
+                                                                    <span>
+                                                                        Loading
+                                                                        data...
+                                                                    </span>
+                                                                </Block>
+                                                            ) : (
+                                                                'No data available'
+                                                            )}
                                                         </Block>
-                                                    ) : (
-                                                        'No data available'
-                                                    )}
-                                                </Block>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                )}
-                            </table>
-                        </ScrollableContainer>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        )}
+                                    </table>
+                                </ScrollableContainer>
+                            </SortableContext>
+                            <DragOverlay dropAnimation={null}>
+                                {activeId ? (
+                                    <Block
+                                        style={{
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[100],
+                                            border: `1px solid ${FOUNDATION_THEME.colors.gray[300]}`,
+                                            borderRadius:
+                                                FOUNDATION_THEME.unit[4],
+                                            boxShadow:
+                                                '0 4px 12px rgba(0, 0, 0, 0.15)',
+                                            padding: `${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]}`,
+                                            cursor: 'grabbing',
+                                            height: '56px',
+                                            minWidth: '120px',
+                                            maxWidth: '320px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        <PrimitiveText
+                                            style={{
+                                                fontSize:
+                                                    FOUNDATION_THEME.font.size
+                                                        .body.sm.fontSize,
+                                                fontWeight: 600,
+                                                color: FOUNDATION_THEME.colors
+                                                    .gray[500],
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            {
+                                                visibleColumns.find(
+                                                    (col) =>
+                                                        String(col.field) ===
+                                                        activeId
+                                                )?.header
+                                            }
+                                        </PrimitiveText>
+                                    </Block>
+                                ) : null}
+                            </DragOverlay>
+                        </DndContext>
                     </Block>
 
                     <TableFooter
