@@ -215,6 +215,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 }
                                 aria-hidden={isSkeleton ? true : undefined}
                                 lineHeight={lineHeight}
+                                textAlign="center"
                             >
                                 {text}
                             </Text>
