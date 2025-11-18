@@ -137,6 +137,8 @@ const MultiValueInputDemo = () => {
                 </Block>
                 <Block maxWidth="500px">
                     <MultiValueInput
+                        onFocus={() => console.log('focused')}
+                        onBlur={() => console.log('blurred')}
                         value={inputValue}
                         onChange={(value) => setInputValue(value)}
                         label="Technologies"
