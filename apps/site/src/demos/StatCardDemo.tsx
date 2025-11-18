@@ -336,7 +336,7 @@ const StatCardDemo = () => {
                         </h3>
                         <StatCard
                             actionIcon={<EllipsisVertical size={16} />}
-                            height="250px"
+                            height="350px"
                             title="Total Revenue"
                             value="$12,345"
                             subtitle="vs last month"
@@ -363,6 +363,7 @@ const StatCardDemo = () => {
                                 selected: dropdownValue,
                                 onSelect: handleDropdownSelect,
                             }}
+                            chartData={sampleLineData}
                         />
                     </div>
 
