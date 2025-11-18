@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Editor, { OnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../Primitives/Block/Block'
@@ -332,6 +332,8 @@ export const MonacoEditorWrapper = ({
     onBlur,
 }: MonacoEditorWrapperProps) => {
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
+    const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
+    const shortcutDisposables = useRef<Monaco.IDisposable[]>([])
     const [isEditorReady, setIsEditorReady] = useState(false)
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
 
@@ -352,18 +354,56 @@ export const MonacoEditorWrapper = ({
         [metrics, showLineNumbers]
     )
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (editorRef.current?.hasTextFocus()) {
-                event.stopPropagation()
-            }
+    const disposeShortcuts = useCallback(() => {
+        shortcutDisposables.current.forEach((disposable) =>
+            disposable?.dispose?.()
+        )
+        shortcutDisposables.current = []
+    }, [])
+
+    const registerKeyboardShortcuts = useCallback(() => {
+        const editor = editorRef.current
+        const monacoInstance = monacoRef.current
+
+        if (!editor || !monacoInstance) {
+            return
         }
 
-        document.addEventListener('keydown', handleKeyDown, true)
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown, true)
-        }
-    }, [])
+        disposeShortcuts()
+
+        const shortcutConfigurations = [
+            {
+                id: 'blend-editor-select-all',
+                label: 'Select All',
+                keybindings: [
+                    monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyA,
+                    monacoInstance.KeyMod.WinCtrl | monacoInstance.KeyCode.KeyA,
+                ],
+                actionId: 'editor.action.selectAll',
+                requiresWriteAccess: false,
+            },
+        ]
+
+        const dispositions = shortcutConfigurations
+            .filter(
+                (shortcut) =>
+                    !shortcut.requiresWriteAccess || (!readOnly && !disabled)
+            )
+            .map((shortcut) =>
+                editor.addAction({
+                    id: shortcut.id,
+                    label: shortcut.label,
+                    keybindings: shortcut.keybindings,
+                    precondition: undefined,
+                    keybindingContext: undefined,
+                    run: () => {
+                        editor.trigger('shortcut', shortcut.actionId, undefined)
+                    },
+                })
+            )
+
+        shortcutDisposables.current = dispositions
+    }, [disposeShortcuts, disabled, readOnly])
 
     useEffect(() => {
         if (!editorRef.current) return
@@ -389,8 +429,21 @@ export const MonacoEditorWrapper = ({
         })
     }, [disabled, readOnly, showLineNumbers, metrics])
 
-    const handleEditorDidMount: OnMount = (editor) => {
+    useEffect(() => {
+        if (!isEditorReady) {
+            return
+        }
+
+        registerKeyboardShortcuts()
+
+        return () => {
+            disposeShortcuts()
+        }
+    }, [disposeShortcuts, isEditorReady, registerKeyboardShortcuts])
+
+    const handleEditorDidMount: OnMount = (editor, monacoInstance) => {
         editorRef.current = editor
+        monacoRef.current = monacoInstance
         setIsEditorReady(true)
 
         editor.updateOptions({
@@ -482,6 +535,7 @@ export const MonacoEditorWrapper = ({
                 onMount={handleEditorDidMount}
                 theme="blend-code-theme"
                 beforeMount={(monacoInstance) => {
+                    monacoRef.current = monacoInstance
                     try {
                         configureLanguageDefaults(monacoInstance)
                         monacoInstance.editor.defineTheme(
