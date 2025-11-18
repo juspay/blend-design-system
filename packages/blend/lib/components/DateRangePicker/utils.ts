@@ -1746,7 +1746,14 @@ export const calculateDayCellProps = (
     }
 
     const getTextColor = () => {
-        if (dateStates.isStart || dateStates.isEnd || dateStates.isSingleDate) {
+        if (dateStates.isDisabled) {
+            return calendarToken.calendar.calendarGrid.day.text.disabledDate
+                .color
+        } else if (
+            dateStates.isStart ||
+            dateStates.isEnd ||
+            dateStates.isSingleDate
+        ) {
             return calendarToken.calendar.calendarGrid.day.text.selectedDay
                 .color
         } else if (dateStates.isTodayDay) {

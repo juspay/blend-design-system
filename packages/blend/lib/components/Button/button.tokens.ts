@@ -41,7 +41,10 @@ export type ButtonTokensType = {
     padding: {
         [key in ButtonSize]: {
             [key in ButtonType]: {
-                [key in ButtonSubType]: CSSObject['padding']
+                [key in ButtonSubType]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
             }
         }
     }
@@ -438,68 +441,176 @@ export const getButtonTokens = (
             padding: {
                 sm: {
                     primary: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
                 md: {
                     primary: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
                 lg: {
                     primary: {
-                        default: '14px 16px',
-                        iconOnly: '16px 16px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '13px',
+                        },
+                        iconOnly: {
+                            x: '16px',
+                            y: '16px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '14px 16px',
-                        iconOnly: '16px 16px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '13px',
+                        },
+                        iconOnly: {
+                            x: '16px',
+                            y: '16px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '14px 16px',
-                        iconOnly: '16px 16px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '13px',
+                        },
+                        iconOnly: {
+                            x: '16px',
+                            y: '16px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '14px 16px',
-                        iconOnly: '16px 16px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '13px',
+                        },
+                        iconOnly: {
+                            x: '16px',
+                            y: '16px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
             },
@@ -508,16 +619,16 @@ export const getButtonTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -548,16 +659,16 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
+                        default: `1px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
+                        default: `1px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -568,16 +679,16 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
+                        default: `1px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
+                        default: `1px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1193,68 +1304,176 @@ export const getButtonTokens = (
             padding: {
                 sm: {
                     primary: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '6px 16px',
-                        iconOnly: '9px 9px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '5px',
+                        },
+                        iconOnly: {
+                            x: '9px',
+                            y: '9px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
                 md: {
                     primary: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '8px 16px',
-                        iconOnly: '10px 10px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '7px',
+                        },
+                        iconOnly: {
+                            x: '10px',
+                            y: '10px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
                 lg: {
                     primary: {
-                        default: '10px 16px',
-                        iconOnly: '12px 12px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '9px',
+                        },
+                        iconOnly: {
+                            x: '12px',
+                            y: '12px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     secondary: {
-                        default: '10px 16px',
-                        iconOnly: '12px 12px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '9px',
+                        },
+                        iconOnly: {
+                            x: '12px',
+                            y: '12px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     danger: {
-                        default: '10px 16px',
-                        iconOnly: '12px 12px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '9px',
+                        },
+                        iconOnly: {
+                            x: '12px',
+                            y: '12px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                     success: {
-                        default: '10px 16px',
-                        iconOnly: '12px 12px',
-                        inline: `${foundationToken.unit[0]} ${foundationToken.unit[0]}`,
+                        default: {
+                            x: '16px',
+                            y: '9px',
+                        },
+                        iconOnly: {
+                            x: '12px',
+                            y: '12px',
+                        },
+                        inline: {
+                            x: foundationToken.unit[0],
+                            y: foundationToken.unit[0],
+                        },
                     },
                 },
             },
@@ -1263,16 +1482,16 @@ export const getButtonTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1303,16 +1522,16 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
+                        default: `1px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
+                        default: `1px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1323,16 +1542,16 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
+                        default: `1px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
-                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
+                        default: `1px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,

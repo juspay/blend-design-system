@@ -107,6 +107,13 @@ type PrimitiveTextareaProps = StateStyles & {
     // Cursor
     cursor?: CSSObject['cursor']
 
+    // Transition
+    transition?: CSSObject['transition']
+    transitionProperty?: CSSObject['transitionProperty']
+    transitionDuration?: CSSObject['transitionDuration']
+    transitionTimingFunction?: CSSObject['transitionTimingFunction']
+    transitionDelay?: CSSObject['transitionDelay']
+
     // Placeholder
     placeholderStyles?: CSSObject
 
@@ -184,6 +191,11 @@ const blockedProps = [
     'zIndex',
     'pointerEvents',
     'opacity',
+    'transition',
+    'transitionProperty',
+    'transitionDuration',
+    'transitionTimingFunction',
+    'transitionDelay',
     '_hover',
     '_focus',
     '_active',
@@ -303,7 +315,12 @@ const getStyles = (props: PrimitiveTextareaProps): CSSObject => {
         styles.borderBottom = props.borderBottom
     if (props.borderLeft !== undefined) styles.borderLeft = props.borderLeft
     if (props.borderRight !== undefined) styles.borderRight = props.borderRight
-    if (props.boxShadow !== undefined) styles.boxShadow = props.boxShadow
+    if (props.boxShadow !== undefined) {
+        styles.boxShadow = props.boxShadow
+    } else {
+        // Set default to enable smooth transitions
+        styles.boxShadow = '0 0 0 0 transparent'
+    }
 
     if (props.overflow !== undefined) styles.overflow = props.overflow
     if (props.overflowX !== undefined) styles.overflowX = props.overflowX
@@ -312,6 +329,16 @@ const getStyles = (props: PrimitiveTextareaProps): CSSObject => {
     if (props.cursor !== undefined) styles.cursor = props.cursor
 
     if (props.resize !== undefined) styles.resize = props.resize
+
+    if (props.transition !== undefined) styles.transition = props.transition
+    if (props.transitionProperty !== undefined)
+        styles.transitionProperty = props.transitionProperty
+    if (props.transitionDuration !== undefined)
+        styles.transitionDuration = props.transitionDuration
+    if (props.transitionTimingFunction !== undefined)
+        styles.transitionTimingFunction = props.transitionTimingFunction
+    if (props.transitionDelay !== undefined)
+        styles.transitionDelay = props.transitionDelay
 
     styles.scrollPadding = 6
     styles.scrollbarWidth = 'thin'

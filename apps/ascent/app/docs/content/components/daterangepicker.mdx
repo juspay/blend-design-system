@@ -52,130 +52,348 @@ function MyComponent() {
         [
             {
                 content: 'value',
-                hintText: 'Current selected date range',
+                hintText:
+                    'Optional controlled DateRange value representing the currently selected date range. When provided, the component works in controlled mode, requiring onChange to update state. The DateRange object contains startDate and endDate properties. If undefined, the component manages its own state.',
             },
-            { content: 'DateRange | undefined', hintText: 'DateRange' },
-            { content: 'undefined' },
+            {
+                content: 'DateRange | undefined',
+                hintText:
+                    'Object with startDate and endDate properties, or undefined',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'onChange',
-                hintText: 'Callback when date range changes',
+                hintText:
+                    'Optional callback function invoked when the user selects a new date range. Receives the new DateRange object containing startDate and endDate. Required when using controlled mode (providing value prop). Use this to synchronize state with your application.',
             },
-            { content: '(range: DateRange) => void', hintText: 'function' },
+            {
+                content: '(range: DateRange) => void',
+                hintText:
+                    'Function called with new date range when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onPresetSelection',
+                hintText:
+                    'Optional callback function invoked when a user selects a preset option (e.g., "Today", "Last 7 days"). Receives PresetSelectionData containing the preset information, date range, and formatted times. Useful for tracking preset usage or performing preset-specific actions.',
+            },
+            {
+                content: '(data: PresetSelectionData) => void',
+                hintText:
+                    'Function called with preset selection data when preset is chosen',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'showDateTimePicker',
-                hintText: 'Whether to show date and time inputs',
+                hintText:
+                    'When true, displays date and time input fields in the calendar popover, allowing users to manually enter dates and times. When false, only the calendar grid is shown. Time inputs are useful for precise date-time selection. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows date and time inputs, false shows only calendar',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'showPresets',
-                hintText: 'Whether to show quick preset options',
+                hintText:
+                    'When true, displays quick preset options (e.g., "Today", "Last 7 days", "This month") in the calendar interface. Presets allow users to quickly select common date ranges without manual calendar navigation. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows preset options, false hides preset selector',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customPresets',
+                hintText:
+                    'Optional custom preset configuration that can be an array of preset definitions, custom preset configs, or a mix. Allows you to add custom preset options beyond the default presets, or replace them entirely. Each preset should define a label and date range calculation.',
+            },
+            {
+                content: 'PresetsConfig',
+                hintText:
+                    'Array or object containing custom preset definitions',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'placeholder',
-                hintText: 'Placeholder text for the trigger',
+                hintText:
+                    'Optional placeholder text displayed in the trigger button when no date range is selected. Provides guidance to users about what the picker does. Should be concise and descriptive (e.g., "Select date range").',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Placeholder text shown in trigger when no date is selected',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isDisabled',
-                hintText: 'Whether the picker is disabled',
+                hintText:
+                    "When true, disables the date range picker, making it non-interactive. Disabled pickers cannot be opened and show reduced visual opacity. Useful for preventing selection when prerequisites aren't met or during loading states. Defaults to false.",
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables interaction, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'icon',
-                hintText: 'Custom icon for the trigger',
+                hintText:
+                    'Optional custom React element (typically a calendar icon) to replace the default icon in the trigger button. Allows branding customization or using different icon libraries. If not provided, uses default Calendar icon.',
             },
-            { content: 'ReactNode', hintText: 'ReactNode' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element (icon, image, etc.) for the trigger icon',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'minDate',
-                hintText: 'Minimum selectable date',
+                hintText:
+                    'Optional Date object representing the earliest date that can be selected. Dates before this date are disabled and cannot be chosen. Useful for preventing selection of dates in the past or setting business rules. Takes precedence over disablePastDates.',
             },
-            { content: 'Date', hintText: 'Date' },
+            {
+                content: 'Date',
+                hintText:
+                    'Date object representing the minimum selectable date',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'maxDate',
-                hintText: 'Maximum selectable date',
+                hintText:
+                    'Optional Date object representing the latest date that can be selected. Dates after this date are disabled and cannot be chosen. Useful for preventing selection of future dates or setting business rules. Takes precedence over disableFutureDates.',
             },
-            { content: 'Date', hintText: 'Date' },
+            {
+                content: 'Date',
+                hintText:
+                    'Date object representing the maximum selectable date',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'dateFormat',
-                hintText: 'Format for displaying dates',
+                hintText:
+                    'Optional string format for displaying dates in the trigger and inputs. Uses format tokens (e.g., "dd/MM/yyyy" for day/month/year, "MM/dd/yyyy" for US format). The format affects how dates are displayed but not how they\'re stored. Defaults to "dd/MM/yyyy".',
             },
-            { content: 'string', hintText: 'string' },
-            { content: '"dd/MM/yyyy"' },
+            {
+                content: 'string',
+                hintText:
+                    'Date format string using format tokens (dd, MM, yyyy, etc.)',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'allowSingleDateSelection',
-                hintText: 'Allow selection of single date instead of range',
+                hintText:
+                    'When true, allows users to select a single date instead of requiring a range. In single date mode, selecting one date completes the selection. When false, users must select both start and end dates. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true allows single date, false requires date range',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'disableFutureDates',
-                hintText: 'Disable selection of future dates',
+                hintText:
+                    'When true, disables all dates in the future, preventing users from selecting dates after today. Future dates appear grayed out and are non-clickable. Useful for preventing selection of future dates in booking or scheduling scenarios. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true disables future dates, false allows all dates',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'disablePastDates',
-                hintText: 'Disable selection of past dates',
+                hintText:
+                    'When true, disables all dates in the past, preventing users from selecting dates before today. Past dates appear grayed out and are non-clickable. Useful for preventing selection of past dates in scheduling or future-only scenarios. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText: 'true disables past dates, false allows all dates',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hideFutureDates',
+                hintText:
+                    "When true, hides future dates from the calendar grid entirely (they don't appear in the calendar view). Unlike disableFutureDates, hidden dates are not visible but selection is still technically possible through other means. Useful for cleaner calendar views. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText: 'true hides future dates, false shows all dates',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hidePastDates',
+                hintText:
+                    "When true, hides past dates from the calendar grid entirely (they don't appear in the calendar view). Unlike disablePastDates, hidden dates are not visible but selection is still technically possible through other means. Useful for cleaner calendar views. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText: 'true hides past dates, false shows all dates',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customDisableDates',
+                hintText:
+                    'Optional function that receives a Date and returns a boolean indicating whether that date should be disabled. Allows fine-grained control over which specific dates are disabled based on custom logic (e.g., weekends, holidays, business rules). More flexible than minDate/maxDate.',
+            },
+            {
+                content: '(date: Date) => boolean',
+                hintText:
+                    'Function that returns true to disable a date, false to enable it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customRangeConfig',
+                hintText:
+                    'Optional configuration object for custom date range calculations. Allows defining custom range logic beyond standard presets. Useful for business-specific date range calculations or complex range requirements. The config defines how custom ranges are calculated.',
+            },
+            {
+                content: 'CustomRangeConfig',
+                hintText:
+                    'Object with properties for custom range calculation logic',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'triggerElement',
-                hintText: 'Custom trigger element',
+                hintText:
+                    'Deprecated: Optional custom React element to use as the trigger button. This prop is deprecated in favor of triggerConfig. Use triggerConfig for custom trigger rendering instead. If provided, it will still work but may be removed in future versions.',
             },
-            { content: 'ReactNode', hintText: 'ReactNode' },
-            { content: 'null' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Custom React element for trigger (deprecated, use triggerConfig)',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'useDrawerOnMobile',
-                hintText: 'Use mobile drawer instead of popover on mobile',
+                hintText:
+                    'When true, uses a mobile drawer (full-screen modal) instead of a popover on mobile devices (screen width < 1024px). Drawers provide better mobile UX with more space and better touch interaction. On desktop, always uses popover. Defaults to true.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true uses drawer on mobile, false uses popover on all devices',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'skipQuickFiltersOnMobile',
-                hintText: 'Hide preset options on mobile',
+                hintText:
+                    'When true, hides preset options (quick filters) on mobile devices. Useful for saving space in mobile drawers or simplifying the mobile interface. Presets are still available on desktop. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true hides presets on mobile, false shows presets on all devices',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the size variant of the picker trigger and internal components. SMALL creates a compact picker, MEDIUM provides standard sizing, LARGE creates a more prominent picker. Size affects padding, font size, and overall dimensions. Defaults to MEDIUM.',
+            },
+            {
+                content: 'DateRangePickerSize',
+                hintText:
+                    'Enum that determines the physical dimensions of the picker',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
+        ],
+        [
+            {
+                content: 'formatConfig',
+                hintText:
+                    'Optional DateFormatConfig object that provides detailed configuration for date format display. Allows fine-grained control over date formatting beyond the simple dateFormat string. Useful for complex formatting requirements or locale-specific formatting.',
+            },
+            {
+                content: 'DateFormatConfig',
+                hintText:
+                    'Object with properties for detailed date format configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'triggerConfig',
+                hintText:
+                    'Optional TriggerConfig object that allows custom rendering of the trigger button. Provides control over trigger appearance, content, and behavior. Use this instead of the deprecated triggerElement prop for more flexible trigger customization.',
+            },
+            {
+                content: 'TriggerConfig',
+                hintText:
+                    'Object with properties for custom trigger rendering configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxMenuHeight',
+                hintText:
+                    'Maximum height in pixels for the dropdown menu/popover containing the calendar. When the calendar content exceeds this height, a scrollbar appears. Useful for controlling the vertical space taken by the picker. Defaults to 250 pixels.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum menu height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showPreset',
+                hintText:
+                    'When true, shows only the preset selector without the calendar date picker. Users can only select from preset options and cannot manually choose dates from the calendar. Useful for simplified interfaces where only preset ranges are needed. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows only preset selector, false shows full calendar picker',
+            },
+            { content: '' },
         ],
     ]}
     className="mb-8"
@@ -183,412 +401,212 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Types
-
-```tsx
-export type DateRange = {
-    startDate: Date
-    endDate: Date
-    showTimePicker?: boolean
-}
-
-export enum DateRangePreset {
-    CUSTOM = 'custom',
-    TODAY = 'today',
-    YESTERDAY = 'yesterday',
-    TOMORROW = 'tomorrow',
-    LAST_1_HOUR = 'last1Hour',
-    LAST_6_HOURS = 'last6Hours',
-    LAST_7_DAYS = 'last7Days',
-    LAST_30_DAYS = 'last30Days',
-    LAST_3_MONTHS = 'last3Months',
-    LAST_12_MONTHS = 'last12Months',
-    NEXT_7_DAYS = 'next7Days',
-    NEXT_30_DAYS = 'next30Days',
-    NEXT_3_MONTHS = 'next3Months',
-    NEXT_12_MONTHS = 'next12Months',
-}
-```
-
 ## Component Tokens
 
-The DateRangePicker uses comprehensive tokens for styling all its sub-components:
+You can style the DateRangePicker component using the following tokens:
 
 ```tsx
+export type CalendarState = 'default' | 'hover' | 'active' | 'disabled'
+export type CalendarSize = 'sm' | 'md' | 'lg'
+
 export type CalendarTokenType = {
-    quickRange: {
-        width: CSSObject['width']
-        trigger: {
-            /* Quick range trigger styling */
-        }
-        content: {
-            /* Dropdown content styling */
-        }
-        item: {
-            /* Individual preset item styling */
-        }
-    }
-    mobileDrawer: {
-        picker: {
-            /* Mobile time picker styling */
-        }
-        header: {
-            /* Mobile drawer header */
-        }
-        presetItem: {
-            /* Mobile preset items */
-        }
-        actionButtons: {
-            /* Mobile action buttons */
-        }
-    }
     trigger: {
-        height: CSSObject['height']
-        borderRadius: CSSObject['borderRadius']
-        /* Complete trigger button styling */
+        quickSelector: {
+            borderRadius: {
+                topLeft: CSSObject['borderTopLeftRadius']
+                topRight: CSSObject['borderTopRightRadius']
+                bottomLeft: CSSObject['borderBottomLeftRadius']
+                bottomRight: CSSObject['borderBottomRightRadius']
+            }
+            backgroundColor: CSSObject['backgroundColor']
+            gap: CSSObject['gap']
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+            border: {
+                [key in CalendarState]: {
+                    left: CSSObject['borderLeft']
+                    top: CSSObject['borderTop']
+                    bottom: CSSObject['borderBottom']
+                    right: CSSObject['borderRight']
+                }
+            }
+            text: {
+                color: CSSObject['color']
+                fontWeight: CSSObject['fontWeight']
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize']
+                }
+            }
+            iconSize: CSSObject['width']
+        }
+        dateInput: {
+            borderRadius: {
+                withQuickSelector: CSSObject['borderRadius']
+                withoutQuickSelector: CSSObject['borderRadius']
+            }
+            padding: {
+                [key in CalendarSize]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+            text: {
+                color: CSSObject['color']
+                fontSize: {
+                    [key in CalendarSize]: CSSObject['fontSize']
+                }
+                fontWeight: CSSObject['fontWeight']
+            }
+            border: {
+                [key in CalendarState]: CSSObject['border']
+            }
+            backgroundColor: CSSObject['backgroundColor']
+            iconSize: CSSObject['width']
+            gap: CSSObject['gap']
+        }
     }
     calendar: {
+        minWidth: CSSObject['minWidth']
+        width: CSSObject['width']
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
         inputs: {
-            /* Date/time input styling */
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            dateInput: {
+                gap: CSSObject['gap']
+                label: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
         }
         calendarGrid: {
-            /* Calendar grid and day styling */
+            month: {
+                header: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    padding: {
+                        x: CSSObject['padding']
+                        y: CSSObject['padding']
+                    }
+                    gap: CSSObject['gap']
+                }
+            }
+            week: {
+                gap: CSSObject['gap']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                boxShadow: CSSObject['boxShadow']
+                color: CSSObject['color']
+                padding: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+                row: {
+                    gap: CSSObject['gap']
+                }
+            }
+            day: {
+                cell: {
+                    padding: {
+                        x: CSSObject['padding']
+                        y: CSSObject['padding']
+                    }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                    outline: {
+                        [key in CalendarState]: CSSObject['outline']
+                    }
+                    borderRadius: CSSObject['borderRadius']
+                }
+                states: {
+                    startDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: {
+                            topLeft: CSSObject['borderTopLeftRadius']
+                            bottomLeft: CSSObject['borderBottomLeftRadius']
+                        }
+                    }
+                    endDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: {
+                            topRight: CSSObject['borderTopRightRadius']
+                            bottomRight: CSSObject['borderBottomRightRadius']
+                        }
+                    }
+                    singleDate: {
+                        backgroundColor: CSSObject['backgroundColor']
+                        borderRadius: CSSObject['borderRadius']
+                    }
+                    rangeDay: {
+                        backgroundColor: CSSObject['backgroundColor']
+                    }
+                    todayDay: {
+                        fontWeight: CSSObject['fontWeight']
+                    }
+                    hoverState: {
+                        boxShadow: CSSObject['boxShadow']
+                        borderRadius: CSSObject['borderRadius']
+                    }
+                    disabledDay: {
+                        opacity: CSSObject['opacity']
+                        cursor: CSSObject['cursor']
+                        pointerEvents: CSSObject['pointerEvents']
+                    }
+                }
+                text: {
+                    dayNumber: {
+                        color: CSSObject['color']
+                    }
+                    selectedDay: {
+                        color: CSSObject['color']
+                    }
+                    rangeDay: {
+                        color: CSSObject['color']
+                    }
+                    todayDay: {
+                        color: CSSObject['color']
+                    }
+                }
+                todayIndicator: {
+                    width: CSSObject['width']
+                    height: CSSObject['height']
+                    backgroundColor: CSSObject['backgroundColor']
+                    borderRadius: CSSObject['borderRadius']
+                    position: CSSObject['position']
+                    bottom: CSSObject['bottom']
+                    left: CSSObject['left']
+                    transform: CSSObject['transform']
+                }
+            }
         }
         footer: {
-            /* Footer controls styling */
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            borderTop: CSSObject['borderTop']
+            gap: CSSObject['gap']
         }
     }
 }
-```
 
-The component uses responsive tokens that provide comprehensive styling for desktop popover and mobile drawer experiences.
-
-## Features
-
-- **Date Range Selection**: Select start and end dates with visual range indication
-- **Time Picker Integration**: Optional time selection with date ranges
-- **Quick Presets**: Pre-defined date ranges (Today, Yesterday, Last 7 days, etc.)
-- **Mobile Optimized**: Responsive design with mobile drawer on small screens
-- **Single Date Mode**: Option to select single dates instead of ranges
-- **Date Validation**: Built-in validation with min/max date constraints
-- **Custom Triggers**: Support for custom trigger elements
-- **Keyboard Navigation**: Full keyboard accessibility support
-- **Flexible Formatting**: Configurable date display formats
-- **Time Zone Support**: Handles local time zone calculations
-
-## Usage Examples
-
-### Basic Date Range Picker
-
-Simple date range selection with presets:
-
-```tsx
-import { DateRangePicker, DateRange } from '@juspay/blend-design-system'
-
-const [reportDateRange, setReportDateRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleReportDateChange = (range: DateRange) => {
-    setReportDateRange(range)
-    // Fetch data for the selected range
-    fetchReportData(range)
+export type ResponsiveCalendarTokens = {
+    [key in keyof BreakpointType]: CalendarTokenType
 }
-
-;<DateRangePicker
-    value={reportDateRange}
-    onChange={handleReportDateChange}
-    showDateTimePicker={true}
-    showPresets={true}
-    dateFormat="dd/MM/yyyy"
-/>
 ```
-
-### Single Date Selection
-
-Date picker for single date selection:
-
-```tsx
-const [eventDate, setEventDate] = useState<DateRange | undefined>(undefined)
-
-const handleEventDateChange = (range: DateRange) => {
-    setEventDate(range)
-}
-
-;<DateRangePicker
-    value={eventDate}
-    onChange={handleEventDateChange}
-    allowSingleDateSelection={true}
-    showPresets={false}
-    showDateTimePicker={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Date Range with Time
-
-Precise date and time range selection:
-
-```tsx
-const [meetingSchedule, setMeetingSchedule] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleScheduleChange = (range: DateRange) => {
-    setMeetingSchedule(range)
-    console.log('Meeting scheduled:', {
-        start: range.startDate,
-        end: range.endDate,
-    })
-}
-
-;<DateRangePicker
-    value={meetingSchedule}
-    onChange={handleScheduleChange}
-    showDateTimePicker={true}
-    showPresets={true}
-    allowSingleDateSelection={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Historical Data Selection
-
-Date range picker for historical data with future dates disabled:
-
-```tsx
-const [historicalRange, setHistoricalRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleHistoricalChange = (range: DateRange) => {
-    setHistoricalRange(range)
-    // Load historical analytics data
-    loadAnalyticsData(range)
-}
-
-;<DateRangePicker
-    value={historicalRange}
-    onChange={handleHistoricalChange}
-    disableFutureDates={true}
-    showPresets={true}
-    showDateTimePicker={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Custom Trigger Element
-
-Date range picker with custom button trigger:
-
-```tsx
-const [customRange, setCustomRange] = useState<DateRange | undefined>(undefined)
-
-const CustomTrigger = () => (
-    <button
-        style={{
-            padding: '12px 16px',
-            border: '2px solid #e5e7eb',
-            borderRadius: '8px',
-            background: 'white',
-            cursor: 'pointer',
-        }}
-    >
-        📅{' '}
-        {customRange
-            ? `${customRange.startDate.toLocaleDateString()} - ${customRange.endDate.toLocaleDateString()}`
-            : 'Select Date Range'}
-    </button>
-)
-
-;<DateRangePicker
-    value={customRange}
-    onChange={setCustomRange}
-    triggerElement={<CustomTrigger />}
-    showPresets={true}
-    showDateTimePicker={true}
-/>
-```
-
-### Mobile-Optimized Configuration
-
-Date picker optimized for mobile experience:
-
-```tsx
-const [mobileRange, setMobileRange] = useState<DateRange | undefined>(undefined)
-
-;<DateRangePicker
-    value={mobileRange}
-    onChange={setMobileRange}
-    useDrawerOnMobile={true}
-    skipQuickFiltersOnMobile={false}
-    showDateTimePicker={true}
-    showPresets={true}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Booking System Integration
-
-Date range picker for booking systems with constraints:
-
-```tsx
-const [bookingDates, setBookingDates] = useState<DateRange | undefined>(
-    undefined
-)
-
-const today = new Date()
-const maxDate = new Date()
-maxDate.setFullYear(today.getFullYear() + 1) // One year from now
-
-const handleBookingChange = (range: DateRange) => {
-    setBookingDates(range)
-    // Check availability for selected dates
-    checkAvailability(range)
-}
-
-;<DateRangePicker
-    value={bookingDates}
-    onChange={handleBookingChange}
-    minDate={today}
-    maxDate={maxDate}
-    disablePastDates={true}
-    showPresets={false}
-    showDateTimePicker={true}
-    allowSingleDateSelection={false}
-    dateFormat="dd/MM/yyyy"
-/>
-```
-
-### Analytics Dashboard
-
-Date range picker for analytics with common presets:
-
-```tsx
-const [analyticsRange, setAnalyticsRange] = useState<DateRange | undefined>(
-    undefined
-)
-
-const handleAnalyticsChange = (range: DateRange) => {
-    setAnalyticsRange(range)
-
-    // Update dashboard metrics
-    updateDashboardMetrics({
-        startDate: range.startDate,
-        endDate: range.endDate,
-        includeTime: true,
-    })
-}
-
-;<div>
-    <h3>Analytics Dashboard</h3>
-    <DateRangePicker
-        value={analyticsRange}
-        onChange={handleAnalyticsChange}
-        showPresets={true}
-        showDateTimePicker={false}
-        disableFutureDates={true}
-        dateFormat="dd/MM/yyyy"
-    />
-
-    {analyticsRange && (
-        <div>
-            Showing data from {analyticsRange.startDate.toLocaleDateString()}
-            to {analyticsRange.endDate.toLocaleDateString()}
-        </div>
-    )}
-</div>
-```
-
-## Behavior
-
-### Date Selection Flow
-
-- **Single Click**: Select single date or start of range
-- **Range Selection**: Click start date, then end date to complete range
-- **Visual Feedback**: Highlight selected dates and range preview
-- **Validation**: Ensure end date is after start date
-
-### Mobile Experience
-
-- **Drawer Interface**: Full-screen drawer on mobile devices
-- **Touch Optimized**: Large touch targets for mobile interaction
-- **Preset Integration**: Quick access to common date ranges
-- **Time Picker**: Scrollable time selection interface
-
-### Keyboard Navigation
-
-- **Tab Navigation**: Navigate between inputs and calendar
-- **Arrow Keys**: Navigate calendar grid
-- **Enter/Space**: Select dates and activate controls
-- **Escape**: Close picker without selection
-
-### Preset Functionality
-
-- **Quick Selection**: Common date ranges (Today, Last 7 days, etc.)
-- **Custom Presets**: Support for custom preset configurations
-- **Smart Defaults**: Intelligent preset suggestions based on context
-- **Mobile Adaptation**: Streamlined presets for mobile interfaces
-
-## Best Practices
-
-### When to Use DateRangePicker
-
-- **Analytics Dashboards**: Date range selection for data analysis
-- **Booking Systems**: Hotel, flight, and event booking date selection
-- **Report Generation**: Selecting time periods for reports
-- **Scheduling**: Meeting and event scheduling interfaces
-- **Data Filtering**: Filtering datasets by date ranges
-
-### Mobile Considerations
-
-- **Drawer Mode**: Use `useDrawerOnMobile={true}` for better mobile UX
-- **Preset Optimization**: Consider `skipQuickFiltersOnMobile` for simpler mobile UI
-- **Touch Targets**: Ensure adequate spacing for touch interaction
-- **Responsive Design**: Test across different mobile screen sizes
-
-### Date Range Configuration
-
-- **Logical Constraints**: Set appropriate min/max dates for your use case
-- **Future/Past Restrictions**: Use `disableFutureDates` or `disablePastDates` as needed
-- **Format Consistency**: Use consistent date formats across your application
-- **Time Zone Handling**: Consider time zone implications for your users
-
-### Accessibility Guidelines
-
-- **Label Association**: Provide clear labels for screen readers
-- **Keyboard Support**: Ensure full keyboard navigation functionality
-- **Focus Management**: Maintain proper focus flow through the interface
-- **Error Communication**: Provide accessible error messages for invalid selections
-- **ARIA Labels**: Use appropriate ARIA labels for complex calendar interactions
-
-### Performance Optimization
-
-- **State Management**: Use appropriate state management for complex applications
-- **Debouncing**: Consider debouncing for expensive operations triggered by date changes
-- **Memory Management**: Clean up event listeners and timers properly
-- **Lazy Loading**: Consider lazy loading for large calendar ranges
-
-### Form Integration
-
-- **Controlled Components**: Always use controlled date range state
-- **Validation**: Integrate with form validation libraries
-- **Submission Handling**: Properly format dates for API submission
-- **Reset Functionality**: Implement proper form reset behavior
-- **Default Values**: Provide sensible default date ranges when appropriate
-
-### User Experience Guidelines
-
-- **Clear Labels**: Use descriptive labels and placeholders
-- **Visual Feedback**: Show clear selection states and hover effects
-- **Error Handling**: Provide helpful error messages for invalid selections
-- **Loading States**: Show loading indicators during data fetching
-- **Confirmation**: Consider confirmation steps for critical date selections
-
-### Data Handling
-
-- **Time Zone Consistency**: Handle time zones consistently across your application
-- **Date Formatting**: Format dates appropriately for display and storage
-- **Range Validation**: Validate date ranges on both client and server
-- **Edge Cases**: Handle edge cases like leap years and daylight saving time
-- **Persistence**: Consider persisting user's preferred date ranges

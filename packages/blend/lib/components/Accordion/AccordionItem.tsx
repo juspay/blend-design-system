@@ -10,6 +10,12 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import {
+    ChevronAnimation,
+    ChevronAnimationDirection,
+    ChevronAnimationVariant,
+    ChevronAnimationSize,
+} from '../animations/ChevronAnimation'
 import { FOUNDATION_THEME } from '../../tokens'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
@@ -82,7 +88,7 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     display: 'flex',
     width: '100%',
     textAlign: 'left',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
     cursor: 'pointer',
     border: 'none',
     outline: 'none',
@@ -153,13 +159,46 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionToken: AccordionTokenType
 }>((props) => ({
     overflow: 'hidden',
-    transition: 'all 0.2s ease',
-    ...(props.$accordionType === AccordionType.BORDER && {
-        '&[data-state="open"]': {
+    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+
+    '&[data-state="open"]': {
+        animation: 'accordion-down 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        ...(props.$accordionType === AccordionType.BORDER && {
             borderTopLeftRadius: '0',
             borderTopRightRadius: '0',
+        }),
+    },
+
+    '&[data-state="closed"]': {
+        animation: 'accordion-up 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    },
+
+    '@keyframes accordion-down': {
+        from: {
+            height: 0,
+            opacity: 0,
         },
-    }),
+        to: {
+            height: 'var(--radix-accordion-content-height)',
+            opacity: 1,
+        },
+    },
+
+    '@keyframes accordion-up': {
+        from: {
+            height: 'var(--radix-accordion-content-height)',
+            opacity: 1,
+        },
+        to: {
+            height: 0,
+            opacity: 0,
+        },
+    },
+
+    '@media (prefers-reduced-motion: reduce)': {
+        transition: 'none',
+        animation: 'none',
+    },
 }))
 
 const StyledSeparator = styled.hr<{
@@ -172,26 +211,6 @@ const StyledSeparator = styled.hr<{
     backgroundColor:
         props.$accordionToken.separator.color[props.$accordionType],
 }))
-
-const ChevronIcon = styled(Block)<{
-    $chevronPosition: AccordionChevronPosition
-}>((props) => ({
-    transition: 'transform 200ms ease',
-    transformOrigin: 'center',
-
-    ...(props.$chevronPosition === AccordionChevronPosition.RIGHT && {
-        '[data-state="open"] &': {
-            transform: 'rotate(180deg)',
-        },
-    }),
-
-    ...(props.$chevronPosition === AccordionChevronPosition.LEFT && {
-        '[data-state="open"] &': {
-            transform: 'rotate(90deg)',
-        },
-    }),
-}))
-
 const AccordionItem = forwardRef<
     HTMLDivElement,
     AccordionItemProps & {
@@ -235,35 +254,50 @@ const AccordionItem = forwardRef<
             : currentValue === value
 
         const getChevronIcon = () => {
-            const iconStyles = {
-                width: FOUNDATION_THEME.unit[16],
-                height: FOUNDATION_THEME.unit[16],
-                color: isDisabled
-                    ? FOUNDATION_THEME.colors.gray[300]
-                    : FOUNDATION_THEME.colors.gray[500],
-            }
+            const iconColor = isDisabled
+                ? FOUNDATION_THEME.colors.gray[300]
+                : FOUNDATION_THEME.colors.gray[500]
+            const iconSize = FOUNDATION_THEME.unit[16]
 
             return (
-                <ChevronIcon
-                    $chevronPosition={chevronPosition}
-                    style={iconStyles}
+                <ChevronAnimation
+                    isOpen={false} // This will be controlled by Radix UI's data-state
+                    direction={
+                        chevronPosition === AccordionChevronPosition.RIGHT
+                            ? ChevronAnimationDirection.DOWN
+                            : ChevronAnimationDirection.RIGHT
+                    }
+                    variant={
+                        chevronPosition === AccordionChevronPosition.RIGHT
+                            ? ChevronAnimationVariant.ROTATE_180
+                            : ChevronAnimationVariant.ROTATE_90
+                    }
+                    size={ChevronAnimationSize.MEDIUM}
+                    disabled={isDisabled}
+                    color={iconColor}
                 >
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
-                            style={{ width: '100%', height: '100%' }}
-                            transform={
-                                isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
-                            }
+                            style={{
+                                width: iconSize,
+                                height: iconSize,
+                                transform: isExpanded
+                                    ? 'rotate(180deg)'
+                                    : 'rotate(0deg)',
+                            }}
                         />
                     ) : (
                         <ChevronRight
-                            style={{ width: '100%', height: '100%' }}
-                            transform={
-                                isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'
-                            }
+                            style={{
+                                width: iconSize,
+                                height: iconSize,
+                                transform: isExpanded
+                                    ? 'rotate(90deg)'
+                                    : 'rotate(0deg)',
+                            }}
                         />
                     )}
-                </ChevronIcon>
+                </ChevronAnimation>
             )
         }
 

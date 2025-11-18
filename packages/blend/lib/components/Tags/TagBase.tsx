@@ -1,10 +1,11 @@
-import { forwardRef, type CSSProperties } from 'react'
+import { forwardRef, type CSSProperties, type MouseEvent } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { TagProps } from './types'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
+import { useRipple, RippleContainer } from '../animations/Ripple'
 
 export type TagBaseProps = TagProps & {
     isSkeleton?: boolean
@@ -34,6 +35,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
         }
     const defaultTagTokens = useResponsiveTokens<TagTokensType>('TAGS')
     const tagTokens = tokens ?? defaultTagTokens
+    const { ripples, createRipple } = useRipple()
 
     const isSplitTag = splitTagPosition !== undefined
     let borderRadius = tagTokens.borderRadius[size][shape]
@@ -49,12 +51,22 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
     const effectiveOnClick = isSkeleton ? undefined : onClick
     const effectiveCursor =
         !isSkeleton && hasClickHandler ? 'pointer' : 'default'
+    const showRipple = !isSkeleton && hasClickHandler
+
+    const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+        if (!showRipple || !effectiveOnClick) {
+            return effectiveOnClick?.(event)
+        }
+
+        createRipple(event)
+        effectiveOnClick(event)
+    }
 
     return (
         <Block
             {...blockProps}
             ref={ref}
-            onClick={effectiveOnClick}
+            onClick={showRipple ? handleClick : effectiveOnClick}
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -77,6 +89,8 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             borderRadius={borderRadius}
             cursor={effectiveCursor}
             pointerEvents={isSkeleton ? 'none' : pointerEvents}
+            position={showRipple ? 'relative' : blockProps.position}
+            overflow={showRipple ? 'hidden' : blockProps.overflow}
             className={className}
             style={style}
         >
@@ -98,6 +112,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                     {rightSlot}
                 </Block>
             )}
+            {showRipple && <RippleContainer ripples={ripples} />}
         </Block>
     )
 })

@@ -1,5 +1,5 @@
-import { forwardRef } from 'react'
-import { PanelsTopLeft, ArrowLeft, UserIcon, ChevronDown } from 'lucide-react'
+import { forwardRef, useState } from 'react'
+import { PanelsTopLeft, ArrowLeft, ChevronDown } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -10,6 +10,13 @@ import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+
+/**
+ * Helper to check if Topbar is in controlled mode
+ */
+const isControlledTopbar = (isVisible: boolean | undefined): boolean => {
+    return isVisible !== undefined
+}
 
 const ToggleButton = styled.button.withConfig({
     shouldForwardProp: (prop) => prop !== 'isMobile',
@@ -182,9 +189,13 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             isExpanded,
             onToggleExpansion,
             showToggleButton,
+            isVisible: controlledIsVisible,
+            // @ts-expect-error - onVisibilityChange is part of the controlled API but not used internally
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            onVisibilityChange,
+            defaultIsVisible = true,
             sidebarTopSlot,
             topbar,
-            title,
             leftAction,
             rightActions,
             showBackButton = false,
@@ -194,10 +205,19 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         },
         ref
     ) => {
+        const isControlled = isControlledTopbar(controlledIsVisible)
+        const [internalVisible] = useState<boolean>(defaultIsVisible)
+
+        const isVisible = isControlled ? controlledIsVisible! : internalVisible
+
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < BREAKPOINTS.lg
         const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
+
+        if (!isVisible) {
+            return null
+        }
 
         if (isMobile) {
             const renderLeftSection = () => {
@@ -286,18 +306,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                             (merchant) => ({
                                                 label: merchant.label,
                                                 value: merchant.value,
-                                                slot1: merchant.icon || (
-                                                    <UserIcon
-                                                        style={{
-                                                            width: topBarToken
-                                                                .merchantSelectTrigger
-                                                                .icon.size,
-                                                            height: topBarToken
-                                                                .merchantSelectTrigger
-                                                                .icon.size,
-                                                        }}
-                                                    />
-                                                ),
+                                                slot1: merchant.icon,
                                             })
                                         ),
                                     },
@@ -370,7 +379,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 <Block
                     ref={ref}
                     width="100%"
-                    position={topBarToken.position}
+                    position="sticky"
                     top={topBarToken.top}
                     borderBottom={topBarToken.borderBottom}
                     display="flex"
@@ -381,6 +390,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     style={{
                         backdropFilter: topBarToken.backdropFilter,
                     }}
+                    justifyContent="space-between"
                 >
                     <Block
                         display="flex"
@@ -391,7 +401,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         {renderLeftSection()}
                     </Block>
 
-                    <Block
+                    {/* <Block
                         flexGrow={1}
                         display="flex"
                         alignItems="center"
@@ -414,7 +424,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                     {title}
                                 </Text>
                             ))}
-                    </Block>
+                    </Block> */}
 
                     <Block
                         display="flex"
@@ -433,7 +443,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                position={topBarToken.position}
                 top={topBarToken.top}
                 borderBottom={topBarToken.borderBottom}
                 display="flex"

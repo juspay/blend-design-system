@@ -21,7 +21,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
-        if (!pagination) {
+        if (!pagination || !hasData) {
             return null
         }
 

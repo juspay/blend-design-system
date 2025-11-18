@@ -13,6 +13,11 @@ export enum AvatarShape {
     ROUNDED = 'rounded',
 }
 
+export enum AvatarOnlinePosition {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+}
+
 export type AvatarProps = {
     src?: string
     alt?: string
@@ -20,6 +25,7 @@ export type AvatarProps = {
     size?: AvatarSize
     shape?: AvatarShape
     online?: boolean
+    onlinePosition?: AvatarOnlinePosition
     leadingSlot?: React.ReactNode
     trailingSlot?: React.ReactNode
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>

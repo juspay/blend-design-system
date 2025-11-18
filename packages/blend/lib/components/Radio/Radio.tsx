@@ -15,6 +15,8 @@ import type { RadioTokensType } from './radio.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useErrorShake } from '../common/useErrorShake'
+import { getErrorShakeStyle } from '../common/error.animations'
 
 export const Radio = ({
     id,
@@ -40,6 +42,7 @@ export const Radio = ({
     const inputProps = createRadioInputProps(checked, defaultChecked)
     const currentChecked = getCurrentCheckedState(checked, defaultChecked)
     const handleChange = createRadioChangeHandler(disabled, onChange)
+    const shouldShake = useErrorShake(error)
 
     return (
         <Block
@@ -62,6 +65,7 @@ export const Radio = ({
                 $isDisabled={disabled}
                 $isChecked={currentChecked}
                 $error={error}
+                style={getErrorShakeStyle(shouldShake)}
                 {...rest}
             />
 

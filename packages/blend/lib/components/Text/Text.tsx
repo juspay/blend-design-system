@@ -85,6 +85,13 @@ const getSemanticTag = (
     return 'p'
 }
 
+const formatLineHeight = (
+    value?: number | string | null
+): string | undefined => {
+    if (value === undefined || value === null) return undefined
+    return typeof value === 'number' ? `${value}px` : value
+}
+
 const Text = ({
     children,
     variant,
@@ -120,6 +127,7 @@ const Text = ({
         <PrimitiveText
             as={Tag}
             fontSize={fontGroup?.fontSize}
+            lineHeight={formatLineHeight(fontGroup?.lineHeight)}
             fontWeight={fontWeight}
             color={color ?? 'inherit'}
             truncate={truncate}

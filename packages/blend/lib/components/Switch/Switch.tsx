@@ -14,6 +14,8 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import type { SwitchTokensType } from './switch.token'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useErrorShake } from '../common/useErrorShake'
+import { getErrorShakeStyle } from '../common/error.animations'
 
 export const Switch = ({
     id,
@@ -47,6 +49,7 @@ export const Switch = ({
         setInternalChecked,
         onChange
     )
+    const shouldShake = useErrorShake(error)
 
     return (
         <Block display="flex" gap={tokens.gap}>
@@ -64,6 +67,7 @@ export const Switch = ({
                 $error={error}
                 value={value}
                 name={name}
+                style={getErrorShakeStyle(shouldShake)}
                 {...rest}
             >
                 <StyledSwitchThumb

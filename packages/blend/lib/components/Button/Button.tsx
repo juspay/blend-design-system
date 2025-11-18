@@ -25,7 +25,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
         width,
         justifyContent = 'center',
         state = ButtonState.DEFAULT,
-        id,
         ...restHtmlProps
     } = props
 
@@ -48,7 +47,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     if (shouldShowSkeleton) {
         return (
             <Skeleton
-                ref={ref as unknown as React.Ref<HTMLDivElement>}
                 variant={skeletonVariant}
                 loading
                 padding="0"
@@ -58,10 +56,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
                 alignItems="stretch"
                 justifyContent="center"
                 pointerEvents="none"
-                id={id}
-                {...restHtmlProps}
             >
                 <ButtonBase
+                    ref={ref}
                     buttonType={buttonType}
                     size={size}
                     subType={subType}
@@ -69,15 +66,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
                     leadingIcon={leadingIcon}
                     trailingIcon={trailingIcon}
                     disabled={disabled}
-                    onClick={undefined}
-                    loading={false}
+                    onClick={onClick}
+                    loading={loading}
                     buttonGroupPosition={buttonGroupPosition}
                     fullWidth={fullWidth}
                     width={skeletonWidth}
                     justifyContent={justifyContent}
                     state={state}
-                    isSkeleton
                     tokens={buttonTokens}
+                    isSkeleton
+                    {...restHtmlProps}
                 />
             </Skeleton>
         )
@@ -100,7 +98,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
             width={width}
             justifyContent={justifyContent}
             state={state}
-            id={id}
             tokens={buttonTokens}
             {...restHtmlProps}
         />

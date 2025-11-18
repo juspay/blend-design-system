@@ -17,6 +17,11 @@ import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import { SelectMenuSize, SelectMenuVariant } from './types'
 import VirtualList from '../VirtualList/VirtualList'
+import {
+    dropdownContentAnimations,
+    submenuContentAnimations,
+    hoverTransition,
+} from './singleSelect.animations'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -99,54 +104,63 @@ const flattenGroups = (groups: SelectMenuGroupType[]): FlattenedItem[] => {
     return flattened
 }
 
-const Content = styled(RadixMenu.Content)(() => ({
-    position: 'relative',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 49,
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    scrollbarWidth: 'none',
-    scrollbarColor: 'transparent transparent',
-}))
+const Content = styled(RadixMenu.Content)`
+    position: relative;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: ${FOUNDATION_THEME.shadows.sm};
+    z-index: 49;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+
+    ${dropdownContentAnimations}
+`
 
 const StyledSubMenu = styled(RadixMenu.Sub)(() => ({
     padding: '8px 6px',
     margin: '0px 8px',
 }))
 
-const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
-    alignItems: 'center',
-    padding: '8px 6px',
-    margin: '0px 8px',
-    borderRadius: 4,
-    '&:hover': {
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-    },
-    '&[data-disabled]': {
-        opacity: 0.5,
-        cursor: 'not-allowed',
-    },
-    '&[data-highlighted]': {
-        border: 'none',
-        outline: 'none',
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
-    },
-}))
+const SubTrigger = styled(RadixMenu.SubTrigger)`
+    align-items: center;
+    padding: 8px 6px;
+    margin: 0px 8px;
+    border-radius: 4px;
+
+    ${hoverTransition}
+
+    &:hover {
+        background-color: ${FOUNDATION_THEME.colors.gray[50]};
+    }
+
+    &[data-disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    &[data-highlighted] {
+        border: none;
+        outline: none;
+        background-color: ${FOUNDATION_THEME.colors.gray[50]};
+    }
+`
 
 const SubContent = styled(RadixMenu.SubContent)<{
     singleSelectTokens?: SingleSelectTokensType
-}>(({ singleSelectTokens }) => ({
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: '8px 0px',
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    border:
+}>`
+    background-color: white;
+    border-radius: 8px;
+    padding: 8px 0px;
+    box-shadow: ${FOUNDATION_THEME.shadows.lg};
+    border: ${({ singleSelectTokens }) =>
         singleSelectTokens?.menu.border ||
-        `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-    zIndex: 49,
-}))
+        `1px solid ${FOUNDATION_THEME.colors.gray[200]}`};
+    z-index: 49;
+
+    ${submenuContentAnimations}
+`
 
 const SubMenu = ({
     item,

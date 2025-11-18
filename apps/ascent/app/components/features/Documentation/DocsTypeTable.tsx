@@ -18,7 +18,7 @@ type DocsTypeTableProps = {
 }
 
 const TableHeader = () => {
-    const columns = ['Prop Name', 'Type', 'Default']
+    const columns = ['Prop Name', 'Type', 'Enum']
 
     return (
         <thead className="bg-[var(--muted)] dark:bg-[var(--code-background)] border-b border-[var(--code-border)]">
@@ -26,9 +26,7 @@ const TableHeader = () => {
                 {columns.map((column, index) => (
                     <th
                         key={index}
-                        className={`px-6 py-3 text-left text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider ${
-                            index === 2 ? 'hidden md:table-cell' : ''
-                        }`}
+                        className="px-6 py-3 text-left text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider"
                     >
                         <span>{column}</span>
                     </th>
@@ -48,19 +46,19 @@ const TableBody = ({ data }: { data: TableCell[][] }) => {
                 >
                     {row.map((cell, cellIndex) => {
                         const hasTooltip = cell.hintText !== undefined
+                        const isEmpty =
+                            !cell.content ||
+                            cell.content === '' ||
+                            cell.content === 'undefined'
 
                         return (
                             <td
                                 key={`${rowIndex}-${cellIndex}`}
-                                className={`py-4 text-sm text-[var(--foreground)] ${
-                                    cellIndex === 2
-                                        ? 'hidden md:table-cell'
-                                        : ''
-                                }`}
+                                className="py-4 text-sm text-[var(--foreground)]"
                             >
                                 <div className="flex items-start gap-2 px-6">
                                     <span className="block break-words">
-                                        {cell.content}
+                                        {isEmpty ? '-' : cell.content}
                                     </span>
                                     {hasTooltip && (
                                         <Tooltip content={cell.hintText!}>

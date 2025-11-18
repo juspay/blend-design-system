@@ -19,6 +19,16 @@ import {
     SingleSelect,
 } from '../../SingleSelect'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const DropdownInput = ({
     label,
@@ -53,6 +63,7 @@ const DropdownInput = ({
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
 
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error || false)
     const [slotWidth, setSlotWidth] = useState<number>(0)
     const [dropdownWidth, setDropdownWidth] = useState<number>(0)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -116,7 +127,11 @@ const DropdownInput = ({
                     tokens={dropdownInputTokens}
                 />
             )}
-            <Block position="relative" width={'100%'}>
+            <Wrapper
+                position="relative"
+                width={'100%'}
+                style={getErrorShakeStyle(shouldShake)}
+            >
                 {slot && (
                     <Block
                         ref={slotRef}
@@ -232,6 +247,11 @@ const DropdownInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -247,6 +267,8 @@ const DropdownInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -311,7 +333,7 @@ const DropdownInput = ({
                         />
                     </Block>
                 )}
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}

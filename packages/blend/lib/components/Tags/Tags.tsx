@@ -1,0 +1,83 @@
+import Block from '../Primitives/Block/Block'
+import { forwardRef } from 'react'
+
+import Text from '../Text/Text'
+import { TagColor, type TagProps, TagShape, TagSize, TagVariant } from './types'
+import type { TagTokensType } from './tag.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRipple, RippleContainer } from '../animations/Ripple'
+
+const Tag = forwardRef<HTMLDivElement, TagProps>(
+    (
+        {
+            text,
+            variant = TagVariant.SUBTLE,
+            color = TagColor.PRIMARY,
+            size = TagSize.SM,
+            shape = TagShape.SQUARICAL,
+            leftSlot,
+            rightSlot,
+            onClick,
+            splitTagPosition,
+            ...rest
+        },
+        ref
+    ) => {
+        const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
+        const { ripples, createRipple } = useRipple()
+        const isInteractive = typeof onClick === 'function'
+
+        const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+            if (isInteractive && onClick) {
+                createRipple(event)
+                onClick(event)
+            }
+        }
+
+        const isSplitTag = splitTagPosition !== undefined
+        let borderRadius = tagTokens.borderRadius[size][shape]
+        if (isSplitTag) {
+            const radius = tagTokens.borderRadius[size][shape]
+            borderRadius =
+                splitTagPosition === 'left'
+                    ? `${radius} 0 0 ${radius}`
+                    : `0 ${radius} ${radius} 0`
+        }
+
+        return (
+            <Block
+                {...rest}
+                ref={ref}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                width="fit-content"
+                gap={tagTokens.gap}
+                padding={tagTokens.padding[size]}
+                backgroundColor={tagTokens.backgroundColor[variant][color]}
+                color={tagTokens.text.color[variant][color]}
+                border={tagTokens.border[variant][color]}
+                borderRadius={borderRadius}
+                cursor={isInteractive ? 'pointer' : 'default'}
+                position={isInteractive ? 'relative' : undefined}
+                overflow={isInteractive ? 'hidden' : undefined}
+                onClick={isInteractive ? handleClick : undefined}
+            >
+                {leftSlot && <Block contentCentered>{leftSlot}</Block>}
+                <Text
+                    fontSize={tagTokens.text.fontSize[size]}
+                    fontWeight={tagTokens.text.fontWeight[size]}
+                    data-label={text}
+                >
+                    {text}
+                </Text>
+                {rightSlot && <Block contentCentered>{rightSlot}</Block>}
+                {isInteractive && <RippleContainer ripples={ripples} />}
+            </Block>
+        )
+    }
+)
+
+Tag.displayName = 'Tag'
+
+export default Tag

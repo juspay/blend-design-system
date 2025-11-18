@@ -73,44 +73,39 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     calendarToken,
 }) => (
     <Block
-        paddingX={calendarToken?.calendar?.inputs?.padding?.x}
-        paddingY={calendarToken?.calendar?.inputs?.padding?.y}
+        paddingX={calendarToken?.calendar?.header?.padding?.x}
+        paddingY={calendarToken?.calendar?.header?.padding?.y}
     >
         <Block
             display="flex"
             flexDirection="column"
-            gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+            gap={calendarToken?.calendar?.header?.dateInput?.gap}
         >
             <Block
                 display="flex"
-                gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                gap={calendarToken?.calendar?.header?.dateInput?.gap}
                 alignItems="center"
             >
                 <PrimitiveText
                     as="span"
                     color={
-                        calendarToken?.calendar?.inputs?.dateInput?.label?.color
+                        calendarToken?.calendar?.header?.dateInput?.label?.color
                     }
                     fontWeight={
-                        calendarToken?.calendar?.inputs?.dateInput?.label
+                        calendarToken?.calendar?.header?.dateInput?.label
                             ?.fontWeight
                     }
                     fontSize={
-                        calendarToken?.calendar?.inputs?.dateInput?.label
+                        calendarToken?.calendar?.header?.dateInput?.label
                             ?.fontSize
                     }
-                    style={{
-                        minWidth:
-                            calendarToken?.calendar?.inputs?.dateInput?.label
-                                ?.width,
-                    }}
                 >
                     Start
                 </PrimitiveText>
                 <Block
                     display="flex"
                     alignItems="start"
-                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                    gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     width="100%"
                 >
                     <Block flexGrow={1}>
@@ -131,7 +126,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             onChange={onStartTimeChange}
                             autoFocus={false}
                             tabIndex={-1}
-                            calendarToken={calendarToken}
                         />
                     )}
                 </Block>
@@ -143,35 +137,30 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         selectedRange.endDate.getTime())) && (
                 <Block
                     display="flex"
-                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                    gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     alignItems="center"
                 >
                     <PrimitiveText
                         as="span"
                         color={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.color
                         }
                         fontWeight={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontWeight
                         }
                         fontSize={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontSize
                         }
-                        style={{
-                            minWidth:
-                                calendarToken?.calendar?.inputs?.dateInput
-                                    ?.label?.width,
-                        }}
                     >
                         End
                     </PrimitiveText>
                     <Block
                         display="flex"
                         alignItems="start"
-                        gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                        gap={calendarToken?.calendar?.header?.dateInput?.gap}
                         width="100%"
                     >
                         <Block flexGrow={1}>
@@ -192,7 +181,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 onChange={onEndTimeChange}
                                 autoFocus={false}
                                 tabIndex={-1}
-                                calendarToken={calendarToken}
                             />
                         )}
                     </Block>
@@ -376,7 +364,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         // Calculate if apply button should be disabled and get validation message
         const applyButtonValidation = React.useMemo(() => {
-            // Check if date inputs are invalid
+            // Check if date header are invalid
             if (!startDateValidation.isValid) {
                 return {
                     isDisabled: true,

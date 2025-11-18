@@ -149,7 +149,6 @@ const TopbarDemo = () => {
                         </div>
                         <div className="w-full max-w-sm mx-auto border border-gray-300 rounded-lg overflow-hidden">
                             <Topbar
-                                title="Dashboard"
                                 leftPanel={leftPanelData}
                                 merchantInfo={merchantInfo}
                                 rightActions={
@@ -193,7 +192,6 @@ const TopbarDemo = () => {
                         </div>
                         <div className="w-full max-w-sm mx-auto border border-gray-300 rounded-lg overflow-hidden">
                             <Topbar
-                                title="Product Details"
                                 showBackButton={true}
                                 onBackClick={() => setCurrentPage('Dashboard')}
                                 rightActions={
@@ -219,7 +217,6 @@ const TopbarDemo = () => {
                         </div>
                         <div className="w-full max-w-sm mx-auto border border-gray-300 rounded-lg overflow-hidden">
                             <Topbar
-                                title="Analytics"
                                 merchantInfo={merchantInfo}
                                 rightActions={
                                     <div className="flex gap-1">
@@ -525,7 +522,6 @@ const TopbarDemo = () => {
                             </div>
                         }
                         // Mobile props
-                        title="Responsive Header"
                         leftPanel={leftPanelData}
                         merchantInfo={merchantInfo}
                         rightActions={

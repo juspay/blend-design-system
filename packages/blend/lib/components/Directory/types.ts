@@ -20,6 +20,11 @@ export type NavbarItem = {
     onClick?: () => void
     href?: string
     isSelected?: boolean
+    /**
+     * When true, the item appears in the Sidebar mobile navigation drawer.
+     * Desktop always renders all items regardless of this flag.
+     */
+    showOnMobile?: boolean
 }
 
 export type SectionProps = {

@@ -5,7 +5,6 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 export type TopbarState = 'default' | 'hover' | 'active'
 
 export type TopbarTokensType = {
-    position: CSSObject['position']
     top: CSSObject['top']
     zIndex: CSSObject['zIndex']
     borderBottom: CSSObject['borderBottom']
@@ -100,7 +99,6 @@ export const getTopbarTokens = (
 ): ResponsiveTopbarTokens => {
     return {
         sm: {
-            position: 'sticky',
             top: '0',
             zIndex: '10',
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
@@ -193,18 +191,17 @@ export const getTopbarTokens = (
         },
 
         lg: {
-            position: 'sticky',
             top: '0',
             zIndex: '10',
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `12.5px ${foundationToken.unit[32]}`,
+            padding: `${foundationToken.unit[16]} ${foundationToken.unit[32]}`,
             gap: foundationToken.unit[16],
 
             toggleButton: {
                 borderRadius: foundationToken.border.radius[10],
-                padding: foundationToken.unit[9],
+                padding: foundationToken.unit[10],
                 backgroundColor: {
                     default: 'transparent',
                     hover: foundationToken.colors.gray[100],
@@ -221,7 +218,7 @@ export const getTopbarTokens = (
                 borderRadius: foundationToken.border.radius[8],
                 padding: foundationToken.unit[8],
                 minWidth: foundationToken.unit[40],
-                height: foundationToken.unit[40],
+                height: foundationToken.unit[36],
                 backgroundColor: {
                     default: 'transparent',
                     hover: foundationToken.colors.gray[100],
