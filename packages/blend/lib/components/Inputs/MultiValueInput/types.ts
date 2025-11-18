@@ -28,7 +28,9 @@ export type MultiValueInputProps = {
     onTagRemove?: (tag: string) => void
     onChange?: (value: string) => void
     size?: TextInputSize
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'onChange' | 'value'
+    'size' | 'style' | 'className' | 'onChange' | 'value' | 'onFocus' | 'onBlur'
 >

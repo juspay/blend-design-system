@@ -438,6 +438,18 @@ function MyComponent() {
         ],
         [
             {
+                content: 'LeftPanelInfo.tenantFooter',
+                hintText:
+                    'Optional React element displayed at the bottom of the tenant panel. The footer is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding actions or information that should always be accessible at the bottom of the tenant panel, such as settings, help, or additional options.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the tenant panel footer',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'LeftPanelItem.label',
                 hintText:
                     'Required display text string for the panel item. This is the text users see for each selectable option. Should be concise and descriptive, clearly identifying the option (e.g., "Merchant A", "Tenant 1", "Organization X").',

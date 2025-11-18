@@ -1,6 +1,7 @@
-import { forwardRef, useState, useRef, useEffect } from 'react'
+import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
+
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -34,6 +35,7 @@ import {
     DrawerContent,
     DrawerBody,
 } from '../../Drawer'
+import { DraggableColumnHeader } from './DraggableColumnHeader'
 
 const FilterIcon = styled(ChevronsUpDown)`
     cursor: pointer;
@@ -67,6 +69,7 @@ const TableHeader = forwardRef<
             sortConfig,
             enableInlineEdit = false,
             enableColumnManager = true,
+            enableColumnReordering = false,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
@@ -93,7 +96,6 @@ const TableHeader = forwardRef<
     ) => {
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
-        const [localColumns, setLocalColumns] = useState(visibleColumns)
         const editableRef = useRef<HTMLDivElement>(null)
 
         const [sortState, setSortState] = useState<SortState>({
@@ -121,10 +123,6 @@ const TableHeader = forwardRef<
             onSortDescending
         )
         const filterHandlers = createFilterHandlers(setFilterState)
-
-        useEffect(() => {
-            setLocalColumns(visibleColumns)
-        }, [visibleColumns])
 
         useEffect(() => {
             setSortState({
@@ -238,17 +236,16 @@ const TableHeader = forwardRef<
             const valueToSave =
                 newValue || editableRef.current?.textContent || ''
             const trimmedValue = valueToSave.trim()
-            const currentColumn = localColumns.find(
+            const currentColumn = visibleColumns.find(
                 (col) => String(col.field) === field
             )
 
             if (currentColumn && trimmedValue !== currentColumn.header) {
-                const updatedColumns = localColumns.map((col) =>
+                const updatedColumns = visibleColumns.map((col) =>
                     String(col.field) === field
                         ? { ...col, header: trimmedValue }
                         : col
                 )
-                setLocalColumns(updatedColumns)
 
                 onHeaderChange?.(
                     field as keyof Record<string, unknown>,
@@ -268,7 +265,7 @@ const TableHeader = forwardRef<
             }
         }
 
-        return (
+        const tableHeaderContent = (
             <thead
                 ref={ref}
                 style={{
@@ -372,7 +369,7 @@ const TableHeader = forwardRef<
                         </th>
                     )}
 
-                    {localColumns.map((column, index) => {
+                    {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
                         const isEditing = editingField === String(column.field)
                         const columnConfig = getColumnTypeConfig(
@@ -384,7 +381,7 @@ const TableHeader = forwardRef<
                             columnFreeze,
                             enableRowExpansion,
                             enableRowSelection,
-                            localColumns,
+                            visibleColumns,
                             getColumnWidth,
                             tableToken.dataTable.table.header.backgroundColor ||
                                 '#ffffff'
@@ -403,97 +400,135 @@ const TableHeader = forwardRef<
                                 mobileConfig?.enableColumnOverflow &&
                                 mobileOverflowColumns.length > 0
                             ) &&
-                            index === localColumns.length - 1
+                            index === visibleColumns.length - 1
 
-                        return (
-                            <th
-                                key={String(column.field)}
-                                style={{
-                                    ...tableToken.dataTable.table.header.cell,
-                                    ...(column.isSortable &&
-                                        tableToken.dataTable.table.header
-                                            .sortable),
-                                    ...columnStyles,
-                                    ...frozenStyles,
-                                    // Ensure border bottom is always present
-                                    borderBottom:
-                                        tableToken.dataTable.table.header
-                                            .borderBottom,
-                                    ...(isLastColumn && {
-                                        borderTopRightRadius:
-                                            tableToken.dataTable.borderRadius,
-                                    }),
-                                }}
-                                data-table-column-heading={column.header}
+                        // Disable dragging for frozen columns
+                        const isDraggable =
+                            enableColumnReordering && index >= columnFreeze
+
+                        const headerStyle = {
+                            ...tableToken.dataTable.table.header.cell,
+                            ...(column.isSortable &&
+                                tableToken.dataTable.table.header.sortable),
+                            ...columnStyles,
+                            ...frozenStyles,
+                            // Ensure border bottom is always present
+                            borderBottom:
+                                tableToken.dataTable.table.header.borderBottom,
+                            ...(isLastColumn && {
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }),
+                        }
+
+                        const headerContent = (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                gap="8px"
+                                width="100%"
+                                minWidth={0}
+                                onMouseEnter={() =>
+                                    setHoveredField(String(column.field))
+                                }
+                                onMouseLeave={() => setHoveredField(null)}
                             >
                                 <Block
                                     display="flex"
                                     alignItems="center"
-                                    justifyContent="space-between"
-                                    gap="8px"
-                                    width="100%"
                                     minWidth={0}
-                                    onMouseEnter={() =>
-                                        setHoveredField(String(column.field))
-                                    }
-                                    onMouseLeave={() => setHoveredField(null)}
+                                    flexGrow={1}
+                                    overflow="hidden"
                                 >
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        minWidth={0}
-                                        flexGrow={1}
-                                        overflow="hidden"
-                                    >
-                                        {isEditing ? (
-                                            <Block
-                                                ref={editableRef}
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                onBlur={(e) =>
-                                                    handleHeaderSave(
-                                                        String(column.field),
-                                                        e.currentTarget
-                                                            .textContent || ''
-                                                    )
-                                                }
-                                                onKeyDown={(e) =>
-                                                    handleHeaderKeyDown(
-                                                        e,
-                                                        String(column.field)
-                                                    )
-                                                }
-                                                style={{
-                                                    minWidth: 0,
-                                                    flex: 1,
-                                                    outline: 'none',
-                                                    cursor: 'text',
-                                                    whiteSpace: 'nowrap',
-                                                    overflow: 'hidden',
-                                                }}
-                                            >
-                                                {column.header}
-                                            </Block>
-                                        ) : (
+                                    {isEditing ? (
+                                        <Block
+                                            ref={editableRef}
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onBlur={(e) =>
+                                                handleHeaderSave(
+                                                    String(column.field),
+                                                    e.currentTarget
+                                                        .textContent || ''
+                                                )
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleHeaderKeyDown(
+                                                    e,
+                                                    String(column.field)
+                                                )
+                                            }
+                                            style={{
+                                                minWidth: 0,
+                                                flex: 1,
+                                                outline: 'none',
+                                                cursor: 'text',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            {column.header}
+                                        </Block>
+                                    ) : (
+                                        <Block
+                                            display="flex"
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            position="relative"
+                                            gap={
+                                                tableToken.dataTable.table
+                                                    .header.filter.gap
+                                            }
+                                        >
                                             <Block
                                                 display="flex"
+                                                flexDirection="column"
+                                                alignItems="flex-start"
                                                 minWidth={0}
                                                 flexGrow={1}
-                                                position="relative"
-                                                gap={
-                                                    tableToken.dataTable.table
-                                                        .header.filter.gap
-                                                }
                                             >
-                                                <Block
-                                                    display="flex"
-                                                    flexDirection="column"
-                                                    alignItems="flex-start"
-                                                    minWidth={0}
-                                                    flexGrow={1}
+                                                <Tooltip
+                                                    content={column.header}
+                                                    side={TooltipSide.TOP}
+                                                    align={TooltipAlign.START}
+                                                    size={TooltipSize.SMALL}
+                                                    delayDuration={500}
                                                 >
+                                                    <PrimitiveText
+                                                        style={{
+                                                            overflow: 'hidden',
+                                                            textOverflow:
+                                                                'ellipsis',
+                                                            whiteSpace:
+                                                                'nowrap',
+                                                            minWidth: 0,
+                                                            width: '100%',
+                                                            display: 'block',
+                                                            cursor: 'default',
+                                                            fontSize:
+                                                                tableToken
+                                                                    .dataTable
+                                                                    .table
+                                                                    .header.cell
+                                                                    .fontSize,
+                                                            fontWeight:
+                                                                tableToken
+                                                                    .dataTable
+                                                                    .table
+                                                                    .header.cell
+                                                                    .fontWeight,
+                                                            lineHeight: 1.2,
+                                                        }}
+                                                    >
+                                                        {column.header}
+                                                    </PrimitiveText>
+                                                </Tooltip>
+                                                {column.headerSubtext && (
                                                     <Tooltip
-                                                        content={column.header}
+                                                        content={
+                                                            column.headerSubtext
+                                                        }
                                                         side={TooltipSide.TOP}
                                                         align={
                                                             TooltipAlign.START
@@ -519,320 +554,276 @@ const TableHeader = forwardRef<
                                                                         .dataTable
                                                                         .table
                                                                         .header
-                                                                        .cell
-                                                                        .fontSize,
-                                                                fontWeight:
-                                                                    tableToken
-                                                                        .dataTable
-                                                                        .table
-                                                                        .header
-                                                                        .cell
-                                                                        .fontWeight,
+                                                                        .filter
+                                                                        .groupLabelFontSize,
+                                                                color: tableToken
+                                                                    .dataTable
+                                                                    .table
+                                                                    .header
+                                                                    .filter
+                                                                    .groupLabelColor,
                                                                 lineHeight: 1.2,
+                                                                marginTop:
+                                                                    '2px',
                                                             }}
                                                         >
-                                                            {column.header}
-                                                        </PrimitiveText>
-                                                    </Tooltip>
-                                                    {column.headerSubtext && (
-                                                        <Tooltip
-                                                            content={
+                                                            {
                                                                 column.headerSubtext
                                                             }
-                                                            side={
-                                                                TooltipSide.TOP
-                                                            }
-                                                            align={
-                                                                TooltipAlign.START
-                                                            }
-                                                            size={
-                                                                TooltipSize.SMALL
-                                                            }
-                                                            delayDuration={500}
-                                                        >
-                                                            <PrimitiveText
-                                                                style={{
-                                                                    overflow:
-                                                                        'hidden',
-                                                                    textOverflow:
-                                                                        'ellipsis',
-                                                                    whiteSpace:
-                                                                        'nowrap',
-                                                                    minWidth: 0,
-                                                                    width: '100%',
-                                                                    display:
-                                                                        'block',
-                                                                    cursor: 'default',
-                                                                    fontSize:
-                                                                        tableToken
-                                                                            .dataTable
-                                                                            .table
-                                                                            .header
-                                                                            .filter
-                                                                            .groupLabelFontSize,
-                                                                    color: tableToken
-                                                                        .dataTable
-                                                                        .table
-                                                                        .header
-                                                                        .filter
-                                                                        .groupLabelColor,
-                                                                    lineHeight: 1.2,
-                                                                    marginTop:
-                                                                        '2px',
-                                                                }}
-                                                            >
-                                                                {
-                                                                    column.headerSubtext
-                                                                }
-                                                            </PrimitiveText>
-                                                        </Tooltip>
-                                                    )}
-                                                </Block>
-                                                {enableInlineEdit && (
-                                                    <Block
-                                                        as="span"
-                                                        className="edit-icon-wrapper"
-                                                        display="flex"
-                                                        alignItems="center"
-                                                        opacity={
-                                                            hoveredField ===
-                                                            String(column.field)
-                                                                ? 1
-                                                                : 0
-                                                        }
-                                                        transition="opacity 0.2s"
-                                                        zIndex={2}
-                                                        flexShrink={0}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            handleHeaderEdit(
-                                                                String(
-                                                                    column.field
-                                                                )
-                                                            )
-                                                        }}
-                                                    >
-                                                        <EditIcon size={14} />
-                                                    </Block>
+                                                        </PrimitiveText>
+                                                    </Tooltip>
                                                 )}
                                             </Block>
-                                        )}
-                                    </Block>
-
-                                    {((columnConfig.supportsSorting &&
-                                        column.isSortable !== false) ||
-                                        columnConfig.supportsFiltering) && (
-                                        <Block
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            flexShrink={0}
-                                            width="16px"
-                                            height="16px"
-                                            onClick={(e) => e.stopPropagation()}
-                                            _focus={{ outline: 'none' }}
-                                            _focusVisible={{ outline: 'none' }}
-                                            position="relative"
-                                        >
-                                            {(() => {
-                                                const fieldKey = String(
-                                                    column.field
-                                                )
-                                                const hasSort =
-                                                    sortState.currentSortField ===
-                                                        fieldKey &&
-                                                    sortState.currentSortDirection !==
-                                                        SortDirection.NONE
-                                                const hasFilter = (() => {
-                                                    const selectedValues =
-                                                        filterState
-                                                            .columnSelectedValues[
-                                                            fieldKey
-                                                        ]
-                                                    if (!selectedValues)
-                                                        return false
-
-                                                    if (
-                                                        Array.isArray(
-                                                            selectedValues
-                                                        )
-                                                    ) {
-                                                        return (
-                                                            selectedValues.length >
-                                                            0
-                                                        )
+                                            {enableInlineEdit && (
+                                                <Block
+                                                    as="span"
+                                                    className="edit-icon-wrapper"
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    opacity={
+                                                        hoveredField ===
+                                                        String(column.field)
+                                                            ? 1
+                                                            : 0
                                                     }
-                                                    if (
-                                                        typeof selectedValues ===
-                                                            'object' &&
-                                                        selectedValues !==
-                                                            null &&
-                                                        'min' in
-                                                            selectedValues &&
-                                                        'max' in selectedValues
-                                                    ) {
-                                                        return true // Range filter
-                                                    }
-                                                    return false
-                                                })()
-
-                                                return (
-                                                    (hasSort || hasFilter) && (
-                                                        <Block
-                                                            position="absolute"
-                                                            top="-2px"
-                                                            right="-2px"
-                                                            width="6px"
-                                                            height="6px"
-                                                            borderRadius="50%"
-                                                            backgroundColor={
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .red[500]
-                                                            }
-                                                            zIndex={1}
-                                                        />
-                                                    )
-                                                )
-                                            })()}
-
-                                            {isMobile ? (
-                                                // Mobile: Use Drawer wrapper
-                                                <Drawer
-                                                    open={
-                                                        openPopovers[
+                                                    transition="opacity 0.2s"
+                                                    zIndex={2}
+                                                    flexShrink={0}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleHeaderEdit(
                                                             String(column.field)
-                                                        ] || false
-                                                    }
-                                                    onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
-                                                                [String(
-                                                                    column.field
-                                                                )]: open,
-                                                            })
-                                                        )
-                                                    }}
-                                                    direction="bottom"
-                                                    modal={true}
-                                                    dismissible={true}
-                                                    showHandle={true}
-                                                >
-                                                    <DrawerTrigger>
-                                                        <FilterIcon size={16} />
-                                                    </DrawerTrigger>
-                                                    <DrawerPortal>
-                                                        <DrawerOverlay />
-                                                        <DrawerContent
-                                                            contentDriven={true}
-                                                        >
-                                                            <DrawerBody
-                                                                noPadding
-                                                            >
-                                                                <ColumnFilter
-                                                                    column={
-                                                                        column
-                                                                    }
-                                                                    data={data}
-                                                                    tableToken={
-                                                                        tableToken
-                                                                    }
-                                                                    sortHandlers={
-                                                                        sortHandlers
-                                                                    }
-                                                                    filterHandlers={
-                                                                        filterHandlers
-                                                                    }
-                                                                    filterState={
-                                                                        filterState
-                                                                    }
-                                                                    sortState={
-                                                                        sortState
-                                                                    }
-                                                                    onColumnFilter={
-                                                                        onColumnFilter
-                                                                    }
-                                                                    onPopoverClose={() => {
-                                                                        setOpenPopovers(
-                                                                            (
-                                                                                prev
-                                                                            ) => ({
-                                                                                ...prev,
-                                                                                [String(
-                                                                                    column.field
-                                                                                )]:
-                                                                                    false,
-                                                                            })
-                                                                        )
-                                                                    }}
-                                                                />
-                                                            </DrawerBody>
-                                                        </DrawerContent>
-                                                    </DrawerPortal>
-                                                </Drawer>
-                                            ) : (
-                                                <Popover
-                                                    trigger={
-                                                        <FilterIcon size={16} />
-                                                    }
-                                                    maxWidth={220}
-                                                    minWidth={220}
-                                                    side="bottom"
-                                                    align={getPopoverAlignment(
-                                                        index,
-                                                        localColumns.length
-                                                    )}
-                                                    sideOffset={20}
-                                                    open={
-                                                        openPopovers[
-                                                            String(column.field)
-                                                        ] || false
-                                                    }
-                                                    onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
-                                                                [String(
-                                                                    column.field
-                                                                )]: open,
-                                                            })
                                                         )
                                                     }}
                                                 >
-                                                    <ColumnFilter
-                                                        column={column}
-                                                        data={data}
-                                                        tableToken={tableToken}
-                                                        sortHandlers={
-                                                            sortHandlers
-                                                        }
-                                                        filterHandlers={
-                                                            filterHandlers
-                                                        }
-                                                        filterState={
-                                                            filterState
-                                                        }
-                                                        sortState={sortState}
-                                                        onColumnFilter={
-                                                            onColumnFilter
-                                                        }
-                                                        onPopoverClose={() => {
-                                                            setOpenPopovers(
-                                                                (prev) => ({
-                                                                    ...prev,
-                                                                    [String(
-                                                                        column.field
-                                                                    )]: false,
-                                                                })
-                                                            )
-                                                        }}
-                                                    />
-                                                </Popover>
+                                                    <EditIcon size={14} />
+                                                </Block>
                                             )}
                                         </Block>
                                     )}
                                 </Block>
+
+                                {((columnConfig.supportsSorting &&
+                                    column.isSortable !== false) ||
+                                    columnConfig.supportsFiltering) && (
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        flexShrink={0}
+                                        width="16px"
+                                        height="16px"
+                                        onClick={(e) => e.stopPropagation()}
+                                        _focus={{ outline: 'none' }}
+                                        _focusVisible={{ outline: 'none' }}
+                                        position="relative"
+                                    >
+                                        {(() => {
+                                            const fieldKey = String(
+                                                column.field
+                                            )
+                                            const hasSort =
+                                                sortState.currentSortField ===
+                                                    fieldKey &&
+                                                sortState.currentSortDirection !==
+                                                    SortDirection.NONE
+                                            const hasFilter = (() => {
+                                                const selectedValues =
+                                                    filterState
+                                                        .columnSelectedValues[
+                                                        fieldKey
+                                                    ]
+                                                if (!selectedValues)
+                                                    return false
+
+                                                if (
+                                                    Array.isArray(
+                                                        selectedValues
+                                                    )
+                                                ) {
+                                                    return (
+                                                        selectedValues.length >
+                                                        0
+                                                    )
+                                                }
+                                                if (
+                                                    typeof selectedValues ===
+                                                        'object' &&
+                                                    selectedValues !== null &&
+                                                    'min' in selectedValues &&
+                                                    'max' in selectedValues
+                                                ) {
+                                                    return true // Range filter
+                                                }
+                                                return false
+                                            })()
+
+                                            return (
+                                                (hasSort || hasFilter) && (
+                                                    <Block
+                                                        position="absolute"
+                                                        top="-2px"
+                                                        right="-2px"
+                                                        width="6px"
+                                                        height="6px"
+                                                        borderRadius="50%"
+                                                        backgroundColor={
+                                                            FOUNDATION_THEME
+                                                                .colors.red[500]
+                                                        }
+                                                        zIndex={1}
+                                                    />
+                                                )
+                                            )
+                                        })()}
+
+                                        {isMobile ? (
+                                            // Mobile: Use Drawer wrapper
+                                            <Drawer
+                                                open={
+                                                    openPopovers[
+                                                        String(column.field)
+                                                    ] || false
+                                                }
+                                                onOpenChange={(open) => {
+                                                    setOpenPopovers((prev) => ({
+                                                        ...prev,
+                                                        [String(column.field)]:
+                                                            open,
+                                                    }))
+                                                }}
+                                                direction="bottom"
+                                                modal={true}
+                                                dismissible={true}
+                                                showHandle={true}
+                                            >
+                                                <DrawerTrigger>
+                                                    <FilterIcon size={16} />
+                                                </DrawerTrigger>
+                                                <DrawerPortal>
+                                                    <DrawerOverlay />
+                                                    <DrawerContent
+                                                        contentDriven={true}
+                                                    >
+                                                        <DrawerBody noPadding>
+                                                            <ColumnFilter
+                                                                column={column}
+                                                                data={data}
+                                                                tableToken={
+                                                                    tableToken
+                                                                }
+                                                                sortHandlers={
+                                                                    sortHandlers
+                                                                }
+                                                                filterHandlers={
+                                                                    filterHandlers
+                                                                }
+                                                                filterState={
+                                                                    filterState
+                                                                }
+                                                                sortState={
+                                                                    sortState
+                                                                }
+                                                                onColumnFilter={
+                                                                    onColumnFilter
+                                                                }
+                                                                onPopoverClose={() => {
+                                                                    setOpenPopovers(
+                                                                        (
+                                                                            prev
+                                                                        ) => ({
+                                                                            ...prev,
+                                                                            [String(
+                                                                                column.field
+                                                                            )]:
+                                                                                false,
+                                                                        })
+                                                                    )
+                                                                }}
+                                                            />
+                                                        </DrawerBody>
+                                                    </DrawerContent>
+                                                </DrawerPortal>
+                                            </Drawer>
+                                        ) : (
+                                            <Popover
+                                                trigger={
+                                                    <FilterIcon size={16} />
+                                                }
+                                                maxWidth={220}
+                                                minWidth={220}
+                                                side="bottom"
+                                                align={getPopoverAlignment(
+                                                    index,
+                                                    visibleColumns.length
+                                                )}
+                                                sideOffset={20}
+                                                open={
+                                                    openPopovers[
+                                                        String(column.field)
+                                                    ] || false
+                                                }
+                                                onOpenChange={(open) => {
+                                                    setOpenPopovers((prev) => ({
+                                                        ...prev,
+                                                        [String(column.field)]:
+                                                            open,
+                                                    }))
+                                                }}
+                                            >
+                                                <ColumnFilter
+                                                    column={column}
+                                                    data={data}
+                                                    tableToken={tableToken}
+                                                    sortHandlers={sortHandlers}
+                                                    filterHandlers={
+                                                        filterHandlers
+                                                    }
+                                                    filterState={filterState}
+                                                    sortState={sortState}
+                                                    onColumnFilter={
+                                                        onColumnFilter
+                                                    }
+                                                    onPopoverClose={() => {
+                                                        setOpenPopovers(
+                                                            (prev) => ({
+                                                                ...prev,
+                                                                [String(
+                                                                    column.field
+                                                                )]: false,
+                                                            })
+                                                        )
+                                                    }}
+                                                />
+                                            </Popover>
+                                        )}
+                                    </Block>
+                                )}
+                            </Block>
+                        )
+
+                        // Conditionally wrap with DraggableColumnHeader
+                        if (isDraggable && !isMobile) {
+                            return (
+                                <DraggableColumnHeader
+                                    key={String(column.field)}
+                                    id={String(column.field)}
+                                    style={headerStyle}
+                                    data-table-column-heading={column.header}
+                                    disabled={false}
+                                >
+                                    {headerContent}
+                                </DraggableColumnHeader>
+                            )
+                        }
+
+                        return (
+                            <th
+                                key={String(column.field)}
+                                style={headerStyle}
+                                data-table-column-heading={column.header}
+                            >
+                                {headerContent}
                             </th>
                         )
                     })}
@@ -935,7 +926,7 @@ const TableHeader = forwardRef<
                                 <ColumnManager
                                     columns={initialColumns}
                                     visibleColumns={
-                                        allVisibleColumns || localColumns
+                                        allVisibleColumns || visibleColumns
                                     }
                                     onColumnChange={onColumnChange}
                                     maxSelections={columnManagerMaxSelections}
@@ -956,6 +947,9 @@ const TableHeader = forwardRef<
                 </tr>
             </thead>
         )
+
+        // Return thead (DndContext is now in DataTable)
+        return tableHeaderContent
     }
 )
 

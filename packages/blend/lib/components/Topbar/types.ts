@@ -32,7 +32,6 @@ export type TopbarProps = {
 
     sidebarTopSlot?: ReactNode
     topbar?: ReactNode
-    title?: string
 
     leftAction?: ReactNode
 

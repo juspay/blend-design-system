@@ -3067,6 +3067,10 @@ const DataTableDemo = () => {
                 enableAdvancedFilter
                 advancedFilterComponent={AdvancedFilterComponent}
                 advancedFilters={serverState.filters}
+                enableColumnReordering={true}
+                onColumnReorder={(newColumns) => {
+                    console.log('🔄 Columns reordered:', newColumns)
+                }}
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
