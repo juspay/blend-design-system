@@ -35,7 +35,7 @@ export type ButtonProps = {
     leadingIcon?: React.ReactNode
     trailingIcon?: React.ReactNode
     disabled?: boolean
-    onClick?: () => void
+    onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void
     loading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant

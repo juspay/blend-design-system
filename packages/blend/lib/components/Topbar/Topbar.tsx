@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react'
-import { PanelsTopLeft, ArrowLeft, UserIcon, ChevronDown } from 'lucide-react'
+import { PanelsTopLeft, ArrowLeft, ChevronDown } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -196,7 +196,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             defaultIsVisible = true,
             sidebarTopSlot,
             topbar,
-            title,
             leftAction,
             rightActions,
             showBackButton = false,
@@ -307,18 +306,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                             (merchant) => ({
                                                 label: merchant.label,
                                                 value: merchant.value,
-                                                slot1: merchant.icon || (
-                                                    <UserIcon
-                                                        style={{
-                                                            width: topBarToken
-                                                                .merchantSelectTrigger
-                                                                .icon.size,
-                                                            height: topBarToken
-                                                                .merchantSelectTrigger
-                                                                .icon.size,
-                                                        }}
-                                                    />
-                                                ),
+                                                slot1: merchant.icon,
                                             })
                                         ),
                                     },
@@ -391,7 +379,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 <Block
                     ref={ref}
                     width="100%"
-                    position={topBarToken.position}
+                    position="sticky"
                     top={topBarToken.top}
                     borderBottom={topBarToken.borderBottom}
                     display="flex"
@@ -402,6 +390,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     style={{
                         backdropFilter: topBarToken.backdropFilter,
                     }}
+                    justifyContent="space-between"
                 >
                     <Block
                         display="flex"
@@ -412,7 +401,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         {renderLeftSection()}
                     </Block>
 
-                    <Block
+                    {/* <Block
                         flexGrow={1}
                         display="flex"
                         alignItems="center"
@@ -435,7 +424,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                     {title}
                                 </Text>
                             ))}
-                    </Block>
+                    </Block> */}
 
                     <Block
                         display="flex"
@@ -454,7 +443,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                position={topBarToken.position}
                 top={topBarToken.top}
                 borderBottom={topBarToken.borderBottom}
                 display="flex"

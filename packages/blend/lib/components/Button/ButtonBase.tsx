@@ -74,7 +74,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
             createRipple(event)
-            onClick?.()
+            onClick?.(event)
         }
 
         return (

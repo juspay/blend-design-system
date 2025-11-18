@@ -39,6 +39,7 @@ import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
@@ -120,6 +121,8 @@ const initTokens = (
             componentTokens.AVATAR_GROUP ??
             getAvatarGroupTokens(foundationTokens),
         SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
+        DIRECTORY:
+            componentTokens.DIRECTORY ?? getDirectoryTokens(foundationTokens),
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
             getMobileNavigationTokens(foundationTokens),

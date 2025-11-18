@@ -20,6 +20,7 @@ type TenantPanelProps = {
     selected: string
     onSelect: (label: string) => void
     maxVisibleItems?: number
+    tenantFooter?: React.ReactNode
 }
 
 const TenantPanel: React.FC<TenantPanelProps> = ({
@@ -27,6 +28,7 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
     selected,
     onSelect,
     maxVisibleItems = 5,
+    tenantFooter,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
     const { visibleTenants, hiddenTenants, hasMoreTenants } = arrangeTenants(
@@ -61,6 +63,19 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
                     hiddenTenants={hiddenTenants}
                     onSelect={onSelect}
                 />
+            )}
+
+            {tenantFooter && (
+                <Block
+                    width={tokens.leftPanel.item.width}
+                    height={tokens.leftPanel.item.width}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    marginTop="auto"
+                >
+                    {tenantFooter}
+                </Block>
             )}
         </Block>
     )

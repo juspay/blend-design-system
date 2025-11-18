@@ -13,6 +13,7 @@ export type LeftPanelInfo = {
     selected: string
     onSelect: (value: string) => void
     maxVisibleItems?: number
+    tenantFooter?: ReactNode
 }
 
 export type TenantItem = {
