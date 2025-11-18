@@ -89,6 +89,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     alignItems: 'center',
     justifyContent: 'center',
     whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
     paddingTop: props.$tabsToken.padding[props.$size][props.$variant].top,
     paddingRight: props.$tabsToken.padding[props.$size][props.$variant].right,
     paddingBottom: props.$tabsToken.padding[props.$size][props.$variant].bottom,
@@ -99,10 +100,10 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
         ? props.$tabsToken.trigger.text.color[props.$variant].active
         : props.$tabsToken.trigger.text.color[props.$variant].default,
     backgroundColor: props.$isOverlay
-        ? props.$tabsToken.backgroundColor[props.$variant].active
+        ? 'transparent'
         : props.$tabsToken.backgroundColor[props.$variant].default,
     borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
-    border: props.$tabsToken.border[props.$variant],
+    border: props.$isOverlay ? 'none' : props.$tabsToken.border[props.$variant],
     transition: 'color 0.2s ease-in-out',
     outline: 'none',
     position: 'relative',
@@ -118,10 +119,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
 
         "&[data-state='active']": {
             color: props.$tabsToken.trigger.text.color[props.$variant].active,
-            backgroundColor:
-                props.$variant === TabsVariant.UNDERLINE
-                    ? 'transparent'
-                    : props.$tabsToken.backgroundColor[props.$variant].active,
+            backgroundColor: 'transparent',
             fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
             zIndex: 1,
         },

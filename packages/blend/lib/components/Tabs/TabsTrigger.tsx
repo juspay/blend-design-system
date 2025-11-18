@@ -19,7 +19,6 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             closable = false,
             onClose,
             disable = false,
-            isActive = false,
             isOverlay = false,
             ...props
         },
