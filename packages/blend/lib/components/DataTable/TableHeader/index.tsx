@@ -1,22 +1,7 @@
-import { forwardRef, useState, useRef, useEffect } from 'react'
+import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
-import {
-    DndContext,
-    closestCenter,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-    DragEndEvent,
-    DragOverlay,
-} from '@dnd-kit/core'
-import {
-    SortableContext,
-    sortableKeyboardCoordinates,
-    horizontalListSortingStrategy,
-    arrayMove,
-} from '@dnd-kit/sortable'
+
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -103,7 +88,6 @@ const TableHeader = forwardRef<
             onSortDescending,
             onSelectAll,
             onColumnChange,
-            onColumnReorder,
             onHeaderChange,
             onColumnFilter,
             getColumnWidth,
@@ -112,7 +96,6 @@ const TableHeader = forwardRef<
     ) => {
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
-        const [localColumns, setLocalColumns] = useState(visibleColumns)
         const editableRef = useRef<HTMLDivElement>(null)
 
         const [sortState, setSortState] = useState<SortState>({
@@ -129,24 +112,9 @@ const TableHeader = forwardRef<
             Record<string, boolean>
         >({})
 
-        // Drag and drop state
-        const [activeId, setActiveId] = useState<string | null>(null)
-
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
-
-        // Drag and drop sensors
-        const sensors = useSensors(
-            useSensor(PointerSensor, {
-                activationConstraint: {
-                    distance: 5,
-                },
-            }),
-            useSensor(KeyboardSensor, {
-                coordinateGetter: sortableKeyboardCoordinates,
-            })
-        )
 
         const sortHandlers = createSortHandlers(
             sortState,
@@ -155,10 +123,6 @@ const TableHeader = forwardRef<
             onSortDescending
         )
         const filterHandlers = createFilterHandlers(setFilterState)
-
-        useEffect(() => {
-            setLocalColumns(visibleColumns)
-        }, [visibleColumns])
 
         useEffect(() => {
             setSortState({
@@ -272,17 +236,16 @@ const TableHeader = forwardRef<
             const valueToSave =
                 newValue || editableRef.current?.textContent || ''
             const trimmedValue = valueToSave.trim()
-            const currentColumn = localColumns.find(
+            const currentColumn = visibleColumns.find(
                 (col) => String(col.field) === field
             )
 
             if (currentColumn && trimmedValue !== currentColumn.header) {
-                const updatedColumns = localColumns.map((col) =>
+                const updatedColumns = visibleColumns.map((col) =>
                     String(col.field) === field
                         ? { ...col, header: trimmedValue }
                         : col
                 )
-                setLocalColumns(updatedColumns)
 
                 onHeaderChange?.(
                     field as keyof Record<string, unknown>,
@@ -301,43 +264,6 @@ const TableHeader = forwardRef<
                 setEditingField(null)
             }
         }
-
-        // Drag and drop handlers
-        const handleDragStart = (event: DragEndEvent) => {
-            setActiveId(event.active.id as string)
-        }
-
-        const handleDragEnd = (event: DragEndEvent) => {
-            const { active, over } = event
-
-            if (over && active.id !== over.id) {
-                const oldIndex = localColumns.findIndex(
-                    (col) => String(col.field) === active.id
-                )
-                const newIndex = localColumns.findIndex(
-                    (col) => String(col.field) === over.id
-                )
-
-                if (oldIndex !== -1 && newIndex !== -1) {
-                    const reorderedColumns = arrayMove(
-                        localColumns,
-                        oldIndex,
-                        newIndex
-                    )
-                    setLocalColumns(reorderedColumns)
-                    onColumnChange?.(reorderedColumns)
-                    onColumnReorder?.(reorderedColumns)
-                }
-            }
-
-            setActiveId(null)
-        }
-
-        const handleDragCancel = () => {
-            setActiveId(null)
-        }
-
-        const columnIds = localColumns.map((col) => String(col.field))
 
         const tableHeaderContent = (
             <thead
@@ -443,7 +369,7 @@ const TableHeader = forwardRef<
                         </th>
                     )}
 
-                    {localColumns.map((column, index) => {
+                    {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
                         const isEditing = editingField === String(column.field)
                         const columnConfig = getColumnTypeConfig(
@@ -455,7 +381,7 @@ const TableHeader = forwardRef<
                             columnFreeze,
                             enableRowExpansion,
                             enableRowSelection,
-                            localColumns,
+                            visibleColumns,
                             getColumnWidth,
                             tableToken.dataTable.table.header.backgroundColor ||
                                 '#ffffff'
@@ -474,7 +400,11 @@ const TableHeader = forwardRef<
                                 mobileConfig?.enableColumnOverflow &&
                                 mobileOverflowColumns.length > 0
                             ) &&
-                            index === localColumns.length - 1
+                            index === visibleColumns.length - 1
+
+                        // Disable dragging for frozen columns
+                        const isDraggable =
+                            enableColumnReordering && index >= columnFreeze
 
                         const headerStyle = {
                             ...tableToken.dataTable.table.header.cell,
@@ -825,7 +755,7 @@ const TableHeader = forwardRef<
                                                 side="bottom"
                                                 align={getPopoverAlignment(
                                                     index,
-                                                    localColumns.length
+                                                    visibleColumns.length
                                                 )}
                                                 sideOffset={20}
                                                 open={
@@ -873,11 +803,7 @@ const TableHeader = forwardRef<
                         )
 
                         // Conditionally wrap with DraggableColumnHeader
-                        if (
-                            enableColumnReordering &&
-                            !isMobile &&
-                            columnFreeze === 0
-                        ) {
+                        if (isDraggable && !isMobile) {
                             return (
                                 <DraggableColumnHeader
                                     key={String(column.field)}
@@ -1000,7 +926,7 @@ const TableHeader = forwardRef<
                                 <ColumnManager
                                     columns={initialColumns}
                                     visibleColumns={
-                                        allVisibleColumns || localColumns
+                                        allVisibleColumns || visibleColumns
                                     }
                                     onColumnChange={onColumnChange}
                                     maxSelections={columnManagerMaxSelections}
@@ -1022,58 +948,7 @@ const TableHeader = forwardRef<
             </thead>
         )
 
-        // Return with or without DndContext based on enableColumnReordering
-        if (enableColumnReordering && !isMobile) {
-            return (
-                <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                    onDragCancel={handleDragCancel}
-                >
-                    <SortableContext
-                        items={columnIds}
-                        strategy={horizontalListSortingStrategy}
-                    >
-                        {tableHeaderContent}
-                    </SortableContext>
-                    <DragOverlay>
-                        {activeId ? (
-                            <Block
-                                padding={FOUNDATION_THEME.unit[12]}
-                                backgroundColor={
-                                    tableToken.dataTable.table.header
-                                        .backgroundColor
-                                }
-                                border={`1px solid ${FOUNDATION_THEME.colors.gray[300]}`}
-                                borderRadius={FOUNDATION_THEME.unit[8]}
-                                boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-                            >
-                                <PrimitiveText
-                                    style={{
-                                        fontSize:
-                                            tableToken.dataTable.table.header
-                                                .cell.fontSize,
-                                        fontWeight:
-                                            tableToken.dataTable.table.header
-                                                .cell.fontWeight,
-                                    }}
-                                >
-                                    {
-                                        localColumns.find(
-                                            (col) =>
-                                                String(col.field) === activeId
-                                        )?.header
-                                    }
-                                </PrimitiveText>
-                            </Block>
-                        ) : null}
-                    </DragOverlay>
-                </DndContext>
-            )
-        }
-
+        // Return thead (DndContext is now in DataTable)
         return tableHeaderContent
     }
 )
