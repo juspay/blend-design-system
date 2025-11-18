@@ -632,6 +632,9 @@ const MultiSelectDemo = () => {
         },
     ]
 
+    const [playgroundShowSkeleton, setPlaygroundShowSkeleton] = useState(false)
+    const [playgroundSkeletonCount, setPlaygroundSkeletonCount] = useState('3')
+
     // Helper function to handle multi-select changes
     const handleMultiSelectChange =
         (
@@ -719,6 +722,19 @@ const MultiSelectDemo = () => {
                         <h2 className="text-xl font-semibold">Controls</h2>
 
                         <div className="space-y-4">
+                            <Switch
+                                label="Show Skeleton"
+                                checked={playgroundShowSkeleton}
+                                onChange={setPlaygroundShowSkeleton}
+                            />
+                            <TextInput
+                                label="Skeleton Count"
+                                value={playgroundSkeletonCount.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundSkeletonCount(e.target.value)
+                                }
+                                placeholder="Enter skeleton count"
+                            />
                             <TextInput
                                 label="Label"
                                 value={playgroundLabel}
@@ -863,7 +879,11 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
-                                showSkeleton={true}
+                                skeleton={{
+                                    count: parseInt(playgroundSkeletonCount),
+                                    show: playgroundShowSkeleton,
+                                    variant: 'pulse',
+                                }}
                                 fullWidth={true}
                                 minMenuWidth={400}
                                 showActionButtons={true}
