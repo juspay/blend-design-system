@@ -545,6 +545,11 @@ const SingleSelectDemo = () => {
 
                             <div className="border rounded-lg p-6 bg-gray-50">
                                 <SingleSelect
+                                    skeleton={{
+                                        count: 3,
+                                        show: true,
+                                        variant: 'pulse',
+                                    }}
                                     fullWidth={true}
                                     // minDropdownWidth={100}
                                     error={playgroundError}

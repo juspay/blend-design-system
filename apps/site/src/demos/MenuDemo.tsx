@@ -972,6 +972,7 @@ export const MenuDemo: React.FC = () => {
                                 enableSearch={playgroundEnableSearch}
                                 searchPlaceholder={playgroundSearchPlaceholder}
                                 asModal={playgroundAsModal}
+                                showSkeleton={true}
                             />
                         </Block>
 

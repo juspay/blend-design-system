@@ -1,3 +1,4 @@
+import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SelectMenuAlignment {
@@ -123,4 +124,9 @@ export type SingleSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: {
+        count?: number
+        show?: boolean
+        variant?: SkeletonVariant
+    }
 }

@@ -863,6 +863,7 @@ const MultiSelectDemo = () => {
                             style={{ width: '400px' }}
                         >
                             <MultiSelect
+                                showSkeleton={true}
                                 fullWidth={true}
                                 minMenuWidth={400}
                                 showActionButtons={true}
