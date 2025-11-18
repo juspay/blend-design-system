@@ -336,7 +336,7 @@ const StatCardDemo = () => {
                         </h3>
                         <StatCard
                             actionIcon={<EllipsisVertical size={16} />}
-                            height="350px"
+                            height="250px"
                             title="Total Revenue"
                             value="$12,345"
                             subtitle="vs last month"
