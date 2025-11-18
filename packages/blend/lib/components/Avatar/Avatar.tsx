@@ -1,5 +1,10 @@
 import { forwardRef, useState } from 'react'
-import { type AvatarProps, AvatarSize, AvatarShape } from './types'
+import {
+    type AvatarProps,
+    AvatarSize,
+    AvatarShape,
+    AvatarOnlinePosition,
+} from './types'
 import { StyledAvatarImage } from './StyledAvatar'
 import { getInitialsFromText, getColorFromText } from './avatarUtils'
 import Block from '../Primitives/Block/Block'
@@ -17,6 +22,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             size = AvatarSize.MD,
             shape = AvatarShape.CIRCULAR,
             online = false,
+            onlinePosition = AvatarOnlinePosition.TOP,
             leadingSlot,
             trailingSlot,
             ...props
@@ -49,39 +55,113 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             sm: {
                 [AvatarShape.CIRCULAR]: {
                     [AvatarSize.SM]: {
-                        top: '-1px',
-                        right: '-1px',
+                        top: '-2px',
+                        right: '-2px',
+                        bottom: '0px',
                     },
                     [AvatarSize.REGULAR]: {
-                        top: '-0.875px',
-                        right: '-2.125px',
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '0px',
                     },
-                    [AvatarSize.MD]: { top: '-2px', right: '-3.333px' },
-                    [AvatarSize.LG]: { top: '0.167px', right: '-3px' },
-                    [AvatarSize.XL]: { top: '1.167px', right: '-3px' },
+                    [AvatarSize.MD]: {
+                        top: '-3px',
+                        right: '-4px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.LG]: {
+                        top: '0.2px',
+                        right: '-3px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.XL]: {
+                        top: '1.167px',
+                        right: '-3px',
+                        bottom: '0px',
+                    },
                 },
                 [AvatarShape.ROUNDED]: {
-                    [AvatarSize.SM]: { top: '-2px', right: '-2px' },
-                    [AvatarSize.REGULAR]: { top: '-1.75px', right: '-2.125px' },
-                    [AvatarSize.MD]: { top: '-3.667px', right: '-5px' },
-                    [AvatarSize.LG]: { top: '-3.111px', right: '-8.222px' },
-                    [AvatarSize.XL]: { top: '-3.111px', right: '-10.222px' },
+                    [AvatarSize.SM]: {
+                        top: '-2px',
+                        right: '-3px',
+                        bottom: '-1px',
+                    },
+                    [AvatarSize.REGULAR]: {
+                        top: '-2px',
+                        right: '-3px',
+                        bottom: '-1px',
+                    },
+                    [AvatarSize.MD]: {
+                        top: '-3.667px',
+                        right: '-5px',
+                        bottom: '-3px',
+                    },
+                    [AvatarSize.LG]: {
+                        top: '-3.111px',
+                        right: '-8.222px',
+                        bottom: '-3px',
+                    },
+                    [AvatarSize.XL]: {
+                        top: '-3.111px',
+                        right: '-10.222px',
+                        bottom: '-4px',
+                    },
                 },
             },
             lg: {
                 [AvatarShape.CIRCULAR]: {
-                    [AvatarSize.SM]: { top: '-3px', right: '-3px' },
-                    [AvatarSize.REGULAR]: { top: '-5px', right: '-5px' },
-                    [AvatarSize.MD]: { top: '-3px', right: '-3px' },
-                    [AvatarSize.LG]: { top: '0px', right: '2px' },
-                    [AvatarSize.XL]: { top: '8px', right: '3px' },
+                    [AvatarSize.SM]: {
+                        top: '-2px',
+                        right: '-2px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.REGULAR]: {
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.MD]: {
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.LG]: {
+                        top: '0px',
+                        right: '2px',
+                        bottom: '0px',
+                    },
+                    [AvatarSize.XL]: {
+                        top: '8px',
+                        right: '3px',
+                        bottom: '0px',
+                    },
                 },
                 [AvatarShape.ROUNDED]: {
-                    [AvatarSize.SM]: { top: '-3px', right: '-3px' },
-                    [AvatarSize.REGULAR]: { top: '-3px', right: '-3px' },
-                    [AvatarSize.MD]: { top: '-3px', right: '-3px' },
-                    [AvatarSize.LG]: { top: '-5px', right: '-5px' },
-                    [AvatarSize.XL]: { top: '-8px', right: '-8px' },
+                    [AvatarSize.SM]: {
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '-3px',
+                    },
+                    [AvatarSize.REGULAR]: {
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '-3px',
+                    },
+                    [AvatarSize.MD]: {
+                        top: '-3px',
+                        right: '-3px',
+                        bottom: '-3px',
+                    },
+                    [AvatarSize.LG]: {
+                        top: '-5px',
+                        right: '-5px',
+                        bottom: '-5px',
+                    },
+                    [AvatarSize.XL]: {
+                        top: '-8px',
+                        right: '-8px',
+                        bottom: '-8px',
+                    },
                 },
             },
         }
@@ -95,6 +175,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             INDICATOR_POSITIONS[screenSize][shape as AvatarShape][
                 size as AvatarSize
             ]['right'] || '0'
+
+        const dynamicBottomPosition =
+            INDICATOR_POSITIONS[screenSize][shape as AvatarShape][
+                size as AvatarSize
+            ]['bottom'] || '0'
 
         const renderContent = () => (
             <Block
@@ -126,7 +211,12 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         aria-hidden="true"
                         data-avatar-indicator="true"
                         position="absolute"
-                        top={dynamicTopPosition}
+                        {...(onlinePosition === AvatarOnlinePosition.TOP && {
+                            top: dynamicTopPosition,
+                        })}
+                        {...(onlinePosition === AvatarOnlinePosition.BOTTOM && {
+                            bottom: dynamicBottomPosition,
+                        })}
                         right={dynamicRightPosition}
                         display="block"
                         width={tokens.indicator.size[size].width}
