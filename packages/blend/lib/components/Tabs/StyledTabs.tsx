@@ -71,7 +71,8 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
             scale: 'var(--tabs-indicator-width, 0.125) 1',
             translate: 'var(--tabs-indicator-left, 0) 0',
             transformOrigin: 'left',
-            transition: 'scale 220ms, translate 220ms',
+            transition:
+                'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
             zIndex: 2,
         },
     }),
@@ -81,6 +82,7 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     $variant: TabsVariant
     $size: TabsSize
     $tabsToken: TabsTokensType
+    $isOverlay?: boolean
 }>((props) => ({
     display: 'inline-flex',
     gap: props.$tabsToken.trigger.gap,
@@ -93,8 +95,12 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     paddingLeft: props.$tabsToken.padding[props.$size][props.$variant].left,
     fontSize: props.$tabsToken.trigger.text.fontSize[props.$size],
     fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
-    color: props.$tabsToken.trigger.text.color[props.$variant].default,
-    backgroundColor: props.$tabsToken.backgroundColor[props.$variant].default,
+    color: props.$isOverlay
+        ? props.$tabsToken.trigger.text.color[props.$variant].active
+        : props.$tabsToken.trigger.text.color[props.$variant].default,
+    backgroundColor: props.$isOverlay
+        ? props.$tabsToken.backgroundColor[props.$variant].active
+        : props.$tabsToken.backgroundColor[props.$variant].default,
     borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
     border: props.$tabsToken.border[props.$variant],
     transition: 'color 0.2s ease-in-out',
@@ -103,17 +109,23 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     cursor: 'pointer',
     overflow: 'visible',
 
-    "&:hover:not([data-state='active']):not(:disabled)": {
-        color: props.$tabsToken.trigger.text.color[props.$variant].hover,
-        backgroundColor: props.$tabsToken.backgroundColor[props.$variant].hover,
-    },
+    ...(!props.$isOverlay && {
+        "&:hover:not([data-state='active']):not(:disabled)": {
+            color: props.$tabsToken.trigger.text.color[props.$variant].hover,
+            backgroundColor:
+                props.$tabsToken.backgroundColor[props.$variant].hover,
+        },
 
-    "&[data-state='active']": {
-        color: props.$tabsToken.trigger.text.color[props.$variant].active,
-        backgroundColor: 'transparent',
-        fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
-        zIndex: 1,
-    },
+        "&[data-state='active']": {
+            color: props.$tabsToken.trigger.text.color[props.$variant].active,
+            backgroundColor:
+                props.$variant === TabsVariant.UNDERLINE
+                    ? 'transparent'
+                    : props.$tabsToken.backgroundColor[props.$variant].active,
+            fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
+            zIndex: 1,
+        },
+    }),
 
     '&:focus-visible:not(:disabled)': {
         outline: 'none',

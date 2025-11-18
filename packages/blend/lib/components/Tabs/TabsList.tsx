@@ -15,12 +15,9 @@ import {
     prepareDropdownItems,
     getDisplayTabs,
     calculateTabIndicatorPosition,
-    calculateTransitionDimensions,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-
-const ANIMATION_DURATION = 220 // ms
 
 const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
     (
@@ -50,6 +47,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const tabsListRef = useRef<HTMLDivElement>(null)
         const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
         const prevActiveTabRef = useRef<string>(activeTab)
+        const overlayContainerRef = useRef<HTMLDivElement>(null)
+        const activeTabInOverlayRef = useRef<HTMLButtonElement>(null)
 
         // Animate underline when active tab changes (UNDERLINE variant only)
         useEffect(() => {
@@ -63,60 +62,27 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
             const listElement = tabsListRef.current
             const newTab = tabRefsMap.current.get(activeTab)
-            const oldTab = tabRefsMap.current.get(prevActiveTabRef.current)
 
             if (!newTab || !listElement) {
                 return
             }
 
-            if (!oldTab || oldTab === newTab) {
-                const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
-                    newTab,
-                    listElement
-                )
-                listElement.style.setProperty(
-                    '--tabs-indicator-left',
-                    `${tabLeft}px`
-                )
-                listElement.style.setProperty(
-                    '--tabs-indicator-width',
-                    `${tabWidth}`
-                )
-                prevActiveTabRef.current = activeTab
-                return
-            }
-
-            const dimensions = calculateTransitionDimensions(
-                oldTab,
+            // Smoothly animate directly to the new tab position
+            const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
                 newTab,
                 listElement
             )
 
             listElement.style.setProperty(
                 '--tabs-indicator-left',
-                `${dimensions.left}px`
+                `${tabLeft}px`
             )
             listElement.style.setProperty(
                 '--tabs-indicator-width',
-                `${dimensions.width}`
+                `${tabWidth}`
             )
 
-            const timeoutId = setTimeout(() => {
-                if (listElement) {
-                    listElement.style.setProperty(
-                        '--tabs-indicator-left',
-                        `${dimensions.finalLeft}px`
-                    )
-                    listElement.style.setProperty(
-                        '--tabs-indicator-width',
-                        `${dimensions.finalWidth}`
-                    )
-                }
-            }, ANIMATION_DURATION)
-
             prevActiveTabRef.current = activeTab
-
-            return () => clearTimeout(timeoutId)
         }, [activeTab, variant])
 
         // Update indicator position on window resize
@@ -155,6 +121,41 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             window.addEventListener('resize', updatePosition)
             return () => window.removeEventListener('resize', updatePosition)
         }, [activeTab, variant])
+
+        // Animate clip-path for non-UNDERLINE variants
+        useEffect(() => {
+            if (
+                variant === TabsVariant.UNDERLINE ||
+                !overlayContainerRef.current ||
+                !activeTabInOverlayRef.current ||
+                !activeTab
+            ) {
+                return
+            }
+
+            const container = overlayContainerRef.current
+            const activeTabElement = activeTabInOverlayRef.current
+
+            if (!container || !activeTabElement) {
+                return
+            }
+
+            const updateClipPath = () => {
+                const { offsetLeft, offsetWidth } = activeTabElement
+                const containerWidth = container.offsetWidth
+
+                const clipLeft = (offsetLeft / containerWidth) * 100
+                const clipRight =
+                    ((offsetLeft + offsetWidth) / containerWidth) * 100
+
+                container.style.clipPath = `inset(0 ${(100 - clipRight).toFixed(2)}% 0 ${clipLeft.toFixed(2)}% round ${tabsToken.borderRadius[size][variant]})`
+            }
+
+            updateClipPath()
+
+            window.addEventListener('resize', updateClipPath)
+            return () => window.removeEventListener('resize', updateClipPath)
+        }, [activeTab, variant, size, tabsToken])
 
         // Auto-scroll to end when new tabs are added
         useEffect(() => {
@@ -225,6 +226,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         ref={scrollContainerRef}
                         style={{
                             flex: 1,
+                            position: 'relative',
                             overflowX: 'auto',
                             overflowY: 'visible',
                             WebkitOverflowScrolling: 'touch',
@@ -302,6 +304,79 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 )
                             })}
                         </StyledTabsList>
+
+                        {variant !== TabsVariant.UNDERLINE && (
+                            <Block
+                                ref={overlayContainerRef}
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    overflow: 'hidden',
+                                    pointerEvents: 'none',
+                                    transition:
+                                        'clip-path 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                                    clipPath: 'inset(0 100% 0 0% round 0px)',
+                                }}
+                                aria-hidden="true"
+                            >
+                                <StyledTabsList
+                                    $variant={variant}
+                                    $size={size}
+                                    $expanded={expanded}
+                                    $fitContent={fitContent}
+                                    $tabsToken={tabsToken}
+                                    style={{
+                                        display: 'flex',
+                                        minWidth: 'max-content',
+                                        marginBottom: 0,
+                                    }}
+                                >
+                                    {displayTabs.map((item) => {
+                                        const tabValue = item.value.includes(
+                                            '_'
+                                        )
+                                            ? item.value.split('_')[0]
+                                            : item.value
+
+                                        return (
+                                            <TabsTrigger
+                                                key={`overlay-${item.value}`}
+                                                ref={
+                                                    tabValue === activeTab
+                                                        ? activeTabInOverlayRef
+                                                        : null
+                                                }
+                                                value={tabValue}
+                                                variant={variant}
+                                                size={size}
+                                                isActive={
+                                                    tabValue === activeTab
+                                                }
+                                                isOverlay={true}
+                                                closable={
+                                                    item.closable &&
+                                                    !item.isDefault
+                                                }
+                                                onClose={() =>
+                                                    handleTabClose(item.value)
+                                                }
+                                                disabled={item.disable}
+                                                style={{
+                                                    flexShrink: 0,
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                                tabIndex={-1}
+                                            >
+                                                {item.label}
+                                            </TabsTrigger>
+                                        )
+                                    })}
+                                </StyledTabsList>
+                            </Block>
+                        )}
                     </Block>
 
                     {(showDropdown || showAddButton) && (
@@ -433,6 +508,61 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 >
                     {renderChildren()}
                 </StyledTabsList>
+
+                {variant !== TabsVariant.UNDERLINE && (
+                    <Block
+                        ref={overlayContainerRef}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            overflow: 'hidden',
+                            pointerEvents: 'none',
+                            transition:
+                                'clip-path 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                            clipPath: 'inset(0 100% 0 0% round 0px)',
+                        }}
+                        aria-hidden="true"
+                    >
+                        <StyledTabsList
+                            $variant={variant}
+                            $size={size}
+                            $expanded={expanded}
+                            $fitContent={fitContent}
+                            $tabsToken={tabsToken}
+                        >
+                            {React.Children.map(children, (child) => {
+                                if (!React.isValidElement(child)) return child
+
+                                const existingProps = child.props as Record<
+                                    string,
+                                    unknown
+                                >
+                                const childValue =
+                                    'value' in existingProps
+                                        ? (existingProps.value as string)
+                                        : ''
+
+                                const childProps = {
+                                    ...existingProps,
+                                    variant,
+                                    size,
+                                    isActive: childValue === activeTab,
+                                    isOverlay: true,
+                                    tabIndex: -1,
+                                    ref:
+                                        childValue === activeTab
+                                            ? activeTabInOverlayRef
+                                            : null,
+                                }
+
+                                return React.cloneElement(child, childProps)
+                            })}
+                        </StyledTabsList>
+                    </Block>
+                )}
             </Block>
         )
     }

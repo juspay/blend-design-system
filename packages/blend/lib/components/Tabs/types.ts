@@ -69,6 +69,7 @@ export type TabsTriggerProps = ComponentPropsWithoutRef<
     onClose?: () => void
     disable?: boolean
     isActive?: boolean
+    isOverlay?: boolean
 }
 
 export type TabsContentProps = ComponentPropsWithoutRef<
