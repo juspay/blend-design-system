@@ -153,6 +153,16 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             return processedItems.some((item) => item.showSkeleton === true)
         }, [processedItems])
 
+        const hasAnyChildSkeleton = useMemo(() => {
+            if (showSkeleton) return true
+
+            return React.Children.toArray(children).some((child) => {
+                if (!React.isValidElement(child)) return false
+                const props = child.props as Record<string, unknown>
+                return props.showSkeleton === true
+            })
+        }, [children, showSkeleton])
+
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
                 if (processedTabValue.includes('_')) {
@@ -406,16 +416,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 return React.cloneElement(child, childProps)
             })
         }
-
-        const hasAnyChildSkeleton = useMemo(() => {
-            if (showSkeleton) return true
-
-            return React.Children.toArray(children).some((child) => {
-                if (!React.isValidElement(child)) return false
-                const props = child.props as Record<string, unknown>
-                return props.showSkeleton === true
-            })
-        }, [children, showSkeleton])
 
         return (
             <Block
