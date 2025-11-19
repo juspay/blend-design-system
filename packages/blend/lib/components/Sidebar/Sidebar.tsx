@@ -72,7 +72,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             isExpanded: controlledIsExpanded,
             onExpandedChange,
             defaultIsExpanded = true,
-            tenantPanelOnlyMode = false,
+            panelOnlyMode = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
         },
@@ -168,7 +168,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const handleMouseEnter = useCallback(() => setIsHovering(true), [])
         const handleMouseLeave = useCallback(() => setIsHovering(false), [])
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
-        const isTenantPanelOnlyMode = tenantPanelOnlyMode && hasLeftPanel
+        const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
         const [mobileNavigationHeight, setMobileNavigationHeight] =
@@ -214,8 +214,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 position="relative"
                 zIndex={99}
             >
-                {/* Hover trigger area - only show when NOT in tenant panel only mode */}
-                {!isExpanded && !isMobile && !isTenantPanelOnlyMode && (
+                {/* Hover trigger area - only show when NOT in panel only mode */}
+                {!isExpanded && !isMobile && !isPanelOnlyMode && (
                     <Block
                         position="absolute"
                         left="0"
@@ -233,7 +233,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 <Block
                     backgroundColor={tokens.backgroundColor}
                     maxWidth={
-                        isTenantPanelOnlyMode
+                        isPanelOnlyMode
                             ? 'fit-content'
                             : getSidebarWidth(
                                   isExpanded,
@@ -242,21 +242,21 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                   tokens
                               )
                     }
-                    width={isTenantPanelOnlyMode ? 'auto' : '100%'}
+                    width={isPanelOnlyMode ? 'auto' : '100%'}
                     borderRight={
-                        isTenantPanelOnlyMode
+                        isPanelOnlyMode
                             ? tokens.borderRight
                             : getSidebarBorder(isExpanded, isHovering, tokens)
                     }
                     display={isMobile ? 'none' : 'flex'}
                     position={
-                        isTenantPanelOnlyMode
+                        isPanelOnlyMode
                             ? 'relative'
                             : !isExpanded
                               ? 'absolute'
                               : 'relative'
                     }
-                    zIndex={isTenantPanelOnlyMode ? '48' : getSidebarZIndex()}
+                    zIndex={isPanelOnlyMode ? '48' : getSidebarZIndex()}
                     height="100%"
                     style={{
                         willChange: 'transform',
@@ -265,41 +265,36 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isTenantPanelOnlyMode ? undefined : handleMouseLeave
+                        isPanelOnlyMode ? undefined : handleMouseLeave
                     }
                     data-is-sidebar-expanded={
-                        isTenantPanelOnlyMode ? 'false' : isExpanded
+                        isPanelOnlyMode ? 'false' : isExpanded
                     }
                     boxShadow={
-                        isTenantPanelOnlyMode
+                        isPanelOnlyMode
                             ? 'none'
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
                               : 'none'
                     }
                     data-sidebar-state={
-                        isTenantPanelOnlyMode
-                            ? 'tenant-only'
-                            : getSidebarState()
+                        isPanelOnlyMode ? 'panel-only' : getSidebarState()
                     }
                 >
                     {!isMobile && (
                         <>
-                            {/* Tenant Panel Only Mode: Show only tenant panel, always visible */}
-                            {isTenantPanelOnlyMode && leftPanel && (
+                            {isPanelOnlyMode && leftPanel && (
                                 <TenantPanel
                                     items={leftPanel.items}
                                     selected={leftPanel.selected}
                                     onSelect={leftPanel.onSelect}
-                                    maxVisibleItems={leftPanel.maxVisibleItems}
                                     tenantSlot1={leftPanel.tenantSlot1}
                                     tenantSlot2={leftPanel.tenantSlot2}
                                     tenantFooter={leftPanel.tenantFooter}
                                 />
                             )}
 
-                            {/* Normal Mode: Show tenant panel + sidebar content on expand/hover */}
-                            {!isTenantPanelOnlyMode && (
+                            {!isPanelOnlyMode && (
                                 <>
                                     {hasLeftPanel &&
                                         leftPanel &&
@@ -308,9 +303,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 items={leftPanel.items}
                                                 selected={leftPanel.selected}
                                                 onSelect={leftPanel.onSelect}
-                                                maxVisibleItems={
-                                                    leftPanel.maxVisibleItems
-                                                }
                                                 tenantSlot1={
                                                     leftPanel.tenantSlot1
                                                 }
@@ -381,6 +373,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             isExpanded={isExpanded}
                             onToggleExpansion={handleToggle}
                             showToggleButton={showToggleButton}
+                            panelOnlyMode={isPanelOnlyMode}
                             sidebarTopSlot={sidebarTopSlot}
                             topbar={topbar}
                             leftPanel={leftPanel}

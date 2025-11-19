@@ -1,7 +1,7 @@
 import { forwardRef, useState } from 'react'
 import { PanelsTopLeft, ArrowLeft, ChevronDown } from 'lucide-react'
-import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../Text/Text'
 import type { TopbarProps } from './types'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
@@ -18,170 +18,6 @@ const isControlledTopbar = (isVisible: boolean | undefined): boolean => {
     return isVisible !== undefined
 }
 
-const ToggleButton = styled.button.withConfig({
-    shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    border-radius: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.toggleButton.borderRadius
-            : tokens.lg.toggleButton.borderRadius
-    }};
-    cursor: pointer;
-    padding: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.toggleButton.padding
-            : tokens.lg.toggleButton.padding
-    }};
-    transition: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.toggleButton.transition
-            : tokens.lg.toggleButton.transition
-    }};
-
-    &:hover {
-        background-color: ${({ isMobile }) => {
-            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-            return isMobile
-                ? tokens.sm.toggleButton.backgroundColor.hover
-                : tokens.lg.toggleButton.backgroundColor.hover
-        }};
-    }
-`
-
-const ActionButton = styled.button.withConfig({
-    shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    border-radius: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.actionButton.borderRadius
-            : tokens.lg.actionButton.borderRadius
-    }};
-    cursor: pointer;
-    padding: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.actionButton.padding
-            : tokens.lg.actionButton.padding
-    }};
-    transition: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.actionButton.transition
-            : tokens.lg.actionButton.transition
-    }};
-    min-width: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.actionButton.minWidth
-            : tokens.lg.actionButton.minWidth
-    }};
-    height: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.actionButton.height
-            : tokens.lg.actionButton.height
-    }};
-
-    &:hover {
-        background-color: ${({ isMobile }) => {
-            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-            return isMobile
-                ? tokens.sm.actionButton.backgroundColor.hover
-                : tokens.lg.actionButton.backgroundColor.hover
-        }};
-    }
-
-    &:active {
-        background-color: ${({ isMobile }) => {
-            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-            return isMobile
-                ? tokens.sm.actionButton.backgroundColor.active
-                : tokens.lg.actionButton.backgroundColor.active
-        }};
-    }
-`
-
-const TenantIconButton = styled.button.withConfig({
-    shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    border-radius: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.tenantIconButton.borderRadius
-            : tokens.lg.tenantIconButton.borderRadius
-    }};
-    cursor: pointer;
-    min-height: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.tenantIconButton.minHeight
-            : tokens.lg.tenantIconButton.minHeight
-    }};
-    transition: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.tenantIconButton.transition
-            : tokens.lg.tenantIconButton.transition
-    }};
-
-    &:hover {
-        background-color: ${({ isMobile }) => {
-            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-            return isMobile
-                ? tokens.sm.tenantIconButton.backgroundColor.hover
-                : tokens.lg.tenantIconButton.backgroundColor.hover
-        }};
-    }
-
-    &:active {
-        background-color: ${({ isMobile }) => {
-            const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-            return isMobile
-                ? tokens.sm.tenantIconButton.backgroundColor.active
-                : tokens.lg.tenantIconButton.backgroundColor.active
-        }};
-    }
-`
-
-const MerchantSelectTrigger = styled.button.withConfig({
-    shouldForwardProp: (prop) => prop !== 'isMobile',
-})<{ isMobile: boolean }>`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    gap: ${({ isMobile }) => {
-        const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
-        return isMobile
-            ? tokens.sm.merchantSelectTrigger.gap
-            : tokens.lg.merchantSelectTrigger.gap
-    }};
-    padding: 0;
-    width: 100%;
-    overflow: hidden;
-`
-
 const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
     (
         {
@@ -189,6 +25,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             isExpanded,
             onToggleExpansion,
             showToggleButton,
+            panelOnlyMode = false,
             isVisible: controlledIsVisible,
             // @ts-expect-error - onVisibilityChange is part of the controlled API but not used internally
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -227,12 +64,33 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
 
                 if (showBackButton) {
                     return (
-                        <ActionButton isMobile={isMobile} onClick={onBackClick}>
+                        <PrimitiveButton
+                            type="button"
+                            onClick={onBackClick}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            border="none"
+                            backgroundColor="transparent"
+                            borderRadius={topBarToken.actionButton.borderRadius}
+                            cursor="pointer"
+                            padding={topBarToken.actionButton.padding}
+                            minWidth={topBarToken.actionButton.minWidth}
+                            height={topBarToken.actionButton.height}
+                            style={{
+                                transition: topBarToken.actionButton.transition,
+                            }}
+                            _hover={{
+                                backgroundColor:
+                                    topBarToken.actionButton.backgroundColor
+                                        .hover,
+                            }}
+                        >
                             <ArrowLeft
                                 color={topBarToken.actionButton.icon.color}
                                 size={topBarToken.actionButton.icon.size}
                             />
-                        </ActionButton>
+                        </PrimitiveButton>
                     )
                 }
 
@@ -266,14 +124,40 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                     selected={leftPanel.selected}
                                     onSelect={leftPanel.onSelect}
                                     customTrigger={
-                                        <TenantIconButton isMobile={isMobile}>
+                                        <PrimitiveButton
+                                            type="button"
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            border="none"
+                                            backgroundColor="transparent"
+                                            borderRadius={
+                                                topBarToken.tenantIconButton
+                                                    .borderRadius
+                                            }
+                                            cursor="pointer"
+                                            minHeight={
+                                                topBarToken.tenantIconButton
+                                                    .minHeight
+                                            }
+                                            style={{
+                                                transition:
+                                                    topBarToken.tenantIconButton
+                                                        .transition,
+                                            }}
+                                            _hover={{
+                                                backgroundColor:
+                                                    topBarToken.tenantIconButton
+                                                        .backgroundColor.hover,
+                                            }}
+                                        >
                                             {leftPanel.items.find(
                                                 (item) =>
                                                     (item.value ||
                                                         item.label) ===
                                                     leftPanel.selected
                                             )?.icon || leftPanel.items[0]?.icon}
-                                        </TenantIconButton>
+                                        </PrimitiveButton>
                                     }
                                 />
                             )}
@@ -314,7 +198,22 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 selected={merchantInfo.selected}
                                 onSelect={merchantInfo.onSelect}
                                 customTrigger={
-                                    <MerchantSelectTrigger isMobile={isMobile}>
+                                    <PrimitiveButton
+                                        type="button"
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        border="none"
+                                        backgroundColor="transparent"
+                                        cursor="pointer"
+                                        gap={
+                                            topBarToken.merchantSelectTrigger
+                                                .gap
+                                        }
+                                        padding="0"
+                                        width="100%"
+                                        overflow="hidden"
+                                    >
                                         <Block
                                             display="flex"
                                             alignItems="center"
@@ -367,7 +266,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                     .color
                                             }
                                         />
-                                    </MerchantSelectTrigger>
+                                    </PrimitiveButton>
                                 }
                             />
                         )}
@@ -380,7 +279,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     ref={ref}
                     width="100%"
                     position="sticky"
-                    top={topBarToken.top}
+                    top="0"
                     borderBottom={topBarToken.borderBottom}
                     display="flex"
                     alignItems="center"
@@ -401,31 +300,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         {renderLeftSection()}
                     </Block>
 
-                    {/* <Block
-                        flexGrow={1}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        minWidth={0}
-                    >
-                        {children ||
-                            (title && (
-                                <Text
-                                    variant="body.lg"
-                                    fontWeight={
-                                        topBarToken.centerSection.title
-                                            .fontWeight
-                                    }
-                                    color={
-                                        topBarToken.centerSection.title.color
-                                    }
-                                    truncate
-                                >
-                                    {title}
-                                </Text>
-                            ))}
-                    </Block> */}
-
                     <Block
                         display="flex"
                         alignItems="center"
@@ -443,7 +317,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             <Block
                 ref={ref}
                 width="100%"
-                top={topBarToken.top}
+                top="0"
                 borderBottom={topBarToken.borderBottom}
                 display="flex"
                 alignItems="center"
@@ -454,7 +328,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     backdropFilter: topBarToken.backdropFilter,
                 }}
             >
-                {!isExpanded && (
+                {!isExpanded && !panelOnlyMode && (
                     <Block
                         display="flex"
                         alignItems="center"
@@ -463,16 +337,35 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         flexShrink={0}
                     >
                         {showToggleButton && (
-                            <ToggleButton
-                                isMobile={isMobile}
+                            <PrimitiveButton
+                                type="button"
                                 onClick={onToggleExpansion}
                                 data-icon="sidebar-hamburger"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                border="none"
+                                backgroundColor="transparent"
+                                borderRadius={
+                                    topBarToken.toggleButton.borderRadius
+                                }
+                                cursor="pointer"
+                                padding={topBarToken.toggleButton.padding}
+                                style={{
+                                    transition:
+                                        topBarToken.toggleButton.transition,
+                                }}
+                                _hover={{
+                                    backgroundColor:
+                                        topBarToken.toggleButton.backgroundColor
+                                            .hover,
+                                }}
                             >
                                 <PanelsTopLeft
                                     color={topBarToken.toggleButton.icon.color}
                                     size={topBarToken.toggleButton.icon.size}
                                 />
-                            </ToggleButton>
+                            </PrimitiveButton>
                         )}
                         {sidebarTopSlot}
                     </Block>

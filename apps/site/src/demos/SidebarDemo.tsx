@@ -177,8 +177,7 @@ const SidebarDemo = () => {
     const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
     const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
 
-    const [tenantPanelOnlyMode, setTenantPanelOnlyMode] =
-        useState<boolean>(false)
+    const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
 
     const tenants = [
         {
@@ -190,6 +189,7 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'juspay',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'Razorpay',
@@ -200,6 +200,7 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'razorpay',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'Stripe',
@@ -210,36 +211,40 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'stripe',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'PayPal',
             icon: (
                 <UserIcon
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
             value: 'paypal',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'Square',
             icon: (
                 <Square
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
             value: 'square',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'Adyen',
             icon: (
                 <IndianRupee
-                    style={{ width: '16px', height: '16px' }}
+                    style={{ width: '24px', height: '24px' }}
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
             value: 'adyen',
+            showInPanel: true, // Visible in panel
         },
         {
             label: 'Braintree',
@@ -250,6 +255,7 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'braintree',
+            showInPanel: false, // This will appear in overflow menu
         },
         {
             label: 'Worldpay',
@@ -260,6 +266,7 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'worldpay',
+            showInPanel: false, // This will appear in overflow menu
         },
         // Additional tenants to demonstrate the three dot menu
         {
@@ -1118,7 +1125,7 @@ const SidebarDemo = () => {
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     enableTopbarAutoHide={true}
-                    tenantPanelOnlyMode={tenantPanelOnlyMode}
+                    panelOnlyMode={panelOnlyMode}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1269,18 +1276,16 @@ const SidebarDemo = () => {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() =>
-                                        setTenantPanelOnlyMode(
-                                            !tenantPanelOnlyMode
-                                        )
+                                        setPanelOnlyMode(!panelOnlyMode)
                                     }
                                     className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
                                     title={
-                                        tenantPanelOnlyMode
+                                        panelOnlyMode
                                             ? 'Show Full Sidebar'
-                                            : 'Tenant Panel Only Mode'
+                                            : 'Panel Only Mode'
                                     }
                                     style={{
-                                        backgroundColor: tenantPanelOnlyMode
+                                        backgroundColor: panelOnlyMode
                                             ? FOUNDATION_THEME.colors
                                                   .primary[100]
                                             : 'transparent',
@@ -1288,7 +1293,7 @@ const SidebarDemo = () => {
                                 >
                                     <Users
                                         color={
-                                            tenantPanelOnlyMode
+                                            panelOnlyMode
                                                 ? FOUNDATION_THEME.colors
                                                       .primary[600]
                                                 : FOUNDATION_THEME.colors
