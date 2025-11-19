@@ -2,6 +2,7 @@ import {
     Avatar,
     AvatarSize,
     AvatarShape,
+    AvatarOnlinePosition,
 } from '../../../../packages/blend/lib/components/Avatar'
 
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -24,7 +25,8 @@ const AvatarDemo = () => {
     const [playgroundOnline, setPlaygroundOnline] = useState(false)
     const [showLeadingSlot, setShowLeadingSlot] = useState(false)
     const [showTrailingSlot, setShowTrailingSlot] = useState(false)
-
+    const [playgroundOnlinePosition, setPlaygroundOnlinePosition] =
+        useState<AvatarOnlinePosition>(AvatarOnlinePosition.TOP)
     // Options for selects
     const sizeOptions = [
         { value: AvatarSize.SM, label: 'Small' },
@@ -37,6 +39,11 @@ const AvatarDemo = () => {
     const shapeOptions = [
         { value: AvatarShape.CIRCULAR, label: 'Circular' },
         { value: AvatarShape.ROUNDED, label: 'Rounded' },
+    ]
+
+    const onlinePositionOptions = [
+        { value: AvatarOnlinePosition.TOP, label: 'Top' },
+        { value: AvatarOnlinePosition.BOTTOM, label: 'Bottom' },
     ]
 
     // Sample avatar data for AvatarGroup
@@ -125,6 +132,17 @@ const AvatarDemo = () => {
                             }
                             placeholder="Select shape"
                         />
+                        <SingleSelect
+                            label="Online Position"
+                            items={[{ items: onlinePositionOptions }]}
+                            selected={playgroundOnlinePosition}
+                            onSelect={(value) =>
+                                setPlaygroundOnlinePosition(
+                                    value as AvatarOnlinePosition
+                                )
+                            }
+                            placeholder="Select online position"
+                        />
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -161,6 +179,7 @@ const AvatarDemo = () => {
                             leadingSlot={
                                 showLeadingSlot ? <User size={16} /> : undefined
                             }
+                            onlinePosition={playgroundOnlinePosition}
                             trailingSlot={
                                 showTrailingSlot ? (
                                     <Settings size={16} />

@@ -5,16 +5,7 @@ import {
 } from '../../../../packages/blend/lib/components/ChatInput'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import {
-    Camera,
-    FileText,
-    Upload,
-    Mic,
-    Send,
-    Hash,
-    Star,
-    AudioLines,
-} from 'lucide-react'
+import { Camera, Upload, Hash, AudioLines } from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import {
     ButtonType,
@@ -234,9 +225,7 @@ const ChatInputDemo = () => {
                                 }
                                 value={playgroundMessage}
                                 onChange={setPlaygroundMessage}
-                                onSend={handlePlaygroundSend}
                                 onAttachFiles={handlePlaygroundAttachFiles}
-                                onVoiceRecord={handlePlaygroundVoiceRecord}
                                 onFileRemove={handlePlaygroundFileRemove}
                                 onFileClick={handlePlaygroundFileClick}
                                 attachedFiles={playgroundFiles}
@@ -302,18 +291,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={(message) =>
-                                addSnackbar({
-                                    header: 'Full width',
-                                    description: `Message: "${message}"`,
-                                })
-                            }
-                            onVoiceRecord={() =>
-                                addSnackbar({
-                                    header: 'Voice Recording',
-                                    description: 'Full width voice recording',
-                                })
-                            }
                             placeholder="Full width chat input..."
                         />
                     </div>
@@ -326,19 +303,6 @@ const ChatInputDemo = () => {
                             <ChatInput
                                 value=""
                                 onChange={() => {}}
-                                onSend={(message) =>
-                                    addSnackbar({
-                                        header: '400px width',
-                                        description: `Message: "${message}"`,
-                                    })
-                                }
-                                onVoiceRecord={() =>
-                                    addSnackbar({
-                                        header: 'Voice Recording',
-                                        description:
-                                            '400px width voice recording',
-                                    })
-                                }
                                 placeholder="Fixed 400px width..."
                             />
                         </div>
@@ -352,19 +316,6 @@ const ChatInputDemo = () => {
                             <ChatInput
                                 value=""
                                 onChange={() => {}}
-                                onSend={(message) =>
-                                    addSnackbar({
-                                        header: '50% width',
-                                        description: `Message: "${message}"`,
-                                    })
-                                }
-                                onVoiceRecord={() =>
-                                    addSnackbar({
-                                        header: 'Voice Recording',
-                                        description:
-                                            '50% width voice recording',
-                                    })
-                                }
                                 placeholder="50% width chat input..."
                             />
                         </div>
@@ -377,28 +328,22 @@ const ChatInputDemo = () => {
                 <h2 className="text-2xl font-bold">Custom Icons</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="space-y-3">
-                        <h3 className="text-lg font-semibold">Camera Icons</h3>
+                        <h3 className="text-lg font-semibold">Camera Icon</h3>
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={() => {}}
                             attachButtonIcon={<Camera size={20} />}
-                            voiceButtonIcon={<Camera size={20} />}
-                            sendButtonIcon={<Camera size={20} />}
-                            placeholder="All camera icons..."
+                            placeholder="Custom camera icon for attach..."
                         />
                     </div>
 
                     <div className="space-y-3">
-                        <h3 className="text-lg font-semibold">Mixed Icons</h3>
+                        <h3 className="text-lg font-semibold">Upload Icon</h3>
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={() => {}}
                             attachButtonIcon={<Upload size={20} />}
-                            voiceButtonIcon={<Star size={20} />}
-                            sendButtonIcon={<FileText size={20} />}
-                            placeholder="Custom mixed icons..."
+                            placeholder="Custom upload icon for attach..."
                         />
                     </div>
                 </div>
@@ -416,14 +361,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value={basicMessage}
                             onChange={setBasicMessage}
-                            onSend={(message, files) => {
-                                addSnackbar({
-                                    header: 'Message Sent',
-                                    description: `"${message}" with ${files.length} files`,
-                                })
-                                setBasicMessage('')
-                                setBasicFiles([])
-                            }}
                             onAttachFiles={(newFiles) => {
                                 const attachedFiles: AttachedFile[] =
                                     newFiles.map((file, index) => ({
@@ -490,7 +427,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={() => {}}
                             attachedFiles={createSampleFiles()}
                             onFileClick={(file) => {
                                 addSnackbar({
@@ -521,13 +457,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value={topQueriesMessage}
                             onChange={setTopQueriesMessage}
-                            onSend={(message) => {
-                                addSnackbar({
-                                    header: 'Message Sent',
-                                    description: `"${message}"`,
-                                })
-                                setTopQueriesMessage('')
-                            }}
                             onTopQuerySelect={(query) => {
                                 console.log('query', query)
                                 setTopQueriesMessage(query.text)
@@ -592,7 +521,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value="This input is disabled"
                             onChange={() => {}}
-                            onSend={() => {}}
                             disabled={true}
                             placeholder="Disabled chat input..."
                         />
@@ -605,7 +533,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={() => {}}
                             maxLength={50}
                             placeholder="Type up to 50 characters..."
                         />
@@ -625,19 +552,6 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={(files) =>
-                                addSnackbar({
-                                    header: 'Support ticket created',
-                                    description: `Message sent with ${files.length} attachments`,
-                                })
-                            }
-                            onVoiceRecord={() =>
-                                addSnackbar({
-                                    header: 'Voice message',
-                                    description:
-                                        'Recording started for support',
-                                })
-                            }
                             placeholder="Describe your issue or attach relevant files..."
                         />
                     </div>
@@ -650,16 +564,8 @@ const ChatInputDemo = () => {
                         <ChatInput
                             value=""
                             onChange={() => {}}
-                            onSend={(message, files) =>
-                                addSnackbar({
-                                    header: 'Message sent to team',
-                                    description: `"${message}" with ${files.length} files`,
-                                })
-                            }
                             placeholder="Message your team..."
                             attachButtonIcon={<Hash size={20} />}
-                            voiceButtonIcon={<Mic size={20} />}
-                            sendButtonIcon={<Send size={20} />}
                         />
                     </div>
 
@@ -670,7 +576,6 @@ const ChatInputDemo = () => {
                             <ChatInput
                                 value=""
                                 onChange={() => {}}
-                                onSend={() => {}}
                                 placeholder="Quick message..."
                                 autoResize={false}
                             />
@@ -695,11 +600,12 @@ const ChatInputDemo = () => {
 
                     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                         <h4 className="font-semibold text-green-900 mb-2">
-                            🎤 Voice Recording
+                            🔧 Custom Slots
                         </h4>
                         <p className="text-sm text-green-700">
-                            Built-in voice recording button with customizable
-                            icon and callback handling.
+                            Add custom buttons via slot1 prop for voice
+                            recording, send actions, or any additional
+                            functionality.
                         </p>
                     </div>
 
@@ -761,12 +667,6 @@ const ChatInputDemo = () => {
                                 </li>
                                 <li>
                                     <code className="bg-gray-200 px-2 py-1 rounded">
-                                        onSend
-                                    </code>{' '}
-                                    - Send message callback
-                                </li>
-                                <li>
-                                    <code className="bg-gray-200 px-2 py-1 rounded">
                                         onAttachFiles
                                     </code>{' '}
                                     - File attachment callback
@@ -777,6 +677,12 @@ const ChatInputDemo = () => {
                                     </code>{' '}
                                     - Array of attached files (overflow
                                     calculated dynamically)
+                                </li>
+                                <li>
+                                    <code className="bg-gray-200 px-2 py-1 rounded">
+                                        slot1
+                                    </code>{' '}
+                                    - Custom slot for additional buttons
                                 </li>
                             </ul>
                         </div>
@@ -811,9 +717,9 @@ const ChatInputDemo = () => {
                                 </li>
                                 <li>
                                     <code className="bg-gray-200 px-2 py-1 rounded">
-                                        *ButtonIcon
+                                        attachButtonIcon
                                     </code>{' '}
-                                    - Custom button icons
+                                    - Custom attach button icon
                                 </li>
                             </ul>
                         </div>

@@ -270,6 +270,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         maxVisibleItems={
                                             leftPanel.maxVisibleItems
                                         }
+                                        tenantFooter={leftPanel.tenantFooter}
                                     />
                                 )}
 

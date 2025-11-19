@@ -384,6 +384,9 @@ export function DataTablePagination({
                                     minMenuWidth={120}
                                     maxMenuHeight={300}
                                     disabled={isLoading || !hasData}
+                                    enableVirtualization={totalPages > 50}
+                                    virtualListItemHeight={40}
+                                    virtualListOverscan={5}
                                     customTrigger={
                                         <PrimitiveButton
                                             contentCentered

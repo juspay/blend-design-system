@@ -412,6 +412,32 @@ function MyComponent() {
         ],
         [
             {
+                content: 'enableColumnReordering',
+                hintText:
+                    'When true, enables drag-and-drop column reordering functionality. Users can click and drag column headers to reorder columns dynamically. Works seamlessly with frozen columns and column visibility management. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables drag-and-drop column reordering, false disables column reordering',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onColumnReorder',
+                hintText:
+                    'Optional callback function invoked when the user reorders columns via drag-and-drop. Receives the new array of ColumnDefinition objects in the updated order. Use this to persist the column order state or sync with your application state.',
+            },
+            {
+                content: '(columns: ColumnDefinition<T>[]) => void',
+                hintText:
+                    'Function called with reordered column array when column order changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'columnManagerMaxSelections',
                 hintText:
                     'Optional maximum number of columns that can be selected/visible at once in the column manager. When reached, users cannot enable additional columns. Useful for performance optimization or layout constraints.',
