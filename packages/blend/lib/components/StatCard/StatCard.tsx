@@ -53,6 +53,7 @@ const StatCard = ({
     actionIcon,
     helpIconText,
     dropdownProps,
+    minWidth = 'auto',
     maxWidth = 'auto',
     xAxis,
     yAxis,
@@ -275,6 +276,7 @@ const StatCard = ({
                 justifyContent="space-between"
                 data-statcard-variant={normalizedVariant}
                 maxWidth={maxWidth}
+                minWidth={minWidth}
                 {...props}
             >
                 <Block
@@ -458,6 +460,7 @@ const StatCard = ({
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
             maxWidth={maxWidth}
+            minWidth={minWidth}
             {...props}
         >
             {variant !== StatCardVariant.NUMBER && (
