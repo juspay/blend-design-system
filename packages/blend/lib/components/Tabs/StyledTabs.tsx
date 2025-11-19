@@ -23,6 +23,7 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
     $expanded: boolean
     $fitContent: boolean
     $tabsToken: TabsTokensType
+    $hideIndicator?: boolean
 }>((props) => ({
     display: 'flex',
     width: props.$fitContent ? 'fit-content' : '100%',
@@ -59,23 +60,24 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
             },
         }),
 
-    ...(props.$variant === TabsVariant.UNDERLINE && {
-        '&::after': {
-            content: "''",
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: '-1px',
-            height: props.$tabsToken.trigger.activeIndicator.height,
-            backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
-            scale: 'var(--tabs-indicator-width, 0.125) 1',
-            translate: 'var(--tabs-indicator-left, 0) 0',
-            transformOrigin: 'left',
-            transition:
-                'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
-            zIndex: 2,
-        },
-    }),
+    ...(props.$variant === TabsVariant.UNDERLINE &&
+        !props.$hideIndicator && {
+            '&::after': {
+                content: "''",
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: '-1px',
+                height: props.$tabsToken.trigger.activeIndicator.height,
+                backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
+                scale: 'var(--tabs-indicator-width, 0.125) 1',
+                translate: 'var(--tabs-indicator-left, 0) 0',
+                transformOrigin: 'left',
+                transition:
+                    'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                zIndex: 2,
+            },
+        }),
 }))
 
 export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{

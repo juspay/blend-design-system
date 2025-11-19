@@ -6,6 +6,8 @@ import type { TabsTokensType } from './tabs.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { X } from 'lucide-react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import Skeleton from '../Skeleton/Skeleton'
+import { getSkeletonState } from '../Skeleton/utils'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -22,11 +24,14 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             disable = false,
             isOverlay = false,
             tabsGroupId = '',
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
             ...props
         },
         ref
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+        const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
         const handleCloseClick = useCallback(
             (e: React.MouseEvent) => {
@@ -58,8 +63,11 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         )
 
         const isActive = props.isActive
+        const isDisabled = shouldShowSkeleton ? true : disable
 
-        return (
+        const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
+
+        const triggerContent = (
             <StyledTabsTrigger
                 ref={ref}
                 value={value}
@@ -68,12 +76,21 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 $tabsToken={tabsToken}
                 $isOverlay={isOverlay}
                 className={className}
-                disabled={disable}
+                disabled={isDisabled}
+                style={{
+                    ...(shouldShowSkeleton && {
+                        color: 'transparent',
+                        pointerEvents: 'none',
+                        border: 'none',
+                    }),
+                    ...props.style,
+                }}
                 {...props}
             >
                 {!isOverlay &&
                     isActive &&
-                    variant !== TabsVariant.UNDERLINE && (
+                    variant !== TabsVariant.UNDERLINE &&
+                    !shouldShowSkeleton && (
                         <motion.span
                             layoutId={`tabs-background-indicator-${tabsGroupId}`}
                             style={{
@@ -94,22 +111,54 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                     )}
 
                 {leftSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                    >
                         {leftSlot}
                     </IconContainer>
                 )}
 
-                <span style={{ flexGrow: 1, position: 'relative', zIndex: 1 }}>
+                <span
+                    style={{
+                        flexGrow: 1,
+                        position: 'relative',
+                        zIndex: 1,
+                        opacity: shouldShowSkeleton ? 0 : 1,
+                    }}
+                >
                     {children}
                 </span>
 
                 {effectiveRightSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                    >
                         {effectiveRightSlot}
                     </IconContainer>
                 )}
             </StyledTabsTrigger>
         )
+
+        if (shouldShowSkeleton) {
+            return (
+                <Skeleton
+                    variant={skeletonVariant}
+                    loading
+                    padding="0"
+                    display="inline-block"
+                    pointerEvents="none"
+                    height="fit-content"
+                    width="fit-content"
+                    borderRadius={skeletonBorderRadius}
+                >
+                    {triggerContent}
+                </Skeleton>
+            )
+        }
+
+        return triggerContent
     }
 )
 

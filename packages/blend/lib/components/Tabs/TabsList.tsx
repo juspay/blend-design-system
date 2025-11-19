@@ -43,6 +43,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             onTabChange,
             activeTab = '',
             disable = false,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
             children,
         },
         ref
@@ -147,6 +149,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             return getDisplayTabs(processedItems)
         }, [processedItems])
 
+        const hasAnySkeleton = useMemo(() => {
+            return processedItems.some((item) => item.showSkeleton === true)
+        }, [processedItems])
+
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
                 if (processedTabValue.includes('_')) {
@@ -180,7 +186,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         overflow: 'hidden',
                         position: 'relative',
                         borderBottom:
-                            variant === TabsVariant.UNDERLINE
+                            variant === TabsVariant.UNDERLINE && !hasAnySkeleton
                                 ? tabsToken.borderBottom[variant]
                                 : 'none',
                         paddingTop:
@@ -222,6 +228,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 $expanded={expanded}
                                 $fitContent={fitContent}
                                 $tabsToken={tabsToken}
+                                $hideIndicator={hasAnySkeleton}
                                 style={{
                                     display: 'flex',
                                     minWidth: 'max-content',
@@ -260,6 +267,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 handleTabClose(item.value)
                                             }
                                             disabled={item.disable}
+                                            showSkeleton={item.showSkeleton}
+                                            skeletonVariant={
+                                                item.skeletonVariant
+                                            }
                                             style={{
                                                 flexShrink: 0,
                                                 whiteSpace: 'nowrap',
@@ -346,7 +357,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             )
         }
 
-        // Clone children and pass disable prop (similar to Accordion pattern)
         const renderChildren = () => {
             return React.Children.map(children, (child) => {
                 if (!React.isValidElement(child)) return child
@@ -362,6 +372,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         ? (existingProps.value as string)
                         : ''
 
+                const isTabsTrigger =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsTrigger'
+
                 const childProps = {
                     ...existingProps,
                     disable: childDisable || disable,
@@ -369,6 +384,16 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     size,
                     isActive: childValue === activeTab,
                     tabsGroupId,
+                    ...(isTabsTrigger && {
+                        showSkeleton:
+                            'showSkeleton' in existingProps
+                                ? existingProps.showSkeleton
+                                : showSkeleton,
+                        skeletonVariant:
+                            'skeletonVariant' in existingProps
+                                ? existingProps.skeletonVariant
+                                : skeletonVariant,
+                    }),
                     ref: (node: HTMLButtonElement) => {
                         if (node && childValue) {
                             tabRefsMap.current.set(childValue, node)
@@ -382,11 +407,22 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             })
         }
 
+        const hasAnyChildSkeleton = useMemo(() => {
+            if (showSkeleton) return true
+
+            return React.Children.toArray(children).some((child) => {
+                if (!React.isValidElement(child)) return false
+                const props = child.props as Record<string, unknown>
+                return props.showSkeleton === true
+            })
+        }, [children, showSkeleton])
+
         return (
             <Block
                 style={{
                     borderBottom:
-                        variant === TabsVariant.UNDERLINE
+                        variant === TabsVariant.UNDERLINE &&
+                        !hasAnyChildSkeleton
                             ? tabsToken.borderBottom[variant]
                             : 'none',
                 }}
@@ -412,6 +448,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         $expanded={expanded}
                         $fitContent={fitContent}
                         $tabsToken={tabsToken}
+                        $hideIndicator={hasAnyChildSkeleton}
                     >
                         {renderChildren()}
                     </StyledTabsList>
