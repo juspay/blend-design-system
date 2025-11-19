@@ -334,18 +334,18 @@ const DataTable = forwardRef(
             ? mobileVisibleColumns
             : visibleColumns
 
-        // Calculate minimum height for table body based on page size
-        // This helps maintain consistent layout and prevents shifting when data changes
-        const tableBodyMinHeight = useMemo(() => {
-            // Don't apply min height if:
-            // 1. User has set a custom tableBodyHeight
-            // 2. maintainMinHeight is disabled
-            if (tableBodyHeight || !maintainMinHeight) {
-                return undefined
+        // Calculate minimum height for empty state based on page size
+        // This ensures consistent height whether data is present or not
+        const emptyStateMinHeight = useMemo(() => {
+            // If custom tableBodyHeight is provided, use default 400px
+            if (tableBodyHeight) {
+                return '400px'
             }
-            // Calculate based on page size and row height
-            return `${pageSize * rowHeight}px`
-        }, [pageSize, rowHeight, tableBodyHeight, maintainMinHeight])
+            // Use fixed heights based on page size ranges
+            // 5 rows/page → 300px
+            // 10+ rows/page → 600px
+            return pageSize <= 5 ? '300px' : '600px'
+        }, [pageSize, tableBodyHeight])
 
         const formatOptions: MenuGroupType[] = [
             {
@@ -1015,10 +1015,7 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
-                        maxHeight:
-                            currentData.length > 0
-                                ? tableToken.dataTable.maxHeight
-                                : 'none',
+                        maxHeight: tableToken.dataTable.maxHeight,
                         overflow: 'hidden',
                     }}
                 >
@@ -1065,7 +1062,7 @@ const DataTable = forwardRef(
                                               }
                                             : {
                                                   flex: 1,
-                                                  minHeight: tableBodyMinHeight,
+                                                  overflowY: 'auto',
                                               }),
                                         position: 'relative',
                                     }}
@@ -1340,9 +1337,6 @@ const DataTable = forwardRef(
                                                                 : 0)
                                                         }
                                                         style={{
-                                                            textAlign: 'center',
-                                                            verticalAlign:
-                                                                'middle',
                                                             padding: '0',
                                                             height: '100%',
                                                             color: tableToken
@@ -1355,10 +1349,6 @@ const DataTable = forwardRef(
                                                                     .table.body
                                                                     .cell
                                                                     .fontSize,
-                                                            backgroundColor:
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[0],
                                                         }}
                                                     >
                                                         <Block
@@ -1369,7 +1359,11 @@ const DataTable = forwardRef(
                                                                 width: '100%',
                                                                 height: '100%',
                                                                 minHeight:
-                                                                    tableBodyMinHeight,
+                                                                    emptyStateMinHeight,
+                                                                backgroundColor:
+                                                                    FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
                                                             }}
                                                         >
                                                             {isLoading ? (
