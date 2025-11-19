@@ -14,6 +14,11 @@ export enum ChangeType {
     DECREASE = 'decrease',
 }
 
+export enum StatCardArrowDirection {
+    UP = 'up',
+    DOWN = 'down',
+}
+
 export type ChartDataPoint = {
     value: number
     name: string
@@ -22,6 +27,7 @@ export type ChartDataPoint = {
 export type StatCardChange = {
     value: number
     valueType: ChangeType
+    arrowDirection?: StatCardArrowDirection
     tooltip?: ReactNode
 }
 

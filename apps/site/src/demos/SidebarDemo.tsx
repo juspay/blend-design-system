@@ -333,7 +333,7 @@ const SidebarDemo = () => {
     const merchants = [
         {
             label: 'Design System',
-            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
+            // icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
             value: 'design-system',
         },
         {
@@ -1136,6 +1136,26 @@ const SidebarDemo = () => {
                         items: tenants,
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),
+                        tenantFooter: (
+                            <button
+                                onClick={() =>
+                                    alert('Tenant settings clicked!')
+                                }
+                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                }}
+                                title="Tenant Settings"
+                            >
+                                <Settings
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        ),
                     }}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({

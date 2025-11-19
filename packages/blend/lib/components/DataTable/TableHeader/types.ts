@@ -14,6 +14,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     sortConfig?: SortConfig | null
     enableInlineEdit?: boolean
     enableColumnManager?: boolean
+    enableColumnReordering?: boolean
     columnManagerMaxSelections?: number
     columnManagerAlwaysSelected?: string[]
     columnManagerPrimaryAction?: {
@@ -42,6 +43,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     onSortDescending?: (field: keyof T) => void
     onSelectAll: (checked: boolean | 'indeterminate') => void
     onColumnChange: (columns: ColumnDefinition<T>[]) => void
+    onColumnReorder?: (columns: ColumnDefinition<T>[]) => void
     onColumnFilter?: (
         field: string,
         type: FilterType,

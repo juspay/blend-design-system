@@ -35,6 +35,8 @@ const MultiValueInput = ({
     onTagRemove,
     onChange,
     size = TextInputSize.MEDIUM,
+    onFocus,
+    onBlur,
     ...rest
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
@@ -106,6 +108,8 @@ const MultiValueInput = ({
                               : multiValueInputTokens.inputContainer.border
                                     .default
                     }
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     style={{
                         transition:
                             'border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out',
@@ -143,6 +147,7 @@ const MultiValueInput = ({
                         />
                     ))}
                     <PrimitiveInput
+                        flexGrow={1}
                         placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                         fontSize={
                             multiValueInputTokens.inputContainer.fontSize[size]
@@ -154,7 +159,8 @@ const MultiValueInput = ({
                         }
                         ref={inputRef}
                         paddingInlineStart={2}
-                        paddingInlineEnd={paddingX}
+                        paddingInlineEnd={2}
+                        // paddingInlineEnd={paddingX}
                         borderRadius={
                             multiValueInputTokens.inputContainer.borderRadius
                         }

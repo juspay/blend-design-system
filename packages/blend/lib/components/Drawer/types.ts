@@ -109,6 +109,14 @@ export type DrawerContentProps = {
      * Custom styles
      */
     style?: React.CSSProperties
+    /**
+     * Accessibility label for the drawer content
+     */
+    'aria-label'?: string
+    /**
+     * ID of the element describing the drawer content
+     */
+    'aria-describedby'?: string
 }
 
 export type DrawerHeaderProps = {
@@ -131,6 +139,10 @@ export type DrawerTitleProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * ID for ARIA labeling
+     */
+    id?: string
 }
 
 export type DrawerDescriptionProps = {
@@ -142,6 +154,10 @@ export type DrawerDescriptionProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * ID for ARIA description
+     */
+    id?: string
 }
 
 export type DrawerFooterProps = {

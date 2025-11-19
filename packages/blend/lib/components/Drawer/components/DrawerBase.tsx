@@ -330,6 +330,8 @@ export const DrawerContent = forwardRef<
             width,
             maxWidth,
             mobileOffset,
+            'aria-label': ariaLabel,
+            'aria-describedby': ariaDescribedBy,
             ...props
         },
         ref
@@ -348,6 +350,8 @@ export const DrawerContent = forwardRef<
                 customWidth={width}
                 customMaxWidth={maxWidth}
                 mobileOffset={mobileOffset}
+                aria-label={ariaLabel}
+                aria-describedby={ariaDescribedBy}
                 {...props}
             >
                 {showHandle &&
@@ -404,9 +408,9 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
 DrawerHeader.displayName = 'DrawerHeader'
 
 export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
-    ({ children, className, ...props }, ref) => {
+    ({ children, className, id, ...props }, ref) => {
         return (
-            <StyledTitle ref={ref} className={className} {...props}>
+            <StyledTitle ref={ref} className={className} id={id} {...props}>
                 {children}
             </StyledTitle>
         )
@@ -418,9 +422,9 @@ DrawerTitle.displayName = 'DrawerTitle'
 export const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
->(({ children, className, ...props }, ref) => {
+>(({ children, className, id, ...props }, ref) => {
     return (
-        <StyledDescription ref={ref} className={className} {...props}>
+        <StyledDescription ref={ref} className={className} id={id} {...props}>
             {children}
         </StyledDescription>
     )
