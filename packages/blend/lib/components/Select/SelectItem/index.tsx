@@ -82,7 +82,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             e.stopPropagation()
             onSelect(item.value)
         }
-
         const shouldShowAutoTooltip =
             (showTooltip && item.label) ||
             (showSubLabelTooltip && item.subLabel)
@@ -102,14 +101,25 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         const rightSlotContent = rightSlotConfig ? (
             rightSlotConfig.type === 'checkbox' ? (
-                <Checkbox
+                <div
                     data-checkbox-value={item.value}
                     data-selected-checkbox={isSelected}
                     data-checkbox-status={
                         item.disabled ? 'disabled' : 'enabled'
                     }
-                    {...rightSlotConfig.props}
-                />
+                    style={{
+                        width: '16px',
+                        height: '16px',
+                        border: '1px solid #888',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: isSelected ? '#0044ff' : 'transparent',
+                        opacity: item.disabled ? 0.5 : 1,
+                    }}
+                >
+                    {isSelected ? <Check size={14} /> : null}
+                </div>
             ) : (
                 <Check
                     data-checkmark-value={item.value}
@@ -146,14 +156,15 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const itemContent = (
             <RadixMenu.Item
                 asChild
+                // onSelect={handleSelect}
                 onClick={handleClick}
                 data-disabled={item.disabled}
             >
                 <Block
+                    ref={ref}
                     data-dropdown-numeric={index + 1}
                     data-dropdown-value={item.label}
                     data-dropdown-value-selected={isSelected ? 'True' : 'False'}
-                    ref={ref}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"

@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import { Checkbox } from '../Checkbox'
@@ -89,13 +90,33 @@ const SelectAllItem = ({
                 >
                     {selectAllText}
                 </PrimitiveText>
-                <Checkbox
+                {/* <Checkbox
                     data-checkbox-value={selectAllText}
                     data-selected-checkbox={allSelected}
                     data-checkbox-status={disabled ? 'disabled' : 'enabled'}
                     checked={getCheckboxState()}
                     disabled={disabled}
-                />
+                /> */}
+
+                <div
+                    // data-checkbox-value={item.value}
+                    // data-selected-checkbox={isSelected}
+                    // data-checkbox-status={
+                    //     item.disabled ? 'disabled' : 'enabled'
+                    // }
+                    style={{
+                        width: '16px',
+                        height: '16px',
+                        border: '1px solid #888',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: allSelected ? '#0044ff' : 'transparent',
+                        // opacity: item.disabled ? 0.5 : 1,
+                    }}
+                >
+                    {allSelected ? <Check size={14} /> : null}
+                </div>
             </Block>
         </RadixMenu.Item>
     )
