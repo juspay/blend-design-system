@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { forwardRef, useMemo, useRef, useEffect, useCallback } from 'react'
+import {
+    forwardRef,
+    useMemo,
+    useRef,
+    useEffect,
+    useCallback,
+    useId,
+} from 'react'
 import { type TabsListProps, TabsSize, TabsVariant } from './types'
 import { StyledTabsList } from './StyledTabs'
 import type { TabsTokensType } from './tabs.token'
@@ -41,14 +48,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         ref
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+        const tabsGroupId = useId()
 
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const prevItemsLengthRef = useRef(items.length)
         const tabsListRef = useRef<HTMLDivElement>(null)
         const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
-        const prevActiveTabRef = useRef<string>(activeTab)
-        const overlayContainerRef = useRef<HTMLDivElement>(null)
-        const activeTabInOverlayRef = useRef<HTMLButtonElement>(null)
 
         // Animate underline when active tab changes (UNDERLINE variant only)
         useEffect(() => {
@@ -61,15 +66,14 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             }
 
             const listElement = tabsListRef.current
-            const newTab = tabRefsMap.current.get(activeTab)
+            const activeTabElement = tabRefsMap.current.get(activeTab)
 
-            if (!newTab || !listElement) {
+            if (!activeTabElement || !listElement) {
                 return
             }
 
-            // Smoothly animate directly to the new tab position
             const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
-                newTab,
+                activeTabElement,
                 listElement
             )
 
@@ -81,11 +85,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-
-            prevActiveTabRef.current = activeTab
         }, [activeTab, variant])
 
-        // Update indicator position on window resize
+        // Update indicator position on window resize (UNDERLINE variant only)
         useEffect(() => {
             if (
                 variant !== TabsVariant.UNDERLINE ||
@@ -121,46 +123,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             window.addEventListener('resize', updatePosition)
             return () => window.removeEventListener('resize', updatePosition)
         }, [activeTab, variant])
-
-        // Animate clip-path for non-UNDERLINE variants
-        useEffect(() => {
-            if (
-                variant === TabsVariant.UNDERLINE ||
-                !overlayContainerRef.current ||
-                !activeTabInOverlayRef.current ||
-                !activeTab
-            ) {
-                return
-            }
-
-            const container = overlayContainerRef.current
-            const activeTabElement = activeTabInOverlayRef.current
-
-            if (!container || !activeTabElement) {
-                return
-            }
-
-            const updateClipPath = () => {
-                const { offsetLeft, offsetWidth } = activeTabElement
-
-                const clipLeft = offsetLeft
-                const clipRight = offsetLeft + offsetWidth
-
-                const borderRadius =
-                    tabsToken.borderRadius[size][variant] || '0px'
-
-                container.style.clipPath = `inset(0 ${Number(
-                    100 - (clipRight / container.offsetWidth) * 100
-                ).toFixed()}% 0 ${Number(
-                    (clipLeft / container.offsetWidth) * 100
-                ).toFixed()}% round ${borderRadius})`
-            }
-
-            updateClipPath()
-
-            window.addEventListener('resize', updateClipPath)
-            return () => window.removeEventListener('resize', updateClipPath)
-        }, [activeTab, variant, size, tabsToken])
 
         // Auto-scroll to end when new tabs are added
         useEffect(() => {
@@ -290,6 +252,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             variant={variant}
                                             size={size}
                                             isActive={tabValue === activeTab}
+                                            tabsGroupId={tabsGroupId}
                                             closable={
                                                 item.closable && !item.isDefault
                                             }
@@ -314,94 +277,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     )
                                 })}
                             </StyledTabsList>
-
-                            {variant !== TabsVariant.UNDERLINE && (
-                                <Block
-                                    ref={overlayContainerRef}
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        overflow: 'hidden',
-                                        pointerEvents: 'none',
-                                        zIndex: 10,
-                                        transition: 'clip-path 250ms ease',
-                                        clipPath:
-                                            'inset(0 100% 0 0% round 0px)',
-                                    }}
-                                    aria-hidden="true"
-                                >
-                                    <StyledTabsList
-                                        $variant={variant}
-                                        $size={size}
-                                        $expanded={expanded}
-                                        $fitContent={fitContent}
-                                        $tabsToken={tabsToken}
-                                        style={{
-                                            minWidth: 'max-content',
-                                            marginBottom: 0,
-                                            borderRadius: 0,
-                                            display: 'block',
-                                        }}
-                                    >
-                                        <Block
-                                            style={{
-                                                display: 'flex',
-                                                gap: tabsToken.gap,
-                                                backgroundColor:
-                                                    tabsToken.backgroundColor[
-                                                        variant
-                                                    ].active,
-                                            }}
-                                        >
-                                            {displayTabs.map((item) => {
-                                                const tabValue =
-                                                    item.value.includes('_')
-                                                        ? item.value.split(
-                                                              '_'
-                                                          )[0]
-                                                        : item.value
-
-                                                return (
-                                                    <TabsTrigger
-                                                        key={`overlay-${item.value}`}
-                                                        ref={
-                                                            tabValue ===
-                                                            activeTab
-                                                                ? activeTabInOverlayRef
-                                                                : null
-                                                        }
-                                                        value={tabValue}
-                                                        variant={variant}
-                                                        size={size}
-                                                        isOverlay={true}
-                                                        closable={
-                                                            item.closable &&
-                                                            !item.isDefault
-                                                        }
-                                                        onClose={() =>
-                                                            handleTabClose(
-                                                                item.value
-                                                            )
-                                                        }
-                                                        disabled={item.disable}
-                                                        style={{
-                                                            flexShrink: 0,
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                        }}
-                                                        tabIndex={-1}
-                                                    >
-                                                        {item.label}
-                                                    </TabsTrigger>
-                                                )
-                                            })}
-                                        </Block>
-                                    </StyledTabsList>
-                                </Block>
-                            )}
                         </Block>
                     </Block>
 
@@ -493,6 +368,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     variant,
                     size,
                     isActive: childValue === activeTab,
+                    tabsGroupId,
                     ref: (node: HTMLButtonElement) => {
                         if (node && childValue) {
                             tabRefsMap.current.set(childValue, node)
@@ -539,79 +415,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     >
                         {renderChildren()}
                     </StyledTabsList>
-
-                    {variant !== TabsVariant.UNDERLINE && (
-                        <Block
-                            ref={overlayContainerRef}
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '100%',
-                                overflow: 'hidden',
-                                pointerEvents: 'none',
-                                zIndex: 10,
-                                transition: 'clip-path 250ms ease',
-                                clipPath: 'inset(0 100% 0 0% round 0px)',
-                            }}
-                            aria-hidden="true"
-                        >
-                            <StyledTabsList
-                                $variant={variant}
-                                $size={size}
-                                $expanded={expanded}
-                                $fitContent={fitContent}
-                                $tabsToken={tabsToken}
-                                style={{
-                                    borderRadius: 0,
-                                    display: 'block',
-                                }}
-                            >
-                                <Block
-                                    style={{
-                                        display: 'flex',
-                                        gap: tabsToken.gap,
-                                        backgroundColor:
-                                            tabsToken.backgroundColor[variant]
-                                                .active,
-                                    }}
-                                >
-                                    {React.Children.map(children, (child) => {
-                                        if (!React.isValidElement(child))
-                                            return child
-
-                                        const existingProps =
-                                            child.props as Record<
-                                                string,
-                                                unknown
-                                            >
-                                        const childValue =
-                                            'value' in existingProps
-                                                ? (existingProps.value as string)
-                                                : ''
-
-                                        const childProps = {
-                                            ...existingProps,
-                                            variant,
-                                            size,
-                                            isOverlay: true,
-                                            tabIndex: -1,
-                                            ref:
-                                                childValue === activeTab
-                                                    ? activeTabInOverlayRef
-                                                    : null,
-                                        }
-
-                                        return React.cloneElement(
-                                            child,
-                                            childProps
-                                        )
-                                    })}
-                                </Block>
-                            </StyledTabsList>
-                        </Block>
-                    )}
                 </Block>
             </Block>
         )

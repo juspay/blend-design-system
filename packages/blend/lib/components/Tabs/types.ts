@@ -70,6 +70,7 @@ export type TabsTriggerProps = ComponentPropsWithoutRef<
     disable?: boolean
     isActive?: boolean
     isOverlay?: boolean
+    tabsGroupId?: string
 }
 
 export type TabsContentProps = ComponentPropsWithoutRef<

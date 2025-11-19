@@ -115,12 +115,16 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
             color: props.$tabsToken.trigger.text.color[props.$variant].hover,
             backgroundColor:
                 props.$tabsToken.backgroundColor[props.$variant].hover,
+            borderRadius:
+                props.$tabsToken.borderRadius[props.$size][props.$variant],
         },
 
         "&[data-state='active']": {
             color: props.$tabsToken.trigger.text.color[props.$variant].active,
             backgroundColor: 'transparent',
             fontWeight: props.$tabsToken.trigger.text.fontWeight[props.$size],
+            borderRadius:
+                props.$tabsToken.borderRadius[props.$size][props.$variant],
             zIndex: 1,
         },
     }),
