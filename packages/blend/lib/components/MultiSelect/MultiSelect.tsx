@@ -186,6 +186,7 @@ const MultiSelect = ({
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
+                skeleton={skeleton}
             />
         )
     }
