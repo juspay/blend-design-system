@@ -133,8 +133,6 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             tableBodyHeight,
-            rowHeight = 52,
-            maintainMinHeight = true,
             mobileColumnsToShow,
             ...rest
         }: DataTableProps<T>,
