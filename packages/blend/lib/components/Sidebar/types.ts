@@ -13,6 +13,8 @@ export type LeftPanelInfo = {
     selected: string
     onSelect: (value: string) => void
     maxVisibleItems?: number
+    tenantSlot1?: ReactNode
+    tenantSlot2?: ReactNode
     tenantFooter?: ReactNode
 }
 
@@ -81,6 +83,17 @@ export type SidebarProps = {
      * Only used when isExpanded is not provided
      */
     defaultIsExpanded?: boolean
+
+    /**
+     * When true, shows only the tenant panel without any sidebar content
+     * In this mode:
+     * - Only tenant panel is visible (no directory, header, footer, toggle)
+     * - Tenant panel is always shown (no intermediate/hover states)
+     * - Sidebar cannot be expanded
+     * Only applies when leftPanel is provided
+     */
+    tenantPanelOnlyMode?: boolean
+
     /**
      * Show primary action button in mobile navigation
      */

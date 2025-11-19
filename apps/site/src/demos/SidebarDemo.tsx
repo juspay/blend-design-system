@@ -35,6 +35,8 @@ import {
     Workflow,
     Moon,
     Sun,
+    HelpCircle,
+    Lightbulb,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -174,6 +176,9 @@ const SidebarDemo = () => {
     // Topbar visibility control states
     const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
     const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
+
+    const [tenantPanelOnlyMode, setTenantPanelOnlyMode] =
+        useState<boolean>(false)
 
     const tenants = [
         {
@@ -1113,6 +1118,7 @@ const SidebarDemo = () => {
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     enableTopbarAutoHide={true}
+                    tenantPanelOnlyMode={tenantPanelOnlyMode}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1125,6 +1131,42 @@ const SidebarDemo = () => {
                         items: tenants,
                         selected: activeTenant,
                         onSelect: (value) => setActiveTenant(value),
+                        tenantSlot1: (
+                            <button
+                                onClick={() => alert('Help clicked!')}
+                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                }}
+                                title="Help"
+                            >
+                                <HelpCircle
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        ),
+                        tenantSlot2: (
+                            <button
+                                onClick={() => alert('Tips clicked!')}
+                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                }}
+                                title="Tips"
+                            >
+                                <Lightbulb
+                                    color={FOUNDATION_THEME.colors.yellow[600]}
+                                    size={20}
+                                />
+                            </button>
+                        ),
                         tenantFooter: (
                             <button
                                 onClick={() =>
@@ -1225,6 +1267,36 @@ const SidebarDemo = () => {
                                 />
                             </Block>
                             <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setTenantPanelOnlyMode(
+                                            !tenantPanelOnlyMode
+                                        )
+                                    }
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        tenantPanelOnlyMode
+                                            ? 'Show Full Sidebar'
+                                            : 'Tenant Panel Only Mode'
+                                    }
+                                    style={{
+                                        backgroundColor: tenantPanelOnlyMode
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Users
+                                        color={
+                                            tenantPanelOnlyMode
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
                                 <button
                                     onClick={() =>
                                         setColorTheme(
