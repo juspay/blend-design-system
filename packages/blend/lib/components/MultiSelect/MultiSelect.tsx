@@ -82,6 +82,11 @@ const MultiSelect = ({
     endReachedThreshold,
     hasMore,
     loadingComponent,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -181,6 +186,7 @@ const MultiSelect = ({
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
+                skeleton={skeleton}
             />
         )
     }
@@ -207,6 +213,7 @@ const MultiSelect = ({
                 )}
 
             <MultiSelectMenu
+                skeleton={skeleton}
                 items={items}
                 selected={selectedValues}
                 onSelect={onChange}

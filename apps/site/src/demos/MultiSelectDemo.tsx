@@ -632,6 +632,9 @@ const MultiSelectDemo = () => {
         },
     ]
 
+    const [playgroundShowSkeleton, setPlaygroundShowSkeleton] = useState(false)
+    const [playgroundSkeletonCount, setPlaygroundSkeletonCount] = useState('3')
+
     // Helper function to handle multi-select changes
     const handleMultiSelectChange =
         (
@@ -719,6 +722,19 @@ const MultiSelectDemo = () => {
                         <h2 className="text-xl font-semibold">Controls</h2>
 
                         <div className="space-y-4">
+                            <Switch
+                                label="Show Skeleton"
+                                checked={playgroundShowSkeleton}
+                                onChange={setPlaygroundShowSkeleton}
+                            />
+                            <TextInput
+                                label="Skeleton Count"
+                                value={playgroundSkeletonCount.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundSkeletonCount(e.target.value)
+                                }
+                                placeholder="Enter skeleton count"
+                            />
                             <TextInput
                                 label="Label"
                                 value={playgroundLabel}
@@ -862,57 +878,68 @@ const MultiSelectDemo = () => {
                             className="border rounded-lg p-6 bg-gray-50"
                             style={{ width: '400px' }}
                         >
-                            <MultiSelect
-                                fullWidth={true}
-                                minMenuWidth={400}
-                                showActionButtons={true}
-                                primaryAction={{
-                                    text: 'Apply',
-                                    onClick: (selected) => {
-                                        console.log('Applied', selected)
-                                    },
-                                }}
-                                secondaryAction={{
-                                    text: 'Reset',
-                                    onClick: () => {
-                                        console.log('Reset')
-                                    },
-                                }}
-                                error={playgroundError}
-                                errorMessage={playgroundErrorMessage}
-                                onBlur={() => {
-                                    console.log('MultiSelect blur')
-                                }}
-                                onFocus={() => {
-                                    console.log('MultiSelect focus')
-                                }}
-                                useDrawerOnMobile={false}
-                                height={62}
-                                enableSelectAll={true}
-                                enableSearch={true}
-                                label={playgroundLabel}
-                                sublabel={playgroundSubLabel}
-                                hintText={playgroundHintText}
-                                placeholder={playgroundPlaceholder}
-                                size={playgroundSize}
-                                variant={playgroundVariant}
-                                alignment={playgroundAlignment}
-                                side={playgroundSide}
-                                selectionTagType={playgroundSelectionTagType}
-                                items={skillItems}
-                                selectedValues={playgroundSelected}
-                                onChange={handleMultiSelectChange(
-                                    playgroundSelected,
-                                    setPlaygroundSelected
-                                )}
-                                required={playgroundRequired}
-                                disabled={playgroundDisabled}
-                                slot={
-                                    playgroundShowSlot ? (
-                                        <User size={16} />
-                                    ) : undefined
-                                }
-                            />
+                            <form>
+                                <MultiSelect
+                                    skeleton={{
+                                        count: parseInt(
+                                            playgroundSkeletonCount
+                                        ),
+                                        show: playgroundShowSkeleton,
+                                        variant: 'pulse',
+                                    }}
+                                    fullWidth={true}
+                                    minMenuWidth={400}
+                                    showActionButtons={true}
+                                    primaryAction={{
+                                        text: 'Apply',
+                                        onClick: (selected) => {
+                                            console.log('Applied', selected)
+                                        },
+                                    }}
+                                    secondaryAction={{
+                                        text: 'Reset',
+                                        onClick: () => {
+                                            console.log('Reset')
+                                        },
+                                    }}
+                                    error={playgroundError}
+                                    errorMessage={playgroundErrorMessage}
+                                    onBlur={() => {
+                                        console.log('MultiSelect blur')
+                                    }}
+                                    onFocus={() => {
+                                        console.log('MultiSelect focus')
+                                    }}
+                                    useDrawerOnMobile={true}
+                                    height={62}
+                                    enableSelectAll={true}
+                                    enableSearch={true}
+                                    label={playgroundLabel}
+                                    sublabel={playgroundSubLabel}
+                                    hintText={playgroundHintText}
+                                    placeholder={playgroundPlaceholder}
+                                    size={playgroundSize}
+                                    variant={playgroundVariant}
+                                    alignment={playgroundAlignment}
+                                    side={playgroundSide}
+                                    selectionTagType={
+                                        playgroundSelectionTagType
+                                    }
+                                    items={skillItems}
+                                    selectedValues={playgroundSelected}
+                                    onChange={handleMultiSelectChange(
+                                        playgroundSelected,
+                                        setPlaygroundSelected
+                                    )}
+                                    required={playgroundRequired}
+                                    disabled={playgroundDisabled}
+                                    slot={
+                                        playgroundShowSlot ? (
+                                            <User size={16} />
+                                        ) : undefined
+                                    }
+                                />
+                            </form>
                             {playgroundSelected.length > 0 && (
                                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                                     <p className="text-sm text-blue-700">

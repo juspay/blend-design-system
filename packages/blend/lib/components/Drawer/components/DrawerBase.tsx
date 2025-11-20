@@ -1,7 +1,7 @@
 'use client'
 import './Drawer.css'
 
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useContext } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -17,6 +17,10 @@ import type {
     DrawerFooterProps,
     DrawerCloseProps,
 } from '../types'
+
+const DrawerConfigContext = React.createContext<{ disableDrag: boolean }>({
+    disableDrag: false,
+})
 
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
@@ -242,6 +246,7 @@ export const Drawer = ({
     onSnapPointChange,
     fadeFromIndex,
     snapToSequentialPoint = false,
+    disableDrag = false,
     children,
 }: DrawerProps) => {
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
@@ -252,6 +257,7 @@ export const Drawer = ({
         direction,
         modal,
         dismissible,
+        handleOnly: disableDrag,
     }
 
     if (snapPoints) vaulProps.snapPoints = snapPoints
@@ -262,7 +268,11 @@ export const Drawer = ({
     if (snapToSequentialPoint)
         vaulProps.snapToSequentialPoint = snapToSequentialPoint
 
-    return <RootComponent {...vaulProps}>{children}</RootComponent>
+    return (
+        <DrawerConfigContext.Provider value={{ disableDrag }}>
+            <RootComponent {...vaulProps}>{children}</RootComponent>
+        </DrawerConfigContext.Provider>
+    )
 }
 
 export const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerProps>(
@@ -341,6 +351,8 @@ export const DrawerContent = forwardRef<
         ref
     ) => {
         const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
+        const { disableDrag } = useContext(DrawerConfigContext)
+        const resolvedShowHandle = disableDrag ? false : showHandle
 
         return (
             <StyledContent
@@ -358,7 +370,7 @@ export const DrawerContent = forwardRef<
                 aria-describedby={ariaDescribedBy}
                 {...props}
             >
-                {showHandle &&
+                {resolvedShowHandle &&
                     (direction === 'bottom' || direction === 'top') &&
                     (handle || (
                         <Block

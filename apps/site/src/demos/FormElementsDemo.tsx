@@ -175,8 +175,7 @@ const FormElementsDemo = () => {
                     <h2 className="text-xl font-semibold">Checkboxes</h2>
                     <div className="space-y-2">
                         <Checkbox
-                            value="newsletter"
-                            checked={formData.newsletter}
+                            checked={formData.newsletter || false}
                             onCheckedChange={(checked) =>
                                 setFormData({
                                     ...formData,
@@ -188,7 +187,6 @@ const FormElementsDemo = () => {
                             Subscribe to newsletter
                         </Checkbox>
                         <Checkbox
-                            value="terms"
                             checked={formData.terms}
                             onCheckedChange={(checked) =>
                                 setFormData({

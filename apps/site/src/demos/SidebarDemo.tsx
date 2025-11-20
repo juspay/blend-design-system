@@ -106,6 +106,7 @@ import CodeEditorDemo from './CodeEditorDemo'
 import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
+import SkeletonDemo from './SkeletonDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -432,6 +433,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'skeleton':
+                return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
             case 'virtualList':
@@ -959,6 +962,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'statCard',
                     onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Skeleton',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'skeleton',
+                    onClick: () => setActiveComponent('skeleton'),
                 },
                 {
                     label: 'Card',

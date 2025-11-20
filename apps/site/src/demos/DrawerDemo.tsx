@@ -3092,7 +3092,7 @@ export const NestedSingleSelectDrawerExample = () => {
 // Wide Right Drawer Example
 export const WideRightDrawerExample = () => {
     return (
-        <Drawer direction="right">
+        <Drawer direction="right" disableDrag={true}>
             <DrawerTrigger>
                 <button
                     style={{
@@ -3138,6 +3138,7 @@ export const WideRightDrawerExample = () => {
                                     margin: '0 0 8px 0',
                                     fontSize: '24px',
                                     fontWeight: '600',
+                                    userSelect: 'all',
                                 }}
                             >
                                 Data Analytics Dashboard
@@ -3147,6 +3148,7 @@ export const WideRightDrawerExample = () => {
                                     margin: '0',
                                     color: '#6b7280',
                                     fontSize: '14px',
+                                    userSelect: 'all',
                                 }}
                             >
                                 Real-time insights and performance metrics

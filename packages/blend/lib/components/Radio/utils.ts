@@ -7,11 +7,6 @@ export const getRadioDataState = (checked: boolean): string => {
     return checked ? 'checked' : 'unchecked'
 }
 
-export const extractPixelValue = (tokenValue: string): number => {
-    const match = tokenValue.match(/(\d+)/)
-    return match && match[1] ? parseInt(match[1], 10) : 16
-}
-
 export const getSpacingBySize = (
     size: RadioSize
 ): { marginLeft: string; marginTop: string } => {
