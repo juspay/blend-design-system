@@ -32,6 +32,8 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
+
+    SANKEY = 'sankey',
 }
 
 export enum LegendsChangeType {
@@ -120,6 +122,7 @@ export type RenderChartProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     noData?: NoDataProps
+    height?: number | string
 }
 
 export type CoreChartProps = {
@@ -206,4 +209,41 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
     selectedKeys: string[]
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+}
+
+export type SankeyNode = {
+    name: string
+}
+
+export type SankeyLink = {
+    source: number
+    target: number
+    value: number
+}
+
+export type SankeyData = {
+    nodes: SankeyNode[]
+    links: SankeyLink[]
+}
+
+export type SankeyNodeProps = {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    index?: number
+    payload?: SankeyNode & { value?: number }
+    containerWidth?: number
+}
+
+export type SankeyLinkProps = {
+    sourceX?: number
+    targetX?: number
+    sourceY?: number
+    targetY?: number
+    sourceControlX?: number
+    targetControlX?: number
+    linkWidth?: number
+    index?: number
+    payload?: SankeyLink
 }
