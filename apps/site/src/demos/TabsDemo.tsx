@@ -107,6 +107,12 @@ const TabsDemo = () => {
     // Disabled state demo
     const [globalDisable, setGlobalDisable] = useState(false)
 
+    // Skeleton state demo
+    const [showSkeleton, setShowSkeleton] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] = useState<
+        'pulse' | 'wave' | 'shimmer'
+    >('pulse')
+
     // Options for selects
     const variantOptions = [
         { value: TabsVariant.BOXED, label: 'Boxed' },
@@ -715,6 +721,303 @@ const TabsDemo = () => {
                             <li>
                                 • Follows the same pattern as Accordion
                                 component
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {/* Skeleton State Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Skeleton State</h2>
+                <div className="space-y-8">
+                    {/* Skeleton Controls */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton Loading State
+                        </h3>
+                        <p className="text-gray-600">
+                            The Tabs component supports skeleton loading state
+                            to show a loading placeholder while content is being
+                            fetched. Use the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                showSkeleton
+                            </code>{' '}
+                            prop to enable skeleton state and{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                skeletonVariant
+                            </code>{' '}
+                            to choose the animation style.
+                        </p>
+                        <div className="flex items-center gap-6 flex-wrap">
+                            <Switch
+                                label="Show Skeleton"
+                                checked={showSkeleton}
+                                onChange={() => setShowSkeleton(!showSkeleton)}
+                            />
+                            <SingleSelect
+                                label="Skeleton Variant"
+                                items={[
+                                    {
+                                        items: [
+                                            { value: 'pulse', label: 'Pulse' },
+                                            { value: 'wave', label: 'Wave' },
+                                            {
+                                                value: 'shimmer',
+                                                label: 'Shimmer',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={skeletonVariant}
+                                onSelect={(value) =>
+                                    setSkeletonVariant(
+                                        value as 'pulse' | 'wave' | 'shimmer'
+                                    )
+                                }
+                                placeholder="Select variant"
+                            />
+                        </div>
+                        <Tabs
+                            showSkeleton={showSkeleton}
+                            skeletonVariant={skeletonVariant}
+                            defaultValue="tab1"
+                            items={[
+                                {
+                                    value: 'tab1',
+                                    label: 'Overview',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Overview Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This content is shown when
+                                                skeleton is disabled.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab2',
+                                    label: 'Analytics',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Analytics Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Analytics data and charts.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab3',
+                                    label: 'Reports',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Reports Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Generated reports and exports.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Skeleton Across Variants */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton State Across Variants
+                        </h3>
+                        <p className="text-gray-600">
+                            Skeleton state works consistently across all tab
+                            variants.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {Object.values(TabsVariant).map((variant) => (
+                                <div key={variant} className="space-y-2">
+                                    <h4 className="font-medium capitalize">
+                                        {variant} Variant
+                                    </h4>
+                                    <Tabs
+                                        showSkeleton={showSkeleton}
+                                        skeletonVariant={skeletonVariant}
+                                        defaultValue="tab1"
+                                    >
+                                        <TabsList variant={variant}>
+                                            <TabsTrigger
+                                                value="tab1"
+                                                variant={variant}
+                                            >
+                                                Overview
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab2"
+                                                variant={variant}
+                                            >
+                                                Analytics
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab3"
+                                                variant={variant}
+                                            >
+                                                Reports
+                                            </TabsTrigger>
+                                        </TabsList>
+
+                                        <TabsContent
+                                            value="tab1"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Content for {variant}{' '}
+                                                    variant
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab2"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Analytics content
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab3"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Reports content
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Skeleton with Children Pattern */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton State with Children Pattern
+                        </h3>
+                        <p className="text-gray-600">
+                            The skeleton prop works with the children pattern as
+                            well.
+                        </p>
+                        <Tabs
+                            showSkeleton={showSkeleton}
+                            skeletonVariant={skeletonVariant}
+                            defaultValue="tab1"
+                        >
+                            <TabsList>
+                                <TabsTrigger
+                                    value="tab1"
+                                    leftSlot={<Home size={16} />}
+                                >
+                                    Home
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab2"
+                                    leftSlot={<User size={16} />}
+                                >
+                                    Profile
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab3"
+                                    leftSlot={<Settings size={16} />}
+                                >
+                                    Settings
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="tab1" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Home Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Toggle the skeleton switch above to see
+                                        the loading state.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab2" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Profile Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Profile information and settings.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab3" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Settings Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Application settings and preferences.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Skeleton State Features:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Enable skeleton state using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    showSkeleton
+                                </code>{' '}
+                                prop on Tabs component
+                            </li>
+                            <li>
+                                • Choose animation style with{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    skeletonVariant
+                                </code>{' '}
+                                prop (pulse, wave, shimmer)
+                            </li>
+                            <li>
+                                • Works with both items pattern and children
+                                pattern
+                            </li>
+                            <li>
+                                • Tab content becomes transparent and
+                                non-interactive when skeleton is active
+                            </li>
+                            <li>
+                                • Consistent behavior across all variants and
+                                sizes
+                            </li>
+                            <li>
+                                • Follows the same pattern as Button component
+                            </li>
+                            <li>
+                                • Skeleton wrapper provides visual loading
+                                feedback
                             </li>
                         </ul>
                     </div>

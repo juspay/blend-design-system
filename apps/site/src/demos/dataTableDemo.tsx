@@ -703,7 +703,8 @@ const SimpleDataTableExample = () => {
                     if (fieldName === 'category' && typeof value === 'object') {
                         updated.category = value as DropdownColumnProps
                     } else {
-                        ;(updated as Record<string, unknown>)[fieldName] = value
+                        const updatedRecord = updated as Record<string, unknown>
+                        updatedRecord[fieldName] = value
                     }
                     return updated
                 }
@@ -3420,6 +3421,481 @@ const DataTableDemo = () => {
             </div>
 
             <EmptyDataTableExamples />
+
+            <SkeletonLoadingDemo />
+        </div>
+    )
+}
+
+// Skeleton Loading Demo Component
+const SkeletonLoadingDemo = () => {
+    const [globalSkeletonLoading, setGlobalSkeletonLoading] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] = useState<'pulse' | 'wave'>(
+        'pulse'
+    )
+    const [simulateApiCall, setSimulateApiCall] = useState(false)
+    const [loadingRowIds, setLoadingRowIds] = useState<Set<number>>(new Set())
+
+    type DemoRow = {
+        id: number
+        name: AvatarColumnProps
+        email: string
+        role: string
+        status: TagColumnProps
+        department: string
+    }
+
+    const demoData: DemoRow[] = [
+        {
+            id: 1,
+            name: {
+                label: 'Alice Johnson',
+                sublabel: 'Joined March 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/women/1.jpg',
+            },
+            email: 'alice.johnson@example.com',
+            role: 'Admin',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+        {
+            id: 2,
+            name: {
+                label: 'Bob Smith',
+                sublabel: 'Joined June 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
+            },
+            email: 'bob.smith@example.com',
+            role: 'Developer',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+        {
+            id: 3,
+            name: {
+                label: 'Carol Williams',
+                sublabel: 'Joined September 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/women/3.jpg',
+            },
+            email: 'carol.williams@example.com',
+            role: 'Designer',
+            status: {
+                text: 'Pending',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+            department: 'Design',
+        },
+        {
+            id: 4,
+            name: {
+                label: 'David Brown',
+                sublabel: 'Joined December 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/men/4.jpg',
+            },
+            email: 'david.brown@example.com',
+            role: 'Manager',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Marketing',
+        },
+        {
+            id: 5,
+            name: {
+                label: 'Emma Davis',
+                sublabel: 'Joined January 2024',
+                imageUrl: 'https://randomuser.me/api/portraits/women/5.jpg',
+            },
+            email: 'emma.davis@example.com',
+            role: 'Developer',
+            status: {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+    ]
+
+    const demoColumns: ColumnDefinition<DemoRow>[] = [
+        {
+            field: 'name',
+            header: 'User',
+            type: ColumnType.AVATAR,
+            renderCell: (value: AvatarColumnProps) => (
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '12px',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Avatar src={value.imageUrl} alt={value.label} />
+                    <div>
+                        <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                            {value.label}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                            {value.sublabel}
+                        </div>
+                    </div>
+                </div>
+            ),
+            isSortable: true,
+            minWidth: '200px',
+            maxWidth: '300px',
+            // This column always shows skeleton when ANY loading is active
+            showSkeleton: undefined,
+            skeletonVariant: 'pulse',
+        },
+        {
+            field: 'email',
+            header: 'Email',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '200px',
+            maxWidth: '300px',
+        },
+        {
+            field: 'role',
+            header: 'Role (Wave Animation)',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+            // This column uses wave variant
+            showSkeleton: undefined,
+            skeletonVariant: 'wave',
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+            isSortable: true,
+            minWidth: '100px',
+            maxWidth: '140px',
+        },
+        {
+            field: 'department',
+            header: 'Department',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '130px',
+            maxWidth: '180px',
+        },
+    ]
+
+    const handleSimulateApiCall = () => {
+        setSimulateApiCall(true)
+        setTimeout(() => {
+            setSimulateApiCall(false)
+        }, 2000)
+    }
+
+    const handleSimulateRowUpdate = (rowId: number) => {
+        setLoadingRowIds((prev) => new Set(prev).add(rowId))
+        setTimeout(() => {
+            setLoadingRowIds((prev) => {
+                const newSet = new Set(prev)
+                newSet.delete(rowId)
+                return newSet
+            })
+        }, 1500)
+    }
+
+    const isRowLoading = (row: Record<string, unknown>) => {
+        const demoRow = row as DemoRow
+        return loadingRowIds.has(demoRow.id)
+    }
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0f9ff',
+                    borderRadius: '8px',
+                    border: '1px solid #bae6fd',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#0369a1',
+                    }}
+                >
+                    ⚡ Skeleton Loading States Demo
+                </h3>
+                <p
+                    style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        color: '#075985',
+                    }}
+                >
+                    🎯 <strong>NEW FEATURE:</strong> The DataTable now supports
+                    granular skeleton loading control similar to the Tabs
+                    component!
+                    <br />
+                    <br />
+                    <strong>Features demonstrated:</strong>
+                    <br />• <strong>Global skeleton loading</strong> - Toggle to
+                    show skeleton for all cells (including checkboxes and
+                    expansion buttons)
+                    <br />• <strong>Per-column animation</strong> - "Role"
+                    column uses wave animation, others use pulse
+                    <br />• <strong>Per-row loading</strong> - Click "Update
+                    Row" buttons to simulate individual row updates
+                    <br />• <strong>API call simulation</strong> - Simulate a
+                    2-second API call; shows "Loading data..." instead of "No
+                    data" when loading
+                    <br />• <strong>Different variants</strong> - Switch between
+                    pulse and wave animations globally
+                </p>
+            </div>
+
+            {/* Controls */}
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#fefce8',
+                    borderRadius: '8px',
+                    border: '1px solid #fef08a',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    buttonType={
+                        globalSkeletonLoading
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() =>
+                        setGlobalSkeletonLoading(!globalSkeletonLoading)
+                    }
+                >
+                    {globalSkeletonLoading
+                        ? '✓ Global Skeleton ON'
+                        : 'Global Skeleton OFF'}
+                </Button>
+
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<RefreshCw size={16} />}
+                    onClick={handleSimulateApiCall}
+                    disabled={simulateApiCall}
+                >
+                    {simulateApiCall ? 'Loading... (2s)' : 'Simulate API Call'}
+                </Button>
+
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                    }}
+                >
+                    <label htmlFor="skeleton-variant">Animation:</label>
+                    <select
+                        id="skeleton-variant"
+                        value={skeletonVariant}
+                        onChange={(e) =>
+                            setSkeletonVariant(
+                                e.target.value as 'pulse' | 'wave'
+                            )
+                        }
+                        style={{
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <option value="pulse">Pulse</option>
+                        <option value="wave">Wave</option>
+                    </select>
+                </div>
+
+                <div
+                    style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}
+                >
+                    {demoData.map((row) => (
+                        <Button
+                            key={row.id}
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            onClick={() => handleSimulateRowUpdate(row.id)}
+                            disabled={loadingRowIds.has(row.id)}
+                        >
+                            {loadingRowIds.has(row.id)
+                                ? `Row ${row.id} Loading...`
+                                : `Update Row ${row.id}`}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+
+            <DataTable
+                data={demoData}
+                columns={
+                    demoColumns as unknown as ColumnDefinition<
+                        Record<string, unknown>
+                    >[]
+                }
+                idField="id"
+                title="Skeleton Loading Examples"
+                description="Demonstrates global, per-column, and per-row skeleton loading states"
+                enableSearch={true}
+                enableFiltering={false}
+                enableAdvancedFilter={false}
+                enableInlineEdit={false}
+                enableRowExpansion={false}
+                enableRowSelection={true}
+                enableColumnManager={true}
+                showSettings={false}
+                columnFreeze={0}
+                showSkeleton={globalSkeletonLoading}
+                skeletonVariant={skeletonVariant}
+                isLoading={simulateApiCall}
+                isRowLoading={isRowLoading}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: demoData.length,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                headerSlot1={
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={<Settings size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Settings clicked')}
+                    >
+                        Settings
+                    </Button>
+                }
+                headerSlot2={
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        leadingIcon={<Package size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Add User clicked')}
+                    >
+                        Add User
+                    </Button>
+                }
+            />
+
+            {/* Explanation Card */}
+            <div
+                style={{
+                    marginTop: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h4
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    📚 How It Works
+                </h4>
+                <div
+                    style={{
+                        fontSize: '14px',
+                        color: '#166534',
+                        lineHeight: '1.6',
+                    }}
+                >
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>1. Global Skeleton Loading:</strong> Use{' '}
+                        <code>showSkeleton={'{true}'}</code> prop to show
+                        skeleton for all cells (including checkboxes and
+                        expansion buttons), or <code>isLoading={'{true}'}</code>{' '}
+                        for backward compatibility.
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>2. Per-Row Loading:</strong> Use{' '}
+                        <code>isRowLoading</code> function to show skeleton for
+                        specific rows that are being updated (e.g., during an
+                        API call for that row).
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>3. Per-Column Control:</strong> You can set{' '}
+                        <code>showSkeleton: false</code> on a column definition
+                        to prevent that column from showing skeleton, or use{' '}
+                        <code>skeletonVariant</code> to customize the animation
+                        for specific columns.
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>4. Animation Variants:</strong> Set{' '}
+                        <code>skeletonVariant="wave"</code> globally or
+                        per-column using <code>column.skeletonVariant</code>{' '}
+                        (pulse or wave).
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>5. Empty State:</strong> When loading with no
+                        data, shows "Loading data..." spinner instead of "No
+                        data available".
+                    </p>
+                    <p style={{ margin: '0' }}>
+                        <strong>Priority:</strong> Column-level{' '}
+                        <code>showSkeleton</code> &gt; Row-level{' '}
+                        <code>isRowLoading</code> &gt; Global{' '}
+                        <code>showSkeleton/isLoading</code>
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }
