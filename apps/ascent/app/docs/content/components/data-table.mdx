@@ -65,6 +65,102 @@ function MyComponent() {
 }
 ```
 
+## Skeleton Loading
+
+The DataTable supports granular skeleton loading for better UX during data fetching. You can control skeleton loading at the table level, column level, or row level.
+
+### Global Skeleton Loading
+
+```tsx
+import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [data, setData] = useState([])
+
+    const fetchData = async () => {
+        setIsLoading(true)
+        const response = await fetch('/api/users')
+        const newData = await response.json()
+        setData(newData)
+        setIsLoading(false)
+    }
+
+    return (
+        <DataTable
+            data={data}
+            columns={columns}
+            idField="id"
+            isLoading={isLoading}
+            skeletonVariant="pulse" // or "wave"
+            // ... other props
+        />
+    )
+}
+```
+
+### Per-Column Skeleton Control
+
+```tsx
+const columns: ColumnDefinition<User>[] = [
+    {
+        field: 'name',
+        header: 'Name',
+        type: ColumnType.TEXT,
+        // Uses global skeleton settings
+    },
+    {
+        field: 'email',
+        header: 'Email',
+        type: ColumnType.TEXT,
+        skeletonVariant: 'wave', // Override with wave animation
+    },
+    {
+        field: 'actions',
+        header: 'Actions',
+        type: ColumnType.CUSTOM,
+        showSkeleton: false, // Never show skeleton for this column
+    },
+]
+```
+
+### Per-Row Skeleton Loading
+
+```tsx
+function MyComponent() {
+    const [updatingRowIds, setUpdatingRowIds] = useState<Set<number>>(new Set())
+
+    const handleRowUpdate = async (rowId: number) => {
+        setUpdatingRowIds((prev) => new Set(prev).add(rowId))
+        await updateRow(rowId)
+        setUpdatingRowIds((prev) => {
+            const newSet = new Set(prev)
+            newSet.delete(rowId)
+            return newSet
+        })
+    }
+
+    return (
+        <DataTable
+            data={data}
+            columns={columns}
+            idField="id"
+            isRowLoading={(row) => updatingRowIds.has(row.id)}
+            // ... other props
+        />
+    )
+}
+```
+
+### Skeleton Priority
+
+Skeleton loading follows this priority order:
+
+1. **Column-level** `showSkeleton` (highest priority)
+2. **Row-level** `isRowLoading` function
+3. **Global** `showSkeleton` or `isLoading` (lowest priority)
+
 ## API Reference
 
 <DocsTypeTable
@@ -557,12 +653,50 @@ function MyComponent() {
             {
                 content: 'isLoading',
                 hintText:
-                    'When true, displays a loading indicator overlay on the table, indicating that data is being fetched or processed. Useful for async operations like API calls. The table becomes non-interactive during loading. Defaults to false.',
+                    'When true, displays skeleton loading in table cells, indicating that data is being fetched or processed. Useful for async operations like API calls. Skeleton loaders provide better UX than empty states. Works together with showSkeleton for granular control. Defaults to false.',
             },
             {
                 content: 'boolean',
                 hintText:
-                    'true shows loading state, false shows normal table state',
+                    'true shows skeleton loading state, false shows normal table state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showSkeleton',
+                hintText:
+                    'When true, displays skeleton loading placeholders in all table cells (including checkboxes and expansion buttons). Provides granular control over skeleton display separate from isLoading. Can be overridden at the column level via column.showSkeleton or at the row level via isRowLoading. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows skeleton in all cells, false shows normal content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeletonVariant',
+                hintText:
+                    'Determines the skeleton animation style globally. "pulse" creates a pulsing fade effect, "wave" creates a shimmer wave effect moving across the skeleton. Can be overridden per column via column.skeletonVariant. Defaults to "pulse".',
+            },
+            {
+                content: "'pulse' | 'wave'",
+                hintText: 'Union type defining skeleton animation variants',
+            },
+            { content: 'pulse, wave' },
+        ],
+        [
+            {
+                content: 'isRowLoading',
+                hintText:
+                    'Optional function that determines whether a specific row should show skeleton loading. Receives the row data and index, returns boolean. Useful for showing skeleton on individual rows during updates (e.g., during save operations). Takes precedence over global showSkeleton/isLoading but can be overridden by column.showSkeleton.',
+            },
+            {
+                content: '(row: T, index: number) => boolean',
+                hintText:
+                    'Function that returns true if row should show skeleton, false otherwise',
             },
             { content: '' },
         ],
@@ -1082,6 +1216,32 @@ Each column in the `columns` array should have the following structure:
                 hintText: 'CSS class name to apply to column cells',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'showSkeleton',
+                hintText:
+                    'Optional boolean that controls skeleton loading for this specific column. When true, cells in this column show skeleton during loading. When false, cells never show skeleton regardless of global showSkeleton or isLoading. When undefined (default), inherits from global showSkeleton/isLoading or row-level isRowLoading. Useful for excluding specific columns from skeleton loading.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows skeleton, false hides skeleton, undefined inherits from global/row settings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeletonVariant',
+                hintText:
+                    'Optional skeleton animation variant for this specific column. Overrides the global skeletonVariant prop. "pulse" creates a pulsing fade effect, "wave" creates a shimmer wave effect. Useful for having different animation styles for different columns (e.g., wave for text columns, pulse for numeric columns).',
+            },
+            {
+                content: "'pulse' | 'wave'",
+                hintText:
+                    'Union type defining skeleton animation variant for this column',
+            },
+            { content: 'pulse, wave' },
         ],
         [
             {
