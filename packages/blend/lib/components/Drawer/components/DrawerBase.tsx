@@ -148,20 +148,22 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     ? `${customMaxWidth}px`
                     : customMaxWidth || '400px'
 
+            const hasOffset =
+                mobileOffset?.left !== undefined ||
+                mobileOffset?.right !== undefined ||
+                mobileOffset?.top !== undefined ||
+                mobileOffset?.bottom !== undefined
+
             return `
                 position: fixed;
-                top: ${offset.top};
-                bottom: ${offset.bottom};
-                left: ${offset.left};
-                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
-                width: calc(100% - calc(${offset.left} + ${offset.right}));
+                top: ${hasOffset ? offset.top : '0'};
+                bottom: ${hasOffset ? offset.bottom : '0'};
+                left: ${hasOffset ? offset.left : '0'};
+                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `0 ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} 0`};
+                width: ${maxWidthValue};
                 overflow: hidden;
-                max-width: ${maxWidthValue};
-                
+
                 @media (min-width: 1024px) {
-                    top: 0;
-                    bottom: 0;
-                    left: 0;
                     width: ${widthValue};
                 }
             `
@@ -176,20 +178,22 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     ? `${customMaxWidth}px`
                     : customMaxWidth || '400px'
 
+            const hasOffset =
+                mobileOffset?.left !== undefined ||
+                mobileOffset?.right !== undefined ||
+                mobileOffset?.top !== undefined ||
+                mobileOffset?.bottom !== undefined
+
             return `
                 position: fixed;
-                top: ${offset.top};
-                bottom: ${offset.bottom};
-                right: ${offset.right};
-                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
-                width: calc(100% - calc(${offset.left} + ${offset.right}));
+                top: ${hasOffset ? offset.top : '0'};
+                bottom: ${hasOffset ? offset.bottom : '0'};
+                right: ${hasOffset ? offset.right : '0'};
+                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `${tokens.borderRadius.topLeft} 0 0 ${tokens.borderRadius.bottomLeft}`};
+                width: ${maxWidthValue};
                 overflow: hidden;
-                max-width: ${maxWidthValue};
-                
+
                 @media (min-width: 1024px) {
-                    top: 0;
-                    bottom: 0;
-                    right: 0;
                     width: ${widthValue};
                 }
             `
