@@ -101,25 +101,14 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         const rightSlotContent = rightSlotConfig ? (
             rightSlotConfig.type === 'checkbox' ? (
-                <div
+                <Checkbox
                     data-checkbox-value={item.value}
                     data-selected-checkbox={isSelected}
                     data-checkbox-status={
                         item.disabled ? 'disabled' : 'enabled'
                     }
-                    style={{
-                        width: '16px',
-                        height: '16px',
-                        border: '1px solid #888',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: isSelected ? '#0044ff' : 'transparent',
-                        opacity: item.disabled ? 0.5 : 1,
-                    }}
-                >
-                    {isSelected ? <Check size={14} /> : null}
-                </div>
+                    {...rightSlotConfig.props}
+                />
             ) : (
                 <Check
                     data-checkmark-value={item.value}
