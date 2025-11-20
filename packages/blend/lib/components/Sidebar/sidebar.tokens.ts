@@ -78,6 +78,7 @@ export type SidebarTokenType = {
             backgroundColor: {
                 [key in SidebarState]: CSSObject['backgroundColor'] // Button background per state
             }
+            width: CSSObject['width']
         }
     }
 
@@ -162,6 +163,7 @@ export const getSidebarTokens = (
                         hover: foundationToken.colors.gray[100],
                         active: foundationToken.colors.gray[100],
                     },
+                    width: foundationToken.unit[16],
                 },
             },
 
@@ -240,6 +242,7 @@ export const getSidebarTokens = (
                         hover: foundationToken.colors.gray[100],
                         active: foundationToken.colors.gray[100],
                     },
+                    width: foundationToken.unit[16],
                 },
             },
 

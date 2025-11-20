@@ -254,6 +254,7 @@ const SidebarMobileNavigation = forwardRef<
                             borderTopLeftRadius: tokens.drawer.borderRadius,
                             borderTopRightRadius: tokens.drawer.borderRadius,
                             overflow: 'hidden',
+                            zIndex: 1050,
                         }}
                         mobileOffset={{
                             top: '0px',
