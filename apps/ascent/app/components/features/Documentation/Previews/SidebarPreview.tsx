@@ -66,14 +66,14 @@ function MyComponent() {
     const reCode = `type leftPanelItem = {
   label: string,
   icon: React.element,
-  value: option<string>
+  value: option<string>,
+  showInPanel: option<bool>
 }
 
 type leftPanelInfo = {
   items: array<leftPanelItem>,
   selected: string,
-  onSelect: string => unit,
-  maxVisibleItems: option<int>
+  onSelect: string => unit
 }
 
 @react.component
@@ -115,11 +115,11 @@ external make: (
     "items": array<{
       "label": string,
       "icon": React.element,
-      "value": string=?
+      "value": string=?,
+      "showInPanel": bool=?
     }>,
     "selected": string,
-    "onSelect": string => unit,
-    "maxVisibleItems": int=?
+    "onSelect": string => unit
   }=?,
   ~topbar: React.element,
   ~footer: React.element=?,

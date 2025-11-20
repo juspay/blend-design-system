@@ -879,32 +879,6 @@ function MyComponent() {
         ],
         [
             {
-                content: 'rowHeight',
-                hintText:
-                    'Approximate height of a single row in pixels. Used to calculate minimum table height based on page size, helping maintain consistent layout and preventing layout shifts when data changes (e.g., during loading or empty states). Adjust this value to match your row design. Defaults to 52.',
-            },
-            {
-                content: 'number',
-                hintText:
-                    'Positive number representing approximate row height in pixels',
-            },
-            { content: '52' },
-        ],
-        [
-            {
-                content: 'maintainMinHeight',
-                hintText:
-                    'When true, the table maintains a minimum height based on pageSize × rowHeight, preventing layout shifts when switching between data states (loading, empty, populated). When false, table height adjusts dynamically to content. Set to false if you prefer dynamic height behavior. Defaults to true.',
-            },
-            {
-                content: 'boolean',
-                hintText:
-                    'true maintains consistent height, false allows dynamic height adjustment',
-            },
-            { content: 'true' },
-        ],
-        [
-            {
                 content: 'mobileColumnsToShow',
                 hintText:
                     'Optional number specifying how many columns to display on mobile devices. When provided, the table automatically adapts to show only the specified number of columns on small screens, with remaining columns accessible via overflow or expansion. Useful for responsive design.',
