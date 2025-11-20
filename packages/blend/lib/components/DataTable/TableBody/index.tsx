@@ -746,48 +746,33 @@ const TableBody = forwardRef<
                                                   }),
                                               }}
                                           >
-                                              {rowShouldShowSkeleton ? (
-                                                  <Skeleton
-                                                      variant={skeletonVariant}
-                                                      loading
-                                                      width="20px"
-                                                      height="20px"
-                                                      borderRadius="4px"
-                                                      style={{
-                                                          margin: 'auto',
-                                                      }}
+                                              <Block
+                                                  display="flex"
+                                                  alignItems="center"
+                                                  justifyContent="center"
+                                                  width={
+                                                      FOUNDATION_THEME.unit[40]
+                                                  }
+                                                  onClick={(e) =>
+                                                      e.stopPropagation()
+                                                  }
+                                              >
+                                                  <Checkbox
+                                                      checked={
+                                                          !!selectedRows[rowId]
+                                                      }
+                                                      onCheckedChange={() =>
+                                                          onRowSelect(
+                                                              row[idField]
+                                                          )
+                                                      }
+                                                      size={CheckboxSize.MEDIUM}
+                                                      disabled={
+                                                          isEditing ||
+                                                          rowShouldShowSkeleton
+                                                      }
                                                   />
-                                              ) : (
-                                                  <Block
-                                                      display="flex"
-                                                      alignItems="center"
-                                                      justifyContent="center"
-                                                      width={
-                                                          FOUNDATION_THEME
-                                                              .unit[40]
-                                                      }
-                                                      onClick={(e) =>
-                                                          e.stopPropagation()
-                                                      }
-                                                  >
-                                                      <Checkbox
-                                                          checked={
-                                                              !!selectedRows[
-                                                                  rowId
-                                                              ]
-                                                          }
-                                                          onCheckedChange={() =>
-                                                              onRowSelect(
-                                                                  row[idField]
-                                                              )
-                                                          }
-                                                          size={
-                                                              CheckboxSize.MEDIUM
-                                                          }
-                                                          disabled={isEditing}
-                                                      />
-                                                  </Block>
-                                              )}
+                                              </Block>
                                           </StyledTableCell>
                                       )}
 

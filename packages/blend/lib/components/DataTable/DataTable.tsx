@@ -1131,6 +1131,8 @@ const DataTable = forwardRef(
                                             enableColumnReordering={
                                                 enableColumnReordering
                                             }
+                                            showSkeleton={showSkeleton}
+                                            isLoading={isLoading}
                                             onColumnReorder={(columns) => {
                                                 setVisibleColumns(
                                                     columns as ColumnDefinition<T>[]
@@ -1493,6 +1495,7 @@ const DataTable = forwardRef(
                         pageSize={pageSize}
                         totalRows={totalRows}
                         isLoading={isLoading}
+                        showSkeleton={showSkeleton}
                         hasData={currentData.length > 0}
                         onPageChange={handlePageChange}
                         onPageSizeChange={handlePageSizeChange}
