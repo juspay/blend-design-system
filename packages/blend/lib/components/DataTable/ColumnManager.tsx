@@ -26,6 +26,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     columnManagerPrimaryAction,
     columnManagerSecondaryAction,
     multiSelectWidth = 250,
+    disabled = false,
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -174,8 +175,12 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             justifyContent="center"
             width="auto"
             height="auto"
-            cursor="pointer"
+            cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
+            disabled={disabled}
+            style={{
+                opacity: disabled ? 0.4 : 1,
+            }}
         >
             <Plus
                 size={tableTokens.header.actionIcons.columnManagerIcon.width}
@@ -204,6 +209,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         showActionButtons: true,
         primaryAction,
         secondaryAction: columnManagerSecondaryAction,
+        disabled,
     }
 
     return (

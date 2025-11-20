@@ -9,8 +9,12 @@ import {
     TabItem,
 } from '../../../../packages/blend/lib/components/Tabs'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
-import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
+import {
+    MultiSelect,
+    MultiSelectVariant,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import Modal from '../../../../packages/blend/lib/components/Modal/Modal'
 import {
     Home,
     User,
@@ -166,21 +170,27 @@ const TabsDemo = () => {
     // Enhanced tabs handlers
     const handleTabClose = (value: string) => {
         const tabToClose = enhancedTabs.find((tab) => tab.value === value)
-
         if (!tabToClose) return
 
+        // Filter out the tab being closed and any concatenated tabs with same content
         const filteredTabs = enhancedTabs.filter((tab) => {
+            // Keep if it's not the tab being closed
             if (tab.value === value) return false
+            // Remove non-default tabs that share the same content (concatenated tabs)
             if (tab.content === tabToClose.content && !tab.isDefault)
                 return false
-
             return true
         })
 
+        // Check if active tab will be removed
+        const activeTabWillBeRemoved = !filteredTabs.some(
+            (tab) => tab.value === enhancedActiveTab
+        )
+
         setEnhancedTabs(filteredTabs)
 
-        // If closing active tab, switch to first remaining tab
-        if (value === enhancedActiveTab && filteredTabs.length > 0) {
+        // Switch to first remaining tab if active tab was removed
+        if (activeTabWillBeRemoved && filteredTabs.length > 0) {
             setEnhancedActiveTab(filteredTabs[0].value)
         }
     }
@@ -205,38 +215,50 @@ const TabsDemo = () => {
     const handleAddSelectedTabs = () => {
         if (selectedTabsToAdd.length === 0) return
 
-        const newTabs: TabItem[] = selectedTabsToAdd.map((value) => {
-            const item = availableTabOptions.find((opt) => opt.value === value)!
-            const content =
-                selectedTabsToAdd.length > 1 ? (
-                    sharedContent
-                ) : (
-                    <div className="p-4 bg-purple-50 rounded-lg">
-                        <h3 className="text-lg font-semibold mb-2">
-                            {item.label} Content
-                        </h3>
-                        <p className="text-purple-600">
-                            This is unique content for {item.label} tab.
-                        </p>
-                    </div>
+        // Create new tabs - multiple selections share content, single gets unique content
+        const isMultipleSelection = selectedTabsToAdd.length > 1
+        const newTabs: TabItem[] = selectedTabsToAdd.reduce<TabItem[]>(
+            (acc, value) => {
+                const item = availableTabOptions.find(
+                    (opt) => opt.value === value
                 )
+                if (!item) return acc
 
-            return {
-                value: item.value,
-                label: item.label,
-                content,
-                closable: true,
-                isDefault: false,
-            }
-        })
+                acc.push({
+                    value: item.value,
+                    label: item.label,
+                    content: isMultipleSelection ? (
+                        sharedContent
+                    ) : (
+                        <div className="p-4 bg-purple-50 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-2">
+                                {item.label} Content
+                            </h3>
+                            <p className="text-purple-600">
+                                This is unique content for {item.label} tab.
+                            </p>
+                        </div>
+                    ),
+                    closable: true,
+                    isDefault: false,
+                })
+                return acc
+            },
+            []
+        )
 
-        setEnhancedTabs([...enhancedTabs, ...newTabs])
-        setEnhancedActiveTab(newTabs[0].value)
+        // Add new tabs and activate the first one
+        setEnhancedTabs((prevTabs) => [...prevTabs, ...newTabs])
+        if (newTabs.length > 0) {
+            setEnhancedActiveTab(newTabs[0].value)
+        }
+
+        // Close modal and reset selection
         setSelectedTabsToAdd([])
         setShowMultiSelect(false)
     }
 
-    const handleCancelAdd = () => {
+    const handleCloseModal = () => {
         setSelectedTabsToAdd([])
         setShowMultiSelect(false)
     }
@@ -296,42 +318,36 @@ const TabsDemo = () => {
                         />
                     </div>
 
-                    {showMultiSelect && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-                                <h3 className="text-lg font-semibold mb-4">
-                                    Add New Tabs
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    Select up to 3 tabs to add. If you select
-                                    multiple tabs, they will share content and
-                                    be concatenated as "TabA+TabB+TabC".
-                                </p>
-
-                                <MultiSelect
-                                    selectedValues={selectedTabsToAdd}
-                                    onChange={handleMultiSelectChange}
-                                    items={multiSelectItems}
-                                    placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
-                                    label="Available Tabs"
-                                    enableSearch={true}
-                                    searchPlaceholder="Search available tabs..."
-                                    showActionButtons={true}
-                                    primaryAction={{
-                                        text: 'Add Selected Tabs',
-                                        onClick: handleAddSelectedTabs,
-                                        disabled:
-                                            selectedTabsToAdd.length === 0,
-                                    }}
-                                    secondaryAction={{
-                                        text: 'Cancel',
-                                        onClick: handleCancelAdd,
-                                    }}
-                                    useDrawerOnMobile={false}
-                                />
-                            </div>
-                        </div>
-                    )}
+                    <Modal
+                        isOpen={showMultiSelect}
+                        onClose={handleCloseModal}
+                        title="Add New Tabs"
+                        subtitle="Select up to 3 tabs to add. Multiple tabs will share content and be concatenated."
+                        minWidth="600px"
+                        primaryAction={{
+                            text: 'Add Selected Tabs',
+                            onClick: handleAddSelectedTabs,
+                            disabled: selectedTabsToAdd.length === 0,
+                        }}
+                        secondaryAction={{
+                            text: 'Cancel',
+                            onClick: handleCloseModal,
+                        }}
+                    >
+                        <MultiSelect
+                            selectedValues={selectedTabsToAdd}
+                            onChange={handleMultiSelectChange}
+                            items={multiSelectItems}
+                            placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
+                            label=""
+                            enableSearch={true}
+                            searchPlaceholder="Search available tabs..."
+                            maxSelections={3}
+                            useDrawerOnMobile={false}
+                            fullWidth={true}
+                            variant={MultiSelectVariant.NO_CONTAINER}
+                        />
+                    </Modal>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="p-4 bg-blue-50 rounded-lg">
