@@ -25,6 +25,8 @@ import {
 import { FOUNDATION_THEME } from '../../tokens'
 import SidebarMobileNavigation from './SidebarMobile'
 
+// Styled wrappers for pseudo-element support (::webkit-scrollbar)
+// Block primitive doesn't support pseudo-elements, so we need minimal styled wrappers
 const DirectoryContainer = styled(Block)`
     flex: 1;
     overflow-y: auto;
@@ -70,6 +72,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             isExpanded: controlledIsExpanded,
             onExpandedChange,
             defaultIsExpanded = true,
+            panelOnlyMode = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
         },
@@ -165,6 +168,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const handleMouseEnter = useCallback(() => setIsHovering(true), [])
         const handleMouseLeave = useCallback(() => setIsHovering(false), [])
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
+        const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
         const [mobileNavigationHeight, setMobileNavigationHeight] =
@@ -210,7 +214,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 position="relative"
                 zIndex={99}
             >
-                {!isExpanded && !isMobile && (
+                {/* Hover trigger area - only show when NOT in panel only mode */}
+                {!isExpanded && !isMobile && !isPanelOnlyMode && (
                     <Block
                         position="absolute"
                         left="0"
@@ -227,21 +232,31 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                 <Block
                     backgroundColor={tokens.backgroundColor}
-                    maxWidth={getSidebarWidth(
-                        isExpanded,
-                        isHovering,
-                        hasLeftPanel,
-                        tokens
-                    )}
-                    width="100%"
-                    borderRight={getSidebarBorder(
-                        isExpanded,
-                        isHovering,
-                        tokens
-                    )}
+                    maxWidth={
+                        isPanelOnlyMode
+                            ? 'fit-content'
+                            : getSidebarWidth(
+                                  isExpanded,
+                                  isHovering,
+                                  hasLeftPanel,
+                                  tokens
+                              )
+                    }
+                    width={isPanelOnlyMode ? 'auto' : '100%'}
+                    borderRight={
+                        isPanelOnlyMode
+                            ? tokens.borderRight
+                            : getSidebarBorder(isExpanded, isHovering, tokens)
+                    }
                     display={isMobile ? 'none' : 'flex'}
-                    position={!isExpanded ? 'absolute' : 'relative'}
-                    zIndex={getSidebarZIndex()}
+                    position={
+                        isPanelOnlyMode
+                            ? 'relative'
+                            : !isExpanded
+                              ? 'absolute'
+                              : 'relative'
+                    }
+                    zIndex={isPanelOnlyMode ? '48' : getSidebarZIndex()}
                     height="100%"
                     style={{
                         willChange: 'transform',
@@ -249,56 +264,88 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         animation: 'slide-in-from-left 0.3s ease-out',
                         overflow: 'hidden',
                     }}
-                    onMouseLeave={handleMouseLeave}
-                    data-is-sidebar-expanded={isExpanded}
-                    boxShadow={
-                        isHovering
-                            ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
-                            : 'none'
+                    onMouseLeave={
+                        isPanelOnlyMode ? undefined : handleMouseLeave
                     }
-                    data-sidebar-state={getSidebarState()}
+                    data-is-sidebar-expanded={
+                        isPanelOnlyMode ? 'false' : isExpanded
+                    }
+                    boxShadow={
+                        isPanelOnlyMode
+                            ? 'none'
+                            : isHovering
+                              ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
+                              : 'none'
+                    }
+                    data-sidebar-state={
+                        isPanelOnlyMode ? 'panel-only' : getSidebarState()
+                    }
                 >
                     {!isMobile && (
                         <>
-                            {hasLeftPanel &&
-                                leftPanel &&
-                                (isExpanded || isHovering) && (
-                                    <TenantPanel
-                                        items={leftPanel.items}
-                                        selected={leftPanel.selected}
-                                        onSelect={leftPanel.onSelect}
-                                        maxVisibleItems={
-                                            leftPanel.maxVisibleItems
-                                        }
-                                        tenantFooter={leftPanel.tenantFooter}
-                                    />
-                                )}
+                            {isPanelOnlyMode && leftPanel && (
+                                <TenantPanel
+                                    items={leftPanel.items}
+                                    selected={leftPanel.selected}
+                                    onSelect={leftPanel.onSelect}
+                                    tenantSlot1={leftPanel.tenantSlot1}
+                                    tenantSlot2={leftPanel.tenantSlot2}
+                                    tenantFooter={leftPanel.tenantFooter}
+                                />
+                            )}
 
-                            {(isExpanded || isHovering) && (
-                                <Block
-                                    width="100%"
-                                    height="100%"
-                                    display="flex"
-                                    flexDirection="column"
-                                    position="relative"
-                                >
-                                    <SidebarHeader
-                                        sidebarTopSlot={sidebarTopSlot}
-                                        merchantInfo={merchantInfo}
-                                        isExpanded={isExpanded}
-                                        isScrolled={isScrolled}
-                                        sidebarCollapseKey={sidebarCollapseKey}
-                                        onToggle={handleToggle}
-                                    />
+                            {!isPanelOnlyMode && (
+                                <>
+                                    {hasLeftPanel &&
+                                        leftPanel &&
+                                        (isExpanded || isHovering) && (
+                                            <TenantPanel
+                                                items={leftPanel.items}
+                                                selected={leftPanel.selected}
+                                                onSelect={leftPanel.onSelect}
+                                                tenantSlot1={
+                                                    leftPanel.tenantSlot1
+                                                }
+                                                tenantSlot2={
+                                                    leftPanel.tenantSlot2
+                                                }
+                                                tenantFooter={
+                                                    leftPanel.tenantFooter
+                                                }
+                                            />
+                                        )}
 
-                                    <DirectoryContainer
-                                        data-directory-container
-                                    >
-                                        <Directory directoryData={data} />
-                                    </DirectoryContainer>
+                                    {(isExpanded || isHovering) && (
+                                        <Block
+                                            width="100%"
+                                            height="100%"
+                                            display="flex"
+                                            flexDirection="column"
+                                            position="relative"
+                                        >
+                                            <SidebarHeader
+                                                sidebarTopSlot={sidebarTopSlot}
+                                                merchantInfo={merchantInfo}
+                                                isExpanded={isExpanded}
+                                                isScrolled={isScrolled}
+                                                sidebarCollapseKey={
+                                                    sidebarCollapseKey
+                                                }
+                                                onToggle={handleToggle}
+                                            />
 
-                                    <SidebarFooter footer={footer} />
-                                </Block>
+                                            <DirectoryContainer
+                                                data-directory-container
+                                            >
+                                                <Directory
+                                                    directoryData={data}
+                                                />
+                                            </DirectoryContainer>
+
+                                            <SidebarFooter footer={footer} />
+                                        </Block>
+                                    )}
+                                </>
                             )}
                         </>
                     )}
@@ -326,6 +373,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             isExpanded={isExpanded}
                             onToggleExpansion={handleToggle}
                             showToggleButton={showToggleButton}
+                            panelOnlyMode={isPanelOnlyMode}
                             sidebarTopSlot={sidebarTopSlot}
                             topbar={topbar}
                             leftPanel={leftPanel}

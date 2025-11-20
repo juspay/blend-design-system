@@ -89,6 +89,7 @@ const SelectAllItem = ({
                 >
                     {selectAllText}
                 </PrimitiveText>
+
                 <Checkbox
                     data-checkbox-value={selectAllText}
                     data-selected-checkbox={allSelected}

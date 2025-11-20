@@ -92,6 +92,11 @@ const SingleSelect = ({
     endReachedThreshold,
     hasMore,
     loadingComponent,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -159,6 +164,7 @@ const SingleSelect = ({
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
+                skeleton={skeleton}
             />
         )
     }
@@ -201,6 +207,7 @@ const SingleSelect = ({
                     data-dropdown-for={placeholder}
                 >
                     <SingleSelectMenu
+                        skeleton={skeleton}
                         open={open}
                         onOpenChange={(isOpen) => {
                             setOpen(isOpen)

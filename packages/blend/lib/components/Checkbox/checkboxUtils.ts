@@ -10,58 +10,6 @@ export const getCheckboxDataState = (
         : CheckboxCheckedState.UNCHECKED
 }
 
-export const extractPixelValue = (
-    tokenValue: string | number | undefined
-): number => {
-    if (typeof tokenValue === 'number') return tokenValue
-    if (typeof tokenValue === 'string') {
-        if (tokenValue.endsWith('px')) {
-            return parseInt(tokenValue.replace('px', ''), 10)
-        } else if (tokenValue.endsWith('rem')) {
-            return parseInt(tokenValue.replace('rem', ''), 10) * 16 // Assuming 1rem = 16px
-        } else if (tokenValue.endsWith('em')) {
-            return parseInt(tokenValue.replace('em', ''), 10) * 16 // Assuming 1em = 16px for base
-        }
-        // Attempt to parse as a number if no unit, or if it's just a number string
-        const parsedAsNumber = parseInt(tokenValue, 10)
-        if (!isNaN(parsedAsNumber)) {
-            return parsedAsNumber
-        }
-    }
-    return 0 // fallback for undefined or unparsable
-}
-
-/**
- * Determines if the checkbox component is controlled based on the checked prop
- */
-export const isControlledCheckbox = (
-    checked: boolean | 'indeterminate' | undefined
-): boolean => {
-    return checked !== undefined
-}
-
-/**
- * Creates input props for controlled vs uncontrolled components
- */
-export const createCheckboxInputProps = (
-    checked: boolean | 'indeterminate' | undefined,
-    defaultChecked: boolean
-) => {
-    return isControlledCheckbox(checked)
-        ? { checked: checked === 'indeterminate' ? false : checked }
-        : { defaultChecked: defaultChecked }
-}
-
-/**
- * Gets the current checked state for styling purposes
- */
-export const getCurrentCheckedState = (
-    checked: boolean | 'indeterminate' | undefined,
-    defaultChecked: boolean
-): boolean | 'indeterminate' => {
-    return isControlledCheckbox(checked) ? checked! : defaultChecked
-}
-
 /**
  * Gets the icon color based on checkbox state
  */

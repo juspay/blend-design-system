@@ -1,10 +1,13 @@
 import { forwardRef, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { type TabsTriggerProps, TabsVariant, TabsSize } from './types'
 import { StyledTabsTrigger, IconContainer } from './StyledTabs'
 import type { TabsTokensType } from './tabs.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { X } from 'lucide-react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import Skeleton from '../Skeleton/Skeleton'
+import { getSkeletonState } from '../Skeleton/utils'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -19,11 +22,16 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             closable = false,
             onClose,
             disable = false,
+            isOverlay = false,
+            tabsGroupId = '',
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
             ...props
         },
         ref
     ) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+        const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
         const handleCloseClick = useCallback(
             (e: React.MouseEvent) => {
@@ -54,32 +62,103 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             rightSlot
         )
 
-        return (
+        const isActive = props.isActive
+        const isDisabled = shouldShowSkeleton ? true : disable
+
+        const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
+
+        const triggerContent = (
             <StyledTabsTrigger
                 ref={ref}
                 value={value}
                 $variant={variant}
                 $size={size}
                 $tabsToken={tabsToken}
+                $isOverlay={isOverlay}
                 className={className}
-                disabled={disable}
+                disabled={isDisabled}
+                style={{
+                    ...(shouldShowSkeleton && {
+                        color: 'transparent',
+                        pointerEvents: 'none',
+                        border: 'none',
+                    }),
+                    ...props.style,
+                }}
                 {...props}
             >
+                {!isOverlay &&
+                    isActive &&
+                    variant !== TabsVariant.UNDERLINE &&
+                    !shouldShowSkeleton && (
+                        <motion.span
+                            layoutId={`tabs-background-indicator-${tabsGroupId}`}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                backgroundColor:
+                                    tabsToken.backgroundColor[variant].active,
+                                borderRadius:
+                                    tabsToken.borderRadius[size][variant],
+                                zIndex: -1,
+                            }}
+                            transition={{
+                                type: 'spring',
+                                bounce: 0.2,
+                                duration: 0.6,
+                            }}
+                        />
+                    )}
+
                 {leftSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                    >
                         {leftSlot}
                     </IconContainer>
                 )}
 
-                <span style={{ flexGrow: 1 }}>{children}</span>
+                <span
+                    style={{
+                        flexGrow: 1,
+                        position: 'relative',
+                        zIndex: 1,
+                        opacity: shouldShowSkeleton ? 0 : 1,
+                    }}
+                >
+                    {children}
+                </span>
 
                 {effectiveRightSlot && (
-                    <IconContainer $tabsToken={tabsToken}>
+                    <IconContainer
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                    >
                         {effectiveRightSlot}
                     </IconContainer>
                 )}
             </StyledTabsTrigger>
         )
+
+        if (shouldShowSkeleton) {
+            return (
+                <Skeleton
+                    variant={skeletonVariant}
+                    loading
+                    padding="0"
+                    display="inline-block"
+                    pointerEvents="none"
+                    height="fit-content"
+                    width="fit-content"
+                    borderRadius={skeletonBorderRadius}
+                >
+                    {triggerContent}
+                </Skeleton>
+            )
+        }
+
+        return triggerContent
     }
 )
 

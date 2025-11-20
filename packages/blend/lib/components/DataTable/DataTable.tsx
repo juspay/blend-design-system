@@ -110,6 +110,9 @@ const DataTable = forwardRef(
             onRowSelectionChange,
             renderExpandedRow,
             isRowExpandable,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
+            isRowLoading,
             pagination = {
                 currentPage: 1,
                 pageSize: 10,
@@ -133,8 +136,6 @@ const DataTable = forwardRef(
             rowActions,
             getRowStyle,
             tableBodyHeight,
-            rowHeight = 52,
-            maintainMinHeight = true,
             mobileColumnsToShow,
             ...rest
         }: DataTableProps<T>,
@@ -236,6 +237,9 @@ const DataTable = forwardRef(
         const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
             useState<number>(-1)
 
+        // Internal loading state for animations
+        const [internalLoading, setInternalLoading] = useState<boolean>(false)
+
         // Drag and drop for column reordering
         const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -334,18 +338,18 @@ const DataTable = forwardRef(
             ? mobileVisibleColumns
             : visibleColumns
 
-        // Calculate minimum height for table body based on page size
-        // This helps maintain consistent layout and prevents shifting when data changes
-        const tableBodyMinHeight = useMemo(() => {
-            // Don't apply min height if:
-            // 1. User has set a custom tableBodyHeight
-            // 2. maintainMinHeight is disabled
-            if (tableBodyHeight || !maintainMinHeight) {
-                return undefined
+        // Calculate minimum height for empty state based on page size
+        // This ensures consistent height whether data is present or not
+        const emptyStateMinHeight = useMemo(() => {
+            // If custom tableBodyHeight is provided, use default 400px
+            if (tableBodyHeight) {
+                return '400px'
             }
-            // Calculate based on page size and row height
-            return `${pageSize * rowHeight}px`
-        }, [pageSize, rowHeight, tableBodyHeight, maintainMinHeight])
+            // Use fixed heights based on page size ranges
+            // 5 rows/page → 300px
+            // 10+ rows/page → 600px
+            return pageSize <= 5 ? '300px' : '600px'
+        }, [pageSize, tableBodyHeight])
 
         const formatOptions: MenuGroupType[] = [
             {
@@ -760,22 +764,34 @@ const DataTable = forwardRef(
 
         const handlePageChange = (page: number) => {
             if (page !== currentPage) {
+                setInternalLoading(true)
                 setCurrentPage(page)
 
                 if (onPageChange) {
                     onPageChange(page)
                 }
+
+                // Reset loading state after a short delay to show skeleton animation
+                setTimeout(() => {
+                    setInternalLoading(false)
+                }, 300)
             }
         }
 
         const handlePageSizeChange = (size: number) => {
             if (size !== pageSize) {
+                setInternalLoading(true)
                 setPageSize(size)
                 setCurrentPage(1)
 
                 if (onPageSizeChange) {
                     onPageSizeChange(size)
                 }
+
+                // Reset loading state after a short delay to show skeleton animation
+                setTimeout(() => {
+                    setInternalLoading(false)
+                }, 300)
             }
         }
 
@@ -1015,10 +1031,7 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
-                        maxHeight:
-                            currentData.length > 0
-                                ? tableToken.dataTable.maxHeight
-                                : 'none',
+                        maxHeight: tableToken.dataTable.maxHeight,
                         overflow: 'hidden',
                     }}
                 >
@@ -1065,7 +1078,7 @@ const DataTable = forwardRef(
                                               }
                                             : {
                                                   flex: 1,
-                                                  minHeight: tableBodyMinHeight,
+                                                  overflowY: 'auto',
                                               }),
                                         position: 'relative',
                                     }}
@@ -1319,6 +1332,24 @@ const DataTable = forwardRef(
                                                           >
                                                         | undefined
                                                 }
+                                                isLoading={
+                                                    isLoading || internalLoading
+                                                }
+                                                showSkeleton={showSkeleton}
+                                                skeletonVariant={
+                                                    skeletonVariant
+                                                }
+                                                isRowLoading={
+                                                    isRowLoading as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => boolean)
+                                                        | undefined
+                                                }
                                             />
                                         ) : (
                                             <tbody style={{ height: '100%' }}>
@@ -1340,9 +1371,6 @@ const DataTable = forwardRef(
                                                                 : 0)
                                                         }
                                                         style={{
-                                                            textAlign: 'center',
-                                                            verticalAlign:
-                                                                'middle',
                                                             padding: '0',
                                                             height: '100%',
                                                             color: tableToken
@@ -1355,10 +1383,6 @@ const DataTable = forwardRef(
                                                                     .table.body
                                                                     .cell
                                                                     .fontSize,
-                                                            backgroundColor:
-                                                                FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[0],
                                                         }}
                                                     >
                                                         <Block
@@ -1369,7 +1393,11 @@ const DataTable = forwardRef(
                                                                 width: '100%',
                                                                 height: '100%',
                                                                 minHeight:
-                                                                    tableBodyMinHeight,
+                                                                    emptyStateMinHeight,
+                                                                backgroundColor:
+                                                                    FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
                                                             }}
                                                         >
                                                             {isLoading ? (

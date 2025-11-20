@@ -1,3 +1,4 @@
+import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum MultiSelectVariant {
@@ -141,6 +142,11 @@ export type MultiSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: {
+        count?: number
+        show?: boolean
+        variant?: SkeletonVariant
+    }
 }
 
 // Multi Select Menu Dropdpown
@@ -197,4 +203,9 @@ export type MultiSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: {
+        count?: number
+        show?: boolean
+        variant?: SkeletonVariant
+    }
 }

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 
 export enum SortDirection {
     NONE = 'none',
@@ -140,6 +141,8 @@ export type BaseColumnDefinition<T> = {
     frozen?: boolean
     className?: string
     filterType?: FilterType
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type ColumnDefinition<T> =
@@ -322,6 +325,9 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
+    isRowLoading?: (row: T, index: number) => boolean
     showHeader?: boolean
     showToolbar?: boolean
     showSettings?: boolean
@@ -363,22 +369,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 
     tableBodyHeight?: string | number
-
-    /**
-     * Approximate height of a single row in pixels.
-     * Used to calculate minimum table height based on page size.
-     * Helps maintain consistent layout and prevent shifting.
-     * @default 52
-     */
-    rowHeight?: number
-
-    /**
-     * Whether to maintain minimum height based on page size.
-     * When true, table maintains consistent height preventing layout shifts.
-     * When false, table height adjusts to content.
-     * @default true
-     */
-    maintainMinHeight?: boolean
 
     // Mobile configuration
     mobileColumnsToShow?: number
