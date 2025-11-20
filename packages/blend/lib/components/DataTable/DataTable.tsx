@@ -110,6 +110,9 @@ const DataTable = forwardRef(
             onRowSelectionChange,
             renderExpandedRow,
             isRowExpandable,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
+            isRowLoading,
             pagination = {
                 currentPage: 1,
                 pageSize: 10,
@@ -233,6 +236,9 @@ const DataTable = forwardRef(
             useState<T | null>(null)
         const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
             useState<number>(-1)
+
+        // Internal loading state for animations
+        const [internalLoading, setInternalLoading] = useState<boolean>(false)
 
         // Drag and drop for column reordering
         const [activeId, setActiveId] = useState<string | null>(null)
@@ -758,22 +764,34 @@ const DataTable = forwardRef(
 
         const handlePageChange = (page: number) => {
             if (page !== currentPage) {
+                setInternalLoading(true)
                 setCurrentPage(page)
 
                 if (onPageChange) {
                     onPageChange(page)
                 }
+
+                // Reset loading state after a short delay to show skeleton animation
+                setTimeout(() => {
+                    setInternalLoading(false)
+                }, 300)
             }
         }
 
         const handlePageSizeChange = (size: number) => {
             if (size !== pageSize) {
+                setInternalLoading(true)
                 setPageSize(size)
                 setCurrentPage(1)
 
                 if (onPageSizeChange) {
                     onPageSizeChange(size)
                 }
+
+                // Reset loading state after a short delay to show skeleton animation
+                setTimeout(() => {
+                    setInternalLoading(false)
+                }, 300)
             }
         }
 
@@ -1312,6 +1330,24 @@ const DataTable = forwardRef(
                                                                   unknown
                                                               >
                                                           >
+                                                        | undefined
+                                                }
+                                                isLoading={
+                                                    isLoading || internalLoading
+                                                }
+                                                showSkeleton={showSkeleton}
+                                                skeletonVariant={
+                                                    skeletonVariant
+                                                }
+                                                isRowLoading={
+                                                    isRowLoading as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => boolean)
                                                         | undefined
                                                 }
                                             />
