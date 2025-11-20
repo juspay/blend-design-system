@@ -5637,7 +5637,7 @@ xAxis={{
                                 },
                             ]}
                             chartType={ChartType.SANKEY}
-                            height={700}
+                            height={960}
                             chartHeaderSlot={
                                 <div
                                     style={{
