@@ -60,7 +60,7 @@ type SingleSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton: {
+    skeleton?: {
         count?: number
         show?: boolean
         variant?: SkeletonVariant
