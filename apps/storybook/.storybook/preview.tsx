@@ -1,5 +1,6 @@
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/react-vite'
 import React from 'react'
+import { DocsContainer } from '@storybook/addon-docs/blocks'
 import './fonts.css'
 import './global.css'
 
@@ -23,26 +24,32 @@ const preview: Preview = {
             description: {
                 component: 'Blend Design System Components',
             },
+            source: {
+                type: 'dynamic',
+                language: 'tsx',
+                dark: true,
+            },
         },
         backgrounds: {
-            default: 'light',
-            values: [
-                {
+            options: {
+                light: {
                     name: 'light',
                     value: '#ffffff',
                 },
-                {
+
+                dark: {
                     name: 'dark',
                     value: '#1a1a1a',
                 },
-                {
+
+                gray: {
                     name: 'gray',
                     value: '#f5f5f5',
                 },
-            ],
+            },
         },
         viewport: {
-            viewports: {
+            options: {
                 mobile: {
                     name: 'Mobile',
                     styles: {
@@ -67,6 +74,7 @@ const preview: Preview = {
             },
         },
     },
+
     decorators: [
         (Story) => (
             <div style={{ padding: '20px' }}>
@@ -74,6 +82,7 @@ const preview: Preview = {
             </div>
         ),
     ],
+
     globalTypes: {
         theme: {
             description: 'Global theme for components',
@@ -84,6 +93,12 @@ const preview: Preview = {
                 items: ['light', 'dark'],
                 dynamicTitle: true,
             },
+        },
+    },
+
+    initialGlobals: {
+        backgrounds: {
+            value: 'light',
         },
     },
 }

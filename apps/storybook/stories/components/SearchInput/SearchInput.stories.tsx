@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import React, { useState } from 'react'
 import { SearchInput } from '@juspay/blend-design-system'
 import { Search, X, Filter, MapPin, Calendar } from 'lucide-react'

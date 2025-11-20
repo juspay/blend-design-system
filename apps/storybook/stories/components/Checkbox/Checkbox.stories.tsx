@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import React, { useState } from 'react'
 import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
 import { Star, Info, Settings } from 'lucide-react'

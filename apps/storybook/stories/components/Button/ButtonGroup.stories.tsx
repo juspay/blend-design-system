@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
 import {
     ButtonGroup,
@@ -207,6 +207,14 @@ export const ButtonGroupPositioning: Story = {
         docs: {
             description: {
                 story: 'Demonstrates how ButtonGroup automatically applies buttonGroupPosition prop to its children when stacked=true. This creates seamless connected buttons with proper border radius handling.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'button-name', enabled: true },
+                ],
             },
         },
     },

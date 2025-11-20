@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
 import {
     Button,
@@ -16,6 +16,7 @@ import {
     Search,
     Edit,
     Trash2,
+    Check,
 } from 'lucide-react'
 
 // Figma Code Connect is now in a separate file: Button.figma.tsx
@@ -62,49 +63,44 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
         buttonType: {
             control: 'select',
             options: Object.values(ButtonType),
-            description: 'The visual style of the button',
+            description:
+                'Visual style variant that determines the semantic meaning and appearance of the button',
+            table: {
+                type: { summary: 'ButtonType' },
+                defaultValue: { summary: 'PRIMARY' },
+                category: 'Appearance',
+            },
         },
         size: {
             control: 'select',
             options: Object.values(ButtonSize),
-            description: 'The size of the button',
+            description:
+                'Size of the button affecting padding, font size, and icon size. Responsive sizing available via design tokens.',
+            table: {
+                type: { summary: 'ButtonSize' },
+                defaultValue: { summary: 'MEDIUM' },
+                category: 'Appearance',
+            },
         },
         subType: {
             control: 'select',
             options: Object.values(ButtonSubType),
-            description: 'Button subtype for special variants',
+            description:
+                'Button variant for specialized use cases. ICON_ONLY for compact icon buttons, INLINE for text-flow buttons.',
+            table: {
+                type: { summary: 'ButtonSubType' },
+                defaultValue: { summary: 'DEFAULT' },
+                category: 'Appearance',
+            },
         },
         text: {
             control: 'text',
-            description: 'The text content of the button',
-        },
-        loading: {
-            control: 'boolean',
-            description: 'Shows loading state',
-        },
-        disabled: {
-            control: 'boolean',
-            description: 'Disables the button',
-        },
-        fullWidth: {
-            control: 'boolean',
-            description: 'Makes the button take full width',
-        },
-        buttonGroupPosition: {
-            control: 'select',
-            options: ['left', 'center', 'right'],
             description:
-                'Position in button group for border radius adjustment',
-        },
-        justifyContent: {
-            control: 'select',
-            options: ['flex-start', 'center', 'flex-end', 'space-between'],
-            description: 'Content alignment within the button',
-        },
-        state: {
-            control: 'select',
-            options: Object.values(ButtonState),
-            description: 'Visual state of the button',
+                'Text label displayed in the button. Required for accessibility unless using aria-label. Hidden when loading=true.',
+            table: {
+                type: { summary: 'string' },
+                category: 'Content',
+            },
         },
         leadingIcon: {
             control: 'select',
@@ -118,7 +114,12 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
                 'search',
                 'edit',
             ],
-            description: 'Icon to display before the button text',
+            description:
+                'Icon element to display before the button text. Accepts any React element, typically from lucide-react or similar icon libraries.',
+            table: {
+                type: { summary: 'ReactNode' },
+                category: 'Content',
+            },
         },
         trailingIcon: {
             control: 'select',
@@ -132,11 +133,92 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
                 'search',
                 'edit',
             ],
-            description: 'Icon to display after the button text',
+            description:
+                'Icon element to display after the button text. Useful for dropdown indicators or directional cues.',
+            table: {
+                type: { summary: 'ReactNode' },
+                category: 'Content',
+            },
+        },
+        loading: {
+            control: 'boolean',
+            description:
+                'Shows loading spinner and disables interaction. Text and icons are hidden during loading state.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'State',
+            },
+        },
+        disabled: {
+            control: 'boolean',
+            description:
+                'Disables the button, preventing interaction and applying disabled styling. Automatically sets aria-disabled.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'State',
+            },
+        },
+        state: {
+            control: 'select',
+            options: Object.values(ButtonState),
+            description:
+                'Manual control of visual state. Typically managed automatically by user interaction.',
+            table: {
+                type: { summary: 'ButtonState' },
+                defaultValue: { summary: 'DEFAULT' },
+                category: 'State',
+            },
+        },
+        fullWidth: {
+            control: 'boolean',
+            description:
+                'Makes the button take 100% width of its container. Useful for mobile layouts and form actions.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Layout',
+            },
+        },
+        width: {
+            control: 'text',
+            description:
+                'Custom width value (e.g., "200px", "50%"). Overrides fullWidth when set.',
+            table: {
+                type: { summary: 'string' },
+                category: 'Layout',
+            },
+        },
+        justifyContent: {
+            control: 'select',
+            options: ['flex-start', 'center', 'flex-end', 'space-between'],
+            description:
+                'Horizontal alignment of content within the button. Useful for full-width buttons.',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: 'center' },
+                category: 'Layout',
+            },
+        },
+        buttonGroupPosition: {
+            control: 'select',
+            options: ['left', 'center', 'right'],
+            description:
+                'Position in ButtonGroup for border radius adjustment. Automatically set by ButtonGroup component.',
+            table: {
+                type: { summary: "'left' | 'center' | 'right'" },
+                category: 'Layout',
+            },
         },
         onClick: {
             action: 'clicked',
-            description: 'Click handler function',
+            description:
+                'Click event handler. Not called when disabled=true or loading=true.',
+            table: {
+                type: { summary: '(event: MouseEvent) => void' },
+                category: 'Events',
+            },
         },
     },
     tags: ['autodocs'],
@@ -212,6 +294,14 @@ export const ButtonTypes: Story = {
         docs: {
             description: {
                 story: 'Different button types for various use cases and semantic meanings.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'button-name', enabled: true },
+                ],
             },
         },
     },
@@ -720,6 +810,225 @@ export const Interactive: Story = {
         docs: {
             description: {
                 story: 'Interactive playground to experiment with all Button props using the controls panel.',
+            },
+        },
+    },
+}
+
+// Accessibility demonstration
+export const Accessibility: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Keyboard Navigation
+                </h4>
+                <p
+                    style={{
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Use Tab to navigate between buttons, Enter or Space to
+                    activate. Disabled buttons are skipped in tab order.
+                </p>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Focusable Button 1"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Focusable Button 2"
+                    />
+                    <Button
+                        buttonType={ButtonType.SUCCESS}
+                        text="Focusable Button 3"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Disabled (Skipped)"
+                        disabled={true}
+                    />
+                    <Button
+                        buttonType={ButtonType.DANGER}
+                        text="Focusable Button 4"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Color Contrast
+                </h4>
+                <p
+                    style={{
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '16px',
+                    }}
+                >
+                    All button variants meet WCAG 2.1 Level AA contrast
+                    requirements (4.5:1 for normal text, 3:1 for large text).
+                </p>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button buttonType={ButtonType.PRIMARY} text="Primary" />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Secondary"
+                    />
+                    <Button buttonType={ButtonType.DANGER} text="Danger" />
+                    <Button buttonType={ButtonType.SUCCESS} text="Success" />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    State Communication
+                </h4>
+                <p
+                    style={{
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Loading and disabled states are communicated via
+                    aria-disabled and aria-busy attributes for screen readers.
+                </p>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Normal State"
+                    />
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Loading State"
+                        loading={true}
+                    />
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Disabled State"
+                        disabled={true}
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Icon-Only Buttons
+                </h4>
+                <p
+                    style={{
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Icon-only buttons include text prop for screen reader
+                    accessibility, even though the text is visually hidden.
+                </p>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Plus size={16} />}
+                        buttonType={ButtonType.PRIMARY}
+                        text="Add Item"
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Search size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                        text="Search"
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={16} />}
+                        buttonType={ButtonType.SECONDARY}
+                        text="Settings"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Focus Indicators
+                </h4>
+                <p
+                    style={{
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '16px',
+                    }}
+                >
+                    All buttons have visible focus indicators for keyboard
+                    navigation. Click a button then press Tab to see the focus
+                    ring.
+                </p>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Tab to Focus"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Next Focus"
+                    />
+                    <Button
+                        buttonType={ButtonType.SUCCESS}
+                        leadingIcon={<Star size={16} />}
+                        text="With Icon"
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Comprehensive accessibility demonstration showing keyboard navigation, color contrast, state communication, and focus indicators. All features comply with WCAG 2.1 Level AA standards.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    { id: 'color-contrast', enabled: true },
+                    { id: 'button-name', enabled: true },
+                    { id: 'aria-allowed-attr', enabled: true },
+                    { id: 'aria-required-attr', enabled: true },
+                    { id: 'focus-order-semantics', enabled: true },
+                ],
             },
         },
     },
