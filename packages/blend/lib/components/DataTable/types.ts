@@ -118,6 +118,7 @@ export type ColumnManagerProps<T extends Record<string, unknown>> = {
         loading?: boolean
     }
     multiSelectWidth?: number
+    disabled?: boolean
 }
 
 export type AdvancedFilterProps = {
