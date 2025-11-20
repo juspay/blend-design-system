@@ -61,6 +61,7 @@ export type StatCardProps = {
     helpIconText?: string
     dropdownProps?: SingleSelectProps
     maxWidth?: string
+    minWidth?: string
     xAxis?: StatCardAxisConfig
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType

@@ -1,43 +1,36 @@
-# Changelog for v0.0.25
+# Changelog for v0.0.26-beta (Beta)
 
-> **Stable Release** - This version is production-ready and recommended for general use.
+> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
 
 ## 🚀 Features
 
+- add Tabs animation and skeleton (#596) ([bfd6e39](../../commit/bfd6e39))
+- implement tenant panel only mode in Sidebar (#614) ([1b7d1e8](../../commit/1b7d1e8))
 - integrate drag-and-drop column reordering in DataTable (#595) ([48ca119](../../commit/48ca119))
 - add Directory component and tokens (#593) ([7625b88](../../commit/7625b88))
 - added variant support in split tag (#589) ([e1fc3d1](../../commit/e1fc3d1))
-- Add ripple effect to Button and Tag component (#468) ([8d1d5de](../../commit/8d1d5de))
-- update component documentation (#552) ([4900f55](../../commit/4900f55))
-- dark theme setup (#570) ([e8c9822](../../commit/e8c9822))
-
-## 🐛 Bug Fixes
-
-- resolve hover state issues and improve bar chart interactions (#582) ([3928918](../../commit/3928918))
-
-## 📚 Documentation
-
-- update contributing and getting started guides (#581) ([3733b40](../../commit/3733b40))
 
 ## 🔧 Chores
 
+- dev to staging (#619) ([a870f25](../../commit/a870f25))
+- Fix multiselct and checkbox and add skeletons (#615) ([ac9d6eb](../../commit/ac9d6eb))
+- **release**: v0.0.25 [STABLE] ([0e8aee5](../../commit/0e8aee5))
 - dev to staging (#606) ([44de03c](../../commit/44de03c))
 - Fix code editor and multi value input issues (#605) ([c97122f](../../commit/c97122f))
 - **release**: v0.0.25-beta [BETA] ([d6fbe6d](../../commit/d6fbe6d))
-- Feat/animate (#583) ([e1ad5e2](../../commit/e1ad5e2))
-- 569 Create mweb for sidebar and enhance data table (#571) ([7b71b74](../../commit/7b71b74))
-- **release**: v0.0.24 [STABLE] ([3a518e1](../../commit/3a518e1))
 
 ---
 
-**Release Date**: 2025-11-18
-**Commit Range**: v0.0.24..HEAD
-**Total Changes**: 14 commits
+**Release Date**: 2025-11-20
+**Commit Range**: v0.0.25-beta..HEAD
+**Total Changes**: 11 commits
 
-## Installation
+## Beta Installation
 
 ```bash
-npm install @juspay/blend-design-system@latest
-# or specific version
-npm install @juspay/blend-design-system@0.0.25
+npm install @juspay/blend-design-system@beta
+# or specific beta version
+npm install @juspay/blend-design-system@0.0.26-beta
 ```
+
+> **Note**: Beta versions are for testing only. Use stable versions in production.

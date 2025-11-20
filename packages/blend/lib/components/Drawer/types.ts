@@ -62,6 +62,8 @@ export type DrawerProps = {
      * @default false
      */
     snapToSequentialPoint?: boolean
+
+    disableDrag?: boolean
     /**
      * Custom mobile offset values (overrides token defaults)
      */

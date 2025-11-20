@@ -82,7 +82,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             e.stopPropagation()
             onSelect(item.value)
         }
-
         const shouldShowAutoTooltip =
             (showTooltip && item.label) ||
             (showSubLabelTooltip && item.subLabel)
@@ -146,14 +145,15 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const itemContent = (
             <RadixMenu.Item
                 asChild
+                // onSelect={handleSelect}
                 onClick={handleClick}
                 data-disabled={item.disabled}
             >
                 <Block
+                    ref={ref}
                     data-dropdown-numeric={index + 1}
                     data-dropdown-value={item.label}
                     data-dropdown-value-selected={isSelected ? 'True' : 'False'}
-                    ref={ref}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
