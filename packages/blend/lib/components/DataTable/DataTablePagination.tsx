@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from 'react'
+import { useMemo } from 'react'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -94,28 +94,9 @@ export function DataTablePagination({
         return filtered
     }, [pageSizeOptions, totalRows, pageSize])
 
-    const previousTotalRows = useRef(totalRows)
-    useEffect(() => {
-        if (
-            totalRows < previousTotalRows.current &&
-            pageSize > totalRows &&
-            totalRows > 0 &&
-            pageSizeOptions.length > 0
-        ) {
-            const validOptions = pageSizeOptions.filter(
-                (size) => size <= totalRows
-            )
-            if (validOptions.length > 0) {
-                const newPageSize = Math.max(...validOptions)
-                onPageSizeChange(newPageSize)
-            } else {
-                const smallestOption = Math.min(...pageSizeOptions)
-                onPageSizeChange(smallestOption)
-            }
-        }
-
-        previousTotalRows.current = totalRows
-    }, [totalRows, pageSize, pageSizeOptions, onPageSizeChange])
+    // Removed auto-adjustment of pageSize when totalRows decreases
+    // This was causing issues with client-side filtering where temporary
+    // reduction in rows would permanently change the user's selected page size
 
     const pageSizeMenuItems = [
         {

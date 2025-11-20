@@ -68,6 +68,7 @@ const StyledTableCell = styled.td<{
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: top;
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
         css`
@@ -599,10 +600,10 @@ const TableBody = forwardRef<
                                                       position: 'sticky',
                                                       left: '0px',
                                                       zIndex: 9,
-                                                      backgroundColor:
-                                                          rowStyling.backgroundColor ||
-                                                          FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                      ...(rowStyling.backgroundColor && {
+                                                          backgroundColor:
+                                                              rowStyling.backgroundColor,
+                                                      }),
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -664,10 +665,10 @@ const TableBody = forwardRef<
                                                           ? '50px'
                                                           : '0px',
                                                       zIndex: 9,
-                                                      backgroundColor:
-                                                          rowStyling.backgroundColor ||
-                                                          FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                      ...(rowStyling.backgroundColor && {
+                                                          backgroundColor:
+                                                              rowStyling.backgroundColor,
+                                                      }),
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -972,10 +973,10 @@ const TableBody = forwardRef<
                                                           .body.cell.fontSize,
                                                   position: 'sticky',
                                                   right: 0,
-                                                  backgroundColor:
-                                                      rowStyling.backgroundColor ||
-                                                      FOUNDATION_THEME.colors
-                                                          .gray[0],
+                                                  ...(rowStyling.backgroundColor && {
+                                                      backgroundColor:
+                                                          rowStyling.backgroundColor,
+                                                  }),
                                               }}
                                           />
                                       )}
