@@ -5180,6 +5180,668 @@ xAxis={{
                     </div>
                 </div>
             </div>
+
+            {/* Sankey Chart Example */}
+            <div className="chart-example-container mb-12">
+                <h3 className="text-xl font-bold mb-6">
+                    🌊 Sankey Diagram (Flow Chart)
+                </h3>
+                <div className="mb-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <h4 className="text-indigo-800 font-semibold mb-2">
+                        ✨ New Feature: Sankey Diagrams!
+                    </h4>
+                    <p className="text-indigo-700 text-sm">
+                        Visualize flows and relationships between nodes. Perfect
+                        for energy flows, user journeys, budget allocations, and
+                        data pipelines!
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-8">
+                    {/* Energy Flow Example */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            ⚡ Energy Flow Sankey
+                        </h4>
+                        <Charts
+                            data={[
+                                {
+                                    name: 'energy-flow',
+                                    data: {
+                                        sankeyData: {
+                                            primary: {
+                                                nodes: [
+                                                    {
+                                                        name: 'Agricultural waste',
+                                                    },
+                                                    { name: 'Bio-conversion' },
+                                                    { name: 'Liquid' },
+                                                    { name: 'Losses' },
+                                                    { name: 'Solid' },
+                                                    { name: 'Gas' },
+                                                    { name: 'Biofuel imports' },
+                                                    { name: 'Biomass imports' },
+                                                    { name: 'Coal imports' },
+                                                    { name: 'Coal' },
+                                                    { name: 'Coal reserves' },
+                                                    {
+                                                        name: 'District heating',
+                                                    },
+                                                    { name: 'Industry' },
+                                                    {
+                                                        name: 'Heating and cooling - commercial',
+                                                    },
+                                                    {
+                                                        name: 'Heating and cooling - homes',
+                                                    },
+                                                    {
+                                                        name: 'Electricity grid',
+                                                    },
+                                                    {
+                                                        name: 'Over generation / exports',
+                                                    },
+                                                    { name: 'H2 conversion' },
+                                                    { name: 'Road transport' },
+                                                    { name: 'Agriculture' },
+                                                    { name: 'Rail transport' },
+                                                    {
+                                                        name: 'Lighting & appliances - commercial',
+                                                    },
+                                                    {
+                                                        name: 'Lighting & appliances - homes',
+                                                    },
+                                                    { name: 'Gas imports' },
+                                                    { name: 'Ngas' },
+                                                    { name: 'Gas reserves' },
+                                                    {
+                                                        name: 'Thermal generation',
+                                                    },
+                                                    { name: 'Geothermal' },
+                                                    { name: 'H2' },
+                                                    { name: 'Hydro' },
+                                                    {
+                                                        name: 'International shipping',
+                                                    },
+                                                    {
+                                                        name: 'Domestic aviation',
+                                                    },
+                                                    {
+                                                        name: 'International aviation',
+                                                    },
+                                                    {
+                                                        name: 'National navigation',
+                                                    },
+                                                    { name: 'Marine algae' },
+                                                    { name: 'Nuclear' },
+                                                    { name: 'Oil imports' },
+                                                    { name: 'Oil' },
+                                                    { name: 'Oil reserves' },
+                                                    { name: 'Other waste' },
+                                                    { name: 'Pumped heat' },
+                                                    { name: 'Solar PV' },
+                                                    { name: 'Solar Thermal' },
+                                                    { name: 'Solar' },
+                                                    { name: 'Tidal' },
+                                                    {
+                                                        name: 'UK land based bioenergy',
+                                                    },
+                                                    { name: 'Wave' },
+                                                    { name: 'Wind' },
+                                                ],
+                                                links: [
+                                                    {
+                                                        source: 0,
+                                                        target: 1,
+                                                        value: 124.729,
+                                                    },
+                                                    {
+                                                        source: 1,
+                                                        target: 2,
+                                                        value: 0.597,
+                                                    },
+                                                    {
+                                                        source: 1,
+                                                        target: 3,
+                                                        value: 26.862,
+                                                    },
+                                                    {
+                                                        source: 1,
+                                                        target: 4,
+                                                        value: 280.322,
+                                                    },
+                                                    {
+                                                        source: 1,
+                                                        target: 5,
+                                                        value: 81.144,
+                                                    },
+                                                    {
+                                                        source: 6,
+                                                        target: 2,
+                                                        value: 35,
+                                                    },
+                                                    {
+                                                        source: 7,
+                                                        target: 4,
+                                                        value: 35,
+                                                    },
+                                                    {
+                                                        source: 8,
+                                                        target: 9,
+                                                        value: 11.606,
+                                                    },
+                                                    {
+                                                        source: 10,
+                                                        target: 9,
+                                                        value: 63.965,
+                                                    },
+                                                    {
+                                                        source: 9,
+                                                        target: 4,
+                                                        value: 75.571,
+                                                    },
+                                                    {
+                                                        source: 11,
+                                                        target: 12,
+                                                        value: 10.639,
+                                                    },
+                                                    {
+                                                        source: 11,
+                                                        target: 13,
+                                                        value: 22.505,
+                                                    },
+                                                    {
+                                                        source: 11,
+                                                        target: 14,
+                                                        value: 46.184,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 16,
+                                                        value: 104.453,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 14,
+                                                        value: 113.726,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 17,
+                                                        value: 27.14,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 12,
+                                                        value: 342.165,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 18,
+                                                        value: 37.797,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 19,
+                                                        value: 4.412,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 13,
+                                                        value: 40.858,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 3,
+                                                        value: 56.691,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 20,
+                                                        value: 7.863,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 21,
+                                                        value: 90.008,
+                                                    },
+                                                    {
+                                                        source: 15,
+                                                        target: 22,
+                                                        value: 93.494,
+                                                    },
+                                                    {
+                                                        source: 23,
+                                                        target: 24,
+                                                        value: 40.719,
+                                                    },
+                                                    {
+                                                        source: 25,
+                                                        target: 24,
+                                                        value: 82.233,
+                                                    },
+                                                    {
+                                                        source: 5,
+                                                        target: 13,
+                                                        value: 0.129,
+                                                    },
+                                                    {
+                                                        source: 5,
+                                                        target: 3,
+                                                        value: 1.401,
+                                                    },
+                                                    {
+                                                        source: 5,
+                                                        target: 26,
+                                                        value: 151.891,
+                                                    },
+                                                    {
+                                                        source: 5,
+                                                        target: 19,
+                                                        value: 2.096,
+                                                    },
+                                                    {
+                                                        source: 5,
+                                                        target: 12,
+                                                        value: 48.58,
+                                                    },
+                                                    {
+                                                        source: 27,
+                                                        target: 15,
+                                                        value: 7.013,
+                                                    },
+                                                    {
+                                                        source: 17,
+                                                        target: 28,
+                                                        value: 20.897,
+                                                    },
+                                                    {
+                                                        source: 17,
+                                                        target: 3,
+                                                        value: 6.242,
+                                                    },
+                                                    {
+                                                        source: 28,
+                                                        target: 18,
+                                                        value: 20.897,
+                                                    },
+                                                    {
+                                                        source: 29,
+                                                        target: 15,
+                                                        value: 6.995,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 12,
+                                                        value: 121.066,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 30,
+                                                        value: 128.69,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 18,
+                                                        value: 135.835,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 31,
+                                                        value: 14.458,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 32,
+                                                        value: 206.267,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 19,
+                                                        value: 3.64,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 33,
+                                                        value: 33.218,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 20,
+                                                        value: 4.413,
+                                                    },
+                                                    {
+                                                        source: 34,
+                                                        target: 1,
+                                                        value: 4.375,
+                                                    },
+                                                    {
+                                                        source: 24,
+                                                        target: 5,
+                                                        value: 122.952,
+                                                    },
+                                                    {
+                                                        source: 35,
+                                                        target: 26,
+                                                        value: 839.978,
+                                                    },
+                                                    {
+                                                        source: 36,
+                                                        target: 37,
+                                                        value: 504.287,
+                                                    },
+                                                    {
+                                                        source: 38,
+                                                        target: 37,
+                                                        value: 107.703,
+                                                    },
+                                                    {
+                                                        source: 37,
+                                                        target: 2,
+                                                        value: 611.99,
+                                                    },
+                                                    {
+                                                        source: 39,
+                                                        target: 4,
+                                                        value: 56.587,
+                                                    },
+                                                    {
+                                                        source: 39,
+                                                        target: 1,
+                                                        value: 77.81,
+                                                    },
+                                                    {
+                                                        source: 40,
+                                                        target: 14,
+                                                        value: 193.026,
+                                                    },
+                                                    {
+                                                        source: 40,
+                                                        target: 13,
+                                                        value: 70.672,
+                                                    },
+                                                    {
+                                                        source: 41,
+                                                        target: 15,
+                                                        value: 59.901,
+                                                    },
+                                                    {
+                                                        source: 42,
+                                                        target: 14,
+                                                        value: 19.263,
+                                                    },
+                                                    {
+                                                        source: 43,
+                                                        target: 42,
+                                                        value: 19.263,
+                                                    },
+                                                    {
+                                                        source: 43,
+                                                        target: 41,
+                                                        value: 59.901,
+                                                    },
+                                                    {
+                                                        source: 4,
+                                                        target: 19,
+                                                        value: 0.882,
+                                                    },
+                                                    {
+                                                        source: 4,
+                                                        target: 26,
+                                                        value: 400.12,
+                                                    },
+                                                    {
+                                                        source: 4,
+                                                        target: 12,
+                                                        value: 46.477,
+                                                    },
+                                                    {
+                                                        source: 26,
+                                                        target: 15,
+                                                        value: 525.531,
+                                                    },
+                                                    {
+                                                        source: 26,
+                                                        target: 3,
+                                                        value: 787.129,
+                                                    },
+                                                    {
+                                                        source: 26,
+                                                        target: 11,
+                                                        value: 79.329,
+                                                    },
+                                                    {
+                                                        source: 44,
+                                                        target: 15,
+                                                        value: 9.452,
+                                                    },
+                                                    {
+                                                        source: 45,
+                                                        target: 1,
+                                                        value: 182.01,
+                                                    },
+                                                    {
+                                                        source: 46,
+                                                        target: 15,
+                                                        value: 19.013,
+                                                    },
+                                                    {
+                                                        source: 47,
+                                                        target: 15,
+                                                        value: 289.366,
+                                                    },
+                                                ],
+                                            } as any,
+                                            aux: [],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.SANKEY}
+                            height={700}
+                            chartHeaderSlot={
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <Activity
+                                        size={16}
+                                        className="text-blue-600"
+                                    />
+                                    <h4
+                                        style={{
+                                            margin: 0,
+                                            fontSize: '14px',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        UK Energy Flow
+                                    </h4>
+                                </div>
+                            }
+                        />
+                    </div>
+
+                    {/* Simple User Journey Example */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            👥 User Journey Sankey
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Visualize user flow from visit to conversion or loss
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: 'user-journey',
+                                    data: {
+                                        sankeyData: {
+                                            primary: {
+                                                nodes: [
+                                                    { name: 'Visit' },
+                                                    {
+                                                        name: 'Direct-Favourite',
+                                                    },
+                                                    { name: 'Page-Click' },
+                                                    {
+                                                        name: 'Detail-Favourite',
+                                                    },
+                                                    { name: 'Lost' },
+                                                ],
+                                                links: [
+                                                    {
+                                                        source: 0,
+                                                        target: 1,
+                                                        value: 3728.3,
+                                                    },
+                                                    {
+                                                        source: 0,
+                                                        target: 2,
+                                                        value: 354170,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 3,
+                                                        value: 62429,
+                                                    },
+                                                    {
+                                                        source: 2,
+                                                        target: 4,
+                                                        value: 291741,
+                                                    },
+                                                ],
+                                            } as any,
+                                            aux: [],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.SANKEY}
+                            height={450}
+                            chartHeaderSlot={
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <Users
+                                        size={16}
+                                        className="text-green-600"
+                                    />
+                                    <h4
+                                        style={{
+                                            margin: 0,
+                                            fontSize: '14px',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        User Flow Analysis
+                                    </h4>
+                                </div>
+                            }
+                        />
+                    </div>
+                </div>
+
+                {/* API Reference */}
+                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 className="font-semibold text-gray-800 mb-3">
+                        📚 Sankey Chart API Reference
+                    </h4>
+                    <div className="text-sm text-gray-700 space-y-4">
+                        <div>
+                            <strong>Data Format:</strong>
+                            <pre className="text-xs mt-1 bg-gray-100 p-3 rounded overflow-x-auto">
+                                {`// Sankey charts use a special data structure
+data={[
+  {
+    name: 'chart-name',
+    data: {
+      sankeyData: {
+        primary: {
+          nodes: [
+            { name: 'Source A' },
+            { name: 'Target B' },
+            // ... more nodes
+          ],
+          links: [
+            { source: 0, target: 1, value: 100 },
+            // source/target are node indices
+            // value represents flow magnitude
+          ]
+        },
+        aux: []
+      }
+    }
+  }
+]}`}
+                            </pre>
+                        </div>
+
+                        <div>
+                            <strong>💡 Use Cases:</strong>
+                            <ul className="ml-4 mt-2 space-y-1 text-xs">
+                                <li>• Energy flow diagrams</li>
+                                <li>• User journey visualization</li>
+                                <li>• Budget allocation flows</li>
+                                <li>• Material flow analysis</li>
+                                <li>• Data pipeline visualization</li>
+                                <li>• Supply chain mapping</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <strong>🎨 Customization:</strong>
+                            <ul className="ml-4 mt-2 space-y-1 text-xs">
+                                <li>
+                                    • Hover over links to highlight individual
+                                    flows
+                                </li>
+                                <li>
+                                    • Node labels positioned automatically
+                                    (left/right)
+                                </li>
+                                <li>
+                                    • Long labels truncated to prevent overlap
+                                </li>
+                                <li>• Gradient colors for visual appeal</li>
+                                <li>
+                                    • Responsive sizing with height prop (700+
+                                    recommended)
+                                </li>
+                                <li>
+                                    • Increased node padding for better spacing
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <strong>⚙️ Configuration Tips:</strong>
+                            <ul className="ml-4 mt-2 space-y-1 text-xs">
+                                <li>
+                                    • Use height={'{'}700{'}'} or higher for
+                                    complex diagrams
+                                </li>
+                                <li>
+                                    • Keep node names concise (max 25 chars)
+                                </li>
+                                <li>
+                                    • Organize nodes from left (sources) to
+                                    right (targets)
+                                </li>
+                                <li>
+                                    • Use meaningful link values for proper flow
+                                    visualization
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

@@ -12,8 +12,17 @@ import {
     Cell,
     ScatterChart,
     Scatter,
+    Sankey,
 } from 'recharts'
-import { ChartType, RenderChartProps, TickProps, AxisType } from './types'
+import {
+    ChartType,
+    RenderChartProps,
+    TickProps,
+    AxisType,
+    SankeyData,
+} from './types'
+import SankeyNode from './SankeyNode'
+import SankeyLink from './SankeyLink'
 import {
     formatNumber,
     getAxisFormatter,
@@ -42,6 +51,7 @@ export const renderChart = ({
     xAxis,
     yAxis,
     noData,
+    height,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -684,6 +694,83 @@ export const renderChart = ({
                         />
                     ))}
                 </ScatterChart>
+            )
+        }
+
+        case ChartType.SANKEY: {
+            // For Sankey charts, we expect the data to be in a special format
+            // The first data point should contain the Sankey data structure
+            const sankeyData = originalData[0]?.data?.sankeyData
+                ?.primary as unknown as SankeyData
+
+            if (!sankeyData || !sankeyData.nodes || !sankeyData.links) {
+                return (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        flexDirection="column"
+                        gap={28}
+                        data-chart="No-Data"
+                    >
+                        <Text
+                            variant="body.lg"
+                            color={FOUNDATION_THEME.colors.gray[800]}
+                            fontWeight={600}
+                        >
+                            Invalid Sankey data format
+                        </Text>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            fontWeight={500}
+                        >
+                            Please provide nodes and links
+                        </Text>
+                    </Block>
+                )
+            }
+
+            // Use 100% width for responsiveness - Sankey will fill the container
+            const sankeyWidth = isSmallScreen ? 600 : 1200
+            // Use user-provided height or fall back to defaults
+            const defaultHeight = isSmallScreen ? 400 : 600
+            const sankeyHeight =
+                typeof height === 'number' ? height : defaultHeight
+
+            return (
+                <Sankey
+                    data-chart={chartName}
+                    width={sankeyWidth}
+                    height={sankeyHeight}
+                    margin={{
+                        top: 20,
+                        bottom: 20,
+                        left: isSmallScreen ? 10 : 150,
+                        right: isSmallScreen ? 10 : 150,
+                    }}
+                    data={sankeyData}
+                    nodeWidth={isSmallScreen ? 8 : 15}
+                    nodePadding={isSmallScreen ? 20 : 50}
+                    linkCurvature={0.61}
+                    iterations={64}
+                    link={<SankeyLink />}
+                    node={<SankeyNode containerWidth={sankeyWidth} />}
+                >
+                    <defs>
+                        <linearGradient id={'linkGradient'}>
+                            <stop
+                                offset="0%"
+                                stopColor="rgba(0, 136, 254, 0.5)"
+                            />
+                            <stop
+                                offset="100%"
+                                stopColor="rgba(0, 197, 159, 0.3)"
+                            />
+                        </linearGradient>
+                    </defs>
+                    <Tooltip />
+                </Sankey>
             )
         }
 
