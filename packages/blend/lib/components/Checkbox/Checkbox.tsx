@@ -4,9 +4,6 @@ import type { CheckboxProps } from './types'
 import { CheckboxSize } from './types'
 import {
     getCheckboxDataState,
-    extractPixelValue,
-    createCheckboxInputProps,
-    getCurrentCheckedState,
     getCheckboxIconColor,
     getCheckboxTextProps,
     getCheckboxSubtextProps,
@@ -25,7 +22,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
         {
             id,
-            value,
+            name,
             checked,
             defaultChecked = false,
             onCheckedChange,
@@ -40,36 +37,32 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         },
         ref
     ) => {
-        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
-
         const generatedId = useId()
         const uniqueId = id || generatedId
-
-        const inputProps = createCheckboxInputProps(checked, defaultChecked)
-        const currentChecked = getCurrentCheckedState(checked, defaultChecked)
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         const shouldShake = useErrorShake(error)
 
         return (
             <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
                 <StyledCheckboxRoot
+                    id={id}
+                    name={name}
                     ref={ref}
-                    id={uniqueId}
-                    {...inputProps}
+                    data-state={getCheckboxDataState(checked || false)}
+                    data-error={error}
+                    defaultChecked={defaultChecked}
                     onCheckedChange={onCheckedChange}
                     disabled={disabled}
                     required={required}
-                    value={value}
-                    data-state={getCheckboxDataState(currentChecked || false)}
-                    data-error={error}
                     size={size}
                     $isDisabled={disabled}
-                    $checked={currentChecked || false}
+                    $checked={checked || false}
                     $error={error}
                     style={getErrorShakeStyle(shouldShake)}
                     {...rest}
                 >
                     <CheckboxIndicator
-                        checked={currentChecked}
+                        checked={checked || false}
                         size={size}
                         tokens={tokens}
                         disabled={disabled}
@@ -126,10 +119,7 @@ const CheckboxIndicator: React.FC<{
     tokens: CheckboxTokensType
     disabled: boolean
 }> = ({ checked, size, tokens, disabled }) => (
-    <StyledCheckboxIndicator
-        forceMount={checked === 'indeterminate' ? true : undefined}
-        size={size}
-    >
+    <StyledCheckboxIndicator forceMount={true} size={size}>
         {checked && (
             <Block
                 as="span"
@@ -141,17 +131,13 @@ const CheckboxIndicator: React.FC<{
             >
                 {checked === 'indeterminate' ? (
                     <Minus
-                        size={extractPixelValue(
-                            tokens.indicator.icon.width[size]
-                        )}
+                        size={tokens.indicator.icon.width[size]}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
                         strokeWidth={tokens.indicator.icon.strokeWidth[size]}
                     />
                 ) : (
                     <Check
-                        size={extractPixelValue(
-                            tokens.indicator.icon.width[size]
-                        )}
+                        size={tokens.indicator.icon.width[size]}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
                         strokeWidth={tokens.indicator.icon.strokeWidth[size]}
                     />
