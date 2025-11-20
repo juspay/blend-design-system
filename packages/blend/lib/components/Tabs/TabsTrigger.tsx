@@ -5,9 +5,9 @@ import { StyledTabsTrigger, IconContainer } from './StyledTabs'
 import type { TabsTokensType } from './tabs.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { X } from 'lucide-react'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
+import Block from '../Primitives/Block/Block'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -43,21 +43,27 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         )
 
         const effectiveRightSlot = closable ? (
-            <PrimitiveButton
+            <Block
+                as="span"
                 onClick={handleCloseClick}
-                size={16}
+                width="16px"
+                height="16px"
                 borderRadius="50%"
                 backgroundColor="transparent"
-                _hover={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                }}
-                contentCentered
+                cursor="pointer"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                transition="background-color 0.2s"
+                _hover={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                }}
+                _active={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                }}
             >
                 <X size={12} />
-            </PrimitiveButton>
+            </Block>
         ) : (
             rightSlot
         )
@@ -66,6 +72,8 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         const isDisabled = shouldShowSkeleton ? true : disable
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
+
+        const { isActive: _isActive, style, ...domProps } = props
 
         const triggerContent = (
             <StyledTabsTrigger
@@ -83,9 +91,9 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                         pointerEvents: 'none',
                         border: 'none',
                     }),
-                    ...props.style,
+                    ...style,
                 }}
-                {...props}
+                {...domProps}
             >
                 {!isOverlay &&
                     isActive &&

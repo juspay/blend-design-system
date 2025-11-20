@@ -105,6 +105,7 @@ export const CodeEditorHeader = ({
                     }}
                 >
                     <Button
+                        type="button"
                         onClick={onCopy}
                         buttonType={ButtonType.SECONDARY}
                         subType={ButtonSubType.ICON_ONLY}

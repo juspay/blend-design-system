@@ -56,54 +56,23 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const prevItemsLengthRef = useRef(items.length)
         const tabsListRef = useRef<HTMLDivElement>(null)
         const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
+        const isScrollingRef = useRef(false)
 
-        // Animate underline when active tab changes (UNDERLINE variant only)
         useEffect(() => {
-            if (
-                variant !== TabsVariant.UNDERLINE ||
-                !tabsListRef.current ||
-                !activeTab
-            ) {
+            if (!activeTab || isScrollingRef.current) {
                 return
             }
 
-            const listElement = tabsListRef.current
+            const scrollContainer = scrollContainerRef.current
             const activeTabElement = tabRefsMap.current.get(activeTab)
+            const listElement = tabsListRef.current
 
-            if (!activeTabElement || !listElement) {
+            if (!activeTabElement || !scrollContainer) {
                 return
             }
 
-            const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
-                activeTabElement,
-                listElement
-            )
-
-            listElement.style.setProperty(
-                '--tabs-indicator-left',
-                `${tabLeft}px`
-            )
-            listElement.style.setProperty(
-                '--tabs-indicator-width',
-                `${tabWidth}`
-            )
-        }, [activeTab, variant])
-
-        // Update indicator position on window resize (UNDERLINE variant only)
-        useEffect(() => {
-            if (
-                variant !== TabsVariant.UNDERLINE ||
-                !tabsListRef.current ||
-                !activeTab
-            ) {
-                return
-            }
-
-            const updatePosition = () => {
-                const listElement = tabsListRef.current
-                const activeTabElement = tabRefsMap.current.get(activeTab)
-
-                if (!activeTabElement || !listElement) {
+            const updateIndicator = () => {
+                if (!listElement || variant !== TabsVariant.UNDERLINE) {
                     return
                 }
 
@@ -122,20 +91,96 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 )
             }
 
-            window.addEventListener('resize', updatePosition)
-            return () => window.removeEventListener('resize', updatePosition)
-        }, [activeTab, variant])
+            const scrollTabIntoView = () => {
+                const containerRect = scrollContainer.getBoundingClientRect()
+                const tabRect = activeTabElement.getBoundingClientRect()
 
-        // Auto-scroll to end when new tabs are added
+                const isTabVisible =
+                    tabRect.left >= containerRect.left &&
+                    tabRect.right <= containerRect.right
+
+                if (!isTabVisible) {
+                    isScrollingRef.current = true
+
+                    const containerWidth = scrollContainer.offsetWidth
+                    const tabOffsetLeft = activeTabElement.offsetLeft
+                    const tabWidth = activeTabElement.offsetWidth
+
+                    scrollContainer.scrollTo({
+                        left: Math.max(
+                            0,
+                            tabOffsetLeft - containerWidth / 2 + tabWidth / 2
+                        ),
+                        behavior: 'smooth',
+                    })
+
+                    setTimeout(() => {
+                        isScrollingRef.current = false
+                        updateIndicator()
+                    }, 500)
+                } else {
+                    updateIndicator()
+                }
+            }
+
+            const delay = items.length !== prevItemsLengthRef.current ? 50 : 0
+            const timeout = setTimeout(() => {
+                scrollTabIntoView()
+            }, delay)
+
+            window.addEventListener('resize', updateIndicator)
+
+            return () => {
+                clearTimeout(timeout)
+                window.removeEventListener('resize', updateIndicator)
+            }
+        }, [activeTab, items.length, variant])
+
         useEffect(() => {
-            if (items.length > prevItemsLengthRef.current) {
-                scrollContainerRef.current?.scrollTo({
-                    left: scrollContainerRef.current.scrollWidth,
+            const currentLength = items.length
+            const previousLength = prevItemsLengthRef.current
+
+            if (currentLength > previousLength) {
+                const scrollContainer = scrollContainerRef.current
+                if (!scrollContainer) return
+
+                isScrollingRef.current = true
+
+                scrollContainer.scrollTo({
+                    left: scrollContainer.scrollWidth,
                     behavior: 'smooth',
                 })
+
+                const scrollTimeout = setTimeout(() => {
+                    isScrollingRef.current = false
+                    if (variant === TabsVariant.UNDERLINE && activeTab) {
+                        const listElement = tabsListRef.current
+                        const activeTabElement =
+                            tabRefsMap.current.get(activeTab)
+
+                        if (activeTabElement && listElement) {
+                            const { tabLeft, tabWidth } =
+                                calculateTabIndicatorPosition(
+                                    activeTabElement,
+                                    listElement
+                                )
+                            listElement.style.setProperty(
+                                '--tabs-indicator-left',
+                                `${tabLeft}px`
+                            )
+                            listElement.style.setProperty(
+                                '--tabs-indicator-width',
+                                `${tabWidth}`
+                            )
+                        }
+                    }
+                }, 350)
+
+                return () => clearTimeout(scrollTimeout)
             }
-            prevItemsLengthRef.current = items.length
-        }, [items.length])
+
+            prevItemsLengthRef.current = currentLength
+        }, [items.length, activeTab, variant])
 
         const processedItems = useMemo(() => {
             return processTabsWithConcatenation(items)
@@ -166,9 +211,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
                 if (processedTabValue.includes('_')) {
+                    // Concatenated tab - close all tabs with same content
                     const originalValues = processedTabValue.split('_')
                     originalValues.forEach((val) => onTabClose?.(val))
                 } else {
+                    // Single tab
                     onTabClose?.(processedTabValue)
                 }
             },
@@ -181,7 +228,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             },
             [onTabChange]
         )
-
         const handleAddClick = useCallback(() => {
             onTabAdd?.()
         }, [onTabAdd])
