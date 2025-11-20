@@ -8,7 +8,7 @@ const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
     ({ className, children, ...props }, ref) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
 
-        const { disable: _disable, ...domProps } = props as TabsContentProps & {
+        const { ...domProps } = props as TabsContentProps & {
             disable?: boolean
         }
 

@@ -73,7 +73,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
 
-        const { isActive: _isActive, style, ...domProps } = props
+        const { style, ...domProps } = props
 
         const triggerContent = (
             <StyledTabsTrigger
