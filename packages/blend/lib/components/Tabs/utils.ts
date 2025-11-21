@@ -96,17 +96,31 @@ export const createTabsFromSelection = <
 /**
  * Prepares items for SingleSelect dropdown (all tabs including scrolled-out)
  */
-export const prepareDropdownItems = (tabs: TabItem[]) => {
+export const prepareDropdownItems = (
+    tabs: TabItem[],
+    originalItems?: TabItem[]
+) => {
     if (!tabs.length) return []
+
+    // Create a Set of original tab values for quick lookup
+    const originalTabValues = originalItems
+        ? new Set(originalItems.map((item) => item.value))
+        : new Set<string>()
 
     return [
         {
-            items: tabs.map((tab) => ({
-                value: tab.value.includes('_')
-                    ? tab.value.split('_')[0]
-                    : tab.value,
-                label: tab.label,
-            })),
+            items: tabs.map((tab) => {
+                const value = originalTabValues.has(tab.value)
+                    ? tab.value
+                    : tab.value.includes('_')
+                      ? tab.value.split('_')[0]
+                      : tab.value
+
+                return {
+                    value,
+                    label: tab.label,
+                }
+            }),
         },
     ]
 }
