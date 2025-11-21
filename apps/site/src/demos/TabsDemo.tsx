@@ -69,21 +69,21 @@ const TabsDemo = () => {
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
         // Default tabs - always visible at front, no X icon
         {
-            value: 'home',
+            value: 'payment_gateway',
             label: 'Home',
             content: (
                 <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Home Content</h3>
                     <p className="text-blue-600">
                         This is a default tab that cannot be closed. Default
-                        tabs are always visible at the front.
+                        tabs are alw ays visible at the front.
                     </p>
                 </div>
             ),
             isDefault: true,
         },
         {
-            value: 'dashboard',
+            value: 'payment_status',
             label: 'Dashboard',
             content: (
                 <div className="p-4 bg-green-50 rounded-lg">
@@ -100,7 +100,8 @@ const TabsDemo = () => {
         },
     ])
 
-    const [enhancedActiveTab, setEnhancedActiveTab] = useState('home')
+    const [enhancedActiveTab, setEnhancedActiveTab] =
+        useState('payment_gateway')
     const [showEnhancedDropdown, setShowEnhancedDropdown] = useState(true)
     const [showEnhancedAddButton, setShowEnhancedAddButton] = useState(true)
 
@@ -402,6 +403,195 @@ const TabsDemo = () => {
                                 <strong>Max limit:</strong> Only first 3 items
                                 are concatenated
                             </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Data with Underscores</h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This section demonstrates how the Tabs component
+                        correctly handles tab values with underscores that come
+                        from backend APIs. Values like{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_gateway
+                        </code>
+                        ,{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method
+                        </code>
+                        , and{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method_type
+                        </code>{' '}
+                        are treated as single tab values, not concatenated tabs.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Simulated API Response
+                        </h3>
+                        <div className="mb-4 p-4 bg-gray-50 rounded-lg font-mono text-sm">
+                            <div className="text-gray-600 mb-2">
+                                {/* Simulated API response */}
+                                <pre>{`// Backend API returns:
+const apiTabs = [
+  { value: 'payment_gateway', label: 'Payment Gateway' },
+  { value: 'payment_method', label: 'Payment Method' },
+  { value: 'payment_method_type', label: 'Payment Method Type' },
+  { value: 'payment_status', label: 'Payment Status' },
+]`}</pre>
+                            </div>
+                        </div>
+                        <Tabs defaultValue="payment_gateway">
+                            <TabsList>
+                                <TabsTrigger value="payment_gateway">
+                                    Payment Gateway
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method">
+                                    Payment Method
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method_type">
+                                    Payment Method Type
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_status">
+                                    Payment Status
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent
+                                value="payment_gateway"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-blue-800">
+                                        Payment Gateway Content
+                                    </h4>
+                                    <p className="text-blue-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-blue-100 rounded">
+                                            payment_gateway
+                                        </code>
+                                        . This tab is fully clickable and works
+                                        correctly with underscore values from
+                                        backend APIs.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-green-800">
+                                        Payment Method Content
+                                    </h4>
+                                    <p className="text-green-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-green-100 rounded">
+                                            payment_method
+                                        </code>
+                                        . All tabs with underscores work
+                                        correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method_type"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-purple-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-purple-800">
+                                        Payment Method Type Content
+                                    </h4>
+                                    <p className="text-purple-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-purple-100 rounded">
+                                            payment_method_type
+                                        </code>
+                                        . Even tabs with multiple underscores
+                                        work perfectly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_status"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-orange-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-orange-800">
+                                        Payment Status Content
+                                    </h4>
+                                    <p className="text-orange-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-orange-100 rounded">
+                                            payment_status
+                                        </code>
+                                        . Backend API data is handled correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">
+                            Backend API Integration:
+                        </h4>
+                        <ul className="text-green-700 space-y-1 text-sm">
+                            <li>
+                                • Tab values with underscores (e.g.,{' '}
+                                <code className="px-1 bg-green-100 rounded">
+                                    payment_gateway
+                                </code>
+                                ) are treated as single values
+                            </li>
+                            <li>
+                                • Only concatenated tabs (created when multiple
+                                tabs share content) use underscores as
+                                separators
+                            </li>
+                            <li>
+                                • The component automatically distinguishes
+                                between single tabs with underscores and
+                                concatenated tabs
+                            </li>
+                            <li>
+                                • All tab operations (click, close, dropdown)
+                                work correctly with underscore values
+                            </li>
+                            <li>
+                                • Compatible with REST APIs, GraphQL, and any
+                                backend that uses underscore naming conventions
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Example: Using Backend API Data
+                        </h4>
+                        <div className="font-mono text-sm text-blue-700">
+                            <pre>{`// Fetch tabs from backend API
+const response = await fetch('/api/tabs')
+const apiTabs = await response.json()
+
+// Transform API response to TabItem format
+const tabs: TabItem[] = apiTabs.map(tab => ({
+  value: tab.id,           // e.g., 'payment_gateway'
+  label: tab.name,         // e.g., 'Payment Gateway'
+  content: <TabContent />,
+  isDefault: tab.isDefault || false,
+  closable: !tab.isDefault,
+}))
+
+// Use directly - underscores work correctly!
+<Tabs items={tabs} defaultValue={tabs[0].value} />`}</pre>
                         </div>
                     </div>
                 </div>
@@ -1102,7 +1292,7 @@ const TabsDemo = () => {
                                     fitContent={fitContent}
                                 >
                                     <TabsTrigger
-                                        value="tab1"
+                                        value="payment_gateway"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -1116,10 +1306,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Home
+                                        payment_gateway
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab2"
+                                        value="payment_status"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -1133,10 +1323,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Profile
+                                        payment_status
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab3"
+                                        value="payment_method"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -1150,10 +1340,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Settings
+                                        payment_method
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab4"
+                                        value="payment_history"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -1167,11 +1357,14 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Documents
+                                        payment_history
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="tab1" className="mt-4">
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Home Content
@@ -1184,7 +1377,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab2" className="mt-4">
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Profile Content
@@ -1198,7 +1394,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab3" className="mt-4">
+                                <TabsContent
+                                    value="payment_method"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Settings Content
@@ -1212,7 +1411,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab4" className="mt-4">
+                                <TabsContent
+                                    value="payment_history"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Documents Content
@@ -1242,21 +1444,24 @@ const TabsDemo = () => {
                             </h3>
                             <Tabs defaultValue="tab1">
                                 <TabsList variant={variant}>
-                                    <TabsTrigger value="tab1">
-                                        Overview
+                                    <TabsTrigger value="payment_gateway">
+                                        payment_gateway
                                     </TabsTrigger>
-                                    <TabsTrigger value="tab2">
-                                        Analytics
+                                    <TabsTrigger value="payment_status">
+                                        payment_status
                                     </TabsTrigger>
                                     <TabsTrigger value="tab3">
-                                        Reports
+                                        payment_method
                                     </TabsTrigger>
                                     <TabsTrigger value="tab4">
-                                        Settings
+                                        payment_history
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="tab1" className="mt-4">
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Overview
@@ -1268,7 +1473,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab2" className="mt-4">
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Analytics

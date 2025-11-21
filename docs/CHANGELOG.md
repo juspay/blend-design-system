@@ -1,6 +1,6 @@
-# Changelog for v0.0.27-beta (Beta)
+# Changelog for v0.0.27
 
-> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
+> **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
@@ -8,21 +8,19 @@
 
 ## 🔧 Chores
 
+- **release**: v0.0.27-beta [BETA] ([1c90119](../../commit/1c90119))
 - **release**: v0.0.26 [STABLE] ([687e0fd](../../commit/687e0fd))
-- **release**: v0.0.26-beta [BETA] ([f5e6699](../../commit/f5e6699))
 
 ---
 
 **Release Date**: 2025-11-21
-**Commit Range**: v0.0.26-beta..HEAD
+**Commit Range**: v0.0.26..HEAD
 **Total Changes**: 3 commits
 
-## Beta Installation
+## Installation
 
 ```bash
-npm install @juspay/blend-design-system@beta
-# or specific beta version
-npm install @juspay/blend-design-system@0.0.27-beta
+npm install @juspay/blend-design-system@latest
+# or specific version
+npm install @juspay/blend-design-system@0.0.27
 ```
-
-> **Note**: Beta versions are for testing only. Use stable versions in production.
