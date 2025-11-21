@@ -102,7 +102,6 @@ export const prepareDropdownItems = (
 ) => {
     if (!tabs.length) return []
 
-    // Create a Set of original tab values for quick lookup
     const originalTabValues = originalItems
         ? new Set(originalItems.map((item) => item.value))
         : new Set<string>()
