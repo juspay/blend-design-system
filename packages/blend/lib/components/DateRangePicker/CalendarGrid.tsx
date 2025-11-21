@@ -48,7 +48,7 @@ const containerVariants = {
         opacity: 1,
         transition: {
             duration: 0.2,
-            ease: [0.4, 0, 0.2, 1] as const, 
+            ease: [0.4, 0, 0.2, 1] as const,
         },
     },
 }
@@ -61,7 +61,7 @@ const monthVariants = {
         transition: {
             duration: 0.3,
             delay: custom * 0.03,
-            ease: [0.25, 0.46, 0.45, 0.94] as const, 
+            ease: [0.25, 0.46, 0.45, 0.94] as const,
         },
     }),
 }
