@@ -339,7 +339,7 @@ const TabsDemo = () => {
                             onChange={handleMultiSelectChange}
                             items={multiSelectItems}
                             placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
-                            label=""
+                            label="select tabs to add"
                             enableSearch={true}
                             searchPlaceholder="Search available tabs..."
                             maxSelections={3}
