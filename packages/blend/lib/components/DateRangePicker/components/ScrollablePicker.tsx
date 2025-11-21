@@ -5,7 +5,7 @@ import {
     isValidTimeInput,
     formatTimeInput,
     triggerHapticFeedback,
-    AppleCalendarHapticManager,
+    calendarHapticManager,
     MOBILE_CALENDAR_CONSTANTS,
     getPickerVisibleItems,
     clampPickerIndex,
@@ -18,7 +18,7 @@ import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import type { ScrollablePickerProps } from '../types'
 import { getMobileToken } from './mobile.tokens'
 
-const { ITEM_HEIGHT, VISIBLE_ITEMS, SCROLL_DEBOUNCE } = MOBILE_PICKER_CONSTANTS
+const { ITEM_HEIGHT, VISIBLE_ITEMS } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
 
 const ScrollablePicker = React.memo<ScrollablePickerProps>(
@@ -33,21 +33,16 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
         const tokens = getMobileToken(FOUNDATION_THEME).sm
         const scrollRef = useRef<HTMLDivElement>(null)
         const isScrollingRef = useRef(false)
+        const isProgrammaticScrollRef = useRef(false)
+        const programmaticScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
         const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
         const lastSelectedIndexRef = useRef(selectedIndex)
-        const velocityRef = useRef(0)
-        const smoothedVelocityRef = useRef(0)
-        const velocityHistoryRef = useRef<number[]>([])
-        const lastScrollTimeRef = useRef(0)
         const lastScrollTopRef = useRef(0)
-        const momentumAnimationRef = useRef<number | null>(null)
-        const hapticManagerRef = useRef(new AppleCalendarHapticManager())
+        const hapticManagerRef = useRef(new calendarHapticManager())
         const isInitializedRef = useRef(false)
-        const frameCountRef = useRef(0)
 
         const [editingValue, setEditingValue] = useState<string>('')
         const [isEditing, setIsEditing] = useState(false)
-        const [isSnapping, setIsSnapping] = useState(false)
 
         const validatedItems = useMemo(() => {
             if (!Array.isArray(items) || items.length === 0) {
@@ -60,184 +55,90 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
             return clampPickerIndex(selectedIndex, validatedItems.length)
         }, [selectedIndex, validatedItems.length])
 
+        const setScrollPosition = useCallback(
+            (top: number, options?: ScrollToOptions) => {
+                if (!scrollRef.current) {
+                    return
+                }
+
+                isProgrammaticScrollRef.current = true
+                lastScrollTopRef.current = top
+
+                if (options) {
+                    scrollRef.current.scrollTo({ top, ...options })
+                } else {
+                    scrollRef.current.scrollTop = top
+                }
+
+                if (programmaticScrollTimeoutRef.current) {
+                    clearTimeout(programmaticScrollTimeoutRef.current)
+                }
+                programmaticScrollTimeoutRef.current = setTimeout(() => {
+                    isProgrammaticScrollRef.current = false
+                }, 100)
+            },
+            []
+        )
+
         useEffect(() => {
-            if (
-                !scrollRef.current ||
-                isScrollingRef.current ||
-                !validatedItems.length ||
-                isDisabled
-            ) {
+            if (!scrollRef.current || !validatedItems.length || isDisabled) {
                 return
             }
 
             const initializeScroll = () => {
+                if (isScrollingRef.current) {
+                    return
+                }
+
                 const targetScrollTop = calculateScrollPosition(
                     validSelectedIndex,
                     ITEM_HEIGHT
                 )
-                if (scrollRef.current) {
-                    scrollRef.current.scrollTop = targetScrollTop
-                    lastSelectedIndexRef.current = validSelectedIndex
-                    lastScrollTopRef.current = targetScrollTop
-                    isInitializedRef.current = true
+
+                // Check if we are already at the correct position (with small tolerance)
+                const currentScrollTop = scrollRef.current?.scrollTop || 0
+                if (Math.abs(currentScrollTop - targetScrollTop) > 2) {
+                    setScrollPosition(targetScrollTop)
                 }
+
+                lastSelectedIndexRef.current = validSelectedIndex
+                lastScrollTopRef.current = targetScrollTop
+                isInitializedRef.current = true
             }
 
             if (!isInitializedRef.current) {
-                requestAnimationFrame(initializeScroll)
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(initializeScroll)
+                })
+            } else {
+                initializeScroll()
             }
-        }, [validSelectedIndex, validatedItems.length, isDisabled])
+        }, [
+            validSelectedIndex,
+            validatedItems.length,
+            isDisabled,
+            setScrollPosition,
+        ])
 
-        const snapToNearestItem = useCallback(
-            (currentScrollTop: number) => {
+        const handleScroll = useCallback(
+            (e: React.UIEvent<HTMLDivElement>) => {
+                e.stopPropagation()
+
+                const currentScrollTop = e.currentTarget.scrollTop
+                lastScrollTopRef.current = currentScrollTop
+
                 if (
-                    !scrollRef.current ||
-                    isSnapping ||
+                    isProgrammaticScrollRef.current ||
                     !validatedItems.length ||
                     isDisabled
                 ) {
                     return
                 }
 
-                setIsSnapping(true)
-                const targetIndex = calculateIndexFromScroll(
-                    currentScrollTop,
-                    ITEM_HEIGHT
-                )
-                const clampedIndex = clampPickerIndex(
-                    targetIndex,
-                    validatedItems.length
-                )
-                const targetScrollTop = calculateScrollPosition(
-                    clampedIndex,
-                    ITEM_HEIGHT
-                )
-
-                if (clampedIndex !== lastSelectedIndexRef.current) {
-                    hapticManagerRef.current.triggerSelectionHaptic()
-                    lastSelectedIndexRef.current = clampedIndex
-                    onSelect(clampedIndex)
-                }
-
-                const startScrollTop = currentScrollTop
-                const distance = targetScrollTop - startScrollTop
-
-                if (Math.abs(distance) < 2) {
-                    if (scrollRef.current) {
-                        scrollRef.current.scrollTop = targetScrollTop
-                    }
-                    setIsSnapping(false)
-                    return
-                }
-
-                const duration = Math.min(
-                    MOBILE_CALENDAR_CONSTANTS.SNAP_DURATION,
-                    Math.abs(distance) * 1.5
-                )
-                const startTime = performance.now()
-                frameCountRef.current = 0
-
-                const animateSnap = (currentTime: number) => {
-                    frameCountRef.current++
-
-                    if (
-                        frameCountRef.current >
-                        MOBILE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
-                    ) {
-                        if (scrollRef.current) {
-                            scrollRef.current.scrollTop = targetScrollTop
-                        }
-                        setIsSnapping(false)
-                        momentumAnimationRef.current = null
-                        return
-                    }
-
-                    const elapsed = currentTime - startTime
-                    const progress = Math.min(elapsed / duration, 1)
-
-                    const easeOut = 1 - Math.pow(1 - progress, 3)
-                    const newScrollTop = startScrollTop + distance * easeOut
-
-                    if (scrollRef.current && Number.isFinite(newScrollTop)) {
-                        scrollRef.current.scrollTop = newScrollTop
-                    }
-
-                    if (progress < 1) {
-                        momentumAnimationRef.current =
-                            requestAnimationFrame(animateSnap)
-                    } else {
-                        setIsSnapping(false)
-                        momentumAnimationRef.current = null
-                        frameCountRef.current = 0
-                    }
-                }
-
-                momentumAnimationRef.current =
-                    requestAnimationFrame(animateSnap)
-            },
-            [validatedItems.length, onSelect, isSnapping, isDisabled]
-        )
-
-        const handleScroll = useCallback(
-            (e: React.UIEvent<HTMLDivElement>) => {
-                e.stopPropagation()
-
-                if (isSnapping || !validatedItems.length || isDisabled) {
-                    return
-                }
-
-                const currentTime = performance.now()
-                const currentScrollTop = e.currentTarget.scrollTop
-
-                if (
-                    !Number.isFinite(currentScrollTop) ||
-                    currentScrollTop < 0
-                ) {
-                    return
-                }
-
-                const timeDelta = currentTime - lastScrollTimeRef.current
-                const scrollDelta = currentScrollTop - lastScrollTopRef.current
-
-                if (timeDelta > 0 && timeDelta < 100) {
-                    const rawVelocity = scrollDelta / timeDelta
-                    const resistedVelocity =
-                        rawVelocity *
-                        MOBILE_CALENDAR_CONSTANTS.SCROLL_RESISTANCE
-
-                    velocityHistoryRef.current.push(resistedVelocity)
-                    if (
-                        velocityHistoryRef.current.length >
-                        MOBILE_CALENDAR_CONSTANTS.VELOCITY_HISTORY_SIZE
-                    ) {
-                        velocityHistoryRef.current.shift()
-                    }
-
-                    const avgVelocity =
-                        velocityHistoryRef.current.reduce(
-                            (sum, vel) => sum + vel,
-                            0
-                        ) / velocityHistoryRef.current.length
-                    smoothedVelocityRef.current =
-                        smoothedVelocityRef.current *
-                            MOBILE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING +
-                        avgVelocity *
-                            (1 - MOBILE_CALENDAR_CONSTANTS.VELOCITY_SMOOTHING)
-                    velocityRef.current = smoothedVelocityRef.current
-                }
-
-                lastScrollTimeRef.current = currentTime
-                lastScrollTopRef.current = currentScrollTop
-
+                isScrollingRef.current = true
                 if (scrollTimeoutRef.current) {
                     clearTimeout(scrollTimeoutRef.current)
                 }
-                if (momentumAnimationRef.current) {
-                    cancelAnimationFrame(momentumAnimationRef.current)
-                    momentumAnimationRef.current = null
-                }
-
-                isScrollingRef.current = true
 
                 const newIndex = calculateIndexFromScroll(
                     currentScrollTop,
@@ -259,116 +160,9 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
 
                 scrollTimeoutRef.current = setTimeout(() => {
                     isScrollingRef.current = false
-                    const finalVelocity = Math.abs(velocityRef.current)
-
-                    if (
-                        finalVelocity >
-                        MOBILE_CALENDAR_CONSTANTS.MOMENTUM_THRESHOLD
-                    ) {
-                        const currentScrollTop =
-                            scrollRef.current?.scrollTop || 0
-                        const currentIndex = calculateIndexFromScroll(
-                            currentScrollTop,
-                            ITEM_HEIGHT
-                        )
-
-                        const velocityDirection =
-                            velocityRef.current > 0 ? 1 : -1
-                        const momentumDistance = Math.min(
-                            MOBILE_CALENDAR_CONSTANTS.MAX_MOMENTUM_DISTANCE,
-                            Math.ceil(
-                                finalVelocity *
-                                    MOBILE_CALENDAR_CONSTANTS.VELOCITY_MULTIPLIER
-                            )
-                        )
-
-                        const targetIndex = clampPickerIndex(
-                            currentIndex + momentumDistance * velocityDirection,
-                            validatedItems.length
-                        )
-
-                        const targetScrollTop = calculateScrollPosition(
-                            targetIndex,
-                            ITEM_HEIGHT
-                        )
-
-                        const startScrollTop = currentScrollTop
-                        const distance = targetScrollTop - startScrollTop
-                        const duration = Math.min(
-                            MOBILE_CALENDAR_CONSTANTS.SNAP_DURATION * 1.2,
-                            Math.abs(distance) * 2
-                        )
-                        const startTime = performance.now()
-                        frameCountRef.current = 0
-
-                        const animateMomentum = (currentTime: number) => {
-                            frameCountRef.current++
-
-                            if (
-                                frameCountRef.current >
-                                MOBILE_CALENDAR_CONSTANTS.ANIMATION_FRAME_LIMIT
-                            ) {
-                                snapToNearestItem(targetScrollTop)
-                                return
-                            }
-
-                            const elapsed = currentTime - startTime
-                            const progress = Math.min(elapsed / duration, 1)
-
-                            const easeOut = 1 - Math.pow(1 - progress, 4)
-                            const newScrollTop =
-                                startScrollTop + distance * easeOut
-
-                            if (
-                                scrollRef.current &&
-                                Number.isFinite(newScrollTop)
-                            ) {
-                                scrollRef.current.scrollTop = newScrollTop
-                            }
-
-                            const newIndex = calculateIndexFromScroll(
-                                newScrollTop,
-                                ITEM_HEIGHT
-                            )
-                            const clampedIndex = clampPickerIndex(
-                                newIndex,
-                                validatedItems.length
-                            )
-
-                            if (
-                                clampedIndex !== lastSelectedIndexRef.current &&
-                                clampedIndex >= 0
-                            ) {
-                                hapticManagerRef.current.triggerScrollHaptic(
-                                    clampedIndex
-                                )
-                                lastSelectedIndexRef.current = clampedIndex
-                                onSelect(clampedIndex)
-                            }
-
-                            if (progress < 1) {
-                                momentumAnimationRef.current =
-                                    requestAnimationFrame(animateMomentum)
-                            } else {
-                                snapToNearestItem(targetScrollTop)
-                                frameCountRef.current = 0
-                            }
-                        }
-
-                        momentumAnimationRef.current =
-                            requestAnimationFrame(animateMomentum)
-                    } else {
-                        snapToNearestItem(currentScrollTop)
-                    }
-                }, SCROLL_DEBOUNCE)
+                }, 100)
             },
-            [
-                onSelect,
-                validatedItems.length,
-                snapToNearestItem,
-                isSnapping,
-                isDisabled,
-            ]
+            [onSelect, validatedItems.length, isDisabled]
         )
 
         const handleItemClick = useCallback(
@@ -390,18 +184,19 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                 lastSelectedIndexRef.current = index
                 onSelect(index)
 
-                if (scrollRef.current) {
-                    const targetScrollTop = calculateScrollPosition(
-                        index,
-                        ITEM_HEIGHT
-                    )
-                    scrollRef.current.scrollTo({
-                        top: targetScrollTop,
-                        behavior: 'smooth',
-                    })
-                }
+                const targetScrollTop = calculateScrollPosition(
+                    index,
+                    ITEM_HEIGHT
+                )
+                setScrollPosition(targetScrollTop, { behavior: 'smooth' })
             },
-            [onSelect, validSelectedIndex, validatedItems.length, isDisabled]
+            [
+                onSelect,
+                validSelectedIndex,
+                validatedItems.length,
+                isDisabled,
+                setScrollPosition,
+            ]
         )
 
         useEffect(() => {
@@ -409,8 +204,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                 if (scrollTimeoutRef.current) {
                     clearTimeout(scrollTimeoutRef.current)
                 }
-                if (momentumAnimationRef.current) {
-                    cancelAnimationFrame(momentumAnimationRef.current)
+                if (programmaticScrollTimeoutRef.current) {
+                    clearTimeout(programmaticScrollTimeoutRef.current)
                 }
                 const hapticManager = hapticManagerRef.current
                 if (hapticManager) {
@@ -772,6 +567,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                         right: 0,
                         overflowY: 'auto',
                         overflowX: 'hidden',
+                        scrollSnapType: 'y mandatory',
                         paddingTop: `${ITEM_HEIGHT}px`,
                         paddingBottom: `${ITEM_HEIGHT}px`,
                         scrollbarWidth: 'none',

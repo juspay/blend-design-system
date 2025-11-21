@@ -268,18 +268,25 @@ const FooterControls: React.FC<FooterControlsProps> = ({
                 onClick={onCancel}
                 text="Cancel"
             />
-            <Tooltip
-                content={isApplyDisabled ? applyDisabledMessage : undefined}
-                open={isApplyDisabled ? undefined : false}
-            >
+            {isApplyDisabled ? (
+                <Tooltip content={applyDisabledMessage}>
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.SMALL}
+                        onClick={onApply}
+                        text="Apply"
+                        disabled={true}
+                    />
+                </Tooltip>
+            ) : (
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.SMALL}
                     onClick={onApply}
                     text="Apply"
-                    disabled={isApplyDisabled}
+                    disabled={false}
                 />
-            </Tooltip>
+            )}
         </Block>
     </Block>
 )
@@ -324,6 +331,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [selectedRange, setSelectedRange] = useState<DateRange>(
             value || getPresetDateRange(DateRangePreset.TODAY)
         )
+        const lastExternalValueRef = React.useRef<{
+            start: number | null
+            end: number | null
+            dateFormat: string
+        } | null>(null)
 
         const [activePreset, setActivePreset] = useState<DateRangePreset>(
             DateRangePreset.TODAY
@@ -405,16 +417,39 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const isApplyDisabled = applyButtonValidation.isDisabled
 
         useEffect(() => {
-            if (value) {
-                setSelectedRange(value)
-                setStartDate(formatDate(value.startDate, dateFormat))
-                setEndDate(formatDate(value.endDate, dateFormat))
-                setStartTime(formatDate(value.startDate, 'HH:mm'))
-                setEndTime(formatDate(value.endDate, 'HH:mm'))
-
-                const detectedPreset = detectPresetFromRange(value)
-                setActivePreset(detectedPreset)
+            if (!value) {
+                lastExternalValueRef.current = null
+                return
             }
+
+            const nextSignature = {
+                start: value.startDate?.getTime() ?? null,
+                end: value.endDate?.getTime() ?? null,
+                dateFormat,
+            }
+
+            const prevSignature = lastExternalValueRef.current
+            const hasRangeChanged =
+                !prevSignature ||
+                prevSignature.start !== nextSignature.start ||
+                prevSignature.end !== nextSignature.end
+            const hasFormatChanged =
+                !prevSignature || prevSignature.dateFormat !== dateFormat
+
+            if (!hasRangeChanged && !hasFormatChanged) {
+                return
+            }
+
+            lastExternalValueRef.current = nextSignature
+
+            setSelectedRange(value)
+            setStartDate(formatDate(value.startDate, dateFormat))
+            setEndDate(formatDate(value.endDate, dateFormat))
+            setStartTime(formatDate(value.startDate, 'HH:mm'))
+            setEndTime(formatDate(value.endDate, 'HH:mm'))
+
+            const detectedPreset = detectPresetFromRange(value)
+            setActivePreset(detectedPreset)
         }, [value, dateFormat])
 
         const handleDateSelect = useCallback(
