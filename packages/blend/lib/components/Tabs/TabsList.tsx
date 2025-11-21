@@ -192,12 +192,16 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         }, [items])
 
         const dropdownItems = useMemo(() => {
-            return prepareDropdownItems(processedItems)
-        }, [processedItems])
+            return prepareDropdownItems(processedItems, items)
+        }, [processedItems, items])
 
         const displayTabs = useMemo(() => {
             return getDisplayTabs(processedItems)
         }, [processedItems])
+
+        const originalTabValues = useMemo(() => {
+            return new Set(items.map((item) => item.value))
+        }, [items])
 
         const hasAnySkeleton = useMemo(() => {
             return processedItems.some((item) => item.showSkeleton === true)
@@ -215,16 +219,17 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
-                if (processedTabValue.includes('_')) {
-                    // Concatenated tab - close all tabs with same content
+                if (
+                    processedTabValue.includes('_') &&
+                    !originalTabValues.has(processedTabValue)
+                ) {
                     const originalValues = processedTabValue.split('_')
                     originalValues.forEach((val) => onTabClose?.(val))
-                } else {
-                    // Single tab
+
                     onTabClose?.(processedTabValue)
                 }
             },
-            [onTabClose]
+            [onTabClose, originalTabValues]
         )
 
         const handleDropdownSelect = useCallback(
@@ -297,9 +302,13 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 }}
                             >
                                 {displayTabs.map((item) => {
-                                    const tabValue = item.value.includes('_')
-                                        ? item.value.split('_')[0]
-                                        : item.value
+                                    const tabValue = originalTabValues.has(
+                                        item.value
+                                    )
+                                        ? item.value
+                                        : item.value.includes('_')
+                                          ? item.value.split('_')[0]
+                                          : item.value
 
                                     return (
                                         <TabsTrigger
@@ -338,7 +347,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             }}
                                             data-tabs={item.label}
                                             data-tab-selected={
-                                                item.value === activeTab
+                                                tabValue === activeTab
                                             }
                                             data-tabs-disabled={
                                                 item.disable ? 'true' : 'false'
@@ -363,7 +372,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                             }}
                         >
                             {showDropdown && (
-                                // <Tooltip content={dropdownTooltip}>
                                 <SingleSelect
                                     items={dropdownItems}
                                     selected={activeTab}
