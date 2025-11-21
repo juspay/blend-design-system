@@ -71,6 +71,19 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             FOUNDATION_THEME.font.size.body.md.lineHeight
         )
 
+        const getRippleColor = (): string => {
+            if (buttonType === ButtonType.SECONDARY) {
+                return 'rgba(0, 0, 0, 0.1)'
+            } else if (buttonType === ButtonType.PRIMARY) {
+                return 'rgba(219, 234, 254, 0.7)'
+            } else if (buttonType === ButtonType.DANGER) {
+                return 'rgba(255, 255, 255, 0.6)'
+            } else if (buttonType === ButtonType.SUCCESS) {
+                return 'rgba(255, 255, 255, 0.6)'
+            }
+            return 'rgba(255, 255, 255, 0.4)'
+        }
+
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
             createRipple(event)
@@ -122,8 +135,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
-                              border: buttonTokens.border[buttonType][subType]
-                                  .active,
+                              //   border: buttonTokens.border[buttonType][subType]
+                              //       .active,
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
@@ -133,15 +146,13 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                     isSkeleton
                         ? undefined
                         : {
-                              border: buttonTokens.border[buttonType][subType]
-                                  .hover,
                               background:
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].hover,
-                              outline:
-                                  buttonTokens.outline[buttonType][subType]
-                                      .hover,
+                              //   outline:
+                              //       buttonTokens.outline[buttonType][subType]
+                              //           .hover,
                               color: buttonTokens.text.color[buttonType][
                                   subType
                               ].hover,
@@ -232,7 +243,12 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         )}
                     </>
                 )}
-                {!isSkeleton && <RippleContainer ripples={ripples} />}
+                {!isSkeleton && (
+                    <RippleContainer
+                        ripples={ripples}
+                        rippleColor={getRippleColor()}
+                    />
+                )}
             </PrimitiveButton>
         )
     }
