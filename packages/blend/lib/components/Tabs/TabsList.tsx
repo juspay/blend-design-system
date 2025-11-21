@@ -67,7 +67,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             const activeTabElement = tabRefsMap.current.get(activeTab)
             const listElement = tabsListRef.current
 
-            if (!activeTabElement || !scrollContainer) {
+            if (!activeTabElement || !listElement) {
                 return
             }
 
@@ -92,6 +92,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             }
 
             const scrollTabIntoView = () => {
+                if (!scrollContainer) {
+                    updateIndicator()
+                    return
+                }
+
                 const containerRect = scrollContainer.getBoundingClientRect()
                 const tabRect = activeTabElement.getBoundingClientRect()
 
