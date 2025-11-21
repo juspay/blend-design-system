@@ -33,6 +33,8 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     ...tableToken.dataTable.table.footer,
                     borderBottomLeftRadius: tableToken.dataTable.borderRadius,
                     borderBottomRightRadius: tableToken.dataTable.borderRadius,
+                    position: 'relative',
+                    zIndex: 11,
                 }}
             >
                 <DataTablePagination
