@@ -32,6 +32,7 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
+    SANKEY = 'sankey',
 }
 
 export enum LegendsChangeType {
@@ -196,6 +197,43 @@ export type ChartLegendsProps = {
     stacked?: boolean
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+}
+
+export type SankeyNode = {
+    id: string
+    name: string
+    color?: string
+    value?: number
+}
+
+export type SankeyLink = {
+    source: string
+    target: string
+    value: number
+    color?: string
+}
+
+export type SankeyData = {
+    nodes: SankeyNode[]
+    links: SankeyLink[]
+}
+
+export type SankeyProps = {
+    data: SankeyData[]
+    width?: number
+    height?: number
+    onNodeClick?: (node: SankeyNode) => void
+    onLinkClick?: (link: SankeyLink) => void
+    node?: {
+        fill?: string
+        stroke?: string
+        strokeWidth?: number
+    }
+    link?: {
+        stroke?: string
+        strokeOpacity?: number
+        strokeWidth?: number
+    }
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {

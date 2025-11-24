@@ -13,7 +13,14 @@ import {
     ScatterChart,
     Scatter,
 } from 'recharts'
-import { ChartType, RenderChartProps, TickProps, AxisType } from './types'
+import BlendSankeyChart from './SankeyChart'
+import {
+    ChartType,
+    RenderChartProps,
+    TickProps,
+    AxisType,
+    SankeyData,
+} from './types'
 import {
     formatNumber,
     getAxisFormatter,
@@ -684,6 +691,22 @@ export const renderChart = ({
                         />
                     ))}
                 </ScatterChart>
+            )
+        }
+
+        case ChartType.SANKEY: {
+            // For Sankey charts, we expect the originalData to be in sankeyData format
+            // SankeyChart expects data as an array with a single object containing nodes and links
+            const sankeyData = originalData as unknown as SankeyData[]
+
+            return (
+                <BlendSankeyChart
+                    data={sankeyData}
+                    width={800}
+                    height={500}
+                    chartName={chartName}
+                    colors={colors}
+                />
             )
         }
 
