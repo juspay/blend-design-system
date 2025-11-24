@@ -34,15 +34,16 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
         string[]
-    >([])
+    >(() => visibleColumns.map((col) => String(col.field)))
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
-        if (hasPrimaryAction) {
+        if (hasPrimaryAction && !isOpen) {
             setPendingSelectedColumns(
                 visibleColumns.map((col) => String(col.field))
             )
         }
-    }, [visibleColumns, hasPrimaryAction])
+    }, [visibleColumns, hasPrimaryAction, isOpen])
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
     const selectedColumnValues = hasPrimaryAction
@@ -166,6 +167,16 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
         onColumnChange(newVisibleColumns)
         columnManagerPrimaryAction.onClick(pendingSelectedColumns)
+        setIsOpen(false)
+    }
+
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open)
+        if (open && hasPrimaryAction) {
+            setPendingSelectedColumns(
+                visibleColumns.map((col) => String(col.field))
+            )
+        }
     }
 
     const customTrigger = (
@@ -210,6 +221,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         primaryAction,
         secondaryAction: columnManagerSecondaryAction,
         disabled,
+        open: isOpen,
+        onOpenChange: handleOpenChange,
     }
 
     return (
