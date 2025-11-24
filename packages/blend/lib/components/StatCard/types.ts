@@ -1,6 +1,14 @@
 import type { ReactNode } from 'react'
 import { SingleSelectProps } from '../SingleSelect'
 import { AxisType } from '../Charts/types'
+import { SkeletonVariant } from '../Skeleton'
+
+export type StatCardSkeletonProps = {
+    variant: SkeletonVariant
+    show: boolean
+    height?: string
+    width?: string
+}
 
 export enum StatCardVariant {
     LINE = 'line',
@@ -67,4 +75,5 @@ export type StatCardProps = {
     valueFormatter?: AxisType
     height?: string
     direction?: StatCardDirection
+    skeleton?: StatCardSkeletonProps
 }
