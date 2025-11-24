@@ -1,0 +1,127 @@
+{
+    "componentName": "TextInput",
+    "version": "0.0.27",
+    "evaluationDate": "2025-11-24",
+    "overallScore": 89,
+    "levelAScore": 100,
+    "levelAAScore": 95,
+    "levelAAAScore": 75,
+    "keyboardNavigation": {
+        "score": 95,
+        "tabOrder": "pass",
+        "focusManagement": "pass",
+        "focusIndicators": "needs-review",
+        "labelClick": "pass",
+        "notes": "Input is keyboard accessible. Label click works correctly. CONCERN: outline:none removes native focus indicator. Custom focus styling present but should use :focus-visible."
+    },
+    "screenReaderSupport": {
+        "score": 90,
+        "ariaLabels": "pass",
+        "ariaDescriptions": "fail",
+        "roleUsage": "pass",
+        "errorHandling": "needs-review",
+        "semanticHTML": "pass",
+        "notes": "Uses semantic label with htmlFor. Auto-generates ID from name. MISSING: aria-describedby for error messages and hint text. MISSING: aria-invalid when error exists. Error message has data-form-error but no ID for ARIA."
+    },
+    "visualAccessibility": {
+        "score": 85,
+        "colorContrast": "needs-review",
+        "fontSize": "pass",
+        "focusIndicators": "pass",
+        "reducedMotion": "fail",
+        "highContrast": "needs-review",
+        "textSpacing": "pass",
+        "notes": "Uses design tokens for theming. Focus states have clear visual indicators. Error state uses red border. ISSUE: Shake animation doesn't respect prefers-reduced-motion. NEEDS VERIFICATION: Placeholder contrast, AAA contrast (7:1)."
+    },
+    "ariaCompliance": {
+        "score": 88,
+        "ariaRoles": "pass",
+        "ariaStates": "needs-review",
+        "ariaProperties": "fail",
+        "designPattern": "pass",
+        "errorPattern": "fail",
+        "notes": "Follows basic text input pattern. Uses semantic HTML. Label association via htmlFor. MISSING: aria-describedby for errors and hints (critical). MISSING: aria-invalid on error state. Required attribute needs verification."
+    },
+    "strengths": [
+        "Proper semantic HTML with label element linked via htmlFor attribute",
+        "Auto-generates id from name prop for label association if ID not provided",
+        "Required field indicator with visual asterisk",
+        "Error states with visual feedback (border color, shake animation)",
+        "Hint text support for additional context",
+        "Disabled state with proper visual styling and cursor changes",
+        "Focus states with clear visual indicators (border, box-shadow, background)",
+        "Help icon with Tooltip component for contextual assistance",
+        "Left/right slot support with proper padding adjustments",
+        "Responsive design with floating labels on mobile large size",
+        "Error shake animation provides clear visual feedback",
+        "InputLabels component properly implements label accessibility",
+        "InputFooter component provides error and hint text structure",
+        "PrimitiveInput base component supports comprehensive styling",
+        "Token-based theming system for consistency"
+    ],
+    "issuesFound": [
+        {
+            "severity": "major",
+            "criterion": "3.3.2",
+            "description": "Error messages not programmatically associated with input",
+            "impact": "Screen reader users won't hear error messages when input receives focus",
+            "suggestion": "Add aria-describedby to input linking to error message ID. When error exists, set aria-describedby=`${name}-error` and add id=`${name}-error` to error message in InputFooter.",
+            "codeReference": "TextInput.tsx:156-230, InputFooter.tsx:36-50"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.4.7",
+            "description": "Focus-visible outline removed",
+            "impact": "Keyboard users may have difficulty tracking focus position in some browsers",
+            "suggestion": "Instead of removing outline completely with outline:none, use custom focus-visible styling that maintains visible indicator for keyboard users while removing it for mouse users.",
+            "codeReference": "PrimitiveInput.tsx:432-435"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.3",
+            "description": "Placeholder text contrast not verified",
+            "impact": "Users with low vision may not be able to read placeholder text",
+            "suggestion": "Verify placeholder text color meets 4.5:1 contrast ratio against background. Current implementation uses tokens but specific ratio needs measurement.",
+            "codeReference": "PrimitiveInput.tsx:264-270"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.2.2",
+            "description": "Error shake animation doesn't respect prefers-reduced-motion",
+            "impact": "Users who prefer reduced motion will still see shake animation which may cause discomfort",
+            "suggestion": "Add @media (prefers-reduced-motion: reduce) query to disable shake animation. Modify useErrorShake hook to check user preference.",
+            "codeReference": "TextInput.tsx:58-76, PrimitiveInput.tsx:116-126"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.6",
+            "description": "Enhanced contrast (7:1) not verified for AAA",
+            "impact": "Users with low vision may have difficulty reading input text",
+            "suggestion": "Verify all text colors (input text, label, error, hint) meet 7:1 contrast ratio against backgrounds for AAA compliance."
+        },
+        {
+            "severity": "minor",
+            "criterion": "4.1.2",
+            "description": "Required state not programmatically exposed beyond visual asterisk",
+            "impact": "Screen reader users may not be aware that field is required",
+            "suggestion": "The required prop is already passed to PrimitiveInput which applies HTML required attribute. Verify this is working correctly. Consider adding aria-required='true' explicitly.",
+            "codeReference": "TextInput.tsx:156, PrimitiveInput.tsx:454"
+        }
+    ],
+    "recommendations": [
+        "Add aria-describedby for error messages - Link input to error message programmatically",
+        "Add aria-describedby for hint text - Link input to hint text when provided",
+        "Combine aria-describedby - When both error and hint exist, use space-separated IDs",
+        "Add aria-invalid - Set aria-invalid='true' when error exists",
+        "Verify required attribute - Ensure HTML required attribute is properly applied",
+        "Improve focus-visible styling - Use :focus-visible pseudo-class instead of removing outline",
+        "Add prefers-reduced-motion support - Disable shake animation for users who prefer reduced motion",
+        "Verify color contrast - Measure all text/background combinations for AA (4.5:1) and AAA (7:1)",
+        "Test floating labels with screen readers - Ensure mobile floating label pattern works with VoiceOver/TalkBack",
+        "Document help icon accessibility - Verify Tooltip keyboard accessibility and screen reader announcements",
+        "Add autocomplete support - Consider adding autocomplete attribute for common fields (name, email, etc.)",
+        "Test with NVDA/JAWS/VoiceOver - Validate all states announced correctly",
+        "Verify touch target sizes - Ensure input height meets 24×24px (AA) or 44×44px (AAA)",
+        "Add inputmode support - Consider adding inputmode for better mobile keyboard UX"
+    ]
+}

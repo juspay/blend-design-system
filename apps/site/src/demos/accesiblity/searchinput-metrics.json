@@ -1,0 +1,119 @@
+{
+    "componentName": "SearchInput",
+    "version": "0.0.27",
+    "evaluationDate": "2025-11-24",
+    "overallScore": 82,
+    "levelAScore": 96,
+    "levelAAScore": 90,
+    "levelAAAScore": 65,
+    "keyboardNavigation": {
+        "score": 92,
+        "tabOrder": "pass",
+        "focusManagement": "pass",
+        "focusIndicators": "pass",
+        "interactiveSlots": "needs-review",
+        "notes": "Input is keyboard accessible. Focus states clearly visible via bottom border. CONCERN: If rightSlot contains interactive button, keyboard accessibility needs verification."
+    },
+    "screenReaderSupport": {
+        "score": 75,
+        "ariaLabels": "fail",
+        "ariaDescriptions": "fail",
+        "roleUsage": "pass",
+        "errorHandling": "fail",
+        "semanticHTML": "pass",
+        "notes": "Uses semantic input element. MISSING: No aria-label or label prop - screen readers can't identify purpose. MISSING: No error message text. MISSING: Icons not properly labeled or hidden. CRITICAL: Without accessible name, fails basic screen reader requirements."
+    },
+    "visualAccessibility": {
+        "score": 80,
+        "colorContrast": "needs-review",
+        "fontSize": "pass",
+        "focusIndicators": "pass",
+        "reducedMotion": "fail",
+        "highContrast": "needs-review",
+        "textSpacing": "pass",
+        "notes": "Uses design tokens for theming. Focus state has clear bottom border. Error state uses red border. ISSUE: Icon animations (scale/opacity) don't respect prefers-reduced-motion. NEEDS VERIFICATION: Placeholder contrast, AAA contrast (7:1)."
+    },
+    "ariaCompliance": {
+        "score": 82,
+        "ariaRoles": "pass",
+        "ariaStates": "pass",
+        "ariaProperties": "fail",
+        "designPattern": "needs-review",
+        "errorPattern": "fail",
+        "notes": "Uses semantic HTML. MISSING: aria-label for accessible name. MISSING: aria-describedby for instructions. MISSING: aria-invalid for error state. Should follow WAI-ARIA Search design pattern."
+    },
+    "strengths": [
+        "Keyboard accessible via Tab and standard input controls",
+        "Focus states with clear visual indicators (bottom border)",
+        "Disabled state properly styled with visual feedback",
+        "Left/right slot support for icons (search, clear, etc.)",
+        "Icon animations provide visual feedback on focus (scale and opacity)",
+        "Placeholder text fades out on focus for better UX",
+        "Error state with red border for visual distinction",
+        "Smooth transitions for all state changes",
+        "Token-based theming system for consistency",
+        "Auto-generates ID from name prop if not provided",
+        "Works with all input modalities (mouse, touch, keyboard)"
+    ],
+    "issuesFound": [
+        {
+            "severity": "major",
+            "criterion": "4.1.2",
+            "description": "No accessible name provided",
+            "impact": "Screen reader users cannot identify the purpose of the search input",
+            "suggestion": "Add aria-label prop support and documentation. Example: <SearchInput aria-label='Search products' />. Alternatively, provide label prop support similar to TextInput.",
+            "codeReference": "SearchInput.tsx:161-232"
+        },
+        {
+            "severity": "major",
+            "criterion": "1.1.1",
+            "description": "Icon slots not properly labeled for assistive technology",
+            "impact": "Screen reader users don't know the purpose of icons in left/right slots",
+            "suggestion": "Add aria-hidden='true' to decorative icons, or provide aria-label for interactive icons (like clear button). Document icon slot accessibility requirements.",
+            "codeReference": "SearchInput.tsx:103-119"
+        },
+        {
+            "severity": "minor",
+            "criterion": "3.3.2",
+            "description": "Error state is visual only, no error message text",
+            "impact": "Screen reader users and users with color blindness may not be aware of error state",
+            "suggestion": "Add errorMessage prop similar to TextInput. Provide text description of error, not just visual indicator."
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.2.2",
+            "description": "Icon animations don't respect prefers-reduced-motion",
+            "impact": "Users who prefer reduced motion will still see scale/opacity animations which may cause discomfort",
+            "suggestion": "Add @media (prefers-reduced-motion: reduce) to disable icon animations. Set transition to 'none' when user prefers reduced motion.",
+            "codeReference": "SearchInput.tsx:132-137, 150-155"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.3",
+            "description": "Placeholder text contrast not verified",
+            "impact": "Users with low vision may not be able to read placeholder text",
+            "suggestion": "Verify placeholder color (gray[400]) meets 4.5:1 contrast ratio against background."
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.6",
+            "description": "Enhanced contrast (7:1) not verified for AAA",
+            "impact": "Users with low vision may have difficulty reading input text",
+            "suggestion": "Verify all text colors meet 7:1 contrast ratio for AAA compliance. Test default, hover, focus, error, and disabled states."
+        }
+    ],
+    "recommendations": [
+        "Add aria-label prop - Allow consumers to provide accessible name for search input",
+        "Add label prop support - Provide visible label option similar to TextInput for better UX",
+        "Add errorMessage prop - Provide text error messages, not just visual indicators",
+        "Add hintText prop - Allow help text for search syntax or examples",
+        "Document icon accessibility - Provide guidelines for making left/right slot icons accessible",
+        "Add prefers-reduced-motion support - Disable animations for users who prefer reduced motion",
+        "Verify color contrast - Measure placeholder and text colors for AA/AAA compliance",
+        "Add aria-describedby - Link to hint text or instructions when provided",
+        "Consider autocomplete - Add autocomplete='search' for better browser integration",
+        "Test with screen readers - Validate with NVDA, JAWS, VoiceOver",
+        "Document search pattern - Provide examples of accessible search implementation",
+        "Add clear button accessibility - If rightSlot is clear button, ensure it has aria-label='Clear search'"
+    ]
+}

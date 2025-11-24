@@ -1032,16 +1032,56 @@
             "levelAScore": 100,
             "levelAAScore": 100,
             "levelAAAScore": 88
+        },
+        {
+            "componentName": "Modal",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-24",
+            "evaluator": "Accessibility Team",
+            "overallScore": 91,
+            "levelAScore": 100,
+            "levelAAScore": 95,
+            "levelAAAScore": 82
+        },
+        {
+            "componentName": "TextInput",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-24",
+            "evaluator": "Accessibility Team",
+            "overallScore": 89,
+            "levelAScore": 100,
+            "levelAAScore": 95,
+            "levelAAAScore": 75
+        },
+        {
+            "componentName": "SearchInput",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-24",
+            "evaluator": "Accessibility Team",
+            "overallScore": 82,
+            "levelAScore": 96,
+            "levelAAScore": 90,
+            "levelAAAScore": 65
+        },
+        {
+            "componentName": "NumberInput",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-24",
+            "evaluator": "Accessibility Team",
+            "overallScore": 87,
+            "levelAScore": 100,
+            "levelAAScore": 95,
+            "levelAAAScore": 72
         }
     ],
     "summary": {
-        "totalComponents": 4,
-        "averageScore": 94,
+        "totalComponents": 8,
+        "averageScore": 91,
         "levelACompliance": 100,
-        "levelAACompliance": 99,
-        "levelAAACompliance": 88,
+        "levelAACompliance": 96,
+        "levelAAACompliance": 81,
         "criticalIssues": 0,
-        "majorIssues": 0,
-        "minorIssues": 11
+        "majorIssues": 5,
+        "minorIssues": 29
     }
 }

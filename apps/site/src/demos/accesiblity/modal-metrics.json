@@ -1,0 +1,107 @@
+{
+    "componentName": "Modal",
+    "version": "0.0.27",
+    "evaluationDate": "2025-11-24",
+    "overallScore": 91,
+    "levelAScore": 100,
+    "levelAAScore": 95,
+    "levelAAAScore": 82,
+    "keyboardNavigation": {
+        "score": 93,
+        "tabOrder": "pass",
+        "focusManagement": "needs-review",
+        "escapeKey": "pass",
+        "focusTrap": "needs-review",
+        "returnFocus": "fail",
+        "notes": "Escape key works correctly. Tab order is logical. MISSING: Initial focus management, focus trap, and focus return to trigger element."
+    },
+    "screenReaderSupport": {
+        "score": 95,
+        "ariaLabels": "needs-review",
+        "ariaDescriptions": "needs-review",
+        "roleUsage": "pass",
+        "liveRegions": "not-applicable",
+        "semanticHTML": "pass",
+        "announcements": "pass",
+        "notes": "role='dialog' and aria-modal='true' correctly applied. aria-labelledby present but target ID not set. Close button missing aria-label (commented out). Backdrop properly hidden with aria-hidden='true'."
+    },
+    "visualAccessibility": {
+        "score": 88,
+        "colorContrast": "pass",
+        "fontSize": "pass",
+        "focusIndicators": "pass",
+        "reducedMotion": "needs-review",
+        "highContrast": "needs-review",
+        "textSpacing": "pass",
+        "notes": "Uses design tokens for consistent theming. White modal on dark backdrop has excellent contrast. Animation respects should verify prefers-reduced-motion. AAA contrast (7:1) needs verification."
+    },
+    "ariaCompliance": {
+        "score": 92,
+        "ariaRoles": "pass",
+        "ariaStates": "pass",
+        "ariaProperties": "needs-review",
+        "designPattern": "pass",
+        "landmarkRegions": "not-applicable",
+        "notes": "Follows WAI-ARIA Dialog pattern. role='dialog' and aria-modal='true' present. aria-labelledby present but target ID not set. MISSING: aria-describedby for subtitle. Close button needs aria-label."
+    },
+    "strengths": [
+        "Proper ARIA dialog implementation with role='dialog' and aria-modal='true'",
+        "Escape key handler for quick dismissal",
+        "Backdrop overlay with role='presentation' and aria-hidden='true'",
+        "Responsive design with drawer on mobile (Drawer component)",
+        "Scroll lock when modal is open prevents background scrolling",
+        "Close button with icon for visual clarity",
+        "Animated entrance/exit with CSS animations",
+        "Portal rendering prevents DOM hierarchy issues",
+        "Primary/secondary action buttons with proper semantics",
+        "Modal header with title and subtitle support",
+        "Proper z-index layering for overlay",
+        "Desktop and mobile variants maintain accessibility",
+        "Button component integration with full accessibility support"
+    ],
+    "issuesFound": [
+        {
+            "severity": "minor",
+            "criterion": "4.1.2",
+            "description": "Close button missing aria-label",
+            "impact": "Screen reader users may not know the close button's purpose",
+            "suggestion": "Add aria-label='Close dialog' to close button at Modal.tsx:105. Currently commented out.",
+            "codeReference": "Modal.tsx:100-106"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.4.3",
+            "description": "Initial focus not managed",
+            "impact": "Focus doesn't automatically move to modal when opened, keyboard users must tab to reach it",
+            "suggestion": "Implement focus management to move focus to modal or first focusable element on open. Use autoFocus on close button or first input.",
+            "codeReference": "Modal.tsx:252-267"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.4.3",
+            "description": "Focus not returned after close",
+            "impact": "When modal closes, focus doesn't return to trigger element",
+            "suggestion": "Store reference to trigger element and restore focus on close. Add returnFocus prop and implementation.",
+            "codeReference": "useModal.ts:7-66"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.6",
+            "description": "Enhanced contrast (7:1) not verified for AAA",
+            "impact": "Users with low vision may have difficulty reading modal content",
+            "suggestion": "Verify all text colors meet 7:1 contrast ratio against backgrounds. Test header, body, footer sections."
+        }
+    ],
+    "recommendations": [
+        "Add initial focus management - Focus should move to modal on open (first focusable element or close button)",
+        "Add focus return - Store and restore focus to trigger element when modal closes",
+        "Add focus trap - Implement focus trap to keep Tab/Shift+Tab within modal (similar to Drawer)",
+        "Add aria-labelledby reference - Currently hardcoded to 'modal-title' but title ID isn't set",
+        "Add aria-describedby - Link to subtitle for additional context if provided",
+        "Document keyboard shortcuts - Add help text for Escape key behavior",
+        "Test with NVDA/JAWS/VoiceOver - Validate screen reader announcements",
+        "Add close announcement - Announce when modal is dismissed",
+        "Verify animation respects prefers-reduced-motion - Add media query support",
+        "Add portal cleanup verification - Ensure portal container is properly removed"
+    ]
+}

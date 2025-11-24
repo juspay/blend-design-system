@@ -1,0 +1,140 @@
+{
+    "componentName": "NumberInput",
+    "version": "0.0.27",
+    "evaluationDate": "2025-11-24",
+    "overallScore": 87,
+    "levelAScore": 100,
+    "levelAAScore": 95,
+    "levelAAAScore": 72,
+    "keyboardNavigation": {
+        "score": 93,
+        "tabOrder": "pass",
+        "focusManagement": "pass",
+        "focusIndicators": "needs-review",
+        "labelClick": "pass",
+        "stepperAccess": "pass",
+        "notes": "Input and stepper buttons keyboard accessible. Focus states clearly defined. CONCERN: outline:none removes native focus indicator. Custom focus styling provides visual feedback but should use :focus-visible."
+    },
+    "screenReaderSupport": {
+        "score": 88,
+        "ariaLabels": "needs-review",
+        "ariaDescriptions": "fail",
+        "roleUsage": "pass",
+        "errorHandling": "needs-review",
+        "semanticHTML": "pass",
+        "buttonLabels": "fail",
+        "notes": "Uses semantic label with htmlFor. Auto-generates ID from name. MISSING: aria-describedby for error messages and hint text. MISSING: aria-invalid when error exists. MISSING: Stepper buttons lack aria-label. Required indicator needs verification."
+    },
+    "visualAccessibility": {
+        "score": 83,
+        "colorContrast": "needs-review",
+        "fontSize": "pass",
+        "focusIndicators": "pass",
+        "reducedMotion": "fail",
+        "highContrast": "needs-review",
+        "textSpacing": "pass",
+        "notes": "Uses design tokens for theming. Focus states have clear visual indicators. Error state uses red border. ISSUE: Shake animation doesn't respect prefers-reduced-motion. NEEDS VERIFICATION: Placeholder contrast, stepper icon contrast, AAA contrast (7:1)."
+    },
+    "ariaCompliance": {
+        "score": 85,
+        "ariaRoles": "pass",
+        "ariaStates": "needs-review",
+        "ariaProperties": "fail",
+        "designPattern": "pass",
+        "errorPattern": "fail",
+        "buttonPattern": "fail",
+        "notes": "Follows basic number input pattern. Uses semantic HTML. Label association via htmlFor. Stepper buttons use proper button elements. MISSING: aria-describedby for errors and hints. MISSING: aria-invalid on error state. MISSING: aria-label on stepper buttons."
+    },
+    "strengths": [
+        "Proper semantic HTML with label element linked via htmlFor attribute",
+        "Auto-generates id from name prop for label association if ID not provided",
+        "Required field indicator with visual asterisk",
+        "Error states with visual feedback (border color, shake animation)",
+        "Error message text support via errorMessage prop",
+        "Hint text support for additional context via hintText prop",
+        "Disabled state with proper visual styling and cursor changes",
+        "Focus states with clear visual indicators (border, box-shadow, background)",
+        "Help icon with Tooltip component for contextual assistance",
+        "Stepper buttons (increment/decrement) with proper semantics",
+        "Min/max validation with automatic stepper button disabling",
+        "Responsive design with floating labels on mobile large size",
+        "Error shake animation provides clear visual feedback",
+        "InputLabels component properly implements label accessibility",
+        "InputFooter component provides error and hint text structure",
+        "Token-based theming system for consistency",
+        "Number input type provides native number keyboard on mobile"
+    ],
+    "issuesFound": [
+        {
+            "severity": "major",
+            "criterion": "4.1.2",
+            "description": "Stepper buttons missing accessible names",
+            "impact": "Screen reader users don't know the purpose of increment/decrement buttons",
+            "suggestion": "Add aria-label='Increase value' to increment button and aria-label='Decrease value' to decrement button",
+            "codeReference": "NumberInput.tsx:226-297, 298-368"
+        },
+        {
+            "severity": "major",
+            "criterion": "3.3.2",
+            "description": "Error messages not programmatically associated with input",
+            "impact": "Screen reader users won't hear error messages when input receives focus",
+            "suggestion": "Add aria-describedby to input linking to error message ID. When errorMessage exists, set aria-describedby=`${name}-error` and add id=`${name}-error` to error message in InputFooter",
+            "codeReference": "NumberInput.tsx:116-197, InputFooter.tsx:36-50"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.4.7",
+            "description": "Focus-visible outline removed",
+            "impact": "Keyboard users may have difficulty tracking focus position in some browsers",
+            "suggestion": "Instead of removing outline completely with outline:none, use custom focus-visible styling that maintains visible indicator for keyboard users",
+            "codeReference": "NumberInput.tsx:156"
+        },
+        {
+            "severity": "minor",
+            "criterion": "2.2.2",
+            "description": "Error shake animation doesn't respect prefers-reduced-motion",
+            "impact": "Users who prefer reduced motion will still see shake animation which may cause discomfort",
+            "suggestion": "Add @media (prefers-reduced-motion: reduce) query to disable shake animation",
+            "codeReference": "NumberInput.tsx:53, 92"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.3",
+            "description": "Placeholder text contrast not verified",
+            "impact": "Users with low vision may not be able to read placeholder text",
+            "suggestion": "Verify placeholder text color meets 4.5:1 contrast ratio against background",
+            "codeReference": "NumberInput.tsx:118"
+        },
+        {
+            "severity": "minor",
+            "criterion": "1.4.6",
+            "description": "Enhanced contrast (7:1) not verified for AAA",
+            "impact": "Users with low vision may have difficulty reading input text",
+            "suggestion": "Verify all text colors (input text, label, error, hint) meet 7:1 contrast ratio against backgrounds for AAA compliance"
+        },
+        {
+            "severity": "minor",
+            "criterion": "3.3.3",
+            "description": "Stepper buttons don't provide feedback on min/max reached",
+            "impact": "Users may not understand why stepper buttons are disabled",
+            "suggestion": "Add aria-live announcement when min/max is reached. Example: 'Minimum value reached' or 'Maximum value reached'",
+            "codeReference": "NumberInput.tsx:254-258, 338-343"
+        }
+    ],
+    "recommendations": [
+        "Add aria-labels to stepper buttons - Label increment as 'Increase value' and decrement as 'Decrease value'",
+        "Add aria-describedby for error messages - Link input to error message programmatically",
+        "Add aria-describedby for hint text - Link input to hint text when provided",
+        "Combine aria-describedby - When both error and hint exist, use space-separated IDs",
+        "Add aria-invalid - Set aria-invalid='true' when error exists",
+        "Add aria-valuemin, aria-valuemax, aria-valuenow - Explicitly communicate number range to screen readers",
+        "Improve focus-visible styling - Use :focus-visible pseudo-class instead of removing outline",
+        "Add prefers-reduced-motion support - Disable shake animation for users who prefer reduced motion",
+        "Verify color contrast - Measure all text/background combinations for AA (4.5:1) and AAA (7:1)",
+        "Test floating labels with screen readers - Ensure mobile floating label pattern works with VoiceOver/TalkBack",
+        "Document stepper button accessibility - Provide guidance on using increment/decrement controls",
+        "Test with NVDA/JAWS/VoiceOver - Validate all states announced correctly",
+        "Verify touch target sizes - Ensure stepper buttons meet 24×24px (AA) or 44×44px (AAA)",
+        "Add inputmode support - Consider adding inputmode='numeric' for better mobile keyboard"
+    ]
+}

@@ -12,6 +12,10 @@ import accordionMetrics from '../../../../scripts/accessibility/accordion-metric
 import sidebarMetrics from '../../../../scripts/accessibility/sidebar-metrics.json'
 import buttonMetrics from './accesiblity/button-metrics.json'
 import tabsMetrics from './accesiblity/tabs-metrics.json'
+import modalMetrics from './accesiblity/modal-metrics.json'
+import textinputMetrics from './accesiblity/textinput-metrics.json'
+import searchinputMetrics from './accesiblity/searchinput-metrics.json'
+import numberinputMetrics from './accesiblity/numberinput-metrics.json'
 
 const AccessibilityDashboardDemo = () => {
     const [selectedComponent, setSelectedComponent] =
@@ -346,14 +350,14 @@ const AccessibilityDashboardDemo = () => {
                 <Block marginBottom={FOUNDATION_THEME.unit[24]}>
                     <Block
                         padding={FOUNDATION_THEME.unit[16]}
-                        backgroundColor={FOUNDATION_THEME.colors.purple[50]}
+                        backgroundColor={FOUNDATION_THEME.colors.primary[50]}
                         borderRadius={FOUNDATION_THEME.unit[8]}
                         marginBottom={FOUNDATION_THEME.unit[12]}
                     >
                         <Text
                             variant="heading.md"
                             fontWeight={600}
-                            color={FOUNDATION_THEME.colors.purple[900]}
+                            color={FOUNDATION_THEME.colors.primary[900]}
                         >
                             Phase 2: Screen Reader Testing (Critical)
                         </Text>
@@ -435,14 +439,14 @@ const AccessibilityDashboardDemo = () => {
                 <Block marginBottom={FOUNDATION_THEME.unit[24]}>
                     <Block
                         padding={FOUNDATION_THEME.unit[16]}
-                        backgroundColor={FOUNDATION_THEME.colors.blue[50]}
+                        backgroundColor={FOUNDATION_THEME.colors.primary[50]}
                         borderRadius={FOUNDATION_THEME.unit[8]}
                         marginBottom={FOUNDATION_THEME.unit[12]}
                     >
                         <Text
                             variant="heading.md"
                             fontWeight={600}
-                            color={FOUNDATION_THEME.colors.blue[900]}
+                            color={FOUNDATION_THEME.colors.primary[900]}
                         >
                             Phase 3: Browser Testing
                         </Text>
@@ -597,9 +601,9 @@ const AccessibilityDashboardDemo = () => {
             {/* Validation Guide Banner */}
             <Block
                 padding={FOUNDATION_THEME.unit[20]}
-                backgroundColor={FOUNDATION_THEME.colors.orange[50]}
+                backgroundColor={FOUNDATION_THEME.colors.red[50]}
                 borderRadius={FOUNDATION_THEME.unit[12]}
-                border={`2px solid ${FOUNDATION_THEME.colors.orange[200]}`}
+                border={`2px solid ${FOUNDATION_THEME.colors.red[200]}`}
                 marginBottom={FOUNDATION_THEME.unit[24]}
                 cursor="pointer"
                 onClick={() => setSelectedComponent('validation-guide')}
@@ -878,6 +882,14 @@ const AccessibilityDashboardDemo = () => {
             metrics = buttonMetrics
         } else if (componentName === 'Tabs') {
             metrics = tabsMetrics
+        } else if (componentName === 'Modal') {
+            metrics = modalMetrics
+        } else if (componentName === 'TextInput') {
+            metrics = textinputMetrics
+        } else if (componentName === 'SearchInput') {
+            metrics = searchinputMetrics
+        } else if (componentName === 'NumberInput') {
+            metrics = numberinputMetrics
         }
         // Add more components here as they're evaluated
 
