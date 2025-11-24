@@ -107,10 +107,12 @@ import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
+import AccessibilityDashboardDemo from './AccessibilityDashboardDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
         | 'buttons'
+        | 'accessibilityDashboard'
         | 'tooltips'
         | 'tags'
         | 'breadcrumb'
@@ -449,6 +451,8 @@ const SidebarDemo = () => {
                 return <WorkflowCanvasDemo />
             case 'formElements':
                 return <FormElementsDemo />
+            case 'accessibilityDashboard':
+                return <AccessibilityDashboardDemo />
             default:
                 return (
                     <div className="p-8">
@@ -1100,6 +1104,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'colorPalette',
                     onClick: () => setActiveComponent('colorPalette'),
+                },
+                {
+                    label: '♿ Accessibility Dashboard',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accessibilityDashboard',
+                    onClick: () => setActiveComponent('accessibilityDashboard'),
                 },
                 {
                     label: '🎨 All Components Demo',

@@ -36,7 +36,9 @@
         "test:blend:ui": "cd packages/blend && pnpm test:ui",
         "test:blend:coverage": "cd packages/blend && pnpm test:coverage",
         "test:blend:watch": "cd packages/blend && pnpm test:watch",
-        "test:blend:run": "cd packages/blend && pnpm test:run"
+        "test:blend:run": "cd packages/blend && pnpm test:run",
+        "accessibility:generate": "cd scripts/accessibility && npx tsx index.ts",
+        "accessibility:dashboard": "open docs/accessibility/dashboard.md"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",

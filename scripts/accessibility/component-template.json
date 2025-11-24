@@ -1,0 +1,130 @@
+{
+    "componentName": "ComponentName",
+    "version": "0.0.27",
+    "evaluationDate": "YYYY-MM-DD",
+    "evaluator": "Your Name",
+    "overallScore": 0,
+    "levelAScore": 0,
+    "levelAAScore": 0,
+    "levelAAAScore": 0,
+    "keyboardNavigation": {
+        "score": 0,
+        "tabOrder": "needs-review",
+        "focusManagement": "needs-review",
+        "keyboardShortcuts": "needs-review",
+        "trapFocus": "needs-review",
+        "escapeKey": "needs-review",
+        "notes": [
+            "Test: Tab through all interactive elements",
+            "Test: Enter/Space on buttons and controls",
+            "Test: Arrow keys if applicable",
+            "Test: Escape key to close modals/popups",
+            "Test: Focus trap for modals",
+            "Document any keyboard shortcuts"
+        ]
+    },
+    "screenReaderSupport": {
+        "score": 0,
+        "ariaLabels": "needs-review",
+        "ariaDescriptions": "needs-review",
+        "roleUsage": "needs-review",
+        "liveRegions": "needs-review",
+        "semanticHTML": "needs-review",
+        "announcements": "needs-review",
+        "notes": [
+            "Test with NVDA (Windows) + Chrome/Firefox",
+            "Test with JAWS (Windows) + Chrome",
+            "Test with VoiceOver (macOS) + Safari",
+            "Test with VoiceOver (iOS) + Safari",
+            "Test with TalkBack (Android) + Chrome",
+            "Verify all interactive elements are announced",
+            "Verify state changes are announced",
+            "Check ARIA roles match component purpose"
+        ]
+    },
+    "visualAccessibility": {
+        "score": 0,
+        "colorContrast": "needs-review",
+        "fontSize": "needs-review",
+        "focusIndicators": "needs-review",
+        "reducedMotion": "needs-review",
+        "highContrast": "needs-review",
+        "textSpacing": "needs-review",
+        "notes": [
+            "Measure contrast ratios (use WebAIM Contrast Checker)",
+            "Normal text: 4.5:1 (AA), 7:1 (AAA)",
+            "Large text (18pt+): 3:1 (AA), 4.5:1 (AAA)",
+            "UI components: 3:1 (AA)",
+            "Test at 200% zoom",
+            "Test with prefers-reduced-motion",
+            "Test in Windows High Contrast Mode",
+            "Test with increased text spacing"
+        ]
+    },
+    "ariaCompliance": {
+        "score": 0,
+        "ariaRoles": "needs-review",
+        "ariaStates": "needs-review",
+        "ariaProperties": "needs-review",
+        "designPattern": "needs-review",
+        "landmarkRegions": "needs-review",
+        "notes": [
+            "Check WAI-ARIA Authoring Practices for pattern",
+            "Verify ARIA roles are correct",
+            "Verify aria-expanded, aria-selected, aria-checked states",
+            "Verify aria-label, aria-labelledby, aria-describedby",
+            "Run axe DevTools to check for ARIA errors",
+            "Validate HTML structure"
+        ]
+    },
+    "evaluations": [
+        {
+            "criterionId": "1.1.1",
+            "status": "needs-review",
+            "notes": "Check for non-text content (images, icons) and verify alt text or aria-label",
+            "evidence": []
+        },
+        {
+            "criterionId": "1.3.1",
+            "status": "needs-review",
+            "notes": "Verify semantic HTML and ARIA roles for info and relationships",
+            "evidence": []
+        },
+        {
+            "criterionId": "2.1.1",
+            "status": "needs-review",
+            "notes": "Test all functionality with keyboard only",
+            "evidence": []
+        },
+        {
+            "criterionId": "2.4.3",
+            "status": "needs-review",
+            "notes": "Verify focus order is logical",
+            "evidence": []
+        },
+        {
+            "criterionId": "2.4.7",
+            "status": "needs-review",
+            "notes": "Check focus indicator visibility and contrast",
+            "evidence": []
+        },
+        {
+            "criterionId": "4.1.2",
+            "status": "needs-review",
+            "notes": "Verify all elements have accessible names, roles, states, and values",
+            "evidence": []
+        }
+    ],
+    "strengths": ["List the accessibility features that are done well"],
+    "recommendations": ["List suggestions for improving accessibility"],
+    "issuesFound": [
+        {
+            "severity": "minor",
+            "criterion": "X.X.X",
+            "description": "Brief description of the issue",
+            "impact": "How this affects users with disabilities",
+            "suggestion": "How to fix the issue",
+            "codeReference": "ComponentName.tsx:line"
+        }
+    ]
+}
