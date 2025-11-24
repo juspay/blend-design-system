@@ -10,6 +10,7 @@ import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import dashboardData from '../../../../docs/accessibility/dashboard.json'
 import accordionMetrics from '../../../../scripts/accessibility/accordion-metrics.json'
 import sidebarMetrics from '../../../../scripts/accessibility/sidebar-metrics.json'
+import buttonMetrics from './accesiblity/button-metrics.json'
 
 const AccessibilityDashboardDemo = () => {
     const [selectedComponent, setSelectedComponent] =
@@ -284,6 +285,8 @@ const AccessibilityDashboardDemo = () => {
             metrics = accordionMetrics
         } else if (componentName === 'Sidebar') {
             metrics = sidebarMetrics
+        } else if (componentName === 'Button') {
+            metrics = buttonMetrics
         }
         // Add more components here as they're evaluated
 
