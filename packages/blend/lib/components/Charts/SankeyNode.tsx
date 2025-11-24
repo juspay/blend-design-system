@@ -10,6 +10,7 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
     index = 0,
     payload,
     containerWidth = 960,
+    nodeColors = [],
 }) => {
     const isOut = x + width + 6 > containerWidth
     const maxLabelLength = 25 // Truncate long labels
@@ -22,6 +23,8 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
 
     const nodeName = truncateLabel(payload?.name || '', maxLabelLength)
 
+    const nodeColor = nodeColors[index] || (payload as any)?.color || '#5192ca'
+
     return (
         <Layer key={`CustomNode${index}`}>
             <Rectangle
@@ -29,7 +32,7 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
                 y={y}
                 width={width}
                 height={height}
-                fill="#5192ca"
+                fill={nodeColor}
                 fillOpacity="1"
             />
             <text

@@ -698,8 +698,6 @@ export const renderChart = ({
         }
 
         case ChartType.SANKEY: {
-            // For Sankey charts, we expect the data to be in a special format
-            // The first data point should contain the Sankey data structure
             const sankeyData = originalData[0]?.data?.sankeyData
                 ?.primary as unknown as SankeyData
 
@@ -731,9 +729,46 @@ export const renderChart = ({
                 )
             }
 
-            // Use 100% width for responsiveness - Sankey will fill the container
+            // Transform data to handle both numeric indices and string IDs
+            const nodeMap = new Map<string, number>()
+            sankeyData.nodes.forEach((node, index) => {
+                const nodeId = node.id || node.name || index.toString()
+                nodeMap.set(nodeId, index)
+            })
+
+            // Extract node and link colors if provided
+            const nodeColors = sankeyData.nodes
+                .map((node) => node.color)
+                .filter(Boolean) as string[]
+            const linkColors = sankeyData.links
+                .map((link) => link.color)
+                .filter(Boolean) as string[]
+
+            // Transform links to use numeric indices if they're strings
+            const transformedData = {
+                nodes: sankeyData.nodes.map((node) => ({
+                    name: node.name,
+                })),
+                links: sankeyData.links.map((link) => {
+                    const sourceIndex =
+                        typeof link.source === 'number'
+                            ? link.source
+                            : (nodeMap.get(link.source as string) ?? 0)
+
+                    const targetIndex =
+                        typeof link.target === 'number'
+                            ? link.target
+                            : (nodeMap.get(link.target as string) ?? 0)
+
+                    return {
+                        source: sourceIndex,
+                        target: targetIndex,
+                        value: link.value,
+                    }
+                }),
+            }
+
             const sankeyWidth = isSmallScreen ? 600 : 1200
-            // Use user-provided height or fall back to defaults
             const defaultHeight = isSmallScreen ? 400 : 600
             const sankeyHeight =
                 typeof height === 'number' ? height : defaultHeight
@@ -749,13 +784,18 @@ export const renderChart = ({
                         left: isSmallScreen ? 10 : 150,
                         right: isSmallScreen ? 10 : 150,
                     }}
-                    data={sankeyData}
+                    data={transformedData}
                     nodeWidth={isSmallScreen ? 8 : 15}
                     nodePadding={isSmallScreen ? 20 : 50}
                     linkCurvature={0.61}
                     iterations={64}
-                    link={<SankeyLink />}
-                    node={<SankeyNode containerWidth={sankeyWidth} />}
+                    link={<SankeyLink linkColors={linkColors} />}
+                    node={
+                        <SankeyNode
+                            containerWidth={sankeyWidth}
+                            nodeColors={nodeColors}
+                        />
+                    }
                 >
                     <defs>
                         <linearGradient id={'linkGradient'}>

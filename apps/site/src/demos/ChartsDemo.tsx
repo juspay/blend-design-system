@@ -5745,6 +5745,279 @@ xAxis={{
                             }
                         />
                     </div>
+
+                    {/* Payment Flow Example with String IDs */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            💳 Payment Flow Sankey (String IDs)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            Visualize payment card flow through 3DS
+                            authentication to authorization with custom colors
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: 'payment-flow',
+                                    data: {
+                                        sankeyData: {
+                                            primary: {
+                                                nodes: [
+                                                    // Stage 1: Initiated (Card Types)
+                                                    {
+                                                        id: 'Visa',
+                                                        name: 'Visa',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Mastercard',
+                                                        name: 'Mastercard',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'American Express',
+                                                        name: 'American Express',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Other',
+                                                        name: 'Other',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    // Stage 2: 3D Secure Scope
+                                                    {
+                                                        id: 'Out 3DS Scope',
+                                                        name: 'Out 3DS Scope',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'In 3DS Scope',
+                                                        name: 'In 3DS Scope',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Drop Off',
+                                                        name: 'Drop-off',
+                                                        color: '#991b1b',
+                                                    },
+                                                    // Stage 3: Authentication
+                                                    {
+                                                        id: 'Successfull Authentication',
+                                                        name: 'Successful authentications',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Failed Authentication',
+                                                        name: 'Failed Authentication',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    // Stage 4: Received for authorisation
+                                                    {
+                                                        id: 'Received',
+                                                        name: 'Received',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Authentication Only',
+                                                        name: 'Authentication-only',
+                                                        color: '#991b1b',
+                                                    },
+                                                    // Stage 5: Authorisation
+                                                    {
+                                                        id: 'Authorised',
+                                                        name: 'Authorised',
+                                                        color: '#1e3a8a',
+                                                    },
+                                                    {
+                                                        id: 'Failed Transaction',
+                                                        name: 'Failed transactions',
+                                                        color: '#991b1b',
+                                                    },
+                                                    {
+                                                        id: 'Pending',
+                                                        name: 'Pending',
+                                                        color: '#6b7280',
+                                                    },
+                                                ],
+                                                links: [
+                                                    {
+                                                        source: 'Visa',
+                                                        target: 'Out 3DS Scope',
+                                                        value: 165.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Visa',
+                                                        target: 'In 3DS Scope',
+                                                        value: 78.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Visa',
+                                                        target: 'Drop Off',
+                                                        value: 17.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Mastercard',
+                                                        target: 'Out 3DS Scope',
+                                                        value: 30.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Mastercard',
+                                                        target: 'In 3DS Scope',
+                                                        value: 14.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Mastercard',
+                                                        target: 'Drop Off',
+                                                        value: 3.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'American Express',
+                                                        target: 'In 3DS Scope',
+                                                        value: 6.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'American Express',
+                                                        target: 'Drop Off',
+                                                        value: 1.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'American Express',
+                                                        target: 'Out 3DS Scope',
+                                                        value: 16.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Other',
+                                                        target: 'Out 3DS Scope',
+                                                        value: 46.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Other',
+                                                        target: 'In 3DS Scope',
+                                                        value: 22.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Other',
+                                                        target: 'Drop Off',
+                                                        value: 6.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Out 3DS Scope',
+                                                        target: 'Received',
+                                                        value: 254.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'In 3DS Scope',
+                                                        target: 'Successfull Authentication',
+                                                        value: 105.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'In 3DS Scope',
+                                                        target: 'Failed Authentication',
+                                                        value: 15.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Successfull Authentication',
+                                                        target: 'Drop Off',
+                                                        value: 0.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Successfull Authentication',
+                                                        target: 'Received',
+                                                        value: 105.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Successfull Authentication',
+                                                        target: 'Authentication Only',
+                                                        value: 0.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Failed Authentication',
+                                                        target: 'Received',
+                                                        value: 15.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Failed Authentication',
+                                                        target: 'Authentication Only',
+                                                        value: 3.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Failed Authentication',
+                                                        target: 'Drop Off',
+                                                        value: 0.0,
+                                                        color: 'rgba(239, 68, 68, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Received',
+                                                        target: 'Authorised',
+                                                        value: 220.0,
+                                                        color: 'rgba(59, 130, 246, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Received',
+                                                        target: 'Failed Transaction',
+                                                        value: 151.0,
+                                                        color: 'rgba(153, 27, 27, 0.4)',
+                                                    },
+                                                    {
+                                                        source: 'Received',
+                                                        target: 'Pending',
+                                                        value: 1.0,
+                                                        color: 'rgba(107, 114, 128, 0.4)',
+                                                    },
+                                                ],
+                                            } as any,
+                                            aux: [],
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.SANKEY}
+                            height={700}
+                            chartHeaderSlot={
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <ChartBar
+                                        size={16}
+                                        className="text-purple-600"
+                                    />
+                                    <h4
+                                        style={{
+                                            margin: 0,
+                                            fontSize: '14px',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        Payment Card Flow Analysis
+                                    </h4>
+                                </div>
+                            }
+                        />
+                    </div>
                 </div>
 
                 {/* API Reference */}
@@ -5757,6 +6030,7 @@ xAxis={{
                             <strong>Data Format:</strong>
                             <pre className="text-xs mt-1 bg-gray-100 p-3 rounded overflow-x-auto">
                                 {`// Sankey charts use a special data structure
+// Format 1: Numeric indices (traditional)
 data={[
   {
     name: 'chart-name',
@@ -5765,13 +6039,38 @@ data={[
         primary: {
           nodes: [
             { name: 'Source A' },
-            { name: 'Target B' },
-            // ... more nodes
+            { name: 'Target B' }
           ],
           links: [
-            { source: 0, target: 1, value: 100 },
+            { source: 0, target: 1, value: 100 }
             // source/target are node indices
-            // value represents flow magnitude
+          ]
+        },
+        aux: []
+      }
+    }
+  }
+]}
+
+// Format 2: String IDs (with custom colors)
+data={[
+  {
+    name: 'chart-name',
+    data: {
+      sankeyData: {
+        primary: {
+          nodes: [
+            { id: 'node1', name: 'Source A', color: '#3B82F6' },
+            { id: 'node2', name: 'Target B', color: '#10B981' }
+          ],
+          links: [
+            { 
+              source: 'node1', 
+              target: 'node2', 
+              value: 100,
+              color: 'rgba(59, 130, 246, 0.3)' 
+            }
+            // source/target use node IDs
           ]
         },
         aux: []
@@ -5808,6 +6107,10 @@ data={[
                                 <li>
                                     • Long labels truncated to prevent overlap
                                 </li>
+                                <li>
+                                    • Custom colors for nodes and links (via
+                                    color property)
+                                </li>
                                 <li>• Gradient colors for visual appeal</li>
                                 <li>
                                     • Responsive sizing with height prop (700+
@@ -5815,6 +6118,10 @@ data={[
                                 </li>
                                 <li>
                                     • Increased node padding for better spacing
+                                </li>
+                                <li>
+                                    • Support for both numeric indices and
+                                    string IDs
                                 </li>
                             </ul>
                         </div>

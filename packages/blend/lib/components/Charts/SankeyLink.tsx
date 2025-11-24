@@ -1,35 +1,37 @@
-import { Component } from 'react'
+import React, { useState } from 'react'
 import { Layer } from 'recharts'
 import { SankeyLinkProps } from './types'
 
-interface SankeyLinkState {
-    fill: string
-}
+const SankeyLink: React.FC<SankeyLinkProps> = ({
+    sourceX = 0,
+    targetX = 0,
+    sourceY = 0,
+    targetY = 0,
+    sourceControlX = 0,
+    targetControlX = 0,
+    linkWidth = 0,
+    index = 0,
+    payload,
+    linkColors = [],
+}) => {
+    const defaultFill =
+        linkColors[index || 0] ||
+        (payload as any)?.color ||
+        'url(#linkGradient)'
+    const [fill, setFill] = useState<string>(defaultFill)
 
-class SankeyLink extends Component<SankeyLinkProps, SankeyLinkState> {
-    static displayName = 'SankeyLinkDemo'
-
-    state: SankeyLinkState = {
-        fill: 'url(#linkGradient)',
+    const handleMouseEnter = () => {
+        setFill('rgba(0, 136, 254, 0.5)')
     }
 
-    render() {
-        const {
-            sourceX = 0,
-            targetX = 0,
-            sourceY = 0,
-            targetY = 0,
-            sourceControlX = 0,
-            targetControlX = 0,
-            linkWidth = 0,
-            index = 0,
-        } = this.props
-        const { fill } = this.state
+    const handleMouseLeave = () => {
+        setFill(defaultFill)
+    }
 
-        return (
-            <Layer key={`CustomLink${index}`}>
-                <path
-                    d={`
+    return (
+        <Layer key={`CustomLink${index}`}>
+            <path
+                d={`
             M${sourceX},${sourceY + linkWidth / 2}
             C${sourceControlX},${sourceY + linkWidth / 2}
               ${targetControlX},${targetY + linkWidth / 2}
@@ -40,18 +42,15 @@ class SankeyLink extends Component<SankeyLinkProps, SankeyLinkState> {
               ${sourceX},${sourceY - linkWidth / 2}
             Z
           `}
-                    fill={fill}
-                    strokeWidth="0"
-                    onMouseEnter={() => {
-                        this.setState({ fill: 'rgba(0, 136, 254, 0.5)' })
-                    }}
-                    onMouseLeave={() => {
-                        this.setState({ fill: 'url(#linkGradient)' })
-                    }}
-                />
-            </Layer>
-        )
-    }
+                fill={fill}
+                strokeWidth="0"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            />
+        </Layer>
+    )
 }
+
+SankeyLink.displayName = 'SankeyLink'
 
 export default SankeyLink

@@ -213,12 +213,15 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
 
 export type SankeyNode = {
     name: string
+    id?: string
+    color?: string
 }
 
 export type SankeyLink = {
-    source: number
-    target: number
+    source: number | string
+    target: number | string
     value: number
+    color?: string
 }
 
 export type SankeyData = {
@@ -234,6 +237,7 @@ export type SankeyNodeProps = {
     index?: number
     payload?: SankeyNode & { value?: number }
     containerWidth?: number
+    nodeColors?: string[]
 }
 
 export type SankeyLinkProps = {
@@ -246,4 +250,5 @@ export type SankeyLinkProps = {
     linkWidth?: number
     index?: number
     payload?: SankeyLink
+    linkColors?: string[]
 }
