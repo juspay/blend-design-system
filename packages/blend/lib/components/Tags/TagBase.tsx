@@ -100,6 +100,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                 </Block>
             )}
             <Text
+                data-label={text}
                 fontSize={tagTokens.text.fontSize[size]}
                 fontWeight={tagTokens.text.fontWeight[size]}
                 style={{ color: isSkeleton ? 'transparent' : undefined }}

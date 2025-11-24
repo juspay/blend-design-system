@@ -13,6 +13,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
             pageSize,
             totalRows,
             isLoading,
+            showSkeleton,
             onPageChange,
             onPageSizeChange,
             hasData = true,
@@ -32,6 +33,8 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     ...tableToken.dataTable.table.footer,
                     borderBottomLeftRadius: tableToken.dataTable.borderRadius,
                     borderBottomRightRadius: tableToken.dataTable.borderRadius,
+                    position: 'relative',
+                    zIndex: 11,
                 }}
             >
                 <DataTablePagination
@@ -41,7 +44,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     pageSizeOptions={
                         pagination.pageSizeOptions || [10, 20, 50, 100]
                     }
-                    isLoading={isLoading}
+                    isLoading={isLoading || showSkeleton}
                     hasData={hasData}
                     onPageChange={onPageChange}
                     onPageSizeChange={onPageSizeChange}

@@ -130,7 +130,7 @@ function MyComponent() {
             {
                 content: 'Sidebar.leftPanel',
                 hintText:
-                    'Optional LeftPanelInfo object that configures a secondary sidebar panel (tenant/merchant selection panel). When provided, displays a left panel with selectable items. The panel appears when the sidebar is expanded or hovered. Useful for multi-tenant applications or context switching. Each LeftPanelInfo contains: items (required array), selected (required string), onSelect (required callback), and maxVisibleItems (optional number).',
+                    'Optional LeftPanelInfo object that configures a secondary sidebar panel (tenant/merchant selection panel). When provided, displays a left panel with selectable items. The panel appears when the sidebar is expanded or hovered. Useful for multi-tenant applications or context switching. Each LeftPanelInfo contains: items (required array), selected (required string), and onSelect (required callback). Items visibility is controlled by the showInPanel property on each item.',
             },
             {
                 content: 'LeftPanelInfo',
@@ -425,14 +425,25 @@ function MyComponent() {
         ],
         [
             {
-                content: 'LeftPanelInfo.maxVisibleItems',
+                content: 'LeftPanelInfo.tenantSlot1',
                 hintText:
-                    'Optional maximum number of items to display before showing an overflow menu. When the number of items exceeds this limit, additional items are placed in an overflow menu. Useful for managing visual clutter when there are many options. Defaults to 5 items.',
+                    'Optional React element displayed as the first slot above the tenant footer. The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding custom actions or controls that should be positioned above the footer, such as help buttons, notifications, or quick actions.',
             },
             {
-                content: 'number',
+                content: 'ReactNode',
+                hintText: 'React element displayed as first tenant slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.tenantSlot2',
                 hintText:
-                    'Positive integer representing maximum visible items before overflow',
+                    'Optional React element displayed as the second slot above the tenant footer (and below tenantSlot1 if provided). The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding secondary actions or controls above the footer, providing additional functionality alongside tenantSlot1.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed as second tenant slot',
             },
             { content: '' },
         ],
@@ -484,6 +495,19 @@ function MyComponent() {
                 hintText: 'Custom value identifier for the panel item',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelItem.showInPanel',
+                hintText:
+                    'Optional boolean that controls whether the item appears directly in the panel or in the overflow menu (three-dot menu). When true, the item is displayed in the main panel. When false or undefined (default), the item appears only in the overflow menu. The selected item is always visible in the panel, regardless of this setting. Useful for managing panel clutter by relegating less frequently used options to the overflow menu.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows item in panel, false/undefined shows in overflow menu',
+            },
+            { content: 'false' },
         ],
     ]}
     className="mb-8"

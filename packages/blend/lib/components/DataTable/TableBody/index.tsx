@@ -8,12 +8,15 @@ import {
     MoreHorizontal,
 } from 'lucide-react'
 import { styled, css } from 'styled-components'
+import { motion } from 'framer-motion'
 import { TableBodyProps } from './types'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Menu from '../../Menu/Menu'
 import { MenuAlignment, MenuSide } from '../../Menu/types'
+import Skeleton from '../../Skeleton/Skeleton'
+import { getSkeletonState } from '../../Skeleton/utils'
 
 import {
     Button,
@@ -68,6 +71,7 @@ const StyledTableCell = styled.td<{
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: top;
+    background-color: ${FOUNDATION_THEME.colors.gray[25]};
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
         css`
@@ -517,6 +521,10 @@ const TableBody = forwardRef<
             getColumnWidth,
             getRowStyle,
             getDisplayValue,
+            isLoading = false,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
+            isRowLoading,
         },
         ref
     ) => {
@@ -545,8 +553,47 @@ const TableBody = forwardRef<
 
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
+        const globalLoadingState = isLoading || showSkeleton
+        const { shouldShowSkeleton: globalShouldShowSkeleton } =
+            getSkeletonState(globalLoadingState)
+
+        const getCellSkeletonState = (
+            row: Record<string, unknown>,
+            rowIndex: number,
+            column: (typeof visibleColumns)[0]
+        ) => {
+            const rowIsLoading = isRowLoading
+                ? isRowLoading(row, rowIndex)
+                : false
+            const columnShowSkeleton =
+                column.showSkeleton !== undefined
+                    ? column.showSkeleton
+                    : undefined
+
+            let shouldShow = false
+            if (columnShowSkeleton !== undefined) {
+                shouldShow = columnShowSkeleton
+            } else if (rowIsLoading) {
+                shouldShow = true
+            } else {
+                shouldShow = globalShouldShowSkeleton
+            }
+
+            const variant = column.skeletonVariant || skeletonVariant
+
+            return {
+                shouldShowSkeleton: shouldShow,
+                skeletonVariant: variant,
+            }
+        }
+
         return (
-            <tbody ref={ref}>
+            <motion.tbody
+                ref={ref}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+            >
                 {currentData.length > 0
                     ? currentData.map((row, index) => {
                           const rowId = String(row[idField])
@@ -561,6 +608,12 @@ const TableBody = forwardRef<
                               : {}
                           const hasCustomBackground =
                               !!rowStyling.backgroundColor
+
+                          const rowIsLoading = isRowLoading
+                              ? isRowLoading(row, index)
+                              : false
+                          const rowShouldShowSkeleton =
+                              rowIsLoading || globalShouldShowSkeleton
 
                           return (
                               <React.Fragment key={rowId}>
@@ -602,7 +655,7 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                              .colors.gray[25],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -610,46 +663,62 @@ const TableBody = forwardRef<
                                                   }),
                                               }}
                                           >
-                                              <Block
-                                                  display="flex"
-                                                  alignItems="center"
-                                                  justifyContent="center"
-                                                  onClick={(e) =>
-                                                      e.stopPropagation()
-                                                  }
-                                              >
-                                                  {canExpand ? (
-                                                      <ExpandButton
-                                                          onClick={() =>
-                                                              onRowExpand(
-                                                                  row[idField]
-                                                              )
-                                                          }
-                                                          title={
-                                                              isExpanded
-                                                                  ? 'Collapse row'
-                                                                  : 'Expand row'
-                                                          }
-                                                      >
-                                                          {isExpanded ? (
-                                                              <ChevronDown
-                                                                  size={16}
-                                                              />
-                                                          ) : (
-                                                              <ChevronRight
-                                                                  size={16}
-                                                              />
-                                                          )}
-                                                      </ExpandButton>
-                                                  ) : (
-                                                      <></>
-                                                  )}
-                                              </Block>
+                                              {rowShouldShowSkeleton ? (
+                                                  <Skeleton
+                                                      variant={skeletonVariant}
+                                                      loading
+                                                      width="20px"
+                                                      height="20px"
+                                                      borderRadius="4px"
+                                                      style={{
+                                                          margin: 'auto',
+                                                      }}
+                                                  />
+                                              ) : (
+                                                  <Block
+                                                      display="flex"
+                                                      alignItems="center"
+                                                      justifyContent="center"
+                                                      onClick={(e) =>
+                                                          e.stopPropagation()
+                                                      }
+                                                  >
+                                                      {canExpand ? (
+                                                          <ExpandButton
+                                                              onClick={() =>
+                                                                  onRowExpand(
+                                                                      row[
+                                                                          idField
+                                                                      ]
+                                                                  )
+                                                              }
+                                                              title={
+                                                                  isExpanded
+                                                                      ? 'Collapse row'
+                                                                      : 'Expand row'
+                                                              }
+                                                          >
+                                                              {isExpanded ? (
+                                                                  <ChevronDown
+                                                                      size={16}
+                                                                  />
+                                                              ) : (
+                                                                  <ChevronRight
+                                                                      size={16}
+                                                                  />
+                                                              )}
+                                                          </ExpandButton>
+                                                      ) : (
+                                                          <></>
+                                                      )}
+                                                  </Block>
+                                              )}
                                           </StyledTableCell>
                                       )}
 
                                       {enableRowSelection && (
                                           <StyledTableCell
+                                              $width="50px"
                                               $customBackgroundColor={
                                                   rowStyling.backgroundColor
                                               }
@@ -658,6 +727,8 @@ const TableBody = forwardRef<
                                               }
                                               $isFirstRow={index === 0}
                                               style={{
+                                                  minWidth: `${FOUNDATION_THEME.unit[52]}`,
+                                                  maxWidth: `${FOUNDATION_THEME.unit[52]}`,
                                                   ...(columnFreeze > 0 && {
                                                       position: 'sticky',
                                                       left: enableRowExpansion
@@ -667,7 +738,7 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                              .colors.gray[25],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -696,7 +767,10 @@ const TableBody = forwardRef<
                                                           )
                                                       }
                                                       size={CheckboxSize.MEDIUM}
-                                                      disabled={isEditing}
+                                                      disabled={
+                                                          isEditing ||
+                                                          rowShouldShowSkeleton
+                                                      }
                                                   />
                                               </Block>
                                           </StyledTableCell>
@@ -808,12 +882,50 @@ const TableBody = forwardRef<
                                                           zIndex: 8,
                                                           backgroundColor:
                                                               rowStyling.backgroundColor ||
-                                                              '#ffffff',
+                                                              FOUNDATION_THEME
+                                                                  .colors
+                                                                  .gray[25],
                                                           ...(isLastFrozenColumn && {
                                                               borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                                                           }),
                                                       }
                                                   }
+
+                                              const cellSkeleton =
+                                                  getCellSkeletonState(
+                                                      row,
+                                                      index,
+                                                      column
+                                                  )
+
+                                              if (
+                                                  cellSkeleton.shouldShowSkeleton
+                                              ) {
+                                                  return (
+                                                      <StyledTableCell
+                                                          key={`${rowId}-${String(column.field)}`}
+                                                          style={{
+                                                              ...columnStyles,
+                                                              ...(colIndex <
+                                                                  columnFreeze &&
+                                                                  getFrozenBodyStyles()),
+                                                          }}
+                                                          $isFirstRow={
+                                                              index === 0
+                                                          }
+                                                      >
+                                                          <Skeleton
+                                                              variant={
+                                                                  cellSkeleton.skeletonVariant
+                                                              }
+                                                              loading
+                                                              width="90%"
+                                                              height="20px"
+                                                              borderRadius="4px"
+                                                          />
+                                                      </StyledTableCell>
+                                                  )
+                                              }
 
                                               return (
                                                   <TableCell
@@ -880,21 +992,35 @@ const TableBody = forwardRef<
                                                               .fontWeight,
                                                   }}
                                               >
-                                                  <ActionsCell
-                                                      row={row}
-                                                      index={index}
-                                                      isEditing={isEditing}
-                                                      enableInlineEdit={
-                                                          enableInlineEdit
-                                                      }
-                                                      rowActions={rowActions}
-                                                      onEditRow={onEditRow}
-                                                      onSaveRow={onSaveRow}
-                                                      onCancelEdit={
-                                                          onCancelEdit
-                                                      }
-                                                      idField={idField}
-                                                  />
+                                                  {rowShouldShowSkeleton ? (
+                                                      <Skeleton
+                                                          variant={
+                                                              skeletonVariant
+                                                          }
+                                                          loading
+                                                          width="80px"
+                                                          height="32px"
+                                                          borderRadius="4px"
+                                                      />
+                                                  ) : (
+                                                      <ActionsCell
+                                                          row={row}
+                                                          index={index}
+                                                          isEditing={isEditing}
+                                                          enableInlineEdit={
+                                                              enableInlineEdit
+                                                          }
+                                                          rowActions={
+                                                              rowActions
+                                                          }
+                                                          onEditRow={onEditRow}
+                                                          onSaveRow={onSaveRow}
+                                                          onCancelEdit={
+                                                              onCancelEdit
+                                                          }
+                                                          idField={idField}
+                                                      />
+                                                  )}
                                               </StyledTableCell>
                                           )}
 
@@ -975,7 +1101,7 @@ const TableBody = forwardRef<
                                                   backgroundColor:
                                                       rowStyling.backgroundColor ||
                                                       FOUNDATION_THEME.colors
-                                                          .gray[0],
+                                                          .gray[25],
                                               }}
                                           />
                                       )}
@@ -1006,7 +1132,7 @@ const TableBody = forwardRef<
                           )
                       })
                     : null}
-            </tbody>
+            </motion.tbody>
         )
     }
 )

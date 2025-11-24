@@ -6,32 +6,34 @@ import type { DirectoryData } from '../Directory/types'
 
 export const arrangeTenants = (
     tenants: TenantItem[],
-    selectedLabel: string,
-    maxVisible: number
+    selectedLabel: string
 ): {
     visibleTenants: TenantItem[]
     hiddenTenants: TenantItem[]
     hasMoreTenants: boolean
 } => {
-    const selectedIndex = tenants.findIndex(
-        (tenant) => tenant.label === selectedLabel
-    )
     const selectedTenant = tenants.find(
         (tenant) => tenant.label === selectedLabel
     )
 
-    let arrangedTenants = [...tenants]
+    const panelTenants = tenants.filter((tenant) => tenant.showInPanel === true)
+    const overflowTenants = tenants.filter(
+        (tenant) => tenant.showInPanel !== true
+    )
 
-    if (selectedIndex >= maxVisible && selectedTenant) {
-        arrangedTenants = arrangedTenants.filter(
-            (tenant) => tenant.label !== selectedLabel
-        )
-        const insertPosition = Math.max(0, maxVisible - 1)
-        arrangedTenants.splice(insertPosition, 0, selectedTenant)
-    }
+    const isSelectedInOverflow = overflowTenants.some(
+        (tenant) => tenant.label === selectedLabel
+    )
 
-    const visibleTenants = arrangedTenants.slice(0, maxVisible)
-    const hiddenTenants = arrangedTenants.slice(maxVisible)
+    const visibleTenants =
+        isSelectedInOverflow && selectedTenant
+            ? [selectedTenant, ...panelTenants]
+            : [...panelTenants]
+
+    const hiddenTenants = overflowTenants.filter(
+        (tenant) => tenant.label !== selectedLabel
+    )
+
     const hasMoreTenants = hiddenTenants.length > 0
 
     return {

@@ -18,15 +18,18 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             addButtonTooltip = 'Add new tab',
             maxDisplayTabs = 6,
             value,
+            defaultValue,
             onValueChange,
             disable = false,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
             children,
             ...props
         },
         ref
     ) => {
         const [activeTab, setActiveTab] = useState<string>(
-            value || items[0]?.value || ''
+            value || defaultValue || items[0]?.value || ''
         )
 
         useEffect(() => {
@@ -59,10 +62,17 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         }
 
         if (items.length > 0) {
-            // Apply global disable to all items if not already disabled
             const processedItems = items.map((item) => ({
                 ...item,
                 disable: item.disable || disable,
+                showSkeleton:
+                    item.showSkeleton !== undefined
+                        ? item.showSkeleton
+                        : showSkeleton,
+                skeletonVariant:
+                    item.skeletonVariant !== undefined
+                        ? item.skeletonVariant
+                        : skeletonVariant,
             }))
 
             return (
@@ -95,20 +105,49 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             )
         }
 
-        // Clone children and pass disable prop (similar to Accordion pattern)
+        const handleChildrenValueChange = (newValue: string) => {
+            setActiveTab(newValue)
+            onValueChange?.(newValue)
+        }
+
         const renderChildren = () => {
             return React.Children.map(children, (child) => {
                 if (!React.isValidElement(child)) return child
 
-                // Merge disable prop: if either parent or child has disable, it should be disabled
                 const existingProps = child.props as Record<string, unknown>
                 const childDisable =
                     'disable' in existingProps
                         ? (existingProps.disable as boolean | undefined)
                         : undefined
+
+                const isTabsList =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsList'
+
+                const isTabsTrigger =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsTrigger'
+
                 const childProps = {
                     ...existingProps,
                     disable: childDisable || disable,
+                    ...(isTabsList && {
+                        activeTab,
+                        showSkeleton,
+                        skeletonVariant,
+                    }),
+                    ...(isTabsTrigger && {
+                        showSkeleton:
+                            'showSkeleton' in existingProps
+                                ? existingProps.showSkeleton
+                                : showSkeleton,
+                        skeletonVariant:
+                            'skeletonVariant' in existingProps
+                                ? existingProps.skeletonVariant
+                                : skeletonVariant,
+                    }),
                 }
 
                 return React.cloneElement(child, childProps)
@@ -119,8 +158,9 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             <StyledTabs
                 ref={ref}
                 className={className}
-                value={value}
-                onValueChange={onValueChange}
+                value={activeTab}
+                defaultValue={defaultValue}
+                onValueChange={handleChildrenValueChange}
                 {...props}
             >
                 {renderChildren()}

@@ -6,13 +6,20 @@ export type LeftPanelItem = {
     label: string
     icon: ReactNode
     value?: string
+
+    /**
+     * When true, item appears in main panel. When false or undefined, item appears in overflow menu (3-dots)
+     * Defaults to false (hidden in overflow)
+     */
+    showInPanel?: boolean
 }
 
 export type LeftPanelInfo = {
     items: LeftPanelItem[]
     selected: string
     onSelect: (value: string) => void
-    maxVisibleItems?: number
+    tenantSlot1?: ReactNode
+    tenantSlot2?: ReactNode
     tenantFooter?: ReactNode
 }
 
@@ -20,6 +27,11 @@ export type TenantItem = {
     label: string
     value?: string
     icon: ReactNode
+    /**
+     * When true, item appears in main panel. When false or undefined, item appears in overflow menu (3-dots)
+     * Defaults to false (hidden in overflow)
+     */
+    showInPanel?: boolean
 }
 
 export type SidebarMerchantInfo = {
@@ -81,6 +93,17 @@ export type SidebarProps = {
      * Only used when isExpanded is not provided
      */
     defaultIsExpanded?: boolean
+
+    /**
+     * When true, shows only the left panel without any sidebar content
+     * In this mode:
+     * - Only left panel is visible (no directory, header, footer, toggle)
+     * - Left panel is always shown (no intermediate/hover states)
+     * - Sidebar cannot be expanded
+     * Only applies when leftPanel is provided
+     */
+    panelOnlyMode?: boolean
+
     /**
      * Show primary action button in mobile navigation
      */

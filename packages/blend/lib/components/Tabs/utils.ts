@@ -96,17 +96,30 @@ export const createTabsFromSelection = <
 /**
  * Prepares items for SingleSelect dropdown (all tabs including scrolled-out)
  */
-export const prepareDropdownItems = (tabs: TabItem[]) => {
+export const prepareDropdownItems = (
+    tabs: TabItem[],
+    originalItems?: TabItem[]
+) => {
     if (!tabs.length) return []
+
+    const originalTabValues = originalItems
+        ? new Set(originalItems.map((item) => item.value))
+        : new Set<string>()
 
     return [
         {
-            items: tabs.map((tab) => ({
-                value: tab.value.includes('_')
-                    ? tab.value.split('_')[0]
-                    : tab.value,
-                label: tab.label,
-            })),
+            items: tabs.map((tab) => {
+                const value = originalTabValues.has(tab.value)
+                    ? tab.value
+                    : tab.value.includes('_')
+                      ? tab.value.split('_')[0]
+                      : tab.value
+
+                return {
+                    value,
+                    label: tab.label,
+                }
+            }),
         },
     ]
 }
@@ -116,4 +129,67 @@ export const prepareDropdownItems = (tabs: TabItem[]) => {
  */
 export const getDisplayTabs = (tabs: TabItem[]): TabItem[] => {
     return tabs
+}
+
+/**
+ * Calculates the position and width for the tab indicator
+ */
+export const calculateTabIndicatorPosition = (
+    tabElement: HTMLButtonElement,
+    listElement: HTMLDivElement
+) => {
+    const listWidth = listElement.offsetWidth
+    const tabLeft = tabElement.offsetLeft
+    const tabWidth = tabElement.offsetWidth / listWidth
+
+    return { tabLeft, tabWidth }
+}
+
+/**
+ * Determines if the tab movement is from left to right
+ */
+export const isMovingRight = (
+    oldTab: HTMLButtonElement,
+    newTab: HTMLButtonElement
+): boolean => {
+    return oldTab.compareDocumentPosition(newTab) === 4
+}
+
+/**
+ * Calculates transition dimensions for the animated underline
+ */
+export const calculateTransitionDimensions = (
+    oldTab: HTMLButtonElement,
+    newTab: HTMLButtonElement,
+    listElement: HTMLDivElement
+) => {
+    const listWidth = listElement.offsetWidth
+    const oldTabLeft = oldTab.offsetLeft
+    const oldTabWidth = oldTab.offsetWidth
+    const newTabLeft = newTab.offsetLeft
+    const newTabWidth = newTab.offsetWidth
+
+    const movingRight = isMovingRight(oldTab, newTab)
+
+    if (movingRight) {
+        // Moving right: expand from old position to cover both tabs
+        const transitionWidth =
+            (newTabLeft + newTabWidth - oldTabLeft) / listWidth
+        return {
+            left: oldTabLeft,
+            width: transitionWidth,
+            finalLeft: newTabLeft,
+            finalWidth: newTabWidth / listWidth,
+        }
+    } else {
+        // Moving left: jump to new position and expand to cover both tabs
+        const transitionWidth =
+            (oldTabLeft + oldTabWidth - newTabLeft) / listWidth
+        return {
+            left: newTabLeft,
+            width: transitionWidth,
+            finalLeft: newTabLeft,
+            finalWidth: newTabWidth / listWidth,
+        }
+    }
 }

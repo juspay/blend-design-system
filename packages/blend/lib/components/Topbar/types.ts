@@ -21,6 +21,9 @@ export type TopbarProps = {
 
     showToggleButton?: boolean
 
+    /** When true, hides toggle button (used in panel only mode) */
+    panelOnlyMode?: boolean
+
     /** Controlled mode: Show/hide topbar */
     isVisible?: boolean
 

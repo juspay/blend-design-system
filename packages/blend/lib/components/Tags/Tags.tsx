@@ -65,9 +65,9 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
+                    data-label={text}
                     fontSize={tagTokens.text.fontSize[size]}
                     fontWeight={tagTokens.text.fontWeight[size]}
-                    data-label={text}
                 >
                     {text}
                 </Text>

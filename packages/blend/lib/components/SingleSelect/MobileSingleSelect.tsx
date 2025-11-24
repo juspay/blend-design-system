@@ -27,6 +27,7 @@ import SingleSelectTrigger from './SingleSelectTrigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Check } from 'lucide-react'
+import { Skeleton, SkeletonVariant } from '../Skeleton'
 
 type MobileSingleSelectProps = SingleSelectProps
 
@@ -218,6 +219,11 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     onBlur,
     onFocus,
     inline = false,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -294,195 +300,234 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                 height="100%"
                                 overflow="hidden"
                             >
-                                <Block
-                                    display="flex"
-                                    flexDirection="column"
-                                    gap={4}
-                                    overflow="auto"
-                                    flexGrow={1}
-                                >
-                                    {enableSearch && (
-                                        <Block
-                                            padding="16px 16px 8px 16px"
-                                            backgroundColor={
-                                                FOUNDATION_THEME.colors.gray[0]
-                                            }
-                                            zIndex={50}
-                                        >
-                                            <TextInput
-                                                size={TextInputSize.MEDIUM}
-                                                placeholder={searchPlaceholder}
-                                                value={searchText}
-                                                onChange={(e) =>
-                                                    setSearchText(
-                                                        e.target.value
-                                                    )
+                                {skeleton.show ? (
+                                    <Block
+                                        padding={
+                                            singleSelectTokens.menu.item.padding
+                                        }
+                                        display="flex"
+                                        flexDirection="column"
+                                        gap={
+                                            singleSelectTokens.menu.item.gap ||
+                                            4
+                                        }
+                                        borderRadius={
+                                            singleSelectTokens.menu.item
+                                                .borderRadius
+                                        }
+                                        outline="none"
+                                        border="none"
+                                        width="100%"
+                                        maxWidth="100%"
+                                    >
+                                        {Array.from({
+                                            length: skeleton.count || 3,
+                                        }).map((_, index) => (
+                                            <Skeleton
+                                                key={index}
+                                                width="100%"
+                                                height="33px"
+                                                variant={
+                                                    (skeleton.variant as SkeletonVariant) ||
+                                                    'pulse'
                                                 }
                                             />
-                                        </Block>
-                                    )}
+                                        ))}
+                                    </Block>
+                                ) : (
+                                    <Block
+                                        display="flex"
+                                        flexDirection="column"
+                                        gap={4}
+                                        overflow="auto"
+                                        flexGrow={1}
+                                    >
+                                        {enableSearch && (
+                                            <Block
+                                                padding="16px 16px 8px 16px"
+                                                backgroundColor={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[0]
+                                                }
+                                                zIndex={50}
+                                            >
+                                                <TextInput
+                                                    size={TextInputSize.MEDIUM}
+                                                    placeholder={
+                                                        searchPlaceholder
+                                                    }
+                                                    value={searchText}
+                                                    onChange={(e) =>
+                                                        setSearchText(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </Block>
+                                        )}
 
-                                    {items.length === 0 ? (
-                                        <Block
-                                            display="flex"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            padding={
-                                                singleSelectTokens.menu.item
-                                                    .padding
-                                            }
-                                        >
-                                            <Text
-                                                variant="body.md"
-                                                color={
+                                        {items.length === 0 ? (
+                                            <Block
+                                                display="flex"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                                padding={
                                                     singleSelectTokens.menu.item
-                                                        .optionsLabel.color
-                                                        .default
+                                                        .padding
                                                 }
-                                                textAlign="center"
                                             >
-                                                No items available
-                                            </Text>
-                                        </Block>
-                                    ) : filteredItems.length === 0 &&
-                                      searchText.length > 0 ? (
-                                        <Block
-                                            display="flex"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            padding={
-                                                singleSelectTokens.menu.item
-                                                    .padding
-                                            }
-                                        >
-                                            <Text
-                                                variant="body.md"
-                                                color={
+                                                <Text
+                                                    variant="body.md"
+                                                    color={
+                                                        singleSelectTokens.menu
+                                                            .item.optionsLabel
+                                                            .color.default
+                                                    }
+                                                    textAlign="center"
+                                                >
+                                                    No items available
+                                                </Text>
+                                            </Block>
+                                        ) : filteredItems.length === 0 &&
+                                          searchText.length > 0 ? (
+                                            <Block
+                                                display="flex"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                                padding={
                                                     singleSelectTokens.menu.item
-                                                        .optionsLabel.color
-                                                        .default
+                                                        .padding
                                                 }
-                                                textAlign="center"
                                             >
-                                                No results found
-                                            </Text>
-                                        </Block>
-                                    ) : (
-                                        <Block
-                                            display="flex"
-                                            flexDirection="column"
-                                            gap={4}
-                                        >
-                                            {filteredItems.map(
-                                                (group, groupId) => (
-                                                    <React.Fragment
-                                                        key={groupId}
-                                                    >
-                                                        {group.groupLabel && (
-                                                            <Block
-                                                                padding={
-                                                                    singleSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .padding
-                                                                }
-                                                                margin={
-                                                                    singleSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .margin
-                                                                }
-                                                            >
-                                                                <Text
-                                                                    variant="body.sm"
-                                                                    color={
-                                                                        singleSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .optionsLabel
-                                                                            .color
-                                                                            .default
-                                                                    }
-                                                                    textTransform="uppercase"
-                                                                    fontSize={
-                                                                        singleSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .optionsLabel
-                                                                            .fontSize
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        group.groupLabel
-                                                                    }
-                                                                </Text>
-                                                            </Block>
-                                                        )}
-                                                        {group.items.map(
-                                                            (
-                                                                item,
-                                                                itemIndex
-                                                            ) => {
-                                                                const isSelected =
-                                                                    selected ===
-                                                                    item.value
-                                                                return (
-                                                                    <SingleSelectItem
-                                                                        key={`${groupId}-${itemIndex}`}
-                                                                        item={
-                                                                            item
-                                                                        }
-                                                                        isSelected={
-                                                                            isSelected
-                                                                        }
-                                                                        onSelect={(
-                                                                            value
-                                                                        ) => {
-                                                                            onSelect(
-                                                                                value
-                                                                            )
-                                                                            setDrawerOpen(
-                                                                                false
-                                                                            )
-                                                                        }}
-                                                                    />
-                                                                )
-                                                            }
-                                                        )}
-                                                        {groupId !==
-                                                            filteredItems.length -
-                                                                1 &&
-                                                            group.showSeparator && (
+                                                <Text
+                                                    variant="body.md"
+                                                    color={
+                                                        singleSelectTokens.menu
+                                                            .item.optionsLabel
+                                                            .color.default
+                                                    }
+                                                    textAlign="center"
+                                                >
+                                                    No results found
+                                                </Text>
+                                            </Block>
+                                        ) : (
+                                            <Block
+                                                display="flex"
+                                                flexDirection="column"
+                                                gap={4}
+                                            >
+                                                {filteredItems.map(
+                                                    (group, groupId) => (
+                                                        <React.Fragment
+                                                            key={groupId}
+                                                        >
+                                                            {group.groupLabel && (
                                                                 <Block
-                                                                    height={
+                                                                    padding={
                                                                         singleSelectTokens
                                                                             .menu
                                                                             .item
-                                                                            .seperator
-                                                                            .height
-                                                                    }
-                                                                    backgroundColor={
-                                                                        singleSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .seperator
-                                                                            .color
+                                                                            .padding
                                                                     }
                                                                     margin={
                                                                         singleSelectTokens
                                                                             .menu
                                                                             .item
-                                                                            .seperator
                                                                             .margin
                                                                     }
-                                                                />
+                                                                >
+                                                                    <Text
+                                                                        variant="body.sm"
+                                                                        color={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .optionsLabel
+                                                                                .color
+                                                                                .default
+                                                                        }
+                                                                        textTransform="uppercase"
+                                                                        fontSize={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .optionsLabel
+                                                                                .fontSize
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            group.groupLabel
+                                                                        }
+                                                                    </Text>
+                                                                </Block>
                                                             )}
-                                                    </React.Fragment>
-                                                )
-                                            )}
-                                        </Block>
-                                    )}
-                                </Block>
+                                                            {group.items.map(
+                                                                (
+                                                                    item,
+                                                                    itemIndex
+                                                                ) => {
+                                                                    const isSelected =
+                                                                        selected ===
+                                                                        item.value
+                                                                    return (
+                                                                        <SingleSelectItem
+                                                                            key={`${groupId}-${itemIndex}`}
+                                                                            item={
+                                                                                item
+                                                                            }
+                                                                            isSelected={
+                                                                                isSelected
+                                                                            }
+                                                                            onSelect={(
+                                                                                value
+                                                                            ) => {
+                                                                                onSelect(
+                                                                                    value
+                                                                                )
+                                                                                setDrawerOpen(
+                                                                                    false
+                                                                                )
+                                                                            }}
+                                                                        />
+                                                                    )
+                                                                }
+                                                            )}
+                                                            {groupId !==
+                                                                filteredItems.length -
+                                                                    1 &&
+                                                                group.showSeparator && (
+                                                                    <Block
+                                                                        height={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .seperator
+                                                                                .height
+                                                                        }
+                                                                        backgroundColor={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .seperator
+                                                                                .color
+                                                                        }
+                                                                        margin={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .seperator
+                                                                                .margin
+                                                                        }
+                                                                    />
+                                                                )}
+                                                        </React.Fragment>
+                                                    )
+                                                )}
+                                            </Block>
+                                        )}
+                                    </Block>
+                                )}
                             </Block>
                         </DrawerBody>
                     </DrawerContent>

@@ -4,18 +4,27 @@ import Block from '../../Primitives/Block/Block'
 import type { RippleElement } from '../../../hooks/useRipple'
 
 const rippleAnimation = keyframes`
+  from {
+    transform: scale(0);
+    opacity: 0.6;
+  }
   to {
     transform: scale(4);
     opacity: 0;
   }
 `
 
-const RippleSpan = styled.span<{ x: number; y: number; size: number }>`
+const RippleSpan = styled.span<{
+    x: number
+    y: number
+    size: number
+    $rippleColor: string
+}>`
     position: absolute;
     border-radius: 50%;
     transform: scale(0);
-    animation: ${rippleAnimation} 600ms linear;
-    background-color: rgba(255, 255, 255, 0.7);
+    animation: ${rippleAnimation} 700ms linear;
+    background-color: ${(props) => props.$rippleColor};
     pointer-events: none;
     left: ${(props) => props.x}px;
     top: ${(props) => props.y}px;
@@ -25,9 +34,13 @@ const RippleSpan = styled.span<{ x: number; y: number; size: number }>`
 
 type RippleContainerProps = {
     ripples: RippleElement[]
+    rippleColor?: string
 }
 
-const RippleContainer: React.FC<RippleContainerProps> = ({ ripples }) => {
+const RippleContainer: React.FC<RippleContainerProps> = ({
+    ripples,
+    rippleColor = 'rgba(255, 255, 255, 0.6)',
+}) => {
     if (ripples.length === 0) return null
 
     return (
@@ -47,6 +60,7 @@ const RippleContainer: React.FC<RippleContainerProps> = ({ ripples }) => {
                     x={ripple.x}
                     y={ripple.y}
                     size={ripple.size}
+                    $rippleColor={rippleColor}
                 />
             ))}
         </Block>
