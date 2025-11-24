@@ -11,6 +11,7 @@ import dashboardData from '../../../../docs/accessibility/dashboard.json'
 import accordionMetrics from '../../../../scripts/accessibility/accordion-metrics.json'
 import sidebarMetrics from '../../../../scripts/accessibility/sidebar-metrics.json'
 import buttonMetrics from './accesiblity/button-metrics.json'
+import tabsMetrics from './accesiblity/tabs-metrics.json'
 
 const AccessibilityDashboardDemo = () => {
     const [selectedComponent, setSelectedComponent] =
@@ -48,8 +49,596 @@ const AccessibilityDashboardDemo = () => {
         }
     }
 
+    const renderValidationGuide = () => (
+        <Block>
+            {/* Header */}
+            <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    marginBottom={FOUNDATION_THEME.unit[12]}
+                >
+                    <Text variant="heading.xl" fontWeight={700}>
+                        Accessibility Metrics Validation Guide
+                    </Text>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                        onClick={() => setSelectedComponent('overview')}
+                        text="← Back to Overview"
+                    />
+                </Block>
+                <Text
+                    variant="body.md"
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                >
+                    Understanding how our accessibility scores are calculated
+                    and validated
+                </Text>
+            </Block>
+
+            {/* Important Warning */}
+            <Block
+                padding={FOUNDATION_THEME.unit[20]}
+                backgroundColor={FOUNDATION_THEME.colors.orange[50]}
+                borderRadius={FOUNDATION_THEME.unit[8]}
+                border={`2px solid ${FOUNDATION_THEME.colors.orange[200]}`}
+                marginBottom={FOUNDATION_THEME.unit[24]}
+            >
+                <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                    <Text
+                        variant="heading.md"
+                        fontWeight={600}
+                        color={FOUNDATION_THEME.colors.orange[900]}
+                    >
+                        ⚠️ Current Limitations
+                    </Text>
+                </Block>
+                <Text
+                    variant="body.md"
+                    color={FOUNDATION_THEME.colors.orange[900]}
+                >
+                    The accessibility scores in these reports are based on code
+                    analysis and automated testing. They MUST be validated with
+                    real testing before being considered accurate.
+                </Text>
+            </Block>
+
+            {/* What Reports Are Based On */}
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        What the Reports Are Based On
+                    </Text>
+                </Block>
+                <Block display="grid" gap={FOUNDATION_THEME.unit[12]}>
+                    {[
+                        {
+                            text: 'Code review - Component implementation analysis',
+                            validated: true,
+                        },
+                        {
+                            text: 'Automated tests - jest-axe test results',
+                            validated: true,
+                        },
+                        {
+                            text: 'WCAG mapping - Theoretical compliance based on features',
+                            validated: true,
+                        },
+                        {
+                            text: 'NOT based on actual screen reader testing',
+                            validated: false,
+                        },
+                        {
+                            text: 'NOT based on real user testing',
+                            validated: false,
+                        },
+                        {
+                            text: 'NOT validated by accessibility experts',
+                            validated: false,
+                        },
+                    ].map((item, index) => (
+                        <Block
+                            key={index}
+                            display="flex"
+                            alignItems="center"
+                            gap={FOUNDATION_THEME.unit[12]}
+                            padding={FOUNDATION_THEME.unit[12]}
+                            backgroundColor={
+                                item.validated
+                                    ? FOUNDATION_THEME.colors.green[50]
+                                    : FOUNDATION_THEME.colors.red[50]
+                            }
+                            borderRadius={FOUNDATION_THEME.unit[6]}
+                        >
+                            <Text
+                                variant="heading.md"
+                                color={
+                                    item.validated
+                                        ? FOUNDATION_THEME.colors.green[700]
+                                        : FOUNDATION_THEME.colors.red[700]
+                                }
+                            >
+                                {item.validated ? '✅' : '❌'}
+                            </Text>
+                            <Text
+                                variant="body.md"
+                                color={
+                                    item.validated
+                                        ? FOUNDATION_THEME.colors.green[900]
+                                        : FOUNDATION_THEME.colors.red[900]
+                                }
+                            >
+                                {item.text}
+                            </Text>
+                        </Block>
+                    ))}
+                </Block>
+            </Block>
+
+            {/* Confidence Levels */}
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        Confidence Levels
+                    </Text>
+                </Block>
+                <Block display="grid" gap={FOUNDATION_THEME.unit[12]}>
+                    {[
+                        {
+                            category: 'Automated tests (jest-axe)',
+                            level: 'HIGH',
+                            description: 'Actually run',
+                        },
+                        {
+                            category: 'Code-based evaluation',
+                            level: 'MEDIUM',
+                            description: 'Theoretical',
+                        },
+                        {
+                            category: 'Screen reader support',
+                            level: 'LOW',
+                            description: 'NOT tested',
+                        },
+                        {
+                            category: 'Color contrast',
+                            level: 'LOW',
+                            description: 'NOT measured',
+                        },
+                        {
+                            category: 'Touch targets',
+                            level: 'LOW',
+                            description: 'NOT measured',
+                        },
+                    ].map((item, index) => {
+                        const levelBgColor =
+                            item.level === 'HIGH'
+                                ? FOUNDATION_THEME.colors.green[100]
+                                : item.level === 'MEDIUM'
+                                  ? FOUNDATION_THEME.colors.yellow[100]
+                                  : FOUNDATION_THEME.colors.red[100]
+                        const levelTextColor =
+                            item.level === 'HIGH'
+                                ? FOUNDATION_THEME.colors.green[700]
+                                : item.level === 'MEDIUM'
+                                  ? FOUNDATION_THEME.colors.yellow[700]
+                                  : FOUNDATION_THEME.colors.red[700]
+                        return (
+                            <Block
+                                key={index}
+                                padding={FOUNDATION_THEME.unit[16]}
+                                backgroundColor={
+                                    FOUNDATION_THEME.colors.gray[50]
+                                }
+                                borderRadius={FOUNDATION_THEME.unit[8]}
+                                border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                            >
+                                <Block
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    marginBottom={FOUNDATION_THEME.unit[8]}
+                                >
+                                    <Text variant="body.md" fontWeight={600}>
+                                        {item.category}
+                                    </Text>
+                                    <Block
+                                        padding={`${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[12]}`}
+                                        backgroundColor={levelBgColor}
+                                        borderRadius={FOUNDATION_THEME.unit[4]}
+                                    >
+                                        <Text
+                                            variant="body.sm"
+                                            fontWeight={700}
+                                            color={levelTextColor}
+                                        >
+                                            {item.level}
+                                        </Text>
+                                    </Block>
+                                </Block>
+                                <Text
+                                    variant="body.sm"
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                >
+                                    {item.description}
+                                </Text>
+                            </Block>
+                        )
+                    })}
+                </Block>
+            </Block>
+
+            {/* Validation Phases */}
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        🧪 Validation Checklist
+                    </Text>
+                </Block>
+
+                {/* Phase 1: Automated */}
+                <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.primary[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.primary[900]}
+                        >
+                            Phase 1: Automated Validation (Do This First)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    >
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Run Existing Tests:</strong> Execute
+                                    component accessibility tests (jest-axe)
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Color Contrast Validation:</strong>{' '}
+                                    Use WebAIM Contrast Checker, Stark Plugin,
+                                    or Chrome DevTools to verify 4.5:1 (AA) or
+                                    7:1 (AAA) ratios
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Touch Target Measurements:</strong>{' '}
+                                    Use Chrome/Firefox DevTools to verify
+                                    24×24px (AA) or 44×44px (AAA) minimum sizes
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+
+                {/* Phase 2: Screen Reader */}
+                <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.purple[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.purple[900]}
+                        >
+                            Phase 2: Screen Reader Testing (Critical)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    >
+                        <Block display="grid" gap={FOUNDATION_THEME.unit[12]}>
+                            {[
+                                {
+                                    name: 'NVDA (Windows - Free)',
+                                    url: 'https://www.nvaccess.org/download/',
+                                    notes: 'Most popular free screen reader',
+                                },
+                                {
+                                    name: 'JAWS (Windows - Paid)',
+                                    url: 'https://www.freedomscientific.com/products/software/jaws/',
+                                    notes: 'Industry standard, enterprise use',
+                                },
+                                {
+                                    name: 'VoiceOver (macOS/iOS - Built-in)',
+                                    url: 'Cmd + F5 to activate',
+                                    notes: 'Apple ecosystem testing',
+                                },
+                                {
+                                    name: 'TalkBack (Android - Built-in)',
+                                    url: 'Settings > Accessibility',
+                                    notes: 'Mobile Android testing',
+                                },
+                            ].map((sr, index) => (
+                                <Block
+                                    key={index}
+                                    padding={FOUNDATION_THEME.unit[12]}
+                                    backgroundColor="#FFFFFF"
+                                    borderRadius={FOUNDATION_THEME.unit[6]}
+                                    border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                >
+                                    <Block
+                                        marginBottom={FOUNDATION_THEME.unit[4]}
+                                    >
+                                        <Text
+                                            variant="body.md"
+                                            fontWeight={600}
+                                        >
+                                            {sr.name}
+                                        </Text>
+                                    </Block>
+                                    <Block
+                                        marginBottom={FOUNDATION_THEME.unit[4]}
+                                    >
+                                        <Text
+                                            variant="body.sm"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                        >
+                                            {sr.notes}
+                                        </Text>
+                                    </Block>
+                                    <Text
+                                        variant="body.xs"
+                                        color={
+                                            FOUNDATION_THEME.colors.primary[600]
+                                        }
+                                    >
+                                        {sr.url}
+                                    </Text>
+                                </Block>
+                            ))}
+                        </Block>
+                    </Block>
+                </Block>
+
+                {/* Phase 3: Browser Testing */}
+                <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.blue[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.blue[900]}
+                        >
+                            Phase 3: Browser Testing
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    >
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Keyboard Navigation:</strong> Test
+                                    Tab, Enter, Space in Chrome, Firefox,
+                                    Safari, Edge
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>High Contrast Mode:</strong> Windows
+                                    High Contrast Mode (Alt + Left Shift + Print
+                                    Screen)
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Zoom Testing:</strong> Verify 100%,
+                                    200%, 400% zoom levels
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+
+                {/* Phase 4: Real User Testing */}
+                <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.green[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.green[900]}
+                        >
+                            Phase 4: Real User Testing (Gold Standard)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                    >
+                        <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                            <Text variant="body.md">
+                                Test with at least 2-3 participants from each
+                                group:
+                            </Text>
+                        </Block>
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Screen reader users:</strong> Blind
+                                    users who rely on screen readers
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Low vision users:</strong> Users who
+                                    need magnification or have color blindness
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Motor disability users:</strong>{' '}
+                                    Keyboard-only or switch control users
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+            </Block>
+
+            {/* Important Reminder */}
+            <Block
+                padding={FOUNDATION_THEME.unit[20]}
+                backgroundColor={FOUNDATION_THEME.colors.primary[50]}
+                borderRadius={FOUNDATION_THEME.unit[8]}
+                border={`2px solid ${FOUNDATION_THEME.colors.primary[200]}`}
+            >
+                <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                    <Text
+                        variant="heading.md"
+                        fontWeight={600}
+                        color={FOUNDATION_THEME.colors.primary[900]}
+                    >
+                        📝 Remember
+                    </Text>
+                </Block>
+                <Text
+                    variant="body.md"
+                    color={FOUNDATION_THEME.colors.primary[900]}
+                >
+                    A 96% score is only meaningful if validated. An honest 80%
+                    validated score is better than an inflated 96% unvalidated
+                    score.
+                </Text>
+            </Block>
+        </Block>
+    )
+
     const renderOverview = () => (
         <Block>
+            {/* Validation Guide Banner */}
+            <Block
+                padding={FOUNDATION_THEME.unit[20]}
+                backgroundColor={FOUNDATION_THEME.colors.orange[50]}
+                borderRadius={FOUNDATION_THEME.unit[12]}
+                border={`2px solid ${FOUNDATION_THEME.colors.orange[200]}`}
+                marginBottom={FOUNDATION_THEME.unit[24]}
+                cursor="pointer"
+                onClick={() => setSelectedComponent('validation-guide')}
+                style={{
+                    transition: 'all 0.2s',
+                }}
+            >
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Block>
+                        <Block marginBottom={FOUNDATION_THEME.unit[8]}>
+                            <Text
+                                variant="heading.lg"
+                                fontWeight={700}
+                                color={FOUNDATION_THEME.colors.orange[900]}
+                            >
+                                ⚠️ Validation Required
+                            </Text>
+                        </Block>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.orange[800]}
+                        >
+                            These scores are based on code analysis only. Click
+                            here to learn how to validate with real testing.
+                        </Text>
+                    </Block>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() => setSelectedComponent('validation-guide')}
+                        text="View Guide →"
+                    />
+                </Block>
+            </Block>
+
             {/* Summary Cards */}
             <Block
                 display="grid"
@@ -287,6 +876,8 @@ const AccessibilityDashboardDemo = () => {
             metrics = sidebarMetrics
         } else if (componentName === 'Button') {
             metrics = buttonMetrics
+        } else if (componentName === 'Tabs') {
+            metrics = tabsMetrics
         }
         // Add more components here as they're evaluated
 
@@ -633,7 +1224,9 @@ const AccessibilityDashboardDemo = () => {
 
                 {selectedComponent === 'overview'
                     ? renderOverview()
-                    : renderComponentDetail(selectedComponent)}
+                    : selectedComponent === 'validation-guide'
+                      ? renderValidationGuide()
+                      : renderComponentDetail(selectedComponent)}
             </Block>
         </Block>
     )

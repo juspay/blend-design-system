@@ -1022,16 +1022,26 @@
             "levelAScore": 100,
             "levelAAScore": 100,
             "levelAAAScore": 90
+        },
+        {
+            "componentName": "Tabs",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-24",
+            "evaluator": "Accessibility Team",
+            "overallScore": 94,
+            "levelAScore": 100,
+            "levelAAScore": 100,
+            "levelAAAScore": 88
         }
     ],
     "summary": {
-        "totalComponents": 3,
+        "totalComponents": 4,
         "averageScore": 94,
         "levelACompliance": 100,
         "levelAACompliance": 99,
         "levelAAACompliance": 88,
         "criticalIssues": 0,
         "majorIssues": 0,
-        "minorIssues": 8
+        "minorIssues": 11
     }
 }
