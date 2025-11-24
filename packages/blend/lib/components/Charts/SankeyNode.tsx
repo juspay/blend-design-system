@@ -1,6 +1,13 @@
 import React from 'react'
 import { Rectangle, Layer } from 'recharts'
-import { SankeyNodeProps } from './types'
+import { SankeyNodeProps, SankeyTooltipData } from './types'
+import { DEFAULT_COLORS } from './utils'
+
+type PayloadWithColor = {
+    name?: string
+    value?: number
+    color?: string
+}
 
 const SankeyNode: React.FC<SankeyNodeProps> = ({
     x = 0,
@@ -11,11 +18,12 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
     payload,
     containerWidth = 960,
     nodeColors = [],
+    onMouseEnter,
+    onMouseLeave,
 }) => {
     const isOut = x + width + 6 > containerWidth
-    const maxLabelLength = 25 // Truncate long labels
+    const maxLabelLength = 25
 
-    // Truncate label if too long
     const truncateLabel = (label: string, maxLength: number) => {
         if (label.length <= maxLength) return label
         return label.substring(0, maxLength - 3) + '...'
@@ -23,7 +31,29 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
 
     const nodeName = truncateLabel(payload?.name || '', maxLabelLength)
 
-    const nodeColor = nodeColors[index] || (payload as any)?.color || '#5192ca'
+    const typedPayload = payload as PayloadWithColor | undefined
+    const nodeColor =
+        nodeColors[index] ||
+        typedPayload?.color ||
+        DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+
+    const handleMouseEnter = (e: React.MouseEvent) => {
+        if (onMouseEnter && payload) {
+            const tooltipData: SankeyTooltipData = {
+                payload: {
+                    name: payload.name,
+                    value: (payload as PayloadWithColor).value,
+                },
+            }
+            onMouseEnter(tooltipData, e)
+        }
+    }
+
+    const handleMouseLeave = () => {
+        if (onMouseLeave) {
+            onMouseLeave()
+        }
+    }
 
     return (
         <Layer key={`CustomNode${index}`}>
@@ -34,6 +64,9 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
                 height={height}
                 fill={nodeColor}
                 fillOpacity="1"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={{ cursor: 'pointer' }}
             />
             <text
                 textAnchor={isOut ? 'end' : 'start'}

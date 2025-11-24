@@ -1,6 +1,16 @@
 import React, { useState } from 'react'
 import { Layer } from 'recharts'
-import { SankeyLinkProps } from './types'
+import { SankeyLinkProps, SankeyTooltipData } from './types'
+
+type PayloadWithColor = {
+    source?: number | string
+    target?: number | string
+    value?: number
+    color?: string
+    hoverColor?: string
+    sourceName?: string
+    targetName?: string
+}
 
 const SankeyLink: React.FC<SankeyLinkProps> = ({
     sourceX = 0,
@@ -13,19 +23,40 @@ const SankeyLink: React.FC<SankeyLinkProps> = ({
     index = 0,
     payload,
     linkColors = [],
+    onMouseEnter,
+    onMouseLeave,
 }) => {
+    const typedPayload = payload as PayloadWithColor | undefined
     const defaultFill =
-        linkColors[index || 0] ||
-        (payload as any)?.color ||
-        'url(#linkGradient)'
+        linkColors[index || 0] || typedPayload?.color || 'url(#linkGradient)'
     const [fill, setFill] = useState<string>(defaultFill)
 
-    const handleMouseEnter = () => {
-        setFill('rgba(0, 136, 254, 0.5)')
+    const handleMouseEnter = (e: React.MouseEvent) => {
+        if (typedPayload?.hoverColor) {
+            setFill(typedPayload.hoverColor)
+        }
+
+        if (onMouseEnter && payload) {
+            const tooltipData: SankeyTooltipData = {
+                payload: {
+                    source: typedPayload?.source,
+                    target: typedPayload?.target,
+                    value: typedPayload?.value,
+                    sourceName: typedPayload?.sourceName,
+                    targetName: typedPayload?.targetName,
+                    color: typedPayload?.color,
+                },
+            }
+            onMouseEnter(tooltipData, e)
+        }
     }
 
     const handleMouseLeave = () => {
         setFill(defaultFill)
+
+        if (onMouseLeave) {
+            onMouseLeave()
+        }
     }
 
     return (
@@ -46,6 +77,7 @@ const SankeyLink: React.FC<SankeyLinkProps> = ({
                 strokeWidth="0"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                style={{ cursor: 'pointer' }}
             />
         </Layer>
     )

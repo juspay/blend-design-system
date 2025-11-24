@@ -12,7 +12,6 @@ import {
     Cell,
     ScatterChart,
     Scatter,
-    Sankey,
 } from 'recharts'
 import {
     ChartType,
@@ -21,8 +20,7 @@ import {
     AxisType,
     SankeyData,
 } from './types'
-import SankeyNode from './SankeyNode'
-import SankeyLink from './SankeyLink'
+import SankeyChartWrapper from './SankeyChartWrapper'
 import {
     formatNumber,
     getAxisFormatter,
@@ -764,6 +762,11 @@ export const renderChart = ({
                         source: sourceIndex,
                         target: targetIndex,
                         value: link.value,
+                        color: link.color,
+                        hoverColor: link.hoverColor,
+                        // Add source and target names for tooltip
+                        sourceName: sankeyData.nodes[sourceIndex]?.name,
+                        targetName: sankeyData.nodes[targetIndex]?.name,
                     }
                 }),
             }
@@ -774,43 +777,15 @@ export const renderChart = ({
                 typeof height === 'number' ? height : defaultHeight
 
             return (
-                <Sankey
-                    data-chart={chartName}
-                    width={sankeyWidth}
-                    height={sankeyHeight}
-                    margin={{
-                        top: 20,
-                        bottom: 20,
-                        left: isSmallScreen ? 10 : 150,
-                        right: isSmallScreen ? 10 : 150,
-                    }}
-                    data={transformedData}
-                    nodeWidth={isSmallScreen ? 8 : 15}
-                    nodePadding={isSmallScreen ? 20 : 50}
-                    linkCurvature={0.61}
-                    iterations={64}
-                    link={<SankeyLink linkColors={linkColors} />}
-                    node={
-                        <SankeyNode
-                            containerWidth={sankeyWidth}
-                            nodeColors={nodeColors}
-                        />
-                    }
-                >
-                    <defs>
-                        <linearGradient id={'linkGradient'}>
-                            <stop
-                                offset="0%"
-                                stopColor="rgba(0, 136, 254, 0.5)"
-                            />
-                            <stop
-                                offset="100%"
-                                stopColor="rgba(0, 197, 159, 0.3)"
-                            />
-                        </linearGradient>
-                    </defs>
-                    <Tooltip />
-                </Sankey>
+                <SankeyChartWrapper
+                    chartName={chartName}
+                    transformedData={transformedData}
+                    nodeColors={nodeColors}
+                    linkColors={linkColors}
+                    sankeyWidth={sankeyWidth}
+                    sankeyHeight={sankeyHeight}
+                    isSmallScreen={isSmallScreen}
+                />
             )
         }
 

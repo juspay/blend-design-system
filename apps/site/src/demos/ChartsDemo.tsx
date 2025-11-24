@@ -5749,11 +5749,12 @@ xAxis={{
                     {/* Payment Flow Example with String IDs */}
                     <div>
                         <h4 className="text-lg font-semibold mb-3">
-                            💳 Payment Flow Sankey (String IDs)
+                            💳 Payment Flow Sankey (String IDs + Hover Colors)
                         </h4>
                         <p className="text-sm text-gray-600 mb-3">
                             Visualize payment card flow through 3DS
                             authentication to authorization with custom colors
+                            and hover effects
                         </p>
                         <Charts
                             data={[
@@ -5845,36 +5846,48 @@ xAxis={{
                                                         target: 'Out 3DS Scope',
                                                         value: 165.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Visa',
                                                         target: 'In 3DS Scope',
                                                         value: 78.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Visa',
                                                         target: 'Drop Off',
                                                         value: 17.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Mastercard',
                                                         target: 'Out 3DS Scope',
                                                         value: 30.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Mastercard',
                                                         target: 'In 3DS Scope',
                                                         value: 14.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Mastercard',
                                                         target: 'Drop Off',
                                                         value: 3.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'American Express',
@@ -5905,84 +5918,112 @@ xAxis={{
                                                         target: 'In 3DS Scope',
                                                         value: 22.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Other',
                                                         target: 'Drop Off',
                                                         value: 6.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Out 3DS Scope',
                                                         target: 'Received',
                                                         value: 254.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'In 3DS Scope',
                                                         target: 'Successfull Authentication',
                                                         value: 105.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'In 3DS Scope',
                                                         target: 'Failed Authentication',
                                                         value: 15.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Successfull Authentication',
                                                         target: 'Drop Off',
                                                         value: 0.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Successfull Authentication',
                                                         target: 'Received',
                                                         value: 105.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Successfull Authentication',
                                                         target: 'Authentication Only',
                                                         value: 0.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Failed Authentication',
                                                         target: 'Received',
                                                         value: 15.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Failed Authentication',
                                                         target: 'Authentication Only',
                                                         value: 3.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Failed Authentication',
                                                         target: 'Drop Off',
                                                         value: 0.0,
                                                         color: 'rgba(239, 68, 68, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(239, 68, 68, 0.9)',
                                                     },
                                                     {
                                                         source: 'Received',
                                                         target: 'Authorised',
                                                         value: 220.0,
                                                         color: 'rgba(59, 130, 246, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(59, 130, 246, 0.8)',
                                                     },
                                                     {
                                                         source: 'Received',
                                                         target: 'Failed Transaction',
                                                         value: 151.0,
                                                         color: 'rgba(153, 27, 27, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(153, 27, 27, 0.8)',
                                                     },
                                                     {
                                                         source: 'Received',
                                                         target: 'Pending',
                                                         value: 1.0,
                                                         color: 'rgba(107, 114, 128, 0.4)',
+                                                        hoverColor:
+                                                            'rgba(107, 114, 128, 0.7)',
                                                     },
                                                 ],
                                             } as any,
@@ -6052,7 +6093,7 @@ data={[
   }
 ]}
 
-// Format 2: String IDs (with custom colors)
+// Format 2: String IDs (with custom colors & hover)
 data={[
   {
     name: 'chart-name',
@@ -6064,13 +6105,15 @@ data={[
             { id: 'node2', name: 'Target B', color: '#10B981' }
           ],
           links: [
-            { 
-              source: 'node1', 
-              target: 'node2', 
+            {
+              source: 'node1',
+              target: 'node2',
               value: 100,
-              color: 'rgba(59, 130, 246, 0.3)' 
+              color: 'rgba(59, 130, 246, 0.3)',
+              hoverColor: '#3B82F6' // Optional: hover color
             }
             // source/target use node IDs
+            // If no hoverColor provided, link won't change on hover
           ]
         },
         aux: []
@@ -6097,8 +6140,16 @@ data={[
                             <strong>🎨 Customization:</strong>
                             <ul className="ml-4 mt-2 space-y-1 text-xs">
                                 <li>
-                                    • Hover over links to highlight individual
-                                    flows
+                                    • Add `hoverColor` to links for custom hover
+                                    effects
+                                </li>
+                                <li>
+                                    • Add `color` to nodes and links for custom
+                                    colors
+                                </li>
+                                <li>
+                                    • Interactive tooltips on hover (shows node
+                                    value or flow details)
                                 </li>
                                 <li>
                                     • Node labels positioned automatically
@@ -6106,10 +6157,6 @@ data={[
                                 </li>
                                 <li>
                                     • Long labels truncated to prevent overlap
-                                </li>
-                                <li>
-                                    • Custom colors for nodes and links (via
-                                    color property)
                                 </li>
                                 <li>• Gradient colors for visual appeal</li>
                                 <li>
