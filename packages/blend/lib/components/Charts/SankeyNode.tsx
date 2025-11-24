@@ -21,7 +21,7 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
     onMouseEnter,
     onMouseLeave,
 }) => {
-    const isOut = x + width + 6 > containerWidth
+    const isOut = x + width + 150 > containerWidth
     const maxLabelLength = 25
 
     const truncateLabel = (label: string, maxLength: number) => {

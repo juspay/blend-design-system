@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Sankey } from 'recharts'
 import SankeyNode from './SankeyNode'
 import SankeyLink from './SankeyLink'
@@ -38,6 +38,9 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
     sankeyHeight,
     isSmallScreen,
 }) => {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [containerWidth, setContainerWidth] = useState<number>(sankeyWidth)
+    const [containerHeight, setContainerHeight] = useState<number>(sankeyHeight)
     const [tooltipData, setTooltipData] = useState<SankeyTooltipData | null>(
         null
     )
@@ -45,6 +48,29 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
         x: number
         y: number
     } | null>(null)
+
+    useEffect(() => {
+        const updateDimensions = () => {
+            if (containerRef.current) {
+                const width = containerRef.current.offsetWidth
+                const height = containerRef.current.offsetHeight
+                setContainerWidth(Math.max(300, width - 40))
+
+                if (height > 100) {
+                    setContainerHeight(Math.max(300, height - 40))
+                }
+            }
+        }
+
+        updateDimensions()
+        const timeoutId = setTimeout(updateDimensions, 100)
+
+        window.addEventListener('resize', updateDimensions)
+        return () => {
+            window.removeEventListener('resize', updateDimensions)
+            clearTimeout(timeoutId)
+        }
+    }, [sankeyWidth, sankeyHeight])
 
     const handleMouseEnter = (
         data: SankeyTooltipData,
@@ -241,49 +267,76 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
         return null
     }
 
+    const getMargins = () => {
+        if (containerWidth < 500) {
+            return { top: 10, bottom: 10, left: 5, right: 80 }
+        } else if (containerWidth < 800) {
+            return { top: 15, bottom: 15, left: 20, right: 100 }
+        } else if (isSmallScreen) {
+            return { top: 20, bottom: 20, left: 30, right: 120 }
+        } else {
+            return { top: 20, bottom: 20, left: 150, right: 200 }
+        }
+    }
+
+    const margins = getMargins()
+
     return (
         <>
-            <Sankey
-                data-chart={chartName}
-                width={sankeyWidth}
-                height={sankeyHeight}
-                margin={{
-                    top: 20,
-                    bottom: 20,
-                    left: isSmallScreen ? 10 : 150,
-                    right: isSmallScreen ? 10 : 150,
-                }}
-                data={transformedData}
-                nodeWidth={isSmallScreen ? 8 : 15}
-                nodePadding={isSmallScreen ? 20 : 50}
-                linkCurvature={0.61}
-                iterations={64}
-                link={
-                    <SankeyLink
-                        linkColors={linkColors}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    />
-                }
-                node={
-                    <SankeyNode
-                        containerWidth={sankeyWidth}
-                        nodeColors={nodeColors}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    />
-                }
+            <Block
+                ref={containerRef}
+                width="100%"
+                height="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
             >
-                <defs>
-                    <linearGradient id={'linkGradient'}>
-                        <stop offset="0%" stopColor="rgba(0, 136, 254, 0.5)" />
-                        <stop
-                            offset="100%"
-                            stopColor="rgba(0, 197, 159, 0.3)"
-                        />
-                    </linearGradient>
-                </defs>
-            </Sankey>
+                {containerWidth > 0 && containerHeight > 0 && (
+                    <Sankey
+                        data-chart={chartName}
+                        width={containerWidth}
+                        height={containerHeight}
+                        margin={margins}
+                        data={transformedData}
+                        nodeWidth={
+                            containerWidth < 500 ? 6 : isSmallScreen ? 8 : 15
+                        }
+                        nodePadding={
+                            containerWidth < 500 ? 15 : isSmallScreen ? 20 : 50
+                        }
+                        linkCurvature={0.61}
+                        iterations={64}
+                        link={
+                            <SankeyLink
+                                linkColors={linkColors}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            />
+                        }
+                        node={
+                            <SankeyNode
+                                containerWidth={containerWidth}
+                                nodeColors={nodeColors}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            />
+                        }
+                    >
+                        <defs>
+                            <linearGradient id={'linkGradient'}>
+                                <stop
+                                    offset="0%"
+                                    stopColor="rgba(0, 136, 254, 0.5)"
+                                />
+                                <stop
+                                    offset="100%"
+                                    stopColor="rgba(0, 197, 159, 0.3)"
+                                />
+                            </linearGradient>
+                        </defs>
+                    </Sankey>
+                )}
+            </Block>
             {renderTooltip()}
         </>
     )

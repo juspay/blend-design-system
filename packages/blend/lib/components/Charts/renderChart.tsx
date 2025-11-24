@@ -771,7 +771,7 @@ export const renderChart = ({
                 }),
             }
 
-            const sankeyWidth = isSmallScreen ? 600 : 1200
+            const sankeyWidth = isSmallScreen ? 800 : 1200
             const defaultHeight = isSmallScreen ? 400 : 600
             const sankeyHeight =
                 typeof height === 'number' ? height : defaultHeight
