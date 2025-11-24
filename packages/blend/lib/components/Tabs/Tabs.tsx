@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { forwardRef, useState, useEffect } from 'react'
+import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
 import TabsList from './TabsList'
@@ -38,31 +38,41 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             }
         }, [value])
 
-        const handleValueChange = (newValue: string) => {
-            setActiveTab(newValue)
-            onValueChange?.(newValue)
-        }
+        const handleValueChange = useCallback(
+            (newValue: string) => {
+                setActiveTab(newValue)
+                onValueChange?.(newValue)
+            },
+            [onValueChange]
+        )
 
-        const handleTabClose = (tabValue: string) => {
-            onTabClose?.(tabValue)
-            if (tabValue === activeTab && items.length > 1) {
-                const currentIndex = items.findIndex(
-                    (item) => item.value === tabValue
-                )
-                const nextTab =
-                    items[currentIndex + 1] || items[currentIndex - 1]
-                if (nextTab) {
-                    handleValueChange(nextTab.value)
+        const handleTabClose = useCallback(
+            (tabValue: string) => {
+                onTabClose?.(tabValue)
+
+                if (tabValue === activeTab && items.length > 1) {
+                    const currentIndex = items.findIndex(
+                        (item) => item.value === tabValue
+                    )
+                    const nextTab =
+                        items[currentIndex + 1] || items[currentIndex - 1]
+                    if (nextTab) {
+                        handleValueChange(nextTab.value)
+                    }
                 }
-            }
-        }
+            },
+            [activeTab, items, onTabClose, handleValueChange]
+        )
 
-        const handleTabChange = (tabValue: string) => {
-            handleValueChange(tabValue)
-        }
+        const handleTabChange = useCallback(
+            (tabValue: string) => {
+                handleValueChange(tabValue)
+            },
+            [handleValueChange]
+        )
 
-        if (items.length > 0) {
-            const processedItems = items.map((item) => ({
+        const processedItems = useMemo(() => {
+            return items.map((item) => ({
                 ...item,
                 disable: item.disable || disable,
                 showSkeleton:
@@ -74,7 +84,9 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         ? item.skeletonVariant
                         : skeletonVariant,
             }))
+        }, [items, disable, showSkeleton, skeletonVariant])
 
+        if (items.length > 0) {
             return (
                 <StyledTabs
                     ref={ref}
@@ -103,11 +115,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     ))}
                 </StyledTabs>
             )
-        }
-
-        const handleChildrenValueChange = (newValue: string) => {
-            setActiveTab(newValue)
-            onValueChange?.(newValue)
         }
 
         const renderChildren = () => {
@@ -160,7 +167,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 className={className}
                 value={activeTab}
                 defaultValue={defaultValue}
-                onValueChange={handleChildrenValueChange}
+                onValueChange={handleValueChange}
                 {...props}
             >
                 {renderChildren()}
