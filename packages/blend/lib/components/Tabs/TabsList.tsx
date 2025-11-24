@@ -43,6 +43,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showDropdown = false,
             showAddButton = false,
             addButtonTooltip = 'Add new tab',
+            maxDisplayTabs,
             onTabChange,
             activeTab = '',
             disable = false,
@@ -74,8 +75,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         )
 
         const displayTabs = useMemo(
-            () => getDisplayTabs(processedItems),
-            [processedItems]
+            () => getDisplayTabs(processedItems, maxDisplayTabs, activeTab),
+            [processedItems, maxDisplayTabs, activeTab]
         )
 
         const originalTabValues = useMemo(

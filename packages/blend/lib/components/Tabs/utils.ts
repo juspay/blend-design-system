@@ -125,10 +125,37 @@ export const prepareDropdownItems = (
 }
 
 /**
- * Returns all tabs for display (no limiting - let horizontal scroll handle overflow)
+ * Returns tabs for display, limited by maxDisplayTabs if provided.
+ * When limited, shows tabs centered around the active tab to ensure it's always visible.
  */
-export const getDisplayTabs = (tabs: TabItem[]): TabItem[] => {
-    return tabs
+export const getDisplayTabs = (
+    tabs: TabItem[],
+    maxDisplayTabs?: number,
+    activeTab?: string
+): TabItem[] => {
+    if (
+        !maxDisplayTabs ||
+        maxDisplayTabs <= 0 ||
+        tabs.length <= maxDisplayTabs
+    ) {
+        return tabs
+    }
+
+    const activeIndex = activeTab
+        ? tabs.findIndex((tab) => tab.value === activeTab)
+        : -1
+
+    if (activeIndex === -1) {
+        return tabs.slice(0, maxDisplayTabs)
+    }
+
+    let startIndex = Math.max(0, activeIndex - Math.floor(maxDisplayTabs / 2))
+
+    if (startIndex + maxDisplayTabs > tabs.length) {
+        startIndex = Math.max(0, tabs.length - maxDisplayTabs)
+    }
+
+    return tabs.slice(startIndex, startIndex + maxDisplayTabs)
 }
 
 /**
