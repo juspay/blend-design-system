@@ -304,9 +304,8 @@ const AccessibilityDashboardDemo = () => {
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.MEDIUM}
                         onClick={() => setSelectedComponent('overview')}
-                    >
-                        ← Back to Overview
-                    </Button>
+                        text="← Back to Overview"
+                    />
                 </Block>
             )
         }
@@ -328,9 +327,8 @@ const AccessibilityDashboardDemo = () => {
                             buttonType={ButtonType.SECONDARY}
                             size={ButtonSize.SMALL}
                             onClick={() => setSelectedComponent('overview')}
-                        >
-                            ← Back to Overview
-                        </Button>
+                            text="← Back to Overview"
+                        />
                     </Block>
                     <Text
                         variant="body.sm"
@@ -596,7 +594,7 @@ const AccessibilityDashboardDemo = () => {
                                             variant="body.sm"
                                             color={
                                                 FOUNDATION_THEME.colors
-                                                    .blue[900]
+                                                    .primary[900]
                                             }
                                         >
                                             {recommendation}
