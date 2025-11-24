@@ -193,3 +193,40 @@ export const calculateTransitionDimensions = (
         }
     }
 }
+
+/**
+ * Determines the actual tab value from a potentially concatenated value
+ * Concatenated tabs use underscore as separator, but we need to distinguish
+ * from single tabs that naturally have underscores in their values
+ */
+export const getActualTabValue = (
+    processedValue: string,
+    originalTabValues: Set<string>
+): string => {
+    if (originalTabValues.has(processedValue)) {
+        return processedValue
+    }
+
+    if (processedValue.includes('_')) {
+        return processedValue.split('_')[0]
+    }
+
+    return processedValue
+}
+
+/**
+ * Checks if a concatenated tab value should trigger multiple close events
+ */
+export const isConcatenatedTab = (
+    tabValue: string,
+    originalTabValues: Set<string>
+): boolean => {
+    return tabValue.includes('_') && !originalTabValues.has(tabValue)
+}
+
+/**
+ * Extracts original values from a concatenated tab value
+ */
+export const extractOriginalValues = (concatenatedValue: string): string[] => {
+    return concatenatedValue.split('_')
+}
