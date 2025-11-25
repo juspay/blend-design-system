@@ -24,36 +24,6 @@ export const getSpacingBySize = (
     return sizeMap[size]
 }
 
-export const isControlledRadio = (checked: boolean | undefined): boolean => {
-    return checked !== undefined
-}
-
-export const createRadioInputProps = (
-    checked: boolean | undefined,
-    defaultChecked: boolean
-) => {
-    return isControlledRadio(checked)
-        ? { checked: checked }
-        : { defaultChecked: defaultChecked }
-}
-
-export const getCurrentCheckedState = (
-    checked: boolean | undefined,
-    defaultChecked: boolean
-): boolean => {
-    return isControlledRadio(checked) ? checked! : defaultChecked
-}
-
-export const createRadioChangeHandler = (
-    disabled: boolean,
-    onChange?: (checked: boolean) => void
-) => {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (disabled) return
-        onChange?.(e.target.checked)
-    }
-}
-
 export const isRadioElement = (
     child: React.ReactElement,
     RadioComponent: React.ComponentType<RadioProps>

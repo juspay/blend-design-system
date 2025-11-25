@@ -28,6 +28,7 @@ const CodeEditorDemo = () => {
 
     // Modal state
     const [isCodeEditorModalOpen, setIsCodeEditorModalOpen] = useState(false)
+    const [formSubmitCount, setFormSubmitCount] = useState(0)
 
     // Code examples
     const codeExamples = {
@@ -281,21 +282,56 @@ def process_transactions(transactions):
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Live Preview</h3>
                     <p className="text-sm text-gray-600">
-                        Edit the code below to see real-time syntax highlighting
+                        Edit the code below to see real-time syntax
+                        highlighting. This editor is wrapped in a form -
+                        pressing Enter should create a new line, not submit the
+                        form.
                     </p>
-                    <CodeEditor
-                        value={code}
-                        onChange={(newCode) => setCode(newCode)}
-                        variant={variant}
-                        showLineNumbers={showLineNumbers}
-                        showHeader={showHeader}
-                        header={headerText}
-                        language={language}
-                        readOnly={readOnly}
-                        disabled={disabled}
-                        placeholder="Start typing your code..."
-                        minHeight="300px"
-                    />
+                    {formSubmitCount > 0 && (
+                        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                            ⚠️ Form submitted {formSubmitCount} time
+                            {formSubmitCount > 1 ? 's' : ''}! (This should NOT
+                            happen when pressing Enter in the editor)
+                        </div>
+                    )}
+                    <form
+                        onSubmit={() => {
+                            // e.preventDefault()
+                            setFormSubmitCount((prev) => prev + 1)
+                            console.log('Form submitted!')
+                        }}
+                        className="space-y-3"
+                    >
+                        <CodeEditor
+                            value={code}
+                            onChange={(newCode) => setCode(newCode)}
+                            variant={variant}
+                            showLineNumbers={showLineNumbers}
+                            showHeader={showHeader}
+                            header={headerText}
+                            language={language}
+                            readOnly={readOnly}
+                            disabled={disabled}
+                            placeholder="Start typing your code..."
+                            minHeight="300px"
+                        />
+                        <div className="flex gap-3">
+                            <Button
+                                text="Submit Form (should work)"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                type="submit"
+                            />
+                            {formSubmitCount > 0 && (
+                                <Button
+                                    text="Reset Counter"
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    onClick={() => setFormSubmitCount(0)}
+                                />
+                            )}
+                        </div>
+                    </form>
                 </div>
             </div>
 

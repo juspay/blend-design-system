@@ -47,19 +47,27 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 flexBasis={0}
                 style={{ minWidth: 0 }}
             >
-                <Tooltip
-                    content={isApplyDisabled ? applyDisabledMessage : undefined}
-                    open={isApplyDisabled ? undefined : false}
-                >
+                {isApplyDisabled ? (
+                    <Tooltip content={applyDisabledMessage}>
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.LARGE}
+                            fullWidth={true}
+                            disabled={true}
+                            onClick={onApply}
+                            text="Apply Date"
+                        />
+                    </Tooltip>
+                ) : (
                     <Button
                         buttonType={ButtonType.PRIMARY}
                         size={ButtonSize.LARGE}
                         fullWidth={true}
-                        disabled={isDisabled || isApplyDisabled}
+                        disabled={isDisabled}
                         onClick={onApply}
                         text="Apply Date"
                     />
-                </Tooltip>
+                )}
             </Block>
         </Block>
     )

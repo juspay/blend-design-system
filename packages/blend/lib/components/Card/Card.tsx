@@ -11,9 +11,10 @@ import {
     isCustomCard,
 } from './utils'
 import { DefaultCard, AlignedCard, CustomCard } from './CardComponents'
+import { Skeleton, SkeletonVariant } from '../Skeleton'
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ maxWidth = 'auto', minHeight, maxHeight, ...props }, ref) => {
+    ({ maxWidth = 'auto', minHeight, maxHeight, skeleton, ...props }, ref) => {
         const cardToken = useResponsiveTokens<CardTokenType>('CARD')
         const variant = getCardVariant(
             'variant' in props ? props.variant : undefined
@@ -92,7 +93,15 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 onMouseLeave={handleMouseLeave}
                 data-card="true"
             >
-                {renderCardContent()}
+                {skeleton?.show ? (
+                    <Skeleton
+                        variant={skeleton.variant as SkeletonVariant}
+                        width={skeleton.width || '100%'}
+                        height={skeleton.height || '250px'}
+                    />
+                ) : (
+                    renderCardContent()
+                )}
             </Block>
         )
     }

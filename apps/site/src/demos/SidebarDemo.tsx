@@ -167,7 +167,7 @@ const SidebarDemo = () => {
         | 'codeEditor'
         | 'workflowCanvas'
         | 'formElements'
-    >('tabs')
+    >('dataRangePicker')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -994,6 +994,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'dataTable',
                     onClick: () => setActiveComponent('dataTable'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Date Picker',
@@ -1004,6 +1005,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'dataRangePicker',
                     onClick: () => setActiveComponent('dataRangePicker'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Code Block',

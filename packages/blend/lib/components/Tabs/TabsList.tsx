@@ -3,9 +3,9 @@ import {
     forwardRef,
     useMemo,
     useRef,
-    useEffect,
     useCallback,
     useId,
+    useEffect,
 } from 'react'
 import { type TabsListProps, TabsSize, TabsVariant } from './types'
 import { StyledTabsList } from './StyledTabs'
@@ -21,6 +21,9 @@ import {
     processTabsWithConcatenation,
     prepareDropdownItems,
     getDisplayTabs,
+    getActualTabValue,
+    isConcatenatedTab,
+    extractOriginalValues,
     calculateTabIndicatorPosition,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -40,6 +43,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showDropdown = false,
             showAddButton = false,
             addButtonTooltip = 'Add new tab',
+            maxDisplayTabs,
             onTabChange,
             activeTab = '',
             disable = false,
@@ -53,159 +57,37 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const tabsGroupId = useId()
 
         const scrollContainerRef = useRef<HTMLDivElement>(null)
-        const prevItemsLengthRef = useRef(items.length)
         const tabsListRef = useRef<HTMLDivElement>(null)
         const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
+
         const isScrollingRef = useRef(false)
+        const hasMountedRef = useRef(false)
+        const prevItemsLengthRef = useRef(items.length)
 
-        useEffect(() => {
-            if (!activeTab || isScrollingRef.current) {
-                return
-            }
+        const processedItems = useMemo(
+            () => processTabsWithConcatenation(items),
+            [items]
+        )
 
-            const scrollContainer = scrollContainerRef.current
-            const activeTabElement = tabRefsMap.current.get(activeTab)
-            const listElement = tabsListRef.current
+        const dropdownItems = useMemo(
+            () => prepareDropdownItems(processedItems, items),
+            [processedItems, items]
+        )
 
-            if (!activeTabElement || !listElement) {
-                return
-            }
+        const displayTabs = useMemo(
+            () => getDisplayTabs(processedItems, maxDisplayTabs, activeTab),
+            [processedItems, maxDisplayTabs, activeTab]
+        )
 
-            const updateIndicator = () => {
-                if (!listElement || variant !== TabsVariant.UNDERLINE) {
-                    return
-                }
+        const originalTabValues = useMemo(
+            () => new Set(items.map((item) => item.value)),
+            [items]
+        )
 
-                const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
-                    activeTabElement,
-                    listElement
-                )
-
-                listElement.style.setProperty(
-                    '--tabs-indicator-left',
-                    `${tabLeft}px`
-                )
-                listElement.style.setProperty(
-                    '--tabs-indicator-width',
-                    `${tabWidth}`
-                )
-            }
-
-            const scrollTabIntoView = () => {
-                if (!scrollContainer) {
-                    updateIndicator()
-                    return
-                }
-
-                const containerRect = scrollContainer.getBoundingClientRect()
-                const tabRect = activeTabElement.getBoundingClientRect()
-
-                const isTabVisible =
-                    tabRect.left >= containerRect.left &&
-                    tabRect.right <= containerRect.right
-
-                if (!isTabVisible) {
-                    isScrollingRef.current = true
-
-                    const containerWidth = scrollContainer.offsetWidth
-                    const tabOffsetLeft = activeTabElement.offsetLeft
-                    const tabWidth = activeTabElement.offsetWidth
-
-                    scrollContainer.scrollTo({
-                        left: Math.max(
-                            0,
-                            tabOffsetLeft - containerWidth / 2 + tabWidth / 2
-                        ),
-                        behavior: 'smooth',
-                    })
-
-                    setTimeout(() => {
-                        isScrollingRef.current = false
-                        updateIndicator()
-                    }, 500)
-                } else {
-                    updateIndicator()
-                }
-            }
-
-            const delay = items.length !== prevItemsLengthRef.current ? 50 : 0
-            const timeout = setTimeout(() => {
-                scrollTabIntoView()
-            }, delay)
-
-            window.addEventListener('resize', updateIndicator)
-
-            return () => {
-                clearTimeout(timeout)
-                window.removeEventListener('resize', updateIndicator)
-            }
-        }, [activeTab, items.length, variant])
-
-        useEffect(() => {
-            const currentLength = items.length
-            const previousLength = prevItemsLengthRef.current
-
-            if (currentLength > previousLength) {
-                const scrollContainer = scrollContainerRef.current
-                if (!scrollContainer) return
-
-                isScrollingRef.current = true
-
-                scrollContainer.scrollTo({
-                    left: scrollContainer.scrollWidth,
-                    behavior: 'smooth',
-                })
-
-                const scrollTimeout = setTimeout(() => {
-                    isScrollingRef.current = false
-                    if (variant === TabsVariant.UNDERLINE && activeTab) {
-                        const listElement = tabsListRef.current
-                        const activeTabElement =
-                            tabRefsMap.current.get(activeTab)
-
-                        if (activeTabElement && listElement) {
-                            const { tabLeft, tabWidth } =
-                                calculateTabIndicatorPosition(
-                                    activeTabElement,
-                                    listElement
-                                )
-                            listElement.style.setProperty(
-                                '--tabs-indicator-left',
-                                `${tabLeft}px`
-                            )
-                            listElement.style.setProperty(
-                                '--tabs-indicator-width',
-                                `${tabWidth}`
-                            )
-                        }
-                    }
-                }, 350)
-
-                return () => clearTimeout(scrollTimeout)
-            }
-
-            prevItemsLengthRef.current = currentLength
-        }, [items.length, activeTab, variant])
-
-        const processedItems = useMemo(() => {
-            return processTabsWithConcatenation(items)
-        }, [items])
-
-        const dropdownItems = useMemo(() => {
-            return prepareDropdownItems(processedItems, items)
-        }, [processedItems, items])
-
-        const displayTabs = useMemo(() => {
-            return getDisplayTabs(processedItems)
-        }, [processedItems])
-
-        const originalTabValues = useMemo(() => {
-            return new Set(items.map((item) => item.value))
-        }, [items])
-
-        const hasAnySkeleton = useMemo(() => {
-            return processedItems.some((item) => item.showSkeleton === true)
-        }, [processedItems])
+        const hasAnySkeleton = useMemo(
+            () => processedItems.some((item) => item.showSkeleton === true),
+            [processedItems]
+        )
 
         const hasAnyChildSkeleton = useMemo(() => {
             if (showSkeleton) return true
@@ -217,17 +99,160 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             })
         }, [children, showSkeleton])
 
+        const updateIndicator = useCallback(() => {
+            if (variant !== TabsVariant.UNDERLINE || hasAnySkeleton) {
+                return
+            }
+
+            const listElement = tabsListRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement || !listElement) {
+                return
+            }
+
+            const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
+                activeTabElement,
+                listElement
+            )
+
+            listElement.style.setProperty(
+                '--tabs-indicator-left',
+                `${tabLeft}px`
+            )
+            listElement.style.setProperty(
+                '--tabs-indicator-width',
+                `${tabWidth}`
+            )
+        }, [activeTab, variant, tabRefsMap, hasAnySkeleton])
+
+        useEffect(() => {
+            if (
+                !activeTab ||
+                variant !== TabsVariant.UNDERLINE ||
+                hasAnySkeleton
+            ) {
+                return
+            }
+
+            const listElement = tabsListRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement || !listElement) {
+                return
+            }
+
+            const needsDelay =
+                !hasMountedRef.current ||
+                items.length !== prevItemsLengthRef.current
+            const delay = needsDelay ? 100 : 0
+
+            const timeout = setTimeout(() => {
+                updateIndicator()
+                hasMountedRef.current = true
+                prevItemsLengthRef.current = items.length
+            }, delay)
+
+            window.addEventListener('resize', updateIndicator)
+
+            return () => {
+                clearTimeout(timeout)
+                window.removeEventListener('resize', updateIndicator)
+            }
+        }, [activeTab, variant, hasAnySkeleton, items.length, updateIndicator])
+
+        useEffect(() => {
+            if (!activeTab || isScrollingRef.current) {
+                return
+            }
+
+            const scrollContainer = scrollContainerRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement) {
+                return
+            }
+
+            if (!scrollContainer) {
+                updateIndicator()
+                return
+            }
+
+            const containerRect = scrollContainer.getBoundingClientRect()
+            const tabRect = activeTabElement.getBoundingClientRect()
+
+            const isTabVisible =
+                tabRect.left >= containerRect.left &&
+                tabRect.right <= containerRect.right
+
+            if (!isTabVisible) {
+                isScrollingRef.current = true
+
+                const containerWidth = scrollContainer.offsetWidth
+                const tabOffsetLeft = activeTabElement.offsetLeft
+                const tabWidth = activeTabElement.offsetWidth
+
+                scrollContainer.scrollTo({
+                    left: Math.max(
+                        0,
+                        tabOffsetLeft - containerWidth / 2 + tabWidth / 2
+                    ),
+                    behavior: 'smooth',
+                })
+
+                const scrollTimer = setTimeout(() => {
+                    isScrollingRef.current = false
+                    updateIndicator()
+                }, 500)
+
+                return () => clearTimeout(scrollTimer)
+            } else {
+                updateIndicator()
+            }
+        }, [activeTab, updateIndicator])
+
+        // Effect: Scroll to end when new tabs are added
+        useEffect(() => {
+            const currentLength = items.length
+            const previousLength = prevItemsLengthRef.current
+
+            if (currentLength <= previousLength) {
+                prevItemsLengthRef.current = currentLength
+                return
+            }
+
+            const scrollContainer = scrollContainerRef.current
+            if (!scrollContainer) {
+                prevItemsLengthRef.current = currentLength
+                return
+            }
+
+            isScrollingRef.current = true
+
+            scrollContainer.scrollTo({
+                left: scrollContainer.scrollWidth,
+                behavior: 'smooth',
+            })
+
+            const scrollTimeout = setTimeout(() => {
+                isScrollingRef.current = false
+                updateIndicator()
+            }, 350)
+
+            prevItemsLengthRef.current = currentLength
+
+            return () => clearTimeout(scrollTimeout)
+        }, [items.length, updateIndicator])
+
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
-                if (
-                    processedTabValue.includes('_') &&
-                    !originalTabValues.has(processedTabValue)
-                ) {
-                    const originalValues = processedTabValue.split('_')
+                if (isConcatenatedTab(processedTabValue, originalTabValues)) {
+                    const originalValues =
+                        extractOriginalValues(processedTabValue)
                     originalValues.forEach((val) => onTabClose?.(val))
-
-                    onTabClose?.(processedTabValue)
                 }
+
+                onTabClose?.(processedTabValue)
             },
             [onTabClose, originalTabValues]
         )
@@ -238,9 +263,33 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             },
             [onTabChange]
         )
+
         const handleAddClick = useCallback(() => {
             onTabAdd?.()
         }, [onTabAdd])
+
+        const registerTabRef = useCallback(
+            (node: HTMLButtonElement | null, value: string) => {
+                if (node && value) {
+                    tabRefsMap.current.set(value, node)
+                } else if (value) {
+                    tabRefsMap.current.delete(value)
+                }
+            },
+            []
+        )
+
+        const setRefs = useCallback(
+            (node: HTMLDivElement | null) => {
+                tabsListRef.current = node
+                if (typeof ref === 'function') {
+                    ref(node)
+                } else if (ref) {
+                    ref.current = node
+                }
+            },
+            [ref]
+        )
 
         if (items.length > 0) {
             return (
@@ -276,18 +325,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         <Block
                             style={{
                                 position: 'relative',
-                                width: 'fit-content',
+                                width: fitContent ? 'fit-content' : '100%',
                             }}
                         >
                             <StyledTabsList
-                                ref={(node) => {
-                                    tabsListRef.current = node
-                                    if (typeof ref === 'function') {
-                                        ref(node)
-                                    } else if (ref) {
-                                        ref.current = node
-                                    }
-                                }}
+                                ref={setRefs}
                                 className={className}
                                 $variant={variant}
                                 $size={size}
@@ -302,29 +344,17 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 }}
                             >
                                 {displayTabs.map((item) => {
-                                    const tabValue = originalTabValues.has(
-                                        item.value
+                                    const tabValue = getActualTabValue(
+                                        item.value,
+                                        originalTabValues
                                     )
-                                        ? item.value
-                                        : item.value.includes('_')
-                                          ? item.value.split('_')[0]
-                                          : item.value
 
                                     return (
                                         <TabsTrigger
                                             key={item.value}
-                                            ref={(node) => {
-                                                if (node) {
-                                                    tabRefsMap.current.set(
-                                                        tabValue,
-                                                        node
-                                                    )
-                                                } else {
-                                                    tabRefsMap.current.delete(
-                                                        tabValue
-                                                    )
-                                                }
-                                            }}
+                                            ref={(node) =>
+                                                registerTabRef(node, tabValue)
+                                            }
                                             value={tabValue}
                                             variant={variant}
                                             size={size}
@@ -398,7 +428,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     useDrawerOnMobile={false}
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                 />
-                                // {</Tooltip> */}
                             )}
 
                             {showAddButton && (
@@ -430,7 +459,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             return React.Children.map(children, (child) => {
                 if (!React.isValidElement(child)) return child
 
-                // Merge disable prop: if either parent or child has disable, it should be disabled
                 const existingProps = child.props as Record<string, unknown>
                 const childDisable =
                     'disable' in existingProps
@@ -463,13 +491,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                 ? existingProps.skeletonVariant
                                 : skeletonVariant,
                     }),
-                    ref: (node: HTMLButtonElement) => {
-                        if (node && childValue) {
-                            tabRefsMap.current.set(childValue, node)
-                        } else if (childValue) {
-                            tabRefsMap.current.delete(childValue)
-                        }
-                    },
+                    ref: (node: HTMLButtonElement) =>
+                        registerTabRef(node, childValue),
                 }
 
                 return React.cloneElement(child, childProps)
@@ -489,18 +512,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 <Block
                     style={{
                         position: 'relative',
-                        width: 'fit-content',
+                        width: fitContent ? 'fit-content' : '100%',
                     }}
                 >
                     <StyledTabsList
-                        ref={(node) => {
-                            tabsListRef.current = node
-                            if (typeof ref === 'function') {
-                                ref(node)
-                            } else if (ref) {
-                                ref.current = node
-                            }
-                        }}
+                        ref={setRefs}
                         className={className}
                         $variant={variant}
                         $size={size}

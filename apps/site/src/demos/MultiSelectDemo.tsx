@@ -1737,6 +1737,7 @@ const MultiSelectDemo = () => {
                             Search with Select All
                         </h3>
                         <MultiSelect
+                            maxTriggerWidth={300}
                             label="Search + Select All"
                             sublabel="Combine search with select all functionality"
                             items={skillItems}

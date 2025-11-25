@@ -81,6 +81,7 @@ const SingleSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
+
     onBlur,
     onFocus,
     inline = false,
@@ -97,6 +98,8 @@ const SingleSelect = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -165,6 +168,8 @@ const SingleSelect = ({
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
                 skeleton={skeleton}
+                maxTriggerWidth={maxTriggerWidth}
+                minTriggerWidth={minTriggerWidth}
             />
         )
     }
@@ -249,6 +254,8 @@ const SingleSelect = ({
                                         disabled ? 'disabled' : 'enabled'
                                     }
                                     type="button"
+                                    maxWidth={maxTriggerWidth}
+                                    minWidth={minTriggerWidth}
                                     name={name}
                                     position="relative"
                                     width={fullWidth ? '100%' : 'fit-content'}

@@ -140,6 +140,7 @@ const SwitchDemo = () => {
                         />
                         <Switch
                             label="Error"
+                            subtext="This is an error message"
                             checked={playgroundError}
                             onChange={() =>
                                 setPlaygroundError(!playgroundError)
@@ -166,12 +167,13 @@ const SwitchDemo = () => {
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
                         <Switch
+                            maxLength={{ label: 3, subtext: 3 }}
                             label={playgroundLabel}
                             checked={playgroundChecked}
-                            onChange={(checked) => {
-                                setPlaygroundChecked(checked)
+                            onChange={() => {
+                                setPlaygroundChecked(!playgroundChecked)
                                 addSnackbar({
-                                    header: `Switch ${checked ? 'enabled' : 'disabled'}!`,
+                                    header: `Switch ${!playgroundChecked ? 'enabled' : 'disabled'}!`,
                                 })
                             }}
                             size={playgroundSize}

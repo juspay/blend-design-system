@@ -49,6 +49,8 @@ const StatCardDemo = () => {
     const [arrowDirection, setArrowDirection] =
         useState<StatCardArrowDirection>(StatCardArrowDirection.UP)
 
+    const [showSkeleton, setShowSkeleton] = useState(true)
+
     // Sample chart data
     const sampleLineData = [
         { value: 100, name: 'JAN' },
@@ -256,9 +258,20 @@ const StatCardDemo = () => {
                             checked={showHelpIcon}
                             onChange={() => setShowHelpIcon(!showHelpIcon)}
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
                     </div>
                     <div className="w-[350px]">
                         <StatCard
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                                height: '135px',
+                                width: '100%',
+                            }}
                             data-single-stat={playgroundTitle}
                             dropdownProps={{
                                 label: 'Currency',

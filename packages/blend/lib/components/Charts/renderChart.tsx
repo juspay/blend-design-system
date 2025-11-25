@@ -13,7 +13,14 @@ import {
     ScatterChart,
     Scatter,
 } from 'recharts'
-import { ChartType, RenderChartProps, TickProps, AxisType } from './types'
+import {
+    ChartType,
+    RenderChartProps,
+    TickProps,
+    AxisType,
+    SankeyData,
+} from './types'
+import SankeyChartWrapper from './SankeyChartWrapper'
 import {
     formatNumber,
     getAxisFormatter,
@@ -42,6 +49,7 @@ export const renderChart = ({
     xAxis,
     yAxis,
     noData,
+    height,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -684,6 +692,100 @@ export const renderChart = ({
                         />
                     ))}
                 </ScatterChart>
+            )
+        }
+
+        case ChartType.SANKEY: {
+            const sankeyData = originalData[0]?.data?.sankeyData
+                ?.primary as unknown as SankeyData
+
+            if (!sankeyData || !sankeyData.nodes || !sankeyData.links) {
+                return (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        flexDirection="column"
+                        gap={28}
+                        data-chart="No-Data"
+                    >
+                        <Text
+                            variant="body.lg"
+                            color={FOUNDATION_THEME.colors.gray[800]}
+                            fontWeight={600}
+                        >
+                            Invalid Sankey data format
+                        </Text>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            fontWeight={500}
+                        >
+                            Please provide nodes and links
+                        </Text>
+                    </Block>
+                )
+            }
+
+            // Transform data to handle both numeric indices and string IDs
+            const nodeMap = new Map<string, number>()
+            sankeyData.nodes.forEach((node, index) => {
+                const nodeId = node.id || node.name || index.toString()
+                nodeMap.set(nodeId, index)
+            })
+
+            // Extract node and link colors if provided
+            const nodeColors = sankeyData.nodes
+                .map((node) => node.color)
+                .filter(Boolean) as string[]
+            const linkColors = sankeyData.links
+                .map((link) => link.color)
+                .filter(Boolean) as string[]
+
+            // Transform links to use numeric indices if they're strings
+            const transformedData = {
+                nodes: sankeyData.nodes.map((node) => ({
+                    name: node.name,
+                })),
+                links: sankeyData.links.map((link) => {
+                    const sourceIndex =
+                        typeof link.source === 'number'
+                            ? link.source
+                            : (nodeMap.get(link.source as string) ?? 0)
+
+                    const targetIndex =
+                        typeof link.target === 'number'
+                            ? link.target
+                            : (nodeMap.get(link.target as string) ?? 0)
+
+                    return {
+                        source: sourceIndex,
+                        target: targetIndex,
+                        value: link.value,
+                        color: link.color,
+                        hoverColor: link.hoverColor,
+                        // Add source and target names for tooltip
+                        sourceName: sankeyData.nodes[sourceIndex]?.name,
+                        targetName: sankeyData.nodes[targetIndex]?.name,
+                    }
+                }),
+            }
+
+            const sankeyWidth = isSmallScreen ? 800 : 1200
+            const defaultHeight = isSmallScreen ? 400 : 600
+            const sankeyHeight =
+                typeof height === 'number' ? height : defaultHeight
+
+            return (
+                <SankeyChartWrapper
+                    chartName={chartName}
+                    transformedData={transformedData}
+                    nodeColors={nodeColors}
+                    linkColors={linkColors}
+                    sankeyWidth={sankeyWidth}
+                    sankeyHeight={sankeyHeight}
+                    isSmallScreen={isSmallScreen}
+                />
             )
         }
 

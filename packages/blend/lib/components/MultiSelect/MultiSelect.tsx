@@ -87,6 +87,8 @@ const MultiSelect = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -317,6 +319,8 @@ const MultiSelect = ({
                                         width={
                                             fullWidth ? '100%' : 'fit-content'
                                         }
+                                        maxWidth={maxTriggerWidth}
+                                        minWidth={minTriggerWidth}
                                         display="flex"
                                         alignItems="center"
                                         overflow="hidden"
