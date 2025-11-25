@@ -325,7 +325,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         <Block
                             style={{
                                 position: 'relative',
-                                width: 'fit-content',
+                                width: fitContent ? 'fit-content' : '100%',
                             }}
                         >
                             <StyledTabsList
@@ -512,7 +512,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 <Block
                     style={{
                         position: 'relative',
-                        width: 'fit-content',
+                        width: fitContent ? 'fit-content' : '100%',
                     }}
                 >
                     <StyledTabsList

@@ -7,7 +7,6 @@ import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { useRipple, RippleContainer } from '../animations/Ripple'
 import { FOUNDATION_THEME } from '../../tokens'
 
 export type ButtonBaseProps = Omit<
@@ -50,7 +49,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const defaultButtonTokens =
             useResponsiveTokens<ButtonTokensType>('BUTTON')
         const buttonTokens = tokens ?? defaultButtonTokens
-        const { ripples, createRipple } = useRipple()
 
         const getBorderRadius = () => {
             const variantBorderRadius =
@@ -70,23 +68,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const lineHeight = formatLineHeight(
             FOUNDATION_THEME.font.size.body.md.lineHeight
         )
-
-        const getRippleColor = (): string => {
-            if (buttonType === ButtonType.SECONDARY) {
-                return 'rgba(0, 0, 0, 0.1)'
-            } else if (buttonType === ButtonType.PRIMARY) {
-                return 'rgba(219, 234, 254, 0.7)'
-            } else if (buttonType === ButtonType.DANGER) {
-                return 'rgba(255, 255, 255, 0.6)'
-            } else if (buttonType === ButtonType.SUCCESS) {
-                return 'rgba(255, 255, 255, 0.6)'
-            }
-            return 'rgba(255, 255, 255, 0.4)'
-        }
-
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
-            createRipple(event)
             onClick?.(event)
         }
 
@@ -125,8 +108,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         ? 'transparent'
                         : buttonTokens.outline[buttonType][subType].default
                 }
-                position={!isSkeleton ? 'relative' : undefined}
-                overflow={!isSkeleton ? 'hidden' : undefined}
+                transition="transform 0.15s ease-in-out"
                 _active={
                     isSkeleton || isDisabled
                         ? undefined
@@ -140,6 +122,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
+                              transform: 'scale(0.99)',
                           }
                 }
                 _hover={
@@ -150,12 +133,10 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].hover,
-                              //   outline:
-                              //       buttonTokens.outline[buttonType][subType]
-                              //           .hover,
                               color: buttonTokens.text.color[buttonType][
                                   subType
                               ].hover,
+                              //   transform: 'scale(1.01)',
                           }
                 }
                 _focusVisible={
@@ -242,12 +223,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             </Block>
                         )}
                     </>
-                )}
-                {!isSkeleton && (
-                    <RippleContainer
-                        ripples={ripples}
-                        rippleColor={getRippleColor()}
-                    />
                 )}
             </PrimitiveButton>
         )

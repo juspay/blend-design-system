@@ -70,7 +70,7 @@ const StyledTableCell = styled.td<{
 }>`
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
-    vertical-align: top;
+    vertical-align: middle;
     background-color: ${FOUNDATION_THEME.colors.gray[25]};
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
@@ -668,10 +668,11 @@ const TableBody = forwardRef<
                                                       variant={skeletonVariant}
                                                       loading
                                                       width="20px"
-                                                      height="20px"
+                                                      height="28px"
                                                       borderRadius="4px"
                                                       style={{
                                                           margin: 'auto',
+                                                          display: 'block',
                                                       }}
                                                   />
                                               ) : (
@@ -920,8 +921,12 @@ const TableBody = forwardRef<
                                                               }
                                                               loading
                                                               width="90%"
-                                                              height="20px"
+                                                              height="28px"
                                                               borderRadius="4px"
+                                                              style={{
+                                                                  display:
+                                                                      'block',
+                                                              }}
                                                           />
                                                       </StyledTableCell>
                                                   )
@@ -1001,6 +1006,9 @@ const TableBody = forwardRef<
                                                           width="80px"
                                                           height="32px"
                                                           borderRadius="4px"
+                                                          style={{
+                                                              display: 'block',
+                                                          }}
                                                       />
                                                   ) : (
                                                       <ActionsCell

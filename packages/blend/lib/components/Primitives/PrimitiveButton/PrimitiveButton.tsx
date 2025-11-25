@@ -78,6 +78,10 @@ type PrimitiveButtonProps = StateStyles & {
     outlineWidth?: CSSObject['outlineWidth']
     outlineColor?: CSSObject['outlineColor']
 
+    // Transform & Transition
+    transform?: CSSObject['transform']
+    transition?: CSSObject['transition']
+
     // State
     disabled?: boolean
 
@@ -142,6 +146,8 @@ const blockedProps = [
     'outlineStyle',
     'outlineWidth',
     'outlineColor',
+    'transform',
+    'transition',
     'variant',
     '_hover',
     '_focus',
@@ -260,6 +266,10 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
     if (props.outlineStyle) styles.outlineStyle = props.outlineStyle
     if (props.outlineWidth) styles.outlineWidth = props.outlineWidth
     if (props.outlineColor) styles.outlineColor = props.outlineColor
+
+    // Transform & Transition
+    if (props.transform) styles.transform = props.transform
+    if (props.transition) styles.transition = props.transition
 
     return styles
 }
