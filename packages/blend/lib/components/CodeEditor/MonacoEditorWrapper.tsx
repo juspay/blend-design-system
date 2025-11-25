@@ -3,6 +3,7 @@ import Editor, { OnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../Primitives/Block/Block'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
+import './monaco-editor.css'
 
 const LANGUAGE_MAP: Record<string, string> = {
     jsx: 'javascriptreact',
@@ -504,12 +505,19 @@ export const MonacoEditorWrapper = ({
         }
     }
 
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            event.stopPropagation()
+        }
+    }
+
     return (
         <Block
             position="relative"
             width="100%"
             backgroundColor={tokens.body.backgroundColor}
             style={containerStyle}
+            onKeyDown={handleKeyDown}
         >
             <style>
                 {showLineNumbers
