@@ -32,6 +32,8 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
+
+    SANKEY = 'sankey',
 }
 
 export enum LegendsChangeType {
@@ -120,6 +122,7 @@ export type RenderChartProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     noData?: NoDataProps
+    height?: number | string
 }
 
 export type CoreChartProps = {
@@ -206,4 +209,64 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
     selectedKeys: string[]
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+}
+
+export type SankeyNode = {
+    name: string
+    id?: string
+    color?: string
+}
+
+export type SankeyLink = {
+    source: number | string
+    target: number | string
+    value: number
+    color?: string
+    hoverColor?: string
+}
+
+export type SankeyData = {
+    nodes: SankeyNode[]
+    links: SankeyLink[]
+}
+
+export type SankeyTooltipData = {
+    payload: {
+        name?: string
+        value?: number
+        source?: number | string
+        target?: number | string
+        sourceName?: string
+        targetName?: string
+        color?: string
+        hoverColor?: string
+    }
+}
+
+export type SankeyNodeProps = {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    index?: number
+    payload?: SankeyNode & { value?: number }
+    containerWidth?: number
+    nodeColors?: string[]
+    onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
+    onMouseLeave?: () => void
+}
+
+export type SankeyLinkProps = {
+    sourceX?: number
+    targetX?: number
+    sourceY?: number
+    targetY?: number
+    sourceControlX?: number
+    targetControlX?: number
+    linkWidth?: number
+    index?: number
+    payload?: SankeyLink
+    linkColors?: string[]
+    onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
+    onMouseLeave?: () => void
 }
