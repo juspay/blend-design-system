@@ -154,6 +154,9 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontSize
                         }
+                        style={{
+                            minWidth: '30.6px',
+                        }}
                     >
                         End
                     </PrimitiveText>
