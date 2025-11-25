@@ -1,6 +1,8 @@
 import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
+import type { DraggableAttributes } from '@dnd-kit/core'
+import type { useSortable } from '@dnd-kit/sortable'
 
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -428,7 +430,12 @@ const TableHeader = forwardRef<
                             }),
                         }
 
-                        const headerContent = (
+                        const headerContent = (dragHandleProps?: {
+                            listeners?: ReturnType<
+                                typeof useSortable
+                            >['listeners']
+                            attributes?: DraggableAttributes
+                        }) => (
                             <Block
                                 display="flex"
                                 alignItems="center"
@@ -494,6 +501,15 @@ const TableHeader = forwardRef<
                                                 alignItems="flex-start"
                                                 minWidth={0}
                                                 flexGrow={1}
+                                                style={{
+                                                    cursor: isDraggable
+                                                        ? 'grab'
+                                                        : 'default',
+                                                }}
+                                                {...(isDraggable &&
+                                                dragHandleProps
+                                                    ? dragHandleProps.listeners
+                                                    : {})}
                                             >
                                                 {isDisabled ? (
                                                     <Skeleton
@@ -525,7 +541,9 @@ const TableHeader = forwardRef<
                                                                 width: '100%',
                                                                 display:
                                                                     'block',
-                                                                cursor: 'default',
+                                                                cursor: isDraggable
+                                                                    ? 'grab'
+                                                                    : 'default',
                                                                 fontSize:
                                                                     tableToken
                                                                         .dataTable
@@ -588,7 +606,9 @@ const TableHeader = forwardRef<
                                                                     width: '100%',
                                                                     display:
                                                                         'block',
-                                                                    cursor: 'default',
+                                                                    cursor: isDraggable
+                                                                        ? 'grab'
+                                                                        : 'default',
                                                                     fontSize:
                                                                         tableToken
                                                                             .dataTable
@@ -730,14 +750,22 @@ const TableHeader = forwardRef<
                                                         ] || false
                                                     }
                                                     onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
+                                                        if (open) {
+                                                            setOpenPopovers({
                                                                 [String(
                                                                     column.field
-                                                                )]: open,
+                                                                )]: true,
                                                             })
-                                                        )
+                                                        } else {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                        }
                                                     }}
                                                     direction="bottom"
                                                     modal={true}
@@ -815,14 +843,22 @@ const TableHeader = forwardRef<
                                                         ] || false
                                                     }
                                                     onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
+                                                        if (open) {
+                                                            setOpenPopovers({
                                                                 [String(
                                                                     column.field
-                                                                )]: open,
+                                                                )]: true,
                                                             })
-                                                        )
+                                                        } else {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                        }
                                                     }}
                                                 >
                                                     <ColumnFilter
@@ -870,7 +906,9 @@ const TableHeader = forwardRef<
                                     data-table-column-heading={column.header}
                                     disabled={false}
                                 >
-                                    {headerContent}
+                                    {(dragHandleProps) =>
+                                        headerContent(dragHandleProps)
+                                    }
                                 </DraggableColumnHeader>
                             )
                         }
@@ -881,7 +919,7 @@ const TableHeader = forwardRef<
                                 style={headerStyle}
                                 data-table-column-heading={column.header}
                             >
-                                {headerContent}
+                                {headerContent()}
                             </th>
                         )
                     })}

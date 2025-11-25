@@ -68,7 +68,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const lineHeight = formatLineHeight(
             FOUNDATION_THEME.font.size.body.md.lineHeight
         )
-
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
             onClick?.(event)
@@ -118,8 +117,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
-                              border: buttonTokens.border[buttonType][subType]
-                                  .active,
+                              //   border: buttonTokens.border[buttonType][subType]
+                              //       .active,
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
@@ -130,8 +129,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                     isSkeleton
                         ? undefined
                         : {
-                              border: buttonTokens.border[buttonType][subType]
-                                  .hover,
                               background:
                                   buttonTokens.backgroundColor[buttonType][
                                       subType

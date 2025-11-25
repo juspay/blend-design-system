@@ -317,6 +317,10 @@ const Charts: React.FC<ChartsProps> = ({
                                                   : mergedYAxis.showLabel,
                                           },
                                           noData,
+                                          height:
+                                              typeof height === 'number'
+                                                  ? height
+                                                  : undefined,
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -358,6 +362,10 @@ const Charts: React.FC<ChartsProps> = ({
                                                   : mergedYAxis.showLabel,
                                           },
                                           noData,
+                                          height:
+                                              typeof height === 'number'
+                                                  ? height
+                                                  : undefined,
                                       })}
                                   </ResponsiveContainer>
                               </Block>
@@ -512,6 +520,10 @@ const Charts: React.FC<ChartsProps> = ({
                                                   : mergedYAxis.showLabel,
                                           },
                                           noData,
+                                          height:
+                                              typeof height === 'number'
+                                                  ? height
+                                                  : undefined,
                                       })}
                                   </ResponsiveContainer>
                                   {isSmallScreen && (
@@ -643,6 +655,10 @@ const Charts: React.FC<ChartsProps> = ({
                                                   : mergedYAxis.showLabel,
                                           },
                                           noData,
+                                          height:
+                                              typeof height === 'number'
+                                                  ? height
+                                                  : undefined,
                                       })}
                                   </ResponsiveContainer>
                               </Block>
