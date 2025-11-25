@@ -15,10 +15,14 @@ export type SwitchProps = {
     error?: boolean
     size?: SwitchSize
     label?: string
-    subtext?: ReactNode
+    subtext?: string
     slot?: ReactNode
     name?: string
     value?: string
+    maxLength?: {
+        label?: number
+        subtext?: number
+    }
 }
 
 export type SwitchGroupProps = {
