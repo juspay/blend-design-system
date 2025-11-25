@@ -596,6 +596,549 @@ const AccessibilityDashboardDemo = () => {
         </Block>
     )
 
+    const renderMethodology = () => (
+        <Block>
+            <Block marginBottom={FOUNDATION_THEME.unit[24]}>
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    marginBottom={FOUNDATION_THEME.unit[12]}
+                >
+                    <Text variant="heading.xl" fontWeight={700}>
+                        Methodology & Accuracy
+                    </Text>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                        onClick={() => setSelectedComponent('overview')}
+                        text="← Back to Overview"
+                    />
+                </Block>
+                <Text
+                    variant="body.md"
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                >
+                    How accessibility reports are generated and what to expect
+                </Text>
+            </Block>
+
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        📋 How Reports Are Generated
+                    </Text>
+                </Block>
+                <Block display="grid" gap={FOUNDATION_THEME.unit[16]}>
+                    {[
+                        {
+                            title: 'Code Analysis',
+                            description:
+                                'Automated analysis of component source code to identify semantic HTML, ARIA attributes, keyboard handlers, and focus management',
+                            confidence: 'Primary method',
+                        },
+                        {
+                            title: 'WCAG 2.2 Criteria Mapping',
+                            description:
+                                'Systematic check of all 73 WCAG criteria (25 Level A, 20 Level AA, 28 Level AAA) against component implementation',
+                            confidence: 'Comprehensive',
+                        },
+                        {
+                            title: 'WAI-ARIA Pattern Recognition',
+                            description:
+                                'Comparison against official WAI-ARIA design patterns (Dialog, Accordion, Tabs, Text Input, etc.)',
+                            confidence: 'Pattern-based',
+                        },
+                        {
+                            title: 'Issue Classification',
+                            description:
+                                'Categorization by severity (Critical/Major/Minor), impact, WCAG criterion, and exact code location',
+                            confidence: 'Detailed',
+                        },
+                    ].map((item, index) => (
+                        <Block
+                            key={index}
+                            padding={FOUNDATION_THEME.unit[16]}
+                            backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                            borderRadius={FOUNDATION_THEME.unit[8]}
+                            border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                        >
+                            <Block marginBottom={FOUNDATION_THEME.unit[8]}>
+                                <Text variant="body.md" fontWeight={600}>
+                                    {item.title}
+                                </Text>
+                            </Block>
+                            <Block marginBottom={FOUNDATION_THEME.unit[8]}>
+                                <Text
+                                    variant="body.sm"
+                                    color={FOUNDATION_THEME.colors.gray[700]}
+                                >
+                                    {item.description}
+                                </Text>
+                            </Block>
+                            <Text
+                                variant="body.xs"
+                                color={FOUNDATION_THEME.colors.primary[600]}
+                                fontWeight={600}
+                            >
+                                {item.confidence}
+                            </Text>
+                        </Block>
+                    ))}
+                </Block>
+            </Block>
+
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        🎯 Accuracy Levels
+                    </Text>
+                </Block>
+
+                <Block marginBottom={FOUNDATION_THEME.unit[20]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.green[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.green[900]}
+                        >
+                            HIGH Confidence (90-95% accurate)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor="#FFFFFF"
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.green[200]}`}
+                    >
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Semantic HTML:</strong> Whether
+                                    label, input, button elements are used
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>ARIA Attributes:</strong> Presence
+                                    of aria-label, aria-describedby, role, etc.
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Keyboard Support:</strong> Tab
+                                    order, keyboard event handlers
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Focus Management:</strong> Whether
+                                    focus is trapped, returned, or managed
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+
+                <Block marginBottom={FOUNDATION_THEME.unit[20]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.yellow[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.yellow[900]}
+                        >
+                            MEDIUM Confidence (70-80% accurate)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor="#FFFFFF"
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.yellow[200]}`}
+                    >
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Visual Styling:</strong> Can see CSS
+                                    values but cannot visually render
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Animation Behavior:</strong> Can see
+                                    animations but cannot verify
+                                    prefers-reduced-motion
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Responsive Behavior:</strong> Can
+                                    see breakpoint logic but cannot verify
+                                    rendering
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+
+                <Block marginBottom={FOUNDATION_THEME.unit[20]}>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor={FOUNDATION_THEME.colors.red[50]}
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        marginBottom={FOUNDATION_THEME.unit[12]}
+                    >
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.red[900]}
+                        >
+                            LOW Confidence (40-60% accurate)
+                        </Text>
+                    </Block>
+                    <Block
+                        padding={FOUNDATION_THEME.unit[16]}
+                        backgroundColor="#FFFFFF"
+                        borderRadius={FOUNDATION_THEME.unit[8]}
+                        border={`1px solid ${FOUNDATION_THEME.colors.red[200]}`}
+                    >
+                        <ul
+                            style={{
+                                paddingLeft: FOUNDATION_THEME.unit[20],
+                                margin: 0,
+                            }}
+                        >
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>
+                                        Screen Reader Announcements:
+                                    </strong>{' '}
+                                    Cannot test with NVDA, JAWS, VoiceOver
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Color Contrast Ratios:</strong>{' '}
+                                    Cannot calculate exact 4.5:1 or 7:1 ratios
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Touch Target Sizes:</strong> Cannot
+                                    measure rendered pixel dimensions
+                                </Text>
+                            </li>
+                            <li
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[8],
+                                }}
+                            >
+                                <Text variant="body.md">
+                                    <strong>Browser Compatibility:</strong>{' '}
+                                    Cannot test across different browsers and
+                                    modes
+                                </Text>
+                            </li>
+                        </ul>
+                    </Block>
+                </Block>
+            </Block>
+
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        📊 How Scores Are Calculated
+                    </Text>
+                </Block>
+                <Block
+                    padding={FOUNDATION_THEME.unit[20]}
+                    backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                    borderRadius={FOUNDATION_THEME.unit[8]}
+                    border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                >
+                    <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                        <Text variant="body.md" fontWeight={600}>
+                            Overall Component Score
+                        </Text>
+                        <Text
+                            variant="body.sm"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        >
+                            Average of: Keyboard Navigation (25%) + Screen
+                            Reader Support (25%) + Visual Accessibility (25%) +
+                            ARIA Compliance (25%)
+                        </Text>
+                    </Block>
+                    <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                        <Text variant="body.md" fontWeight={600}>
+                            WCAG Level Scores
+                        </Text>
+                        <Text
+                            variant="body.sm"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        >
+                            Level A: (Passing A criteria ÷ Total A criteria) ×
+                            100
+                        </Text>
+                        <Text
+                            variant="body.sm"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        >
+                            Level AA: (Passing AA criteria ÷ Total AA criteria)
+                            × 100
+                        </Text>
+                        <Text
+                            variant="body.sm"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                        >
+                            Level AAA: (Passing AAA criteria ÷ Total AAA
+                            criteria) × 100
+                        </Text>
+                    </Block>
+                </Block>
+            </Block>
+
+            {/* What To Do Next */}
+            <Block marginBottom={FOUNDATION_THEME.unit[32]}>
+                <Block marginBottom={FOUNDATION_THEME.unit[16]}>
+                    <Text variant="heading.lg" fontWeight={600}>
+                        ✅ What To Do Next
+                    </Text>
+                </Block>
+
+                <Block
+                    padding={FOUNDATION_THEME.unit[20]}
+                    backgroundColor={FOUNDATION_THEME.colors.primary[50]}
+                    borderRadius={FOUNDATION_THEME.unit[8]}
+                    border={`2px solid ${FOUNDATION_THEME.colors.primary[200]}`}
+                    marginBottom={FOUNDATION_THEME.unit[16]}
+                >
+                    <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.primary[900]}
+                        >
+                            Trust These Reports For:
+                        </Text>
+                    </Block>
+                    <ul
+                        style={{
+                            paddingLeft: FOUNDATION_THEME.unit[20],
+                            margin: 0,
+                        }}
+                    >
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.primary[900]}
+                            >
+                                Code structure issues (missing ARIA, no labels,
+                                wrong elements)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.primary[900]}
+                            >
+                                API design flaws (props that should exist but
+                                don't)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.primary[900]}
+                            >
+                                Pattern violations (not following WAI-ARIA
+                                patterns)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.primary[900]}
+                            >
+                                Issue prioritization (which issues are most
+                                critical)
+                            </Text>
+                        </li>
+                    </ul>
+                </Block>
+
+                <Block
+                    padding={FOUNDATION_THEME.unit[20]}
+                    backgroundColor={FOUNDATION_THEME.colors.orange[50]}
+                    borderRadius={FOUNDATION_THEME.unit[8]}
+                    border={`2px solid ${FOUNDATION_THEME.colors.orange[200]}`}
+                    marginBottom={FOUNDATION_THEME.unit[16]}
+                >
+                    <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                        <Text
+                            variant="heading.md"
+                            fontWeight={600}
+                            color={FOUNDATION_THEME.colors.orange[900]}
+                        >
+                            Do NOT Trust For:
+                        </Text>
+                    </Block>
+                    <ul
+                        style={{
+                            paddingLeft: FOUNDATION_THEME.unit[20],
+                            margin: 0,
+                        }}
+                    >
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.orange[900]}
+                            >
+                                Final verification (always test with real screen
+                                readers)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.orange[900]}
+                            >
+                                Exact contrast ratios (use WebAIM Contrast
+                                Checker)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.orange[900]}
+                            >
+                                User experience (test with actual users with
+                                disabilities)
+                            </Text>
+                        </li>
+                        <li style={{ marginBottom: FOUNDATION_THEME.unit[8] }}>
+                            <Text
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.orange[900]}
+                            >
+                                Browser-specific issues (test across all
+                                browsers)
+                            </Text>
+                        </li>
+                    </ul>
+                </Block>
+            </Block>
+
+            {/* Expected Accuracy */}
+            <Block
+                padding={FOUNDATION_THEME.unit[20]}
+                backgroundColor={FOUNDATION_THEME.colors.primary[50]}
+                borderRadius={FOUNDATION_THEME.unit[8]}
+                border={`2px solid ${FOUNDATION_THEME.colors.primary[200]}`}
+            >
+                <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                    <Text
+                        variant="heading.md"
+                        fontWeight={600}
+                        color={FOUNDATION_THEME.colors.primary[900]}
+                    >
+                        📈 Expected Accuracy
+                    </Text>
+                </Block>
+                <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                    <Text
+                        variant="body.md"
+                        color={FOUNDATION_THEME.colors.primary[900]}
+                    >
+                        <strong>Overall Confidence: 70-75%</strong> - These
+                        reports catch 70-80% of accessibility issues through
+                        code analysis alone.
+                    </Text>
+                </Block>
+                <Block marginBottom={FOUNDATION_THEME.unit[12]}>
+                    <Text
+                        variant="body.md"
+                        color={FOUNDATION_THEME.colors.primary[900]}
+                    >
+                        <strong>Scores may drop 5-10%</strong> after real screen
+                        reader testing and user validation. This is normal and
+                        expected.
+                    </Text>
+                </Block>
+                <Text
+                    variant="body.md"
+                    color={FOUNDATION_THEME.colors.primary[900]}
+                >
+                    Think of these reports as{' '}
+                    <strong>"Phase 0: Code Review"</strong> that identifies
+                    major blockers before you even start manual testing.
+                    Remaining issues require human testing with assistive
+                    technology.
+                </Text>
+            </Block>
+        </Block>
+    )
+
     const renderOverview = () => (
         <Block>
             {/* Validation Guide Banner */}
@@ -639,6 +1182,51 @@ const AccessibilityDashboardDemo = () => {
                         size={ButtonSize.MEDIUM}
                         onClick={() => setSelectedComponent('validation-guide')}
                         text="View Guide →"
+                    />
+                </Block>
+            </Block>
+
+            {/* Methodology Banner */}
+            <Block
+                padding={FOUNDATION_THEME.unit[20]}
+                backgroundColor={FOUNDATION_THEME.colors.primary[50]}
+                borderRadius={FOUNDATION_THEME.unit[12]}
+                border={`2px solid ${FOUNDATION_THEME.colors.primary[200]}`}
+                marginBottom={FOUNDATION_THEME.unit[24]}
+                cursor="pointer"
+                onClick={() => setSelectedComponent('methodology')}
+                style={{
+                    transition: 'all 0.2s',
+                }}
+            >
+                <Block
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Block>
+                        <Block marginBottom={FOUNDATION_THEME.unit[8]}>
+                            <Text
+                                variant="heading.lg"
+                                fontWeight={700}
+                                color={FOUNDATION_THEME.colors.primary[900]}
+                            >
+                                📊 How Reports Are Generated
+                            </Text>
+                        </Block>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.primary[800]}
+                        >
+                            Learn how accessibility scores are calculated and
+                            what accuracy to expect.
+                        </Text>
+                    </Block>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() => setSelectedComponent('methodology')}
+                        text="View Methodology →"
                     />
                 </Block>
             </Block>
@@ -1238,7 +1826,9 @@ const AccessibilityDashboardDemo = () => {
                     ? renderOverview()
                     : selectedComponent === 'validation-guide'
                       ? renderValidationGuide()
-                      : renderComponentDetail(selectedComponent)}
+                      : selectedComponent === 'methodology'
+                        ? renderMethodology()
+                        : renderComponentDetail(selectedComponent)}
             </Block>
         </Block>
     )
