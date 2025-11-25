@@ -60,7 +60,7 @@ export const useModal = (isOpen: boolean, onClose: () => void) => {
                 clearTimeout(exitTimer)
             }
         }
-    }, [isOpen, onClose])
+    }, [isOpen])
 
     return { shouldRender, isAnimatingIn, portalContainer }
 }
