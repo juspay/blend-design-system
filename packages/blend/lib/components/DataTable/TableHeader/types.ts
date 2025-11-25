@@ -15,6 +15,8 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     enableInlineEdit?: boolean
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
+    showSkeleton?: boolean
+    isLoading?: boolean
     columnManagerMaxSelections?: number
     columnManagerAlwaysSelected?: string[]
     columnManagerPrimaryAction?: {

@@ -7,12 +7,18 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
     ({ className, children, ...props }, ref) => {
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
+
+        const { disable: _disable, ...domProps } = props as TabsContentProps & {
+            disable?: boolean
+        }
+        void _disable
+
         return (
             <StyledTabsContent
                 ref={ref}
                 className={className}
                 $tabsToken={tabsToken}
-                {...props}
+                {...domProps}
             >
                 {children}
             </StyledTabsContent>

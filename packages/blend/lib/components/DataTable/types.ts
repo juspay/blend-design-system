@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 
 export enum SortDirection {
     NONE = 'none',
@@ -117,6 +118,7 @@ export type ColumnManagerProps<T extends Record<string, unknown>> = {
         loading?: boolean
     }
     multiSelectWidth?: number
+    disabled?: boolean
 }
 
 export type AdvancedFilterProps = {
@@ -140,6 +142,8 @@ export type BaseColumnDefinition<T> = {
     frozen?: boolean
     className?: string
     filterType?: FilterType
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type ColumnDefinition<T> =
@@ -322,6 +326,9 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
+    isRowLoading?: (row: T, index: number) => boolean
     showHeader?: boolean
     showToolbar?: boolean
     showSettings?: boolean

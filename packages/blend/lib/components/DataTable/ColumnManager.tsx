@@ -26,6 +26,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     columnManagerPrimaryAction,
     columnManagerSecondaryAction,
     multiSelectWidth = 250,
+    disabled = false,
 }: ColumnManagerProps<T>) => {
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
@@ -33,15 +34,16 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
     const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
         string[]
-    >([])
+    >(() => visibleColumns.map((col) => String(col.field)))
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
-        if (hasPrimaryAction) {
+        if (hasPrimaryAction && !isOpen) {
             setPendingSelectedColumns(
                 visibleColumns.map((col) => String(col.field))
             )
         }
-    }, [visibleColumns, hasPrimaryAction])
+    }, [visibleColumns, hasPrimaryAction, isOpen])
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
     const selectedColumnValues = hasPrimaryAction
@@ -165,6 +167,16 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
         onColumnChange(newVisibleColumns)
         columnManagerPrimaryAction.onClick(pendingSelectedColumns)
+        setIsOpen(false)
+    }
+
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open)
+        if (open && hasPrimaryAction) {
+            setPendingSelectedColumns(
+                visibleColumns.map((col) => String(col.field))
+            )
+        }
     }
 
     const customTrigger = (
@@ -174,8 +186,12 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             justifyContent="center"
             width="auto"
             height="auto"
-            cursor="pointer"
+            cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
+            disabled={disabled}
+            style={{
+                opacity: disabled ? 0.4 : 1,
+            }}
         >
             <Plus
                 size={tableTokens.header.actionIcons.columnManagerIcon.width}
@@ -204,6 +220,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         showActionButtons: true,
         primaryAction,
         secondaryAction: columnManagerSecondaryAction,
+        disabled,
+        open: isOpen,
+        onOpenChange: handleOpenChange,
     }
 
     return (

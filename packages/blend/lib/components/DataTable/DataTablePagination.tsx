@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -94,10 +94,6 @@ export function DataTablePagination({
         return filtered
     }, [pageSizeOptions, totalRows, pageSize])
 
-    // Removed auto-adjustment of pageSize when totalRows decreases
-    // This was causing issues with client-side filtering where temporary
-    // reduction in rows would permanently change the user's selected page size
-
     const pageSizeMenuItems = [
         {
             groupLabel: '',
@@ -112,6 +108,7 @@ export function DataTablePagination({
 
     return (
         <Block
+            data-table-pagination="true"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -141,13 +138,22 @@ export function DataTablePagination({
                     {isMobile ? 'Rows' : 'Rows per page'}
                 </PrimitiveText>
 
-                <Block style={{ cursor: hasData ? 'pointer' : 'not-allowed' }}>
+                <Block
+                    style={{
+                        cursor:
+                            hasData && !isLoading ? 'pointer' : 'not-allowed',
+                    }}
+                >
                     <SingleSelect
                         label="rows per page"
                         items={pageSizeMenuItems}
                         selected={String(pageSize)}
                         onSelect={(value) => {
-                            if (typeof value === 'string' && hasData) {
+                            if (
+                                typeof value === 'string' &&
+                                hasData &&
+                                !isLoading
+                            ) {
                                 const newSize = Number(value)
                                 if (
                                     newSize > 0 &&
@@ -163,31 +169,9 @@ export function DataTablePagination({
                         variant={SelectMenuVariant.NO_CONTAINER}
                         placeholder=""
                         minMenuWidth={80}
-                        disabled={!hasData}
+                        disabled={!hasData || isLoading}
                     />
                 </Block>
-
-                {isLoading && (
-                    <Block
-                        display="flex"
-                        alignItems="center"
-                        gap={FOUNDATION_THEME.unit[4]}
-                    >
-                        <Loader2
-                            size={FOUNDATION_THEME.unit[16]}
-                            className="animate-spin"
-                        />
-                        <PrimitiveText
-                            as="span"
-                            fontSize={
-                                FOUNDATION_THEME.font.size.body.sm.fontSize
-                            }
-                            color={FOUNDATION_THEME.colors.gray[500]}
-                        >
-                            Loading...
-                        </PrimitiveText>
-                    </Block>
-                )}
             </Block>
 
             <Block
