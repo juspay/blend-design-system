@@ -224,6 +224,8 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -267,6 +269,8 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                 <DrawerTrigger>
                     {customTrigger || (
                         <SingleSelectTrigger
+                            maxTriggerWidth={maxTriggerWidth}
+                            minTriggerWidth={minTriggerWidth}
                             singleSelectTokens={singleSelectTokens}
                             size={size}
                             selected={selected}
