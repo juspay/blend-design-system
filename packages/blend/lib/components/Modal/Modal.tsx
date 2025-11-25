@@ -231,7 +231,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     alignItems="center"
                     justifyContent="center"
                     overflow="auto"
-                    padding={FOUNDATION_THEME.unit[16]}
+                    padding={modalTokens.padding}
                     boxShadow={modalTokens.boxShadow}
                     {...props}
                 >

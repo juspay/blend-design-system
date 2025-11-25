@@ -38,7 +38,8 @@ export type ModalTokensType = {
     boxShadow: CSSObject['boxShadow']
     // Pattern: borderRadius
     borderRadius: CSSObject['borderRadius']
-
+    // Pattern: padding
+    padding: CSSObject['padding']
     // Header properties
     header: {
         // Pattern: header.padding
@@ -108,6 +109,7 @@ export const getModalComponentTokens = (
             // Container properties
             boxShadow: foundationToken.shadows.xs,
             borderRadius: foundationToken.border.radius[12],
+            padding: foundationToken.unit[16],
 
             // Header properties
             header: {
@@ -154,6 +156,7 @@ export const getModalComponentTokens = (
             // Container properties
             boxShadow: foundationToken.shadows.lg,
             borderRadius: foundationToken.border.radius[16],
+            padding: foundationToken.unit[16],
 
             // Header properties
             header: {
