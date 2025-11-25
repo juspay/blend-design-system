@@ -16,6 +16,8 @@ import modalMetrics from './accesiblity/modal-metrics.json'
 import textinputMetrics from './accesiblity/textinput-metrics.json'
 import searchinputMetrics from './accesiblity/searchinput-metrics.json'
 import numberinputMetrics from './accesiblity/numberinput-metrics.json'
+import singleselectMetrics from './accesiblity/singleselect-metrics.json'
+import multiselectMetrics from './accesiblity/multiselect-metrics.json'
 
 const AccessibilityDashboardDemo = () => {
     const [selectedComponent, setSelectedComponent] =
@@ -1478,6 +1480,10 @@ const AccessibilityDashboardDemo = () => {
             metrics = searchinputMetrics
         } else if (componentName === 'NumberInput') {
             metrics = numberinputMetrics
+        } else if (componentName === 'SingleSelect') {
+            metrics = singleselectMetrics
+        } else if (componentName === 'MultiSelect') {
+            metrics = multiselectMetrics
         }
         // Add more components here as they're evaluated
 

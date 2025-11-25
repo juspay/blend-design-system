@@ -1072,16 +1072,36 @@
             "levelAScore": 100,
             "levelAAScore": 95,
             "levelAAAScore": 72
+        },
+        {
+            "componentName": "SingleSelect",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-25",
+            "evaluator": "Accessibility Team",
+            "overallScore": 91,
+            "levelAScore": 100,
+            "levelAAScore": 95,
+            "levelAAAScore": 78
+        },
+        {
+            "componentName": "MultiSelect",
+            "version": "0.0.27",
+            "evaluationDate": "2025-11-25",
+            "evaluator": "Accessibility Team",
+            "overallScore": 90,
+            "levelAScore": 100,
+            "levelAAScore": 95,
+            "levelAAAScore": 75
         }
     ],
     "summary": {
-        "totalComponents": 8,
+        "totalComponents": 10,
         "averageScore": 91,
         "levelACompliance": 100,
         "levelAACompliance": 96,
-        "levelAAACompliance": 81,
+        "levelAAACompliance": 79,
         "criticalIssues": 0,
-        "majorIssues": 5,
-        "minorIssues": 29
+        "majorIssues": 10,
+        "minorIssues": 38
     }
 }

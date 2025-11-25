@@ -147,7 +147,10 @@ export type ComponentTokenType = {
     WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
-import { Theme } from './ThemeProvider'
+export enum Theme {
+    LIGHT = 'light',
+    DARK = 'dark',
+}
 
 type ThemeContextType = {
     foundationTokens: ThemeType
