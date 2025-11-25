@@ -93,6 +93,9 @@ export type MultiSelectProps = {
     // responsive behavior
     useDrawerOnMobile?: boolean
 
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+
     // dim
     minMenuWidth?: number
     maxMenuWidth?: number

@@ -31,6 +31,8 @@ export type MultiSelectTriggerProps = {
     inline?: boolean
     error?: boolean
     disabled?: boolean
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
 }
 const MultiSelectTrigger = ({
     selectedValues,
@@ -51,6 +53,8 @@ const MultiSelectTrigger = ({
     inline = false,
     error,
     disabled,
+    maxTriggerWidth,
+    minTriggerWidth,
 }: MultiSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -96,6 +100,8 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    maxWidth={maxTriggerWidth}
+                    minWidth={minTriggerWidth}
                     data-selectbox-value={placeholder}
                     data-dropdown-for={placeholder}
                     data-value={placeholder}

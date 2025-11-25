@@ -28,9 +28,13 @@ export type SingleSelectTriggerProps = {
     error?: boolean
     errorMessage?: string
     disabled?: boolean
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
 }
 
 const SingleSelectTrigger = ({
+    maxTriggerWidth,
+    minTriggerWidth,
     size,
     selected,
     label,
@@ -71,6 +75,8 @@ const SingleSelectTrigger = ({
                 data-custom-value={selected || placeholder}
                 data-button-status={disabled ? 'disabled' : 'enabled'}
                 onClick={onClick}
+                maxWidth={maxTriggerWidth}
+                minWidth={minTriggerWidth}
                 type="button"
                 name={name}
                 position="relative"

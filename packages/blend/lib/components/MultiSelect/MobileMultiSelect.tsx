@@ -326,6 +326,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -370,6 +372,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                 <DrawerTrigger>
                     {customTrigger || (
                         <MultiSelectTrigger
+                            maxTriggerWidth={maxTriggerWidth}
+                            minTriggerWidth={minTriggerWidth}
                             onChange={onChange}
                             name={name || ''}
                             label={label}

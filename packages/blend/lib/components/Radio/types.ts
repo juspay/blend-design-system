@@ -19,6 +19,10 @@ export type RadioProps = {
     subtext?: string
     slot?: ReactNode
     name?: string
+    maxLength?: {
+        label?: number
+        subtext?: number
+    }
 }
 
 export type RadioGroupProps = {

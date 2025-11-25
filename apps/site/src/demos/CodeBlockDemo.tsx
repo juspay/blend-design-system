@@ -415,63 +415,68 @@ fibonacci n
                 {/* Live Preview */}
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Live Preview</h3>
-                    <CodeBlock
-                        code={
-                            variant === CodeBlockVariant.DIFF ? '' : customCode
-                        }
-                        variant={variant}
-                        showLineNumbers={showLineNumbers}
-                        showHeader={showHeader}
-                        header={headerText}
-                        diffLines={
-                            variant === CodeBlockVariant.DIFF
-                                ? [
-                                      {
-                                          content:
-                                              'function getPaymentPriority(order) {',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content: '  const priorities = [];',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content:
-                                              "  if (order.udf3 === 'insurance' && order.udf4 === 'health' && order.paymentMethod === 'UPI') {",
-                                          type: DiffLineType.REMOVED,
-                                      },
-                                      {
-                                          content:
-                                              "  if (order.type === 'insurance' && order.category === 'health' && order.method === 'UPI') {",
-                                          type: DiffLineType.ADDED,
-                                      },
-                                      {
-                                          content:
-                                              "    priorities.push('PAYU');",
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content: '  }',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content:
-                                              "  return priorities.length ? priorities : ['DEFAULT'];",
-                                          type: DiffLineType.REMOVED,
-                                      },
-                                      {
-                                          content:
-                                              "  return priorities.length > 0 ? priorities : ['DEFAULT'];",
-                                          type: DiffLineType.ADDED,
-                                      },
-                                      {
-                                          content: '}',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                  ]
-                                : undefined
-                        }
-                    />
+                    <form>
+                        <CodeBlock
+                            code={
+                                variant === CodeBlockVariant.DIFF
+                                    ? ''
+                                    : customCode
+                            }
+                            variant={variant}
+                            showLineNumbers={showLineNumbers}
+                            showHeader={showHeader}
+                            header={headerText}
+                            diffLines={
+                                variant === CodeBlockVariant.DIFF
+                                    ? [
+                                          {
+                                              content:
+                                                  'function getPaymentPriority(order) {',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  '  const priorities = [];',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  "  if (order.udf3 === 'insurance' && order.udf4 === 'health' && order.paymentMethod === 'UPI') {",
+                                              type: DiffLineType.REMOVED,
+                                          },
+                                          {
+                                              content:
+                                                  "  if (order.type === 'insurance' && order.category === 'health' && order.method === 'UPI') {",
+                                              type: DiffLineType.ADDED,
+                                          },
+                                          {
+                                              content:
+                                                  "    priorities.push('PAYU');",
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content: '  }',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  "  return priorities.length ? priorities : ['DEFAULT'];",
+                                              type: DiffLineType.REMOVED,
+                                          },
+                                          {
+                                              content:
+                                                  "  return priorities.length > 0 ? priorities : ['DEFAULT'];",
+                                              type: DiffLineType.ADDED,
+                                          },
+                                          {
+                                              content: '}',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                      ]
+                                    : undefined
+                            }
+                        />
+                    </form>
                 </div>
             </div>
 

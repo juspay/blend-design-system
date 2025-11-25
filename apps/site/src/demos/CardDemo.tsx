@@ -12,6 +12,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
+    Switch,
 } from '../../../../packages/blend/lib/main'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import {
@@ -31,6 +32,7 @@ const CardDemo = () => {
         CardAlignment.VERTICAL
     )
     const [centerAlign, setCenterAlign] = useState(false)
+    const [showSkeleton, setShowSkeleton] = useState(true)
 
     const imageSlot = (
         <div
@@ -114,6 +116,12 @@ const CardDemo = () => {
                     >
                         Card Variant
                     </label>
+
+                    <Switch
+                        label="Show Skeleton"
+                        checked={showSkeleton}
+                        onChange={() => setShowSkeleton(!showSkeleton)}
+                    />
                     <SingleSelect
                         label=""
                         placeholder="Select Card Variant"
@@ -236,6 +244,12 @@ const CardDemo = () => {
                 <div style={{ maxWidth: '400px' }}>
                     {selectedVariant === CardVariant.DEFAULT && (
                         <Card
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                                height: '300px',
+                                width: '100%',
+                            }}
                             headerSlot1={
                                 <div
                                     style={{
@@ -322,6 +336,12 @@ const CardDemo = () => {
 
                     {selectedVariant === CardVariant.ALIGNED && (
                         <Card
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                                height: '300px',
+                                width: '100%',
+                            }}
                             variant={CardVariant.ALIGNED}
                             alignment={selectedAlignment}
                             centerAlign={centerAlign}
@@ -358,7 +378,15 @@ const CardDemo = () => {
                     )}
 
                     {selectedVariant === CardVariant.CUSTOM && (
-                        <Card variant={CardVariant.CUSTOM}>
+                        <Card
+                            variant={CardVariant.CUSTOM}
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                                height: '300px',
+                                width: '100%',
+                            }}
+                        >
                             <div
                                 style={{
                                     display: 'flex',

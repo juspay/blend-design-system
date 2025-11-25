@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { ButtonProps } from '../Button/types'
+import { SkeletonVariant } from '../Skeleton'
 
 export enum CardVariant {
     DEFAULT = 'default',
@@ -49,6 +50,13 @@ export type CustomCardProps = {
     children: ReactNode
 }
 
+export type CardSkeletonProps = {
+    variant: SkeletonVariant
+    show: boolean
+    height?: string
+    width?: string
+}
+
 export type CardProps = {
     maxWidth?: string
     /**
@@ -62,4 +70,5 @@ export type CardProps = {
      * Useful when you want the card to grow with content but maintain a minimum height.
      */
     minHeight?: string
+    skeleton?: CardSkeletonProps
 } & (DefaultCardProps | AlignedCardProps | CustomCardProps)
