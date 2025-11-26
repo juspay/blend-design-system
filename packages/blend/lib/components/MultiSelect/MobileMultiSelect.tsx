@@ -18,6 +18,10 @@ import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { map, filterMenuGroups } from './utils'
+import {
+    hasExactMatch as checkExactMatch,
+    getFilteredItemsWithCustomValue,
+} from '../Select/selectUtils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectTokensType } from './multiSelect.tokens'
 import type {
@@ -328,6 +332,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     },
     maxTriggerWidth,
     minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -337,7 +343,30 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const [searchText, setSearchText] = useState('')
     const valueLabelMap = map(items)
 
-    const filteredItems = filterMenuGroups(items, searchText)
+    const hasMatch = React.useMemo(
+        () => checkExactMatch(searchText, items),
+        [searchText, items]
+    )
+
+    const filteredItems = React.useMemo(() => {
+        const baseFilteredItems = filterMenuGroups(items, searchText)
+
+        return getFilteredItemsWithCustomValue(
+            baseFilteredItems,
+            searchText,
+            hasMatch,
+            allowCustomValue,
+            enableSearch,
+            customValueLabel
+        )
+    }, [
+        items,
+        searchText,
+        allowCustomValue,
+        hasMatch,
+        enableSearch,
+        customValueLabel,
+    ])
 
     const flattenedItems = useMemo(
         () => flattenMobileMultiSelectGroups(filteredItems, enableSelectAll),
@@ -366,6 +395,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         onFocus?.()
                     } else {
                         onBlur?.()
+                        if (enableSearch) {
+                            setSearchText('')
+                        }
                     }
                 }}
             >
@@ -694,7 +726,18 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                 }}
                                             />
                                         ) : (
-                                            <>
+                                            <Block
+                                                paddingX={
+                                                    multiSelectTokens.menu
+                                                        .padding[size][variant]
+                                                        .x
+                                                }
+                                                paddingY={
+                                                    multiSelectTokens.menu
+                                                        .padding[size][variant]
+                                                        .y
+                                                }
+                                            >
                                                 {enableSelectAll && (
                                                     <SelectAllItem
                                                         items={filteredItems}
@@ -709,127 +752,122 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                 )}
 
                                                 {filteredItems.map(
-                                                    (group, groupId) => (
-                                                        <React.Fragment
-                                                            key={groupId}
-                                                        >
-                                                            {group.groupLabel && (
-                                                                <Block
-                                                                    padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
-                                                                    margin={`0 ${FOUNDATION_THEME.unit[6]}`}
-                                                                >
-                                                                    <Text
-                                                                        variant="body.sm"
-                                                                        color={
-                                                                            FOUNDATION_THEME
-                                                                                .colors
-                                                                                .gray[400]
-                                                                        }
-                                                                        textTransform="uppercase"
-                                                                        fontSize={
-                                                                            12
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            group.groupLabel
-                                                                        }
-                                                                    </Text>
-                                                                </Block>
-                                                            )}
-                                                            {group.items.map(
-                                                                (
-                                                                    item,
-                                                                    itemIndex
-                                                                ) => {
-                                                                    const isSelected =
-                                                                        selectedValues.includes(
-                                                                            item.value
-                                                                        )
+                                                    (group, groupId) => {
+                                                        const isLastGroup =
+                                                            groupId ===
+                                                            filteredItems.length -
+                                                                1
 
-                                                                    const isLastItemOverall =
-                                                                        (() => {
-                                                                            const isLastGroup =
-                                                                                groupId ===
-                                                                                filteredItems.length -
-                                                                                    1
-                                                                            const isLastItemInGroup =
-                                                                                itemIndex ===
-                                                                                group
-                                                                                    .items
-                                                                                    .length -
-                                                                                    1
-                                                                            return (
-                                                                                isLastGroup &&
-                                                                                isLastItemInGroup
-                                                                            )
-                                                                        })()
-
-                                                                    const shouldShowDivider =
-                                                                        showItemDividers &&
-                                                                        !isLastItemOverall
-
-                                                                    return (
-                                                                        <React.Fragment
-                                                                            key={`${groupId}-${itemIndex}`}
-                                                                        >
-                                                                            <MultiSelectItem
-                                                                                item={
-                                                                                    item
-                                                                                }
-                                                                                isSelected={
-                                                                                    isSelected
-                                                                                }
-                                                                                onChange={
-                                                                                    onChange
-                                                                                }
-                                                                                maxSelections={
-                                                                                    maxSelections
-                                                                                }
-                                                                                selectedCount={
-                                                                                    selectedValues.length
-                                                                                }
-                                                                            />
-                                                                            {shouldShowDivider && (
-                                                                                <Block
-                                                                                    height={
-                                                                                        1
-                                                                                    }
-                                                                                    flexShrink={
-                                                                                        0
-                                                                                    }
-                                                                                    width="auto"
-                                                                                    display="block"
-                                                                                    style={{
-                                                                                        borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                                                                                        minHeight:
-                                                                                            '1px',
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                        </React.Fragment>
-                                                                    )
-                                                                }
-                                                            )}
-                                                            {groupId !==
-                                                                filteredItems.length -
-                                                                    1 &&
-                                                                group.showSeparator && (
+                                                        return (
+                                                            <React.Fragment
+                                                                key={groupId}
+                                                            >
+                                                                {group.groupLabel && (
                                                                     <Block
-                                                                        height={
-                                                                            1
-                                                                        }
-                                                                        backgroundColor={
-                                                                            FOUNDATION_THEME
-                                                                                .colors
-                                                                                .gray[200]
-                                                                        }
-                                                                        margin="8px 0px"
-                                                                    />
+                                                                        padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                                        margin={`0 ${FOUNDATION_THEME.unit[6]}`}
+                                                                    >
+                                                                        <Text
+                                                                            variant="body.sm"
+                                                                            color={
+                                                                                FOUNDATION_THEME
+                                                                                    .colors
+                                                                                    .gray[400]
+                                                                            }
+                                                                            textTransform="uppercase"
+                                                                            fontSize={
+                                                                                12
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                group.groupLabel
+                                                                            }
+                                                                        </Text>
+                                                                    </Block>
                                                                 )}
-                                                        </React.Fragment>
-                                                    )
+                                                                {group.items.map(
+                                                                    (
+                                                                        item,
+                                                                        itemIndex
+                                                                    ) => {
+                                                                        const isSelected =
+                                                                            selectedValues.includes(
+                                                                                item.value
+                                                                            )
+                                                                        const isLastItemInGroup =
+                                                                            itemIndex ===
+                                                                            group
+                                                                                .items
+                                                                                .length -
+                                                                                1
+                                                                        const isLastItemOverall =
+                                                                            isLastGroup &&
+                                                                            isLastItemInGroup
+                                                                        const shouldShowDivider =
+                                                                            showItemDividers &&
+                                                                            !isLastItemOverall
+
+                                                                        return (
+                                                                            <React.Fragment
+                                                                                key={`${groupId}-${itemIndex}`}
+                                                                            >
+                                                                                <MultiSelectItem
+                                                                                    item={
+                                                                                        item
+                                                                                    }
+                                                                                    isSelected={
+                                                                                        isSelected
+                                                                                    }
+                                                                                    onChange={
+                                                                                        onChange
+                                                                                    }
+                                                                                    maxSelections={
+                                                                                        maxSelections
+                                                                                    }
+                                                                                    selectedCount={
+                                                                                        selectedValues.length
+                                                                                    }
+                                                                                />
+                                                                                {shouldShowDivider && (
+                                                                                    <Block
+                                                                                        height={
+                                                                                            1
+                                                                                        }
+                                                                                        flexShrink={
+                                                                                            0
+                                                                                        }
+                                                                                        width="auto"
+                                                                                        display="block"
+                                                                                        style={{
+                                                                                            borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                                                                            minHeight:
+                                                                                                '1px',
+                                                                                        }}
+                                                                                    />
+                                                                                )}
+                                                                            </React.Fragment>
+                                                                        )
+                                                                    }
+                                                                )}
+                                                                {!isLastGroup &&
+                                                                    group.showSeparator && (
+                                                                        <Block
+                                                                            height={
+                                                                                1
+                                                                            }
+                                                                            backgroundColor={
+                                                                                FOUNDATION_THEME
+                                                                                    .colors
+                                                                                    .gray[200]
+                                                                            }
+                                                                            margin="8px 0px"
+                                                                        />
+                                                                    )}
+                                                            </React.Fragment>
+                                                        )
+                                                    }
                                                 )}
-                                            </>
+                                            </Block>
                                         )}
                                     </Block>
 

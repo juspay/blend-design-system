@@ -722,6 +722,63 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MultiSelect.skeleton',
+                hintText:
+                    'Optional skeleton loading configuration object. Controls the appearance and behavior of skeleton loading states while data is being fetched. The skeleton provides visual feedback to users during loading. Contains count (number of skeleton items to show), show (boolean to toggle skeleton visibility), and variant (visual style: "pulse" or "wave").',
+            },
+            {
+                content:
+                    '{ count?: number, show?: boolean, variant?: SkeletonVariant }',
+                hintText: 'object',
+            },
+            {
+                content:
+                    'count: number of skeleton items, show: boolean to display skeleton, variant: "pulse" | "wave"',
+            },
+            {
+                content: '{ count: 3, show: false, variant: "pulse" }',
+            },
+        ],
+        [
+            {
+                content: 'MultiSelect.maxTriggerWidth',
+                hintText:
+                    'Optional maximum width constraint for the trigger button in pixels. Prevents the trigger from growing beyond this width even if the content is longer. Useful for maintaining consistent layouts and preventing the select from becoming too wide. Text that exceeds this width will be truncated with ellipsis.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.minTriggerWidth',
+                hintText:
+                    'Optional minimum width constraint for the trigger button in pixels. Ensures the trigger maintains at least this width even if the content is shorter. Useful for maintaining consistent button sizes across multiple select fields or ensuring adequate click target area.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.allowCustomValue',
+                hintText:
+                    'When true, allows users to enter custom values that are not in the predefined items list. Enables a special menu option that lets users specify their own value. Useful for scenarios where the list cannot cover all possible options. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'MultiSelect.customValueLabel',
+                hintText:
+                    'Optional label text for the custom value option in the dropdown menu. This text appears as the label for the menu item that allows users to enter their own custom value. Only visible when allowCustomValue is true. Defaults to "Specify".',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '"Specify"' },
+        ],
+        [
+            {
                 content: 'MultiSelectMenuGroupType.groupLabel',
                 hintText:
                     'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., "Frontend", "Backend", "Tools"). The label is styled distinctly from menu items.',

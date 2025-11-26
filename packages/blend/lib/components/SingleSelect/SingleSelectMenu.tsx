@@ -27,6 +27,10 @@ import {
     hoverTransition,
 } from './singleSelect.animations'
 import SingleSelectSkeleton from './SingleSelectSkeleton'
+import {
+    hasExactMatch as checkExactMatch,
+    getFilteredItemsWithCustomValue,
+} from '../Select/selectUtils'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -65,6 +69,8 @@ type SingleSelectMenuProps = {
     hasMore?: boolean
     loadingComponent?: React.ReactNode
     skeleton?: SingleSelectSkeletonProps
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
 
 type FlattenedItem = {
@@ -363,6 +369,8 @@ const SingleSelectMenu = ({
         show: false,
         variant: 'pulse',
     },
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }: SingleSelectMenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
@@ -371,10 +379,32 @@ const SingleSelectMenu = ({
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     let itemCounter = 0
 
-    const filteredItems = useMemo(
-        () => (searchText ? filterMenuGroups(items, searchText) : items),
-        [items, searchText]
+    const hasMatch = useMemo(
+        () => checkExactMatch(searchText, items),
+        [searchText, items]
     )
+
+    const filteredItems = useMemo(() => {
+        const baseFilteredItems = searchText
+            ? filterMenuGroups(items, searchText)
+            : items
+
+        return getFilteredItemsWithCustomValue(
+            baseFilteredItems,
+            searchText,
+            hasMatch,
+            allowCustomValue || false,
+            enableSearch || false,
+            customValueLabel
+        )
+    }, [
+        items,
+        searchText,
+        allowCustomValue,
+        hasMatch,
+        enableSearch,
+        customValueLabel,
+    ])
 
     const flattenedItems = useMemo(
         () =>

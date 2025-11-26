@@ -152,6 +152,8 @@ export type MultiSelectProps = {
     hasMore?: boolean
     loadingComponent?: React.ReactNode
     skeleton?: MultiSelectSkeletonProps
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
 
 // Multi Select Menu Dropdpown
@@ -209,4 +211,10 @@ export type MultiSelectMenuProps = {
     hasMore?: boolean
     loadingComponent?: React.ReactNode
     skeleton?: MultiSelectSkeletonProps
+    // size and variant
+    size?: MultiSelectMenuSize
+    variant?: MultiSelectVariant
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }

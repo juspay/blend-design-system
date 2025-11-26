@@ -89,6 +89,8 @@ const MultiSelect = ({
     },
     maxTriggerWidth,
     minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -189,6 +191,8 @@ const MultiSelect = ({
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
                 skeleton={skeleton}
+                allowCustomValue={allowCustomValue}
+                customValueLabel={customValueLabel}
             />
         )
     }
@@ -303,7 +307,9 @@ const MultiSelect = ({
                                     content={
                                         (showTooltip &&
                                             selectedValues
-                                                .map((v) => valueLabelMap[v])
+                                                .map(
+                                                    (v) => valueLabelMap[v] || v
+                                                )
                                                 .join(', ')) ||
                                         ''
                                     }
@@ -550,7 +556,8 @@ const MultiSelect = ({
                                                             .trigger
                                                             .selectionTag
                                                             .container[
-                                                            selectionTagType
+                                                            MultiSelectSelectionTagType
+                                                                .COUNT
                                                         ].color
                                                     }
                                                     fontWeight={500}
@@ -562,44 +569,17 @@ const MultiSelect = ({
                                                                 .trigger
                                                                 .selectionTag
                                                                 .container[
-                                                                selectionTagType
+                                                                MultiSelectSelectionTagType
+                                                                    .COUNT
                                                             ].backgroundColor,
                                                         borderRadius: 4,
-                                                        padding:
-                                                            selectionTagType ===
-                                                            MultiSelectSelectionTagType.COUNT
-                                                                ? '0px 6px'
-                                                                : '0px 0px',
-                                                        overflow: 'hidden',
-                                                        textOverflow:
-                                                            'ellipsis',
-                                                        whiteSpace: 'nowrap',
+                                                        padding: '0px 6px',
                                                     }}
                                                     data-badge-value={
-                                                        selectionTagType ===
-                                                        MultiSelectSelectionTagType.COUNT
-                                                            ? selectedValues.length
-                                                            : selectedValues
-                                                                  .map(
-                                                                      (v) =>
-                                                                          valueLabelMap[
-                                                                              v
-                                                                          ]
-                                                                  )
-                                                                  .join(', ')
+                                                        selectedValues.length
                                                     }
                                                 >
-                                                    {selectionTagType ===
-                                                    MultiSelectSelectionTagType.COUNT
-                                                        ? selectedValues.length
-                                                        : selectedValues
-                                                              .map(
-                                                                  (v) =>
-                                                                      valueLabelMap[
-                                                                          v
-                                                                      ]
-                                                              )
-                                                              .join(', ')}
+                                                    {selectedValues.length}
                                                 </Text>
                                             )}
                                         </Block>
@@ -660,6 +640,8 @@ const MultiSelect = ({
                         </Block>
                     )
                 }
+                allowCustomValue={allowCustomValue}
+                customValueLabel={customValueLabel}
             />
 
             {variant === MultiSelectVariant.CONTAINER && (
