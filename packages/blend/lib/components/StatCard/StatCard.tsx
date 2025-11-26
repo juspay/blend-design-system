@@ -39,7 +39,7 @@ import {
 import { toPixels } from '../../global-utils/GlobalUtils'
 import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
 import { AxisType } from '../Charts/types'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import StatCardSkeleton from './StatCardSkeleton'
 
 const StatCard = ({
     title,
@@ -466,10 +466,8 @@ const StatCard = ({
             {...props}
         >
             {skeleton?.show ? (
-                <Skeleton
-                    variant={skeleton.variant as SkeletonVariant}
-                    width="100%"
-                    height={skeleton.height || '133px'}
+                <StatCardSkeleton
+                    skeleton={skeleton}
                     maxWidth={maxWidth}
                     minWidth={minWidth}
                 />

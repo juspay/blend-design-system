@@ -49,7 +49,7 @@ const StatCardDemo = () => {
     const [arrowDirection, setArrowDirection] =
         useState<StatCardArrowDirection>(StatCardArrowDirection.UP)
 
-    const [showSkeleton, setShowSkeleton] = useState(true)
+    const [showSkeleton, setShowSkeleton] = useState(false)
 
     // Sample chart data
     const sampleLineData = [
