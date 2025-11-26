@@ -45,8 +45,6 @@ const MultiSelectTrigger = ({
     label,
     placeholder,
     required,
-    selectionTagType,
-    valueLabelMap,
     open,
     onClick,
     multiSelectTokens,

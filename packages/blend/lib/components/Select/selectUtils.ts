@@ -2,7 +2,6 @@ type BaseMenuItemType = {
     label: string
     value: string
     subMenu?: BaseMenuItemType[]
-    [key: string]: any
 }
 
 type BaseMenuGroupType<T extends BaseMenuItemType = BaseMenuItemType> = {
