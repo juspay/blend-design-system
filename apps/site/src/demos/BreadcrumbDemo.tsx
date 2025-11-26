@@ -40,6 +40,7 @@ const BreadcrumbDemo = () => {
     ])
 
     const [showSlots, setShowSlots] = useState(false)
+    const [showSkeleton, setShowSkeleton] = useState(false)
     const [currentPath, setCurrentPath] = useState(
         '/products/electronics/smartphones'
     )
@@ -227,6 +228,11 @@ const BreadcrumbDemo = () => {
                             checked={showSlots}
                             onChange={() => setShowSlots(!showSlots)}
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
                     </div>
 
                     <div className="min-h-20 rounded-2xl w-full flex items-center p-4 outline-1 outline-gray-200">
@@ -236,6 +242,10 @@ const BreadcrumbDemo = () => {
                                     ? breadcrumbWithSlots
                                     : playgroundItems
                             }
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                            }}
                         />
                     </div>
 
