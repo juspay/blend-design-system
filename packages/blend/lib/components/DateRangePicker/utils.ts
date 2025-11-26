@@ -2227,7 +2227,14 @@ export const formatDateRangeWithConfig = (
         }
 
         case DateFormatPreset.ISO_RANGE: {
-            const startISO = startDate.toISOString().split('T')[0]
+            const formatISODate = (date: Date): string => {
+                const year = date.getFullYear()
+                const month = (date.getMonth() + 1).toString().padStart(2, '0')
+                const day = date.getDate().toString().padStart(2, '0')
+                return `${year}-${month}-${day}`
+            }
+
+            const startISO = formatISODate(startDate)
 
             if (isSameDate) {
                 const timeStr = includeTime
@@ -2236,7 +2243,7 @@ export const formatDateRangeWithConfig = (
                 return `${startISO}${timeStr}`
             }
 
-            const endISO = endDate.toISOString().split('T')[0]
+            const endISO = formatISODate(endDate)
             const timeStr = includeTime
                 ? ` ${formatDate(startDate, 'HH:mm')} - ${formatDate(endDate, 'HH:mm')}`
                 : ''

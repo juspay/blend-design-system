@@ -190,6 +190,16 @@ const MultiSelectDemo = () => {
         string[]
     >([])
 
+    // Custom value demo state
+    const [customValueBasicSelected, setCustomValueBasicSelected] = useState<
+        string[]
+    >([])
+    const [customValueWithLabelSelected, setCustomValueWithLabelSelected] =
+        useState<string[]>([])
+    const [customValueFormSelected, setCustomValueFormSelected] = useState<
+        string[]
+    >([])
+
     // Sample data
     const simpleItems: MultiSelectMenuGroupType[] = [
         {
@@ -695,6 +705,9 @@ const MultiSelectDemo = () => {
         setMaxSelectionsBasicSelected([])
         setMaxSelectionsAdvancedSelected([])
         setBorderRadiusFixSelected([])
+        setCustomValueBasicSelected([])
+        setCustomValueWithLabelSelected([])
+        setCustomValueFormSelected([])
         addSnackbar({
             header: 'All Selections Cleared',
             description: 'All multi-select values have been reset',
@@ -3356,6 +3369,199 @@ const MultiSelectDemo = () => {
                             <code>tooltipProps</code> for configuration, or{' '}
                             <code>disableTruncation: true</code> to disable
                             auto-tooltips.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Custom Value Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">✨ Custom Value Examples</h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Allow users to specify custom values that aren't in
+                        the predefined options!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        allowCustomValue
+                    </code>{' '}
+                    prop to enable typing custom values. When users type text
+                    that doesn't match any existing option, a "Specify: [text]"
+                    option appears automatically.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Basic Custom Value</h3>
+                        <MultiSelect
+                            label="Select Technologies"
+                            sublabel="You can add technologies not in the list"
+                            items={skillItems}
+                            selectedValues={customValueBasicSelected}
+                            onChange={handleMultiSelectChange(
+                                customValueBasicSelected,
+                                setCustomValueBasicSelected
+                            )}
+                            placeholder="Select or type custom technology"
+                            allowCustomValue={true}
+                            enableSearch={true}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {customValueBasicSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected (
+                                        {customValueBasicSelected.length}):
+                                    </strong>{' '}
+                                    {customValueBasicSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    💡 Try typing a technology not in the list!
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Custom Label Text</h3>
+                        <MultiSelect
+                            label="Select Permissions"
+                            sublabel="Add custom permissions as needed"
+                            items={permissionItems}
+                            selectedValues={customValueWithLabelSelected}
+                            onChange={handleMultiSelectChange(
+                                customValueWithLabelSelected,
+                                setCustomValueWithLabelSelected
+                            )}
+                            placeholder="Select or add custom permission"
+                            allowCustomValue={true}
+                            customValueLabel="Add custom"
+                            enableSearch={true}
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                        />
+                        {customValueWithLabelSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Custom Label Example (
+                                        {customValueWithLabelSelected.length}):
+                                    </strong>{' '}
+                                    {customValueWithLabelSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {customValueWithLabelSelected.length > 3 &&
+                                        ` +${customValueWithLabelSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    ✏️ Custom label shows "Add custom: [text]"
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">Form Use Case</h3>
+                        <MultiSelect
+                            label="Select Skills"
+                            sublabel="Add any skills you have"
+                            items={skillItems}
+                            selectedValues={customValueFormSelected}
+                            onChange={handleMultiSelectChange(
+                                customValueFormSelected,
+                                setCustomValueFormSelected
+                            )}
+                            placeholder="Select or type custom skills"
+                            allowCustomValue={true}
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            required={true}
+                            slot={<Code size={16} />}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                        />
+                        {customValueFormSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Form Skills (
+                                        {customValueFormSelected.length}
+                                        ):
+                                    </strong>{' '}
+                                    {customValueFormSelected
+                                        .slice(0, 4)
+                                        .join(', ')}
+                                    {customValueFormSelected.length > 4 &&
+                                        ` +${customValueFormSelected.length - 4} more`}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    ⭐ Perfect for forms with required fields
+                                </p>
+                            </div>
+                        )}
+                        {customValueFormSelected.length === 0 && (
+                            <p className="text-xs text-red-600">
+                                ⚠ At least one skill required
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                    <h4 className="font-semibold text-green-900 mb-2">
+                        🎉 Custom Value Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                • <strong>Flexible Input:</strong> Users can
+                                type values not in the predefined list
+                            </li>
+                            <li>
+                                • <strong>Smart Detection:</strong> Only shows
+                                custom option when typed text doesn't match
+                                existing items
+                            </li>
+                            <li>
+                                • <strong>Custom Label:</strong> Customize the
+                                prefix with customValueLabel prop
+                            </li>
+                            <li>
+                                • <strong>Search Integration:</strong> Works
+                                seamlessly with search functionality
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-green-800 space-y-1">
+                            <li>
+                                • <strong>Mobile Support:</strong> Works in both
+                                desktop dropdown and mobile drawer
+                            </li>
+                            <li>
+                                • <strong>Callback Compatible:</strong> Custom
+                                values are passed to onChange callback
+                            </li>
+                            <li>
+                                • <strong>Display Handling:</strong> Custom
+                                values display correctly on trigger and in tags
+                            </li>
+                            <li>
+                                • <strong>Form Friendly:</strong> Perfect for
+                                forms requiring flexible user input
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
+                        <p className="text-sm text-green-700">
+                            <strong>Usage:</strong> Set{' '}
+                            <code>allowCustomValue=true</code> to enable. The
+                            custom value appears as "Specify: [text]" by
+                            default, or customize with{' '}
+                            <code>customValueLabel="Your label"</code>. Custom
+                            values are returned in the onChange callback and
+                            display correctly in all selection modes.
                         </p>
                     </div>
                 </div>
