@@ -30,6 +30,12 @@ export enum MultiSelectSelectionTagType {
     TEXT = 'text',
 }
 
+export type MultiSelectSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
+}
+
 export type MultiSelectMenuItemType = {
     label: string
     value: string
@@ -145,11 +151,7 @@ export type MultiSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
+    skeleton?: MultiSelectSkeletonProps
 }
 
 // Multi Select Menu Dropdpown
@@ -206,9 +208,5 @@ export type MultiSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
+    skeleton?: MultiSelectSkeletonProps
 }
