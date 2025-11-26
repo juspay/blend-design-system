@@ -150,6 +150,9 @@ export type MultiSelectProps = {
         show?: boolean
         variant?: SkeletonVariant
     }
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
 
 // Multi Select Menu Dropdpown
@@ -211,4 +214,11 @@ export type MultiSelectMenuProps = {
         show?: boolean
         variant?: SkeletonVariant
     }
+
+    // size and variant
+    size?: MultiSelectMenuSize
+    variant?: MultiSelectVariant
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }

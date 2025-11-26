@@ -224,7 +224,6 @@ const MultiSelectTrigger = ({
                                     />
                                 </Block>
                             )}
-                        {/* Variant == Container - always show the placeholder*/}
                         {variant === MultiSelectVariant.CONTAINER &&
                             (selectedValues.length > 0 ||
                                 !isSmallScreen ||
@@ -244,7 +243,9 @@ const MultiSelectTrigger = ({
                                 variant="body.md"
                                 color={
                                     multiSelectTokens.trigger.selectionTag
-                                        .container[selectionTagType].color
+                                        .container[
+                                        MultiSelectSelectionTagType.COUNT
+                                    ].color
                                 }
                                 fontWeight={500}
                                 style={{
@@ -252,22 +253,14 @@ const MultiSelectTrigger = ({
                                     marginLeft: 8,
                                     backgroundColor:
                                         multiSelectTokens.trigger.selectionTag
-                                            .container[selectionTagType]
-                                            .backgroundColor,
+                                            .container[
+                                            MultiSelectSelectionTagType.COUNT
+                                        ].backgroundColor,
                                     borderRadius: 4,
-                                    padding:
-                                        selectionTagType ===
-                                        MultiSelectSelectionTagType.COUNT
-                                            ? '0px 6px'
-                                            : '0px 0px',
+                                    padding: '0px 6px',
                                 }}
                             >
-                                {selectionTagType ===
-                                MultiSelectSelectionTagType.COUNT
-                                    ? selectedValues.length
-                                    : selectedValues
-                                          .map((v) => valueLabelMap[v])
-                                          .join(', ')}
+                                {selectedValues.length}
                             </Text>
                         )}
                     </Block>
