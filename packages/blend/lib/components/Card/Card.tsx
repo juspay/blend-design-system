@@ -96,8 +96,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 {skeleton?.show ? (
                     <Skeleton
                         variant={skeleton.variant as SkeletonVariant}
-                        width={skeleton.width || '100%'}
+                        width={'100%'}
                         height={skeleton.height || '250px'}
+                        maxHeight={maxHeight}
+                        minHeight={minHeight}
+                        maxWidth={maxWidth}
                     />
                 ) : (
                     renderCardContent()

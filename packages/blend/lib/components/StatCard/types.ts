@@ -6,6 +6,9 @@ import { SkeletonVariant } from '../Skeleton'
 export type StatCardSkeletonProps = {
     variant: SkeletonVariant
     show: boolean
+    height?: string | number
+    maxWidth?: string | number
+    minWidth?: string | number
 }
 
 export enum StatCardVariant {
