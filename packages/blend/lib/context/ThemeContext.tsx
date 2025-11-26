@@ -12,6 +12,7 @@ import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.toke
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveAutocompleteTokens } from '../components/Inputs/Autocomplete/autocomplete.tokens'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
@@ -59,6 +60,7 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import { getAutocompleteTokens } from '../components/Inputs/Autocomplete/autocomplete.tokens'
 import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token'
 import { getButtonTokens } from '../components/Button/button.tokens'
@@ -115,6 +117,7 @@ export type ComponentTokenType = {
     UNIT_INPUT?: ResponsiveUnitInputTokens
     MULTI_VALUE_INPUT?: ResponsiveMultiValueInputTokens
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
+    AUTOCOMPLETE?: ResponsiveAutocompleteTokens
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
@@ -172,6 +175,7 @@ const ThemeContext = createContext<ThemeContextType>({
         UNIT_INPUT: getUnitInputTokens(FOUNDATION_THEME),
         MULTI_VALUE_INPUT: getMultiValueInputTokens(FOUNDATION_THEME),
         DROPDOWN_INPUT: getDropdownInputTokens(FOUNDATION_THEME),
+        AUTOCOMPLETE: getAutocompleteTokens(FOUNDATION_THEME),
         CHECKBOX: getCheckboxTokens(FOUNDATION_THEME),
         TABS: getTabsTokens(FOUNDATION_THEME),
         BUTTON: getButtonTokens(FOUNDATION_THEME),

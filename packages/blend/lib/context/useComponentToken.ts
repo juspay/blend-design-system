@@ -14,6 +14,7 @@ import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.toke
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveAutocompleteTokens } from '../components/Inputs/Autocomplete/autocomplete.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -61,6 +62,7 @@ export const useComponentToken = (
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
+    | ResponsiveAutocompleteTokens
     | ResponsiveButtonTokens
     | ResponsiveModalTokens
     | ResponsiveBreadcrumbTokens
@@ -117,6 +119,8 @@ export const useComponentToken = (
             return componentTokens.TABS
         case 'DROPDOWN_INPUT':
             return componentTokens.DROPDOWN_INPUT
+        case 'AUTOCOMPLETE':
+            return componentTokens.AUTOCOMPLETE
         case 'BUTTON':
             return componentTokens.BUTTON
         case 'MODAL':
