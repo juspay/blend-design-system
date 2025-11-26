@@ -16,6 +16,7 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import { getAutocompleteTokens } from '../components/Inputs/Autocomplete/autocomplete.tokens'
 import { getButtonTokens } from '../components/Button/button.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -76,6 +77,9 @@ const initTokens = (
         DROPDOWN_INPUT:
             componentTokens.DROPDOWN_INPUT ??
             getDropdownInputTokens(foundationTokens),
+        AUTOCOMPLETE:
+            componentTokens.AUTOCOMPLETE ??
+            getAutocompleteTokens(foundationTokens),
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),

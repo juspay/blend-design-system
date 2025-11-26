@@ -107,6 +107,7 @@ import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
+import AutocompleteDemo from './AutocompleteDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -135,6 +136,7 @@ const SidebarDemo = () => {
         | 'modal'
         | 'input'
         | 'searchInput'
+        | 'autocomplete'
         | 'unitInput'
         | 'numberInput'
         | 'textArea'
@@ -371,6 +373,8 @@ const SidebarDemo = () => {
                 return <InputDemo />
             case 'searchInput':
                 return <SearchInputDemo />
+            case 'autocomplete':
+                return <AutocompleteDemo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
@@ -698,6 +702,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'searchInput',
                     onClick: () => setActiveComponent('searchInput'),
+                },
+                {
+                    label: 'Autocomplete',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'autocomplete',
+                    onClick: () => setActiveComponent('autocomplete'),
                 },
                 {
                     label: 'OTP Input',
