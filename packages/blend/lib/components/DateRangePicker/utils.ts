@@ -1772,6 +1772,45 @@ export const calculateDayCellProps = (
     }
 }
 
+const getPickerYearRange = (selectedRange: DateRange) => {
+    const { MIN_YEAR, MAX_YEAR_OFFSET } = DATE_RANGE_PICKER_CONSTANTS
+    const currentYear = new Date().getFullYear()
+    const defaultMaxYear = currentYear + MAX_YEAR_OFFSET
+
+    const selectedYears: number[] = []
+    if (selectedRange.startDate && isValidDate(selectedRange.startDate)) {
+        selectedYears.push(selectedRange.startDate.getFullYear())
+    }
+    if (selectedRange.endDate && isValidDate(selectedRange.endDate)) {
+        selectedYears.push(selectedRange.endDate.getFullYear())
+    }
+
+    const hasSelectedYears = selectedYears.length > 0
+    const earliestYear = hasSelectedYears
+        ? Math.min(...selectedYears)
+        : currentYear
+    const latestYear = hasSelectedYears
+        ? Math.max(...selectedYears)
+        : currentYear
+
+    const minYear = Math.min(MIN_YEAR, earliestYear)
+    const maxYear = Math.max(defaultMaxYear, latestYear)
+
+    return {
+        minYear: Math.max(0, minYear),
+        maxYear: Math.max(minYear, maxYear),
+    }
+}
+
+const buildYearOptions = (minYear: number, maxYear: number): number[] => {
+    if (maxYear < minYear) {
+        return [minYear]
+    }
+
+    const totalYears = maxYear - minYear + 1
+    return Array.from({ length: totalYears }, (_, index) => minYear + index)
+}
+
 /**
  * Generates picker data for date/time selection
  * @param tabType Whether this is for start or end date
@@ -1786,22 +1825,25 @@ export const generatePickerData = (
     startTime: string,
     endTime: string
 ) => {
-    const targetDate =
+    const rawDate =
         tabType === 'start' ? selectedRange.startDate : selectedRange.endDate
     const targetTime = tabType === 'start' ? startTime : endTime
 
-    const currentYear = new Date().getFullYear()
-    const allYears = Array.from(
-        { length: currentYear + 5 - 2012 + 1 },
-        (_, i) => 2012 + i
-    )
-    const allMonths = Array.from({ length: 12 }, (_, i) => i)
-    const daysInCurrentMonth = new Date(
-        targetDate.getFullYear(),
-        targetDate.getMonth() + 1,
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const safeDate = rawDate && isValidDate(rawDate) ? new Date(rawDate) : today
+
+    const { minYear, maxYear } = getPickerYearRange(selectedRange)
+    const yearOptions = buildYearOptions(minYear, maxYear)
+    const monthIndex = safeDate.getMonth()
+    const daysInMonth = new Date(
+        safeDate.getFullYear(),
+        monthIndex + 1,
         0
     ).getDate()
-    const allDates = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1)
+    const dateOptions = Array.from({ length: daysInMonth }, (_, i) => i + 1)
+    const monthOptions = Array.from({ length: 12 }, (_, i) => i)
 
     const allTimes = []
     for (let h = 0; h < 24; h++) {
@@ -1812,18 +1854,29 @@ export const generatePickerData = (
         }
     }
 
+    const yearIndex = yearOptions.indexOf(safeDate.getFullYear())
+    const resolvedYearIndex =
+        yearIndex >= 0
+            ? yearIndex
+            : clampPickerIndex(yearIndex, yearOptions.length)
+    const dateIndex = dateOptions.indexOf(safeDate.getDate())
+    const resolvedDateIndex =
+        dateIndex >= 0
+            ? dateIndex
+            : clampPickerIndex(dateIndex, dateOptions.length)
+
     return {
         years: {
-            items: allYears,
-            selectedIndex: allYears.indexOf(targetDate.getFullYear()),
+            items: yearOptions,
+            selectedIndex: resolvedYearIndex,
         },
         months: {
-            items: allMonths.map((m) => getMonthName(m).slice(0, 3)),
-            selectedIndex: targetDate.getMonth(),
+            items: monthOptions.map((m) => getMonthName(m).slice(0, 3)),
+            selectedIndex: monthIndex,
         },
         dates: {
-            items: allDates,
-            selectedIndex: allDates.indexOf(targetDate.getDate()),
+            items: dateOptions,
+            selectedIndex: resolvedDateIndex,
         },
         times: {
             items: allTimes,
@@ -1857,23 +1910,44 @@ export const createSelectionHandler = (
     setEndDate: (date: string) => void
 ) => {
     return (index: number) => {
-        const targetDate =
+        const now = new Date()
+        const baselineDate =
             tabType === 'start'
                 ? selectedRange.startDate
                 : selectedRange.endDate
-        const newDate = new Date(targetDate)
+        const safeBaseDate =
+            baselineDate && isValidDate(baselineDate)
+                ? baselineDate
+                : new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        const newDate = new Date(safeBaseDate)
 
         switch (type) {
             case 'year': {
-                const years = Array.from(
-                    { length: new Date().getFullYear() + 5 - 2012 + 1 },
-                    (_, i) => 2012 + i
-                )
-                newDate.setFullYear(years[index])
+                const { minYear, maxYear } = getPickerYearRange(selectedRange)
+                const years = buildYearOptions(minYear, maxYear)
+                const safeIndex = clampPickerIndex(index, years.length)
+                const newYear = years[safeIndex]
+                const currentMonth = newDate.getMonth()
+                const currentDay = newDate.getDate()
+                const daysInTargetMonth = new Date(
+                    newYear,
+                    currentMonth + 1,
+                    0
+                ).getDate()
+                const clampedDay = Math.min(currentDay, daysInTargetMonth)
+                newDate.setFullYear(newYear, currentMonth, clampedDay)
                 break
             }
             case 'month': {
-                newDate.setMonth(index)
+                const newMonth = Math.max(0, Math.min(11, index))
+                const currentDay = newDate.getDate()
+                const daysInTargetMonth = new Date(
+                    newDate.getFullYear(),
+                    newMonth + 1,
+                    0
+                ).getDate()
+                const clampedDay = Math.min(currentDay, daysInTargetMonth)
+                newDate.setMonth(newMonth, clampedDay)
                 break
             }
             case 'date': {
@@ -1882,11 +1956,15 @@ export const createSelectionHandler = (
                     newDate.getMonth() + 1,
                     0
                 ).getDate()
+                const clampedIndex = Math.max(
+                    0,
+                    Math.min(daysInMonth - 1, index)
+                )
                 const dates = Array.from(
                     { length: daysInMonth },
                     (_, i) => i + 1
                 )
-                newDate.setDate(dates[index])
+                newDate.setDate(dates[clampedIndex])
                 break
             }
             case 'time': {
@@ -2149,7 +2227,14 @@ export const formatDateRangeWithConfig = (
         }
 
         case DateFormatPreset.ISO_RANGE: {
-            const startISO = startDate.toISOString().split('T')[0]
+            const formatISODate = (date: Date): string => {
+                const year = date.getFullYear()
+                const month = (date.getMonth() + 1).toString().padStart(2, '0')
+                const day = date.getDate().toString().padStart(2, '0')
+                return `${year}-${month}-${day}`
+            }
+
+            const startISO = formatISODate(startDate)
 
             if (isSameDate) {
                 const timeStr = includeTime
@@ -2158,7 +2243,7 @@ export const formatDateRangeWithConfig = (
                 return `${startISO}${timeStr}`
             }
 
-            const endISO = endDate.toISOString().split('T')[0]
+            const endISO = formatISODate(endDate)
             const timeStr = includeTime
                 ? ` ${formatDate(startDate, 'HH:mm')} - ${formatDate(endDate, 'HH:mm')}`
                 : ''
@@ -2364,9 +2449,9 @@ export const CUSTOM_FORMAT_EXAMPLES = {
 }
 
 const HAPTIC_PATTERNS = {
-    selection: [8], // Lighter for scroll selection
-    impact: [15], // Medium for direct selection
-    notification: [25, 40, 25], // Pattern for notifications
+    selection: [5], // Light feedback for scroll selection
+    impact: [10], // Subtle impact for direct selection
+    notification: [15, 30, 15], // Softer pattern for notifications
 } as const
 
 /**
@@ -2427,13 +2512,10 @@ export const triggerHapticFeedback = (
     }
 }
 
-/**
- * Optimized Apple Calendar-style haptic manager
- */
-export class AppleCalendarHapticManager {
+export class calendarHapticManager {
     private lastHapticTime = 0
     private lastHapticIndex = -1
-    private readonly hapticCooldown = 50
+    private readonly hapticCooldown = 100
     private isDestroyed = false
 
     /**
@@ -2479,15 +2561,15 @@ export class AppleCalendarHapticManager {
 }
 
 export const MOBILE_CALENDAR_CONSTANTS = {
-    // Scroll behavior - optimized for smoothness
-    SNAP_DURATION: 300, // Slightly faster snap
-    MOMENTUM_THRESHOLD: 0.03, // Lower threshold for better responsiveness
-    DECELERATION_RATE: 0.95, // Slightly higher for smoother deceleration
-    MIN_VELOCITY: 0.01, // Higher minimum for better stops
-    MAX_MOMENTUM_DISTANCE: 2, // Allow up to 2 items for natural feel
-    VELOCITY_MULTIPLIER: 0.15, // Slightly higher impact
-    VELOCITY_SMOOTHING: 0.8, // More smoothing
-    SCROLL_RESISTANCE: 0.9, // Less resistance for smoother scrolling
+    // Scroll behavior - optimized for smoothness and control
+    SNAP_DURATION: 340, // Controlled snap similar to native pickers
+    MOMENTUM_THRESHOLD: 0.01, // Lower threshold for steadier momentum
+    DECELERATION_RATE: 0.95, // Slower deceleration for smoother glide
+    MIN_VELOCITY: 0.005, // Prevent tiny jitters
+    MAX_MOMENTUM_DISTANCE: 50, // Allow momentum to scroll through many items
+    VELOCITY_MULTIPLIER: 0.8, // Impact from swipe speed
+    VELOCITY_SMOOTHING: 0.7, // Balanced velocity curve
+    SCROLL_RESISTANCE: 0.95, // Lower friction for Apple-like feel
 
     // Visual feedback - refined values
     SCALE_SELECTED: 1.02, // More subtle scaling
@@ -2495,7 +2577,7 @@ export const MOBILE_CALENDAR_CONSTANTS = {
     OPACITY_SELECTED: 1, // Full opacity for selected
     OPACITY_UNSELECTED: 0.9, // Better visibility
 
-    TRANSITION_DURATION: '180ms',
+    TRANSITION_DURATION: '220ms',
     EASING: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 
     ANIMATION_FRAME_LIMIT: 60, // Limit animation frames
@@ -2505,7 +2587,7 @@ export const MOBILE_CALENDAR_CONSTANTS = {
 export const MOBILE_PICKER_CONSTANTS = {
     ITEM_HEIGHT: 44,
     VISIBLE_ITEMS: 3,
-    SCROLL_DEBOUNCE: 80,
+    SCROLL_DEBOUNCE: 130,
 } as const
 
 /**

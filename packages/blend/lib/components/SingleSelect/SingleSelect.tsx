@@ -81,6 +81,7 @@ const SingleSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
+
     onBlur,
     onFocus,
     inline = false,
@@ -97,6 +98,10 @@ const SingleSelect = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -165,6 +170,10 @@ const SingleSelect = ({
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
                 skeleton={skeleton}
+                maxTriggerWidth={maxTriggerWidth}
+                minTriggerWidth={minTriggerWidth}
+                allowCustomValue={allowCustomValue}
+                customValueLabel={customValueLabel}
             />
         )
     }
@@ -240,6 +249,8 @@ const SingleSelect = ({
                         endReachedThreshold={endReachedThreshold}
                         hasMore={hasMore}
                         loadingComponent={loadingComponent}
+                        allowCustomValue={allowCustomValue}
+                        customValueLabel={customValueLabel}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
@@ -249,6 +260,8 @@ const SingleSelect = ({
                                         disabled ? 'disabled' : 'enabled'
                                     }
                                     type="button"
+                                    maxWidth={maxTriggerWidth}
+                                    minWidth={minTriggerWidth}
                                     name={name}
                                     position="relative"
                                     width={fullWidth ? '100%' : 'fit-content'}
@@ -418,14 +431,12 @@ const SingleSelect = ({
                                                         data-button-text={
                                                             valueLabelMap[
                                                                 selected
-                                                            ]
+                                                            ] || selected
                                                         }
                                                     >
-                                                        {
-                                                            valueLabelMap[
-                                                                selected
-                                                            ]
-                                                        }
+                                                        {valueLabelMap[
+                                                            selected
+                                                        ] || selected}
                                                     </Text>
                                                 )}
                                             </Block>
@@ -472,12 +483,13 @@ const SingleSelect = ({
                                                     selected
                                                         ? valueLabelMap[
                                                               selected
-                                                          ]
+                                                          ] || selected
                                                         : placeholder
                                                 }
                                             >
                                                 {selected
-                                                    ? valueLabelMap[selected]
+                                                    ? valueLabelMap[selected] ||
+                                                      selected
                                                     : placeholder}
                                             </Text>
                                         )}

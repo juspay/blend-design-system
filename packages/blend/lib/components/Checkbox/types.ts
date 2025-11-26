@@ -31,4 +31,8 @@ export type CheckboxProps = {
     children?: ReactNode
     subtext?: string
     slot?: ReactNode
+    maxLength?: {
+        label?: number
+        subtext?: number
+    }
 }

@@ -262,6 +262,59 @@ const [selected, setSelected] = useState<string>('');
                 category: 'Validation',
             },
         },
+        skeleton: {
+            control: { type: 'object' },
+            description:
+                'Skeleton loading configuration object. Controls the appearance and behavior of skeleton loading states while data is being fetched.',
+            table: {
+                type: {
+                    summary:
+                        '{ count?: number, show?: boolean, variant?: SkeletonVariant }',
+                },
+                defaultValue: {
+                    summary: "{ count: 3, show: false, variant: 'pulse' }",
+                },
+                category: 'Loading',
+            },
+        },
+        maxTriggerWidth: {
+            control: { type: 'number' },
+            description:
+                'Maximum width constraint for the trigger button in pixels. Prevents the trigger from growing beyond this width.',
+            table: {
+                type: { summary: 'number' },
+                category: 'Dimensions',
+            },
+        },
+        minTriggerWidth: {
+            control: { type: 'number' },
+            description:
+                'Minimum width constraint for the trigger button in pixels. Ensures the trigger maintains at least this width.',
+            table: {
+                type: { summary: 'number' },
+                category: 'Dimensions',
+            },
+        },
+        allowCustomValue: {
+            control: { type: 'boolean' },
+            description:
+                'When true, allows users to enter custom values that are not in the predefined items list. Enables a special menu option for custom input.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Features',
+            },
+        },
+        customValueLabel: {
+            control: { type: 'text' },
+            description:
+                'Label text for the custom value option in the dropdown menu. Only visible when allowCustomValue is true.',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: '"Specify"' },
+                category: 'Content',
+            },
+        },
     },
     tags: ['autodocs'],
 }

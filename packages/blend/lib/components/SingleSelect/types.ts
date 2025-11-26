@@ -129,4 +129,9 @@ export type SingleSelectProps = {
         show?: boolean
         variant?: SkeletonVariant
     }
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
