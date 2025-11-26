@@ -39,7 +39,8 @@ import {
 import { toPixels } from '../../global-utils/GlobalUtils'
 import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
 import { AxisType } from '../Charts/types'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import { SkeletonVariant } from '../Skeleton'
+import StatCardSkeleton from './StatCardSkeleton'
 
 const StatCard = ({
     title,
@@ -466,10 +467,16 @@ const StatCard = ({
             {...props}
         >
             {skeleton?.show ? (
-                <Skeleton
-                    variant={skeleton.variant as SkeletonVariant}
-                    width={skeleton.width || '100%'}
-                    height={skeleton.height || '250px'}
+                <StatCardSkeleton
+                    height={
+                        height && !isSmallScreen ? height : statCardToken.height
+                    }
+                    skeletonVariant={skeleton.variant as SkeletonVariant}
+                    statCardVariant={variant as StatCardVariant}
+                    actionIcon={actionIcon}
+                    titleIcon={titleIcon}
+                    isSmallScreen={isSmallScreen}
+                    statCardToken={statCardToken}
                 />
             ) : (
                 <>
@@ -477,6 +484,7 @@ const StatCard = ({
                         <Block
                             display="flex"
                             gap={statCardToken.textContainer.header.gap}
+                            position="relative"
                         >
                             {direction === StatCardDirection.VERTICAL && (
                                 <>
@@ -603,6 +611,9 @@ const StatCard = ({
                                             alignItems="center"
                                             justifyContent="center"
                                             flexShrink={0}
+                                            position="absolute"
+                                            right={0}
+                                            top={0}
                                         >
                                             {actionIcon}
                                         </Block>

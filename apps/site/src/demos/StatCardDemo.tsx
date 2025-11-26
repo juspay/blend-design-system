@@ -269,8 +269,6 @@ const StatCardDemo = () => {
                             skeleton={{
                                 show: showSkeleton,
                                 variant: 'pulse',
-                                height: '135px',
-                                width: '100%',
                             }}
                             data-single-stat={playgroundTitle}
                             dropdownProps={{
