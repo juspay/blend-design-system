@@ -606,7 +606,11 @@ const SingleSelectDemo = () => {
                                 <Switch
                                     label="Show Skeleton"
                                     checked={playgroundShowSkeleton}
-                                    onChange={setPlaygroundShowSkeleton}
+                                    onChange={() =>
+                                        setPlaygroundShowSkeleton(
+                                            !playgroundShowSkeleton
+                                        )
+                                    }
                                 />
                                 <TextInput
                                     label="Skeleton Count"
@@ -621,7 +625,11 @@ const SingleSelectDemo = () => {
                                 <Switch
                                     label="Required"
                                     checked={playgroundRequired}
-                                    onChange={setPlaygroundRequired}
+                                    onChange={() =>
+                                        setPlaygroundRequired(
+                                            !playgroundRequired
+                                        )
+                                    }
                                 />
 
                                 <Switch
@@ -635,19 +643,31 @@ const SingleSelectDemo = () => {
                                 <Switch
                                     label="Disabled"
                                     checked={playgroundDisabled}
-                                    onChange={setPlaygroundDisabled}
+                                    onChange={() =>
+                                        setPlaygroundDisabled(
+                                            !playgroundDisabled
+                                        )
+                                    }
                                 />
 
                                 <Switch
                                     label="Enable Search"
                                     checked={playgroundEnableSearch}
-                                    onChange={setPlaygroundEnableSearch}
+                                    onChange={() =>
+                                        setPlaygroundEnableSearch(
+                                            !playgroundEnableSearch
+                                        )
+                                    }
                                 />
 
                                 <Switch
                                     label="Show Icon Slot"
                                     checked={playgroundShowSlot}
-                                    onChange={setPlaygroundShowSlot}
+                                    onChange={() =>
+                                        setPlaygroundShowSlot(
+                                            !playgroundShowSlot
+                                        )
+                                    }
                                 />
                             </div>
                         </div>
