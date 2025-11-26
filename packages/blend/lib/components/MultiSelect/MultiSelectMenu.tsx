@@ -9,12 +9,18 @@ import {
     type MultiSelectMenuItemType,
     type MultiSelectMenuProps,
     MultiSelectMenuSide,
+    MultiSelectMenuSize,
+    MultiSelectVariant,
 } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { SearchInput } from '../Inputs'
 import { filterMenuGroups, getAllAvailableValues } from './utils'
+import {
+    hasExactMatch as checkExactMatch,
+    getFilteredItemsWithCustomValue,
+} from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Button from '../Button/Button'
@@ -148,6 +154,10 @@ const MultiSelectMenu = ({
         show: false,
         variant: 'pulse',
     },
+    size = MultiSelectMenuSize.MEDIUM,
+    variant = MultiSelectVariant.CONTAINER,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -156,10 +166,30 @@ const MultiSelectMenu = ({
     const searchInputRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
 
-    const filteredItems = React.useMemo(
-        () => filterMenuGroups(items, searchText),
-        [items, searchText]
+    const hasMatch = React.useMemo(
+        () => checkExactMatch(searchText, items),
+        [searchText, items]
     )
+
+    const filteredItems = React.useMemo(() => {
+        const baseFilteredItems = filterMenuGroups(items, searchText)
+
+        return getFilteredItemsWithCustomValue(
+            baseFilteredItems,
+            searchText,
+            hasMatch,
+            allowCustomValue,
+            enableSearch || false,
+            customValueLabel
+        )
+    }, [
+        items,
+        searchText,
+        allowCustomValue,
+        hasMatch,
+        enableSearch,
+        customValueLabel,
+    ])
     const availableValues = React.useMemo(
         () => getAllAvailableValues(filteredItems),
         [filteredItems]
@@ -500,59 +530,61 @@ const MultiSelectMenu = ({
                                     />
                                 </Block>
                             ) : (
-                                filteredItems.map(
-                                    (
-                                        group: MultiSelectMenuGroupType,
-                                        groupId: number
-                                    ) => (
-                                        <React.Fragment key={groupId}>
-                                            {group.groupLabel && (
-                                                <RadixMenu.Label asChild>
-                                                    <PrimitiveText
-                                                        fontSize={
-                                                            multiSelectTokens
-                                                                .menu.item
-                                                                .optionsLabel
-                                                                .fontSize
-                                                        }
-                                                        fontWeight={
-                                                            multiSelectTokens
-                                                                .menu.item
-                                                                .optionsLabel
-                                                                .fontWeight
-                                                        }
-                                                        padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
-                                                        userSelect="none"
-                                                        textTransform="uppercase"
-                                                        color={
-                                                            multiSelectTokens
-                                                                .menu.item
-                                                                .optionsLabel
-                                                                .color.default
-                                                        }
-                                                    >
-                                                        {group.groupLabel}
-                                                    </PrimitiveText>
-                                                </RadixMenu.Label>
-                                            )}
-                                            {group.items.map(
-                                                (
-                                                    item: MultiSelectMenuItemType,
-                                                    itemIndex: number
-                                                ) => {
-                                                    let itemIdx = 0
-                                                    // Count items in previous groups
-                                                    for (
-                                                        let i = 0;
-                                                        i < groupId;
-                                                        i++
-                                                    ) {
-                                                        itemIdx +=
-                                                            filteredItems[i]
-                                                                .items.length
-                                                    }
-                                                    itemIdx += itemIndex
-                                                    return (
+                                <Block
+                                    paddingX={
+                                        multiSelectTokens.menu.padding[size][
+                                            variant
+                                        ].x
+                                    }
+                                    paddingY={
+                                        multiSelectTokens.menu.padding[size][
+                                            variant
+                                        ].y
+                                    }
+                                >
+                                    {filteredItems.map((group, groupId) => {
+                                        const groupStartIndex = filteredItems
+                                            .slice(0, groupId)
+                                            .reduce(
+                                                (acc, g) =>
+                                                    acc + g.items.length,
+                                                0
+                                            )
+
+                                        return (
+                                            <React.Fragment key={groupId}>
+                                                {group.groupLabel && (
+                                                    <RadixMenu.Label asChild>
+                                                        <PrimitiveText
+                                                            fontSize={
+                                                                multiSelectTokens
+                                                                    .menu.item
+                                                                    .optionsLabel
+                                                                    .fontSize
+                                                            }
+                                                            fontWeight={
+                                                                multiSelectTokens
+                                                                    .menu.item
+                                                                    .optionsLabel
+                                                                    .fontWeight
+                                                            }
+                                                            padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                            userSelect="none"
+                                                            textTransform="uppercase"
+                                                            color={
+                                                                multiSelectTokens
+                                                                    .menu.item
+                                                                    .optionsLabel
+                                                                    .color
+                                                                    .default
+                                                            }
+                                                        >
+                                                            {group.groupLabel}
+                                                        </PrimitiveText>
+                                                    </RadixMenu.Label>
+                                                )}
+                                                {group.items.map(
+                                                    (item, itemIndex) => (
                                                         <MultiSelectMenuItem
                                                             key={`${groupId}-${itemIndex}`}
                                                             selected={selected}
@@ -564,42 +596,48 @@ const MultiSelectMenu = ({
                                                             allItems={filteredItems.flatMap(
                                                                 (g) => g.items
                                                             )}
-                                                            index={itemIdx}
+                                                            index={
+                                                                groupStartIndex +
+                                                                itemIndex
+                                                            }
                                                         />
                                                     )
-                                                }
-                                            )}
-                                            {groupId !==
-                                                filteredItems.length - 1 &&
-                                                group.showSeparator && (
-                                                    <RadixMenu.Separator
-                                                        asChild
-                                                    >
-                                                        <Block
-                                                            height={
-                                                                multiSelectTokens
-                                                                    .menu.item
-                                                                    .seperator
-                                                                    .height
-                                                            }
-                                                            backgroundColor={
-                                                                multiSelectTokens
-                                                                    .menu.item
-                                                                    .seperator
-                                                                    .color
-                                                            }
-                                                            margin={
-                                                                multiSelectTokens
-                                                                    .menu.item
-                                                                    .seperator
-                                                                    .margin
-                                                            }
-                                                        ></Block>
-                                                    </RadixMenu.Separator>
                                                 )}
-                                        </React.Fragment>
-                                    )
-                                )
+                                                {groupId !==
+                                                    filteredItems.length - 1 &&
+                                                    group.showSeparator && (
+                                                        <RadixMenu.Separator
+                                                            asChild
+                                                        >
+                                                            <Block
+                                                                height={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .seperator
+                                                                        .height
+                                                                }
+                                                                backgroundColor={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .seperator
+                                                                        .color
+                                                                }
+                                                                margin={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .seperator
+                                                                        .margin
+                                                                }
+                                                            />
+                                                        </RadixMenu.Separator>
+                                                    )}
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </Block>
                             )}
                         </ScrollableContent>
                         {showActionButtons &&

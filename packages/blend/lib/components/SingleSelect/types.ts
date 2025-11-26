@@ -131,4 +131,7 @@ export type SingleSelectProps = {
     }
     maxTriggerWidth?: number
     minTriggerWidth?: number
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
