@@ -50,7 +50,7 @@ const StatCardDemo = () => {
         useState<StatCardArrowDirection>(StatCardArrowDirection.UP)
 
     const [showSkeleton, setShowSkeleton] = useState(true)
-
+    const [dataDisplay, setDataDisplay] = useState(true)
     // Sample chart data
     const sampleLineData = [
         { value: 100, name: 'JAN' },
@@ -263,6 +263,11 @@ const StatCardDemo = () => {
                             checked={showSkeleton}
                             onChange={() => setShowSkeleton(!showSkeleton)}
                         />
+                        <Switch
+                            label="Show Data Display"
+                            checked={dataDisplay}
+                            onChange={() => setDataDisplay(!dataDisplay)}
+                        />
                     </div>
                     <div className="w-[350px]">
                         <StatCard
@@ -328,6 +333,7 @@ const StatCardDemo = () => {
                                       ? sampleBarData
                                       : undefined
                             }
+                            dataDisplay={dataDisplay}
                             progressValue={
                                 playgroundVariant ===
                                 StatCardVariant.PROGRESS_BAR
