@@ -28,6 +28,7 @@ import {
     transformScatterData,
     generateConsistentDateTimeTicks,
 } from './ChartUtils'
+import { parseTimestamp } from './DateTimeFormatter'
 import { CustomTooltip } from './CustomTooltip'
 import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
@@ -67,9 +68,11 @@ export const renderChart = ({
         ...yAxis,
     }
 
+    const isDateTimeAxis = finalXAxis.type === AxisType.DATE_TIME
+
     // Auto-generate consistent ticks for DATE_TIME axes (like Highcharts)
     if (
-        finalXAxis.type === AxisType.DATE_TIME &&
+        isDateTimeAxis &&
         finalXAxis.autoConsistentTicks !== false &&
         !finalXAxis.ticks &&
         originalData.length > 0
@@ -87,7 +90,9 @@ export const renderChart = ({
             useUTC: finalXAxis.useUTC,
             formatString: finalXAxis.formatString,
         })
-        finalXAxis.ticks = ticks
+        finalXAxis.ticks = isDateTimeAxis
+            ? ticks.map((tick) => parseTimestamp(tick) ?? Number(tick))
+            : ticks
 
         // Enable smart date/time format by default (alternates between date and time)
         // Only if user hasn't specified dateOnly, timeOnly, or formatString
@@ -137,7 +142,26 @@ export const renderChart = ({
         gridStroke: FOUNDATION_THEME.colors.gray[150],
     }
 
-    if (flattenedData.length === 0) {
+    const processedData = isDateTimeAxis
+        ? flattenedData.map((item) => {
+              const numericTimestamp =
+                  typeof item.name === 'number'
+                      ? item.name
+                      : parseTimestamp(item.name)
+              return {
+                  ...item,
+                  __blendTimestamp:
+                      numericTimestamp ??
+                      (typeof item.name === 'string'
+                          ? Number(item.name)
+                          : item.name),
+              }
+          })
+        : flattenedData
+
+    const xAxisDataKey = isDateTimeAxis ? '__blendTimestamp' : 'name'
+
+    if (processedData.length === 0) {
         return (
             <Block
                 display="flex"
@@ -202,7 +226,7 @@ export const renderChart = ({
             return (
                 <LineChart
                     data-chart={chartName}
-                    data={flattenedData}
+                    data={processedData}
                     margin={{
                         top: 10,
                         right: 30,
@@ -217,12 +241,20 @@ export const renderChart = ({
                     onMouseLeave={() => setHoveredKey(null)}
                 >
                     <XAxis
-                        dataKey="name"
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        ticks={finalXAxis.ticks}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
@@ -366,12 +398,20 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
-                        dataKey="name"
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        ticks={finalXAxis.ticks}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
