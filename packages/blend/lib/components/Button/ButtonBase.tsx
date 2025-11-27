@@ -117,8 +117,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
-                              //   border: buttonTokens.border[buttonType][subType]
-                              //       .active,
+                              border: buttonTokens.border[buttonType][subType]
+                                  .active,
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
@@ -136,6 +136,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               color: buttonTokens.text.color[buttonType][
                                   subType
                               ].hover,
+                              border: buttonTokens.border[buttonType][subType]
+                                  .hover,
                               //   transform: 'scale(1.01)',
                           }
                 }
