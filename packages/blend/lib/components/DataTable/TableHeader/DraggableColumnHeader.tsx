@@ -5,12 +5,6 @@ import { FOUNDATION_THEME } from '../../../tokens'
 
 const HeaderWrapper = styled.th<{ $isDragging: boolean; $isDisabled: boolean }>`
     opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
-    cursor: ${(props) =>
-        props.$isDisabled
-            ? 'default'
-            : props.$isDragging
-              ? 'grabbing'
-              : 'grab'};
     transition: all 0.2s ease;
     user-select: none;
 
@@ -24,7 +18,10 @@ const HeaderWrapper = styled.th<{ $isDragging: boolean; $isDisabled: boolean }>`
 
 interface DraggableColumnHeaderProps {
     id: string
-    children: React.ReactNode
+    children: (dragHandleProps: {
+        listeners?: ReturnType<typeof useSortable>['listeners']
+        attributes?: ReturnType<typeof useSortable>['attributes']
+    }) => React.ReactNode
     style?: React.CSSProperties
     disabled?: boolean
     'data-table-column-heading'?: string
@@ -61,10 +58,9 @@ export const DraggableColumnHeader: React.FC<DraggableColumnHeaderProps> = ({
             $isDragging={isDragging}
             $isDisabled={disabled}
             {...attributes}
-            {...listeners}
             {...props}
         >
-            {children}
+            {children({ listeners, attributes })}
         </HeaderWrapper>
     )
 }

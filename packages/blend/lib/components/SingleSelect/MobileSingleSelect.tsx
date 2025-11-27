@@ -28,6 +28,10 @@ import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Check } from 'lucide-react'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
+import {
+    hasExactMatch as checkExactMatch,
+    getFilteredItemsWithCustomValue,
+} from '../Select/selectUtils'
 
 type MobileSingleSelectProps = SingleSelectProps
 
@@ -224,6 +228,10 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         show: false,
         variant: 'pulse',
     },
+    maxTriggerWidth,
+    minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -233,7 +241,30 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     const [searchText, setSearchText] = useState('')
     const valueLabelMap = map(items)
 
-    const filteredItems = filterMenuGroups(items, searchText)
+    const hasMatch = React.useMemo(
+        () => checkExactMatch(searchText, items),
+        [searchText, items]
+    )
+
+    const filteredItems = React.useMemo(() => {
+        const baseFilteredItems = filterMenuGroups(items, searchText)
+
+        return getFilteredItemsWithCustomValue(
+            baseFilteredItems,
+            searchText,
+            hasMatch,
+            allowCustomValue,
+            enableSearch || false,
+            customValueLabel
+        )
+    }, [
+        items,
+        searchText,
+        allowCustomValue,
+        hasMatch,
+        enableSearch,
+        customValueLabel,
+    ])
 
     const isItemSelected = selected.length > 0
     const isSmallScreenWithLargeSize =
@@ -261,12 +292,17 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                         onFocus?.()
                     } else {
                         onBlur?.()
+                        if (enableSearch) {
+                            setSearchText('')
+                        }
                     }
                 }}
             >
                 <DrawerTrigger>
                     {customTrigger || (
                         <SingleSelectTrigger
+                            maxTriggerWidth={maxTriggerWidth}
+                            minTriggerWidth={minTriggerWidth}
                             singleSelectTokens={singleSelectTokens}
                             size={size}
                             selected={selected}

@@ -93,6 +93,9 @@ export type MultiSelectProps = {
     // responsive behavior
     useDrawerOnMobile?: boolean
 
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+
     // dim
     minMenuWidth?: number
     maxMenuWidth?: number
@@ -147,6 +150,9 @@ export type MultiSelectProps = {
         show?: boolean
         variant?: SkeletonVariant
     }
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
 
 // Multi Select Menu Dropdpown
@@ -208,4 +214,11 @@ export type MultiSelectMenuProps = {
         show?: boolean
         variant?: SkeletonVariant
     }
+
+    // size and variant
+    size?: MultiSelectMenuSize
+    variant?: MultiSelectVariant
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }

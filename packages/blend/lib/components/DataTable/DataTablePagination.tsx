@@ -94,10 +94,6 @@ export function DataTablePagination({
         return filtered
     }, [pageSizeOptions, totalRows, pageSize])
 
-    // Removed auto-adjustment of pageSize when totalRows decreases
-    // This was causing issues with client-side filtering where temporary
-    // reduction in rows would permanently change the user's selected page size
-
     const pageSizeMenuItems = [
         {
             groupLabel: '',
@@ -113,6 +109,7 @@ export function DataTablePagination({
     return (
         <Block
             data-pagesize-pagination-wrapper="data-pagesize-pagination-wrapper"
+            data-table-pagination="true"
             display="flex"
             justifyContent="space-between"
             alignItems="center"

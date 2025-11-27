@@ -835,23 +835,21 @@ const SimpleDataTableExample = () => {
                 }}
                 headerSlot1={
                     <Button
+                        text="Manage Products"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Package />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Product action clicked')}
-                    >
-                        Manage Products
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Schedule"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Calendar />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Calendar action clicked')}
-                    >
-                        Schedule
-                    </Button>
+                    />
                 }
             />
 
@@ -922,27 +920,25 @@ const SimpleDataTableExample = () => {
                     onFieldChange={handleFieldChange}
                     headerSlot1={
                         <Button
+                            text="Manage Products"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Package />}
                             size={ButtonSize.SMALL}
                             onClick={() =>
                                 console.log('Product action clicked')
                             }
-                        >
-                            Manage Products
-                        </Button>
+                        />
                     }
                     headerSlot2={
                         <Button
+                            text="Schedule"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Calendar />}
                             size={ButtonSize.SMALL}
                             onClick={() =>
                                 console.log('Calendar action clicked')
                             }
-                        >
-                            Schedule
-                        </Button>
+                        />
                     }
                 />
             </div>
@@ -983,13 +979,12 @@ const SimpleDataTableExample = () => {
                 </div>
 
                 <Button
+                    text="Open Column Sorting Demo Table"
                     buttonType={ButtonType.PRIMARY}
                     leadingIcon={<Settings size={16} />}
                     size={ButtonSize.MEDIUM}
                     onClick={() => setIsTableModalOpen(true)}
-                >
-                    Open Column Sorting Demo Table
-                </Button>
+                />
 
                 {/* Modal with Table */}
                 <Modal
@@ -1431,23 +1426,21 @@ const EmptyDataTableExamples = () => {
                 }}
                 headerSlot1={
                     <Button
+                        text="Refresh"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<RefreshCw size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Refresh clicked')}
-                    >
-                        Refresh
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Add User"
                         buttonType={ButtonType.PRIMARY}
                         leadingIcon={<Package size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Add User clicked')}
-                    >
-                        Add User
-                    </Button>
+                    />
                 }
             />
 
@@ -1509,13 +1502,12 @@ const EmptyDataTableExamples = () => {
                     }}
                     headerSlot1={
                         <Button
+                            text="Add Product"
                             buttonType={ButtonType.PRIMARY}
                             leadingIcon={<Package size={16} />}
                             size={ButtonSize.SMALL}
                             onClick={() => console.log('Add Product clicked')}
-                        >
-                            Add Product
-                        </Button>
+                        />
                     }
                 />
             </div>
@@ -2952,6 +2944,7 @@ const DataTableDemo = () => {
                             </div>
                         </div>
                         <Button
+                            text={`Auto API Switch: ${autoSwitchToApi ? 'ON' : 'OFF'}`}
                             buttonType={
                                 autoSwitchToApi
                                     ? ButtonType.PRIMARY
@@ -2961,10 +2954,9 @@ const DataTableDemo = () => {
                             size={ButtonSize.SMALL}
                             onClick={toggleAutoSwitch}
                             disabled={isServerSideMode}
-                        >
-                            Auto API Switch: {autoSwitchToApi ? 'ON' : 'OFF'}
-                        </Button>
+                        />
                         <Button
+                            text={`Switch to ${isServerSideMode ? 'Local' : 'Server-Side'}`}
                             buttonType={
                                 isServerSideMode
                                     ? ButtonType.PRIMARY
@@ -2980,10 +2972,7 @@ const DataTableDemo = () => {
                             size={ButtonSize.SMALL}
                             onClick={toggleMode}
                             disabled={isLoading}
-                        >
-                            Switch to{' '}
-                            {isServerSideMode ? 'Local' : 'Server-Side'}
-                        </Button>
+                        />
                     </div>
                 </div>
 
@@ -3132,6 +3121,7 @@ const DataTableDemo = () => {
                         <>
                             <Button
                                 key="download"
+                                text="Download"
                                 buttonType={ButtonType.PRIMARY}
                                 size={ButtonSize.SMALL}
                                 leadingIcon={<Download size={16} />}
@@ -3147,11 +3137,10 @@ const DataTableDemo = () => {
                                         `Downloading selected users to CSV format.`
                                     )
                                 }}
-                            >
-                                Download
-                            </Button>
+                            />
                             <Button
                                 key="send-email"
+                                text="Send Email"
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 leadingIcon={<Calendar size={16} />}
@@ -3159,11 +3148,10 @@ const DataTableDemo = () => {
                                     console.log('📧 Send Email clicked')
                                     alert('Sending email to selected users!')
                                 }}
-                            >
-                                Send Email
-                            </Button>
+                            />
                             <Button
                                 key="archive"
+                                text="Archive"
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 leadingIcon={<Package size={16} />}
@@ -3171,11 +3159,10 @@ const DataTableDemo = () => {
                                     console.log('📦 Archive clicked')
                                     alert('Archiving selected users!')
                                 }}
-                            >
-                                Archive
-                            </Button>
+                            />
                             <Button
                                 key="delete"
+                                text="Delete"
                                 buttonType={ButtonType.DANGER}
                                 size={ButtonSize.SMALL}
                                 leadingIcon={<Trash2 size={16} />}
@@ -3189,32 +3176,28 @@ const DataTableDemo = () => {
                                         alert('Deleted selected users!')
                                     }
                                 }}
-                            >
-                                Delete
-                            </Button>
+                            />
                         </>
                     ),
                 }}
                 headerSlot1={
                     <Button
+                        text={isLoading ? 'Loading...' : 'Refresh'}
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<RefreshCw size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={handleRefreshData}
                         disabled={isLoading}
-                    >
-                        {isLoading ? 'Loading...' : 'Refresh'}
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Action"
                         buttonType={ButtonType.DANGER}
                         leadingIcon={<CircleX size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={handleRefreshData}
-                    >
-                        Action
-                    </Button>
+                    />
                 }
                 rowActions={{
                     showEditAction: true, // Show edit actions alongside custom actions
@@ -3334,23 +3317,21 @@ const DataTableDemo = () => {
                     onRowSelectionChange={handleRowSelectionChange}
                     headerSlot1={
                         <Button
+                            text="Settings"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Settings size={16} />}
                             size={ButtonSize.SMALL}
                             onClick={() => console.log('Settings clicked')}
-                        >
-                            Settings
-                        </Button>
+                        />
                     }
                     headerSlot2={
                         <Button
+                            text="Add User"
                             buttonType={ButtonType.PRIMARY}
                             leadingIcon={<Package size={16} />}
                             size={ButtonSize.SMALL}
                             onClick={() => console.log('Add User clicked')}
-                        >
-                            Add User
-                        </Button>
+                        />
                     }
                 />
 
@@ -3707,6 +3688,11 @@ const SkeletonLoadingDemo = () => {
                 }}
             >
                 <Button
+                    text={
+                        globalSkeletonLoading
+                            ? '✓ Global Skeleton ON'
+                            : 'Global Skeleton OFF'
+                    }
                     buttonType={
                         globalSkeletonLoading
                             ? ButtonType.PRIMARY
@@ -3716,21 +3702,20 @@ const SkeletonLoadingDemo = () => {
                     onClick={() =>
                         setGlobalSkeletonLoading(!globalSkeletonLoading)
                     }
-                >
-                    {globalSkeletonLoading
-                        ? '✓ Global Skeleton ON'
-                        : 'Global Skeleton OFF'}
-                </Button>
+                />
 
                 <Button
+                    text={
+                        simulateApiCall
+                            ? 'Loading... (2s)'
+                            : 'Simulate API Call'
+                    }
                     buttonType={ButtonType.SECONDARY}
                     size={ButtonSize.SMALL}
                     leadingIcon={<RefreshCw size={16} />}
                     onClick={handleSimulateApiCall}
                     disabled={simulateApiCall}
-                >
-                    {simulateApiCall ? 'Loading... (2s)' : 'Simulate API Call'}
-                </Button>
+                />
 
                 <div
                     style={{
@@ -3766,15 +3751,16 @@ const SkeletonLoadingDemo = () => {
                     {demoData.map((row) => (
                         <Button
                             key={row.id}
+                            text={
+                                loadingRowIds.has(row.id)
+                                    ? `Row ${row.id} Loading...`
+                                    : `Update Row ${row.id}`
+                            }
                             buttonType={ButtonType.SECONDARY}
                             size={ButtonSize.SMALL}
                             onClick={() => handleSimulateRowUpdate(row.id)}
                             disabled={loadingRowIds.has(row.id)}
-                        >
-                            {loadingRowIds.has(row.id)
-                                ? `Row ${row.id} Loading...`
-                                : `Update Row ${row.id}`}
-                        </Button>
+                        />
                     ))}
                 </div>
             </div>
@@ -3810,23 +3796,21 @@ const SkeletonLoadingDemo = () => {
                 }}
                 headerSlot1={
                     <Button
+                        text="Settings"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Settings size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Settings clicked')}
-                    >
-                        Settings
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Add User"
                         buttonType={ButtonType.PRIMARY}
                         leadingIcon={<Package size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Add User clicked')}
-                    >
-                        Add User
-                    </Button>
+                    />
                 }
             />
 

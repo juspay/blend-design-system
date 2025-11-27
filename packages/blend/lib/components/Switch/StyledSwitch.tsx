@@ -33,6 +33,7 @@ export const StyledSwitchRoot = styled.button<{
             justify-content: flex-start;
 
             width: ${tokens.switchContainer.width[size]};
+            min-width: ${tokens.switchContainer.width[size]};
             height: ${tokens.switchContainer.height[size]};
 
             background-color: ${$isDisabled

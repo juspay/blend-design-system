@@ -12,11 +12,13 @@ import {
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckbox'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import { Tooltip } from '../Tooltip/Tooltip'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useErrorShake } from '../common/useErrorShake'
 import { getErrorShakeStyle } from '../common/error.animations'
+import { getTruncatedText } from '../../global-utils/GlobalUtils'
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
@@ -33,19 +35,22 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
             children,
             subtext,
             slot,
+            maxLength,
             ...rest
         },
         ref
     ) => {
+        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         const generatedId = useId()
         const uniqueId = id || generatedId
-        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
         const shouldShake = useErrorShake(error)
+        const labelMaxLength = maxLength?.label
+        const subtextMaxLength = maxLength?.subtext
 
         return (
             <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
                 <StyledCheckboxRoot
-                    id={id}
+                    id={uniqueId}
                     name={name}
                     ref={ref}
                     data-state={getCheckboxDataState(checked || false)}
@@ -84,6 +89,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                                 size={size}
                                 children={children}
                                 tokens={tokens}
+                                maxLength={labelMaxLength}
                             />
 
                             {slot && (
@@ -102,6 +108,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                                 disabled={disabled}
                                 error={error}
                                 tokens={tokens}
+                                maxLength={subtextMaxLength}
                             >
                                 {subtext}
                             </CheckboxSubtext>
@@ -155,13 +162,28 @@ const CheckboxContent: React.FC<{
     size: CheckboxSize
     children?: React.ReactNode
     tokens: CheckboxTokensType
-}> = ({ uniqueId, disabled, error, required, size, children, tokens }) => {
+    maxLength?: number
+}> = ({
+    uniqueId,
+    disabled,
+    error,
+    required,
+    size,
+    children,
+    tokens,
+    maxLength,
+}) => {
     if (!children) return null
 
     const labelStyles = getCheckboxLabelStyles(disabled)
     const textProps = getCheckboxTextProps(tokens, size, disabled, error)
+    const isStringChild =
+        typeof children === 'string' || typeof children === 'number'
+    const truncation = isStringChild
+        ? getTruncatedText(String(children), maxLength)
+        : null
 
-    return (
+    const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
                 data-text={children}
@@ -170,7 +192,7 @@ const CheckboxContent: React.FC<{
                 fontWeight={textProps.fontWeight}
                 color={textProps.color}
             >
-                {children}
+                {truncation?.isTruncated ? truncation.truncatedValue : children}
                 {required && (
                     <PrimitiveText
                         as="span"
@@ -183,6 +205,12 @@ const CheckboxContent: React.FC<{
             </PrimitiveText>
         </label>
     )
+
+    return truncation?.isTruncated ? (
+        <Tooltip content={truncation.fullValue}>{content}</Tooltip>
+    ) : (
+        content
+    )
 }
 
 const CheckboxSubtext: React.FC<{
@@ -191,10 +219,16 @@ const CheckboxSubtext: React.FC<{
     error: boolean
     tokens: CheckboxTokensType
     children: React.ReactNode
-}> = ({ size, disabled, error, tokens, children }) => {
+    maxLength?: number
+}> = ({ size, disabled, error, tokens, children, maxLength }) => {
     const subtextProps = getCheckboxSubtextProps(tokens, size, disabled, error)
+    const isStringLike =
+        typeof children === 'string' || typeof children === 'number'
+    const truncation = isStringLike
+        ? getTruncatedText(String(children), maxLength)
+        : null
 
-    return (
+    const content = (
         <Block>
             <PrimitiveText
                 data-description-text={children}
@@ -202,10 +236,16 @@ const CheckboxSubtext: React.FC<{
                 color={subtextProps.color}
                 fontSize={subtextProps.fontSize}
             >
-                {children}
+                {truncation?.isTruncated ? truncation.truncatedValue : children}
             </PrimitiveText>
         </Block>
     )
+
+    if (truncation?.isTruncated) {
+        return <Tooltip content={truncation.fullValue}>{content}</Tooltip>
+    }
+
+    return content
 }
 
 Checkbox.displayName = 'Checkbox'

@@ -1,29 +1,34 @@
-# Changelog for v0.0.26
+# Changelog for v0.0.28
 
 > **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
-- add Tabs animation and skeleton (#596) ([bfd6e39](../../commit/bfd6e39))
-- implement tenant panel only mode in Sidebar (#614) ([1b7d1e8](../../commit/1b7d1e8))
+- enhance custom issue template and add Monaco editor styles (#654) ([26c6b4d](../../commit/26c6b4d))
+- add Sankey chart support to Charts (#616) ([37d8021](../../commit/37d8021))
+
+## ♻️ Code Refactoring
+
+- tabs code and update dynamic tabs management (#644) ([77eafcf](../../commit/77eafcf))
 
 ## 🔧 Chores
 
-- **release**: v0.0.26-beta [BETA] ([f5e6699](../../commit/f5e6699))
-- dev to staging (#619) ([a870f25](../../commit/a870f25))
-- Fix multiselct and checkbox and add skeletons (#615) ([ac9d6eb](../../commit/ac9d6eb))
-- **release**: v0.0.25 [STABLE] ([0e8aee5](../../commit/0e8aee5))
+- **release**: v0.0.28-beta [BETA] ([6676b96](../../commit/6676b96))
+- Add skeleton for card, statcard and fix dropdown, switch, modal (#657) ([e40daf1](../../commit/e40daf1))
+- Fix tabs with underscore data (#638) (#639) ([0ceed2f](../../commit/0ceed2f))
+- Fix tabs with underscore data (#638) ([821f1ea](../../commit/821f1ea))
+- **release**: v0.0.27 [STABLE] ([c46a409](../../commit/c46a409))
 
 ---
 
-**Release Date**: 2025-11-20
-**Commit Range**: v0.0.25..HEAD
-**Total Changes**: 6 commits
+**Release Date**: 2025-11-26
+**Commit Range**: v0.0.27..HEAD
+**Total Changes**: 8 commits
 
 ## Installation
 
 ```bash
 npm install @juspay/blend-design-system@latest
 # or specific version
-npm install @juspay/blend-design-system@0.0.26
+npm install @juspay/blend-design-system@0.0.28
 ```

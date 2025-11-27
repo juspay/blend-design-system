@@ -66,6 +66,65 @@ function MyComponent() {
 }
 ```
 
+### Sankey Charts (Flow Diagrams)
+
+```tsx
+import { Charts, ChartType } from 'blend-v1'
+
+function SankeyChart() {
+    const data = [
+        {
+            name: 'payment-flow',
+            data: {
+                sankeyData: {
+                    primary: {
+                        nodes: [
+                            { id: 'Visa', name: 'Visa', color: '#1e3a8a' },
+                            {
+                                id: 'Received',
+                                name: 'Received',
+                                color: '#3B82F6',
+                            },
+                            {
+                                id: 'Authorised',
+                                name: 'Authorised',
+                                color: '#10B981',
+                            },
+                        ],
+                        links: [
+                            {
+                                source: 'Visa', // Can use string ID or numeric index
+                                target: 'Received',
+                                value: 165.0,
+                                color: 'rgba(59, 130, 246, 0.4)',
+                                hoverColor: 'rgba(59, 130, 246, 0.8)', // Optional hover effect
+                            },
+                            {
+                                source: 'Received',
+                                target: 'Authorised',
+                                value: 220.0,
+                                color: 'rgba(16, 185, 129, 0.4)',
+                                hoverColor: 'rgba(16, 185, 129, 0.8)',
+                            },
+                        ],
+                    },
+                    aux: [],
+                },
+            },
+        },
+    ]
+
+    return (
+        <Charts
+            chartType={ChartType.SANKEY}
+            data={data}
+            height={700}
+            chartHeaderSlot={<h3>Payment Flow Diagram</h3>}
+        />
+    )
+}
+```
+
 ## API Reference
 
 <DocsTypeTable
@@ -74,13 +133,13 @@ function MyComponent() {
             {
                 content: 'chartType',
                 hintText:
-                    'Determines the visualization type to render. LINE displays data as connected points for trends over time, BAR shows categorical comparisons with rectangular bars, PIE represents proportions as circular segments, and SCATTER plots individual data points for correlation analysis. Defaults to LINE.',
+                    'Determines the visualization type to render. LINE displays data as connected points for trends over time, BAR shows categorical comparisons with rectangular bars, PIE represents proportions as circular segments, SCATTER plots individual data points for correlation analysis, and SANKEY visualizes flows between nodes showing relationships and magnitudes. Defaults to LINE.',
             },
             {
                 content: 'ChartType',
                 hintText: 'Enum that determines the chart visualization type',
             },
-            { content: 'LINE, BAR, PIE, SCATTER' },
+            { content: 'LINE, BAR, PIE, SCATTER, SANKEY' },
         ],
         [
             {
@@ -328,6 +387,49 @@ function MyComponent() {
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
+
+## Sankey Chart Features
+
+Sankey charts have unique features for visualizing flows:
+
+### Node and Link Customization
+
+```tsx
+// Nodes support:
+{
+    id: 'unique-id',        // String identifier (optional, can use numeric indices)
+    name: 'Display Name',   // Visible label
+    color: '#1e3a8a'       // Custom color for the node
+}
+
+// Links support:
+{
+    source: 'node-id',              // Source node (string ID or number)
+    target: 'target-id',            // Target node (string ID or number)
+    value: 100,                     // Flow magnitude
+    color: 'rgba(59, 130, 246, 0.4)',      // Link color
+    hoverColor: 'rgba(59, 130, 246, 0.8)'  // Color on hover (optional)
+}
+```
+
+### Interactive Tooltips
+
+Sankey charts display tooltips on hover:
+
+- **Node Tooltip**: Shows node name and total value
+- **Link Tooltip**: Displays source → target flow with value
+
+### Data Format Options
+
+You can use either **numeric indices** or **string IDs** for links:
+
+```tsx
+// Option 1: Numeric indices (traditional)
+links: [{ source: 0, target: 1, value: 100 }]
+
+// Option 2: String IDs (more readable)
+links: [{ source: 'Visa', target: 'Received', value: 165 }]
+```
 
 ## Component Tokens
 

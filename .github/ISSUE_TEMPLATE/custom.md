@@ -1,12 +1,12 @@
 ---
 name: Custom issue template
 about: Describe this issue template's purpose here.
-title: ''
+title: '[component name]: brief issue summary'
 labels: ''
 assignees: ''
 ---
 
-## Issue Type
+## Issue Type [Mandatory]
 
 - [ ] Bug Report
 - [ ] Feature Request
@@ -15,13 +15,13 @@ assignees: ''
 
 ---
 
-## Description
+## Description [Mandatory]
 
 <!-- Provide a clear and concise description of the issue -->
 
 ---
 
-## Steps to Reproduce (for bugs)
+## Steps to Reproduce (for bugs) [Mandatory]
 
 1. ...
 2. ...
@@ -29,24 +29,24 @@ assignees: ''
 
 ---
 
-## Expected Behavior
+## Expected Behavior [Mandatory]
 
 <!-- Describe what you expected to happen -->
 
 ---
 
-## Screenshots / Logs / Video
+## Screenshots / Logs / Video [Mandatory]
 
 <!-- Paste logs or upload screenshots/videos if applicable -->
 
 ---
 
-## Related Issues / PRs
+## Related Issues / PRs [Optional]
 
 <!-- Link related issues/PRs -->
 
 ---
 
-## Additional Context
+## Additional Context [Optional]
 
 <!-- Add any other context about the issue here -->

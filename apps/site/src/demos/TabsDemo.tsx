@@ -28,7 +28,16 @@ import {
     Download,
     Upload,
     Trash2,
+    MessageSquare,
+    Pin,
 } from 'lucide-react'
+
+// Conversation tabs constants pattern
+const CONVERSATION_TABS = {
+    CHAT: 'chat',
+    FILES: 'files',
+    PINS: 'pins',
+} as const
 
 const sharedContent = (
     <div className="p-4 bg-gray-50 rounded-lg">
@@ -40,6 +49,39 @@ const sharedContent = (
         </p>
     </div>
 )
+
+const ANALYTICS_TABS_DATA = [
+    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: false },
+    {
+        value: 'payment_method_type',
+        label: 'Payment Method Type',
+        isDefault: false,
+    },
+    { value: 'payment_method', label: 'Payment Method', isDefault: false },
+    {
+        value: 'payment_instrument_group',
+        label: 'Payment Instrument Group',
+        isDefault: true,
+    },
+    { value: 'bank_name', label: 'Bank', isDefault: true },
+    {
+        value: 'actual_payment_status',
+        label: 'Actual Payment Status',
+        isDefault: true,
+    },
+    { value: 'order_status', label: 'Order Status', isDefault: true },
+    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: true },
+    { value: 'order_type', label: 'Order Type', isDefault: true },
+    { value: 'auth_type', label: 'Auth Type', isDefault: true },
+    { value: 'card_brand', label: 'Card Brand', isDefault: true },
+    {
+        value: 'card_last_four_digits',
+        label: 'Card Last Four Digits',
+        isDefault: true,
+    },
+    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: true },
+    { value: 'ticket_size', label: 'Ticket Size', isDefault: true },
+]
 
 const availableTabOptions = [
     { value: 'analytics', label: 'Analytics' },
@@ -63,27 +105,27 @@ const TabsDemo = () => {
     const [fitContent, setFitContent] = useState(false)
     const [showIcons, setShowIcons] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
-    const [activeTab, setActiveTab] = useState('tab1')
+    const [activeTab, setActiveTab] = useState('payment_gateway')
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
         // Default tabs - always visible at front, no X icon
         {
-            value: 'home',
+            value: 'payment_gateway',
             label: 'Home',
             content: (
                 <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Home Content</h3>
                     <p className="text-blue-600">
                         This is a default tab that cannot be closed. Default
-                        tabs are always visible at the front.
+                        tabs are alw ays visible at the front.
                     </p>
                 </div>
             ),
             isDefault: true,
         },
         {
-            value: 'dashboard',
+            value: 'payment_status',
             label: 'Dashboard',
             content: (
                 <div className="p-4 bg-green-50 rounded-lg">
@@ -100,7 +142,8 @@ const TabsDemo = () => {
         },
     ])
 
-    const [enhancedActiveTab, setEnhancedActiveTab] = useState('home')
+    const [enhancedActiveTab, setEnhancedActiveTab] =
+        useState('payment_gateway')
     const [showEnhancedDropdown, setShowEnhancedDropdown] = useState(true)
     const [showEnhancedAddButton, setShowEnhancedAddButton] = useState(true)
 
@@ -116,6 +159,33 @@ const TabsDemo = () => {
     const [skeletonVariant, setSkeletonVariant] = useState<
         'pulse' | 'wave' | 'shimmer'
     >('pulse')
+
+    // Conversation tabs state
+    const [conversationTab, setConversationTab] = useState<string>(
+        CONVERSATION_TABS.CHAT
+    )
+
+    const [analyticsTabsItems, setAnalyticsTabsItems] = useState<TabItem[]>(
+        ANALYTICS_TABS_DATA.slice(0, 4).map((tab) => ({
+            value: tab.value,
+            label: tab.label,
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold mb-2">{tab.label}</h4>
+                    <p className="text-gray-600">
+                        This demonstrates tabs with underscore values like "
+                        {tab.value}". The underline indicator should animate
+                        smoothly between tabs.
+                    </p>
+                </div>
+            ),
+            isDefault: tab.isDefault,
+            closable: !tab.isDefault,
+        }))
+    )
+    const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
+        ANALYTICS_TABS_DATA[0].value
+    )
 
     // Options for selects
     const variantOptions = [
@@ -263,6 +333,48 @@ const TabsDemo = () => {
         setShowMultiSelect(false)
     }
 
+    const handleAnalyticsTabClose = (value: string) => {
+        const filteredTabs = analyticsTabsItems.filter(
+            (tab) => tab.value !== value
+        )
+        setAnalyticsTabsItems(filteredTabs)
+
+        if (value === analyticsActiveTab && filteredTabs.length > 0) {
+            setAnalyticsActiveTab(filteredTabs[0].value)
+        }
+    }
+
+    const handleAnalyticsTabAdd = () => {
+        const existingValues = new Set(
+            analyticsTabsItems.map((tab) => tab.value)
+        )
+        const remainingTabs = ANALYTICS_TABS_DATA.filter(
+            (tab) => !existingValues.has(tab.value)
+        )
+
+        if (remainingTabs.length > 0) {
+            const newTab = remainingTabs[0]
+            const newTabItem: TabItem = {
+                value: newTab.value,
+                label: newTab.label,
+                content: (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold mb-2">{newTab.label}</h4>
+                        <p className="text-gray-600">
+                            Newly added tab: {newTab.value}
+                        </p>
+                    </div>
+                ),
+                isDefault: newTab.isDefault || false,
+                closable: !newTab.isDefault,
+            }
+            setAnalyticsTabsItems((prev) => [...prev, newTabItem])
+            setAnalyticsActiveTab(newTab.value)
+        } else {
+            console.log('All available tabs have been added')
+        }
+    }
+
     const multiSelectItems = [
         {
             items: getAvailableItems().map((item) => ({
@@ -276,6 +388,208 @@ const TabsDemo = () => {
 
     return (
         <div className="p-8 space-y-12">
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Playground</h2>
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <SingleSelect
+                            label="Variant"
+                            items={[{ items: variantOptions }]}
+                            selected={playgroundVariant}
+                            onSelect={(value) =>
+                                setPlaygroundVariant(value as TabsVariant)
+                            }
+                            placeholder="Select variant"
+                        />
+
+                        <SingleSelect
+                            label="Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={playgroundSize}
+                            onSelect={(value) =>
+                                setPlaygroundSize(value as TabsSize)
+                            }
+                            placeholder="Select size"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-6 flex-wrap">
+                        <Switch
+                            label="Expanded"
+                            checked={expanded}
+                            onChange={() => setExpanded(!expanded)}
+                        />
+                        <Switch
+                            label="Fit Content"
+                            checked={fitContent}
+                            onChange={() => setFitContent(!fitContent)}
+                        />
+                        <Switch
+                            label="Show Icons"
+                            checked={showIcons}
+                            onChange={() => setShowIcons(!showIcons)}
+                        />
+                        <Switch
+                            label="Show Right Slot"
+                            checked={showRightSlot}
+                            onChange={() => setShowRightSlot(!showRightSlot)}
+                        />
+                    </div>
+
+                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
+                        <div className="w-full ">
+                            <Tabs
+                                value={activeTab}
+                                onValueChange={setActiveTab}
+                            >
+                                <TabsList
+                                    variant={playgroundVariant}
+                                    size={playgroundSize}
+                                    expanded={expanded}
+                                    fitContent={fitContent}
+                                >
+                                    <TabsTrigger
+                                        value="payment_gateway"
+                                        variant={playgroundVariant}
+                                        size={playgroundSize}
+                                        leftSlot={
+                                            showIcons
+                                                ? getIconForTab('tab1')
+                                                : undefined
+                                        }
+                                        rightSlot={
+                                            showRightSlot
+                                                ? getRightSlotForTab('tab1')
+                                                : undefined
+                                        }
+                                    >
+                                        payment_gateway
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="payment_status"
+                                        variant={playgroundVariant}
+                                        size={playgroundSize}
+                                        leftSlot={
+                                            showIcons
+                                                ? getIconForTab('tab2')
+                                                : undefined
+                                        }
+                                        rightSlot={
+                                            showRightSlot
+                                                ? getRightSlotForTab('tab2')
+                                                : undefined
+                                        }
+                                    >
+                                        payment_status
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="payment_method"
+                                        variant={playgroundVariant}
+                                        size={playgroundSize}
+                                        leftSlot={
+                                            showIcons
+                                                ? getIconForTab('tab3')
+                                                : undefined
+                                        }
+                                        rightSlot={
+                                            showRightSlot
+                                                ? getRightSlotForTab('tab3')
+                                                : undefined
+                                        }
+                                    >
+                                        payment_method
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="payment_history"
+                                        variant={playgroundVariant}
+                                        size={playgroundSize}
+                                        leftSlot={
+                                            showIcons
+                                                ? getIconForTab('tab4')
+                                                : undefined
+                                        }
+                                        rightSlot={
+                                            showRightSlot
+                                                ? getRightSlotForTab('tab4')
+                                                : undefined
+                                        }
+                                    >
+                                        payment_history
+                                    </TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            Home Content
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            This is the home tab content. You
+                                            can put any content here including
+                                            forms, lists, or other components.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            Profile Content
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            This is the profile tab content.
+                                            Here you can display user
+                                            information, preferences, or account
+                                            settings.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent
+                                    value="payment_method"
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            Settings Content
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            This is the settings tab content.
+                                            You can include configuration
+                                            options, preferences, or system
+                                            settings here.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent
+                                    value="payment_history"
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                        <h3 className="text-lg font-semibold mb-2">
+                                            Documents Content
+                                        </h3>
+                                        <p className="text-gray-600">
+                                            This is the documents tab content.
+                                            You can display file lists, document
+                                            management tools, or file upload
+                                            interfaces here.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Enhanced Tabs Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">
@@ -339,7 +653,7 @@ const TabsDemo = () => {
                             onChange={handleMultiSelectChange}
                             items={multiSelectItems}
                             placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
-                            label=""
+                            label="select tabs to add"
                             enableSearch={true}
                             searchPlaceholder="Search available tabs..."
                             maxSelections={3}
@@ -402,6 +716,497 @@ const TabsDemo = () => {
                                 <strong>Max limit:</strong> Only first 3 items
                                 are concatenated
                             </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Conversation Tabs Pattern
+                </h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This demonstrates a common pattern for tabs with
+                        conditional rendering. Using constants for tab values
+                        ensures type safety and prevents typos. The underline
+                        indicator animates smoothly between tabs.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <Tabs
+                            value={conversationTab}
+                            onValueChange={setConversationTab}
+                        >
+                            <TabsList>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.CHAT}
+                                    leftSlot={<MessageSquare size={16} />}
+                                >
+                                    Chat
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.FILES}
+                                    leftSlot={<FileText size={16} />}
+                                >
+                                    Files
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.PINS}
+                                    leftSlot={<Pin size={16} />}
+                                >
+                                    Pins
+                                </TabsTrigger>
+                            </TabsList>
+
+                            {conversationTab === CONVERSATION_TABS.CHAT && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.CHAT}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-blue-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-blue-800">
+                                            Chat Messages
+                                        </h4>
+                                        <p className="text-blue-700">
+                                            This is where chat messages would be
+                                            displayed. The tab content is
+                                            conditionally rendered based on the
+                                            active tab value.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+
+                            {conversationTab === CONVERSATION_TABS.FILES && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.FILES}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-green-800">
+                                            Shared Files
+                                        </h4>
+                                        <p className="text-green-700">
+                                            This is where shared files would be
+                                            displayed. Using conditional
+                                            rendering allows for better control
+                                            over component lifecycle.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+
+                            {conversationTab === CONVERSATION_TABS.PINS && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.PINS}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-purple-800">
+                                            Pinned Messages
+                                        </h4>
+                                        <p className="text-purple-700">
+                                            This is where pinned messages would
+                                            be displayed. Each tab content can
+                                            be unmounted when not active.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Pattern Benefits:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Constants prevent typos:{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    CONVERSATION_TABS.CHAT
+                                </code>
+                            </li>
+                            <li>
+                                • Conditional rendering allows unmounting
+                                inactive tabs
+                            </li>
+                            <li>
+                                • Works perfectly with underscore values (chat,
+                                files, pins)
+                            </li>
+                            <li>
+                                • Underline indicator animates smoothly between
+                                tabs
+                            </li>
+                            <li>
+                                • Type-safe with{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    as const
+                                </code>{' '}
+                                assertion
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Code Example:
+                        </h4>
+                        <div className="font-mono text-sm text-gray-700">
+                            <pre>{`const CONVERSATION_TABS = {
+  CHAT: 'chat',
+  FILES: 'files',
+  PINS: 'pins',
+} as const
+
+const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
+
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value={CONVERSATION_TABS.CHAT}>
+      Chat
+    </TabsTrigger>
+    {/* ... */}
+  </TabsList>
+
+  {activeTab === CONVERSATION_TABS.CHAT && (
+    <TabsContent value={CONVERSATION_TABS.CHAT}>
+      {/* Chat content */}
+    </TabsContent>
+  )}
+</Tabs>`}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Analytics Dashboard Tabs - Real World Example */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Analytics Dashboard - Real World Example
+                </h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This demonstrates a real-world analytics dashboard with
+                        many tabs using underscore values from a backend API.
+                        Features include default tabs, closable tabs, dropdown
+                        navigation, and add button for dynamic tab management.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Payment Analytics Dashboard
+                        </h3>
+                        <Tabs
+                            items={analyticsTabsItems}
+                            value={analyticsActiveTab}
+                            onValueChange={setAnalyticsActiveTab}
+                            onTabClose={handleAnalyticsTabClose}
+                            onTabAdd={handleAnalyticsTabAdd}
+                            showDropdown={true}
+                            showAddButton={true}
+                            dropdownTooltip="View all analytics dimensions"
+                            addButtonTooltip="Add dimension"
+                            maxDisplayTabs={5}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Underscore Values Work Perfectly:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>
+                                    • All values use underscores:{' '}
+                                    <code className="px-1 bg-blue-100 rounded">
+                                        payment_gateway
+                                    </code>
+                                    ,{' '}
+                                    <code className="px-1 bg-blue-100 rounded">
+                                        payment_method
+                                    </code>
+                                </li>
+                                <li>
+                                    • Underline indicator animates smoothly
+                                    between tabs
+                                </li>
+                                <li>
+                                    • Tabs scroll horizontally when overflow
+                                    occurs
+                                </li>
+                                <li>
+                                    • Dropdown shows all tabs (even scrolled-out
+                                    ones)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Dynamic Tab Management:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>
+                                    • Default tabs (
+                                    <code className="px-1 bg-green-100 rounded">
+                                        isDefault: true
+                                    </code>
+                                    ) cannot be closed
+                                </li>
+                                <li>
+                                    • Non-default tabs show close button (X)
+                                </li>
+                                <li>
+                                    • + button adds new dimension from remaining
+                                    options
+                                </li>
+                                <li>• Auto-scroll to newly added tab</li>
+                                <li>
+                                    • Handles 14+ tabs with smooth scrolling
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h4 className="font-semibold text-purple-800 mb-2">
+                            Current State:
+                        </h4>
+                        <div className="text-purple-700 text-sm space-y-2">
+                            <p>
+                                <strong>Active Tab:</strong>{' '}
+                                <code className="px-2 py-1 bg-purple-100 rounded">
+                                    {analyticsActiveTab}
+                                </code>
+                            </p>
+                            <p>
+                                <strong>Total Tabs:</strong>{' '}
+                                {analyticsTabsItems.length}
+                            </p>
+                            <p>
+                                <strong>Default Tabs:</strong>{' '}
+                                {
+                                    analyticsTabsItems.filter(
+                                        (tab) => tab.isDefault
+                                    ).length
+                                }
+                            </p>
+                            <p>
+                                <strong>Closable Tabs:</strong>{' '}
+                                {
+                                    analyticsTabsItems.filter(
+                                        (tab) => tab.closable
+                                    ).length
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Sample Tab Values:
+                        </h4>
+                        <div className="font-mono text-xs text-gray-700 grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {analyticsTabsItems.slice(0, 9).map((tab) => (
+                                <div
+                                    key={tab.value}
+                                    className="px-2 py-1 bg-white rounded border"
+                                >
+                                    {tab.value}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Data with Underscores</h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This section demonstrates how the Tabs component
+                        correctly handles tab values with underscores that come
+                        from backend APIs. Values like{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_gateway
+                        </code>
+                        ,{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method
+                        </code>
+                        , and{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method_type
+                        </code>{' '}
+                        are treated as single tab values, not concatenated tabs.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Simulated API Response
+                        </h3>
+                        <div className="mb-4 p-4 bg-gray-50 rounded-lg font-mono text-sm">
+                            <div className="text-gray-600 mb-2">
+                                {/* Simulated API response */}
+                                <pre>{`// Backend API returns:
+const apiTabs = [
+  { value: 'payment_gateway', label: 'Payment Gateway' },
+  { value: 'payment_method', label: 'Payment Method' },
+  { value: 'payment_method_type', label: 'Payment Method Type' },
+  { value: 'payment_status', label: 'Payment Status' },
+]`}</pre>
+                            </div>
+                        </div>
+                        <Tabs defaultValue="payment_gateway">
+                            <TabsList>
+                                <TabsTrigger value="payment_gateway">
+                                    Payment Gateway
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method">
+                                    Payment Method
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method_type">
+                                    Payment Method Type
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_status">
+                                    Payment Status
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent
+                                value="payment_gateway"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-blue-800">
+                                        Payment Gateway Content
+                                    </h4>
+                                    <p className="text-blue-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-blue-100 rounded">
+                                            payment_gateway
+                                        </code>
+                                        . This tab is fully clickable and works
+                                        correctly with underscore values from
+                                        backend APIs.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-green-800">
+                                        Payment Method Content
+                                    </h4>
+                                    <p className="text-green-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-green-100 rounded">
+                                            payment_method
+                                        </code>
+                                        . All tabs with underscores work
+                                        correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method_type"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-purple-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-purple-800">
+                                        Payment Method Type Content
+                                    </h4>
+                                    <p className="text-purple-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-purple-100 rounded">
+                                            payment_method_type
+                                        </code>
+                                        . Even tabs with multiple underscores
+                                        work perfectly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_status"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-orange-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-orange-800">
+                                        Payment Status Content
+                                    </h4>
+                                    <p className="text-orange-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-orange-100 rounded">
+                                            payment_status
+                                        </code>
+                                        . Backend API data is handled correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">
+                            Backend API Integration:
+                        </h4>
+                        <ul className="text-green-700 space-y-1 text-sm">
+                            <li>
+                                • Tab values with underscores (e.g.,{' '}
+                                <code className="px-1 bg-green-100 rounded">
+                                    payment_gateway
+                                </code>
+                                ) are treated as single values
+                            </li>
+                            <li>
+                                • Only concatenated tabs (created when multiple
+                                tabs share content) use underscores as
+                                separators
+                            </li>
+                            <li>
+                                • The component automatically distinguishes
+                                between single tabs with underscores and
+                                concatenated tabs
+                            </li>
+                            <li>
+                                • All tab operations (click, close, dropdown)
+                                work correctly with underscore values
+                            </li>
+                            <li>
+                                • Compatible with REST APIs, GraphQL, and any
+                                backend that uses underscore naming conventions
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Example: Using Backend API Data
+                        </h4>
+                        <div className="font-mono text-sm text-blue-700">
+                            <pre>{`// Fetch tabs from backend API
+const response = await fetch('/api/tabs')
+const apiTabs = await response.json()
+
+// Transform API response to TabItem format
+const tabs: TabItem[] = apiTabs.map(tab => ({
+  value: tab.id,           // e.g., 'payment_gateway'
+  label: tab.name,         // e.g., 'Payment Gateway'
+  content: <TabContent />,
+  isDefault: tab.isDefault || false,
+  closable: !tab.isDefault,
+}))
+
+// Use directly - underscores work correctly!
+<Tabs items={tabs} defaultValue={tabs[0].value} />`}</pre>
                         </div>
                     </div>
                 </div>
@@ -1040,197 +1845,6 @@ const TabsDemo = () => {
                 </div>
             </div>
 
-            {/* Playground Section */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
-                <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <SingleSelect
-                            label="Variant"
-                            items={[{ items: variantOptions }]}
-                            selected={playgroundVariant}
-                            onSelect={(value) =>
-                                setPlaygroundVariant(value as TabsVariant)
-                            }
-                            placeholder="Select variant"
-                        />
-
-                        <SingleSelect
-                            label="Size"
-                            items={[{ items: sizeOptions }]}
-                            selected={playgroundSize}
-                            onSelect={(value) =>
-                                setPlaygroundSize(value as TabsSize)
-                            }
-                            placeholder="Select size"
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-6 flex-wrap">
-                        <Switch
-                            label="Expanded"
-                            checked={expanded}
-                            onChange={() => setExpanded(!expanded)}
-                        />
-                        <Switch
-                            label="Fit Content"
-                            checked={fitContent}
-                            onChange={() => setFitContent(!fitContent)}
-                        />
-                        <Switch
-                            label="Show Icons"
-                            checked={showIcons}
-                            onChange={() => setShowIcons(!showIcons)}
-                        />
-                        <Switch
-                            label="Show Right Slot"
-                            checked={showRightSlot}
-                            onChange={() => setShowRightSlot(!showRightSlot)}
-                        />
-                    </div>
-
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
-                        <div className="w-full ">
-                            <Tabs
-                                value={activeTab}
-                                onValueChange={setActiveTab}
-                            >
-                                <TabsList
-                                    variant={playgroundVariant}
-                                    size={playgroundSize}
-                                    expanded={expanded}
-                                    fitContent={fitContent}
-                                >
-                                    <TabsTrigger
-                                        value="tab1"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab1')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab1')
-                                                : undefined
-                                        }
-                                    >
-                                        Home
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="tab2"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab2')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab2')
-                                                : undefined
-                                        }
-                                    >
-                                        Profile
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="tab3"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab3')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab3')
-                                                : undefined
-                                        }
-                                    >
-                                        Settings
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="tab4"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab4')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab4')
-                                                : undefined
-                                        }
-                                    >
-                                        Documents
-                                    </TabsTrigger>
-                                </TabsList>
-
-                                <TabsContent value="tab1" className="mt-4">
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Home Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the home tab content. You
-                                            can put any content here including
-                                            forms, lists, or other components.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent value="tab2" className="mt-4">
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Profile Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the profile tab content.
-                                            Here you can display user
-                                            information, preferences, or account
-                                            settings.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent value="tab3" className="mt-4">
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Settings Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the settings tab content.
-                                            You can include configuration
-                                            options, preferences, or system
-                                            settings here.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent value="tab4" className="mt-4">
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Documents Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the documents tab content.
-                                            You can display file lists, document
-                                            management tools, or file upload
-                                            interfaces here.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/* Tabs Variants */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Tabs Variants</h2>
@@ -1242,21 +1856,24 @@ const TabsDemo = () => {
                             </h3>
                             <Tabs defaultValue="tab1">
                                 <TabsList variant={variant}>
-                                    <TabsTrigger value="tab1">
-                                        Overview
+                                    <TabsTrigger value="payment_gateway">
+                                        payment_gateway
                                     </TabsTrigger>
-                                    <TabsTrigger value="tab2">
-                                        Analytics
+                                    <TabsTrigger value="payment_status">
+                                        payment_status
                                     </TabsTrigger>
                                     <TabsTrigger value="tab3">
-                                        Reports
+                                        payment_method
                                     </TabsTrigger>
                                     <TabsTrigger value="tab4">
-                                        Settings
+                                        payment_history
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="tab1" className="mt-4">
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Overview
@@ -1268,7 +1885,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab2" className="mt-4">
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Analytics

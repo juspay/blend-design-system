@@ -96,26 +96,66 @@ export const createTabsFromSelection = <
 /**
  * Prepares items for SingleSelect dropdown (all tabs including scrolled-out)
  */
-export const prepareDropdownItems = (tabs: TabItem[]) => {
+export const prepareDropdownItems = (
+    tabs: TabItem[],
+    originalItems?: TabItem[]
+) => {
     if (!tabs.length) return []
+
+    const originalTabValues = originalItems
+        ? new Set(originalItems.map((item) => item.value))
+        : new Set<string>()
 
     return [
         {
-            items: tabs.map((tab) => ({
-                value: tab.value.includes('_')
-                    ? tab.value.split('_')[0]
-                    : tab.value,
-                label: tab.label,
-            })),
+            items: tabs.map((tab) => {
+                const value = originalTabValues.has(tab.value)
+                    ? tab.value
+                    : tab.value.includes('_')
+                      ? tab.value.split('_')[0]
+                      : tab.value
+
+                return {
+                    value,
+                    label: tab.label,
+                }
+            }),
         },
     ]
 }
 
 /**
- * Returns all tabs for display (no limiting - let horizontal scroll handle overflow)
+ * Returns tabs for display, limited by maxDisplayTabs if provided.
+ * When limited, shows tabs centered around the active tab to ensure it's always visible.
  */
-export const getDisplayTabs = (tabs: TabItem[]): TabItem[] => {
-    return tabs
+export const getDisplayTabs = (
+    tabs: TabItem[],
+    maxDisplayTabs?: number,
+    activeTab?: string
+): TabItem[] => {
+    if (
+        !maxDisplayTabs ||
+        maxDisplayTabs <= 0 ||
+        tabs.length <= maxDisplayTabs
+    ) {
+        return tabs
+    }
+
+    const activeIndex = activeTab
+        ? tabs.findIndex((tab) => tab.value === activeTab)
+        : -1
+
+    if (activeIndex === -1) {
+        return tabs.slice(0, maxDisplayTabs)
+    }
+
+    let startIndex = Math.max(0, activeIndex - Math.floor(maxDisplayTabs / 2))
+
+    if (startIndex + maxDisplayTabs > tabs.length) {
+        startIndex = Math.max(0, tabs.length - maxDisplayTabs)
+    }
+
+    return tabs.slice(startIndex, startIndex + maxDisplayTabs)
 }
 
 /**
@@ -179,4 +219,41 @@ export const calculateTransitionDimensions = (
             finalWidth: newTabWidth / listWidth,
         }
     }
+}
+
+/**
+ * Determines the actual tab value from a potentially concatenated value
+ * Concatenated tabs use underscore as separator, but we need to distinguish
+ * from single tabs that naturally have underscores in their values
+ */
+export const getActualTabValue = (
+    processedValue: string,
+    originalTabValues: Set<string>
+): string => {
+    if (originalTabValues.has(processedValue)) {
+        return processedValue
+    }
+
+    if (processedValue.includes('_')) {
+        return processedValue.split('_')[0]
+    }
+
+    return processedValue
+}
+
+/**
+ * Checks if a concatenated tab value should trigger multiple close events
+ */
+export const isConcatenatedTab = (
+    tabValue: string,
+    originalTabValues: Set<string>
+): boolean => {
+    return tabValue.includes('_') && !originalTabValues.has(tabValue)
+}
+
+/**
+ * Extracts original values from a concatenated tab value
+ */
+export const extractOriginalValues = (concatenatedValue: string): string[] => {
+    return concatenatedValue.split('_')
 }

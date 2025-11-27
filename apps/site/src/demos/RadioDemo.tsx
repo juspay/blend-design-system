@@ -144,6 +144,7 @@ const RadioDemo = () => {
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
                         <Radio
+                            maxLength={{ label: 3, subtext: 3 }}
                             name="playground-radio"
                             value="playground"
                             checked={playgroundChecked}
