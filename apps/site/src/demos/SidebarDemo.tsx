@@ -180,6 +180,12 @@ const SidebarDemo = () => {
 
     const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
 
+    // Skeleton control states
+    const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
+    const [skeletonVariant, setSkeletonVariant] = useState<
+        'pulse' | 'wave' | 'shimmer'
+    >('pulse')
+
     const tenants = [
         {
             label: 'Juspay',
@@ -1139,6 +1145,8 @@ const SidebarDemo = () => {
                 <Sidebar
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
+                    showSkeleton={showSkeleton}
+                    skeletonVariant={skeletonVariant}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1287,6 +1295,34 @@ const SidebarDemo = () => {
                                 />
                             </Block>
                             <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setShowSkeleton(!showSkeleton)
+                                    }
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        showSkeleton
+                                            ? 'Hide Skeleton'
+                                            : 'Show Skeleton'
+                                    }
+                                    style={{
+                                        backgroundColor: showSkeleton
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Square
+                                        color={
+                                            showSkeleton
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
                                 <button
                                     onClick={() =>
                                         setPanelOnlyMode(!panelOnlyMode)

@@ -116,6 +116,17 @@ export type SidebarProps = {
         React.ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >
+
+    /**
+     * Show skeleton loading state
+     */
+    showSkeleton?: boolean
+
+    /**
+     * Skeleton animation variant
+     * @default 'pulse'
+     */
+    skeletonVariant?: 'pulse' | 'wave' | 'shimmer'
 }
 
 export type MobileNavigationItem = NavbarItem & {

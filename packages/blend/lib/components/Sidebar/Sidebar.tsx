@@ -24,6 +24,8 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import SidebarMobileNavigation from './SidebarMobile'
+import Skeleton from '../Skeleton/Skeleton'
+import { getSkeletonState } from '../Skeleton/utils'
 
 // Styled wrappers for pseudo-element support (::webkit-scrollbar)
 // Block primitive doesn't support pseudo-elements, so we need minimal styled wrappers
@@ -75,9 +77,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             panelOnlyMode = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
         },
         ref
     ) => {
+        const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
         const isControlled = isControlledSidebar(controlledIsExpanded)
 
         const [internalExpanded, setInternalExpanded] =
@@ -332,17 +337,56 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                     sidebarCollapseKey
                                                 }
                                                 onToggle={handleToggle}
+                                                showSkeleton={
+                                                    shouldShowSkeleton
+                                                }
+                                                skeletonVariant={
+                                                    skeletonVariant
+                                                }
                                             />
 
                                             <DirectoryContainer
                                                 data-directory-container
                                             >
-                                                <Directory
-                                                    directoryData={data}
-                                                />
+                                                {shouldShowSkeleton ? (
+                                                    <Block
+                                                        padding="12px"
+                                                        display="flex"
+                                                        flexDirection="column"
+                                                        gap="8px"
+                                                    >
+                                                        {Array.from({
+                                                            length: 8,
+                                                        }).map((_, index) => (
+                                                            <Skeleton
+                                                                key={index}
+                                                                variant={
+                                                                    skeletonVariant
+                                                                }
+                                                                loading
+                                                                padding="0"
+                                                                width="100%"
+                                                                height="36px"
+                                                                borderRadius="6px"
+                                                            />
+                                                        ))}
+                                                    </Block>
+                                                ) : (
+                                                    <Directory
+                                                        directoryData={data}
+                                                    />
+                                                )}
                                             </DirectoryContainer>
 
-                                            <SidebarFooter footer={footer} />
+                                            <SidebarFooter
+                                                footer={footer}
+                                                showSkeleton={
+                                                    shouldShowSkeleton
+                                                }
+                                                skeletonVariant={
+                                                    skeletonVariant
+                                                }
+                                            />
                                         </Block>
                                     )}
                                 </>

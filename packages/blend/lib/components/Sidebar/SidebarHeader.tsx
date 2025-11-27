@@ -10,6 +10,8 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
+import Skeleton from '../Skeleton/Skeleton'
+import { getSkeletonState } from '../Skeleton/utils'
 
 type SidebarHeaderProps = {
     sidebarTopSlot?: React.ReactNode
@@ -18,6 +20,8 @@ type SidebarHeaderProps = {
     isScrolled: boolean
     sidebarCollapseKey: string
     onToggle: () => void
+    showSkeleton?: boolean
+    skeletonVariant?: 'pulse' | 'wave' | 'shimmer'
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -27,8 +31,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     isScrolled,
     sidebarCollapseKey,
     onToggle,
+    showSkeleton = false,
+    skeletonVariant = 'pulse',
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+    const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
     const defaultMerchantInfo: SidebarMerchantInfo = {
         items: [
@@ -79,7 +86,17 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            {sidebarTopSlot ? (
+            {shouldShowSkeleton ? (
+                <Skeleton
+                    variant={skeletonVariant}
+                    loading
+                    padding="0"
+                    display="inline-block"
+                    width="120px"
+                    height="32px"
+                    borderRadius="6px"
+                />
+            ) : sidebarTopSlot ? (
                 sidebarTopSlot
             ) : (
                 <SingleSelect
@@ -102,35 +119,48 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            <Tooltip
-                content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
-            >
-                <PrimitiveButton
-                    type="button"
-                    onClick={onToggle}
-                    data-icon="sidebar-hamburger"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    border="none"
-                    backgroundColor={
-                        tokens.header.toggleButton.backgroundColor.default
-                    }
+            {shouldShowSkeleton ? (
+                <Skeleton
+                    variant={skeletonVariant}
+                    loading
+                    padding="0"
+                    display="inline-block"
+                    width="36px"
+                    height="36px"
                     borderRadius="10px"
-                    cursor="pointer"
-                    padding="9px"
-                    style={{ transition: 'background-color 0.15s ease' }}
-                    _hover={{
-                        backgroundColor:
-                            tokens.header.toggleButton.backgroundColor.hover,
-                    }}
+                />
+            ) : (
+                <Tooltip
+                    content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                 >
-                    <PanelsTopLeft
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                        size={tokens.header.toggleButton.width}
-                    />
-                </PrimitiveButton>
-            </Tooltip>
+                    <PrimitiveButton
+                        type="button"
+                        onClick={onToggle}
+                        data-icon="sidebar-hamburger"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        border="none"
+                        backgroundColor={
+                            tokens.header.toggleButton.backgroundColor.default
+                        }
+                        borderRadius="10px"
+                        cursor="pointer"
+                        padding="9px"
+                        style={{ transition: 'background-color 0.15s ease' }}
+                        _hover={{
+                            backgroundColor:
+                                tokens.header.toggleButton.backgroundColor
+                                    .hover,
+                        }}
+                    >
+                        <PanelsTopLeft
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            size={tokens.header.toggleButton.width}
+                        />
+                    </PrimitiveButton>
+                </Tooltip>
+            )}
         </Block>
     )
 }
