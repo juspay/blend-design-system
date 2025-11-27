@@ -34,6 +34,7 @@ export function DataTablePagination({
     const tableToken = useResponsiveTokens('TABLE') as TableTokenType
     const { breakPointLabel } = useBreakpoints()
     const isMobile = breakPointLabel === 'sm'
+    const PAGINATION_ITEM_HEIGHT = 33
 
     const totalPages = Math.ceil(totalRows / pageSize)
 
@@ -361,7 +362,9 @@ export function DataTablePagination({
                                     maxMenuHeight={300}
                                     disabled={isLoading || !hasData}
                                     enableVirtualization={totalPages > 50}
-                                    virtualListItemHeight={40}
+                                    virtualListItemHeight={
+                                        PAGINATION_ITEM_HEIGHT
+                                    }
                                     virtualListOverscan={5}
                                     customTrigger={
                                         <PrimitiveButton
