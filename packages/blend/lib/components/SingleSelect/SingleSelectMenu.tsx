@@ -429,33 +429,65 @@ const SingleSelectMenu = ({
         item: FlattenedItem
         index: number
     }) => {
+        const VirtualItemWrapper = ({
+            children,
+        }: {
+            children: React.ReactNode
+        }) => (
+            <Block
+                style={{
+                    height: virtualListItemHeight,
+                    minHeight: virtualListItemHeight,
+                    maxHeight: virtualListItemHeight,
+                    display: 'flex',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                }}
+            >
+                {children}
+            </Block>
+        )
+
         if (flatItem.type === 'label') {
             return (
-                <Label>
-                    <Text
-                        variant="body.sm"
-                        color={
-                            singleSelectTokens.menu.item.optionsLabel.color
-                                .default
-                        }
-                    >
-                        {flatItem.label}
-                    </Text>
-                </Label>
+                <VirtualItemWrapper>
+                    <Label style={{ margin: 0, width: '100%' }}>
+                        <Text
+                            fontSize={
+                                singleSelectTokens.menu.item.optionsLabel
+                                    .fontSize
+                            }
+                            color={
+                                singleSelectTokens.menu.item.optionsLabel.color
+                                    .default
+                            }
+                            fontWeight={
+                                singleSelectTokens.menu.item.optionsLabel
+                                    .fontWeight
+                            }
+                        >
+                            {flatItem.label}
+                        </Text>
+                    </Label>
+                </VirtualItemWrapper>
             )
         }
 
         if (flatItem.type === 'separator') {
             return (
-                <RadixMenu.Separator asChild>
-                    <Block
-                        height={singleSelectTokens.menu.item.seperator.height}
-                        backgroundColor={
-                            singleSelectTokens.menu.item.seperator.color
-                        }
-                        margin={singleSelectTokens.menu.item.seperator.margin}
-                    />
-                </RadixMenu.Separator>
+                <VirtualItemWrapper>
+                    <RadixMenu.Separator asChild>
+                        <Block
+                            height={
+                                singleSelectTokens.menu.item.seperator.height
+                            }
+                            backgroundColor={
+                                singleSelectTokens.menu.item.seperator.color
+                            }
+                            width="100%"
+                        />
+                    </RadixMenu.Separator>
+                </VirtualItemWrapper>
             )
         }
 
@@ -463,13 +495,17 @@ const SingleSelectMenu = ({
             const currentIndex = itemCounter
             itemCounter++
             return (
-                <Item
-                    selected={selected}
-                    item={flatItem.item}
-                    onSelect={onSelect}
-                    singleSelectTokens={singleSelectTokens}
-                    index={currentIndex}
-                />
+                <VirtualItemWrapper>
+                    <Block width="100%" style={{ minWidth: 0 }}>
+                        <Item
+                            selected={selected}
+                            item={flatItem.item}
+                            onSelect={onSelect}
+                            singleSelectTokens={singleSelectTokens}
+                            index={currentIndex}
+                        />
+                    </Block>
+                </VirtualItemWrapper>
             )
         }
 

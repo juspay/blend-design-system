@@ -440,33 +440,71 @@ const MultiSelectMenu = ({
                                                 const typed =
                                                     flatItem as FlattenedMultiSelectItem
 
+                                                const VirtualItemWrapper = ({
+                                                    children,
+                                                }: {
+                                                    children: React.ReactNode
+                                                }) => (
+                                                    <Block
+                                                        style={{
+                                                            height: virtualListItemHeight,
+                                                            minHeight:
+                                                                virtualListItemHeight,
+                                                            maxHeight:
+                                                                virtualListItemHeight,
+                                                            display: 'flex',
+                                                            alignItems:
+                                                                'center',
+                                                            overflow: 'hidden',
+                                                        }}
+                                                    >
+                                                        {children}
+                                                    </Block>
+                                                )
+
                                                 if (typed.type === 'label') {
                                                     return (
-                                                        <RadixMenu.Label
-                                                            asChild
-                                                        >
-                                                            <PrimitiveText
-                                                                fontSize={12}
-                                                                padding={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .padding
-                                                                }
-                                                                userSelect="none"
-                                                                textTransform="uppercase"
-                                                                color={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .color
-                                                                        .default
-                                                                }
+                                                        <VirtualItemWrapper>
+                                                            <RadixMenu.Label
+                                                                asChild
                                                             >
-                                                                {typed.label}
-                                                            </PrimitiveText>
-                                                        </RadixMenu.Label>
+                                                                <PrimitiveText
+                                                                    fontSize={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .fontSize
+                                                                    }
+                                                                    fontWeight={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .fontWeight
+                                                                    }
+                                                                    padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                                    userSelect="none"
+                                                                    textTransform="uppercase"
+                                                                    color={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .color
+                                                                            .default
+                                                                    }
+                                                                    style={{
+                                                                        margin: 0,
+                                                                        width: '100%',
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        typed.label
+                                                                    }
+                                                                </PrimitiveText>
+                                                            </RadixMenu.Label>
+                                                        </VirtualItemWrapper>
                                                     )
                                                 }
 
@@ -474,33 +512,29 @@ const MultiSelectMenu = ({
                                                     typed.type === 'separator'
                                                 ) {
                                                     return (
-                                                        <RadixMenu.Separator
-                                                            asChild
-                                                        >
-                                                            <Block
-                                                                height={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .seperator
-                                                                        .height
-                                                                }
-                                                                backgroundColor={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .seperator
-                                                                        .color
-                                                                }
-                                                                margin={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .seperator
-                                                                        .margin
-                                                                }
-                                                            />
-                                                        </RadixMenu.Separator>
+                                                        <VirtualItemWrapper>
+                                                            <RadixMenu.Separator
+                                                                asChild
+                                                            >
+                                                                <Block
+                                                                    height={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .height
+                                                                    }
+                                                                    backgroundColor={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .color
+                                                                    }
+                                                                    width="100%"
+                                                                />
+                                                            </RadixMenu.Separator>
+                                                        </VirtualItemWrapper>
                                                     )
                                                 }
 
@@ -529,18 +563,36 @@ const MultiSelectMenu = ({
                                                         return idx
                                                     })()
                                                     return (
-                                                        <MultiSelectMenuItem
-                                                            selected={selected}
-                                                            item={typed.item}
-                                                            onSelect={onSelect}
-                                                            maxSelections={
-                                                                maxSelections
-                                                            }
-                                                            allItems={filteredItems.flatMap(
-                                                                (g) => g.items
-                                                            )}
-                                                            index={itemIndex}
-                                                        />
+                                                        <VirtualItemWrapper>
+                                                            <Block
+                                                                width="100%"
+                                                                style={{
+                                                                    minWidth: 0,
+                                                                }}
+                                                            >
+                                                                <MultiSelectMenuItem
+                                                                    selected={
+                                                                        selected
+                                                                    }
+                                                                    item={
+                                                                        typed.item
+                                                                    }
+                                                                    onSelect={
+                                                                        onSelect
+                                                                    }
+                                                                    maxSelections={
+                                                                        maxSelections
+                                                                    }
+                                                                    allItems={filteredItems.flatMap(
+                                                                        (g) =>
+                                                                            g.items
+                                                                    )}
+                                                                    index={
+                                                                        itemIndex
+                                                                    }
+                                                                />
+                                                            </Block>
+                                                        </VirtualItemWrapper>
                                                     )
                                                 }
 
