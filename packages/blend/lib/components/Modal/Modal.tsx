@@ -224,7 +224,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
             return (
                 <Block
-                    data-component={title ? `modal-${title}` : 'modal'}
+                    data-component="modal"
+                    data-id={title ? `modal-${title}` : 'modal'}
                     position="fixed"
                     inset={0}
                     zIndex={99}

@@ -108,7 +108,7 @@ export function DataTablePagination({
 
     return (
         <Block
-            data-pagesize-pagination-wrapper="data-pagesize-pagination-wrapper"
+            data-id="data-pagesize-pagination-wrapper"
             data-table-pagination="true"
             display="flex"
             justifyContent="space-between"
@@ -116,7 +116,7 @@ export function DataTablePagination({
             width="100%"
         >
             <Block
-                data-component="page-size-selector"
+                data-id="page-size-selector"
                 display="flex"
                 alignItems="center"
                 gap={FOUNDATION_THEME.unit[8]}
@@ -178,7 +178,7 @@ export function DataTablePagination({
             </Block>
 
             <Block
-                data-component="pagination"
+                data-id="pagination"
                 display="flex"
                 alignItems="center"
                 gap={
