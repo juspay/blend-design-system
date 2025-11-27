@@ -52,6 +52,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 flexDirection="column"
                 gap={alertTokens.gap}
                 border={alertTokens.border[variant][style]}
+                data-alert={heading}
             >
                 <Block
                     display="flex"
@@ -130,6 +131,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                 >
                                     {primaryAction && (
                                         <PrimitiveButton
+                                            data-alert-primary-action={
+                                                primaryAction.label
+                                            }
                                             onClick={primaryAction.onClick}
                                             style={{
                                                 border: 'none',
@@ -157,6 +161,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                     {secondaryAction && (
                                         <>
                                             <PrimitiveButton
+                                                data-alert-secondary-action={
+                                                    secondaryAction.label
+                                                }
                                                 onClick={
                                                     secondaryAction.onClick
                                                 }

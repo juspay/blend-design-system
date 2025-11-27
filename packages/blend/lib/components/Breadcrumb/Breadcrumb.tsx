@@ -48,7 +48,9 @@ const BreadcrumbItem = ({
                 onClick={!isActive && item.onClick ? handleClick : undefined}
             >
                 {item.leftSlot && (
-                    <Block contentCentered>{item.leftSlot}</Block>
+                    <Block data-breadcrumb-left-slot contentCentered>
+                        {item.leftSlot}
+                    </Block>
                 )}
                 <PrimitiveText
                     as="span"
@@ -58,7 +60,9 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block contentCentered>{item.rightSlot}</Block>
+                    <Block data-breadcrumb-right-slot contentCentered>
+                        {item.rightSlot}
+                    </Block>
                 )}
             </PrimitiveLink>
             {!isActive && (

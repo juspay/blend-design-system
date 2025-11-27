@@ -224,6 +224,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
             return (
                 <Block
+                    data-component={title ? `modal-${title}` : 'modal'}
                     position="fixed"
                     inset={0}
                     zIndex={99}
@@ -275,6 +276,11 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         />
 
                         <Block
+                            data-description-text={
+                                title
+                                    ? `modal-${title}-content`
+                                    : 'modal-content'
+                            }
                             padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}

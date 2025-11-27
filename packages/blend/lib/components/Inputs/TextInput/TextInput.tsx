@@ -113,6 +113,7 @@ const TextInput = ({
             >
                 {leftSlot && (
                     <Block
+                        data-text-input-left-slot
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
@@ -154,6 +155,9 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
+                    id={name || label}
+                    data-id={isSmallScreenWithLargeSize ? '' : placeholder}
+                    data-input-name={name || label}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
@@ -230,6 +234,7 @@ const TextInput = ({
                 />
                 {rightSlot && (
                     <Block
+                        data-text-input-right-slot
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}

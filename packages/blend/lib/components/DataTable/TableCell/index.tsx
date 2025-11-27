@@ -167,8 +167,8 @@ const TableCell = forwardRef<
                 (typeof valueToCheck === 'object' &&
                     valueToCheck.constructor === Object)
             ) {
-                if (row.id) {
-                    attrs['data-order-customer-id'] = String(row.id)
+                if (row.id && colIndex) {
+                    attrs['data-row-id'] = String(row.id)
                 }
                 return attrs
             }
@@ -222,8 +222,8 @@ const TableCell = forwardRef<
                 attrs['data-boolean'] = String(valueToCheck)
             }
 
-            if (row.id) {
-                attrs['data-order-customer-id'] = String(row.id)
+            if (row.id && colIndex) {
+                attrs['data-row-id'] = String(row.id)
             }
 
             return attrs

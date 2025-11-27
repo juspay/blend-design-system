@@ -146,6 +146,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
 
         return (
             <Block
+                data-preset-selector="presetSelector"
                 position="relative"
                 ref={ref}
                 className={className}
@@ -179,6 +180,10 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             }}
                         >
                             <Block
+                                data-button-text={getPresetLabelWithCustom(
+                                    activePreset,
+                                    presetConfigs
+                                )}
                                 as="span"
                                 color={
                                     calendarToken?.trigger?.quickSelector?.text

@@ -303,6 +303,7 @@ const AccordionItem = forwardRef<
 
         return (
             <StyledAccordionItem
+                data-accordion={title}
                 value={value}
                 disabled={isDisabled}
                 ref={ref}
@@ -352,6 +353,7 @@ const AccordionItem = forwardRef<
                                     chevronPosition !==
                                         AccordionChevronPosition.LEFT && (
                                         <Block
+                                            data-accordion-left-slot
                                             flexShrink={0}
                                             display="flex"
                                             alignItems="center"
@@ -401,6 +403,7 @@ const AccordionItem = forwardRef<
 
                                         {rightSlot && (
                                             <Block
+                                                data-accordion-right-slot
                                                 flexShrink={0}
                                                 display="flex"
                                                 alignItems="center"
@@ -422,6 +425,9 @@ const AccordionItem = forwardRef<
                                         >
                                             {subtext && !isSmallScreen && (
                                                 <PrimitiveText
+                                                    data-description-text={
+                                                        subtext
+                                                    }
                                                     fontSize={
                                                         accordionToken.trigger
                                                             .text.subtext

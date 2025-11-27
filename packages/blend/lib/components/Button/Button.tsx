@@ -83,6 +83,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 
     return (
         <ButtonBase
+            data-button-for={text}
+            data-custom-value={text}
+            data-button-status={disabled ? 'disabled' : 'enabled'}
+            data-dynamic-button={text}
+            data-batch-value={text}
+            data-button-left-slot={leadingIcon ? 'true' : 'false'}
+            data-button-right-slot={trailingIcon ? 'true' : 'false'}
             ref={ref}
             buttonType={buttonType}
             size={size}

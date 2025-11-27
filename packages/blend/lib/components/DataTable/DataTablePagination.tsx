@@ -112,12 +112,14 @@ export function DataTablePagination({
 
     return (
         <Block
+            data-pagesize-pagination-wrapper="data-pagesize-pagination-wrapper"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
             width="100%"
         >
             <Block
+                data-component="page-size-selector"
                 display="flex"
                 alignItems="center"
                 gap={FOUNDATION_THEME.unit[8]}
@@ -137,6 +139,7 @@ export function DataTablePagination({
                         whiteSpace: 'nowrap',
                         flexShrink: 0,
                     }}
+                    data-page-size-text={isMobile ? 'Rows' : 'Rows per page'}
                 >
                     {isMobile ? 'Rows' : 'Rows per page'}
                 </PrimitiveText>
@@ -170,7 +173,7 @@ export function DataTablePagination({
                         enableSearch={false}
                         size={SelectMenuSize.SMALL}
                         variant={SelectMenuVariant.NO_CONTAINER}
-                        placeholder=""
+                        placeholder={String(pageSize)}
                         minMenuWidth={80}
                         disabled={!hasData || isLoading}
                     />
@@ -178,6 +181,7 @@ export function DataTablePagination({
             </Block>
 
             <Block
+                data-component="pagination"
                 display="flex"
                 alignItems="center"
                 gap={
@@ -190,6 +194,7 @@ export function DataTablePagination({
                 }}
             >
                 <PrimitiveButton
+                    data-navigate-previous-page-button="Navigation-Previous-Page"
                     contentCentered
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}
@@ -237,6 +242,12 @@ export function DataTablePagination({
                         {pageNumbers.map((page, index) =>
                             typeof page === 'number' ? (
                                 <PrimitiveButton
+                                    data-page-number={page}
+                                    data-page-selected-status={
+                                        currentPage === page
+                                            ? 'Selected'
+                                            : 'NotSelected'
+                                    }
                                     key={index}
                                     contentCentered
                                     minWidth={FOUNDATION_THEME.unit[32]}
@@ -392,6 +403,7 @@ export function DataTablePagination({
                 )}
 
                 <PrimitiveButton
+                    data-navigate-next-page-button="Navigation Next Page"
                     contentCentered
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}

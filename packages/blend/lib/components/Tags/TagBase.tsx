@@ -95,7 +95,11 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             style={style}
         >
             {leftSlot && (
-                <Block contentCentered style={{ opacity: isSkeleton ? 0 : 1 }}>
+                <Block
+                    data-tag-left-slot
+                    contentCentered
+                    style={{ opacity: isSkeleton ? 0 : 1 }}
+                >
                     {leftSlot}
                 </Block>
             )}
@@ -109,7 +113,11 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                 {text}
             </Text>
             {rightSlot && (
-                <Block contentCentered style={{ opacity: isSkeleton ? 0 : 1 }}>
+                <Block
+                    data-tag-right-slot
+                    contentCentered
+                    style={{ opacity: isSkeleton ? 0 : 1 }}
+                >
                     {rightSlot}
                 </Block>
             )}

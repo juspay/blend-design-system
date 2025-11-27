@@ -811,7 +811,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             gap={calendarToken?.trigger?.dateInput?.gap}
                         >
                             {iconElement}
-                            <span style={{ whiteSpace: 'nowrap' }}>
+                            <span
+                                data-button-text={displayText}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
                                 {displayText}
                             </span>
                         </Block>

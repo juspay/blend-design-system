@@ -185,6 +185,7 @@ export const addSnackbar = ({
     return sonnerToast.custom(
         (t) => (
             <StyledToast
+                data-snackbar="popUpSnackbar"
                 header={header}
                 description={description}
                 variant={variant}

@@ -165,7 +165,10 @@ const RadioDemo = () => {
                                     <Heart size={16} className="text-red-500" />
                                 ) : undefined
                             }
-                            data-radio={playgroundChecked ? 'true' : 'false'}
+                            data-radio-value={playgroundLabel}
+                            data-radio-selected={
+                                playgroundChecked ? 'true' : 'false'
+                            }
                             data-radio-enabled={
                                 playgroundDisabled ? 'disabled' : 'enabled'
                             }
@@ -211,17 +214,33 @@ const RadioDemo = () => {
                             }}
                             disabled={groupDisabled}
                         >
-                            <Radio value="option1" size={RadioSize.MEDIUM}>
+                            <Radio
+                                id="option-1"
+                                value="option1"
+                                size={RadioSize.MEDIUM}
+                                data-radio-value="Option 1"
+                                data-radio-selected={groupValue === 'option1'}
+                                data-radio-enabled={
+                                    groupDisabled ? 'disabled' : 'enabled'
+                                }
+                            >
                                 Option 1
                             </Radio>
                             <Radio
+                                id="option-2"
                                 value="option2"
                                 size={RadioSize.MEDIUM}
                                 subtext="This option has a description"
+                                data-radio-value="Option 2"
+                                data-radio-selected={groupValue === 'option2'}
+                                data-radio-enabled={
+                                    groupDisabled ? 'disabled' : 'enabled'
+                                }
                             >
                                 Option 2
                             </Radio>
                             <Radio
+                                id="option-3"
                                 value="option3"
                                 size={RadioSize.MEDIUM}
                                 slot={
@@ -229,6 +248,11 @@ const RadioDemo = () => {
                                         size={16}
                                         className="text-yellow-500"
                                     />
+                                }
+                                data-radio-value="Option 3 with slot"
+                                data-radio-selected={groupValue === 'option3'}
+                                data-radio-enabled={
+                                    groupDisabled ? 'disabled' : 'enabled'
                                 }
                             >
                                 Option 3 with slot

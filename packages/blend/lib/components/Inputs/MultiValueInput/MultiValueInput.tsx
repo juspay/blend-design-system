@@ -147,6 +147,8 @@ const MultiValueInput = ({
                         />
                     ))}
                     <PrimitiveInput
+                        id={label}
+                        data-input-name={label}
                         flexGrow={1}
                         placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                         fontSize={

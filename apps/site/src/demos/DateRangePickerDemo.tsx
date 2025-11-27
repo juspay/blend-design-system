@@ -725,7 +725,7 @@ const DateRangePickerDemo = () => {
                     </div>
 
                     {/* Live Example */}
-                    <div>
+                    <div data-date-range-picker-playground="date-range-picker-playground">
                         <h3 className="text-xl font-semibold text-gray-700 mb-4">
                             Live Example
                         </h3>

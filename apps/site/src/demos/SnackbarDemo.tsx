@@ -122,6 +122,7 @@ const SnackbarDemo = () => {
                             Success Variant
                         </h3>
                         <StyledToast
+                            data-snackbar="popUpSnackbar"
                             header={'Payment processed successfully'}
                             description={
                                 'Your payment of $150.00 has been processed and confirmed'
@@ -143,6 +144,7 @@ const SnackbarDemo = () => {
                             Warning Variant
                         </h3>
                         <StyledToast
+                            data-snackbar="popUpSnackbar"
                             header={'Storage space running low'}
                             description={
                                 'You have used 95% of your storage. Consider upgrading your plan'
@@ -164,6 +166,7 @@ const SnackbarDemo = () => {
                             Error Variant
                         </h3>
                         <StyledToast
+                            data-snackbar="popUpSnackbar"
                             header={'Connection failed'}
                             description={
                                 'Unable to connect to the server. Please check your internet connection'
