@@ -62,6 +62,7 @@ const StatCard = ({
     height = 'auto',
     direction = StatCardDirection.VERTICAL,
     skeleton,
+    dataDisplay = true,
     ...props
 }: StatCardProps) => {
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
@@ -1231,7 +1232,7 @@ const StatCard = ({
                             )}
                         </Block>
                     )}
-                    {variant !== StatCardVariant.NUMBER && (
+                    {variant !== StatCardVariant.NUMBER && dataDisplay && (
                         <Block height={statCardToken.chart.height}>
                             {variant === StatCardVariant.LINE &&
                                 (indexedChartData &&
