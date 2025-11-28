@@ -310,12 +310,13 @@ export type ButtonProps = PrimitiveButtonProps &
 
 // Component
 const PrimitiveButton = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ children, disabled, cursor, ...rest }, ref) => {
+    ({ children, disabled, cursor, type = 'button', ...rest }, ref) => {
         return (
             <StyledButton
                 cursor={cursor}
                 ref={ref}
                 disabled={disabled}
+                type={type}
                 {...rest}
             >
                 {children}
