@@ -508,8 +508,6 @@ export function generateConsistentDateTimeTicks(
         currentTick += interval
     }
 
-    console.log({ ticksNumbers })
-
     // Limit ticks to maxTicks if specified
     let finalTicks = ticksNumbers
     if (maxTicks && ticksNumbers.length > maxTicks) {
