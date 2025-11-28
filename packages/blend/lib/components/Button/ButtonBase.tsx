@@ -68,6 +68,11 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const lineHeight = formatLineHeight(
             FOUNDATION_THEME.font.size.body.md.lineHeight
         )
+        const buttonStatus = isLoading
+            ? 'loading'
+            : isDisabled
+              ? 'disabled'
+              : 'enabled'
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
             onClick?.(event)
@@ -171,6 +176,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 }
                 paddingX={paddingTokens.x}
                 paddingY={paddingTokens.y}
+                data-button={text}
+                data-status={buttonStatus}
                 {...htmlProps}
             >
                 {isLoading ? (
@@ -179,6 +186,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         color={
                             buttonTokens.text.color[buttonType][subType].default
                         }
+                        data-status="loading"
                         style={{
                             animation: 'spin 1s linear infinite',
                         }}
@@ -189,7 +197,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             <Block
                                 as="span"
                                 contentCentered
-                                data-button-left-slot
+                                data-element="leading-icon"
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {leadingIcon}
@@ -210,6 +218,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 aria-hidden={isSkeleton ? true : undefined}
                                 lineHeight={lineHeight}
                                 textAlign="center"
+                                data-id={text}
                             >
                                 {text}
                             </Text>
@@ -218,7 +227,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             <Block
                                 as="span"
                                 contentCentered
-                                data-button-right-slot
+                                data-element="trailing-icon"
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {trailingIcon}
