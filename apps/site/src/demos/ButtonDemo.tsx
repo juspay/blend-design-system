@@ -174,11 +174,6 @@ const ButtonDemo = () => {
                 {/* Pure Button Demo */}
                 <div className="min-h-40 rounded-2xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
                     <Button
-                        data-button-for={buttonText}
-                        data-custom-value={buttonText}
-                        data-button-status={isDisabled ? 'disabled' : 'enabled'}
-                        data-dynamic-button={buttonText}
-                        data-batch-value={buttonText}
                         text={
                             buttonSubType === ButtonSubType.ICON_ONLY
                                 ? undefined
