@@ -502,7 +502,7 @@ export function generateConsistentDateTimeTicks(
 
     // Generate ticks that cover the data range
     while (currentTick <= maxTime + interval) {
-        if (currentTick >= minTime - interval) {
+        if (currentTick >= minTime && currentTick <= maxTime) {
             ticksNumbers.push(currentTick)
         }
         currentTick += interval

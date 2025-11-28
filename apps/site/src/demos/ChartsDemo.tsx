@@ -869,128 +869,3782 @@ const GranularChartsDemo = () => {
 const ChartDemo = () => {
     const financialData: NewNestedDataPoint[] = [
         {
-            name: 'Jan',
+            name: '1763539200000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 40000 },
-                    aux: [{ label: 'Growth', val: 12 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 5,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 10,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 2400 },
-                    aux: [{ label: 'Margin', val: 24 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 15000 },
-                    aux: [{ label: 'Change', val: 8 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 3.2 },
-                    aux: [{ label: 'Change', val: 0.5 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
             },
         },
         {
-            name: 'Feb',
+            name: '1763542800000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 3000 },
-                    aux: [{ label: 'Growth', val: -25 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 18.18,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 1398 },
-                    aux: [{ label: 'Margin', val: 19 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 33,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 13000 },
-                    aux: [{ label: 'Change', val: -13 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 2.8 },
-                    aux: [{ label: 'Change', val: -0.4 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
             },
         },
         {
-            name: 'Mar',
+            name: '1763550000000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 2000 },
-                    aux: [{ label: 'Growth', val: -33 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 40,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 9800 },
-                    aux: [{ label: 'Margin', val: 32 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 5,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 17000 },
-                    aux: [{ label: 'Change', val: 30 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 3.5 },
-                    aux: [{ label: 'Change', val: 0.7 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
             },
         },
         {
-            name: 'Apr',
+            name: '1763553600000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 2780 },
-                    aux: [{ label: 'Growth', val: 39 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 55.56,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 3908 },
-                    aux: [{ label: 'Margin', val: 28 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 19500 },
-                    aux: [{ label: 'Change', val: 15 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 4.1 },
-                    aux: [{ label: 'Change', val: 0.6 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
                 },
             },
         },
         {
-            name: 'May',
+            name: '1763557200000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 3490 },
-                    aux: [{ label: 'Growth', val: 25 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 11,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 23.08,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 4300 },
-                    aux: [{ label: 'Margin', val: 31 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 26,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 21000 },
-                    aux: [{ label: 'Change', val: 8 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 13,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 3.9 },
-                    aux: [{ label: 'Change', val: -0.2 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
             },
         },
         {
-            name: 'Jun',
+            name: '1763560800000',
             data: {
-                revenue: {
-                    primary: { label: 'Total Revenue', val: 3200 },
-                    aux: [{ label: 'Growth', val: -8 }],
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 38.89,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
                 },
-                profit: {
-                    primary: { label: 'Net Profit', val: 3800 },
-                    aux: [{ label: 'Margin', val: 29 }],
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
                 },
-                traffic: {
-                    primary: { label: 'Website Traffic', val: 18500 },
-                    aux: [{ label: 'Change', val: -12 }],
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 18,
+                    },
                 },
-                conversions: {
-                    primary: { label: 'Conversion Rate', val: 4.2 },
-                    aux: [{ label: 'Change', val: 0.3 }],
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763564400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 33.33,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763568000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 28.57,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 14,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763571600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 12,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 16.67,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763575200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763578800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 15,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 20,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763582400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763586000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763589600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 50,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763593200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763596800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763629200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 11,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 63.64,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763636400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 85.71,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 7,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763640000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 13,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 84.62,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763643600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 14,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 78.57,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 12,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763647200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763650800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 20,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 25,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 7,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763654400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 20,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763658000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 35.29,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 17,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763661600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 13.51,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 37,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 12,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763665200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 11,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763668800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763672400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763676000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763679600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763722800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763726400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 13,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763730000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 14,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763733600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 22,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 9.09,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763737200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763740800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763744400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 10,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 10,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763748000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 15,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 13.33,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 15,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 13,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763751600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 17,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 32,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763809200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 7,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763812800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 50,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 18,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763823600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763827200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763852400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 25,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763856000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763899200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 7,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763902800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763913600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763928000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763942400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763982000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 75,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763985600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 14,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 42.86,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 21,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 5,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763989200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 30.77,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 13,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763992800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 4,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 25,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1763996400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 44.44,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764000000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 2,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764003600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 8,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 87.5,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764007200000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 15,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 73.33,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764010800000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 9,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 88.89,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 6,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764014400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 21,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 95.24,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764018000000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 3,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 100,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764057600000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 1,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+            },
+        },
+        {
+            name: '1764068400000',
+            data: {
+                'CREDIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                    aux: [
+                        {
+                            label: 'Transactions Success Rate',
+                            val: 0,
+                            type: AxisType.PERCENTAGE,
+                        },
+                    ],
+                },
+                UPI: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'DEBIT CARD': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                'NET BANKING': {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                WALLET: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                Unknown: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 5,
+                    },
+                },
+                REWARD: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
+                },
+                RTP: {
+                    primary: {
+                        label: 'Overall Transactions',
+                        val: 0,
+                    },
                 },
             },
         },
@@ -2258,9 +5912,10 @@ const ChartDemo = () => {
                 chartType={ChartType.LINE}
                 xAxis={{
                     label: 'Date (Timestamp)',
-                    show: true,
+                    // show: true,
                     type: AxisType.DATE_TIME,
                     // maxTicks: 10,
+                    interval: AxisIntervalType.PRESERVE_START_END,
                 }}
                 yAxis={{
                     label: 'Currency',
@@ -2404,6 +6059,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 : 'Period',
                         // show: false,
                         showLabel: true,
+                        type: AxisType.DATE_TIME,
                     }}
                     yAxis={{
                         label:
@@ -2634,6 +6290,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             label: 'Performance Metrics',
                             // show: true,
                             // showLabel: true,
+                            type: AxisType.DATE_TIME,
                         }}
                         yAxis={{
                             label: 'Score',
