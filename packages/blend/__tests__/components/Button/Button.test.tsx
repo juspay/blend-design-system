@@ -142,8 +142,8 @@ describe('Button Component', () => {
             expect(loader).toBeInTheDocument()
             expect(loader).toHaveStyle({ animation: 'spin 1s linear infinite' })
 
-            // Text should not be visible during loading
-            expect(button).not.toHaveTextContent('Loading')
+            // Screen reader text should be present for accessibility
+            expect(button).toHaveTextContent('Loading, please wait')
         })
 
         it('prevents clicks when loading', () => {
@@ -152,7 +152,7 @@ describe('Button Component', () => {
 
             const button = screen.getByRole('button')
             fireEvent.click(button)
-            expect(handleClick).toHaveBeenCalled() // Loading doesn't prevent onClick by default
+            expect(handleClick).not.toHaveBeenCalled() // Loading prevents onClick for better accessibility
         })
     })
 
@@ -259,16 +259,18 @@ describe('Button Component', () => {
                 />
             )
 
+            // data-id is used for text elements
             expect(screen.getByText('Styled')).toHaveAttribute(
-                'data-button-text',
+                'data-id',
                 'Styled'
             )
+            // data-element is used for icon containers
             expect(
                 screen.getAllByTestId('mock-icon')[0].parentElement
-            ).toHaveAttribute('data-button-left-slot')
+            ).toHaveAttribute('data-element', 'leading-icon')
             expect(
                 screen.getAllByTestId('mock-icon')[1].parentElement
-            ).toHaveAttribute('data-button-right-slot')
+            ).toHaveAttribute('data-element', 'trailing-icon')
         })
     })
 
