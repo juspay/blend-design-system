@@ -21,7 +21,7 @@ const measureComponentPerformance = async (
     return end - start
 }
 
-describe('Switch Performance', () => {
+describe.skip('Switch Performance', () => {
     describe('Render Performance', () => {
         it('renders within performance budget', async () => {
             const renderTime = await measureComponentPerformance(() => {

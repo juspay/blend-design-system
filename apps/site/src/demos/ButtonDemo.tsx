@@ -342,6 +342,106 @@ const ButtonDemo = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Accessibility: Screen Reader Loading Announcement */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    ♿ Accessibility: Screen Reader Loading Announcement
+                </h2>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p className="text-green-800 mb-2">
+                        <strong>Why the hidden loading text?</strong>
+                    </p>
+                    <p className="text-green-700 text-sm mb-2">
+                        Lines 203-218 in ButtonBase.tsx contain a visually
+                        hidden
+                        <code className="bg-green-100 px-1 rounded">
+                            {' <span>'}
+                        </code>{' '}
+                        with "Loading, please wait" text. This is for{' '}
+                        <strong>screen reader accessibility</strong> (WCAG 2.1
+                        compliance).
+                    </p>
+                    <ul className="text-green-700 text-sm list-disc list-inside space-y-1">
+                        <li>
+                            The spinner icon has{' '}
+                            <code className="bg-green-100 px-1 rounded">
+                                aria-hidden="true"
+                            </code>{' '}
+                            (decorative only)
+                        </li>
+                        <li>
+                            The hidden span uses{' '}
+                            <code className="bg-green-100 px-1 rounded">
+                                aria-live="polite"
+                            </code>{' '}
+                            to announce loading state
+                        </li>
+                        <li>
+                            CSS makes it invisible to sighted users but
+                            accessible to assistive technologies
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="text-xl font-semibold">
+                        How to Test Screen Reader Announcement:
+                    </h3>
+                    <ol className="list-decimal list-inside space-y-2 text-gray-700">
+                        <li>
+                            <strong>Enable screen reader:</strong> macOS
+                            VoiceOver (Cmd+F5), Windows NVDA/JAWS, or ChromeVox
+                            extension
+                        </li>
+                        <li>
+                            <strong>Toggle loading state</strong> using the
+                            switch below
+                        </li>
+                        <li>
+                            <strong>Listen for announcement:</strong> Screen
+                            reader should say "Loading, please wait" when
+                            loading becomes true
+                        </li>
+                        <li>
+                            <strong>Verify visually:</strong> You should see the
+                            spinner, but the hidden text should not be visible
+                        </li>
+                    </ol>
+
+                    <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6">
+                        <div className="flex flex-col items-center gap-4">
+                            <Switch
+                                label="Toggle Loading State (Test Screen Reader)"
+                                checked={isLoading}
+                                onChange={() => setIsLoading(!isLoading)}
+                            />
+                            <Button
+                                text="Submit Form"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.MEDIUM}
+                                loading={isLoading}
+                                onClick={() => {
+                                    if (!isLoading) {
+                                        addSnackbar({
+                                            header: 'Form submitted!',
+                                            description:
+                                                'This button demonstrates loading state accessibility',
+                                        })
+                                    }
+                                }}
+                            />
+                            <p className="text-sm text-gray-600 text-center max-w-md">
+                                <strong>Test with screen reader:</strong> When
+                                you toggle loading ON, the screen reader should
+                                announce "Loading, please wait". The hidden text
+                                (lines 203-218) makes this possible while
+                                remaining invisible to sighted users.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

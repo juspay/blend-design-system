@@ -167,7 +167,7 @@ const SidebarDemo = () => {
         | 'codeEditor'
         | 'workflowCanvas'
         | 'formElements'
-    >('dataTable')
+    >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

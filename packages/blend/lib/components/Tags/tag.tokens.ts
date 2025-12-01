@@ -71,9 +71,9 @@ export type ResponsiveTagTokens = {
 
 export const getTagTokens = (
     foundationToken: FoundationTokenType,
-    theme: Theme | string = Theme.LIGHT
+    theme: string = 'light'
 ): ResponsiveTagTokens => {
-    if (theme === Theme.DARK || theme === 'dark') {
+    if (theme === 'dark') {
         return getTagDarkTokens(foundationToken)
     }
 
