@@ -93,7 +93,7 @@ export const getDropdownInputTokens = (
                     hover: foundationTokens.colors.gray[700],
                     focus: foundationTokens.colors.gray[700],
                     disabled: foundationTokens.colors.gray[400],
-                    error: foundationTokens.colors.red[600],
+                    error: foundationTokens.colors.gray[700],
                 },
             },
             subLabel: {
@@ -103,8 +103,8 @@ export const getDropdownInputTokens = (
                     default: foundationTokens.colors.gray[400],
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
-                    disabled: foundationTokens.colors.gray[300],
-                    error: foundationTokens.colors.red[600],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.gray[400],
                 },
             },
 
@@ -115,7 +115,7 @@ export const getDropdownInputTokens = (
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
                     disabled: foundationTokens.colors.gray[400],
-                    error: foundationTokens.colors.red[600],
+                    error: foundationTokens.colors.gray[400],
                 },
             },
             hintText: {
@@ -201,7 +201,7 @@ export const getDropdownInputTokens = (
                     hover: foundationTokens.colors.gray[700],
                     focus: foundationTokens.colors.gray[700],
                     disabled: foundationTokens.colors.gray[400],
-                    error: foundationTokens.colors.red[600],
+                    error: foundationTokens.colors.gray[700],
                 },
             },
             subLabel: {
@@ -211,8 +211,8 @@ export const getDropdownInputTokens = (
                     default: foundationTokens.colors.gray[400],
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
-                    disabled: foundationTokens.colors.gray[300],
-                    error: foundationTokens.colors.red[600],
+                    disabled: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.gray[400],
                 },
             },
             helpIcon: {
@@ -222,7 +222,7 @@ export const getDropdownInputTokens = (
                     hover: foundationTokens.colors.gray[400],
                     focus: foundationTokens.colors.gray[400],
                     disabled: foundationTokens.colors.gray[400],
-                    error: foundationTokens.colors.red[600],
+                    error: foundationTokens.colors.gray[400],
                 },
             },
             hintText: {
@@ -266,18 +266,18 @@ export const getDropdownInputTokens = (
                 padding: {
                     x: {
                         sm: foundationTokens.unit[10],
-                        md: foundationTokens.unit[12],
+                        md: foundationTokens.unit[14],
                         lg: foundationTokens.unit[14],
                     },
                     y: {
-                        sm: foundationTokens.unit[6],
+                        sm: foundationTokens.unit[7],
                         md: foundationTokens.unit[8],
                         lg: foundationTokens.unit[10],
                     },
                 },
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
-                    hover: `1px solid ${foundationTokens.colors.gray[400]}`,
+                    hover: `1px solid ${foundationTokens.colors.gray[200]}`,
                     focus: `1px solid ${foundationTokens.colors.primary[500]}`,
                     error: `1px solid ${foundationTokens.colors.red[500]}`,
                     disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
@@ -293,7 +293,7 @@ export const getDropdownInputTokens = (
                 backgroundColor: {
                     default: foundationTokens.colors.gray[0],
                     disabled: foundationTokens.colors.gray[50],
-                    hover: foundationTokens.colors.gray[0],
+                    hover: foundationTokens.colors.gray[50],
                     focus: foundationTokens.colors.gray[0],
                     error: foundationTokens.colors.gray[0],
                 },
