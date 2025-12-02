@@ -93,10 +93,8 @@ const TextInput = ({
             flexDirection="column"
             gap={8}
             width={'100%'}
-            data-component-field-wrapper={`field-${name}`}
-            data-input={value}
+            data-textinput={name ?? ''}
             data-status={disabled ? 'disabled' : 'enabled'}
-            data-id={name ?? ''}
         >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
