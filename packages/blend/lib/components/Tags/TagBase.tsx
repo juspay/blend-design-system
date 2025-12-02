@@ -93,14 +93,19 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             overflow={showRipple ? 'hidden' : blockProps.overflow}
             className={className}
             style={style}
+            data-tag={text}
         >
             {leftSlot && (
-                <Block contentCentered style={{ opacity: isSkeleton ? 0 : 1 }}>
+                <Block
+                    data-element="left-slot"
+                    contentCentered
+                    style={{ opacity: isSkeleton ? 0 : 1 }}
+                >
                     {leftSlot}
                 </Block>
             )}
             <Text
-                data-label={text}
+                data-id={text}
                 fontSize={tagTokens.text.fontSize[size]}
                 fontWeight={tagTokens.text.fontWeight[size]}
                 style={{ color: isSkeleton ? 'transparent' : undefined }}
@@ -109,7 +114,11 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                 {text}
             </Text>
             {rightSlot && (
-                <Block contentCentered style={{ opacity: isSkeleton ? 0 : 1 }}>
+                <Block
+                    data-element="right-slot"
+                    contentCentered
+                    style={{ opacity: isSkeleton ? 0 : 1 }}
+                >
                     {rightSlot}
                 </Block>
             )}
