@@ -131,6 +131,8 @@ const ModalSkeleton = ({
             </Block>
         )
     }
+
+    return null
 }
 
 export default ModalSkeleton
