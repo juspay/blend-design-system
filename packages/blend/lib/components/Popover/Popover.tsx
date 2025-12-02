@@ -10,6 +10,7 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobilePopover from './MobilePopover'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from './popover.animations'
+import PopoverSkeleton from './PopoverSkeleton'
 
 const AnimatedPopoverSurface = styled(Block)`
     ${popoverContentAnimations}
@@ -42,6 +43,7 @@ const Popover = ({
     shadow = 'lg',
     useDrawerOnMobile = true,
     avoidCollisions = true,
+    skeleton,
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
@@ -50,6 +52,9 @@ const Popover = ({
 
     const isCustomPopover =
         !heading && !description && !primaryAction && !secondaryAction
+
+    const shouldShowSkeleton = skeleton?.show
+    const skeletonVariant = skeleton?.variant || 'pulse'
 
     useEffect(() => {
         if (open !== undefined) {
@@ -152,12 +157,33 @@ const Popover = ({
                                 onClose()
                             }
                         }}
+                        showSkeleton={shouldShowSkeleton}
+                        skeletonVariant={skeletonVariant}
                     />
-                    {children}
+                    {shouldShowSkeleton && skeleton?.bodySkeletonProps?.show ? (
+                        <PopoverSkeleton
+                            popoverTokens={popoverTokens}
+                            size={size}
+                            bodySkeleton={{
+                                show:
+                                    skeleton?.bodySkeletonProps?.show || false,
+                                width:
+                                    skeleton?.bodySkeletonProps?.width ||
+                                    '100%',
+                                height:
+                                    skeleton?.bodySkeletonProps?.height || 200,
+                            }}
+                            skeletonVariant={skeletonVariant}
+                        />
+                    ) : (
+                        children
+                    )}
                     <PopoverFooter
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
                         size={size}
+                        showSkeleton={shouldShowSkeleton}
+                        skeletonVariant={skeletonVariant}
                     />
                 </AnimatedPopoverSurface>
             </RadixPopover.Content>

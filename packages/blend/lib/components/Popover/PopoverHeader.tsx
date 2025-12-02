@@ -6,6 +6,8 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { PopoverTokenType } from './popover.tokens'
 import { PopoverProps, PopoverSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { type SkeletonVariant } from '../Skeleton'
+import PopoverSkeleton from './PopoverSkeleton'
 
 const PopoverHeader = ({
     heading,
@@ -13,11 +15,32 @@ const PopoverHeader = ({
     showCloseButton,
     onClose,
     size = PopoverSize.MEDIUM,
+    showSkeleton,
+    skeletonVariant,
 }: Pick<
     PopoverProps,
     'heading' | 'description' | 'showCloseButton' | 'size' | 'onClose'
->) => {
+> & {
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
+}) => {
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
+
+    if (showSkeleton) {
+        return (
+            <PopoverSkeleton
+                popoverTokens={popoverTokens}
+                size={size}
+                headerSkeleton={{
+                    show: showSkeleton || false,
+                    showCloseButton: showCloseButton || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
 
     if (!heading && !description) return null
 
