@@ -184,7 +184,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         const renderContent = () => (
             <Block
                 ref={ref}
-                data-avatar="true"
+                data-avatar={alt ?? ''}
                 data-avatar-size={size}
                 data-avatar-shape={shape}
                 data-avatar-online={online}
