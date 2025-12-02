@@ -9,7 +9,7 @@ import { TextInput } from '../../../../packages/blend/lib/main'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
-
+    const [showSkeleton, setShowSkeleton] = useState(false)
     // Configuration state
     const [config, setConfig] = useState({
         title: 'Modal Heading',
@@ -276,6 +276,20 @@ const ModalDemo = () => {
                                 <label className="flex items-center cursor-pointer text-gray-700">
                                     <input
                                         type="checkbox"
+                                        checked={showSkeleton}
+                                        onChange={() =>
+                                            setShowSkeleton(!showSkeleton)
+                                        }
+                                        className="mr-2 cursor-pointer"
+                                    />
+                                    <span>Show Skeleton</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label className="flex items-center cursor-pointer text-gray-700">
+                                    <input
+                                        type="checkbox"
                                         checked={config.closeOnBackdropClick}
                                         onChange={handleCheckboxChange(
                                             'closeOnBackdropClick'
@@ -463,6 +477,15 @@ const ModalDemo = () => {
 
             {/* Modal with current configuration */}
             <Modal
+                skeleton={{
+                    show: showSkeleton,
+                    bodySkeletonProps: {
+                        show: true,
+                        width: '900px',
+                        // height: '100%',
+                    },
+                    variant: 'pulse',
+                }}
                 data-component="popUpConfirm Some PopUp6"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

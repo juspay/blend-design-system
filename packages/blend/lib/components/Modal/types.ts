@@ -1,7 +1,20 @@
 import type { ReactNode } from 'react'
 import type { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 type ModalButtonAction = Omit<ButtonProps, 'buttonGroupPosition'>
+
+type BodySkeletonProps = {
+    show?: boolean
+    width?: string
+    height?: string
+}
+
+export type ModalSkeletonProps = {
+    show?: boolean
+    variant?: SkeletonVariant
+    bodySkeletonProps?: BodySkeletonProps
+}
 
 export type ModalProps = {
     isOpen: boolean
@@ -21,4 +34,5 @@ export type ModalProps = {
     showDivider?: boolean
     minWidth?: string
     useDrawerOnMobile?: boolean
+    skeleton?: ModalSkeletonProps
 }
