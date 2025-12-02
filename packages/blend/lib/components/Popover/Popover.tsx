@@ -65,6 +65,7 @@ const Popover = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobilePopover
+                skeleton={skeleton}
                 open={isOpen}
                 onOpenChange={(open) => {
                     setIsOpen(open)

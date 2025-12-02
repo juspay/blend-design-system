@@ -5,8 +5,6 @@ import { PopoverTokenType } from './popover.tokens'
 import { PopoverSize } from './types'
 
 const PopoverSkeleton = ({
-    popoverTokens,
-    size,
     headerSkeleton,
     bodySkeleton,
     footerSkeleton,
@@ -28,10 +26,7 @@ const PopoverSkeleton = ({
     }
     skeletonVariant: SkeletonVariant
 }) => {
-    const {
-        show: showHeaderSkeleton = false,
-        showCloseButton: showHeaderCloseButton = false,
-    } = headerSkeleton || {}
+    const { show: showHeaderSkeleton = false } = headerSkeleton || {}
     const {
         show: showBodySkeleton = false,
         width: bodySkeletonWidth = '100%',
@@ -64,23 +59,7 @@ const PopoverSkeleton = ({
                             height={20}
                             borderRadius={4}
                         />
-                        <Skeleton
-                            variant={skeletonVariant}
-                            width="50%"
-                            height={16}
-                            borderRadius={4}
-                        />
                     </Block>
-                    {showHeaderCloseButton && (
-                        <Block size={18} contentCentered>
-                            <Skeleton
-                                variant={skeletonVariant}
-                                width={18}
-                                height={18}
-                                borderRadius={4}
-                            />
-                        </Block>
-                    )}
                 </Block>
             </Block>
         )
@@ -104,27 +83,7 @@ const PopoverSkeleton = ({
     }
 
     if (showFooterSkeleton) {
-        return (
-            <Block
-                display="flex"
-                alignItems="center"
-                gap={popoverTokens.footer.gap[size]}
-                justifyContent="flex-end"
-            >
-                <Skeleton
-                    variant={skeletonVariant}
-                    width={80}
-                    height={32}
-                    borderRadius={6}
-                />
-                <Skeleton
-                    variant={skeletonVariant}
-                    width={80}
-                    height={32}
-                    borderRadius={6}
-                />
-            </Block>
-        )
+        return null
     }
 
     return null
