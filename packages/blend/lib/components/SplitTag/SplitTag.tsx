@@ -8,7 +8,7 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
             display="flex"
             width="fit-content"
             flexWrap="nowrap"
-            data-split-tag="true"
+            data-split-tag={primaryTag.text ?? ''}
             data-split-tag-size={size}
             data-split-tag-shape={shape}
         >
