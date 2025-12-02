@@ -24,6 +24,46 @@ const preview: Preview = {
                 component: 'Blend Design System Components',
             },
         },
+        a11y: {
+            config: {
+                rules: [
+                    {
+                        id: 'color-contrast',
+                        enabled: true,
+                    },
+                    {
+                        id: 'keyboard-navigation',
+                        enabled: true,
+                    },
+                    {
+                        id: 'aria-required-attributes',
+                        enabled: true,
+                    },
+                    {
+                        id: 'aria-hidden-focus',
+                        enabled: true,
+                    },
+                    {
+                        id: 'button-name',
+                        enabled: true,
+                    },
+                    {
+                        id: 'link-name',
+                        enabled: true,
+                    },
+                ],
+            },
+            options: {
+                checks: { 'color-contrast': { options: { noScroll: true } } },
+                restoreScroll: true,
+            },
+        },
+        // Chromatic configuration
+        // Note: Chromatic doesn't support viewports and modes together
+        // Use viewports globally, and configure modes per-story if needed
+        chromatic: {
+            viewports: [375, 768, 1200],
+        },
         backgrounds: {
             default: 'light',
             values: [
