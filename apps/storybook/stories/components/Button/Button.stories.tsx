@@ -17,61 +17,51 @@ import {
     Edit,
     Trash2,
 } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
-// Figma Code Connect is now in a separate file: Button.figma.tsx
+// ============================================================================
+// Meta Configuration
+// ============================================================================
 
 const meta: Meta<typeof Button> = {
     title: 'Components/Button/Button',
     component: Button,
     parameters: {
         layout: 'centered',
-        a11y: {
-            config: {
-                rules: [
-                    {
-                        id: 'color-contrast',
-                        enabled: true,
-                    },
-                    {
-                        id: 'button-name',
-                        enabled: true,
-                    },
-                    {
-                        id: 'keyboard-navigation',
-                        enabled: true,
-                    },
-                ],
-            },
-        },
-        chromatic: {
-            viewports: [375, 768, 1200],
-            delay: 300,
-        },
+        // Use shared a11y config for interactive components
+        a11y: getA11yConfig('interactive'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
-
-A modern, enhanced button component with improved styling and token-based design system.
+Button component with multiple types, sizes, and states.
 
 ## Features
-- Multiple button types (Primary, Secondary, Danger, Success)
-- Various sizes (Small, Medium, Large)
-- Sub-types (Default, Icon Only, Inline)
-- Icon support (leading and trailing)
-- Loading and disabled states
+- Types: Primary, Secondary, Danger, Success
+- Sizes: Small, Medium, Large
+- Sub-types: Default, Icon Only, Inline
+- Icons: Leading and trailing
+- States: Loading, disabled
 - Full width support
 - Button group positioning
-- Token-based styling system
-- Accessibility features built-in
 
 ## Accessibility
+- Keyboard accessible (Tab, Enter, Space)
+- Loading state announced via \`aria-busy\` and visually hidden text
+- Disabled buttons removed from tab order (\`tabIndex={-1}\`)
+- Focus indicators with outlineOffset
+- Icon-only buttons require \`aria-label\`
 
-This component follows WCAG 2.1 Level AAA standards:
-- ✅ Keyboard navigable (Tab, Enter, Space)
-- ✅ Proper ARIA attributes
-- ✅ Color contrast ratios meet WCAG AAA standards
-- ✅ Screen reader compatible
-- ✅ Focus indicators visible
+## Accessibility Testing
+View accessibility reports in Storybook:
+- **Storybook a11y addon**: Check Accessibility panel (bottom) for violations
+- **Chromatic**: Visual regression for focus rings and states
+- **jest-axe**: Unit test coverage in \`__tests__/components/Button/\`
+- **Screen readers**: Manual testing checklist
 
 ## Usage
 
@@ -176,7 +166,15 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
 export default meta
 type Story = StoryObj<typeof Button>
 
-// Helper function to render icons based on control selection
+// ============================================================================
+// Helper Functions
+// ============================================================================
+// Extract reusable helpers here for consistency across stories
+
+/**
+ * Helper function to render icons based on control selection
+ * Returns null instead of undefined for better React compatibility
+ */
 const getIcon = (iconType: string): React.ReactNode => {
     switch (iconType) {
         case 'plus':
@@ -199,7 +197,25 @@ const getIcon = (iconType: string): React.ReactNode => {
     }
 }
 
-// Default story
+// ============================================================================
+// Story Categories
+// ============================================================================
+// Organize stories into logical groups:
+// 1. Basic Variants (types, sizes, sub-types)
+// 2. Icons
+// 3. States (loading, disabled)
+// 4. Layout & Positioning
+// 5. Interactive & Showcase
+// 6. Accessibility Testing
+// ============================================================================
+
+// ============================================================================
+// Basic Variants
+// ============================================================================
+
+/**
+ * Default button
+ */
 export const Default: Story = {
     args: {
         buttonType: ButtonType.PRIMARY,
@@ -225,7 +241,9 @@ export const Default: Story = {
     },
 }
 
-// Button types
+/**
+ * Button types
+ */
 export const ButtonTypes: Story = {
     render: () => (
         <div
@@ -245,13 +263,15 @@ export const ButtonTypes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different button types for various use cases and semantic meanings.',
+                story: 'Primary, Secondary, Danger, and Success variants.',
             },
         },
     },
 }
 
-// Button sizes
+/**
+ * Button sizes
+ */
 export const ButtonSizes: Story = {
     render: () => (
         <div
@@ -270,13 +290,15 @@ export const ButtonSizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different button sizes to fit various contexts and layouts.',
+                story: 'Small, Medium, and Large sizes.',
             },
         },
     },
 }
 
-// Button sub-types
+/**
+ * Button sub-types
+ */
 export const ButtonSubTypes: Story = {
     render: () => (
         <div
@@ -291,7 +313,7 @@ export const ButtonSubTypes: Story = {
             <Button
                 subType={ButtonSubType.ICON_ONLY}
                 leadingIcon={<Settings size={16} />}
-                text="Icon Only"
+                aria-label="Settings"
             />
             <Button subType={ButtonSubType.INLINE} text="Inline" />
         </div>
@@ -299,13 +321,19 @@ export const ButtonSubTypes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different button sub-types including default, icon-only, and inline variants.',
+                story: 'Default, icon-only, and inline variants.',
             },
         },
     },
 }
 
-// With icons
+// ============================================================================
+// Icons
+// ============================================================================
+
+/**
+ * Buttons with icons
+ */
 export const WithIcons: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -335,13 +363,15 @@ export const WithIcons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Buttons with leading and trailing icons for enhanced visual communication.',
+                story: 'Buttons with leading and trailing icons.',
             },
         },
     },
 }
 
-// Icon only buttons
+/**
+ * Icon-only buttons require aria-label
+ */
 export const IconOnly: Story = {
     render: () => (
         <div
@@ -357,37 +387,57 @@ export const IconOnly: Story = {
                 leadingIcon={<Plus size={16} />}
                 buttonType={ButtonType.PRIMARY}
                 size={ButtonSize.SMALL}
+                aria-label="Add item"
             />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
                 leadingIcon={<Search size={16} />}
                 buttonType={ButtonType.SECONDARY}
                 size={ButtonSize.MEDIUM}
+                aria-label="Search"
             />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
                 leadingIcon={<Edit size={16} />}
                 buttonType={ButtonType.SUCCESS}
                 size={ButtonSize.LARGE}
+                aria-label="Edit"
             />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
                 leadingIcon={<Trash2 size={16} />}
                 buttonType={ButtonType.DANGER}
                 size={ButtonSize.MEDIUM}
+                aria-label="Delete"
             />
         </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Icon-only buttons for compact interfaces. Perfect for toolbars and action bars.',
+                story: 'Icon-only buttons require aria-label for accessibility. Check Accessibility panel for button-name violations.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    {
+                        id: 'button-name',
+                        enabled: true,
+                    },
+                    {
+                        id: 'keyboard-navigation',
+                        enabled: true,
+                    },
+                ],
             },
         },
     },
 }
 
-// Inline buttons
+/**
+ * Inline buttons
+ */
 export const InlineButtons: Story = {
     render: () => (
         <div
@@ -416,13 +466,19 @@ export const InlineButtons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Inline buttons that blend seamlessly with text content.',
+                story: 'Inline buttons blend with text content.',
             },
         },
     },
 }
 
-// Button states
+// ============================================================================
+// States
+// ============================================================================
+
+/**
+ * Button states: normal, loading, disabled
+ */
 export const ButtonStates: Story = {
     render: () => (
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -442,13 +498,85 @@ export const ButtonStates: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different button states including normal, loading, and disabled.',
+                story: 'Different button states.',
             },
         },
     },
 }
 
-// Full width buttons
+/**
+ * Loading state with spinner and screen reader announcement
+ */
+export const Loading: Story = {
+    args: {
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
+        text: 'Loading Button',
+        loading: true,
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Loading state shows spinner and announces "Loading, please wait" to screen readers. Check Accessibility panel for aria-busy validation.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    {
+                        id: 'aria-required-attributes',
+                        enabled: true,
+                    },
+                    {
+                        id: 'color-contrast',
+                        enabled: true,
+                    },
+                ],
+            },
+        },
+    },
+}
+
+/**
+ * Disabled state - removed from tab order
+ */
+export const Disabled: Story = {
+    args: {
+        buttonType: ButtonType.PRIMARY,
+        size: ButtonSize.MEDIUM,
+        text: 'Disabled Button',
+        disabled: true,
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Disabled buttons are removed from tab order (tabIndex={-1}). Check Accessibility panel and Chromatic for disabled state appearance.',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [
+                    {
+                        id: 'keyboard-navigation',
+                        enabled: true,
+                    },
+                    {
+                        id: 'color-contrast',
+                        enabled: true,
+                    },
+                ],
+            },
+        },
+    },
+}
+
+// ============================================================================
+// Layout & Positioning
+// ============================================================================
+
+/**
+ * Full-width buttons
+ */
 export const FullWidth: Story = {
     render: () => (
         <div
@@ -480,13 +608,57 @@ export const FullWidth: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Full-width buttons that take up the entire available width of their container.',
+                story: 'Buttons that span full container width.',
             },
         },
     },
 }
 
-// Button group positioning
+/**
+ * Content alignment
+ */
+export const ContentAlignment: Story = {
+    render: () => (
+        <div
+            style={{
+                width: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+            }}
+        >
+            <Button
+                text="Left Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="flex-start"
+            />
+            <Button
+                text="Center Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="center"
+            />
+            <Button
+                text="Right Aligned"
+                buttonType={ButtonType.SECONDARY}
+                fullWidth={true}
+                justifyContent="flex-end"
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Content alignment within buttons.',
+            },
+        },
+    },
+}
+
+/**
+ * Button group positioning
+ */
 export const ButtonGroupPositioning: Story = {
     render: () => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -546,87 +718,57 @@ export const ButtonGroupPositioning: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Manual usage of buttonGroupPosition prop on individual buttons. For automatic positioning, use the ButtonGroup component instead.',
+                story: 'Button group positioning for border radius adjustment.',
             },
         },
     },
 }
 
-// Content alignment
-export const ContentAlignment: Story = {
-    render: () => (
-        <div
-            style={{
-                width: '200px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-            }}
-        >
-            <Button
-                text="Left Aligned"
-                buttonType={ButtonType.SECONDARY}
-                fullWidth={true}
-                justifyContent="flex-start"
-            />
-            <Button
-                text="Center Aligned"
-                buttonType={ButtonType.SECONDARY}
-                fullWidth={true}
-                justifyContent="center"
-            />
-            <Button
-                text="Right Aligned"
-                buttonType={ButtonType.SECONDARY}
-                fullWidth={true}
-                justifyContent="flex-end"
-            />
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different content alignment options within the button.',
-            },
-        },
-    },
-}
+// ============================================================================
+// Interactive & Showcase
+// ============================================================================
 
-// Loading state
-export const Loading: Story = {
+/**
+ * Interactive playground
+ */
+export const Interactive: Story = {
     args: {
         buttonType: ButtonType.PRIMARY,
         size: ButtonSize.MEDIUM,
-        text: 'Loading Button',
-        loading: true,
+        subType: ButtonSubType.DEFAULT,
+        text: 'Interactive Button',
+        loading: false,
+        disabled: false,
+        fullWidth: false,
+        state: ButtonState.DEFAULT,
+        leadingIcon: 'plus',
+        trailingIcon: 'none',
+        justifyContent: 'center',
+    },
+    render: (args: any) => {
+        const { leadingIcon, trailingIcon, ...restArgs } = args
+        return (
+            <div style={{ padding: '20px', textAlign: 'center' }}>
+                <Button
+                    {...restArgs}
+                    leadingIcon={getIcon(leadingIcon)}
+                    trailingIcon={getIcon(trailingIcon)}
+                />
+            </div>
+        )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Button in loading state. Shows a spinner and hides the text and icons.',
+                story: 'Use controls to experiment with button props.',
             },
         },
     },
 }
 
-// Disabled state
-export const Disabled: Story = {
-    args: {
-        buttonType: ButtonType.PRIMARY,
-        size: ButtonSize.MEDIUM,
-        text: 'Disabled Button',
-        disabled: true,
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Button in disabled state. Click events are prevented and visual styling indicates the disabled state.',
-            },
-        },
-    },
-}
-
-// Comprehensive showcase
+/**
+ * Showcase
+ */
 export const Showcase: Story = {
     render: () => (
         <div
@@ -683,6 +825,7 @@ export const Showcase: Story = {
                         subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Settings size={16} />}
                         buttonType={ButtonType.SECONDARY}
+                        aria-label="Settings"
                     />
                 </div>
             </div>
@@ -716,58 +859,19 @@ export const Showcase: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'A comprehensive showcase of Button capabilities and variations.',
+                story: 'Button variations showcase.',
             },
         },
     },
 }
 
-// Interactive playground
-export const Interactive: Story = {
-    args: {
-        buttonType: ButtonType.PRIMARY,
-        size: ButtonSize.MEDIUM,
-        subType: ButtonSubType.DEFAULT,
-        text: 'Interactive Button',
-        loading: false,
-        disabled: false,
-        fullWidth: false,
-        state: ButtonState.DEFAULT,
-        leadingIcon: 'plus',
-        trailingIcon: 'none',
-        justifyContent: 'center',
-    },
-    render: (args: any) => {
-        const { leadingIcon, trailingIcon, ...restArgs } = args
-        return (
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-                <Button
-                    {...restArgs}
-                    leadingIcon={getIcon(leadingIcon)}
-                    trailingIcon={getIcon(trailingIcon)}
-                />
-                <div
-                    style={{
-                        marginTop: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Use the controls below to experiment with different button
-                    configurations
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Interactive playground to experiment with all Button props using the controls panel.',
-            },
-        },
-    },
-}
+// ============================================================================
+// Accessibility Testing
+// ============================================================================
 
+/**
+ * Accessibility examples
+ */
 export const Accessibility: Story = {
     render: () => (
         <div
@@ -775,11 +879,11 @@ export const Accessibility: Story = {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '24px',
-                padding: '20px',
-                maxWidth: '600px',
+                padding: '24px',
+                maxWidth: '800px',
             }}
         >
-            <div>
+            <section>
                 <h3
                     style={{
                         marginBottom: '12px',
@@ -789,36 +893,23 @@ export const Accessibility: Story = {
                 >
                     Keyboard Navigation
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    All buttons are keyboard accessible. Use Tab to navigate,
-                    Enter or Space to activate.
-                </p>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     <Button
                         text="Tab to focus"
                         buttonType={ButtonType.PRIMARY}
-                        onClick={() => alert('Button activated via keyboard!')}
                     />
                     <Button
                         text="Press Enter"
                         buttonType={ButtonType.SECONDARY}
-                        onClick={() => alert('Button activated!')}
                     />
                     <Button
                         text="Press Space"
                         buttonType={ButtonType.SUCCESS}
-                        onClick={() => alert('Button activated!')}
                     />
                 </div>
-            </div>
+            </section>
 
-            <div>
+            <section>
                 <h3
                     style={{
                         marginBottom: '12px',
@@ -826,18 +917,8 @@ export const Accessibility: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Icon-Only Buttons with Accessible Labels
+                    Icon-Only Buttons
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Icon-only buttons include proper ARIA labels for screen
-                    readers.
-                </p>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     <Button
                         subType={ButtonSubType.ICON_ONLY}
@@ -858,9 +939,9 @@ export const Accessibility: Story = {
                         aria-label="Edit"
                     />
                 </div>
-            </div>
+            </section>
 
-            <div>
+            <section>
                 <h3
                     style={{
                         marginBottom: '12px',
@@ -868,33 +949,49 @@ export const Accessibility: Story = {
                         fontWeight: '600',
                     }}
                 >
-                    Disabled State Accessibility
+                    Loading State
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Disabled buttons are properly announced to screen readers
-                    and cannot be activated via keyboard.
-                </p>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     <Button
-                        text="Disabled Button"
+                        text="Loading"
+                        buttonType={ButtonType.PRIMARY}
+                        loading={true}
+                    />
+                    <Button
+                        text="Saving"
+                        buttonType={ButtonType.SUCCESS}
+                        loading={true}
+                    />
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Disabled State
+                </h3>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        text="Disabled"
                         buttonType={ButtonType.PRIMARY}
                         disabled={true}
                     />
                     <Button
-                        text="Disabled Secondary"
-                        buttonType={ButtonType.SECONDARY}
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={16} />}
+                        buttonType={ButtonType.PRIMARY}
+                        aria-label="Settings"
                         disabled={true}
                     />
                 </div>
-            </div>
+            </section>
 
-            <div>
+            <section>
                 <h3
                     style={{
                         marginBottom: '12px',
@@ -904,59 +1001,33 @@ export const Accessibility: Story = {
                 >
                     Focus Indicators
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    All buttons have visible focus indicators that meet WCAG AAA
-                    contrast requirements.
-                </p>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                     <Button text="Focus me" buttonType={ButtonType.PRIMARY} />
                     <Button text="Focus me" buttonType={ButtonType.SECONDARY} />
                     <Button text="Focus me" buttonType={ButtonType.DANGER} />
                 </div>
-            </div>
+            </section>
         </div>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Accessibility testing examples demonstrating keyboard navigation, ARIA labels, disabled states, and focus indicators. Use the Accessibility panel in Storybook to run automated a11y checks.',
+                story: `
+Accessibility examples demonstrating keyboard navigation, ARIA labels, loading states, disabled states, and focus indicators.
+
+**View accessibility reports:**
+- **Storybook a11y addon**: Check Accessibility panel (bottom) for automated violations
+- **Chromatic**: Visual regression for focus rings and state changes
+- **jest-axe**: Unit test coverage in \`__tests__/components/Button/Button.accessibility.test.tsx\`
+- **Screen readers**: Manual testing with VoiceOver/NVDA
+                `,
             },
         },
-        // Enhanced accessibility testing for this story
-        a11y: {
-            config: {
-                rules: [
-                    {
-                        id: 'color-contrast',
-                        enabled: true,
-                    },
-                    {
-                        id: 'button-name',
-                        enabled: true,
-                    },
-                    {
-                        id: 'keyboard-navigation',
-                        enabled: true,
-                    },
-                    {
-                        id: 'aria-required-attributes',
-                        enabled: true,
-                    },
-                    {
-                        id: 'aria-hidden-focus',
-                        enabled: true,
-                    },
-                ],
-            },
-        },
+        // Enhanced a11y rules for accessibility story
+        a11y: getA11yConfig('interactive'),
+        // Extended delay for Chromatic to capture focus states
         chromatic: {
-            viewports: [375, 768, 1200],
+            ...CHROMATIC_CONFIG,
             delay: 500,
         },
     },

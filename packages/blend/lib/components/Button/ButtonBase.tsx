@@ -175,6 +175,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               outline:
                                   buttonTokens.outline[buttonType][subType]
                                       .active,
+                              outlineOffset: FOUNDATION_THEME.unit[2],
                           }
                 }
                 _disabled={
