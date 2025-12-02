@@ -1,39 +1,51 @@
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { ModalTokensType } from './modal.tokens'
+import { Skeleton, type SkeletonVariant } from '../Skeleton'
+import type { ModalTokensType } from './modal.tokens'
 
-const ModalSkeleton = ({
+type HeaderSkeletonConfig = {
+    show: boolean
+    showDivider: boolean
+    showCloseButton: boolean
+}
+
+type BodySkeletonConfig = {
+    show: boolean
+    width: string
+    height: string | number
+}
+
+type FooterSkeletonConfig = {
+    show: boolean
+    showDivider: boolean
+}
+
+type ModalSkeletonProps = {
+    modalTokens: ModalTokensType
+    headerSkeleton?: HeaderSkeletonConfig
+    bodySkeleton?: BodySkeletonConfig
+    footerSkeleton?: FooterSkeletonConfig
+    skeletonVariant: SkeletonVariant
+}
+
+const ModalSkeleton: React.FC<ModalSkeletonProps> = ({
     modalTokens,
     headerSkeleton,
     bodySkeleton,
     footerSkeleton,
+
     skeletonVariant,
-}: {
-    modalTokens: ModalTokensType
-    headerSkeleton?: {
-        show: boolean
-        showDivider: boolean
-        showCloseButton: boolean
-    }
-    bodySkeleton?: { show: boolean; width: string; height: string | number }
-    footerSkeleton?: { show: boolean; showDivider: boolean }
-    skeletonVariant: SkeletonVariant
 }) => {
     const {
         show: showHeaderSkeleton = false,
         showDivider: showHeaderDivider = false,
-        showCloseButton: showHeaderCloseButton = false,
     } = headerSkeleton || {}
     const {
         show: showBodySkeleton = false,
         width: bodySkeletonWidth = '100%',
-        height: bodySkeletonHeight = 200,
+        height: bodySkeletonHeight = 300,
     } = bodySkeleton || {}
-    const {
-        show: showFooterSkeleton = false,
-        showDivider: showFooterDivider = false,
-    } = footerSkeleton || {}
+    const { show: showFooterSkeleton = false } = footerSkeleton || {}
 
     if (showHeaderSkeleton) {
         return (
@@ -66,21 +78,7 @@ const ModalSkeleton = ({
                         height={24}
                         borderRadius={4}
                     />
-                    <Skeleton
-                        variant={skeletonVariant}
-                        width="40%"
-                        height={16}
-                        borderRadius={4}
-                    />
                 </Block>
-                {showHeaderCloseButton && (
-                    <Skeleton
-                        variant={skeletonVariant}
-                        width={32}
-                        height={32}
-                        borderRadius={4}
-                    />
-                )}
             </Block>
         )
     }
@@ -95,7 +93,7 @@ const ModalSkeleton = ({
                 <Skeleton
                     variant={skeletonVariant}
                     width={bodySkeletonWidth || '100%'}
-                    height={bodySkeletonHeight || 200}
+                    height={bodySkeletonHeight || 300}
                     borderRadius={4}
                 />
             </Block>
@@ -103,33 +101,7 @@ const ModalSkeleton = ({
     }
 
     if (showFooterSkeleton) {
-        return (
-            <Block
-                display="flex"
-                backgroundColor={modalTokens.footer.backgroundColor}
-                justifyContent="flex-end"
-                gap={modalTokens.footer.gap}
-                padding={modalTokens.footer.padding}
-                flexShrink={0}
-                borderTop={
-                    showFooterDivider ? modalTokens.footer.borderTop : undefined
-                }
-                borderRadius={`0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`}
-            >
-                <Skeleton
-                    variant={skeletonVariant}
-                    width={100}
-                    height={36}
-                    borderRadius={6}
-                />
-                <Skeleton
-                    variant={skeletonVariant}
-                    width={100}
-                    height={36}
-                    borderRadius={6}
-                />
-            </Block>
-        )
+        return null
     }
 
     return null

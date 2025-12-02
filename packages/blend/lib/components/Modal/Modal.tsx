@@ -255,6 +255,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     <MobileModal
                         isOpen={isOpen}
                         onClose={onClose}
+                        skeleton={skeleton}
                         title={title}
                         subtitle={subtitle}
                         primaryAction={primaryAction}
@@ -346,7 +347,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                                                 ?.width || '100%',
                                         height:
                                             skeleton?.bodySkeletonProps
-                                                ?.height || 200,
+                                                ?.height || 300,
                                     }}
                                     skeletonVariant={skeletonVariant}
                                 />
