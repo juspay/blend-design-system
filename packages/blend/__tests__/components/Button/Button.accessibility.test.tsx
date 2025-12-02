@@ -163,7 +163,6 @@ describe('Button Accessibility', () => {
             )
             const button = screen.getByRole('button')
             const icon = button.querySelector('[data-element="leading-icon"]')
-            // Icon should not have aria-hidden when no text (button relies on aria-label)
             expect(icon).not.toHaveAttribute('aria-hidden')
         })
 
@@ -199,17 +198,12 @@ describe('Button Accessibility', () => {
 
             button.focus()
             expect(document.activeElement).toBe(button)
-            // The actual focus styles are applied via _focusVisible pseudo-class
         })
 
         it('focus indicator meets minimum width requirements', () => {
             render(<Button text="Focus Test" />)
             const button = screen.getByRole('button')
             button.focus()
-
-            // Focus indicator should be applied via _focusVisible
-            // The outlineWidth is set to 2px minimum in ButtonBase
-            // This is verified through the component implementation
             expect(button).toBeInTheDocument()
         })
 
@@ -284,14 +278,11 @@ describe('Button Accessibility', () => {
     describe('Color Contrast', () => {
         it('provides sufficient color contrast for primary buttons', () => {
             render(<Button text="Primary" buttonType={ButtonType.PRIMARY} />)
-            // Color contrast would need to be tested with actual computed styles
-            // This is typically done with visual regression testing tools
             expect(screen.getByRole('button')).toBeInTheDocument()
         })
 
         it('maintains contrast in disabled state', () => {
             render(<Button text="Disabled" disabled />)
-            // Disabled buttons should still maintain minimum contrast ratios
             expect(screen.getByRole('button')).toBeDisabled()
         })
     })
@@ -300,8 +291,6 @@ describe('Button Accessibility', () => {
         it('meets minimum touch target size requirements', () => {
             render(<Button text="Touch Target" />)
             const button = screen.getByRole('button')
-            // Minimum touch target size should be 44x44 pixels
-            // This would need to be verified with computed styles
             expect(button).toBeInTheDocument()
         })
 
