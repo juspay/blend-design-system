@@ -9,8 +9,6 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
             width="fit-content"
             flexWrap="nowrap"
             data-split-tag={primaryTag.text ?? ''}
-            data-split-tag-size={size}
-            data-split-tag-shape={shape}
         >
             {primaryTag ? (
                 <Tag
@@ -20,8 +18,6 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                     variant={primaryTag.variant ?? TagVariant.NO_FILL}
                     size={size}
                     shape={shape}
-                    data-split-tag-left="true"
-                    data-split-tag-left-text={primaryTag.text}
                     data-status={primaryTag.color ?? ''}
                     data-id={primaryTag.text ?? ''}
                 />
@@ -34,8 +30,6 @@ const SplitTag = ({ primaryTag, secondaryTag, size, shape }: SplitTagProps) => {
                     variant={secondaryTag.variant ?? TagVariant.ATTENTIVE}
                     size={size}
                     shape={shape}
-                    data-split-tag-right="true"
-                    data-split-tag-right-text={secondaryTag.text}
                     data-status={secondaryTag.color ?? ''}
                     data-id={secondaryTag.text ?? ''}
                 />
