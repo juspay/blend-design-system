@@ -88,7 +88,14 @@ const TextInput = ({
     }, [leftSlot, rightSlot])
 
     return (
-        <Block display="flex" flexDirection="column" gap={8} width={'100%'}>
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={8}
+            width={'100%'}
+            data-textinput={label ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
+        >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
                     tokens={textInputTokens}
@@ -150,8 +157,6 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
-                    data-textinput={label ?? ''}
-                    data-status={disabled ? 'disabled' : 'enabled'}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
