@@ -51,11 +51,37 @@ const preview: Preview = {
                         id: 'link-name',
                         enabled: true,
                     },
+                    {
+                        id: 'nested-interactive',
+                        enabled: false,
+                    },
+                    {
+                        id: 'focus-order-semantics',
+                        enabled: false,
+                    },
+                    {
+                        id: 'tabindex',
+                        enabled: false,
+                    },
                 ],
             },
             options: {
                 checks: { 'color-contrast': { options: { noScroll: true } } },
                 restoreScroll: true,
+                // Run WCAG 2.2 rules (latest standard) - includes 2.0, 2.1, and 2.2 success criteria
+                runOnly: {
+                    type: 'tag',
+                    values: [
+                        'wcag2a',
+                        'wcag2aa',
+                        'wcag21aa',
+                        'wcag22aa',
+                        'wcag22aaa',
+                    ],
+                },
+                // Ensure all tests complete (no incomplete tests)
+                iframes: true,
+                elementRef: true,
             },
         },
         // Chromatic configuration

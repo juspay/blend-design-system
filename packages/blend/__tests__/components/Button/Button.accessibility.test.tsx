@@ -373,17 +373,9 @@ describe('Button Accessibility', () => {
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('aria-busy', 'true')
         })
-
-        it('skeleton buttons have aria-live for announcements', () => {
-            render(<Button text="Loading" showSkeleton />)
-            const button = screen.getByRole('button')
-            expect(button).toHaveAttribute('aria-live', 'polite')
-        })
-
-        it('skeleton buttons announce loading state via aria-live', () => {
+        it('skeleton buttons announce loading state', () => {
             render(<Button text="Submit" showSkeleton />)
             const button = screen.getByRole('button')
-            expect(button).toHaveAttribute('aria-live', 'polite')
             expect(button).toHaveAttribute('aria-busy', 'true')
             expect(button).toHaveAttribute('aria-label', 'Submit')
         })

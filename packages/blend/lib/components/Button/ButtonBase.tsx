@@ -110,7 +110,13 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               .default
                 }
                 disabled={isDisabled}
-                tabIndex={isDisabled ? -1 : htmlProps.tabIndex}
+                tabIndex={
+                    isDisabled
+                        ? -1
+                        : htmlProps.tabIndex !== undefined
+                          ? Math.max(-1, Math.min(0, htmlProps.tabIndex))
+                          : undefined
+                }
                 color={
                     isSkeleton
                         ? 'transparent'
@@ -129,11 +135,12 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 }
                 transition="transform 0.15s ease-in-out"
                 aria-busy={isLoading || isSkeleton ? 'true' : undefined}
-                aria-live={isSkeleton ? 'polite' : undefined}
                 aria-label={
                     isSkeleton && text && !htmlProps['aria-label']
                         ? text
-                        : undefined
+                        : htmlProps['aria-label']
+                          ? htmlProps['aria-label']
+                          : undefined
                 }
                 _active={
                     isSkeleton || isDisabled
