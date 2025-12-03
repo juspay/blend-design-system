@@ -290,6 +290,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             },
             [ref]
         )
+        console.log(items, 'items')
 
         if (items.length > 0) {
             return (
@@ -377,6 +378,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 whiteSpace: 'nowrap',
                                             }}
                                             data-tabs={item.label}
+                                            data-status={
+                                                item.disable
+                                                    ? 'disabled-selected'
+                                                    : 'enabled-selected'
+                                            }
+                                            data-id={item.label}
                                         >
                                             {item.label}
                                         </TabsTrigger>
