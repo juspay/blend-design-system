@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'react'
+import { SkeletonVariant } from '../Skeleton'
 
 export enum AvatarSize {
     SM = 'sm',
@@ -28,6 +29,10 @@ export type AvatarProps = {
     onlinePosition?: AvatarOnlinePosition
     leadingSlot?: React.ReactNode
     trailingSlot?: React.ReactNode
+    skeleton?: {
+        show: boolean
+        variant?: SkeletonVariant
+    }
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>
 
 export type StyledAvatarContainerProps = {

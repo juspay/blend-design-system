@@ -25,6 +25,7 @@ const AvatarDemo = () => {
     const [playgroundOnline, setPlaygroundOnline] = useState(false)
     const [showLeadingSlot, setShowLeadingSlot] = useState(false)
     const [showTrailingSlot, setShowTrailingSlot] = useState(false)
+    const [showSkeleton, setShowSkeleton] = useState(false)
     const [playgroundOnlinePosition, setPlaygroundOnlinePosition] =
         useState<AvatarOnlinePosition>(AvatarOnlinePosition.TOP)
     // Options for selects
@@ -167,10 +168,16 @@ const AvatarDemo = () => {
                                 setShowTrailingSlot(!showTrailingSlot)
                             }
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Avatar
+                            skeleton={{ show: showSkeleton, variant: 'pulse' }}
                             src={playgroundSrc || undefined}
                             alt={playgroundAlt}
                             size={playgroundSize}
