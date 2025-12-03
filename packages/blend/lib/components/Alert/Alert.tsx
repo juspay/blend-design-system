@@ -75,7 +75,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             </Block>
                         )}
                         <Text
-                            // data-alert-heading={heading}
+                            data-element="header"
+                            data-id={heading}
                             color={alertTokens.text.heading.color[variant]}
                             fontWeight={alertTokens.text.heading.fontWeight}
                             fontSize={alertTokens.text.heading.fontSize}
@@ -115,7 +116,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     gap={FOUNDATION_THEME.unit[18]}
                 >
                     <Text
-                        // data-alert-description={description}
+                        data-element="description"
+                        data-id={description}
                         fontWeight={alertTokens.text.description.fontWeight}
                         fontSize={alertTokens.text.description.fontSize}
                         lineHeight={alertTokens.text.description.lineHeight}
@@ -127,13 +129,14 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                         <Block display="flex" gap={FOUNDATION_THEME.unit[16]}>
                             {(primaryAction || secondaryAction) && (
                                 <Block
-                                    data-element="primary-action"
                                     as="span"
                                     display="flex"
                                     gap={alertTokens.button.gap}
                                 >
                                     {primaryAction && (
                                         <PrimitiveButton
+                                            data-element="primary-action"
+                                            data-id={primaryAction.label}
                                             onClick={primaryAction.onClick}
                                             style={{
                                                 border: 'none',
@@ -162,6 +165,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                         <>
                                             <PrimitiveButton
                                                 data-element="secondary-action"
+                                                data-id={secondaryAction.label}
                                                 onClick={
                                                     secondaryAction.onClick
                                                 }

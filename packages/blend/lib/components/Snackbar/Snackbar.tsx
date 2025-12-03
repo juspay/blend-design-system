@@ -96,7 +96,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.header
                                     .fontWeight
                             }
-                            data-snackbar-header={header}
+                            data-element="header"
+                            data-id={header}
                         >
                             {header}
                         </Text>
@@ -113,7 +114,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.description
                                     .fontWeight
                             }
-                            data-snackbar-body={description}
+                            data-element="description"
+                            data-id={description}
                         >
                             {description}
                         </Text>

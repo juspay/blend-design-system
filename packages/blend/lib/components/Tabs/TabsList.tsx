@@ -312,7 +312,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     }}
                 >
                     <Block
-                        data-element="scroll-container"
                         ref={scrollContainerRef}
                         style={{
                             flex: 1,
@@ -325,7 +324,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         className="hide-scrollbar"
                     >
                         <Block
-                            data-element="tabs-list-container"
                             style={{
                                 position: 'relative',
                                 width: fitContent ? 'fit-content' : '100%',
@@ -390,7 +388,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
                     {(showDropdown || showAddButton) && (
                         <Block
-                            data-element="dropdown-select"
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
