@@ -251,6 +251,7 @@ const Charts: React.FC<ChartsProps> = ({
                     <ChartsSkeleton
                         skeletonVariant={skeleton?.variant}
                         height={height}
+                        isExpanded={isExpanded}
                     />
                 ) : (
                     <>
@@ -487,6 +488,7 @@ const Charts: React.FC<ChartsProps> = ({
                     <ChartsSkeleton
                         skeletonVariant={skeleton?.variant}
                         height={height}
+                        isExpanded={isExpanded}
                     />
                 ) : (
                     <>

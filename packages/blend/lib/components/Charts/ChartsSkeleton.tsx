@@ -5,21 +5,25 @@ import { Skeleton, SkeletonVariant } from '../Skeleton'
 const ChartsSkeleton = ({
     skeletonVariant = 'pulse',
     height = 400,
+    isExpanded,
 }: {
     skeletonVariant?: SkeletonVariant
     height?: number
+    isExpanded?: boolean
 }) => {
     return (
         <Block
             display="flex"
             width="100%"
-            height={height}
+            height={isExpanded ? height : 'auto'}
             gap={FOUNDATION_THEME.unit[16]}
-            padding={FOUNDATION_THEME.unit[16]}
+            padding={FOUNDATION_THEME.unit[8]}
             flexDirection="column"
         >
             <Skeleton variant={skeletonVariant} width="40%" height={'40px'} />
-            <Skeleton variant={skeletonVariant} height={height} />
+            {isExpanded && (
+                <Skeleton variant={skeletonVariant} height={height} />
+            )}
         </Block>
     )
 }
