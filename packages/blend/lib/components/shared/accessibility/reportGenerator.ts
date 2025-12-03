@@ -82,6 +82,22 @@ function generateMarkdownReport(
     markdown += `**Conformance Level:** ${report.conformanceLevel}  \n`
     markdown += `**Overall Status:** ${report.overallStatus.toUpperCase()}  \n\n`
 
+    markdown += `## WCAG Guidelines Coverage\n\n`
+    markdown += `This report evaluates criteria from WCAG 2.0, 2.1, and 2.2:\n\n`
+    markdown += `### WCAG 2.0 (2008)\n`
+    report.wcagVersions['2.0'].forEach((item) => {
+        markdown += `- ${item}\n`
+    })
+    markdown += `\n### WCAG 2.1 (2018)\n`
+    report.wcagVersions['2.1'].forEach((item) => {
+        markdown += `- ${item}\n`
+    })
+    markdown += `\n### WCAG 2.2 (2023)\n`
+    report.wcagVersions['2.2'].forEach((item) => {
+        markdown += `- ${item}\n`
+    })
+    markdown += `\n`
+
     markdown += `## Executive Summary\n\n`
     markdown += `${report.summary}\n\n`
 
@@ -210,7 +226,7 @@ function generateHTMLReport(
             color: #333;
         }
         h1 { color: #1f2937; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; }
-        h2 { color: #374151; margin-top: 40px; }
+        h2 { color: #374151; margin-top: 40px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; }
         h3 { color: #4b5563; margin-top: 30px; }
         h4 { color: #6b7280; margin-top: 20px; }
         .status-badge {
@@ -265,6 +281,21 @@ function generateHTMLReport(
             padding: 16px;
             margin: 20px 0;
         }
+        .wcag-versions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .version-card {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .version-card.wcag20 { border-left: 4px solid #3b82f6; }
+        .version-card.wcag21 { border-left: 4px solid #10b981; }
+        .version-card.wcag22 { border-left: 4px solid #8b5cf6; }
     </style>
 </head>
 <body>
@@ -278,6 +309,32 @@ function generateHTMLReport(
         <span class="status-badge" style="background: ${statusColors[report.overallStatus]}; color: white;">
             ${report.overallStatus.toUpperCase()}
         </span>
+    </div>
+
+    <h2>WCAG Guidelines Coverage</h2>
+    <p>This report evaluates criteria from WCAG 2.0, 2.1, and 2.2:</p>
+    <div class="wcag-versions">
+        <div class="version-card wcag20">
+            <h3>WCAG 2.0 (2008)</h3>
+            <p><strong>Foundation guidelines</strong></p>
+            <ul>
+                ${report.wcagVersions['2.0'].map((item) => `<li>${item}</li>`).join('')}
+            </ul>
+        </div>
+        <div class="version-card wcag21">
+            <h3>WCAG 2.1 (2018)</h3>
+            <p><strong>Current standard</strong></p>
+            <ul>
+                ${report.wcagVersions['2.1'].map((item) => `<li>${item}</li>`).join('')}
+            </ul>
+        </div>
+        <div class="version-card wcag22">
+            <h3>WCAG 2.2 (2023)</h3>
+            <p><strong>Latest updates</strong></p>
+            <ul>
+                ${report.wcagVersions['2.2'].map((item) => `<li>${item}</li>`).join('')}
+            </ul>
+        </div>
     </div>
 
     <h2>Executive Summary</h2>
@@ -358,6 +415,14 @@ function generateHTMLReport(
     <ul>
         ${report.testMethodology.manual.map((t) => `        <li>${t}</li>`).join('\n')}
     </ul>
+    <h3>Verification Tools</h3>
+    <ul>
+        ${report.testMethodology.verificationTools.map((t) => `        <li>${t}</li>`).join('\n')}
+    </ul>
+    <h3>WCAG Levels Evaluated</h3>
+    <p><strong>Level A Criteria:</strong> ${report.testMethodology.wcagLevels.A.join(', ')}</p>
+    <p><strong>Level AA Criteria:</strong> ${report.testMethodology.wcagLevels.AA.join(', ')}</p>
+    <p><strong>Level AAA Criteria:</strong> ${report.testMethodology.wcagLevels.AAA.join(', ')}</p>
 
     ${
         report.criteria.filter((c) => c.status === 'unsure').length > 0

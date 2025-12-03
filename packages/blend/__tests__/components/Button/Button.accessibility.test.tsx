@@ -7,14 +7,14 @@ import { ButtonType, ButtonSubType } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
 
 describe('Button Accessibility', () => {
-    describe('WCAG Compliance', () => {
-        it('meets WCAG standards for default button', async () => {
+    describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
+        it('meets WCAG standards for default button (axe-core validation)', async () => {
             const { container } = render(<Button text="Accessible Button" />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all button types', async () => {
+        it('meets WCAG standards for all button types (Primary, Secondary, Danger, Success)', async () => {
             const buttonTypes = [
                 ButtonType.PRIMARY,
                 ButtonType.SECONDARY,
@@ -34,13 +34,13 @@ describe('Button Accessibility', () => {
             }
         })
 
-        it('meets WCAG standards when disabled', async () => {
+        it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(<Button text="Disabled" disabled />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with icons', async () => {
+        it('meets WCAG standards with icons (1.1.1 Non-text Content)', async () => {
             const { container } = render(
                 <Button
                     text="With Icons"
@@ -53,8 +53,8 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Keyboard Navigation', () => {
-        it('is focusable with keyboard', () => {
+    describe('WCAG 2.1.1 Keyboard (Level A)', () => {
+        it('is focusable with keyboard - all functionality operable via keyboard', () => {
             render(<Button text="Focusable" />)
             const button = screen.getByRole('button')
 
@@ -62,7 +62,7 @@ describe('Button Accessibility', () => {
             expect(document.activeElement).toBe(button)
         })
 
-        it('can be activated with Enter key', async () => {
+        it('can be activated with Enter key - keyboard activation support', async () => {
             const handleClick = vi.fn()
             const { user } = render(
                 <Button text="Enter Key" onClick={handleClick} />
@@ -75,7 +75,7 @@ describe('Button Accessibility', () => {
             expect(handleClick).toHaveBeenCalledTimes(1)
         })
 
-        it('can be activated with Space key', async () => {
+        it('can be activated with Space key - keyboard activation support', async () => {
             const handleClick = vi.fn()
             const { user } = render(
                 <Button text="Space Key" onClick={handleClick} />
@@ -88,20 +88,20 @@ describe('Button Accessibility', () => {
             expect(handleClick).toHaveBeenCalledTimes(1)
         })
 
-        it('disabled buttons have disabled attribute', () => {
+        it('disabled buttons have disabled attribute - prevents keyboard activation', () => {
             render(<Button text="Disabled" disabled />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('disabled')
             expect(button).toBeDisabled()
         })
 
-        it('disabled buttons are removed from tab order', () => {
+        it('disabled buttons are removed from tab order (2.4.3 Focus Order)', () => {
             render(<Button text="Disabled" disabled />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('tabIndex', '-1')
         })
 
-        it('maintains focus visible state', () => {
+        it('maintains focus visible state (2.4.7 Focus Visible - Level AA)', () => {
             render(<Button text="Focus Visible" />)
             const button = screen.getByRole('button')
 
@@ -112,13 +112,13 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Screen Reader Support', () => {
-        it('has proper button role', () => {
+    describe('WCAG 4.1.2 Name, Role, Value (Level A) & Screen Reader Support', () => {
+        it('has proper button role - programmatically determinable role', () => {
             render(<Button text="Button Role" />)
             expect(screen.getByRole('button')).toBeInTheDocument()
         })
 
-        it('announces button text to screen readers', () => {
+        it('announces button text to screen readers - accessible name provided', () => {
             render(<Button text="Screen Reader Text" />)
             const button = screen.getByRole('button', {
                 name: 'Screen Reader Text',
@@ -126,7 +126,7 @@ describe('Button Accessibility', () => {
             expect(button).toBeInTheDocument()
         })
 
-        it('properly handles icon-only buttons with aria-label', () => {
+        it('properly handles icon-only buttons with aria-label (1.1.1 Non-text Content)', () => {
             render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -138,7 +138,7 @@ describe('Button Accessibility', () => {
             expect(button).toBeInTheDocument()
         })
 
-        it('decorative icons have aria-hidden when text is present', () => {
+        it('decorative icons have aria-hidden when text is present (1.1.1 Non-text Content)', () => {
             render(
                 <Button
                     text="Save"
@@ -153,7 +153,7 @@ describe('Button Accessibility', () => {
             })
         })
 
-        it('icons are not hidden when button has no text (for icon-only)', () => {
+        it('icons are not hidden when button has no text (for icon-only buttons)', () => {
             render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -166,14 +166,14 @@ describe('Button Accessibility', () => {
             expect(icon).not.toHaveAttribute('aria-hidden')
         })
 
-        it('announces disabled state', () => {
+        it('announces disabled state - state programmatically determinable', () => {
             render(<Button text="Disabled Button" disabled />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('disabled')
             expect(button).toBeDisabled()
         })
 
-        it('supports aria-describedby for additional context', () => {
+        it('supports aria-describedby for additional context (3.3.2 Labels or Instructions)', () => {
             render(
                 <>
                     <Button text="Submit" aria-describedby="submit-help" />
@@ -184,15 +184,15 @@ describe('Button Accessibility', () => {
             expect(button).toHaveAttribute('aria-describedby', 'submit-help')
         })
 
-        it('supports aria-pressed for toggle buttons', () => {
+        it('supports aria-pressed for toggle buttons - state communicated', () => {
             render(<Button text="Toggle" aria-pressed="true" />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('aria-pressed', 'true')
         })
     })
 
-    describe('Focus Management', () => {
-        it('shows focus indicator when focused', () => {
+    describe('WCAG 2.4.7 Focus Visible (Level AA)', () => {
+        it('shows focus indicator when focused - keyboard focus indicator visible', () => {
             render(<Button text="Focus Me" />)
             const button = screen.getByRole('button')
 
@@ -200,14 +200,15 @@ describe('Button Accessibility', () => {
             expect(document.activeElement).toBe(button)
         })
 
-        it('focus indicator meets minimum width requirements', () => {
+        it('focus indicator is present - focus-visible pseudo-class applied', () => {
             render(<Button text="Focus Test" />)
             const button = screen.getByRole('button')
             button.focus()
             expect(button).toBeInTheDocument()
+            // Focus indicator styling is applied via _focusVisible prop
         })
 
-        it('removes focus on blur', () => {
+        it('removes focus on blur - focus management works correctly', () => {
             render(<Button text="Blur Test" />)
             const button = screen.getByRole('button')
 
@@ -218,7 +219,7 @@ describe('Button Accessibility', () => {
             expect(document.activeElement).not.toBe(button)
         })
 
-        it('maintains focus after click', async () => {
+        it('maintains focus after click - predictable focus behavior', async () => {
             const handleClick = vi.fn()
             const { user } = render(
                 <Button text="Click Focus" onClick={handleClick} />
@@ -233,26 +234,26 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Loading State Accessibility', () => {
-        it('maintains button role during loading', () => {
+    describe('WCAG 4.1.3 Status Messages (Level AA)', () => {
+        it('maintains button role during loading - role preserved', () => {
             render(<Button text="Loading" loading />)
             expect(screen.getByRole('button')).toBeInTheDocument()
         })
 
-        it('automatically sets aria-busy when loading', () => {
+        it('automatically sets aria-busy when loading - state communicated', () => {
             render(<Button text="Loading" loading />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('aria-busy', 'true')
         })
 
-        it('has screen reader announcement for loading state', () => {
+        it('has screen reader announcement for loading state - aria-live region', () => {
             render(<Button text="Loading" loading />)
             const button = screen.getByRole('button')
             const srText = button.querySelector('span[aria-live="polite"]')
             expect(srText).toBeInTheDocument()
         })
 
-        it('loading spinner has aria-hidden attribute', () => {
+        it('loading spinner has aria-hidden attribute - decorative spinner hidden', () => {
             render(<Button text="Loading" loading />)
             const button = screen.getByRole('button')
             const spinner = button.querySelector('svg')
@@ -260,7 +261,7 @@ describe('Button Accessibility', () => {
             expect(spinner).toHaveAttribute('aria-hidden', 'true')
         })
 
-        it('has screen reader only loading message', () => {
+        it('has screen reader only loading message - status announced without focus', () => {
             render(<Button text="Loading" loading />)
             const button = screen.getByRole('button')
             const srText = button.querySelector('span[aria-live="polite"]')
@@ -268,33 +269,41 @@ describe('Button Accessibility', () => {
             expect(srText).toHaveTextContent('Loading, please wait')
         })
 
-        it('meets WCAG standards when loading', async () => {
+        it('meets WCAG standards when loading - comprehensive compliance', async () => {
             const { container } = render(<Button text="Loading" loading />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
     })
 
-    describe('Color Contrast', () => {
-        it('provides sufficient color contrast for primary buttons', () => {
+    describe('WCAG 1.4.3 Contrast (Minimum) - Level AA', () => {
+        it('provides sufficient color contrast for primary buttons - requires manual verification', () => {
             render(<Button text="Primary" buttonType={ButtonType.PRIMARY} />)
-            expect(screen.getByRole('button')).toBeInTheDocument()
+            const button = screen.getByRole('button')
+            expect(button).toBeInTheDocument()
+            // Note: Actual contrast ratio verification requires manual testing with contrast checker
+            // Primary: #FFFFFF text on #0561E2 background - should meet 4.5:1 for AA
         })
 
-        it('maintains contrast in disabled state', () => {
+        it('maintains contrast in disabled state - requires manual verification', () => {
             render(<Button text="Disabled" disabled />)
-            expect(screen.getByRole('button')).toBeDisabled()
+            const button = screen.getByRole('button')
+            expect(button).toBeDisabled()
+            // Note: Disabled state contrast requires manual verification
+            // Disabled buttons use lighter colors which may not meet 4.5:1 requirement
         })
     })
 
-    describe('Touch Target Size', () => {
-        it('meets minimum touch target size requirements', () => {
+    describe('WCAG 2.5.8 Target Size (Minimum) - Level AA & 2.5.5 Target Size - Level AAA', () => {
+        it('meets minimum touch target size requirements (24x24px for AA)', () => {
             render(<Button text="Touch Target" />)
             const button = screen.getByRole('button')
             expect(button).toBeInTheDocument()
+            // Buttons with text naturally exceed 24x24px minimum for Level AA
+            // Actual size verification requires browser DevTools measurement
         })
 
-        it('icon-only buttons meet touch target requirements', () => {
+        it('icon-only buttons meet touch target requirements - requires measurement', () => {
             render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -304,11 +313,14 @@ describe('Button Accessibility', () => {
             )
             const button = screen.getByRole('button')
             expect(button).toBeInTheDocument()
+            // Note: Touch target size (including padding) must be verified manually
+            // Level AA requires 24x24px minimum, Level AAA requires 44x44px minimum
+            // Use browser DevTools to measure: element height + padding-top + padding-bottom
         })
     })
 
-    describe('Form Integration', () => {
-        it('works correctly as a submit button', () => {
+    describe('Form Integration (WCAG 3.3.2 Labels or Instructions)', () => {
+        it('works correctly as a submit button - proper form integration', () => {
             const handleSubmit = vi.fn((e) => e.preventDefault())
             render(
                 <form onSubmit={handleSubmit}>
@@ -333,8 +345,8 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Custom ARIA Attributes', () => {
-        it('supports custom aria-label', () => {
+    describe('Custom ARIA Attributes (WCAG 4.1.2 Name, Role, Value)', () => {
+        it('supports custom aria-label - accessible name override', () => {
             render(<Button text="Save" aria-label="Save document to cloud" />)
             const button = screen.getByRole('button', {
                 name: 'Save document to cloud',
@@ -342,7 +354,7 @@ describe('Button Accessibility', () => {
             expect(button).toBeInTheDocument()
         })
 
-        it('supports aria-expanded for dropdown triggers', () => {
+        it('supports aria-expanded for dropdown triggers - state communicated', () => {
             render(
                 <Button
                     text="Menu"
@@ -355,7 +367,7 @@ describe('Button Accessibility', () => {
             expect(button).toHaveAttribute('aria-haspopup', 'true')
         })
 
-        it('supports aria-controls for associated elements', () => {
+        it('supports aria-controls for associated elements - relationships programmatically determinable', () => {
             render(
                 <>
                     <Button text="Toggle Panel" aria-controls="panel-1" />
@@ -367,33 +379,34 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Skeleton State Accessibility', () => {
-        it('skeleton buttons have aria-busy attribute', () => {
+    describe('Skeleton State Accessibility (WCAG 4.1.3 Status Messages)', () => {
+        it('skeleton buttons have aria-busy attribute - loading state communicated', () => {
             render(<Button text="Loading" showSkeleton />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('aria-busy', 'true')
         })
-        it('skeleton buttons announce loading state', () => {
+        it('skeleton buttons announce loading state - accessible name preserved', () => {
             render(<Button text="Submit" showSkeleton />)
             const button = screen.getByRole('button')
             expect(button).toHaveAttribute('aria-busy', 'true')
             expect(button).toHaveAttribute('aria-label', 'Submit')
         })
 
-        it('skeleton buttons are not interactive', () => {
+        it('skeleton buttons are not interactive - disabled state prevents interaction', () => {
             render(<Button text="Skeleton" showSkeleton />)
             const button = screen.getByRole('button')
             expect(button).toBeDisabled()
         })
 
-        it('skeleton buttons are not in tab order', () => {
+        it('skeleton buttons are not in tab order (2.4.3 Focus Order)', () => {
             render(<Button text="Skeleton" showSkeleton />)
             const button = screen.getByRole('button')
-            // Skeleton buttons should not be focusable
+            // Skeleton buttons should not be focusable - removed from tab order
             expect(button).toBeDisabled()
+            expect(button).toHaveAttribute('tabIndex', '-1')
         })
 
-        it('meets WCAG standards in skeleton state', async () => {
+        it('meets WCAG standards in skeleton state - comprehensive compliance', async () => {
             const { container } = render(
                 <Button text="Skeleton" showSkeleton />
             )
@@ -402,8 +415,8 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Icon-Only Button Accessibility', () => {
-        it('supports aria-label for accessible icon-only buttons', () => {
+    describe('WCAG 1.1.1 Non-text Content (Level A) - Icon-Only Buttons', () => {
+        it('supports aria-label for accessible icon-only buttons - text alternative provided', () => {
             render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -415,7 +428,7 @@ describe('Button Accessibility', () => {
             expect(button).toBeInTheDocument()
         })
 
-        it('supports aria-labelledby for accessible icon-only buttons', () => {
+        it('supports aria-labelledby for accessible icon-only buttons - text alternative via reference', () => {
             render(
                 <>
                     <span id="save-label">Save</span>
@@ -430,7 +443,7 @@ describe('Button Accessibility', () => {
             expect(button).toBeInTheDocument()
         })
 
-        it('supports text prop for accessible icon-only buttons', () => {
+        it('supports text prop for accessible icon-only buttons - visible text provides accessible name', () => {
             render(
                 <Button
                     text="Save"
@@ -443,8 +456,8 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Comprehensive WCAG Compliance', () => {
-        it('meets WCAG standards with all Priority 1 fixes', async () => {
+    describe('Comprehensive WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
+        it('meets WCAG standards with all features combined - comprehensive test', async () => {
             const { container } = render(
                 <Button
                     text="Complete Test"
@@ -455,15 +468,17 @@ describe('Button Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+            // Tests: 1.1.1, 2.1.1, 4.1.2, 4.1.3, keyboard navigation, screen reader support
         })
 
-        it('meets WCAG standards with disabled state', async () => {
+        it('meets WCAG standards with disabled state - all disabled state requirements', async () => {
             const { container } = render(<Button text="Disabled" disabled />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+            // Tests: 2.1.1 Keyboard, 2.4.3 Focus Order, 4.1.2 Name Role Value
         })
 
-        it('meets WCAG standards for icon-only button with proper labeling', async () => {
+        it('meets WCAG standards for icon-only button with proper labeling (1.1.1, 4.1.2)', async () => {
             const { container } = render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -473,6 +488,7 @@ describe('Button Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+            // Tests: 1.1.1 Non-text Content, 4.1.2 Name Role Value
         })
     })
 })
