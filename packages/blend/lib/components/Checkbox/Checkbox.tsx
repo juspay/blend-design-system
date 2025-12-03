@@ -64,7 +64,15 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         }
 
         return (
-            <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
+            <Block
+                data-checkbox={children ?? 'checkbox'}
+                data-status={
+                    disabled ? 'enabled-notselected' : 'enabled-selected'
+                }
+                display="flex"
+                alignItems="flex-start"
+                gap={tokens.gap}
+            >
                 <StyledCheckboxRoot
                     id={uniqueId}
                     name={name}
@@ -98,7 +106,6 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     >
                         <Block display="flex" alignItems="center">
                             <CheckboxContent
-                                checked={checked === true}
                                 uniqueId={uniqueId}
                                 disabled={disabled}
                                 error={error}
@@ -178,7 +185,6 @@ const CheckboxIndicator: React.FC<{
 )
 
 const CheckboxContent: React.FC<{
-    checked: boolean
     uniqueId: string
     disabled: boolean
     error: boolean

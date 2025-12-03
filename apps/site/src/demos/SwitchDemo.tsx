@@ -188,11 +188,15 @@ const SwitchDemo = () => {
                                     <Bell size={16} className="text-blue-500" />
                                 ) : undefined
                             }
-                            data-bool-for={playgroundLabel}
-                            data-toggle-status={
-                                playgroundDisabled ? 'disabled' : 'enabled'
+                            data-element="switch"
+                            data-id={
+                                playgroundDisabled
+                                    ? 'Disabled notifications'
+                                    : 'Enable notifications'
                             }
-                            data-bool-value={playgroundChecked ? 'on' : 'off'}
+                            data-status={
+                                playgroundChecked ? 'enabled-on' : 'enabled-off'
+                            }
                         />
                     </div>
                 </div>
@@ -217,9 +221,8 @@ const SwitchDemo = () => {
                                         header: `Small switch ${checked ? 'enabled' : 'disabled'}!`,
                                     })
                                 }}
-                                data-bool-for="redirectModeOnly"
-                                data-toggle-status="enabled"
-                                data-bool-value="on"
+                                data-id="Enable notifications"
+                                data-status="enabled-on"
                             />
                             <Switch
                                 label="With Subtext"

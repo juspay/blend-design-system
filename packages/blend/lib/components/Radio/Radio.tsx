@@ -77,7 +77,6 @@ export const Radio = ({
             />
 
             <RadioContent
-                checked={checked || false}
                 uniqueId={uniqueId}
                 disabled={disabled}
                 error={error}
@@ -97,7 +96,6 @@ export const Radio = ({
 
 const RadioContent: React.FC<{
     uniqueId: string
-    checked: boolean
     disabled: boolean
     error: boolean
     required: boolean
@@ -111,7 +109,6 @@ const RadioContent: React.FC<{
     subtextId?: string
 }> = ({
     uniqueId,
-    checked,
     disabled,
     error,
     required,
@@ -149,8 +146,6 @@ const RadioContent: React.FC<{
             <PrimitiveText
                 data-element="radio-label"
                 data-id={children ?? ''}
-                data-status={disabled ? 'disabled' : 'enabled'}
-                data-state={getRadioDataState(checked || false)}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -189,7 +184,6 @@ const RadioContent: React.FC<{
             data-element="radio-description"
             data-id={subtext ?? ''}
             data-status={disabled ? 'disabled' : 'enabled'}
-            data-state={getRadioDataState(checked || false)}
                 data-description-text={subtext}
                 as="span"
                 fontSize={subtextProps.fontSize}

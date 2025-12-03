@@ -153,6 +153,18 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                         </SwitchSubtext>
                     )}
                 </Block>
+
+                {subtext && (
+                    <SwitchSubtext
+                        size={size}
+                        disabled={disabled}
+                        error={error}
+                        tokens={tokens}
+                        maxLength={subtextMaxLength}
+                    >
+                        {subtext}
+                    </SwitchSubtext>
+                )}
             </Block>
         )
     }
