@@ -79,9 +79,6 @@ const preview: Preview = {
                         'wcag22aaa',
                     ],
                 },
-                // Ensure all tests complete (no incomplete tests)
-                iframes: true,
-                elementRef: true,
             },
         },
         // Chromatic configuration

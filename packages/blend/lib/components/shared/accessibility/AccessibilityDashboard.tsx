@@ -2,6 +2,7 @@ import { forwardRef, useState, useMemo } from 'react'
 import { SingleSelect } from '../../SingleSelect'
 import { SelectMenuVariant, SelectMenuAlignment } from '../../SingleSelect'
 import ButtonAccessibility from '../../Button/accessibility/ButtonAccessibility'
+import CheckboxAccessibility from '../../Checkbox/accessibility/CheckboxAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -13,9 +14,13 @@ export type ComponentAccessibilitySection = {
 const componentRegistry: ComponentAccessibilitySection[] = [
     {
         name: 'Button',
-
         displayName: 'Button',
         component: ButtonAccessibility,
+    },
+    {
+        name: 'Checkbox',
+        displayName: 'Checkbox',
+        component: CheckboxAccessibility,
     },
     // Add more components here as they are added
     // Example:
