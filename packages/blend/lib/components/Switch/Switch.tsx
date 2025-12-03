@@ -50,7 +50,7 @@ export const Switch = ({
                 aria-checked={checked || false}
                 defaultChecked={defaultChecked}
                 disabled={disabled}
-                onClick={() => onChange?.(checked || false)}
+                onClick={() => onChange?.(!checked)}
                 data-state={getSwitchDataState(checked || false)}
                 size={size}
                 $isDisabled={disabled}
