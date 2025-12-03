@@ -184,10 +184,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         const renderContent = () => (
             <Block
                 ref={ref}
-                data-avatar={alt ?? ''}
-                data-avatar-size={size}
-                data-avatar-shape={shape}
-                data-avatar-online={online}
+                data-avatar={alt ?? 'avatar'}
                 data-avatar-has-image={!!hasImage}
                 position="relative"
                 display="inline-flex"
