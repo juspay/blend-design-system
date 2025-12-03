@@ -5,6 +5,7 @@ import {
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 export type DataPoint = {
     primary: {
@@ -143,6 +144,11 @@ export type CoreChartProps = {
     enableHover?: boolean
 }
 
+export type ChartsSkeletonProps = {
+    show: boolean
+    variant: SkeletonVariant
+}
+
 export type ChartsProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
@@ -164,6 +170,7 @@ export type ChartsProps = {
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
     chartName?: string
+    skeleton?: ChartsSkeletonProps
 }
 
 export type FlattenedDataPoint = {

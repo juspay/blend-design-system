@@ -18,6 +18,7 @@ import {
     SingleSelect,
     FOUNDATION_THEME,
     ChartHeader,
+    Switch,
 } from '../../../../packages/blend/lib/main'
 import React from 'react'
 import { useState } from 'react'
@@ -867,6 +868,7 @@ const GranularChartsDemo = () => {
 }
 
 const ChartDemo = () => {
+    const [showSkeleton, setShowSkeleton] = useState(false)
     const financialData: NewNestedDataPoint[] = [
         {
             name: '1763539200000',
@@ -5665,6 +5667,14 @@ const ChartDemo = () => {
                 Charts Playground - All Variations
             </h5>
 
+            <div className="flex items-center gap-6">
+                <Switch
+                    label="Show Skeleton"
+                    checked={showSkeleton}
+                    onChange={() => setShowSkeleton(!showSkeleton)}
+                />
+            </div>
+
             {/* Smart Date/Time Format Feature */}
             <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-emerald-300 rounded-lg shadow-sm mb-6">
                 <h4 className="text-emerald-900 font-bold text-lg mb-3 flex items-center gap-2">
@@ -5732,6 +5742,10 @@ const ChartDemo = () => {
             </div>
 
             <Charts
+                skeleton={{
+                    show: showSkeleton,
+                    variant: 'pulse',
+                }}
                 data-chart-segment="Chart-1"
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
@@ -9287,6 +9301,7 @@ xAxis={{
                                                         value: 289.366,
                                                     },
                                                 ],
+                                                //eslint-disable-next-line @typescript-eslint/no-explicit-any
                                             } as any,
                                             aux: [],
                                         },
@@ -9369,6 +9384,7 @@ xAxis={{
                                                         value: 291741,
                                                     },
                                                 ],
+                                                //eslint-disable-next-line @typescript-eslint/no-explicit-any
                                             } as any,
                                             aux: [],
                                         },
@@ -9683,6 +9699,7 @@ xAxis={{
                                                             'rgba(107, 114, 128, 0.7)',
                                                     },
                                                 ],
+                                                //eslint-disable-next-line @typescript-eslint/no-explicit-any
                                             } as any,
                                             aux: [],
                                         },
