@@ -147,8 +147,7 @@ export type ComponentTokenType = {
     WORKFLOW_CANVAS?: ResponsiveWorkflowTokens
 }
 
-import { Theme } from './ThemeProvider'
-
+import { Theme } from './theme.enum'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>

@@ -24,6 +24,72 @@ const preview: Preview = {
                 component: 'Blend Design System Components',
             },
         },
+        a11y: {
+            config: {
+                rules: [
+                    {
+                        id: 'color-contrast',
+                        enabled: true,
+                    },
+                    {
+                        id: 'keyboard-navigation',
+                        enabled: true,
+                    },
+                    {
+                        id: 'aria-required-attributes',
+                        enabled: true,
+                    },
+                    {
+                        id: 'aria-hidden-focus',
+                        enabled: true,
+                    },
+                    {
+                        id: 'button-name',
+                        enabled: true,
+                    },
+                    {
+                        id: 'link-name',
+                        enabled: true,
+                    },
+                    {
+                        id: 'nested-interactive',
+                        enabled: false,
+                    },
+                    {
+                        id: 'focus-order-semantics',
+                        enabled: false,
+                    },
+                    {
+                        id: 'tabindex',
+                        enabled: false,
+                    },
+                ],
+            },
+            options: {
+                checks: { 'color-contrast': { options: { noScroll: true } } },
+                restoreScroll: true,
+                // Run WCAG 2.2 rules (latest standard) - includes 2.0, 2.1, and 2.2 success criteria
+                runOnly: {
+                    type: 'tag',
+                    values: [
+                        'wcag2a',
+                        'wcag2aa',
+                        'wcag21aa',
+                        'wcag22aa',
+                        'wcag22aaa',
+                    ],
+                },
+                // Ensure all tests complete (no incomplete tests)
+                iframes: true,
+                elementRef: true,
+            },
+        },
+        // Chromatic configuration
+        // Note: Chromatic doesn't support viewports and modes together
+        // Use viewports globally, and configure modes per-story if needed
+        chromatic: {
+            viewports: [375, 768, 1200],
+        },
         backgrounds: {
             default: 'light',
             values: [

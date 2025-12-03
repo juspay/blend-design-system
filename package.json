@@ -36,7 +36,11 @@
         "test:blend:ui": "cd packages/blend && pnpm test:ui",
         "test:blend:coverage": "cd packages/blend && pnpm test:coverage",
         "test:blend:watch": "cd packages/blend && pnpm test:watch",
-        "test:blend:run": "cd packages/blend && pnpm test:run"
+        "test:blend:run": "cd packages/blend && pnpm test:run",
+        "test:a11y": "cd packages/blend && pnpm test:a11y",
+        "test:a11y:watch": "cd packages/blend && pnpm test:a11y:watch",
+        "chromatic": "cd apps/storybook && pnpm chromatic",
+        "chromatic:ci": "cd apps/storybook && pnpm chromatic:ci"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",

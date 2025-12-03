@@ -1,4 +1,5 @@
 import { forwardRef, type MouseEvent } from 'react'
+import styled from 'styled-components'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -8,6 +9,18 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
+
+const VisuallyHidden = styled.span`
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+`
 
 export type ButtonBaseProps = Omit<
     ButtonProps,
@@ -97,6 +110,13 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               .default
                 }
                 disabled={isDisabled}
+                tabIndex={
+                    isDisabled
+                        ? -1
+                        : htmlProps.tabIndex !== undefined
+                          ? Math.max(-1, Math.min(0, htmlProps.tabIndex))
+                          : undefined
+                }
                 color={
                     isSkeleton
                         ? 'transparent'
@@ -114,6 +134,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         : buttonTokens.outline[buttonType][subType].default
                 }
                 transition="transform 0.15s ease-in-out"
+                aria-busy={isLoading || isSkeleton ? 'true' : undefined}
+                aria-label={
+                    isSkeleton && text && !htmlProps['aria-label']
+                        ? text
+                        : htmlProps['aria-label']
+                          ? htmlProps['aria-label']
+                          : undefined
+                }
                 _active={
                     isSkeleton || isDisabled
                         ? undefined
@@ -143,7 +171,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               ].hover,
                               border: buttonTokens.border[buttonType][subType]
                                   .hover,
-                              //   transform: 'scale(1.01)',
                           }
                 }
                 _focusVisible={
@@ -155,6 +182,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               outline:
                                   buttonTokens.outline[buttonType][subType]
                                       .active,
+                              outlineOffset: FOUNDATION_THEME.unit[2],
                           }
                 }
                 _disabled={
@@ -181,16 +209,23 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 {...htmlProps}
             >
                 {isLoading ? (
-                    <LoaderCircle
-                        size={16}
-                        color={
-                            buttonTokens.text.color[buttonType][subType].default
-                        }
-                        data-status="loading"
-                        style={{
-                            animation: 'spin 1s linear infinite',
-                        }}
-                    />
+                    <>
+                        <LoaderCircle
+                            size={16}
+                            color={
+                                buttonTokens.text.color[buttonType][subType]
+                                    .default
+                            }
+                            data-status="loading"
+                            aria-hidden="true"
+                            style={{
+                                animation: 'spin 1s linear infinite',
+                            }}
+                        />
+                        <VisuallyHidden aria-live="polite">
+                            Loading, please wait
+                        </VisuallyHidden>
+                    </>
                 ) : (
                     <>
                         {leadingIcon && (
@@ -198,6 +233,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 as="span"
                                 contentCentered
                                 data-element="leading-icon"
+                                aria-hidden={text ? 'true' : undefined}
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {leadingIcon}
@@ -228,6 +264,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 as="span"
                                 contentCentered
                                 data-element="trailing-icon"
+                                aria-hidden={text ? 'true' : undefined}
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {trailingIcon}
