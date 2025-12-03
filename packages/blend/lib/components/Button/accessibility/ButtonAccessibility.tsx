@@ -12,7 +12,7 @@ import {
 } from '../../shared/accessibility/reportGenerator'
 import { Download as DownloadIcon } from 'lucide-react'
 
-export interface ButtonAccessibilityProps {
+export type ButtonAccessibilityProps = {
     className?: string
 }
 

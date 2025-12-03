@@ -6,7 +6,7 @@
  * Color contrast ratios verified using actual color values from theme tokens
  */
 
-export interface WCAGSuccessCriterion {
+export type WCAGSuccessCriterion = {
     id: string
     level: 'A' | 'AA' | 'AAA'
     title: string
@@ -17,7 +17,7 @@ export interface WCAGSuccessCriterion {
     notes?: string
 }
 
-export interface AccessibilityReport {
+export type AccessibilityReport = {
     componentName: string
     wcagVersion: string
     reportDate: string
