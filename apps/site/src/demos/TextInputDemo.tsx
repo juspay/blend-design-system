@@ -143,7 +143,6 @@ const InputDemo = () => {
                         <div className="w-full max-w-md">
                             <TextInput
                                 data-id={'Enter text here...'}
-                                data-input-name={playgroundText}
                                 name={playgroundText}
                                 label={playgroundText}
                                 value={playgroundValue}
