@@ -98,6 +98,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     >
                         <Block display="flex" alignItems="center">
                             <CheckboxContent
+                                checked={checked === true}
                                 uniqueId={uniqueId}
                                 disabled={disabled}
                                 error={error}
@@ -110,6 +111,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
                             {slot && (
                                 <Block
+                                    data-element="icon"
                                     as="span"
                                     marginLeft={tokens.slot.marginLeft}
                                 >
@@ -176,6 +178,7 @@ const CheckboxIndicator: React.FC<{
 )
 
 const CheckboxContent: React.FC<{
+    checked: boolean
     uniqueId: string
     disabled: boolean
     error: boolean
@@ -207,7 +210,9 @@ const CheckboxContent: React.FC<{
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
+                data-element="checkbox-label"
+                data-id={children ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -253,7 +258,9 @@ const CheckboxSubtext: React.FC<{
     const content = (
         <Block id={id}>
             <PrimitiveText
-                data-description-text={children}
+                data-id={children ?? ''}
+                data-element="checkbox-description"
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 color={subtextProps.color}
                 fontSize={subtextProps.fontSize}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { type RadioProps, RadioSize } from './types'
-import { getRadioTextProps, getRadioLabelStyles } from './utils'
+import { getRadioTextProps, getRadioLabelStyles, getRadioDataState } from './utils'
 import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -48,7 +48,7 @@ export const Radio = ({
 
     return (
         <Block
-            data-radio={value ?? 'radio'}
+            data-radio={children ?? 'radio'}
             data-status={disabled ? 'disabled' : 'enabled'}
             data-id={value ?? ''}
             display="flex"
@@ -77,6 +77,7 @@ export const Radio = ({
             />
 
             <RadioContent
+                checked={checked || false}
                 uniqueId={uniqueId}
                 disabled={disabled}
                 error={error}
@@ -96,6 +97,7 @@ export const Radio = ({
 
 const RadioContent: React.FC<{
     uniqueId: string
+    checked: boolean
     disabled: boolean
     error: boolean
     required: boolean
@@ -109,6 +111,7 @@ const RadioContent: React.FC<{
     subtextId?: string
 }> = ({
     uniqueId,
+    checked,
     disabled,
     error,
     required,
@@ -144,6 +147,10 @@ const RadioContent: React.FC<{
     const labelContent = children ? (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
+                data-element="radio-label"
+                data-id={children ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
+                data-state={getRadioDataState(checked || false)}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -179,6 +186,10 @@ const RadioContent: React.FC<{
     const subtextContent = subtext ? (
         <Block id={subtextId}>
             <PrimitiveText
+            data-element="radio-description"
+            data-id={subtext ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            data-state={getRadioDataState(checked || false)}
                 data-description-text={subtext}
                 as="span"
                 fontSize={subtextProps.fontSize}
@@ -205,6 +216,8 @@ const RadioContent: React.FC<{
         <Block display="flex" flexDirection="column">
             {labelWithTooltip && (
                 <Block
+                    data-element="radio-label"
+                    data-id={children ?? ''}
                     display="flex"
                     alignItems="center"
                     gap={radioTokens.content.label.gap}
@@ -212,7 +225,7 @@ const RadioContent: React.FC<{
                     {labelWithTooltip}
                     {slot && (
                         <Block
-                            data-element="slot"
+                            data-element="icon"
                             as="span"
                             width={radioTokens.slot[size]}
                         >

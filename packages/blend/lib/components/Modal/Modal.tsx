@@ -69,7 +69,6 @@ const ModalHeader = ({
 
     return (
         <Block
-            data-element="header"
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
@@ -99,6 +98,8 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            data-element="header"
+                            data-id={title ?? ''}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -110,7 +111,8 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
-                        data-header-subtitle-text={subtitle}
+                        data-element="header-subtitle"
+                        data-id={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}

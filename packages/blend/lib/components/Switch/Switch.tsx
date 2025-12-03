@@ -84,7 +84,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         }
 
         return (
-            <Block display="flex" gap={tokens.gap}>
+            <Block  data-switch={label ?? 'switch'}
+            data-status={disabled ? 'disabled' : 'enabled'} display="flex" gap={tokens.gap}>
                 <StyledSwitchRoot
                     ref={ref}
                     type="button"
@@ -130,6 +131,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
 
                         {slot && (
                             <Block
+                             data-element="icon"
                                 as="span"
                                 marginLeft={tokens.content.label.gap}
                             >
@@ -191,7 +193,9 @@ const SwitchContent: React.FC<{
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={label}
+                data-element="switch-label"
+                data-id={label ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -237,6 +241,9 @@ const SwitchSubtext: React.FC<{
 
     const content = (
         <PrimitiveText
+            data-element="switch-description"
+            data-id={children ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
             id={id}
             data-description-text={children}
             as="span"

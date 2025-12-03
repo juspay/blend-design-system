@@ -290,7 +290,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             },
             [ref]
         )
-        console.log(items, 'items')
 
         if (items.length > 0) {
             return (

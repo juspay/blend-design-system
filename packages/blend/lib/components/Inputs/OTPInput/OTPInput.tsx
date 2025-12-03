@@ -156,8 +156,7 @@ const OTPInput = ({
 
     return (
         <Block
-            data-component={'otp-input'}
-            data-otpinput={name ?? ''}
+            data-otpinput={label ?? ''}
             data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
@@ -182,7 +181,7 @@ const OTPInput = ({
                 >
                     {otp.map((digit, index) => (
                         <PrimitiveInput
-                            data-element="otp-input"
+                            data-element={`otp-input-${index}`}
                             placeholder={placeholder}
                             placeholderColor={'transparent'}
                             form={form}
