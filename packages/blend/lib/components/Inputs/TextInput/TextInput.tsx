@@ -93,7 +93,8 @@ const TextInput = ({
             flexDirection="column"
             gap={8}
             width={'100%'}
-            data-component-field-wrapper={`field-${name}`}
+            data-textinput={label ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
         >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
@@ -113,6 +114,7 @@ const TextInput = ({
             >
                 {leftSlot && (
                     <Block
+                        data-element="left-slot"
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
@@ -132,6 +134,7 @@ const TextInput = ({
 
                 {label && isSmallScreenWithLargeSize && (
                     <Block
+                        data-element="label"
                         position="absolute"
                         top={inputFocusedOrWithValue ? paddingY : '50%'}
                         left={paddingInlineStart}
@@ -230,6 +233,7 @@ const TextInput = ({
                 />
                 {rightSlot && (
                     <Block
+                        data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}
