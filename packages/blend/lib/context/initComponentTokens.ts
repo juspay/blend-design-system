@@ -10,7 +10,7 @@ import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import { type ThemeType } from '../tokens'
 import { type ComponentTokenType } from './ThemeContext'
-import { Theme } from './ThemeProvider'
+import { Theme } from './theme.enum'
 import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
