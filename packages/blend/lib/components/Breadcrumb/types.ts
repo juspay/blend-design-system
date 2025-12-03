@@ -1,3 +1,10 @@
+import { SkeletonVariant } from '../Skeleton'
+
+export type BreadcrumbSkeletonProps = {
+    show: boolean
+    variant: SkeletonVariant
+}
+
 export type BreadcrumbItemType = {
     leftSlot?: React.ReactNode
     rightSlot?: React.ReactNode
@@ -9,4 +16,5 @@ export type BreadcrumbItemType = {
      * Use this to avoid page reloads and handle navigation with client-side routing.
      */
     onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
+    skeleton?: BreadcrumbSkeletonProps
 }

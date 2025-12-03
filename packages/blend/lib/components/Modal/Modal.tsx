@@ -17,6 +17,8 @@ import {
     modalContentAnimations,
 } from './modal.animations'
 import { useModal } from './useModal'
+import { type SkeletonVariant } from '../Skeleton'
+import ModalSkeleton from './ModalSkeleton'
 
 const AnimatedBackdrop = styled(Block)<{ $isAnimatingIn: boolean }>`
     ${({ $isAnimatingIn }) => modalBackdropAnimations($isAnimatingIn)}
@@ -33,6 +35,8 @@ const ModalHeader = ({
     showCloseButton,
     headerRightSlot,
     showDivider,
+    showSkeleton,
+    skeletonVariant,
 }: {
     title?: string
     subtitle?: string
@@ -40,8 +44,27 @@ const ModalHeader = ({
     showCloseButton?: boolean
     headerRightSlot?: React.ReactNode
     showDivider?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
+
+    if (showSkeleton) {
+        return (
+            <ModalSkeleton
+                modalTokens={modalTokens}
+                headerSkeleton={{
+                    show: showSkeleton || false,
+                    showDivider: showDivider || false,
+                    showCloseButton: showCloseButton || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
+
     if (!title && !subtitle) return null
 
     return (
@@ -113,12 +136,32 @@ const ModalFooter = ({
     primaryAction,
     secondaryAction,
     showDivider,
+    showSkeleton,
+    skeletonVariant,
 }: {
     primaryAction?: ModalProps['primaryAction']
     secondaryAction?: ModalProps['secondaryAction']
     showDivider?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
+
+    if (showSkeleton) {
+        return (
+            <ModalSkeleton
+                modalTokens={modalTokens}
+                footerSkeleton={{
+                    show: showSkeleton || false,
+                    showDivider: showDivider || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
+
     if (!primaryAction && !secondaryAction) return null
 
     return (
@@ -180,6 +223,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             showDivider = true,
             minWidth = '500px',
             useDrawerOnMobile = true,
+            skeleton,
             ...props
         },
         ref
@@ -202,12 +246,16 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
         if (!shouldRender || !portalContainer) return null
 
+        const shouldShowSkeleton = skeleton?.show
+        const skeletonVariant = skeleton?.variant || 'pulse'
+
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
                 return (
                     <MobileModal
                         isOpen={isOpen}
                         onClose={onClose}
+                        skeleton={skeleton}
                         title={title}
                         subtitle={subtitle}
                         primaryAction={primaryAction}
@@ -272,6 +320,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             showCloseButton={showCloseButton}
                             headerRightSlot={headerRightSlot}
                             showDivider={showDivider}
+                            showSkeleton={shouldShowSkeleton}
+                            skeletonVariant={skeletonVariant}
                         />
 
                         <Block
@@ -284,13 +334,34 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                                     : undefined
                             }
                         >
-                            {children}
+                            {shouldShowSkeleton &&
+                            skeleton?.bodySkeletonProps?.show ? (
+                                <ModalSkeleton
+                                    modalTokens={modalTokens}
+                                    bodySkeleton={{
+                                        show:
+                                            skeleton?.bodySkeletonProps?.show ||
+                                            false,
+                                        width:
+                                            skeleton?.bodySkeletonProps
+                                                ?.width || '100%',
+                                        height:
+                                            skeleton?.bodySkeletonProps
+                                                ?.height || 300,
+                                    }}
+                                    skeletonVariant={skeletonVariant}
+                                />
+                            ) : (
+                                children
+                            )}
                         </Block>
 
                         <ModalFooter
                             primaryAction={primaryAction}
                             secondaryAction={secondaryAction}
                             showDivider={showDivider}
+                            showSkeleton={shouldShowSkeleton}
+                            skeletonVariant={skeletonVariant}
                         />
                     </AnimatedModalContent>
                 </Block>

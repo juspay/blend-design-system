@@ -15,14 +15,18 @@ import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
-import { SelectMenuSize, SelectMenuVariant } from './types'
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelectSkeletonProps,
+} from './types'
 import VirtualList from '../VirtualList/VirtualList'
 import {
     dropdownContentAnimations,
     submenuContentAnimations,
     hoverTransition,
 } from './singleSelect.animations'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import SingleSelectSkeleton from './SingleSelectSkeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
@@ -64,12 +68,7 @@ type SingleSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
-
+    skeleton?: SingleSelectSkeletonProps
     allowCustomValue?: boolean
     customValueLabel?: string
 }
@@ -565,33 +564,10 @@ const SingleSelectMenu = ({
                     }}
                 >
                     {skeleton.show ? (
-                        <Block
-                            padding={singleSelectTokens.menu.item.padding}
-                            display="flex"
-                            flexDirection="column"
-                            gap={singleSelectTokens.menu.item.gap || 4}
-                            borderRadius={
-                                singleSelectTokens.menu.item.borderRadius
-                            }
-                            outline="none"
-                            border="none"
-                            width="100%"
-                            maxWidth="100%"
-                        >
-                            {Array.from({ length: skeleton.count || 3 }).map(
-                                (_, index) => (
-                                    <Skeleton
-                                        key={index}
-                                        width="100%"
-                                        height="33px"
-                                        variant={
-                                            (skeleton.variant as SkeletonVariant) ||
-                                            'pulse'
-                                        }
-                                    />
-                                )
-                            )}
-                        </Block>
+                        <SingleSelectSkeleton
+                            singleSelectTokens={singleSelectTokens}
+                            skeleton={skeleton}
+                        />
                     ) : (
                         <>
                             {enableSearch && (

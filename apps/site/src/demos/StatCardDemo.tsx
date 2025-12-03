@@ -49,7 +49,8 @@ const StatCardDemo = () => {
     const [arrowDirection, setArrowDirection] =
         useState<StatCardArrowDirection>(StatCardArrowDirection.UP)
 
-    const [showSkeleton, setShowSkeleton] = useState(true)
+    const [showSkeleton, setShowSkeleton] = useState(false)
+
     const [dataDisplay, setDataDisplay] = useState(true)
     // Sample chart data
     const sampleLineData = [
@@ -274,8 +275,6 @@ const StatCardDemo = () => {
                             skeleton={{
                                 show: showSkeleton,
                                 variant: 'pulse',
-                                height: '135px',
-                                width: '100%',
                             }}
                             data-single-stat={playgroundTitle}
                             dropdownProps={{

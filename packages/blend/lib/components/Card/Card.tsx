@@ -11,7 +11,7 @@ import {
     isCustomCard,
 } from './utils'
 import { DefaultCard, AlignedCard, CustomCard } from './CardComponents'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import CardSkeleton from './CardSkeleton'
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ maxWidth = 'auto', minHeight, maxHeight, skeleton, ...props }, ref) => {
@@ -94,10 +94,11 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 data-card="true"
             >
                 {skeleton?.show ? (
-                    <Skeleton
-                        variant={skeleton.variant as SkeletonVariant}
-                        width={skeleton.width || '100%'}
-                        height={skeleton.height || '250px'}
+                    <CardSkeleton
+                        skeleton={skeleton}
+                        maxHeight={maxHeight}
+                        minHeight={minHeight}
+                        maxWidth={maxWidth}
                     />
                 ) : (
                     renderCardContent()

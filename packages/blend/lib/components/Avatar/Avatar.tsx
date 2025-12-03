@@ -12,6 +12,7 @@ import { AvatarTokensType } from './avatar.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { Skeleton } from '../Skeleton'
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
     (
@@ -25,12 +26,14 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             onlinePosition = AvatarOnlinePosition.TOP,
             leadingSlot,
             trailingSlot,
+            skeleton,
             ...props
         },
         ref
     ) => {
         const [imageError, setImageError] = useState(false)
         const hasImage = src && !imageError
+        const shouldShowSkeleton = skeleton?.show
         const variant = hasImage ? 'withImage' : 'withoutImage'
         const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -191,9 +194,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 alignItems="center"
                 justifyContent="center"
                 backgroundColor={
-                    hasImage
-                        ? tokens.container.backgroundColor[variant].default
-                        : initialsColor
+                    shouldShowSkeleton
+                        ? 'transparent'
+                        : hasImage
+                          ? tokens.container.backgroundColor[variant].default
+                          : initialsColor
                 }
                 border={tokens.container.border[variant].default}
                 width={tokens.container.size[size].width}
@@ -204,7 +209,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 {...props}
                 data-status={online ? 'online' : 'offline'}
             >
-                {online && (
+                {online && !shouldShowSkeleton && (
                     <Block
                         aria-hidden="true"
                         data-avatar-indicator="true"
@@ -229,7 +234,14 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     />
                 )}
 
-                {hasImage ? (
+                {shouldShowSkeleton ? (
+                    <Skeleton
+                        variant={skeleton?.variant || 'pulse'}
+                        width="100%"
+                        height="100%"
+                        borderRadius={tokens.container.borderRadius[shape]}
+                    />
+                ) : hasImage ? (
                     <StyledAvatarImage
                         src={src}
                         alt={alt}

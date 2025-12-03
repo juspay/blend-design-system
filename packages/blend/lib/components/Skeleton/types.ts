@@ -16,6 +16,10 @@ export type SkeletonProps = BaseSkeletonProps &
         animate?: boolean
         width?: string | number
         height?: string | number
+        maxHeight?: string | number
+        minHeight?: string | number
+        maxWidth?: string | number
+        minWidth?: string | number
         shape?: SkeletonShape
     }
 

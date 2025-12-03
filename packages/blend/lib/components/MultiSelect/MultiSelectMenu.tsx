@@ -28,7 +28,7 @@ import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import { dropdownContentAnimations } from './multiSelect.animations'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import MultiSelectSkeleton from './MultiSelectSkeleton'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -305,33 +305,10 @@ const MultiSelectMenu = ({
                     }}
                 >
                     {skeleton.show ? (
-                        <Block
-                            padding={multiSelectTokens.menu.item.padding}
-                            display="flex"
-                            flexDirection="column"
-                            gap={multiSelectTokens.menu.item.gap || 4}
-                            borderRadius={
-                                multiSelectTokens.menu.item.borderRadius
-                            }
-                            outline="none"
-                            border="none"
-                            width="100%"
-                            maxWidth="100%"
-                        >
-                            {Array.from({ length: skeleton.count || 3 }).map(
-                                (_, index) => (
-                                    <Skeleton
-                                        key={index}
-                                        width="100%"
-                                        height="33px"
-                                        variant={
-                                            (skeleton.variant as SkeletonVariant) ||
-                                            'pulse'
-                                        }
-                                    />
-                                )
-                            )}
-                        </Block>
+                        <MultiSelectSkeleton
+                            multiSelectTokens={multiSelectTokens}
+                            skeleton={skeleton}
+                        />
                     ) : (
                         <>
                             {' '}
