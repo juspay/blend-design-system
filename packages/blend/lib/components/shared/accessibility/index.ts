@@ -1,7 +1,6 @@
 export { default as AccessibilityDashboard } from './AccessibilityDashboard'
 export type {
     AccessibilityDashboardProps,
-    ComponentAccessibilityInfo,
 } from './AccessibilityDashboard'
 export {
     generateAccessibilityReport,

@@ -7,7 +7,7 @@ import type { AccessibilityReport } from '../../Button/accessibility/ButtonAcces
 
 export type ReportFormat = 'json' | 'markdown' | 'html' | 'pdf'
 
-interface ReportGenerationOptions {
+type ReportGenerationOptions = {
     format: ReportFormat
     includeTestResults?: boolean
     includeRecommendations?: boolean
@@ -43,14 +43,14 @@ function generateJSONReport(
     report: AccessibilityReport,
     options: ReportGenerationOptions
 ): string {
-    const { recommendations, ...reportWithoutRecommendations } = report
+    const { ...reportWithoutRecommendations } = report
     const reportData = {
         ...(options.includeRecommendations
             ? report
             : reportWithoutRecommendations),
         criteria: options.includeTestResults
             ? report.criteria
-            : report.criteria.map(({ testResults, ...rest }) => rest),
+            : report.criteria.map(({ ...rest }) => rest),
     }
 
     return JSON.stringify(reportData, null, 2)

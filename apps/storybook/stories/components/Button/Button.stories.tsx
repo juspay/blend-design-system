@@ -58,22 +58,35 @@ Button component with multiple types, sizes, and states.
 
 ## Accessibility
 
-**WCAG Compliance**: 2.2 Level AAA (Latest Standard)
+**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
 
-**Features:**
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
 - Keyboard accessible (Tab, Enter, Space)
 - Screen reader support (VoiceOver/NVDA)
-- Loading state announced via \`aria-busy\`
+- Loading state announced via \`aria-busy\` and aria-live
 - Disabled buttons removed from tab order
-- Focus indicators with 2px outlineOffset (WCAG 2.2 AAA)
-- Touch targets meet WCAG 2.2 Level AA (24px) and AAA (44px)
+- Focus indicators with outlineOffset
 - Icon-only buttons require \`aria-label\`
+- Touch targets meet Level AA requirement (24x24px minimum)
+
+**Level AAA Compliance**: ⚠️ Partial (4 out of 9 applicable criteria)
+- ✅ **Compliant**: 1.4.8 Visual Presentation, 1.4.9 Images of Text, 2.1.3 Keyboard (No Exception), 3.2.5 Change on Request
+- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently 4.5:1 for AA), 2.5.5 Target Size - Small/Medium buttons need 44x44px minimum
+- ⚠️ **Application-Dependent**: 3.3.6 Error Prevention (All) - requires confirmation patterns for destructive actions
+- ℹ️ **Not Applicable**: 2.2.3 No Timing, 2.2.4 Interruptions
+
+**Touch Target Sizes**:
+- Small buttons: ~34px (meets AA 24px, does not meet AAA 44px)
+- Medium buttons: ~36px (meets AA 24px, does not meet AAA 44px)
+- Large buttons: 48px at sm breakpoint (meets AAA 44px), ~40px at lg breakpoint (does not meet AAA)
 
 **Verification:**
-- **Storybook a11y addon**: Check Accessibility panel (0 violations expected, WCAG 2.2 AAA rules enabled)
-- **jest-axe**: Run \`pnpm test Button.accessibility\` (42+ tests)
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **jest-axe**: Run \`pnpm test Button.accessibility\` (42+ tests covering WCAG 2.1 criteria)
 - **Chromatic**: Visual regression for focus rings and states
-- **Manual**: Test with VoiceOver/NVDA
+- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
 
 ## Usage
@@ -1060,7 +1073,14 @@ Accessibility examples demonstrating keyboard navigation, ARIA labels, loading s
 
 ## Accessibility Report
 
-**Current Status**: WCAG 2.1 AA Compliant (0 violations)
+**Current Status**: 
+- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
+- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (4/9 applicable criteria compliant)
+
+**AAA Compliance Details**:
+- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), Change on Request (3.2.5)
+- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Small/Medium buttons need 44x44px
+- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
                 `,
             },
         },

@@ -3,16 +3,17 @@ import { SingleSelect } from '../../SingleSelect'
 import { SelectMenuVariant, SelectMenuAlignment } from '../../SingleSelect'
 import ButtonAccessibility from '../../Button/accessibility/ButtonAccessibility'
 
-export interface ComponentAccessibilitySection {
+export type ComponentAccessibilitySection = {
     name: string
     displayName: string
-    component: React.ComponentType<any>
+    component: React.ComponentType<Record<string, never>>
 }
 
 // Component registry - import all accessibility components here
 const componentRegistry: ComponentAccessibilitySection[] = [
     {
         name: 'Button',
+        
         displayName: 'Button',
         component: ButtonAccessibility,
     },
@@ -25,7 +26,7 @@ const componentRegistry: ComponentAccessibilitySection[] = [
     // },
 ]
 
-export interface AccessibilityDashboardProps {
+export type AccessibilityDashboardProps = {
     className?: string
     defaultComponent?: string
 }
