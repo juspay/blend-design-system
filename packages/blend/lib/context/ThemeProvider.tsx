@@ -1,9 +1,12 @@
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
-import ThemeContext, { type ComponentTokenType, Theme } from './ThemeContext'
+import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 
-export { Theme }
+export enum Theme {
+    LIGHT = 'light',
+    DARK = 'dark',
+}
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
     componentTokens?: ComponentTokenType
