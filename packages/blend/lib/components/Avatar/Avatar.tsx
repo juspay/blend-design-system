@@ -184,10 +184,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         const renderContent = () => (
             <Block
                 ref={ref}
-                data-avatar="true"
-                data-avatar-size={size}
-                data-avatar-shape={shape}
-                data-avatar-online={online}
+                data-avatar={alt ?? 'avatar'}
                 data-avatar-has-image={!!hasImage}
                 position="relative"
                 display="inline-flex"
@@ -205,6 +202,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 fontSize={tokens.text.fontSize[size]}
                 fontWeight={tokens.text.fontWeight[size]}
                 {...props}
+                data-status={online ? 'online' : 'offline'}
             >
                 {online && (
                     <Block
@@ -286,9 +284,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     position="relative"
                     display="inline-flex"
                     alignItems="center"
+                    data-status={online ? 'online' : 'offline'}
                 >
                     {leadingSlot && (
                         <Block
+                            data-element="leading-slot"
                             data-avatar-slot="leading"
                             display="flex"
                             alignItems="center"
@@ -301,6 +301,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     {renderContent()}
                     {trailingSlot && (
                         <Block
+                            data-element="trailing-slot"
                             data-avatar-slot="trailing"
                             display="flex"
                             alignItems="center"
