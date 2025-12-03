@@ -13,7 +13,7 @@ export type ComponentAccessibilitySection = {
 const componentRegistry: ComponentAccessibilitySection[] = [
     {
         name: 'Button',
-        
+
         displayName: 'Button',
         component: ButtonAccessibility,
     },
