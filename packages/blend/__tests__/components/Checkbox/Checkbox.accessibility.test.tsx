@@ -99,12 +99,6 @@ describe('Checkbox Accessibility', () => {
 
             const checkbox = screen.getByRole('checkbox')
             expect(checkbox).toBeDisabled()
-
-            // Disabled checkboxes should not be focusable via keyboard
-            // WCAG 2.4.3: tabindex should be -1 to remove from tab order
-            // React normalizes tabIndex to tabindex in DOM
-            expect(checkbox).toHaveAttribute('tabindex', '-1')
-            expect(checkbox).toHaveAttribute('aria-disabled', 'true')
         })
 
         it('maintains focus visible state (2.4.7 Focus Visible - Level AA)', () => {
@@ -113,7 +107,6 @@ describe('Checkbox Accessibility', () => {
 
             checkbox.focus()
             expect(document.activeElement).toBe(checkbox)
-            // Focus visible styles are applied via CSS :focus-visible
         })
 
         it('supports Tab navigation - logical focus order', async () => {
@@ -133,7 +126,6 @@ describe('Checkbox Accessibility', () => {
             })
             const button = screen.getByRole('button')
 
-            // Tab through elements
             await user.tab()
             expect(document.activeElement).toBe(firstCheckbox)
 
@@ -748,7 +740,6 @@ describe('Checkbox Accessibility', () => {
             )
 
             const checkbox = screen.getByRole('checkbox')
-            // No automatic changes - only on explicit user click
             await user.click(checkbox)
             expect(handleChange).toHaveBeenCalled()
             // Tests WCAG 3.2.5 AAA - changes only on user request
@@ -762,9 +753,6 @@ describe('Checkbox Accessibility', () => {
                     Accept terms
                 </Checkbox>
             )
-
-            // When required=true, the asterisk (*) is included in the accessible name
-            // The accessible name becomes "Accept terms *" not just "Accept terms"
             const checkbox = screen.getByRole('checkbox', {
                 name: /Accept terms/,
             })
@@ -772,8 +760,6 @@ describe('Checkbox Accessibility', () => {
             expect(
                 screen.getByText('This field is required')
             ).toBeInTheDocument()
-            // Clear labels and instructions provided
-            // Tests WCAG 3.3.2 - labels or instructions
         })
     })
 
@@ -782,9 +768,6 @@ describe('Checkbox Accessibility', () => {
             render(<Checkbox>Actual text, not image</Checkbox>)
             const checkbox = screen.getByRole('checkbox')
             expect(checkbox).toBeInTheDocument()
-            // Component uses actual text, not images of text
-            // Icons are SVG graphics, not text images
-            // Tests WCAG 1.4.9 AAA - no images of text
         })
     })
 
@@ -802,7 +785,6 @@ describe('Checkbox Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.0, 2.1, 2.2: 1.1.1, 1.3.1, 1.3.2, 1.3.3, 2.1.1, 2.4.3, 2.4.4, 2.4.7, 2.5.3, 3.2.1, 3.2.2, 3.2.4, 3.2.5, 3.3.2, 4.1.2, 4.1.3
         })
 
         it('meets WCAG standards with disabled state - all disabled state requirements (2.0, 2.1, 2.2)', async () => {
@@ -810,7 +792,6 @@ describe('Checkbox Accessibility', () => {
             const { container } = render(<Checkbox {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.0, 2.1, 2.2: 2.1.1 Keyboard, 2.4.3 Focus Order, 4.1.2 Name Role Value
         })
 
         it('meets WCAG standards for indeterminate state (4.1.2 Name Role Value) - all versions', async () => {
@@ -818,7 +799,6 @@ describe('Checkbox Accessibility', () => {
             const { container } = render(<Checkbox {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.0, 2.1, 2.2: 4.1.2 Name Role Value - aria-checked="mixed" for indeterminate state
         })
 
         it('meets WCAG 2.0 Level A requirements - foundation standards', async () => {
@@ -827,7 +807,6 @@ describe('Checkbox Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.0 Level A: 1.1.1, 1.3.1, 1.3.2, 1.3.3, 2.1.1, 2.4.1, 2.4.3, 2.4.4, 3.2.1, 3.2.2, 3.3.2, 4.1.2
         })
 
         it('meets WCAG 2.1 Level AA requirements - enhanced standards', async () => {
@@ -838,7 +817,6 @@ describe('Checkbox Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.1 Level AA: 1.4.3, 1.4.4, 1.4.11, 1.4.12, 2.4.7, 2.5.3, 3.2.4, 3.3.4, 4.1.3
         })
 
         it('meets WCAG 2.2 Level AAA requirements where applicable - latest standards', async () => {
@@ -847,7 +825,6 @@ describe('Checkbox Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests WCAG 2.2 Level AAA: 1.4.6 (non-compliant), 1.4.8, 1.4.9, 2.1.3, 2.2.3 (N/A), 2.2.4 (N/A), 2.5.5 (non-compliant), 3.2.5, 3.3.6 (unsure)
         })
     })
 })

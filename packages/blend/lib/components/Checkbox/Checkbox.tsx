@@ -54,18 +54,9 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
         const subtextId = getSubtextId(uniqueId, !!subtext)
 
-        const ariaChecked: 'true' | 'false' | 'mixed' =
-            checked === 'indeterminate'
-                ? 'mixed'
-                : checked === true
-                  ? 'true'
-                  : 'false'
-
         const ariaAttributes = {
-            'aria-checked': ariaChecked,
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
-            'aria-disabled': disabled ? true : undefined,
             'aria-describedby': mergeAriaDescribedBy(
                 subtextId,
                 customAriaDescribedBy
@@ -88,8 +79,6 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     $checked={checked || false}
                     $error={error}
                     style={getErrorShakeStyle(shouldShake)}
-                    role="checkbox"
-                    tabIndex={disabled ? -1 : 0}
                     {...ariaAttributes}
                     {...restProps}
                 >
