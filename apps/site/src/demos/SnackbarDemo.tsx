@@ -98,7 +98,6 @@ const SnackbarDemo = () => {
                             Info Variant
                         </h3>
                         <StyledToast
-                            data-snackbar="popUpSnackbar"
                             header={'Data synced successfully'}
                             description={
                                 'Your dashboard now shows the latest data. Please check it once'

@@ -294,6 +294,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         if (items.length > 0) {
             return (
                 <Block
+                    data-element="tabs-list"
                     style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -311,6 +312,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                     }}
                 >
                     <Block
+                        data-element="scroll-container"
                         ref={scrollContainerRef}
                         style={{
                             flex: 1,
@@ -323,6 +325,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         className="hide-scrollbar"
                     >
                         <Block
+                            data-element="tabs-list-container"
                             style={{
                                 position: 'relative',
                                 width: fitContent ? 'fit-content' : '100%',
@@ -376,12 +379,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 whiteSpace: 'nowrap',
                                             }}
                                             data-tabs={item.label}
-                                            data-tab-selected={
-                                                tabValue === activeTab
-                                            }
-                                            data-tabs-disabled={
-                                                item.disable ? 'true' : 'false'
-                                            }
                                         >
                                             {item.label}
                                         </TabsTrigger>
@@ -393,6 +390,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
                     {(showDropdown || showAddButton) && (
                         <Block
+                            data-element="dropdown-select"
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -501,6 +499,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         return (
             <Block
+                data-element="tabs-list"
+                data-status={expanded ? 'expanded' : 'collapsed'}
                 style={{
                     borderBottom:
                         variant === TabsVariant.UNDERLINE &&

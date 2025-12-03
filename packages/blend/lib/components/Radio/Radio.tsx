@@ -26,6 +26,7 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    value,
     maxLength,
     ...rest
 }: RadioProps) => {
@@ -47,6 +48,9 @@ export const Radio = ({
 
     return (
         <Block
+            data-radio={value ?? 'radio'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            data-id={value ?? ''}
             display="flex"
             alignItems={subtext ? 'flex-start' : 'center'}
             gap={radioTokens.gap}
@@ -140,7 +144,6 @@ const RadioContent: React.FC<{
     const labelContent = children ? (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -208,7 +211,11 @@ const RadioContent: React.FC<{
                 >
                     {labelWithTooltip}
                     {slot && (
-                        <Block as="span" width={radioTokens.slot[size]}>
+                        <Block
+                            data-element="slot"
+                            as="span"
+                            width={radioTokens.slot[size]}
+                        >
                             {slot}
                         </Block>
                     )}

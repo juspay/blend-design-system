@@ -69,6 +69,7 @@ const ModalHeader = ({
 
     return (
         <Block
+            data-element="header"
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
@@ -98,7 +99,6 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
-                            data-header-text={title}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -166,6 +166,7 @@ const ModalFooter = ({
 
     return (
         <Block
+            data-element="footer"
             display="flex"
             backgroundColor={modalTokens.footer.backgroundColor}
             justifyContent="flex-end"
@@ -298,6 +299,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     />
 
                     <AnimatedModalContent
+                        data-modal={title ?? 'modal'}
                         ref={ref}
                         display="flex"
                         flexDirection="column"
@@ -325,6 +327,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         />
 
                         <Block
+                            data-element="body"
                             padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}

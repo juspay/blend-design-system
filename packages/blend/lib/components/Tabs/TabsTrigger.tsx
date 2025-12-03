@@ -121,6 +121,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {leftSlot && (
                     <IconContainer
+                        data-element="left-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
                     >
@@ -141,6 +142,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {effectiveRightSlot && (
                     <IconContainer
+                        data-element="right-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
                     >
@@ -153,6 +155,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         if (shouldShowSkeleton) {
             return (
                 <Skeleton
+                    data-element="skeleton"
                     variant={skeletonVariant}
                     loading
                     padding="0"

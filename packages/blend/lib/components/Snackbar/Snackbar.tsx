@@ -51,6 +51,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
 
     return (
         <Block
+            data-snackbar={header ?? 'snackbar'}
+            data-status={variant}
             display="flex"
             justifyContent="space-between"
             gap={snackbarTokens.gap}
@@ -63,10 +65,14 @@ export const StyledToast: React.FC<CustomToastProps> = ({
         >
             {' '}
             {/*  need to fix line height to remove margin */}
-            <Block marginTop={4}>
+            <Block marginTop={4} data-element="icon">
                 <SnackbarIcon variant={variant} />
             </Block>
-            <Block display="flex" gap={snackbarTokens.gap}>
+            <Block
+                display="flex"
+                gap={snackbarTokens.gap}
+                data-element="content"
+            >
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -157,6 +163,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     backgroundColor="transparent"
                     contentCentered
                     onClick={onClose}
+                    data-element="close-button"
                 >
                     <X
                         size={snackbarTokens.actions.closeButton.height}
