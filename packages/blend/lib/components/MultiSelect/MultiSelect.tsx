@@ -438,10 +438,6 @@ const MultiSelect = ({
                                             </Block>
                                         )}
                                         <Block
-                                            data-element="placeholder"
-                                            data-id={
-                                                placeholder || 'placeholder'
-                                            }
                                             as="span"
                                             textAlign="left"
                                             paddingTop={
@@ -468,6 +464,10 @@ const MultiSelect = ({
                                             {variant ===
                                                 MultiSelectVariant.NO_CONTAINER && (
                                                 <Text
+                                                    data-element="placeholder"
+                                                    data-id={
+                                                        label || 'placeholder'
+                                                    }
                                                     as="span"
                                                     variant="body.md"
                                                     color={
@@ -485,7 +485,6 @@ const MultiSelect = ({
                                                             .trigger.placeholder
                                                             .fontSize
                                                     }
-                                                    data-button-text={label}
                                                 >
                                                     {label}
                                                 </Text>
@@ -607,15 +606,13 @@ const MultiSelect = ({
                                                         borderRadius: 4,
                                                         padding: '0px 6px',
                                                     }}
-                                                    data-badge-value={
-                                                        selectedValues.length
-                                                    }
                                                 >
                                                     {selectedValues.length}
                                                 </Text>
                                             )}
                                         </Block>
                                         <Block
+                                            data-element="chevron-icon"
                                             as="span"
                                             display="flex"
                                             alignItems="center"
