@@ -378,8 +378,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             }}
                                             data-status={
                                                 item.disable
-                                                    ? 'disabled-selected'
-                                                    : 'enabled-selected'
+                                                    ? 'disabled'
+                                                    : 'enabled'
                                             }
                                             data-id={item.label}
                                         >
@@ -502,7 +502,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         return (
             <Block
                 data-element="tabs-list"
-                data-status={expanded ? 'expanded' : 'collapsed'}
+                data-state={expanded ? 'expanded' : 'collapsed'}
                 style={{
                     borderBottom:
                         variant === TabsVariant.UNDERLINE &&

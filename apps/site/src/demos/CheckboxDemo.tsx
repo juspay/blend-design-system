@@ -170,9 +170,7 @@ const CheckboxDemo = () => {
                             data-element="checkbox"
                             data-id={playgroundLabel}
                             data-status={
-                                playgroundDisabled
-                                    ? 'disabled-selected'
-                                    : 'enabled-selected'
+                                playgroundDisabled ? 'disabled' : 'enabled'
                             }
                         >
                             {playgroundLabel}

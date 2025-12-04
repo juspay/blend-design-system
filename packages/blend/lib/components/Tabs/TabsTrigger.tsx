@@ -78,9 +78,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
-                data-status={
-                    isDisabled ? 'disabled-selected' : 'enabled-selected'
-                }
+                data-status={isDisabled ? 'disabled' : 'enabled'}
                 data-id={children ?? ''}
                 ref={ref}
                 value={value}
