@@ -8,6 +8,7 @@ import UnitInputAccessibility from '../../Inputs/UnitInput/accessibility/UnitInp
 import DropdownInputAccessibility from '../../Inputs/DropdownInput/accessibility/DropdownInputAccessibility'
 import SearchInputAccessibility from '../../Inputs/SearchInput/accessibility/SearchInputAccessibility'
 import OTPInputAccessibility from '../../Inputs/OTPInput/accessibility/OTPInputAccessibility'
+import TextAreaAccessibility from '../../Inputs/TextArea/accessibility/TextAreaAccessibility'
 import CheckboxAccessibility from '../../Checkbox/accessibility/CheckboxAccessibility'
 import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
@@ -54,6 +55,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'OTPInput',
         displayName: 'OTP Input',
         component: OTPInputAccessibility,
+    },
+    {
+        name: 'TextArea',
+        displayName: 'Text Area',
+        component: TextAreaAccessibility,
     },
     {
         name: 'Checkbox',
