@@ -340,6 +340,7 @@ const MultiSelect = ({
                                         data-button-status={
                                             disabled ? 'disabled' : 'enabled'
                                         }
+                                        data-element="multi-select-button"
                                         type="button"
                                         position="relative"
                                         width={
