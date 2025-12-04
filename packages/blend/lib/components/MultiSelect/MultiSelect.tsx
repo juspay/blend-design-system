@@ -219,6 +219,8 @@ const MultiSelect = ({
 
     return (
         <Block
+            data-multi-select={label || 'multi-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             width={fullWidth ? '100%' : 'fit-content'}
             maxWidth={fullWidth ? '100%' : 'fit-content'}
             display="flex"
@@ -427,6 +429,7 @@ const MultiSelect = ({
                                     >
                                         {slot && (
                                             <Block
+                                                data-element="icon"
                                                 as="span"
                                                 ref={slotRef}
                                                 contentCentered
@@ -435,6 +438,10 @@ const MultiSelect = ({
                                             </Block>
                                         )}
                                         <Block
+                                            data-element="placeholder"
+                                            data-id={
+                                                placeholder || 'placeholder'
+                                            }
                                             as="span"
                                             textAlign="left"
                                             paddingTop={
@@ -569,6 +576,11 @@ const MultiSelect = ({
                                                 )}
                                             {selectedValues.length > 0 && (
                                                 <Text
+                                                    data-element="selection-tag"
+                                                    data-id={
+                                                        selectedValues.length ||
+                                                        'selection-tag'
+                                                    }
                                                     as="span"
                                                     variant="body.md"
                                                     color={
@@ -628,6 +640,7 @@ const MultiSelect = ({
                     {variant === MultiSelectVariant.CONTAINER &&
                         selectedValues.length > 0 && (
                             <PrimitiveButton
+                                data-element="clear-button"
                                 type="button"
                                 borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                                 backgroundColor={
