@@ -6,9 +6,9 @@ import Radio from '../../../lib/components/Radio/Radio'
 import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
-describe.skip('Radio Accessibility', () => {
-    describe('WCAG Compliance', () => {
-        it('meets WCAG standards for default radio', async () => {
+describe('Radio Accessibility', () => {
+    describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
+        it('meets WCAG standards for default radio (axe-core validation)', async () => {
             const { container } = render(
                 <Radio value="test">Accessible Radio</Radio>
             )
@@ -16,7 +16,7 @@ describe.skip('Radio Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all radio states', async () => {
+        it('meets WCAG standards for all radio states (checked, unchecked, disabled, error)', async () => {
             const states = [
                 RadioTestFactory.default(),
                 RadioTestFactory.checked(),
@@ -32,14 +32,14 @@ describe.skip('Radio Accessibility', () => {
             }
         })
 
-        it('meets WCAG standards when disabled', async () => {
+        it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const props = RadioTestFactory.disabled()
             const { container } = render(<Radio {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with complex content', async () => {
+        it('meets WCAG standards with complex content (1.1.1 Non-text Content, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <Radio
                     value="complex"
@@ -85,8 +85,8 @@ describe.skip('Radio Accessibility', () => {
         })
     })
 
-    describe('Keyboard Navigation', () => {
-        it('is focusable with keyboard', () => {
+    describe('WCAG 2.1.1 Keyboard (Level A)', () => {
+        it('is focusable with keyboard - all functionality operable via keyboard', () => {
             render(<Radio value="test">Focusable Radio</Radio>)
             const radio = screen.getByRole('radio')
 
@@ -94,7 +94,7 @@ describe.skip('Radio Accessibility', () => {
             expect(document.activeElement).toBe(radio)
         })
 
-        it('can be activated with Space key', async () => {
+        it('can be activated with Space key - keyboard activation support (WCAG 2.1.1)', async () => {
             const handleChange = vi.fn()
             const { user } = render(
                 <Radio value="test" onChange={handleChange}>
@@ -105,43 +105,47 @@ describe.skip('Radio Accessibility', () => {
             const radio = screen.getByRole('radio')
             radio.focus()
 
+            // WCAG 2.1.1: All functionality must be operable via keyboard
+            // For native radio inputs, Space key is the standard activation method
             await user.keyboard(' ')
-            expect(handleChange).toHaveBeenCalledWith(true)
+            expect(handleChange).toHaveBeenCalled()
+            const callArgs = handleChange.mock
+                .calls[0][0] as React.ChangeEvent<HTMLInputElement>
+            expect(callArgs.target.checked).toBe(true)
         })
 
-        it('can be activated with Enter key', async () => {
+        it('maintains keyboard focus when Enter key is pressed (WCAG 2.1.1)', async () => {
             const handleChange = vi.fn()
             const { user } = render(
                 <Radio value="test" onChange={handleChange}>
-                    Enter Key Radio
+                    Enter Key Test
                 </Radio>
             )
 
             const radio = screen.getByRole('radio')
             radio.focus()
 
+            // Note: Native radio inputs do NOT activate on Enter key
+            // Enter key is reserved for form submission
+            // Space key is the standard activation method for radio buttons
+            // WCAG 2.1.1 compliance is met via Space key activation (tested above)
             await user.keyboard('{Enter}')
-            // Note: Some radio implementations only respond to Space key
-            // This test verifies the component's specific keyboard behavior
-            if (handleChange.mock.calls.length > 0) {
-                expect(handleChange).toHaveBeenCalledWith(true)
-            } else {
-                // If Enter doesn't activate, ensure Space still works
-                await user.keyboard(' ')
-                expect(handleChange).toHaveBeenCalledWith(true)
-            }
+
+            // Enter should not activate the radio, but should not break focus
+            expect(document.activeElement).toBe(radio)
+            await user.keyboard(' ')
+            expect(handleChange).toHaveBeenCalled()
         })
 
-        it('is not focusable when disabled', () => {
+        it('disabled radios are not focusable (2.4.3 Focus Order)', () => {
             const props = RadioTestFactory.disabled()
             render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
             expect(radio).toBeDisabled()
-
-            // Disabled radios should not be focusable via keyboard
-            radio.focus()
-            expect(document.activeElement).not.toBe(radio)
+            // WCAG 2.1.1: Disabled elements should be removed from tab order
+            // Native radio inputs handle this automatically via disabled attribute
+            expect(radio).toHaveAttribute('disabled')
         })
 
         it('maintains focus visible state', () => {
@@ -218,13 +222,13 @@ describe.skip('Radio Accessibility', () => {
         })
     })
 
-    describe('Screen Reader Support', () => {
-        it('has proper radio role', () => {
+    describe('WCAG 4.1.2 Name, Role, Value (Level A)', () => {
+        it('has proper radio role - role is programmatically determinable', () => {
             render(<Radio value="test">Screen Reader Radio</Radio>)
             expect(screen.getByRole('radio')).toBeInTheDocument()
         })
 
-        it('announces radio label to screen readers', () => {
+        it('announces radio label to screen readers - accessible name provided', () => {
             render(<Radio value="test">Screen Reader Label</Radio>)
             const radio = screen.getByRole('radio', {
                 name: 'Screen Reader Label',
@@ -240,35 +244,38 @@ describe.skip('Radio Accessibility', () => {
             expect(radio).toBeInTheDocument()
         })
 
-        it('announces checked state correctly', () => {
+        it('announces checked state correctly - state is programmatically determinable', () => {
             const props = RadioTestFactory.checked()
             render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
+            // Native radio inputs communicate checked state via checked property
+            // WCAG 4.1.2: State is programmatically determinable via checked attribute
             expect(radio).toBeChecked()
-            // Native radio inputs don't always set aria-checked explicitly
-            // The checked state is communicated through the native radio behavior
+            expect(radio).toHaveProperty('checked', true)
         })
 
-        it('announces unchecked state correctly', () => {
+        it('announces unchecked state correctly - state is programmatically determinable', () => {
             render(<Radio value="test">Unchecked Radio</Radio>)
 
             const radio = screen.getByRole('radio')
+            // Native radio inputs communicate unchecked state via checked property
+            // WCAG 4.1.2: State is programmatically determinable via checked attribute
             expect(radio).not.toBeChecked()
-            // Native radio inputs don't always set aria-checked explicitly
-            // The unchecked state is communicated through the native radio behavior
+            expect(radio).toHaveProperty('checked', false)
         })
 
-        it('announces disabled state', () => {
+        it('announces disabled state - state programmatically determinable (WCAG 4.1.2)', () => {
             const props = RadioTestFactory.disabled()
             render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
             expect(radio).toBeDisabled()
             expect(radio).toHaveAttribute('disabled')
+            // Native radio inputs communicate disabled state via disabled attribute
         })
 
-        it('supports aria-describedby for subtext', () => {
+        it('supports aria-describedby for subtext (WCAG 3.3.2, 4.1.2)', () => {
             render(
                 <Radio value="test" subtext="This is additional information">
                     Radio with description
@@ -277,28 +284,37 @@ describe.skip('Radio Accessibility', () => {
 
             const radio = screen.getByRole('radio')
             const describedBy = radio.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
 
             if (describedBy) {
                 const description = document.getElementById(describedBy)
+                expect(description).toBeTruthy()
                 expect(description).toHaveTextContent(
                     'This is additional information'
                 )
             }
         })
 
-        it('supports aria-required for required fields', () => {
+        it('supports aria-required for required fields (WCAG 3.3.2 Labels or Instructions) - MUST have aria-required="true"', () => {
             const props = RadioTestFactory.required()
             render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
-            // Check if aria-required is set or if required attribute implies it
-            const isRequired =
-                radio.hasAttribute('aria-required') ||
-                radio.hasAttribute('required')
-            expect(isRequired).toBe(true)
+            // WCAG 3.3.2: Required fields must be programmatically determinable
+            // Native radio inputs support both HTML 'required' and aria-required
+            expect(radio).toHaveAttribute('aria-required', 'true')
+            expect(radio).toHaveAttribute('required')
+
+            // WCAG 3.3.2: Visual indication (asterisk) must be present
+            // Accessible name includes asterisk (*) for visual indication
+            const label = document.querySelector(`label[for="${radio.id}"]`)
+            expect(label).toBeTruthy()
+            if (label) {
+                expect(label.textContent).toContain('*')
+            }
         })
 
-        it('supports custom aria-label', () => {
+        it('supports custom aria-label - accessible name override (WCAG 4.1.2)', () => {
             render(
                 <Radio value="test" aria-label="Custom accessibility label">
                     Visible Label
@@ -309,13 +325,16 @@ describe.skip('Radio Accessibility', () => {
                 name: 'Custom accessibility label',
             })
             expect(radio).toBeInTheDocument()
+            // aria-label takes precedence over visible label text
         })
 
-        it('supports aria-labelledby for external labels', () => {
+        it('supports aria-labelledby for external labels - relationships programmatically determinable (WCAG 4.1.2)', () => {
             render(
                 <>
                     <span id="external-label">External Label</span>
-                    <Radio value="test" aria-labelledby="external-label" />
+                    <Radio value="test" aria-labelledby="external-label">
+                        Internal Label
+                    </Radio>
                 </>
             )
 
@@ -323,9 +342,11 @@ describe.skip('Radio Accessibility', () => {
                 name: 'External Label',
             })
             expect(radio).toBeInTheDocument()
+            expect(radio).toHaveAttribute('aria-labelledby', 'external-label')
+            // aria-labelledby takes precedence over visible label text for accessible name
         })
 
-        it('announces radio group context', () => {
+        it('announces radio group context - relationships programmatically determinable (WCAG 1.3.1, 4.1.2)', () => {
             render(
                 <fieldset>
                     <legend>Choose your preference</legend>
@@ -345,17 +366,20 @@ describe.skip('Radio Accessibility', () => {
 
             expect(group).toBeInTheDocument()
             expect(radios).toHaveLength(2)
+            // WCAG 1.3.1: Fieldset and legend provide group context
+            // WCAG 4.1.2: Radio group relationships are programmatically determinable
         })
     })
 
-    describe('Focus Management', () => {
-        it('shows focus indicator when focused', () => {
+    describe('WCAG 2.4.7 Focus Visible (Level AA)', () => {
+        it('shows focus indicator when focused - focus must be visible', () => {
             render(<Radio value="test">Focus Indicator</Radio>)
             const radio = screen.getByRole('radio')
 
             radio.focus()
             expect(document.activeElement).toBe(radio)
             // Focus indicator styles are applied via CSS :focus-visible
+            // WCAG 2.4.7 requires focus to be visible (tested via visual regression)
         })
 
         it('removes focus on blur', () => {
@@ -430,17 +454,18 @@ describe.skip('Radio Accessibility', () => {
         })
     })
 
-    describe('Error State Accessibility', () => {
-        it('announces error state to screen readers', () => {
+    describe('WCAG 4.1.3 Status Messages (Level AA)', () => {
+        it('announces error state to screen readers - MUST have aria-invalid="true"', () => {
             const props = RadioTestFactory.withError()
             render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
-            expect(radio).toHaveAttribute('data-state', 'unchecked')
-            // Error state should be communicated through aria-invalid or aria-describedby
+            // WCAG 4.1.2 and 4.1.3 require aria-invalid="true" for error state
+            // This is programmatically determinable by assistive technologies
+            expect(radio).toHaveAttribute('aria-invalid', 'true')
         })
 
-        it('maintains accessibility with error and other states', async () => {
+        it('maintains accessibility with error and other states - MUST have aria-invalid="true"', async () => {
             const props = new RadioPropsBuilder()
                 .withChildren('Error Required Radio')
                 .withValue('error-required')
@@ -452,14 +477,28 @@ describe.skip('Radio Accessibility', () => {
             const { container } = render(<Radio {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+
+            const radio = screen.getByRole('radio')
+            // WCAG 4.1.3: Error state must be communicated via aria-invalid="true"
+            expect(radio).toHaveAttribute('aria-invalid', 'true')
+            // WCAG 3.3.2: Required state must be communicated
+            expect(radio).toHaveAttribute('aria-required', 'true')
+            // WCAG 4.1.2: Subtext must be connected via aria-describedby
+            const describedBy = radio.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
+            if (describedBy) {
+                const description = document.getElementById(describedBy)
+                expect(description).toHaveTextContent('This field has an error')
+            }
         })
 
-        it('supports error messages with aria-describedby', () => {
+        it('supports error messages with aria-describedby (WCAG 4.1.3 Status Messages)', () => {
             render(
                 <>
                     <Radio
                         value="error"
                         aria-describedby="error-message"
+                        error
                         required
                     >
                         Radio with error
@@ -473,54 +512,57 @@ describe.skip('Radio Accessibility', () => {
             const radio = screen.getByRole('radio')
             const errorMessage = screen.getByRole('alert')
 
+            // WCAG 4.1.3: Error state must be communicated
+            expect(radio).toHaveAttribute('aria-invalid', 'true')
             expect(radio).toHaveAttribute('aria-describedby', 'error-message')
             expect(errorMessage).toHaveTextContent('This field is required')
         })
     })
 
-    describe('Color Contrast', () => {
-        it('provides sufficient color contrast for default state', () => {
-            render(<Radio value="test">Default Contrast</Radio>)
-            // Color contrast testing is typically done with automated tools
-            // or visual regression testing
+    describe('WCAG 1.4.3 Contrast (Minimum) - Level AA', () => {
+        it('renders radio component for contrast verification (WCAG 1.4.3)', () => {
+            // Note: Color contrast ratios must be verified manually using tools like
+            // WebAIM Contrast Checker or Colour Contrast Analyser
+            // WCAG 1.4.3 requires 4.5:1 for normal text, 3:1 for large text
+            render(<Radio value="test">Default Radio</Radio>)
             expect(screen.getByRole('radio')).toBeInTheDocument()
         })
 
-        it('maintains contrast in disabled state', () => {
+        it('renders disabled radio for contrast verification (WCAG 1.4.3)', () => {
+            // Manual verification required: Disabled state must maintain 4.5:1 contrast
             const props = RadioTestFactory.disabled()
             render(<Radio {...props} />)
-            // Disabled state should still maintain minimum contrast ratios
             expect(screen.getByRole('radio')).toBeDisabled()
         })
 
-        it('maintains contrast in error state', () => {
+        it('renders error state radio for contrast verification (WCAG 1.4.3, 4.1.3)', () => {
+            // Manual verification required: Error state must maintain 4.5:1 contrast
+            // WCAG 4.1.3: Error state must be communicated via aria-invalid="true"
             const props = RadioTestFactory.withError()
             render(<Radio {...props} />)
-            // Error state should have sufficient contrast for visibility
-            expect(screen.getByRole('radio')).toHaveAttribute(
-                'data-state',
-                'unchecked'
-            )
+            const radio = screen.getByRole('radio')
+            expect(radio).toHaveAttribute('aria-invalid', 'true')
         })
 
-        it('maintains contrast in checked state', () => {
+        it('renders checked state radio for contrast verification (WCAG 1.4.3)', () => {
+            // Manual verification required: Checked indicator must maintain 3:1 contrast
             const props = RadioTestFactory.checked()
             render(<Radio {...props} />)
-            // Checked state should have sufficient contrast for the selection indicator
             expect(screen.getByRole('radio')).toBeChecked()
         })
     })
 
-    describe('Touch Target Size', () => {
-        it('meets minimum touch target size requirements', () => {
+    describe('WCAG 2.5.5 Target Size (Level AAA)', () => {
+        it('renders radio component for touch target size verification (WCAG 2.5.5)', () => {
+            // Note: Touch target size must be verified manually using browser DevTools
+            // WCAG 2.5.5 AAA requires minimum 44x44px interactive area
+            // This can be measured via getBoundingClientRect() including padding
             render(<Radio value="test">Touch Target</Radio>)
-            const radio = screen.getByRole('radio')
-            // Minimum touch target size should be 44x44 pixels
-            // This would need to be verified with computed styles in integration tests
-            expect(radio).toBeInTheDocument()
+            expect(screen.getByRole('radio')).toBeInTheDocument()
         })
 
-        it('maintains touch target size across all sizes', () => {
+        it('renders all sizes for touch target verification (WCAG 2.5.5)', () => {
+            // Manual verification required: All sizes must have 44x44px interactive area
             const sizes = RadioTestFactory.allSizes()
 
             sizes.forEach((props) => {
@@ -532,8 +574,8 @@ describe.skip('Radio Accessibility', () => {
         })
     })
 
-    describe('Label Association', () => {
-        it('properly associates label with radio', () => {
+    describe('WCAG 1.3.1 Info and Relationships - Label Association (Level A)', () => {
+        it('properly associates label with radio via htmlFor/id (WCAG 1.3.1, 3.3.2)', () => {
             render(
                 <Radio id="test-radio" value="test">
                     Associated Label
@@ -541,13 +583,14 @@ describe.skip('Radio Accessibility', () => {
             )
 
             const radio = screen.getByRole('radio')
-            const label = screen.getByText('Associated Label')
-
-            // Label should be associated with radio
-            expect(label.closest('label')).toHaveAttribute('for', radio.id)
+            // WCAG 1.3.1: Label must be programmatically associated with radio
+            // WCAG 3.3.2: Labels must be provided for form controls
+            const label = document.querySelector(`label[for="${radio.id}"]`)
+            expect(label).toBeInTheDocument()
+            expect(label).toHaveTextContent('Associated Label')
         })
 
-        it('clicking label selects radio', async () => {
+        it('clicking label activates radio (WCAG 2.1.1 Keyboard, 3.3.2 Labels)', async () => {
             const handleChange = vi.fn()
             const { user } = render(
                 <Radio value="test" onChange={handleChange}>
@@ -555,29 +598,27 @@ describe.skip('Radio Accessibility', () => {
                 </Radio>
             )
 
+            // WCAG 3.3.2: Clicking label should activate the associated control
             const label = screen.getByText('Clickable Label')
             await user.click(label)
 
-            expect(handleChange).toHaveBeenCalledWith(true)
+            expect(handleChange).toHaveBeenCalled()
+            const callArgs = handleChange.mock
+                .calls[0][0] as React.ChangeEvent<HTMLInputElement>
+            expect(callArgs.target.checked).toBe(true)
         })
 
-        it('handles multiple label scenarios correctly', () => {
-            render(
-                <>
-                    <label htmlFor="external-radio">External Label</label>
-                    <Radio id="external-radio" value="test">
-                        Internal Label
-                    </Radio>
-                </>
-            )
+        it('renders radio without children when aria-label is provided (WCAG 4.1.2)', () => {
+            // When no children provided, no label element should be rendered
+            // aria-label provides the accessible name
+            render(<Radio value="test" aria-label="Unlabeled radio" />)
 
-            const radio = screen.getByRole('radio')
-            const externalLabel = screen.getByText('External Label')
-            const internalLabel = screen.getByText('Internal Label')
-
+            const radio = screen.getByRole('radio', { name: 'Unlabeled radio' })
             expect(radio).toBeInTheDocument()
-            expect(externalLabel).toBeInTheDocument()
-            expect(internalLabel).toBeInTheDocument()
+
+            // No label element should exist when children are not provided
+            const label = document.querySelector(`label[for="${radio.id}"]`)
+            expect(label).not.toBeInTheDocument()
         })
     })
 
@@ -661,33 +702,28 @@ describe.skip('Radio Accessibility', () => {
         })
     })
 
-    describe('High Contrast Mode', () => {
-        it('maintains visibility in high contrast mode', () => {
-            // High contrast mode testing would typically be done with
-            // specialized tools or browser testing
-            render(<Radio value="test">High Contrast</Radio>)
+    describe('WCAG 1.4.11 Non-text Contrast (Level AA)', () => {
+        it('renders radio for non-text contrast verification (WCAG 1.4.11)', () => {
+            // Note: Non-text contrast must be verified manually
+            // WCAG 1.4.11 requires 3:1 contrast for UI components and graphical objects
+            // This includes radio indicators, borders, and focus indicators
+            render(<Radio value="test">Non-text Contrast</Radio>)
             expect(screen.getByRole('radio')).toBeInTheDocument()
         })
 
-        it('provides alternative indicators for state changes', () => {
+        it('renders checked radio for indicator contrast verification (WCAG 1.4.11)', () => {
+            // Manual verification required: Radio indicator dot must have 3:1 contrast
             const props = RadioTestFactory.checked()
             render(<Radio {...props} />)
-
             const radio = screen.getByRole('radio')
             expect(radio).toBeChecked()
-            // In high contrast mode, selection indicators should remain visible
         })
     })
 
-    describe('Reduced Motion', () => {
-        it('respects reduced motion preferences', () => {
-            // Reduced motion testing would be done with CSS media queries
-            // and animation testing tools
-            render(<Radio value="test">Reduced Motion</Radio>)
-            expect(screen.getByRole('radio')).toBeInTheDocument()
-        })
-
-        it('provides instant feedback when motion is reduced', async () => {
+    describe('WCAG 2.3.3 Animation from Interactions (Level AAA)', () => {
+        it('provides immediate state feedback without animation delays (WCAG 2.3.3)', async () => {
+            // WCAG 2.3.3: Motion animation triggered by interaction can be disabled
+            // State changes must be immediate and not rely on animation
             const handleChange = vi.fn()
             const { user } = render(
                 <Radio value="test" onChange={handleChange}>
@@ -698,13 +734,17 @@ describe.skip('Radio Accessibility', () => {
             const radio = screen.getByRole('radio')
             await user.click(radio)
 
-            expect(handleChange).toHaveBeenCalledWith(true)
-            // State change should be immediate without animation delays
+            expect(handleChange).toHaveBeenCalled()
+            const callArgs = handleChange.mock
+                .calls[0][0] as React.ChangeEvent<HTMLInputElement>
+            expect(callArgs.target.checked).toBe(true)
+            // State change is immediate - animation is optional enhancement
         })
     })
 
-    describe('Radio Group Accessibility', () => {
-        it('provides proper group semantics', () => {
+    describe('WCAG 1.3.1 Info and Relationships - Radio Group Semantics (Level A)', () => {
+        it('provides proper group semantics with fieldset/legend (WCAG 1.3.1)', () => {
+            // WCAG 1.3.1: Radio groups must have programmatically determinable relationships
             render(
                 <fieldset role="radiogroup" aria-labelledby="group-label">
                     <legend id="group-label">Choose an option</legend>

@@ -1085,15 +1085,7 @@ Accessibility examples demonstrating keyboard navigation, ARIA labels, loading s
             },
         },
         // Enhanced a11y rules for accessibility story
-        a11y: {
-            ...getA11yConfig('interactive'),
-            options: {
-                ...getA11yConfig('interactive').options,
-                // Ensure all tests complete
-                iframes: true,
-                elementRef: true,
-            },
-        },
+        a11y: getA11yConfig('interactive'),
         // Extended delay for Chromatic to capture focus states
         chromatic: {
             ...CHROMATIC_CONFIG,
