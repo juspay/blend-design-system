@@ -144,7 +144,6 @@ const RadioContent: React.FC<{
     const labelContent = children ? (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-element="radio-label"
                 data-id={children ?? ''}
                 as="span"
                 fontSize={textProps.fontSize}
