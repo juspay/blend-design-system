@@ -78,6 +78,8 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
+                data-status={isDisabled ? 'disabled' : 'enabled'}
+                data-id={children ?? ''}
                 ref={ref}
                 value={value}
                 $variant={variant}
@@ -121,6 +123,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {leftSlot && (
                     <IconContainer
+                        data-element="left-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
                     >
@@ -141,6 +144,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {effectiveRightSlot && (
                     <IconContainer
+                        data-element="right-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
                     >
@@ -153,6 +157,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         if (shouldShowSkeleton) {
             return (
                 <Skeleton
+                    data-element="skeleton"
                     variant={skeletonVariant}
                     loading
                     padding="0"

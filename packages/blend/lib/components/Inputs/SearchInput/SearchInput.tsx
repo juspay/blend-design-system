@@ -119,9 +119,15 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             : null
 
         return (
-            <Block position="relative" width={'100%'}>
+            <Block
+                data-searchinput={placeholder ?? ''}
+                data-status={rest.disabled ? 'disabled' : 'enabled'}
+                position="relative"
+                width={'100%'}
+            >
                 {styledLeftSlot && (
                     <Block
+                        data-element="left-slot"
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
@@ -141,6 +147,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
                 {styledRightSlot && (
                     <Block
+                        data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}

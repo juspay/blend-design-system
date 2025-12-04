@@ -294,6 +294,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         if (items.length > 0) {
             return (
                 <Block
+                    data-element="tabs-list"
                     style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -375,13 +376,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 flexShrink: 0,
                                                 whiteSpace: 'nowrap',
                                             }}
-                                            data-tabs={item.label}
-                                            data-tab-selected={
-                                                tabValue === activeTab
+                                            data-status={
+                                                item.disable
+                                                    ? 'disabled'
+                                                    : 'enabled'
                                             }
-                                            data-tabs-disabled={
-                                                item.disable ? 'true' : 'false'
-                                            }
+                                            data-id={item.label}
                                         >
                                             {item.label}
                                         </TabsTrigger>
@@ -501,6 +501,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         return (
             <Block
+                data-element="tabs-list"
+                data-state={expanded ? 'expanded' : 'collapsed'}
                 style={{
                     borderBottom:
                         variant === TabsVariant.UNDERLINE &&

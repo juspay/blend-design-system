@@ -45,6 +45,7 @@ const SuccessState: React.FC<SuccessStateProps> = ({
         )}
 
         <Block
+            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"

@@ -19,6 +19,7 @@ export enum CheckboxInteractionState {
 }
 
 export type CheckboxProps = {
+    label?: string
     id?: string
     name?: string
     checked?: boolean | 'indeterminate'
