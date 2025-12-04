@@ -113,7 +113,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 )}
 
                 {helpIconHintText && (
-                    <Block contentCentered size={16}>
+                    <Block data-element="icon" contentCentered size={16}>
                         <Tooltip
                             content={helpIconHintText}
                             size={TooltipSize.SMALL}

@@ -57,10 +57,7 @@ const ModalDemo = () => {
             case 'basic':
                 return (
                     <div>
-                        <p
-                            className="text-base text-gray-600"
-                            data-description-text="popUp Confirmation"
-                        >
+                        <p className="text-base text-gray-600">
                             This is a configurable modal for demonstration
                             purposes. You can adjust various settings using the
                             controls.

@@ -26,6 +26,7 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    value,
     maxLength,
     ...rest
 }: RadioProps) => {
@@ -47,6 +48,9 @@ export const Radio = ({
 
     return (
         <Block
+            data-radio={children ?? 'radio'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            data-id={value ?? ''}
             display="flex"
             alignItems={subtext ? 'flex-start' : 'center'}
             gap={radioTokens.gap}
@@ -140,7 +144,6 @@ const RadioContent: React.FC<{
     const labelContent = children ? (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -176,6 +179,9 @@ const RadioContent: React.FC<{
     const subtextContent = subtext ? (
         <Block id={subtextId}>
             <PrimitiveText
+                data-element="radio-description"
+                data-id={subtext ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 data-description-text={subtext}
                 as="span"
                 fontSize={subtextProps.fontSize}
@@ -202,13 +208,19 @@ const RadioContent: React.FC<{
         <Block display="flex" flexDirection="column">
             {labelWithTooltip && (
                 <Block
+                    data-element="radio-label"
+                    data-id={children ?? ''}
                     display="flex"
                     alignItems="center"
                     gap={radioTokens.content.label.gap}
                 >
                     {labelWithTooltip}
                     {slot && (
-                        <Block as="span" width={radioTokens.slot[size]}>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            width={radioTokens.slot[size]}
+                        >
                             {slot}
                         </Block>
                     )}

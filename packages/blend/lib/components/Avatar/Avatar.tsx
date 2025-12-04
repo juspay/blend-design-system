@@ -188,7 +188,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             <Block
                 ref={ref}
                 data-avatar={alt ?? 'avatar'}
-                data-avatar-has-image={!!hasImage}
                 position="relative"
                 display="inline-flex"
                 alignItems="center"
@@ -246,7 +245,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         src={src}
                         alt={alt}
                         onError={() => setImageError(true)}
-                        data-avatar-image="true"
                     />
                 ) : (
                     <Block
@@ -301,7 +299,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     {leadingSlot && (
                         <Block
                             data-element="leading-slot"
-                            data-avatar-slot="leading"
                             display="flex"
                             alignItems="center"
                             marginRight={tokens.slot.spacing}
@@ -314,7 +311,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     {trailingSlot && (
                         <Block
                             data-element="trailing-slot"
-                            data-avatar-slot="trailing"
                             display="flex"
                             alignItems="center"
                             marginLeft={tokens.slot.spacing}

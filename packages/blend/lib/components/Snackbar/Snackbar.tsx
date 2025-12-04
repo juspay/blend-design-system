@@ -51,6 +51,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
 
     return (
         <Block
+            data-snackbar={header ?? 'snackbar'}
+            data-status={variant}
             display="flex"
             justifyContent="space-between"
             gap={snackbarTokens.gap}
@@ -63,10 +65,14 @@ export const StyledToast: React.FC<CustomToastProps> = ({
         >
             {' '}
             {/*  need to fix line height to remove margin */}
-            <Block marginTop={4}>
+            <Block marginTop={4} data-element="icon">
                 <SnackbarIcon variant={variant} />
             </Block>
-            <Block display="flex" gap={snackbarTokens.gap}>
+            <Block
+                display="flex"
+                gap={snackbarTokens.gap}
+                data-element="content"
+            >
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -90,7 +96,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.header
                                     .fontWeight
                             }
-                            data-snackbar-header={header}
+                            data-element="header"
+                            data-id={header}
                         >
                             {header}
                         </Text>
@@ -107,7 +114,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.description
                                     .fontWeight
                             }
-                            data-snackbar-body={description}
+                            data-element="description"
+                            data-id={description}
                         >
                             {description}
                         </Text>
@@ -157,6 +165,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     backgroundColor="transparent"
                     contentCentered
                     onClick={onClose}
+                    data-element="close-button"
                 >
                     <X
                         size={snackbarTokens.actions.closeButton.height}
