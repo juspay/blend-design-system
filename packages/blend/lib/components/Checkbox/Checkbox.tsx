@@ -24,6 +24,7 @@ import { getTruncatedText } from '../../global-utils/GlobalUtils'
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
         {
+            label,
             id,
             name,
             checked,
@@ -65,7 +66,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
         return (
             <Block
-                data-checkbox={children ?? 'checkbox'}
+                data-checkbox={label ?? 'checkbox'}
                 data-status={disabled ? 'disabled' : 'enabled'}
                 display="flex"
                 alignItems="flex-start"

@@ -43,7 +43,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         }
         return (
             <Block
-                data-alert={heading ?? ''}
+                data-alert={heading ?? 'blend-alert'}
                 ref={ref}
                 maxWidth={alertTokens.maxWidth}
                 backgroundColor={alertTokens.background[variant][style]}
