@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react'
-import { Radio, RadioGroup, RadioSize } from '../index'
+import { Radio, RadioGroup } from '../index'
 import { radioAccessibilityReport } from './RadioAccessibilityReport'
 import {
     generateAccessibilityReport,

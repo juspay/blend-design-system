@@ -440,8 +440,8 @@ interface SwitchTestProps {
     required?: boolean
     error?: boolean
     size?: SwitchSize
-    label?: React.ReactNode
-    subtext?: React.ReactNode
+    label?: string
+    subtext?: string
     slot?: React.ReactNode
     name?: string
     value?: string
@@ -489,12 +489,12 @@ export class SwitchPropsBuilder {
         return this
     }
 
-    withLabel(label: React.ReactNode) {
+    withLabel(label: string) {
         this.props.label = label
         return this
     }
 
-    withSubtext(subtext: React.ReactNode) {
+    withSubtext(subtext: string) {
         this.props.subtext = subtext
         return this
     }

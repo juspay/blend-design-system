@@ -10,7 +10,6 @@ export const getSwitchDataState = (checked: boolean): string => {
 export const getSpacingBySize = (
     size: SwitchSize
 ): { marginLeft: string; marginTop: string } => {
-    // Use foundation tokens for consistent spacing
     const sizeMap = {
         [SwitchSize.SMALL]: {
             marginLeft: String(FOUNDATION_THEME.unit[32]),
@@ -162,4 +161,29 @@ export const createSwitchGroupChangeHandler = (
 
         onChange?.(newValues)
     }
+}
+
+/**
+ * Gets the subtext ID for aria-describedby connection
+ * WCAG 3.3.2 (Labels or Instructions) & 4.1.2 (Name, Role, Value)
+ */
+export const getSubtextId = (
+    uniqueId: string,
+    hasSubtext: boolean
+): string | undefined => {
+    return hasSubtext ? `${uniqueId}-subtext` : undefined
+}
+
+/**
+ * Merges aria-describedby values, combining custom and subtext IDs
+ * WCAG 4.1.2 (Name, Role, Value)
+ */
+export const mergeAriaDescribedBy = (
+    subtextId: string | undefined,
+    customAriaDescribedBy: string | undefined
+): string | undefined => {
+    if (subtextId && customAriaDescribedBy) {
+        return `${customAriaDescribedBy} ${subtextId}`.trim()
+    }
+    return subtextId || customAriaDescribedBy
 }

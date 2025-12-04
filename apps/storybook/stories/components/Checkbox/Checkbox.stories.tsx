@@ -735,6 +735,324 @@ export const UncontrolledCheckbox: Story = {
     },
 }
 
+// Checkbox without label (aria-label only)
+export const WithoutLabel: Story = {
+    render: () => {
+        const WithoutLabelComponent = () => {
+            const [noLabelStates, setNoLabelStates] = useState({
+                ariaLabel: false,
+                ariaLabelWithSubtext: false,
+            })
+
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <Checkbox
+                        checked={noLabelStates.ariaLabel}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setNoLabelStates((prev) => ({
+                                ...prev,
+                                ariaLabel: checked === true,
+                            }))
+                        }
+                        aria-label="Enable dark mode"
+                    />
+                    <Checkbox
+                        checked={noLabelStates.ariaLabelWithSubtext}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setNoLabelStates((prev) => ({
+                                ...prev,
+                                ariaLabelWithSubtext: checked === true,
+                            }))
+                        }
+                        subtext="This checkbox has no visible label but has subtext"
+                        aria-label="Dark mode toggle"
+                    />
+                </div>
+            )
+        }
+        return <WithoutLabelComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Checkboxes without visible labels, using aria-label for accessibility. Useful for compact UIs where space is limited.',
+            },
+        },
+    },
+}
+
+// Text truncation with maxLength
+export const TextTruncation: Story = {
+    render: () => {
+        const TextTruncationComponent = () => {
+            const [truncationStates, setTruncationStates] = useState({
+                longLabel: false,
+                longSubtext: false,
+                both: false,
+            })
+
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                        maxWidth: '300px',
+                    }}
+                >
+                    <Checkbox
+                        checked={truncationStates.longLabel}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setTruncationStates((prev) => ({
+                                ...prev,
+                                longLabel: checked === true,
+                            }))
+                        }
+                        maxLength={{ label: 30 }}
+                    >
+                        This is a very long label that will be truncated when it
+                        exceeds the maximum length
+                    </Checkbox>
+                    <Checkbox
+                        checked={truncationStates.longSubtext}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setTruncationStates((prev) => ({
+                                ...prev,
+                                longSubtext: checked === true,
+                            }))
+                        }
+                        subtext="This is a very long subtext description that will be truncated when it exceeds the maximum length specified in the maxLength prop"
+                        maxLength={{ subtext: 50 }}
+                    >
+                        Checkbox with long subtext
+                    </Checkbox>
+                    <Checkbox
+                        checked={truncationStates.both}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setTruncationStates((prev) => ({
+                                ...prev,
+                                both: checked === true,
+                            }))
+                        }
+                        subtext="This subtext will also be truncated along with the label above"
+                        maxLength={{ label: 25, subtext: 40 }}
+                    >
+                        Both label and subtext truncated
+                    </Checkbox>
+                </div>
+            )
+        }
+        return <TextTruncationComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Checkboxes with text truncation using maxLength prop. Hover over truncated text to see full content in tooltip.',
+            },
+        },
+    },
+}
+
+// Combined states
+export const CombinedStates: Story = {
+    render: () => {
+        const CombinedStatesComponent = () => {
+            const [combinedStates, setCombinedStates] = useState({
+                disabledError: false,
+                disabledRequired: false,
+                errorRequired: false,
+            })
+
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                    }}
+                >
+                    <Checkbox
+                        disabled={true}
+                        error={true}
+                        checked={combinedStates.disabledError}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setCombinedStates((prev) => ({
+                                ...prev,
+                                disabledError: checked === true,
+                            }))
+                        }
+                        subtext="This checkbox is disabled and has an error state"
+                    >
+                        Disabled with error
+                    </Checkbox>
+                    <Checkbox
+                        disabled={true}
+                        required={true}
+                        checked={combinedStates.disabledRequired}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setCombinedStates((prev) => ({
+                                ...prev,
+                                disabledRequired: checked === true,
+                            }))
+                        }
+                        subtext="This checkbox is disabled but still marked as required"
+                    >
+                        Disabled and required
+                    </Checkbox>
+                    <Checkbox
+                        error={true}
+                        required={true}
+                        checked={combinedStates.errorRequired}
+                        onCheckedChange={(checked: CheckboxChangeValue) =>
+                            setCombinedStates((prev) => ({
+                                ...prev,
+                                errorRequired: checked === true,
+                            }))
+                        }
+                        subtext="This checkbox has both error and required states"
+                    >
+                        Error and required
+                    </Checkbox>
+                </div>
+            )
+        }
+        return <CombinedStatesComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Checkboxes with combined states: disabled + error, disabled + required, and error + required.',
+            },
+        },
+    },
+}
+
+// Form integration
+export const FormIntegration: Story = {
+    render: () => {
+        const FormIntegrationComponent = () => {
+            const [formData, setFormData] = useState({
+                newsletter: false,
+                terms: false,
+                marketing: false,
+            })
+
+            const handleSubmit = (e: React.FormEvent) => {
+                e.preventDefault()
+                const form = e.target as HTMLFormElement
+                const formDataObj = new FormData(form)
+                const values: Record<string, string> = {}
+                formDataObj.forEach((value, key) => {
+                    values[key] = value as string
+                })
+                alert(
+                    `Form submitted with values: ${JSON.stringify(values, null, 2)}`
+                )
+            }
+
+            return (
+                <form onSubmit={handleSubmit}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '20px',
+                            padding: '20px',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '8px',
+                            maxWidth: '400px',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                margin: 0,
+                                fontSize: '18px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Registration Preferences
+                        </h3>
+
+                        <Checkbox
+                            name="newsletter"
+                            checked={formData.newsletter}
+                            onCheckedChange={(checked: CheckboxChangeValue) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    newsletter: checked === true,
+                                }))
+                            }
+                            subtext="Receive weekly updates and news"
+                        >
+                            Subscribe to newsletter
+                        </Checkbox>
+
+                        <Checkbox
+                            name="terms"
+                            checked={formData.terms}
+                            onCheckedChange={(checked: CheckboxChangeValue) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    terms: checked === true,
+                                }))
+                            }
+                            required={true}
+                            subtext="You must accept the terms to continue"
+                        >
+                            I accept the terms and conditions
+                        </Checkbox>
+
+                        <Checkbox
+                            name="marketing"
+                            checked={formData.marketing}
+                            onCheckedChange={(checked: CheckboxChangeValue) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    marketing: checked === true,
+                                }))
+                            }
+                            subtext="Receive promotional emails and offers"
+                        >
+                            Enable marketing communications
+                        </Checkbox>
+
+                        <button
+                            type="submit"
+                            style={{
+                                marginTop: '16px',
+                                padding: '10px 20px',
+                                backgroundColor: '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Submit Preferences
+                        </button>
+                    </div>
+                </form>
+            )
+        }
+        return <FormIntegrationComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Checkboxes integrated into a form with name and value attributes for form submission.',
+            },
+        },
+    },
+}
+
 // Interactive playground
 export const Interactive: Story = {
     render: function InteractiveCheckbox(args: Story['args']) {
