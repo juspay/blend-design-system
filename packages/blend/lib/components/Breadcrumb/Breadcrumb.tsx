@@ -48,7 +48,6 @@ const BreadcrumbItem = ({
         <>
             <PrimitiveLink
                 data-element="breadcrumb-item"
-                data-id={item.label}
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -66,14 +65,12 @@ const BreadcrumbItem = ({
                 onClick={!isActive && item.onClick ? handleClick : undefined}
             >
                 {item.leftSlot && (
-                    <Block
-                        data-element="breadcrumb-item-left-slot"
-                        contentCentered
-                    >
+                    <Block data-element="leading-icon" contentCentered>
                         {item.leftSlot}
                     </Block>
                 )}
                 <PrimitiveText
+                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
@@ -81,10 +78,7 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block
-                        data-element="breadcrumb-item-right-slot"
-                        contentCentered
-                    >
+                    <Block data-element="trailing-icon" contentCentered>
                         {item.rightSlot}
                     </Block>
                 )}

@@ -207,7 +207,6 @@ const SingleSelect = ({
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
-                data-selectbox-value={placeholder}
             >
                 <Wrapper
                     position="relative"
@@ -216,7 +215,6 @@ const SingleSelect = ({
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
-                    data-dropdown-for={placeholder}
                 >
                     <SingleSelectMenu
                         skeleton={skeleton}
@@ -257,11 +255,6 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
-                                    data-value={selected || placeholder}
-                                    data-custom-value={selected || placeholder}
-                                    data-button-status={
-                                        disabled ? 'disabled' : 'enabled'
-                                    }
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
@@ -446,6 +439,7 @@ const SingleSelect = ({
                                             </Block>
                                         ) : (
                                             <Text
+                                                data-element="placeholder"
                                                 color={
                                                     selected
                                                         ? singleSelectTokens
@@ -483,7 +477,7 @@ const SingleSelect = ({
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
-                                                data-button-text={
+                                                data-id={
                                                     selected
                                                         ? valueLabelMap[
                                                               selected
@@ -498,7 +492,10 @@ const SingleSelect = ({
                                             </Text>
                                         )}
                                     </Block>
-                                    <Block contentCentered>
+                                    <Block
+                                        data-element="chevron-icon"
+                                        contentCentered
+                                    >
                                         <ChevronDown
                                             size={16}
                                             color={

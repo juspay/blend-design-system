@@ -356,7 +356,7 @@ const AccordionItem = forwardRef<
                                     chevronPosition !==
                                         AccordionChevronPosition.LEFT && (
                                         <Block
-                                            data-element="icon"
+                                            data-element="leading-icon"
                                             flexShrink={0}
                                             display="flex"
                                             alignItems="center"
@@ -399,14 +399,17 @@ const AccordionItem = forwardRef<
                                                           .text.title.color
                                                           .default
                                             }
-                                            data-header-text={title}
+                                            data-element="accordion-item-header"
+                                            data-id={
+                                                title || 'accordion-item-header'
+                                            }
                                         >
                                             {title}
                                         </PrimitiveText>
 
                                         {rightSlot && (
                                             <Block
-                                                data-element="icon"
+                                                data-element="trailing-icon"
                                                 flexShrink={0}
                                                 display="flex"
                                                 alignItems="center"

@@ -153,9 +153,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     data-element="select-item"
                     data-id={item.label || 'select-item'}
                     ref={ref}
-                    data-dropdown-numeric={index + 1}
-                    data-dropdown-value={item.label}
-                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
+                    data-numeric={index + 1}
+                    data-state={isSelected ? 'selected' : 'not selected'}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
@@ -264,6 +263,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             {item.slot4 && <MenuItemSlot slot={item.slot4} />}
                             {showCheckmark && rightSlotContent && (
                                 <Block
+                                    data-element="checkbox"
+                                    data-id={item.value || 'checkbox'}
+                                    data-state={
+                                        isSelected ? 'selected' : 'not selected'
+                                    }
                                     as="span"
                                     display="flex"
                                     alignItems="center"
