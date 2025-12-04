@@ -399,6 +399,16 @@ describe('MultiSelect Accessibility', () => {
         })
 
         it('provides accessible name via label - name is programmatically determinable (WCAG 4.1.2)', () => {
+            render(
+                <MultiSelect
+                    label="Country Selection"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                />
+            )
+
             const label = screen.getByText('Country Selection')
             expect(label).toBeInTheDocument()
             expect(label.tagName.toLowerCase()).toBe('label')
@@ -714,11 +724,32 @@ describe('MultiSelect Accessibility', () => {
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
         it('has visible label - label provides instructions', () => {
+            render(
+                <MultiSelect
+                    label="Select Countries"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                />
+            )
+
             const label = screen.getByText('Select Countries')
             expect(label).toBeInTheDocument()
         })
 
         it('has hint text - additional instructions provided', () => {
+            render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    hintText="Select multiple options"
+                />
+            )
+
             const hintText = screen.getByText('Select multiple options')
             expect(hintText).toBeInTheDocument()
         })
@@ -775,6 +806,18 @@ describe('MultiSelect Accessibility', () => {
         })
 
         it('has error message - error instructions provided (WCAG 3.3.2, 4.1.3)', () => {
+            render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    error={true}
+                    errorMessage="Please select at least one option"
+                />
+            )
+
             const errorMessage = screen.getByText(
                 'Please select at least one option'
             )
@@ -782,6 +825,17 @@ describe('MultiSelect Accessibility', () => {
         })
 
         it('required field indicated with asterisk - required instructions (WCAG 3.3.2)', () => {
+            render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    required={true}
+                />
+            )
+
             const label = screen.getByText(/Select options/)
             expect(label).toBeInTheDocument()
             // Required indicator is displayed visually with the label
@@ -1096,6 +1150,17 @@ describe('MultiSelect Accessibility', () => {
 
     describe('WCAG 1.3.3 Sensory Characteristics (Level A)', () => {
         it('does not rely solely on visual characteristics - instructions are text-based (WCAG 1.3.3)', () => {
+            render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    hintText="Select multiple options from the list"
+                />
+            )
+
             // Instructions are provided via label and hintText, not just visual indicators
             const label = screen.getByText('Select options')
             const hintText = screen.getByText(
