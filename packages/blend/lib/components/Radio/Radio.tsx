@@ -1,6 +1,6 @@
 import React from 'react'
 import { type RadioProps, RadioSize } from './types'
-import { getRadioTextProps, getRadioLabelStyles, getRadioDataState } from './utils'
+import { getRadioTextProps, getRadioLabelStyles } from './utils'
 import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -179,9 +179,9 @@ const RadioContent: React.FC<{
     const subtextContent = subtext ? (
         <Block id={subtextId}>
             <PrimitiveText
-            data-element="radio-description"
-            data-id={subtext ?? ''}
-            data-status={disabled ? 'disabled' : 'enabled'}
+                data-element="radio-description"
+                data-id={subtext ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 data-description-text={subtext}
                 as="span"
                 fontSize={subtextProps.fontSize}

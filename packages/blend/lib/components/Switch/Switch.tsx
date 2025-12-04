@@ -84,8 +84,12 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         }
 
         return (
-            <Block  data-switch={label ?? 'switch'}
-            data-status={disabled ? 'disabled' : 'enabled'} display="flex" gap={tokens.gap}>
+            <Block
+                data-switch={label ?? 'switch'}
+                data-status={disabled ? 'disabled' : 'enabled'}
+                display="flex"
+                gap={tokens.gap}
+            >
                 <StyledSwitchRoot
                     ref={ref}
                     type="button"
@@ -131,7 +135,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
 
                         {slot && (
                             <Block
-                             data-element="icon"
+                                data-element="icon"
                                 as="span"
                                 marginLeft={tokens.content.label.gap}
                             >
@@ -153,18 +157,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                         </SwitchSubtext>
                     )}
                 </Block>
-
-                {subtext && (
-                    <SwitchSubtext
-                        size={size}
-                        disabled={disabled}
-                        error={error}
-                        tokens={tokens}
-                        maxLength={subtextMaxLength}
-                    >
-                        {subtext}
-                    </SwitchSubtext>
-                )}
             </Block>
         )
     }
