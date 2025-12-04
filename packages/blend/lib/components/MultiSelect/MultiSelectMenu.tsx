@@ -158,6 +158,7 @@ const MultiSelectMenu = ({
     variant = MultiSelectVariant.CONTAINER,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    menuId,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -285,6 +286,7 @@ const MultiSelectMenu = ({
             </RadixMenu.Trigger>
             <RadixMenu.Portal>
                 <Content
+                    id={menuId}
                     data-dropdown="dropdown"
                     ref={contentRef}
                     align={alignment}
@@ -293,6 +295,8 @@ const MultiSelectMenu = ({
                     side={side}
                     avoidCollisions={false}
                     onKeyDown={handleKeyDown}
+                    role="listbox"
+                    aria-multiselectable="true"
                     style={{
                         minWidth: minMenuWidth || 250,
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
@@ -321,6 +325,10 @@ const MultiSelectMenu = ({
                                             value={searchText}
                                             onChange={handleSearchChange}
                                             autoFocus
+                                            aria-label={
+                                                searchPlaceholder ||
+                                                'Search options'
+                                            }
                                         />
                                     </Block>
                                 )}

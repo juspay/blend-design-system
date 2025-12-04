@@ -151,6 +151,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             >
                 <Block
                     ref={ref}
+                    role={type === SelectItemType.MULTI ? 'option' : 'menuitem'}
+                    aria-selected={
+                        type === SelectItemType.MULTI ? isSelected : undefined
+                    }
                     data-dropdown-numeric={index + 1}
                     data-dropdown-value={item.label}
                     data-dropdown-value-selected={isSelected ? 'True' : 'False'}

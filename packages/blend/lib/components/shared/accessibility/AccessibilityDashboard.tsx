@@ -6,6 +6,7 @@ import CheckboxAccessibility from '../../Checkbox/accessibility/CheckboxAccessib
 import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
+import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -41,19 +42,9 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         component: SingleSelectAccessibility,
     },
     {
-        name: 'Checkbox',
-        displayName: 'Checkbox',
-        component: CheckboxAccessibility,
-    },
-    {
-        name: 'Radio',
-        displayName: 'Radio',
-        component: RadioAccessibility,
-    },
-    {
-        name: 'Switch',
-        displayName: 'Switch',
-        component: SwitchAccessibility,
+        name: 'MultiSelect',
+        displayName: 'MultiSelect',
+        component: MultiSelectAccessibility,
     },
     // Add more components here as they are added
     // Example:

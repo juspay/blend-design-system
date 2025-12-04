@@ -123,8 +123,6 @@ const SingleSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
-    // WCAG 4.1.2 (Name, Role, Value): Setup form-specific ARIA attributes
-    // Note: Radix UI handles aria-expanded and aria-controls automatically
     const generatedId = useId()
     const { uniqueName, hintTextId, errorMessageId, menuId, ariaAttributes } =
         setupAccessibility({

@@ -32,6 +32,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     name?: string
     required?: boolean
     tokens?: Partial<TTokens>
+    labelId?: string
 }
 
 /**
@@ -50,12 +51,13 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     name,
     required,
     tokens,
+    labelId,
 }: InputLabelsProps<TTokens>) => {
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
-                    id={name ? `${name}-label` : undefined}
+                    id={labelId || (name ? `${name}-label` : undefined)}
                     data-form-label={label}
                     as="label"
                     htmlFor={name}
