@@ -95,8 +95,9 @@ describe('TextInput Accessibility', () => {
                     onChange={() => {}}
                 />
             )
+            // Sublabel is rendered as "(As it appears on your ID)"
             expect(
-                screen.getByText('As it appears on your ID')
+                screen.getByText(/As it appears on your ID/)
             ).toBeInTheDocument()
         })
 
@@ -541,7 +542,9 @@ describe('TextInput Accessibility', () => {
                     }
                 />
             )
-            expect(screen.getByRole('textbox')).toBeInTheDocument()
+            // Use accessible name via label instead of role, since RTL
+            // does not always map type="password" to role="textbox"
+            expect(screen.getByLabelText('Password')).toBeInTheDocument()
             expect(
                 screen.getByRole('button', {
                     name: 'Toggle password visibility',
