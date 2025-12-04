@@ -1065,11 +1065,11 @@ console.log('Clickable Height:', clickableHeight);
                             <li className="flex items-start">
                                 <Check className="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
                                 <span>
-                                    <strong>Touch Targets:</strong> Small
-                                    (16px at sm, 14px at lg) and Medium (20px at
-                                    sm, 16px at lg) do not meet Level AAA
-                                    (44x44px minimum). Radio has padding: 0px,
-                                    so interactive area equals visible size.
+                                    <strong>Touch Targets:</strong> Small (16px
+                                    at sm, 14px at lg) and Medium (20px at sm,
+                                    16px at lg) do not meet Level AAA (44x44px
+                                    minimum). Radio has padding: 0px, so
+                                    interactive area equals visible size.
                                 </span>
                             </li>
                             <li className="flex items-start">
