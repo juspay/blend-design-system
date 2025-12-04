@@ -103,6 +103,7 @@ const SingleSelect = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
 }: SingleSelectProps) => {
+    console.log(slot, 'slot')
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
@@ -180,6 +181,8 @@ const SingleSelect = ({
 
     return (
         <Block
+            data-single-select={label || 'single-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             width="100%"
             display="flex"
             flexDirection="column"
@@ -333,6 +336,7 @@ const SingleSelect = ({
                                     >
                                         {slot && (
                                             <Block
+                                                data-element="icon"
                                                 ref={slotRef}
                                                 contentCentered
                                             >

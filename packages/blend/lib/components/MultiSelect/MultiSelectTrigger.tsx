@@ -158,7 +158,12 @@ const MultiSelectTrigger = ({
                     })}
                 >
                     {slot && (
-                        <Block as="span" ref={slotRef} contentCentered>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            ref={slotRef}
+                            contentCentered
+                        >
                             {slot}
                         </Block>
                     )}

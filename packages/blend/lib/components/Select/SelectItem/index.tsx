@@ -13,7 +13,7 @@ import type { SingleSelectTokensType } from '../../SingleSelect/singleSelect.tok
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
-        <Block flexShrink={0} height="auto" contentCentered>
+        <Block data-element="icon" flexShrink={0} height="auto" contentCentered>
             {slot}
         </Block>
     )
@@ -150,6 +150,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 data-disabled={item.disabled}
             >
                 <Block
+                    data-element="select-item"
+                    data-id={item.label || 'select-item'}
                     ref={ref}
                     data-dropdown-numeric={index + 1}
                     data-dropdown-value={item.label}
@@ -219,6 +221,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
                             <Block
+                                data-element="select-item-label"
+                                data-id={item.label || 'select-item-label'}
                                 flexGrow={1}
                                 display="flex"
                                 overflow="hidden"
@@ -272,6 +276,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     </Block>
                     {item.subLabel && (
                         <Block
+                            data-element="select-item-sublabel"
+                            data-id={item.subLabel || 'select-item-sublabel'}
                             ref={subLabelRef}
                             overflow="hidden"
                             style={{ minWidth: 0, maxWidth: '100%' }}

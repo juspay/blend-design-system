@@ -261,6 +261,7 @@ const AccordionItem = forwardRef<
 
             return (
                 <ChevronAnimation
+                    data-element="accordion-item-chevron"
                     isOpen={false} // This will be controlled by Radix UI's data-state
                     direction={
                         chevronPosition === AccordionChevronPosition.RIGHT
@@ -303,6 +304,9 @@ const AccordionItem = forwardRef<
 
         return (
             <StyledAccordionItem
+                data-element="accordion-item"
+                data-id={title}
+                data-status={isDisabled ? 'disabled' : 'enabled'}
                 value={value}
                 disabled={isDisabled}
                 ref={ref}
@@ -352,6 +356,7 @@ const AccordionItem = forwardRef<
                                     chevronPosition !==
                                         AccordionChevronPosition.LEFT && (
                                         <Block
+                                            data-element="icon"
                                             flexShrink={0}
                                             display="flex"
                                             alignItems="center"
@@ -401,6 +406,7 @@ const AccordionItem = forwardRef<
 
                                         {rightSlot && (
                                             <Block
+                                                data-element="icon"
                                                 flexShrink={0}
                                                 display="flex"
                                                 alignItems="center"
@@ -422,6 +428,8 @@ const AccordionItem = forwardRef<
                                         >
                                             {subtext && !isSmallScreen && (
                                                 <PrimitiveText
+                                                    data-element="accordion-item-subtext"
+                                                    data-id={subtext}
                                                     fontSize={
                                                         accordionToken.trigger
                                                             .text.subtext

@@ -31,7 +31,6 @@ const InputFooter = ({
     hintText,
     disabled,
     errorId,
-    hintId,
     tokens,
 }: InputFooterProps) => {
     return (
@@ -43,6 +42,7 @@ const InputFooter = ({
                         id={errorId}
                         role="alert"
                         aria-live="polite"
+                        data-element="form-error"
                         data-form-error={errorMessage}
                         color={
                             tokens?.errorMessage?.color ||
@@ -63,8 +63,8 @@ const InputFooter = ({
                 {hintText && !error && (
                     <Text
                         // variant="body.md"
-                        id={hintId}
-                        data-desc-text={hintText}
+                        data-element="hint-text"
+                        data-id={hintText || 'hint-text'}
                         fontWeight={
                             tokens?.hintText?.fontWeight ||
                             FOUNDATION_THEME.font.weight[400]
