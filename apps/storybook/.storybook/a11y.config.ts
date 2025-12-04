@@ -157,9 +157,6 @@ export function getA11yConfig(
                     'wcag22aaa',
                 ],
             },
-            // Ensure all tests complete (no incomplete tests)
-            iframes: true,
-            elementRef: true,
         },
     }
 }

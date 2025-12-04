@@ -146,7 +146,9 @@ const CheckboxDemo = () => {
                             name="playground"
                             maxLength={{ label: 3, subtext: 3 }}
                             checked={playgroundChecked}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={(
+                                checked: boolean | 'indeterminate'
+                            ) => {
                                 console.log(checked)
                                 setPlaygroundChecked(checked)
                                 addSnackbar({

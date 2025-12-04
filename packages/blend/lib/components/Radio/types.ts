@@ -10,7 +10,7 @@ export type RadioProps = {
     value?: string
     checked?: boolean
     defaultChecked?: boolean
-    onChange?: (checked: boolean) => void
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     disabled?: boolean
     required?: boolean
     error?: boolean
@@ -34,4 +34,6 @@ export type RadioGroupProps = {
     children: ReactNode
     onChange?: (value: string) => void
     disabled?: boolean
+    required?: boolean
+    error?: boolean
 }

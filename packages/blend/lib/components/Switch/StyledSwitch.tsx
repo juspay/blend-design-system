@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components'
 import { SwitchSize } from './types'
 import type { SwitchTokensType } from './switch.token'
 
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     switchRootAnimations,
     switchThumbAnimations,
@@ -13,10 +12,10 @@ export const StyledSwitchRoot = styled.button<{
     $isDisabled: boolean
     $isChecked: boolean
     $error?: boolean
+    $tokens: SwitchTokensType
 }>`
-    ${({ size, $isDisabled, $isChecked }) => {
-        const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
-
+    ${({ size, $isDisabled, $isChecked, $tokens }) => {
+        const tokens = $tokens
         return css`
             ${switchRootAnimations}
 
@@ -69,10 +68,10 @@ export const StyledSwitchRoot = styled.button<{
 export const StyledSwitchThumb = styled.div<{
     size: SwitchSize
     $isChecked: boolean
+    $tokens: SwitchTokensType
 }>`
-    ${({ size, $isChecked }) => {
-        const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
-
+    ${({ size, $isChecked, $tokens }) => {
+        const tokens = $tokens
         return css`
             ${switchThumbAnimations}
 
