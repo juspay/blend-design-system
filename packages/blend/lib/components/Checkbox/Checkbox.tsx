@@ -67,7 +67,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
             <Block
                 data-checkbox={children ?? 'checkbox'}
                 data-status={
-                    disabled ? 'enabled-notselected' : 'enabled-selected'
+                    disabled ? 'disabled-selected' : 'enabled-selected'
                 }
                 display="flex"
                 alignItems="flex-start"
