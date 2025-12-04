@@ -325,7 +325,6 @@ const AccordionItem = forwardRef<
                         disabled={isDisabled}
                         data-type={accordionType}
                         data-disabled={isDisabled || undefined}
-                        data-accordion-expanded={isExpanded ? 'true' : 'false'}
                         $isSmallScreen={isSmallScreen}
                         $isFirst={isFirst}
                         $isLast={isLast}
@@ -342,6 +341,7 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.LEFT && (
                                     <Block
+                                        data-element="chevron-icon"
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="center"
@@ -465,6 +465,7 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.RIGHT && (
                                     <Block
+                                        data-element="chevron-icon"
                                         position="absolute"
                                         right={0}
                                         top={0}

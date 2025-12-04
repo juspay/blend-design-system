@@ -315,6 +315,7 @@ const MultiSelect = ({
                                     }
                                 >
                                     <PrimitiveButton
+                                        data-element="multi-select-button"
                                         type="button"
                                         position="relative"
                                         width={

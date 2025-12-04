@@ -255,6 +255,7 @@ const SingleSelect = ({
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    data-element="single-select-button"
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
