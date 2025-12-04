@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useCallback } from 'react'
+import React, { forwardRef, useState, useCallback, useId } from 'react'
 import type { RadioGroupProps } from './types'
 import { isRadioElement, isValidRadioValue, getRadioTextProps } from './utils'
 import Block from '../Primitives/Block/Block'
@@ -7,13 +7,40 @@ import Radio from './Radio'
 import type { RadioTokensType } from './radio.token'
 import { RadioSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../tokens'
+import { useErrorShake } from '../common/useErrorShake'
+import { getErrorShakeStyle } from '../common/error.animations'
 
 const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
     (
-        { children, label, name, value, defaultValue, onChange, disabled },
+        {
+            id,
+            children,
+            label,
+            name,
+            value,
+            defaultValue,
+            onChange,
+            disabled,
+            required,
+            error,
+            ...rest
+        },
         ref
     ) => {
         const radioTokens = useResponsiveTokens<RadioTokensType>('RADIO')
+        const generatedId = useId()
+        const uniqueId = id || generatedId
+        const shouldShake = useErrorShake(error || false)
+
+        const ariaLabelledBy = (rest as { 'aria-labelledby'?: string })[
+            'aria-labelledby'
+        ]
+        const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
+            'aria-describedby'
+        ]
+        const labelId =
+            !ariaLabelledBy && label ? `${uniqueId}-label` : undefined
 
         // Internal state for uncontrolled mode
         const [internalValue, setInternalValue] = useState<string | undefined>(
@@ -110,27 +137,42 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
             return React.cloneElement(child, {
                 name,
                 checked: isChecked,
-                onChange: (checked: boolean) => {
-                    if (checked) {
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.checked) {
                         handleGroupChange(childValue)
                     }
                 },
                 disabled: disabled || child.props.disabled,
+                error: error || child.props.error,
+                required: required || child.props.required,
             })
         })
 
         return (
             <Block
                 ref={ref}
+                id={uniqueId}
                 display="flex"
                 flexDirection="column"
                 gap={radioTokens.group.gap}
                 role="radiogroup"
-                aria-label={label}
+                style={getErrorShakeStyle(shouldShake)}
                 onKeyDown={handleKeyDown}
+                {...rest}
+                aria-label={!ariaLabelledBy && !labelId ? label : undefined}
+                aria-labelledby={ariaLabelledBy || labelId}
+                aria-describedby={customAriaDescribedBy}
+                aria-required={required ? true : undefined}
+                aria-invalid={error ? true : undefined}
             >
                 {label && (
-                    <GroupLabel radioTokens={radioTokens}>{label}</GroupLabel>
+                    <GroupLabel
+                        radioTokens={radioTokens}
+                        required={required}
+                        id={labelId}
+                    >
+                        {label}
+                    </GroupLabel>
                 )}
                 <Block
                     display="flex"
@@ -147,7 +189,9 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
 const GroupLabel: React.FC<{
     children: React.ReactNode
     radioTokens: RadioTokensType
-}> = ({ children, radioTokens }) => {
+    required?: boolean
+    id?: string
+}> = ({ children, radioTokens, required, id }) => {
     const textProps = getRadioTextProps(
         radioTokens,
         RadioSize.MEDIUM,
@@ -158,12 +202,22 @@ const GroupLabel: React.FC<{
     return (
         <PrimitiveText
             as="label"
+            id={id}
             fontSize={textProps.fontSize}
             fontWeight={textProps.fontWeight}
             color={textProps.color}
             style={{ marginBottom: radioTokens.group.gap }}
         >
             {children}
+            {required && (
+                <PrimitiveText
+                    as="span"
+                    color={radioTokens.required.color}
+                    style={{ marginLeft: FOUNDATION_THEME.unit[2] }}
+                >
+                    *
+                </PrimitiveText>
+            )}
         </PrimitiveText>
     )
 }

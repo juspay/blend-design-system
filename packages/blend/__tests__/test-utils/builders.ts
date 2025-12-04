@@ -337,7 +337,7 @@ interface RadioTestProps {
     value?: string
     checked?: boolean
     defaultChecked?: boolean
-    onChange?: (checked: boolean) => void
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     disabled?: boolean
     required?: boolean
     error?: boolean
@@ -415,7 +415,7 @@ export class RadioPropsBuilder {
         return this
     }
 
-    withOnChange(onChange: (checked: boolean) => void) {
+    withOnChange(onChange: (e: React.ChangeEvent<HTMLInputElement>) => void) {
         this.props.onChange = onChange
         return this
     }
