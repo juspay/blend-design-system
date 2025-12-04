@@ -20,12 +20,13 @@ export type SemanticTagType = keyof Pick<
     | 'label'
 >
 
-export type TextProps = PrimitiveTextProps & {
-    children: React.ReactNode
-    variant?: VariantType
-    as?: SemanticTagType
-    style?: React.CSSProperties
-}
+export type TextProps = PrimitiveTextProps &
+    Omit<React.HTMLAttributes<HTMLElement>, 'color'> & {
+        children: React.ReactNode
+        variant?: VariantType
+        as?: SemanticTagType
+        style?: React.CSSProperties
+    }
 
 export type VariantType =
     | 'body.xs'

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useId, useRef, useState } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
@@ -27,6 +27,7 @@ import {
     errorShakeAnimation,
 } from '../common/error.animations'
 import styled from 'styled-components'
+import { setupAccessibility } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -102,6 +103,7 @@ const SingleSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -120,6 +122,22 @@ const SingleSelect = ({
     const isItemSelected = selected.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
+
+    // WCAG 4.1.2 (Name, Role, Value): Setup form-specific ARIA attributes
+    // Note: Radix UI handles aria-expanded and aria-controls automatically
+    const generatedId = useId()
+    const { uniqueName, hintTextId, errorMessageId, menuId, ariaAttributes } =
+        setupAccessibility({
+            name,
+            generatedId,
+            label,
+            hintText,
+            error,
+            errorMessage,
+            rest,
+            prefix: 'singleselect',
+            needsMenuId: true,
+        })
 
     const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
     const paddingX = toPixels(
@@ -193,7 +211,7 @@ const SingleSelect = ({
                         sublabel={subLabel}
                         disabled={disabled}
                         helpIconHintText={helpIconText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
                         tokens={singleSelectTokens}
                     />
@@ -251,6 +269,7 @@ const SingleSelect = ({
                         loadingComponent={loadingComponent}
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
+                        menuId={menuId}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
@@ -262,7 +281,8 @@ const SingleSelect = ({
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
-                                    name={name}
+                                    name={uniqueName}
+                                    id={uniqueName}
                                     position="relative"
                                     width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
@@ -282,6 +302,7 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
+                                    {...ariaAttributes}
                                     {...((!inline || isContainer) && {
                                         paddingX: paddingX,
                                         paddingY: paddingY,
@@ -517,6 +538,8 @@ const SingleSelect = ({
                     error={error}
                     errorMessage={errorMessage}
                     tokens={singleSelectTokens}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

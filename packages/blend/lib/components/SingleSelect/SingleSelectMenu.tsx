@@ -71,6 +71,7 @@ type SingleSelectMenuProps = {
     skeleton?: SingleSelectSkeletonProps
     allowCustomValue?: boolean
     customValueLabel?: string
+    menuId?: string
 }
 
 type FlattenedItem = {
@@ -596,6 +597,10 @@ const SingleSelectMenu = ({
                                                 setSearchText(e.target.value)
                                             }}
                                             autoFocus
+                                            aria-label={
+                                                searchPlaceholder ||
+                                                'Search options'
+                                            }
                                         />
                                     </Block>
                                 </Block>

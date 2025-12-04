@@ -21,6 +21,8 @@ type InputFooterProps = {
     hintText?: string
     disabled?: boolean
     tokens?: InputFooterTokens
+    hintTextId?: string
+    errorMessageId?: string
 }
 
 const InputFooter = ({
@@ -29,12 +31,15 @@ const InputFooter = ({
     hintText,
     disabled,
     tokens,
+    hintTextId,
+    errorMessageId,
 }: InputFooterProps) => {
     return (
         ((error && errorMessage) || hintText) && (
             <Block width={'100%'}>
                 {error && errorMessage && (
                     <Text
+                        id={errorMessageId}
                         // variant="body.md"
                         data-form-error={errorMessage}
                         color={
@@ -55,6 +60,7 @@ const InputFooter = ({
                 )}
                 {hintText && !error && (
                     <Text
+                        id={hintTextId}
                         // variant="body.md"
                         data-desc-text={hintText}
                         fontWeight={
