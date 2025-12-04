@@ -47,7 +47,6 @@ const TextInput = ({
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
 
-    // Generate unique IDs for accessibility
     const generatedId = useId()
     const inputId = providedId || generatedId
     const errorId = `${inputId}-error`
@@ -68,7 +67,6 @@ const TextInput = ({
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
 
-    // Build aria-describedby to link hints and errors
     const ariaDescribedBy =
         [
             hintText && !error ? hintId : null,
@@ -184,11 +182,9 @@ const TextInput = ({
                     width={'100%'}
                     disabled={disabled}
                     cursor={disabled ? 'not-allowed' : cursor}
-                    // ARIA attributes for accessibility (WCAG 4.1.2, 3.3.1, 3.3.3)
                     aria-required={required ? 'true' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
                     aria-describedby={ariaDescribedBy}
-                    //styling props
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={

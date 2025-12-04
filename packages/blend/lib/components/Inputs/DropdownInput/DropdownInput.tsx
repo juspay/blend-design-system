@@ -86,13 +86,11 @@ const DropdownInput = ({
         (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(dropdownInputTokens.inputContainer.gap)
 
-    // Generate unique IDs for accessibility
     const generatedId = useId()
     const inputId = rest.id || generatedId
     const errorId = `${inputId}-error`
     const hintId = `${inputId}-hint`
 
-    // Build aria-describedby to link hints and errors (WCAG 3.3.1, 3.3.2)
     const ariaDescribedBy =
         [
             hintText && !error ? hintId : null,
@@ -253,7 +251,6 @@ const DropdownInput = ({
                             : paddingY
                     }
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
-                    // ARIA attributes for accessibility (WCAG 4.1.2, 3.3.1, 3.3.3)
                     aria-required={required ? 'true' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
                     aria-describedby={ariaDescribedBy}
