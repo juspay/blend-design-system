@@ -195,7 +195,9 @@ const SwitchDemo = () => {
                                     : 'Enable notifications'
                             }
                             data-status={
-                                playgroundChecked ? 'enabled-on' : 'enabled-off'
+                                playgroundChecked
+                                    ? 'enabled-selected'
+                                    : 'disabled-selected'
                             }
                         />
                     </div>
@@ -222,7 +224,7 @@ const SwitchDemo = () => {
                                     })
                                 }}
                                 data-id="Enable notifications"
-                                data-status="enabled-on"
+                                data-status="enabled-selected"
                             />
                             <Switch
                                 label="With Subtext"
