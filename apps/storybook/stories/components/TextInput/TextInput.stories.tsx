@@ -11,12 +11,20 @@ import {
     Check,
     X,
 } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof TextInput> = {
     title: 'Components/Inputs/TextInput',
     component: TextInput,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -32,6 +40,31 @@ A flexible text input component with support for labels, validation, error handl
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Uses native \`<input type="text">\` for proper semantics
+- Labels are associated via \`label\`, \`sublabel\`, and \`name\` props
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with inputs via \`InputFooter\`
+- Focus styles and error shake patterns are keyboard-friendly
+- Left/right slot icons are decorative by default and should not replace accessible labels
+- Hint and help text provide additional instructions for users and assistive technologies
+
+**WCAG Compliance Target**: 2.1 Level AA (designed to support 2.2 as the latest version of WCAG [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)])
+
+**Intended coverage:**
+- **Perceivable**: Labels, hints, and error messages are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, Enter for form submission)
+- **Understandable**: Clear labels, inline help, and error messaging patterns
+- **Robust**: Built with semantic HTML and ARIA-friendly props for screen readers
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA)
+- **jest-axe tests**: Run \`pnpm test TextInput.accessibility\` (mirroring Button’s tests) to automate WCAG checks
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
+
+> Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
 
 ## Usage
 
@@ -532,6 +565,145 @@ export const WithLabelsAndHints: Story = {
             description: {
                 story: 'TextInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
+        },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => {
+        const [email, setEmail] = useState('')
+        const [name, setName] = useState('')
+        const [password, setPassword] = useState('')
+
+        const emailError =
+            email.length > 0 && !email.includes('@')
+                ? 'Please enter a valid email address'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Required Fields, and Hints
+                    </h3>
+                    <TextInput
+                        label="Full Name"
+                        sublabel="As it appears on your ID"
+                        hintText="Enter your first and last name"
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <TextInput
+                        label="Email Address"
+                        placeholder="name@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="email"
+                        error={!!emailError}
+                        errorMessage={emailError}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <TextInput
+                        label="Disabled Input"
+                        value="This field is disabled"
+                        onChange={() => {}}
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Keyboard and Screen Reader Friendly Layout
+                    </h3>
+                    <TextInput
+                        label="Password"
+                        placeholder="Enter a strong password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        hintText="Use at least 12 characters, including letters and numbers"
+                        required
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations and error messaging.
+
+2. **jest-axe tests**:
+   - Add \`TextInput.accessibility.test.tsx\` mirroring Button's tests and run:
+   \`\`\`bash
+   pnpm test TextInput.accessibility
+   \`\`\`
+   - Validate WCAG 2.1/2.2 A and AA success criteria for form fields (labels, errors, keyboard support).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, Enter).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
         },
     },
 }

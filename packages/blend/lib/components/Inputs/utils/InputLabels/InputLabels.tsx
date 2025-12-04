@@ -30,6 +30,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     disabled?: boolean
     helpIconHintText?: string
     name?: string
+    inputId?: string // Unique ID for input association
     required?: boolean
     tokens?: Partial<TTokens>
 }
@@ -40,6 +41,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
  * @param {string} sublabel - The sublabel for the input field.
  * @param {boolean} disabled - Whether the input field is disabled.
  * @param {string} helpIconHintText - The hint text for the help icon.
+ * @param {string} inputId - Unique ID for proper label association (WCAG 3.3.2).
  * @param {boolean} required - Whether the input field is required.
  */
 const InputLabels = <TTokens extends InputLabelTokens>({
@@ -48,6 +50,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     disabled,
     helpIconHintText,
     name,
+    inputId,
     required,
     tokens,
 }: InputLabelsProps<TTokens>) => {
@@ -57,7 +60,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 <Text
                     data-form-label={label}
                     as="label"
-                    htmlFor={name}
+                    htmlFor={inputId || name}
                     // variant="body.md"
                     fontWeight={tokens?.label?.fontWeight}
                     fontSize={
@@ -77,6 +80,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 </Text>
                 {required && (
                     <sup
+                        aria-hidden="true"
                         style={{
                             color:
                                 tokens?.required?.color ||

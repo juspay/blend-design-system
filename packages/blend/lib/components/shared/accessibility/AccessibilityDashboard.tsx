@@ -2,6 +2,7 @@ import { forwardRef, useState, useMemo } from 'react'
 import { SingleSelect } from '../../SingleSelect'
 import { SelectMenuVariant, SelectMenuAlignment } from '../../SingleSelect'
 import ButtonAccessibility from '../../Button/accessibility/ButtonAccessibility'
+import TextInputAccessibility from '../../Inputs/TextInput/accessibility/TextInputAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -13,17 +14,15 @@ export type ComponentAccessibilitySection = {
 const componentRegistry: ComponentAccessibilitySection[] = [
     {
         name: 'Button',
-
         displayName: 'Button',
         component: ButtonAccessibility,
     },
+    {
+        name: 'TextInput',
+        displayName: 'Text Input',
+        component: TextInputAccessibility,
+    },
     // Add more components here as they are added
-    // Example:
-    // {
-    //     name: 'Input',
-    //     displayName: 'Text Input',
-    //     component: InputAccessibility,
-    // },
 ]
 
 export type AccessibilityDashboardProps = {

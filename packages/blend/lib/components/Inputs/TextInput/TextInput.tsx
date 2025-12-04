@@ -1,6 +1,6 @@
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useId } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import { TextInputSize, type TextInputProps } from './types'
@@ -41,10 +41,17 @@ const TextInput = ({
     onBlur,
     onFocus,
     cursor = 'text',
+    id: providedId,
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
+
+    // Generate unique IDs for accessibility
+    const generatedId = useId()
+    const inputId = providedId || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
 
     const [isFocused, setIsFocused] = useState(false)
     const shouldShake = useErrorShake(error)
@@ -60,6 +67,15 @@ const TextInput = ({
 
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
+
+    // Build aria-describedby to link hints and errors
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
 
     const paddingX = toPixels(textInputTokens.inputContainer.padding.x[size])
     const paddingY =
@@ -103,7 +119,7 @@ const TextInput = ({
                     sublabel={sublabel}
                     helpIconHintText={helpIconHintText}
                     disabled={disabled}
-                    name={name}
+                    inputId={inputId}
                     required={required}
                 />
             )}
@@ -157,6 +173,7 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
+                    id={inputId}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
@@ -167,6 +184,10 @@ const TextInput = ({
                     width={'100%'}
                     disabled={disabled}
                     cursor={disabled ? 'not-allowed' : cursor}
+                    // ARIA attributes for accessibility (WCAG 4.1.2, 3.3.1, 3.3.3)
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     //styling props
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
@@ -256,6 +277,8 @@ const TextInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
             />
         </Block>
     )
