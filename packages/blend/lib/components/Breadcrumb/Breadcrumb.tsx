@@ -136,14 +136,7 @@ const Breadcrumb = ({
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
 
     return (
-        <Block
-            as="nav"
-            width={'full'}
-            display="flex"
-            alignItems="center"
-            gap={breadcrumbTokens.gap}
-            aria-label="Breadcrumb navigation"
-        >
+        <Block as="nav" width={'full'} aria-label="Breadcrumb navigation">
             <ol
                 style={{
                     display: 'flex',
@@ -152,10 +145,17 @@ const Breadcrumb = ({
                     listStyle: 'none',
                     margin: 0,
                     padding: 0,
+                    width: '100%',
                 }}
             >
                 {baseItem && (
-                    <li key={`breadcrumb-item-${0}`}>
+                    <li
+                        key={`breadcrumb-item-${0}`}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
                         <BreadcrumbItem
                             item={baseItem}
                             isActive={items.length == 1 ? true : false}
@@ -164,7 +164,12 @@ const Breadcrumb = ({
                     </li>
                 )}
                 {menuItems.length > 0 && (
-                    <li>
+                    <li
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
                         <PrimitiveButton
                             background={'none'}
                             borderRadius={FOUNDATION_THEME.border.radius[6]}
@@ -194,7 +199,13 @@ const Breadcrumb = ({
                     </li>
                 )}
                 {restItems.map((item, index) => (
-                    <li key={`breadcrumb-item-${index}`}>
+                    <li
+                        key={`breadcrumb-item-${index}`}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
                         <BreadcrumbItem
                             item={item}
                             isActive={index === restItems.length - 1}

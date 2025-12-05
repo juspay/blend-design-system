@@ -252,6 +252,9 @@ describe('Breadcrumb Accessibility', () => {
         })
 
         it('ellipsis button has minimum 44x44px touch target - sufficient target size', () => {
+            const items = createBreadcrumbItems(8)
+            render(<Breadcrumb items={items} />)
+
             const button = screen.getByRole('button', {
                 name: /show \d+ more breadcrumb items/i,
             })
