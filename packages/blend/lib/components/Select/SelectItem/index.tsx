@@ -267,11 +267,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             {item.slot4 && <MenuItemSlot slot={item.slot4} />}
                             {showCheckmark && rightSlotContent && (
                                 <Block
-                                    data-element="checkbox"
-                                    data-id={item.value || 'checkbox'}
-                                    data-state={
-                                        isSelected ? 'selected' : 'not selected'
-                                    }
                                     as="span"
                                     display="flex"
                                     alignItems="center"
