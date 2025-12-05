@@ -241,12 +241,16 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         borderRadius={tokens.container.borderRadius[shape]}
                     />
                 ) : hasImage ? (
+                    /* Avatar image with alt text for accessibility (WCAG 1.1.1, 4.1.2) */
                     <StyledAvatarImage
                         src={src}
                         alt={alt}
                         onError={() => setImageError(true)}
+                        role="img"
                     />
                 ) : (
+                    /* Fallback content (initials or custom) - decorative visual element (WCAG 1.1.1) */
+                    /* Accessible name is provided via visually hidden span above */
                     <Block
                         aria-hidden="true"
                         data-avatar-fallback="true"
@@ -266,7 +270,8 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     </Block>
                 )}
 
-                {/* Visually hidden text for screen readers */}
+                {/* Visually hidden text for screen readers (WCAG 1.1.1, 4.1.2) */}
+                {/* Provides accessible name when image fails to load or when using fallback */}
                 <Block
                     as="span"
                     position="absolute"
@@ -277,11 +282,13 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     overflow="hidden"
                     style={{
                         clip: 'rect(0, 0, 0, 0)',
+                        clipPath: 'inset(50%)',
                         borderWidth: 0,
                     }}
                     whiteSpace="nowrap"
+                    aria-hidden="false"
                 >
-                    {alt}
+                    {alt || 'Avatar'}
                 </Block>
             </Block>
         )
