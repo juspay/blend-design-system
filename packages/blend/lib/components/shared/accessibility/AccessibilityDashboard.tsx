@@ -16,6 +16,7 @@ import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
 import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
+import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -99,6 +100,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Avatar',
         displayName: 'Avatar',
         component: AvatarAccessibility,
+    },
+    {
+        name: 'AvatarGroup',
+        displayName: 'AvatarGroup',
+        component: AvatarGroupAccessibility,
     },
     // Add more components here as they are added
 ]

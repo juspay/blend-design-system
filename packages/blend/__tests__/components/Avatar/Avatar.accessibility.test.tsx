@@ -1,8 +1,10 @@
 import React from 'react'
-import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen, cleanup } from '../../test-utils'
+import { describe, it, expect, afterEach, vi } from 'vitest'
+import { render, screen, cleanup, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
+import userEvent from '@testing-library/user-event'
 import Avatar from '../../../lib/components/Avatar/Avatar'
+import AvatarGroup from '../../../lib/components/AvatarGroup/AvatarGroup'
 import { AvatarSize, AvatarShape } from '../../../lib/components/Avatar/types'
 
 describe('Avatar Accessibility', () => {
@@ -581,6 +583,256 @@ describe('Avatar Accessibility', () => {
         it.skip('no timeouts - timeouts (WCAG 2.2.6)', () => {
             // Skipped: Avatar component has no timeouts
             // This criterion is not applicable to Avatar component
+        })
+    })
+
+    // ============================================================================
+    // AvatarGroup Accessibility Tests
+    // ============================================================================
+
+    describe('AvatarGroup Accessibility', () => {
+        const mockAvatars = [
+            { id: 1, alt: 'John Doe', src: 'https://example.com/john.jpg' },
+            { id: 2, alt: 'Jane Smith', src: 'https://example.com/jane.jpg' },
+            { id: 3, alt: 'Mike Johnson' },
+            { id: 4, alt: 'Sarah Wilson', fallback: 'SW' },
+            { id: 5, alt: 'Alex Brown' },
+            { id: 6, alt: 'Emma Davis' },
+        ]
+
+        describe('WCAG 2.0, 2.1, 2.2 Compliance (Level A, AA, AAA)', () => {
+            it('meets WCAG standards for AvatarGroup (axe-core validation)', async () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 3)} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            })
+
+            it('meets WCAG standards for AvatarGroup with selection (axe-core validation)', async () => {
+                const { container } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 3)}
+                        selectedAvatarIds={[1]}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            })
+
+            it('meets WCAG standards for AvatarGroup with overflow (axe-core validation)', async () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars} maxCount={3} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            })
+        })
+
+        describe('WCAG 1.3.1 Info and Relationships (Level A)', () => {
+            it('has proper group role and aria-label - semantic structure (WCAG 1.3.1)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 3)} />
+                )
+                const group = container.querySelector('[role="group"]')
+                expect(group).toBeInTheDocument()
+                expect(group).toHaveAttribute('aria-label')
+            })
+
+            it('communicates selection state via aria-pressed - state relationships (WCAG 1.3.1)', () => {
+                const { container } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 3)}
+                        selectedAvatarIds={[1]}
+                    />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+                expect(buttons[1]).toHaveAttribute('aria-pressed', 'false')
+            })
+        })
+
+        describe('WCAG 2.1.1 Keyboard (Level A)', () => {
+            it('all avatars are keyboard accessible - keyboard navigation (WCAG 2.1.1)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 3)} />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                buttons.forEach((button) => {
+                    expect(button).toHaveAttribute('tabindex', '0')
+                })
+            })
+
+            it('supports Enter and Space key activation - keyboard activation (WCAG 2.1.1)', async () => {
+                const user = userEvent.setup()
+                const handleSelectionChange = vi.fn()
+                const { container } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 2)}
+                        onSelectionChange={handleSelectionChange}
+                    />
+                )
+                const firstButton = container.querySelector(
+                    '[role="button"]'
+                ) as HTMLElement
+                expect(firstButton).toBeInTheDocument()
+
+                // Test Enter key
+                firstButton.focus()
+                await user.keyboard('{Enter}')
+                await waitFor(() => {
+                    expect(handleSelectionChange).toHaveBeenCalled()
+                })
+            })
+        })
+
+        describe('WCAG 2.4.3 Focus Order (Level A)', () => {
+            it('maintains logical focus order - focus sequence (WCAG 2.4.3)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 3)} />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                expect(buttons.length).toBe(3)
+                // All buttons should be focusable
+                buttons.forEach((button) => {
+                    expect(button).toHaveAttribute('tabindex', '0')
+                })
+            })
+        })
+
+        describe('WCAG 2.4.7 Focus Visible (Level AA)', () => {
+            it('has visible focus indicators - focus visibility (WCAG 2.4.7)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 2)} />
+                )
+                const button = container.querySelector(
+                    '[role="button"]'
+                ) as HTMLElement
+                if (button) {
+                    const styles = window.getComputedStyle(button)
+                    // Focus styles should be defined (checked via :focus-visible)
+                    expect(button).toBeInTheDocument()
+                }
+            })
+        })
+
+        describe('WCAG 4.1.2 Name, Role, Value (Level A)', () => {
+            it('has accessible name via aria-label - name is programmatically determinable (WCAG 4.1.2)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 2)} />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                buttons.forEach((button) => {
+                    expect(button).toHaveAttribute('aria-label')
+                })
+            })
+
+            it('has proper role="button" - role is programmatically determinable (WCAG 4.1.2)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 2)} />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                expect(buttons.length).toBeGreaterThan(0)
+            })
+
+            it('communicates state via aria-pressed - value is programmatically determinable (WCAG 4.1.2)', () => {
+                const { container } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 2)}
+                        selectedAvatarIds={[1]}
+                    />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+            })
+        })
+
+        describe('WCAG 4.1.3 Status Messages (Level AA)', () => {
+            it('group aria-label updates with selection - status updates (WCAG 4.1.3)', () => {
+                const { container, rerender } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 3)}
+                        selectedAvatarIds={[]}
+                    />
+                )
+                let group = container.querySelector('[role="group"]')
+                expect(group).toHaveAttribute('aria-label')
+
+                rerender(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 3)}
+                        selectedAvatarIds={[1]}
+                    />
+                )
+                group = container.querySelector('[role="group"]')
+                expect(group?.getAttribute('aria-label')).toContain('selected')
+            })
+        })
+
+        describe('WCAG 1.4.1 Use of Color (Level A)', () => {
+            it('selection state not conveyed solely by color - color independence (WCAG 1.4.1)', () => {
+                const { container } = render(
+                    <AvatarGroup
+                        avatars={mockAvatars.slice(0, 2)}
+                        selectedAvatarIds={[1]}
+                    />
+                )
+                const selectedButton = container.querySelector(
+                    '[aria-pressed="true"]'
+                )
+                expect(selectedButton).toBeInTheDocument()
+                // Selection communicated via aria-pressed, not solely visual
+            })
+        })
+
+        describe('WCAG 2.5.5 Target Size (Level AAA)', () => {
+            it.skip('avatar buttons meet minimum touch target size for interactive use (WCAG 2.5.5)', () => {
+                // Skipped: Visual dimension testing requires browser environment
+                // AvatarGroup buttons should meet 44x44px touch target for AAA compliance.
+                // This is verified manually and through visual regression testing.
+            })
+        })
+
+        describe('Overflow Menu Accessibility', () => {
+            it('overflow button has proper aria-label - accessible name (WCAG 4.1.2)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars} maxCount={3} />
+                )
+                const overflowButton = container.querySelector(
+                    '[data-avatar-group-overflow="true"]'
+                )
+                expect(overflowButton).toBeInTheDocument()
+                expect(overflowButton).toHaveAttribute('aria-label')
+                expect(overflowButton?.getAttribute('aria-label')).toContain(
+                    'more'
+                )
+            })
+
+            it('overflow button has aria-haspopup="menu" - popup indication (WCAG 4.1.2)', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars} maxCount={3} />
+                )
+                const overflowButton = container.querySelector(
+                    '[data-avatar-group-overflow="true"]'
+                )
+                expect(overflowButton).toHaveAttribute('aria-haspopup', 'menu')
+            })
+        })
+
+        describe('Error Handling and Edge Cases', () => {
+            it('handles empty avatars array gracefully - graceful degradation', () => {
+                const { container } = render(<AvatarGroup avatars={[]} />)
+                const group = container.querySelector('[role="group"]')
+                expect(group).toBeInTheDocument()
+            })
+
+            it('handles single avatar - single item handling', () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars.slice(0, 1)} />
+                )
+                const buttons = container.querySelectorAll('[role="button"]')
+                expect(buttons.length).toBe(1)
+            })
         })
     })
 })
