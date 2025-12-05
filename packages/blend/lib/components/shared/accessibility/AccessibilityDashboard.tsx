@@ -15,6 +15,7 @@ import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
+import TagAccessibility from '../../Tags/accessibility/TagAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -93,6 +94,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'MultiSelect',
         displayName: 'MultiSelect',
         component: MultiSelectAccessibility,
+    },
+    {
+        name: 'Tag',
+        displayName: 'Tag',
+        component: TagAccessibility,
     },
     // Add more components here as they are added
 ]
