@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Breadcrumb from '../../../lib/components/Breadcrumb/Breadcrumb'
 import type { BreadcrumbItemType } from '../../../lib/components/Breadcrumb/types'
@@ -252,9 +252,6 @@ describe('Breadcrumb Accessibility', () => {
         })
 
         it('ellipsis button has minimum 44x44px touch target - sufficient target size', () => {
-            const items = createBreadcrumbItems(8)
-            const { container } = render(<Breadcrumb items={items} />)
-
             const button = screen.getByRole('button', {
                 name: /show \d+ more breadcrumb items/i,
             })

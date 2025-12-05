@@ -709,8 +709,6 @@ describe('Avatar Accessibility', () => {
                     '[role="button"]'
                 ) as HTMLElement
                 if (button) {
-                    const styles = window.getComputedStyle(button)
-                    // Focus styles should be defined (checked via :focus-visible)
                     expect(button).toBeInTheDocument()
                 }
             })

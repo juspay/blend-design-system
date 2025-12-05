@@ -2,8 +2,11 @@ import { forwardRef, useState } from 'react'
 import Breadcrumb from '../Breadcrumb'
 import { Button } from '../../Button'
 import { ButtonType, ButtonSize } from '../../Button/types'
-import { Home, FileText, Settings, ChevronRight } from 'lucide-react'
-import { breadcrumbAccessibilityReport } from './BreadcrumbAccessibilityReport'
+import { Home, FileText, Settings } from 'lucide-react'
+import {
+    breadcrumbAccessibilityReport,
+    type AccessibilityReport,
+} from './BreadcrumbAccessibilityReport'
 import {
     generateAccessibilityReport,
     downloadReport,
@@ -34,7 +37,7 @@ const BreadcrumbAccessibility = forwardRef<
     const handleDownload = () => {
         try {
             const content = generateAccessibilityReport(
-                breadcrumbAccessibilityReport as any,
+                breadcrumbAccessibilityReport as AccessibilityReport,
                 {
                     format: selectedFormat,
                     includeTestResults,
@@ -55,7 +58,7 @@ const BreadcrumbAccessibility = forwardRef<
     const handleViewReport = () => {
         try {
             const htmlContent = generateAccessibilityReport(
-                breadcrumbAccessibilityReport as any,
+                breadcrumbAccessibilityReport as AccessibilityReport,
                 {
                     format: 'html',
                     includeTestResults,

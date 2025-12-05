@@ -1337,7 +1337,9 @@ export const Accessibility: Story = {
                                 <strong>Shift+Tab:</strong> Navigate backwards
                             </li>
                             <li>
-                                Active item is not in the tab order (href={undefined}), preventing navigation to current page
+                                Active item is not in the tab order (href=
+                                {undefined}), preventing navigation to current
+                                page
                             </li>
                             <li>
                                 Ellipsis button is keyboard accessible (Tab,
