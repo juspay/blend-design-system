@@ -976,7 +976,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
-                data-loaded-table={title}
+                data-table={title}
             >
                 <DataTableHeader
                     title={title}

@@ -595,6 +595,10 @@ const TableHeader = forwardRef<
                                                             delayDuration={500}
                                                         >
                                                             <PrimitiveText
+                                                                data-element="table-header-sub-title"
+                                                                data-id={
+                                                                    column.headerSubtext
+                                                                }
                                                                 style={{
                                                                     overflow:
                                                                         'hidden',
@@ -903,7 +907,8 @@ const TableHeader = forwardRef<
                                     key={String(column.field)}
                                     id={String(column.field)}
                                     style={headerStyle}
-                                    data-table-column-heading={column.header}
+                                    data-element="table-header"
+                                    data-id={column.header}
                                     disabled={false}
                                 >
                                     {(dragHandleProps) =>
@@ -917,7 +922,8 @@ const TableHeader = forwardRef<
                             <th
                                 key={String(column.field)}
                                 style={headerStyle}
-                                data-table-column-heading={column.header}
+                                data-element="table-header"
+                                data-id={column.header}
                             >
                                 {headerContent()}
                             </th>
