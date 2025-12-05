@@ -23,6 +23,7 @@ import {
     getFilteredPresets,
     validateCustomRangeConfig,
     getPresetLabelWithCustom,
+    getPresetLabel,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -108,7 +109,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                     gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     width="100%"
                 >
-                    <Block flexGrow={1}>
+                    <Block data-element="start-date-selector" flexGrow={1}>
                         <TextInput
                             label=""
                             placeholder="DD/MM/YYYY"
@@ -166,7 +167,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         gap={calendarToken?.calendar?.header?.dateInput?.gap}
                         width="100%"
                     >
-                        <Block flexGrow={1}>
+                        <Block data-element="end-date-selector" flexGrow={1}>
                             <TextInput
                                 label=""
                                 placeholder="DD/MM/YYYY"
@@ -817,13 +818,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     disabled={isDisabled}
                     data-component-field-wrapper=""
                     data-date-picker="dateRangePicker-Filter"
-                    data-button-for={displayText
-                        .replace(/\s/g, '')
-                        .replace(/-/g, '➟')}
-                    data-custom-value="calendar_button"
-                    data-button-status={isDisabled ? 'disabled' : 'enabled'}
-                    data-dynamic-button="dynamicButton"
+                    data-id={displayText.replace(/\s/g, '').replace(/-/g, '➟')}
+                    data-status={isDisabled ? 'disabled' : 'enabled'}
                     type="button"
+                    data-element="datepicker-selector"
                 >
                     <Block
                         flexGrow={1}
@@ -849,7 +847,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             gap={calendarToken?.trigger?.dateInput?.gap}
                         >
                             {iconElement}
-                            <span style={{ whiteSpace: 'nowrap' }}>
+                            <span
+                                data-element="placeholder"
+                                data-id={displayText}
+                                style={{ whiteSpace: 'nowrap' }}
+                            >
                                 {displayText}
                             </span>
                         </Block>
@@ -954,7 +956,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         }
 
         return (
-            <Block ref={ref} display="flex">
+            <Block
+                data-datepicker={getPresetLabel(activePreset) || 'datepicker'}
+                ref={ref}
+                display="flex"
+            >
                 {showPresets && !hasCustomTrigger && (
                     <QuickRangeSelector
                         isOpen={isQuickRangeOpen}

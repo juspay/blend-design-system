@@ -34,7 +34,6 @@ const InputFooter = ({
     disabled,
     errorId,
     tokens,
-    hintTextId,
     errorMessageId,
     hintId,
 }: InputFooterProps) => {

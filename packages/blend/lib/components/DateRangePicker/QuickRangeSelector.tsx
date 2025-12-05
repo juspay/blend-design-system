@@ -146,6 +146,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
 
         return (
             <Block
+                data-element="preset-selector"
                 position="relative"
                 ref={ref}
                 className={className}
@@ -162,6 +163,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                     useDrawerOnMobile={false}
                     customTrigger={
                         <Block
+                            data-element="single-select-button"
                             style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
@@ -179,6 +181,11 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             }}
                         >
                             <Block
+                                data-element="placeholder"
+                                data-id={
+                                    getPresetLabel(activePreset) ||
+                                    'placeholder'
+                                }
                                 as="span"
                                 color={
                                     calendarToken?.trigger?.quickSelector?.text

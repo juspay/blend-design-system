@@ -128,8 +128,10 @@ const MenuItem = ({
         >
             <Block
                 key={idx}
-                data-dropdown-numeric={idx + 1}
-                data-dropdown-value={item.label}
+                data-element="select-item"
+                data-state={item.disabled ? 'disabled' : 'enabled'}
+                data-numeric={idx + 1}
+                data-id={item.label}
                 display="flex"
                 paddingX={menuTokens.item.padding.x}
                 paddingY={menuTokens.item.padding.y}
