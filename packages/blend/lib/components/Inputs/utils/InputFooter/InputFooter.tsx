@@ -20,6 +20,8 @@ type InputFooterProps = {
     errorMessage?: string
     hintText?: string
     disabled?: boolean
+    errorId?: string // Unique ID for error association (WCAG 3.3.1)
+    hintId?: string // Unique ID for hint association (WCAG 3.3.2)
     tokens?: InputFooterTokens
     hintTextId?: string
     errorMessageId?: string
@@ -30,6 +32,8 @@ const InputFooter = ({
     errorMessage,
     hintText,
     disabled,
+    errorId,
+    hintId,
     tokens,
     hintTextId,
     errorMessageId,
@@ -39,8 +43,9 @@ const InputFooter = ({
             <Block width={'100%'}>
                 {error && errorMessage && (
                     <Text
-                        id={errorMessageId}
-                        // variant="body.md"
+                        id={errorMessageId || errorId}
+                        role="alert"
+                        aria-live="polite"
                         data-form-error={errorMessage}
                         color={
                             tokens?.errorMessage?.color ||
@@ -60,8 +65,7 @@ const InputFooter = ({
                 )}
                 {hintText && !error && (
                     <Text
-                        id={hintTextId}
-                        // variant="body.md"
+                        id={hintTextId || hintId}
                         data-desc-text={hintText}
                         fontWeight={
                             tokens?.hintText?.fontWeight ||

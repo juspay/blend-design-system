@@ -30,6 +30,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     disabled?: boolean
     helpIconHintText?: string
     name?: string
+    inputId?: string // Unique ID for input association
     required?: boolean
     tokens?: Partial<TTokens>
     labelId?: string
@@ -41,6 +42,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
  * @param {string} sublabel - The sublabel for the input field.
  * @param {boolean} disabled - Whether the input field is disabled.
  * @param {string} helpIconHintText - The hint text for the help icon.
+ * @param {string} inputId - Unique ID for proper label association (WCAG 3.3.2).
  * @param {boolean} required - Whether the input field is required.
  */
 const InputLabels = <TTokens extends InputLabelTokens>({
@@ -49,6 +51,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     disabled,
     helpIconHintText,
     name,
+    inputId,
     required,
     tokens,
     labelId,
@@ -60,7 +63,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                     id={labelId || (name ? `${name}-label` : undefined)}
                     data-form-label={label}
                     as="label"
-                    htmlFor={name}
+                    htmlFor={inputId || name}
                     // variant="body.md"
                     fontWeight={tokens?.label?.fontWeight}
                     fontSize={
@@ -80,6 +83,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 </Text>
                 {required && (
                     <sup
+                        aria-hidden="true"
                         style={{
                             color:
                                 tokens?.required?.color ||
@@ -116,7 +120,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 )}
 
                 {helpIconHintText && (
-                    <Block contentCentered size={16}>
+                    <Block data-element="icon" contentCentered size={16}>
                         <Tooltip
                             content={helpIconHintText}
                             size={TooltipSize.SMALL}

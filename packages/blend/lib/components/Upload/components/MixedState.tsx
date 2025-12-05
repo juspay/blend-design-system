@@ -41,6 +41,7 @@ const MixedState: React.FC<MixedStateProps> = ({
         )}
 
         <Block
+            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"

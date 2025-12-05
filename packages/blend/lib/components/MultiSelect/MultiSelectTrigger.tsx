@@ -98,6 +98,7 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    type="button"
                     maxWidth={maxTriggerWidth}
                     minWidth={minTriggerWidth}
                     data-selectbox-value={placeholder}
@@ -278,6 +279,7 @@ const MultiSelectTrigger = ({
                 {variant === MultiSelectVariant.CONTAINER &&
                     selectedValues.length > 0 && (
                         <PrimitiveButton
+                            type="button"
                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered

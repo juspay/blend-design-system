@@ -98,7 +98,8 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
-                            data-header-text={title}
+                            data-element="header"
+                            data-id={title ?? ''}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -110,7 +111,8 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
-                        data-header-subtitle-text={subtitle}
+                        data-element="header-subtitle"
+                        data-id={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
@@ -166,6 +168,7 @@ const ModalFooter = ({
 
     return (
         <Block
+            data-element="footer"
             display="flex"
             backgroundColor={modalTokens.footer.backgroundColor}
             justifyContent="flex-end"
@@ -298,6 +301,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     />
 
                     <AnimatedModalContent
+                        data-modal={title ?? 'modal'}
                         ref={ref}
                         display="flex"
                         flexDirection="column"
@@ -325,6 +329,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         />
 
                         <Block
+                            data-element="body"
                             padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}

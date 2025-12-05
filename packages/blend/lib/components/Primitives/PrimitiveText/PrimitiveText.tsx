@@ -156,9 +156,9 @@ const StyledPrimitiveText = styled.p.withConfig({
  * @param {SemanticTagType} as - Optional semantic tag to render as.
  * @param {PrimitiveTextProps} rest - Styling props.
  */
-const PrimitiveText: React.FC<TextProps> = ({ children, as, ...rest }) => {
+const PrimitiveText: React.FC<TextProps> = ({ id, children, as, ...rest }) => {
     return (
-        <StyledPrimitiveText as={as} {...rest}>
+        <StyledPrimitiveText id={id} as={as} {...rest}>
             {children}
         </StyledPrimitiveText>
     )

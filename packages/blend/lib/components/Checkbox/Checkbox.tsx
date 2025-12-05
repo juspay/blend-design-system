@@ -24,6 +24,7 @@ import { getTruncatedText } from '../../global-utils/GlobalUtils'
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
         {
+            label,
             id,
             name,
             checked,
@@ -64,7 +65,13 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         }
 
         return (
-            <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
+            <Block
+                data-checkbox={label ?? 'checkbox'}
+                data-status={disabled ? 'disabled' : 'enabled'}
+                display="flex"
+                alignItems="flex-start"
+                gap={tokens.gap}
+            >
                 <StyledCheckboxRoot
                     id={uniqueId}
                     name={name}
@@ -110,6 +117,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
                             {slot && (
                                 <Block
+                                    data-element="icon"
                                     as="span"
                                     marginLeft={tokens.slot.marginLeft}
                                 >
@@ -207,7 +215,9 @@ const CheckboxContent: React.FC<{
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
+                data-element="checkbox-label"
+                data-id={children ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -253,7 +263,9 @@ const CheckboxSubtext: React.FC<{
     const content = (
         <Block id={id}>
             <PrimitiveText
-                data-description-text={children}
+                data-id={children ?? ''}
+                data-element="checkbox-description"
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 color={subtextProps.color}
                 fontSize={subtextProps.fontSize}

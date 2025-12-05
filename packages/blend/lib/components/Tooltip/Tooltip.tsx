@@ -1,5 +1,6 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import styled, { type CSSObject } from 'styled-components'
+import { isValidElement } from 'react'
 import {
     type TooltipProps,
     TooltipAlign,
@@ -38,10 +39,23 @@ export const Tooltip = ({
     maxWidth,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
+
+    const isNativeElement =
+        isValidElement(trigger) && typeof trigger.type === 'string'
+    const shouldWrapTrigger = !isNativeElement
+
+    const wrappedTrigger = shouldWrapTrigger ? (
+        <span style={{ display: 'inline-flex' }}>{trigger}</span>
+    ) : (
+        trigger
+    )
+
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>
             <RadixTooltip.Root open={open}>
-                <RadixTooltip.Trigger asChild>{trigger}</RadixTooltip.Trigger>
+                <RadixTooltip.Trigger asChild>
+                    {wrappedTrigger}
+                </RadixTooltip.Trigger>
                 {content && (
                     <RadixTooltip.Portal>
                         <AnimatedTooltipContent

@@ -29,7 +29,8 @@
         "test:watch": "vitest --watch",
         "test:run": "vitest run",
         "test:a11y": "vitest run --testNamePattern 'accessibility|Accessibility'",
-        "test:a11y:watch": "vitest --testNamePattern 'accessibility|Accessibility'"
+        "test:a11y:watch": "vitest --testNamePattern 'accessibility|Accessibility'",
+        "test:file": "vitest run"
     },
     "peerDependencies": {
         "react": "^18.0.0 || ^19.0.0",

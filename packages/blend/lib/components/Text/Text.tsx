@@ -94,6 +94,8 @@ const formatLineHeight = (
 }
 
 const Text = ({
+    id,
+    role,
     children,
     variant,
     as,
@@ -110,6 +112,8 @@ const Text = ({
     if (variant === undefined) {
         return (
             <PrimitiveText
+                id={id}
+                role={role}
                 as={Tag}
                 fontSize={fontSize}
                 fontWeight={fontWeight}

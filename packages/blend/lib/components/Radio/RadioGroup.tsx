@@ -150,6 +150,8 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
 
         return (
             <Block
+                data-radiogroup={label ?? 'radiogroup'}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 ref={ref}
                 id={uniqueId}
                 display="flex"

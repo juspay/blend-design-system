@@ -89,6 +89,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         if (items.length > 0) {
             return (
                 <StyledTabs
+                    data-tabs={value ?? 'tabs'}
                     ref={ref}
                     className={className}
                     value={activeTab}
@@ -96,6 +97,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     {...props}
                 >
                     <TabsList
+                        data-element="tab-list"
                         items={processedItems}
                         onTabClose={handleTabClose}
                         onTabAdd={onTabAdd}
@@ -163,6 +165,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 
         return (
             <StyledTabs
+                data-tabs={value ?? 'tabs'}
                 ref={ref}
                 className={className}
                 value={activeTab}
