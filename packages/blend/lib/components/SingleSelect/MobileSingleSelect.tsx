@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useId, useState } from 'react'
 import {
     Drawer,
     DrawerTrigger,
@@ -28,6 +28,7 @@ import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Check } from 'lucide-react'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
+import { setupAccessibility } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
@@ -232,6 +233,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    ...rest
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -270,6 +272,19 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
+    const generatedId = useId()
+    const { uniqueName, hintTextId, errorMessageId, ariaAttributes } =
+        setupAccessibility({
+            name,
+            generatedId,
+            label,
+            hintText,
+            error,
+            errorMessage,
+            rest,
+            prefix: 'singleselect-mobile',
+        })
+
     return (
         <Block display="flex" flexDirection="column" gap={8}>
             {variant === SelectMenuVariant.CONTAINER &&
@@ -279,7 +294,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                         sublabel={subLabel}
                         disabled={disabled}
                         helpIconHintText={helpIconText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
                     />
                 )}
@@ -307,7 +322,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                             size={size}
                             selected={selected}
                             label={label || ''}
-                            name={name || ''}
+                            name={uniqueName}
                             placeholder={placeholder}
                             required={required || false}
                             valueLabelMap={valueLabelMap}
@@ -322,6 +337,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                             inline={inline}
                             error={error}
                             disabled={disabled}
+                            {...ariaAttributes}
                         />
                     )}
                 </DrawerTrigger>
@@ -397,6 +413,10 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                         setSearchText(
                                                             e.target.value
                                                         )
+                                                    }
+                                                    aria-label={
+                                                        searchPlaceholder ||
+                                                        'Search options'
                                                     }
                                                 />
                                             </Block>
@@ -575,6 +595,8 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

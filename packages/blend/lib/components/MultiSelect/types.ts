@@ -217,4 +217,5 @@ export type MultiSelectMenuProps = {
 
     allowCustomValue?: boolean
     customValueLabel?: string
+    menuId?: string
 }

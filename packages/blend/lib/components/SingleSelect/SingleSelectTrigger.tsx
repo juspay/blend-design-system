@@ -52,6 +52,7 @@ const SingleSelectTrigger = ({
     inline = false,
     error,
     disabled,
+    ...rest
 }: SingleSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -79,6 +80,7 @@ const SingleSelectTrigger = ({
                 minWidth={minTriggerWidth}
                 type="button"
                 name={name}
+                id={name}
                 position="relative"
                 width={'100%'}
                 display="flex"
@@ -92,6 +94,7 @@ const SingleSelectTrigger = ({
                         error ? 'error' : open ? 'open' : 'closed'
                     ]
                 }
+                {...rest}
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
                     paddingX: paddingX,
                     paddingY: paddingY,

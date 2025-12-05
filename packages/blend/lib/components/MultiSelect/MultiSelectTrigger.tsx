@@ -272,7 +272,7 @@ const MultiSelectTrigger = ({
                         contentCentered
                         flexShrink={0}
                     >
-                        <ChevronDown size={16} />
+                        <ChevronDown size={16} aria-hidden="true" />
                     </Block>
                 </PrimitiveButton>
 
