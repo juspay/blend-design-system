@@ -90,7 +90,16 @@ const SelectAllItem = ({
                     {selectAllText}
                 </PrimitiveText>
 
-                <Checkbox checked={getCheckboxState()} disabled={disabled} />
+                <Checkbox
+                    data-status={disabled ? 'disabled' : 'enabled'}
+                    data-element="checkbox"
+                    data-id={selectAllText || 'checkbox'}
+                    data-state={
+                        getCheckboxState() ? 'selected' : 'not selected'
+                    }
+                    checked={getCheckboxState()}
+                    disabled={disabled}
+                />
             </Block>
         </RadixMenu.Item>
     )
