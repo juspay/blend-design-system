@@ -1,237 +1,326 @@
+import { Breadcrumb } from '../../../packages/blend/lib/main'
+import type { BreadcrumbItemType } from '../../../packages/blend/lib/main'
 import {
-    AvatarGroup,
-    AvatarSize,
-    AvatarShape,
-} from '../../../packages/blend/lib/main'
-import { Star, CheckCircle, Settings, User } from 'lucide-react'
+    Home,
+    Users,
+    User,
+    Folder,
+    FolderOpen,
+    Package,
+    FileText,
+    Database,
+    BarChart3,
+    Shield,
+    Layers,
+    Globe,
+} from 'lucide-react'
 
 function App() {
-    const sampleAvatars = [
+    const basicBreadcrumbItems: BreadcrumbItemType[] = [
+        { label: 'Home', href: '/' },
+        { label: 'Products', href: '/products' },
+        { label: 'Electronics', href: '/products/electronics' },
+    ]
+
+    const breadcrumbWithIcons: BreadcrumbItemType[] = [
         {
-            id: 1,
-            src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face',
-            alt: 'John Doe',
+            label: 'Home',
+            href: '/',
+            leftSlot: <Home size={16} />,
         },
         {
-            id: 2,
-            src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
-            alt: 'Jane Smith',
+            label: 'Products',
+            href: '/products',
+            leftSlot: <Package size={16} />,
         },
         {
-            id: 3,
-            src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
-            alt: 'Mike Johnson',
-        },
-        {
-            id: 4,
-            alt: 'Sarah Wilson',
-            fallback: 'SW',
-        },
-        {
-            id: 5,
-            alt: 'Emma Davis',
-            fallback: 'ED',
+            label: 'Electronics',
+            href: '/products/electronics',
+            leftSlot: <Globe size={16} />,
         },
     ]
 
-    const manyAvatars = [
-        ...sampleAvatars,
+    const breadcrumbWithBadges: BreadcrumbItemType[] = [
         {
-            id: 6,
-            alt: 'Alex Chen',
-            fallback: 'AC',
+            label: 'Home',
+            href: '/',
+            leftSlot: <Home size={16} />,
         },
         {
-            id: 7,
-            alt: 'Lisa Brown',
-            fallback: 'LB',
+            label: 'Products',
+            href: '/products',
+            leftSlot: <Package size={16} />,
+            rightSlot: (
+                <span
+                    style={{
+                        backgroundColor: '#3b82f6',
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '10px',
+                        fontWeight: '500',
+                    }}
+                >
+                    New
+                </span>
+            ),
         },
         {
-            id: 8,
-            alt: 'David Wilson',
-            fallback: 'DW',
-        },
-        {
-            id: 9,
-            alt: 'Jessica Miller',
-            fallback: 'JM',
-        },
-        {
-            id: 10,
-            alt: 'Robert Johnson',
-            fallback: 'RJ',
+            label: 'Electronics',
+            href: '/products/electronics',
         },
     ]
 
-    const avatarsWithIcons = [
+    const breadcrumbWithOverflow: BreadcrumbItemType[] = [
+        { label: 'Home', href: '/' },
+        { label: 'Category 1', href: '/cat1' },
+        { label: 'Category 2', href: '/cat2' },
+        { label: 'Category 3', href: '/cat3' },
+        { label: 'Category 4', href: '/cat4' },
+        { label: 'Category 5', href: '/cat5' },
+        { label: 'Category 6', href: '/cat6' },
+        { label: 'Current Page', href: '/current' },
+    ]
+
+    const singleItemBreadcrumb: BreadcrumbItemType[] = [
+        { label: 'Home', href: '/' },
+    ]
+
+    const fileSystemBreadcrumb: BreadcrumbItemType[] = [
         {
-            id: 1,
-            alt: 'User Icon',
-            fallback: <User size={20} />,
+            label: 'Projects',
+            href: '/projects',
+            leftSlot: <FolderOpen size={16} />,
         },
         {
-            id: 2,
-            alt: 'Star User',
-            fallback: <Star size={20} />,
+            label: 'Website',
+            href: '/projects/website',
+            leftSlot: <Folder size={16} />,
         },
         {
-            id: 3,
-            alt: 'Settings',
-            fallback: <Settings size={20} />,
+            label: 'Components',
+            href: '/projects/website/components',
+            leftSlot: <Layers size={16} />,
         },
         {
-            id: 4,
-            alt: 'Check Circle',
-            fallback: <CheckCircle size={20} />,
+            label: 'Button.tsx',
+            href: '/projects/website/components/button',
+            leftSlot: <FileText size={16} />,
+        },
+    ]
+
+    const adminBreadcrumb: BreadcrumbItemType[] = [
+        {
+            label: 'Admin',
+            href: '/admin',
+            leftSlot: <Shield size={16} />,
+            rightSlot: (
+                <span
+                    style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '10px',
+                        fontWeight: '500',
+                    }}
+                >
+                    Secure
+                </span>
+            ),
+        },
+        {
+            label: 'Users',
+            href: '/admin/users',
+            leftSlot: <Users size={16} />,
+        },
+        {
+            label: 'Profile',
+            href: '/admin/users/profile',
+            leftSlot: <User size={16} />,
+        },
+    ]
+
+    const ecommerceBreadcrumb: BreadcrumbItemType[] = [
+        {
+            label: 'Store',
+            href: '/store',
+            leftSlot: <Home size={16} />,
+        },
+        {
+            label: 'Electronics',
+            href: '/store/electronics',
+            leftSlot: <Package size={16} />,
+        },
+        {
+            label: 'Smartphones',
+            href: '/store/electronics/smartphones',
+            leftSlot: <Globe size={16} />,
+        },
+        {
+            label: 'iPhone 15 Pro',
+            href: '/store/electronics/smartphones/iphone-15-pro',
+            rightSlot: (
+                <span
+                    style={{
+                        backgroundColor: '#10b981',
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '10px',
+                        fontWeight: '500',
+                    }}
+                >
+                    In Stock
+                </span>
+            ),
         },
     ]
 
     return (
         <>
-            <AvatarGroup
-                avatars={sampleAvatars.slice(0, 3)}
-                size={AvatarSize.SM}
-                maxCount={3}
+            <Breadcrumb items={basicBreadcrumbItems} />
+            <Breadcrumb items={singleItemBreadcrumb} />
+            <Breadcrumb
+                items={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Dashboard', href: '/dashboard' },
+                ]}
             />
-            <AvatarGroup
-                avatars={sampleAvatars.slice(0, 3)}
-                size={AvatarSize.REGULAR}
-                maxCount={3}
+            <Breadcrumb
+                items={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Settings', href: '/settings' },
+                    { label: 'Profile', href: '/settings/profile' },
+                ]}
             />
-            <AvatarGroup
-                avatars={sampleAvatars.slice(0, 3)}
-                size={AvatarSize.MD}
-                maxCount={3}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars.slice(0, 3)}
-                size={AvatarSize.LG}
-                maxCount={3}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars.slice(0, 3)}
-                size={AvatarSize.XL}
-                maxCount={3}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                maxCount={3}
-            />
-            <AvatarGroup
-                avatars={manyAvatars}
-                size={AvatarSize.LG}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                maxCount={2}
-            />
-            <AvatarGroup
-                avatars={avatarsWithIcons}
-                size={AvatarSize.LG}
-                maxCount={4}
-            />
-            <AvatarGroup
-                avatars={[
+            <Breadcrumb
+                items={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Products', href: '/products' },
+                    { label: 'Electronics', href: '/products/electronics' },
                     {
-                        id: 1,
-                        alt: 'Custom Text',
-                        fallback: '?',
-                    },
-                    {
-                        id: 2,
-                        alt: 'User',
-                        fallback: 'U',
+                        label: 'Smartphones',
+                        href: '/products/electronics/smartphones',
                     },
                 ]}
-                size={AvatarSize.LG}
-                maxCount={2}
             />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.MD}
-                maxCount={3}
+            <Breadcrumb items={breadcrumbWithIcons} />
+            <Breadcrumb items={breadcrumbWithBadges} />
+            <Breadcrumb items={breadcrumbWithOverflow} />
+            <Breadcrumb items={fileSystemBreadcrumb} />
+            <Breadcrumb items={adminBreadcrumb} />
+            <Breadcrumb items={ecommerceBreadcrumb} />
+            <Breadcrumb
+                items={[
+                    {
+                        label: 'Database',
+                        href: '/database',
+                        leftSlot: <Database size={16} />,
+                    },
+                    {
+                        label: 'Users',
+                        href: '/database/users',
+                        leftSlot: <Users size={16} />,
+                        rightSlot: (
+                            <span
+                                style={{
+                                    backgroundColor: '#3b82f6',
+                                    color: 'white',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    fontSize: '10px',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                1,247
+                            </span>
+                        ),
+                    },
+                    {
+                        label: 'Active Users',
+                        href: '/database/users/active',
+                        leftSlot: <User size={16} />,
+                    },
+                ]}
+            />
+            <Breadcrumb
+                items={[
+                    {
+                        label: 'Docs',
+                        href: '/docs',
+                        leftSlot: <FileText size={16} />,
+                    },
+                    {
+                        label: 'Components',
+                        href: '/docs/components',
+                        leftSlot: <Layers size={16} />,
+                    },
+                    {
+                        label: 'Form Controls',
+                        href: '/docs/components/forms',
+                        leftSlot: <Package size={16} />,
+                    },
+                    {
+                        label: 'Button',
+                        href: '/docs/components/forms/button',
+                        rightSlot: (
+                            <span
+                                style={{
+                                    backgroundColor: '#3b82f6',
+                                    color: 'white',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    fontSize: '10px',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                v2.1
+                            </span>
+                        ),
+                    },
+                ]}
+            />
+            <Breadcrumb
+                items={[
+                    {
+                        label: 'Admin',
+                        href: '/admin',
+                        leftSlot: <Shield size={16} />,
+                    },
+                    {
+                        label: 'Analytics',
+                        href: '/admin/analytics',
+                        leftSlot: <BarChart3 size={16} />,
+                    },
+                    {
+                        label: 'Reports',
+                        href: '/admin/analytics/reports',
+                        leftSlot: <FileText size={16} />,
+                        rightSlot: (
+                            <span
+                                style={{
+                                    backgroundColor: '#6b7280',
+                                    color: 'white',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    fontSize: '10px',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                PDF
+                            </span>
+                        ),
+                    },
+                ]}
+            />
+            <Breadcrumb
+                items={basicBreadcrumbItems}
                 skeleton={{ show: true, variant: 'pulse' }}
             />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                maxCount={3}
+            <Breadcrumb
+                items={basicBreadcrumbItems}
                 skeleton={{ show: true, variant: 'wave' }}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.SM}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.REGULAR}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.MD}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.XL}
-                shape={AvatarShape.CIRCULAR}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.SM}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.REGULAR}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.MD}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.LG}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
-            />
-            <AvatarGroup
-                avatars={sampleAvatars}
-                size={AvatarSize.XL}
-                shape={AvatarShape.ROUNDED}
-                maxCount={5}
             />
         </>
     )

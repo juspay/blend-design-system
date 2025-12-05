@@ -17,6 +17,7 @@ import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSe
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
 import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
 import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
+import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -105,6 +106,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'AvatarGroup',
         displayName: 'AvatarGroup',
         component: AvatarGroupAccessibility,
+    },
+    {
+        name: 'Breadcrumb',
+        displayName: 'Breadcrumb',
+        component: BreadcrumbAccessibility,
     },
     // Add more components here as they are added
 ]
