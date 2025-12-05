@@ -33,6 +33,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     inputId?: string // Unique ID for input association
     required?: boolean
     tokens?: Partial<TTokens>
+    labelId?: string
 }
 
 /**
@@ -53,6 +54,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     inputId,
     required,
     tokens,
+    labelId,
 }: InputLabelsProps<TTokens>) => {
     return (
         label && (

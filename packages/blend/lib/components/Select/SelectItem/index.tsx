@@ -148,11 +148,18 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 data-disabled={item.disabled}
             >
                 <Block
+                    data-numeric={index + 1}
+                    data-state={isSelected ? 'selected' : 'not selected'}
                     data-element="select-item"
                     data-id={item.label || 'select-item'}
                     ref={ref}
-                    data-numeric={index + 1}
-                    data-state={isSelected ? 'selected' : 'not selected'}
+                    role={type === SelectItemType.MULTI ? 'option' : 'menuitem'}
+                    aria-selected={
+                        type === SelectItemType.MULTI ? isSelected : undefined
+                    }
+                    data-dropdown-numeric={index + 1}
+                    data-dropdown-value={item.label}
+                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
