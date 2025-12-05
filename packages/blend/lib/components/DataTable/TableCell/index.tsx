@@ -155,7 +155,7 @@ const TableCell = forwardRef<
                 typeof rowIndex === 'number' &&
                 typeof colIndex === 'number'
             ) {
-                attrs['data-table-location'] =
+                attrs['data-element'] =
                     `${tableTitle}_tr${rowIndex + 1}_td${colIndex + 1}`
             }
 

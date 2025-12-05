@@ -640,6 +640,7 @@ const TableHeader = forwardRef<
                                             </Block>
                                             {enableInlineEdit && (
                                                 <Block
+                                                    data-element="edit-icon"
                                                     as="span"
                                                     className="edit-icon-wrapper"
                                                     display="flex"
@@ -672,6 +673,7 @@ const TableHeader = forwardRef<
                                     columnConfig.supportsFiltering) &&
                                     !isDisabled && (
                                         <Block
+                                            data-element="sorting-icon"
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
