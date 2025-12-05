@@ -465,10 +465,6 @@ const MultiSelect = ({
                                             {variant ===
                                                 MultiSelectVariant.NO_CONTAINER && (
                                                 <Text
-                                                    data-element="placeholder"
-                                                    data-id={
-                                                        label || 'placeholder'
-                                                    }
                                                     as="span"
                                                     variant="body.md"
                                                     color={
@@ -547,6 +543,11 @@ const MultiSelect = ({
                                                     size !==
                                                         MultiSelectMenuSize.LARGE) && (
                                                     <Text
+                                                        data-element="placeholder"
+                                                        data-id={
+                                                            label ||
+                                                            'placeholder'
+                                                        }
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
