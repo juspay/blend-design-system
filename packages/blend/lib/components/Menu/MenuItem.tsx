@@ -129,7 +129,7 @@ const MenuItem = ({
             <Block
                 key={idx}
                 data-element="select-item"
-                data-state={item.disabled ? 'disabled' : 'enabled'}
+                data-status={item.disabled ? 'disabled' : 'enabled'}
                 data-numeric={idx + 1}
                 data-id={item.label}
                 display="flex"

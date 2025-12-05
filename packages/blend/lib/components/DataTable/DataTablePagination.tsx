@@ -244,8 +244,8 @@ export function DataTablePagination({
                                     data-element="page-number"
                                     data-status={
                                         currentPage === page
-                                            ? 'active'
-                                            : 'inactive'
+                                            ? 'selected'
+                                            : 'not selected'
                                     }
                                     data-numeric={page}
                                     key={index}
