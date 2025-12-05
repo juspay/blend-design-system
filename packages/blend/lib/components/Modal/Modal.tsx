@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from 'react'
+import { forwardRef, useCallback, useId, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import styled from 'styled-components'
@@ -37,6 +37,8 @@ const ModalHeader = ({
     showDivider,
     showSkeleton,
     skeletonVariant,
+    titleId,
+    subtitleId,
 }: {
     title?: string
     subtitle?: string
@@ -46,6 +48,8 @@ const ModalHeader = ({
     showDivider?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    titleId?: string
+    subtitleId?: string
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
 
@@ -98,9 +102,11 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            id={titleId}
                             data-element="header"
                             data-id={title ?? ''}
                             variant="heading.sm"
+                            as="span"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
                         >
@@ -111,6 +117,7 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
+                        id={subtitleId}
                         data-element="header-subtitle"
                         data-id={subtitle}
                         variant="code.lg"
@@ -125,9 +132,9 @@ const ModalHeader = ({
                 <Button
                     subType={ButtonSubType.INLINE}
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={<X size={16} />}
+                    leadingIcon={<X size={16} aria-hidden="true" />}
                     onClick={onClose}
-                    // ariaLabel="Close"
+                    aria-label="Close modal"
                 />
             )}
         </Block>
@@ -239,7 +246,110 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             onClose
         )
 
+        // Generate unique IDs for accessibility (WCAG 4.1.2 Name, Role, Value)
+        const baseId = useId()
+        const titleId = title ? `${baseId}-title` : undefined
+        const subtitleId = subtitle ? `${baseId}-subtitle` : undefined
+
+        // Construct aria-describedby to link subtitle if present (WCAG 1.3.1 Info and Relationships)
+        const ariaDescribedBy = subtitleId || undefined
+
+        // Focus management refs
+        const modalContentRef = useRef<HTMLDivElement>(null)
+        const previousActiveElementRef = useRef<HTMLElement | null>(null)
+
         useScrollLock(isOpen)
+
+        // Focus management: Trap focus within modal and return focus on close (WCAG 2.1.1 Keyboard, 2.4.3 Focus Order)
+        useEffect(() => {
+            if (!isOpen || !modalContentRef.current) return
+
+            // Store the previously active element before opening modal
+            if (document.activeElement instanceof HTMLElement) {
+                previousActiveElementRef.current = document.activeElement
+            }
+
+            // Get all focusable elements within the modal
+            const getFocusableElements = (
+                container: HTMLElement
+            ): HTMLElement[] => {
+                const focusableSelectors = [
+                    'a[href]',
+                    'button:not([disabled])',
+                    'textarea:not([disabled])',
+                    'input:not([disabled])',
+                    'select:not([disabled])',
+                    '[tabindex]:not([tabindex="-1"])',
+                ].join(', ')
+
+                return Array.from(
+                    container.querySelectorAll<HTMLElement>(focusableSelectors)
+                ).filter(
+                    (el) =>
+                        !el.hasAttribute('aria-hidden') &&
+                        el.offsetParent !== null &&
+                        !el.hasAttribute('disabled')
+                )
+            }
+
+            const modalElement = modalContentRef.current
+            const focusableElements = getFocusableElements(modalElement)
+
+            if (focusableElements.length === 0) return
+
+            const firstFocusable = focusableElements[0]
+            const lastFocusable =
+                focusableElements[focusableElements.length - 1]
+
+            // Move focus to first focusable element after modal is fully rendered
+            // Use requestAnimationFrame to ensure DOM is ready
+            requestAnimationFrame(() => {
+                if (firstFocusable && modalElement.contains(firstFocusable)) {
+                    firstFocusable.focus()
+                }
+            })
+
+            // Handle Tab key to trap focus within modal
+            const handleTabKey = (e: KeyboardEvent) => {
+                if (e.key !== 'Tab') return
+
+                const currentFocusIndex = focusableElements.indexOf(
+                    document.activeElement as HTMLElement
+                )
+
+                if (e.shiftKey) {
+                    // Shift+Tab: Move to previous element or wrap to last
+                    if (currentFocusIndex <= 0) {
+                        e.preventDefault()
+                        lastFocusable?.focus()
+                    }
+                } else {
+                    // Tab: Move to next element or wrap to first
+                    if (
+                        currentFocusIndex >= focusableElements.length - 1 ||
+                        currentFocusIndex === -1
+                    ) {
+                        e.preventDefault()
+                        firstFocusable?.focus()
+                    }
+                }
+            }
+
+            document.addEventListener('keydown', handleTabKey)
+
+            return () => {
+                document.removeEventListener('keydown', handleTabKey)
+
+                // Return focus to previously active element when modal closes
+                if (previousActiveElementRef.current) {
+                    // Use setTimeout to ensure modal is fully closed before focusing
+                    setTimeout(() => {
+                        previousActiveElementRef.current?.focus()
+                        previousActiveElementRef.current = null
+                    }, 0)
+                }
+            }
+        }, [isOpen])
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -302,7 +412,15 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
                     <AnimatedModalContent
                         data-modal={title ?? 'modal'}
-                        ref={ref}
+                        ref={(node) => {
+                            // Combine refs: forwardRef and internal ref for focus management
+                            if (typeof ref === 'function') {
+                                ref(node)
+                            } else if (ref) {
+                                ref.current = node
+                            }
+                            modalContentRef.current = node
+                        }}
                         display="flex"
                         flexDirection="column"
                         position="relative"
@@ -314,7 +432,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         boxShadow={FOUNDATION_THEME.shadows.xs}
                         role="dialog"
                         aria-modal="true"
-                        aria-labelledby="modal-title"
+                        aria-labelledby={titleId}
+                        aria-label={title || 'Modal dialog'}
+                        aria-describedby={ariaDescribedBy}
                         $isAnimatingIn={isAnimatingIn}
                     >
                         <ModalHeader
@@ -326,6 +446,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             showDivider={showDivider}
                             showSkeleton={shouldShowSkeleton}
                             skeletonVariant={skeletonVariant}
+                            titleId={titleId}
+                            subtitleId={subtitleId}
                         />
 
                         <Block
