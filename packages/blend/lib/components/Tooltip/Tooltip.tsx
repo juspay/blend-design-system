@@ -81,7 +81,12 @@ export const Tooltip = ({
                                 {slot &&
                                     slotDirection ===
                                         TooltipSlotDirection.LEFT && (
-                                        <Block contentCentered flexShrink={0}>
+                                        <Block
+                                            contentCentered
+                                            flexShrink={0}
+                                            role="presentation"
+                                            aria-hidden="true"
+                                        >
                                             {slot}
                                         </Block>
                                     )}
@@ -106,7 +111,12 @@ export const Tooltip = ({
                                 {slot &&
                                     slotDirection ===
                                         TooltipSlotDirection.RIGHT && (
-                                        <Block contentCentered flexShrink={0}>
+                                        <Block
+                                            contentCentered
+                                            flexShrink={0}
+                                            role="presentation"
+                                            aria-hidden="true"
+                                        >
                                             {slot}
                                         </Block>
                                     )}
@@ -115,6 +125,7 @@ export const Tooltip = ({
                                 <Arrow
                                     offset={8}
                                     $color={tooltipTokens.background}
+                                    aria-hidden="true"
                                 />
                             )}
                         </AnimatedTooltipContent>
