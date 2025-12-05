@@ -39,6 +39,7 @@
         "test:blend:run": "cd packages/blend && pnpm test:run",
         "test:a11y": "cd packages/blend && pnpm test:a11y",
         "test:a11y:watch": "cd packages/blend && pnpm test:a11y:watch",
+        "test:a11y:file": "cd packages/blend && pnpm test:file",
         "chromatic": "cd apps/storybook && pnpm chromatic",
         "chromatic:ci": "cd apps/storybook && pnpm chromatic:ci"
     },

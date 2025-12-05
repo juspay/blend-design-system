@@ -2,6 +2,14 @@ import { forwardRef, useState, useMemo } from 'react'
 import { SingleSelect } from '../../SingleSelect'
 import { SelectMenuVariant, SelectMenuAlignment } from '../../SingleSelect'
 import ButtonAccessibility from '../../Button/accessibility/ButtonAccessibility'
+import TextInputAccessibility from '../../Inputs/TextInput/accessibility/TextInputAccessibility'
+import NumberInputAccessibility from '../../Inputs/NumberInput/accessibility/NumberInputAccessibility'
+import UnitInputAccessibility from '../../Inputs/UnitInput/accessibility/UnitInputAccessibility'
+import DropdownInputAccessibility from '../../Inputs/DropdownInput/accessibility/DropdownInputAccessibility'
+import SearchInputAccessibility from '../../Inputs/SearchInput/accessibility/SearchInputAccessibility'
+import OTPInputAccessibility from '../../Inputs/OTPInput/accessibility/OTPInputAccessibility'
+import TextAreaAccessibility from '../../Inputs/TextArea/accessibility/TextAreaAccessibility'
+import MultiValueInputAccessibility from '../../Inputs/MultiValueInput/accessibility/MultiValueInputAccessibility'
 import CheckboxAccessibility from '../../Checkbox/accessibility/CheckboxAccessibility'
 import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
@@ -20,6 +28,46 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         component: ButtonAccessibility,
     },
     {
+        name: 'TextInput',
+        displayName: 'Text Input',
+        component: TextInputAccessibility,
+    },
+    {
+        name: 'NumberInput',
+        displayName: 'Number Input',
+        component: NumberInputAccessibility,
+    },
+    {
+        name: 'UnitInput',
+        displayName: 'Unit Input',
+        component: UnitInputAccessibility,
+    },
+    {
+        name: 'DropdownInput',
+        displayName: 'Dropdown Input',
+        component: DropdownInputAccessibility,
+    },
+    {
+        name: 'SearchInput',
+        displayName: 'Search Input',
+        component: SearchInputAccessibility,
+    },
+    {
+        name: 'OTPInput',
+        displayName: 'OTP Input',
+        component: OTPInputAccessibility,
+    },
+    {
+        name: 'TextArea',
+        displayName: 'Text Area',
+        component: TextAreaAccessibility,
+    },
+    {
+        name: 'MultiValueInput',
+        displayName: 'Multi Value Input',
+        component: MultiValueInputAccessibility,
+    },
+    {
         name: 'Checkbox',
         displayName: 'Checkbox',
         component: CheckboxAccessibility,
@@ -35,12 +83,6 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         component: SwitchAccessibility,
     },
     // Add more components here as they are added
-    // Example:
-    // {
-    //     name: 'Input',
-    //     displayName: 'Text Input',
-    //     component: InputAccessibility,
-    // },
 ]
 
 export type AccessibilityDashboardProps = {

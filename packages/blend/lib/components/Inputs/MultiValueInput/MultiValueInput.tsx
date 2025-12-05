@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useRef, useState } from 'react'
+import { type KeyboardEvent, useRef, useState, useId } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooter from '../utils/InputFooter/InputFooter'
@@ -16,6 +16,7 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -25,6 +26,7 @@ const MultiValueInput = ({
     value = '',
     label,
     sublabel,
+    helpIconHintText,
     disabled,
     required,
     error,
@@ -37,6 +39,8 @@ const MultiValueInput = ({
     size = TextInputSize.MEDIUM,
     onFocus,
     onBlur,
+    name,
+    id: providedId,
     ...rest
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
@@ -44,6 +48,21 @@ const MultiValueInput = ({
     const [isFocused, setIsFocused] = useState(false)
     const shouldShake = useErrorShake(error || false)
     const inputRef = useRef<HTMLInputElement>(null)
+
+    // Generate unique IDs for accessibility (WCAG 4.1.2, 3.3.1, 3.3.2)
+    const generatedId = useId()
+    const inputId = providedId || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
+    // Construct aria-describedby to link hint and error messages (WCAG 3.3.1, 3.3.2)
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
 
     const addTag = (value: string) => {
         const trimmedValue = value.trim()
@@ -85,8 +104,11 @@ const MultiValueInput = ({
             <InputLabels
                 label={label}
                 sublabel={sublabel}
+                helpIconHintText={helpIconHintText}
                 disabled={disabled}
                 required={required}
+                inputId={inputId}
+                name={name}
                 tokens={multiValueInputTokens}
             />
             <Wrapper style={getErrorShakeStyle(shouldShake)}>
@@ -138,15 +160,48 @@ const MultiValueInput = ({
                             size={TagSize.XS}
                             shape={TagShape.ROUNDED}
                             rightSlot={
-                                <X
-                                    size={12}
-                                    onClick={() => removeTag(tag)}
-                                    style={{ cursor: 'pointer' }}
-                                />
+                                <PrimitiveButton
+                                    type="button"
+                                    aria-label={`Remove ${tag}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        removeTag(tag)
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            removeTag(tag)
+                                        }
+                                    }}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        minWidth: '24px',
+                                        minHeight: '24px',
+                                    }}
+                                    tabIndex={0}
+                                >
+                                    <X
+                                        size={12}
+                                        aria-hidden="true"
+                                        style={{ pointerEvents: 'none' }}
+                                    />
+                                </PrimitiveButton>
                             }
                         />
                     ))}
                     <PrimitiveInput
+                        id={inputId}
+                        name={name}
                         flexGrow={1}
                         placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                         fontSize={
@@ -167,6 +222,11 @@ const MultiValueInput = ({
                         outline="none"
                         border="none"
                         value={value}
+                        required={required}
+                        aria-required={required ? 'true' : undefined}
+                        aria-invalid={error ? 'true' : 'false'}
+                        aria-describedby={ariaDescribedBy}
+                        disabled={disabled}
                         placeholderStyles={{
                             transition: 'opacity 150ms ease-out',
                             opacity: isFocused ? 0 : 1,
@@ -188,6 +248,8 @@ const MultiValueInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
                 tokens={multiValueInputTokens}
             />
         </Block>

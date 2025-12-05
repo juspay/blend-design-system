@@ -76,6 +76,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         const [rightSlotWidth, setRightSlotWidth] = useState(0)
         const [isFocused, setIsFocused] = useState(false)
 
+        const isRequired = rest.required ?? false
+
         useEffect(() => {
             if (leftSlotRef.current) {
                 setLeftSlotWidth(leftSlotRef.current.offsetWidth)
@@ -166,9 +168,13 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                 )}
 
                 <PrimitiveInput
+                    type={rest.type || 'search'}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     ref={ref}
                     name={name}
+                    required={isRequired}
+                    aria-required={isRequired ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}

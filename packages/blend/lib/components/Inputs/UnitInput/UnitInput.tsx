@@ -1,5 +1,5 @@
 import { Weight } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useId } from 'react'
 import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Text from '../../Text/Text'
@@ -68,6 +68,11 @@ const UnitInput = ({
     const paddingY =
         toPixels(unitInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 1)
+
+    const generatedId = useId()
+    const inputId = rest.id || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
 
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
@@ -190,6 +195,7 @@ const UnitInput = ({
                     helpIconHintText={helpIconHintText}
                     disabled={disabled}
                     name={name}
+                    inputId={inputId}
                     required={required}
                 />
             )}
@@ -258,6 +264,7 @@ const UnitInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    id={inputId}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     type="number"
                     lineHeight={FOUNDATION_THEME.unit[20]}
@@ -267,6 +274,7 @@ const UnitInput = ({
                     step={step}
                     min={min}
                     max={max}
+                    name={name}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={
@@ -280,6 +288,8 @@ const UnitInput = ({
                             : paddingY
                     }
                     required={required}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
                     borderRadius={
                         unitInputTokens.inputContainer.borderRadius[size]
                     }
@@ -347,6 +357,8 @@ const UnitInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
             />
         </Block>
     )

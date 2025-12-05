@@ -6,12 +6,20 @@ import {
     UnitPosition,
 } from '@juspay/blend-design-system'
 import { DollarSign, Percent, Clock, Weight } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof UnitInput> = {
     title: 'Components/Inputs/UnitInput',
     component: UnitInput,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -30,6 +38,32 @@ A specialized numeric input component with unit display for values that require 
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Uses native \`<input type="number">\` for proper semantics, combined with a visual unit label
+- Labels are associated via \`label\`, \`sublabel\`, and \`name\` props (through shared input utilities)
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with inputs via \`InputFooter\`
+- Focus styles and error shake patterns are keyboard-friendly
+- Unit labels and left/right icons are supplementary and should not replace accessible labels
+- Hint and help text provide additional instructions for users and assistive technologies
+
+**WCAG Compliance Target**: 2.1/2.2 Level AA (designed to support WCAG 2.0, 2.1, and 2.2 form guidelines)
+
+**Intended coverage:**
+- **Perceivable**: Labels, units, hints, and error messages are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, typing, step changes via controls)
+- **Understandable**: Clear labels, units, ranges, and inline help for numeric constraints
+- **Robust**: Built with semantic HTML and ARIA-friendly props via shared input primitives
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA)
+- **jest-axe tests**: Add \`UnitInput.accessibility.test.tsx\` (mirroring NumberInput/TextInput) and run:
+\`\`\`bash
+pnpm test UnitInput.accessibility
+\`\`\`
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 ## Usage
 
@@ -658,5 +692,152 @@ export const WithLabelsAndHints: Story = {
                 story: 'UnitInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => {
+        const [price, setPrice] = useState<number | undefined>(undefined)
+        const [discount, setDiscount] = useState<number | undefined>(undefined)
+        const [weight, setWeight] = useState<number | undefined>(undefined)
+
+        const discountError =
+            discount !== undefined && (discount < 0 || discount > 100)
+                ? 'Discount must be between 0% and 100%'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Units, and Hints
+                    </h3>
+                    <UnitInput
+                        label="Product Price"
+                        sublabel="Base price before taxes and discounts"
+                        hintText="Enter the price in US dollars"
+                        unit="$"
+                        unitPosition={UnitPosition.LEFT}
+                        placeholder="0.00"
+                        min={0}
+                        step={0.01}
+                        value={price}
+                        onChange={(e) =>
+                            setPrice(
+                                e.target.value
+                                    ? parseFloat(e.target.value)
+                                    : undefined
+                            )
+                        }
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <UnitInput
+                        label="Discount"
+                        unit="%"
+                        unitPosition={UnitPosition.RIGHT}
+                        placeholder="0"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={discount}
+                        onChange={(e) =>
+                            setDiscount(
+                                e.target.value
+                                    ? parseFloat(e.target.value)
+                                    : undefined
+                            )
+                        }
+                        error={!!discountError}
+                        errorMessage={discountError}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <UnitInput
+                        label="Disabled Weight"
+                        unit="kg"
+                        unitPosition={UnitPosition.RIGHT}
+                        value={weight}
+                        onChange={(e) =>
+                            setWeight(
+                                e.target.value
+                                    ? parseFloat(e.target.value)
+                                    : undefined
+                            )
+                        }
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, unit display, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations, unit readability, and error messaging.
+
+2. **jest-axe tests**:
+   - Add \`UnitInput.accessibility.test.tsx\` mirroring NumberInput/TextInput/Button tests and run:
+   \`\`\`bash
+   pnpm test UnitInput.accessibility
+   \`\`\`
+   - Validate WCAG 2.0/2.1/2.2 A and AA success criteria for form fields (labels, units, errors, keyboard support).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, units, hints, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }
