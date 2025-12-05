@@ -33,6 +33,7 @@ const InputFooter = ({
     hintText,
     disabled,
     errorId,
+    hintId,
     tokens,
     hintTextId,
     errorMessageId,
@@ -65,7 +66,7 @@ const InputFooter = ({
                 )}
                 {hintText && !error && (
                     <Text
-                        id={hintTextId}
+                        id={hintTextId || hintId}
                         // variant="body.md"
                         data-element="hint-text"
                         data-id={hintText || 'hint-text'}
