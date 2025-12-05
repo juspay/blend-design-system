@@ -33,9 +33,10 @@ const InputFooter = ({
     hintText,
     disabled,
     errorId,
-    tokens,
-    errorMessageId,
     hintId,
+    tokens,
+    hintTextId,
+    errorMessageId,
 }: InputFooterProps) => {
     return (
         ((error && errorMessage) || hintText) && (
