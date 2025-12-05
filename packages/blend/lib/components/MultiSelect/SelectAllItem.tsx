@@ -44,7 +44,7 @@ const SelectAllItem = ({
     return (
         <RadixMenu.Item asChild data-disabled={disabled}>
             <Block
-                data-button-for="selectAll"
+                data-element="selectAll-checkbox"
                 padding={FOUNDATION_THEME.unit[8]}
                 display="flex"
                 alignItems="center"
@@ -69,7 +69,7 @@ const SelectAllItem = ({
                 onClick={handleClick}
             >
                 <PrimitiveText
-                    data-button-text={selectAllText}
+                    data-id={selectAllText || 'selectAll-checkbox'}
                     fontSize={multiSelectTokens.menu.item.optionsLabel.fontSize}
                     fontWeight={
                         multiSelectTokens.menu.item.optionsLabel.fontWeight

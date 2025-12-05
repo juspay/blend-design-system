@@ -185,9 +185,6 @@ const SingleSelectTrigger = ({
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                     }}
-                                    data-button-text={
-                                        valueLabelMap[selected] || selected
-                                    }
                                 >
                                     {valueLabelMap[selected] || selected}
                                 </Text>
@@ -221,11 +218,6 @@ const SingleSelectTrigger = ({
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                             }}
-                            data-button-text={
-                                selected
-                                    ? valueLabelMap[selected] || selected
-                                    : placeholder
-                            }
                         >
                             {selected
                                 ? valueLabelMap[selected] || selected

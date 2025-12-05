@@ -540,9 +540,6 @@ const MultiSelect = ({
                                                                 .placeholder
                                                                 .fontSize
                                                         }
-                                                        data-button-text={
-                                                            placeholder
-                                                        }
                                                     >
                                                         {placeholder}
                                                     </Text>

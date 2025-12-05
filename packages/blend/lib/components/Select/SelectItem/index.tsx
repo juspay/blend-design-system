@@ -102,20 +102,18 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const rightSlotContent = rightSlotConfig ? (
             rightSlotConfig.type === 'checkbox' ? (
                 <Checkbox
-                    data-checkbox-value={item.value}
-                    data-selected-checkbox={isSelected}
-                    data-checkbox-status={
-                        item.disabled ? 'disabled' : 'enabled'
-                    }
+                    data-element="checkbox"
+                    data-id={item.value || 'checkbox'}
+                    data-state={isSelected ? 'selected' : 'not selected'}
+                    data-status={item.disabled ? 'disabled' : 'enabled'}
                     {...rightSlotConfig.props}
                 />
             ) : (
                 <Check
-                    data-checkmark-value={item.value}
-                    data-selected-checkmark={isSelected}
-                    data-checkmark-status={
-                        item.disabled ? 'disabled' : 'enabled'
-                    }
+                    data-element="checkbox"
+                    data-id={item.value || 'checkbox'}
+                    data-state={isSelected ? 'selected' : 'not selected'}
+                    data-status={item.disabled ? 'disabled' : 'enabled'}
                     {...rightSlotConfig.props}
                 />
             )
@@ -263,11 +261,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                             {item.slot4 && <MenuItemSlot slot={item.slot4} />}
                             {showCheckmark && rightSlotContent && (
                                 <Block
-                                    data-element="checkbox"
-                                    data-id={item.value || 'checkbox'}
-                                    data-state={
-                                        isSelected ? 'selected' : 'not selected'
-                                    }
                                     as="span"
                                     display="flex"
                                     alignItems="center"

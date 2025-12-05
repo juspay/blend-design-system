@@ -426,11 +426,6 @@ const SingleSelect = ({
                                                             whiteSpace:
                                                                 'nowrap',
                                                         }}
-                                                        data-button-text={
-                                                            valueLabelMap[
-                                                                selected
-                                                            ] || selected
-                                                        }
                                                     >
                                                         {valueLabelMap[
                                                             selected
