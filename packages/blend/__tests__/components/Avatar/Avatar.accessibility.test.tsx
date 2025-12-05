@@ -91,7 +91,9 @@ describe('Avatar Accessibility', () => {
         })
 
         it('has alt text even when image fails to load - fallback accessibility (WCAG 1.1.1)', () => {
-            const { container } = render(<Avatar src="invalid-url.jpg" alt="Jane Smith" />)
+            const { container } = render(
+                <Avatar src="invalid-url.jpg" alt="Jane Smith" />
+            )
             // Alt text should be available in visually hidden span
             const avatar = container.querySelector('span')
             expect(avatar).toBeInTheDocument()
@@ -131,7 +133,9 @@ describe('Avatar Accessibility', () => {
             const { container } = render(
                 <Avatar src="https://example.com/avatar.jpg" alt="John Doe" />
             )
-            const fallback = container.querySelector('[data-avatar-fallback="true"]')
+            const fallback = container.querySelector(
+                '[data-avatar-fallback="true"]'
+            )
             // Fallback should not be visible when image is present
             expect(fallback).toBeFalsy()
         })
@@ -155,7 +159,9 @@ describe('Avatar Accessibility', () => {
         })
 
         it('maintains accessible name when image fails - error handling (WCAG 4.1.2)', () => {
-            const { container } = render(<Avatar src="invalid.jpg" alt="Fallback User" />)
+            const { container } = render(
+                <Avatar src="invalid.jpg" alt="Fallback User" />
+            )
             const avatar = container.querySelector('span')
             expect(avatar).toBeInTheDocument()
             expect(avatar).toHaveTextContent('Fallback User')
@@ -218,7 +224,9 @@ describe('Avatar Accessibility', () => {
                 <Avatar alt="John Doe" online={true} />
             )
             // Visual indicator exists
-            const indicator = container.querySelector('[data-avatar-indicator="true"]')
+            const indicator = container.querySelector(
+                '[data-avatar-indicator="true"]'
+            )
             expect(indicator).toBeTruthy()
             // Programmatic indication via data attribute
             const avatar = container.querySelector('[data-status="online"]')
@@ -229,7 +237,9 @@ describe('Avatar Accessibility', () => {
     describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
         it('fallback text has sufficient contrast - text readability (WCAG 1.4.3)', () => {
             const { container } = render(<Avatar alt="John Doe" />)
-            const fallback = container.querySelector('[data-avatar-fallback="true"]')
+            const fallback = container.querySelector(
+                '[data-avatar-fallback="true"]'
+            )
             if (fallback) {
                 const styles = window.getComputedStyle(fallback as HTMLElement)
                 // White text (#FFFFFF) on colored background should meet contrast
@@ -253,7 +263,9 @@ describe('Avatar Accessibility', () => {
             const { container } = render(
                 <Avatar alt="John Doe" online={true} />
             )
-            const indicator = container.querySelector('[data-avatar-indicator="true"]')
+            const indicator = container.querySelector(
+                '[data-avatar-indicator="true"]'
+            )
             expect(indicator).toBeTruthy()
             // Indicator should have border and background color for contrast
             if (indicator) {
@@ -318,7 +330,9 @@ describe('Avatar Accessibility', () => {
             const hiddenSpan = container.querySelector('span')
             expect(hiddenSpan).toBeInTheDocument()
             // Fallback should render empty string initials
-            const fallback = container.querySelector('[data-avatar-fallback="true"]')
+            const fallback = container.querySelector(
+                '[data-avatar-fallback="true"]'
+            )
             expect(fallback).toBeInTheDocument()
         })
 
@@ -344,7 +358,9 @@ describe('Avatar Accessibility', () => {
                 <Avatar alt="John Doe" online={true} />
             )
             // Online status indicated by both visual indicator and data attribute
-            const indicator = container.querySelector('[data-avatar-indicator="true"]')
+            const indicator = container.querySelector(
+                '[data-avatar-indicator="true"]'
+            )
             const status = container.querySelector('[data-status="online"]')
             expect(indicator).toBeTruthy()
             expect(status).toBeInTheDocument()
@@ -374,7 +390,9 @@ describe('Avatar Accessibility', () => {
     describe('WCAG 1.4.6 Contrast (Enhanced) (Level AAA)', () => {
         it('fallback text meets AAA contrast requirements - enhanced contrast (WCAG 1.4.6)', () => {
             const { container } = render(<Avatar alt="John Doe" />)
-            const fallback = container.querySelector('[data-avatar-fallback="true"]')
+            const fallback = container.querySelector(
+                '[data-avatar-fallback="true"]'
+            )
             if (fallback) {
                 const styles = window.getComputedStyle(fallback as HTMLElement)
                 // White text (#FFFFFF) should meet AAA contrast on colored backgrounds
@@ -385,7 +403,9 @@ describe('Avatar Accessibility', () => {
 
     describe('WCAG 2.4.6 Headings and Labels (Level AA)', () => {
         it('has descriptive alt text - clear labeling (WCAG 2.4.6)', () => {
-            const { container } = render(<Avatar alt="John Doe's Profile Picture" />)
+            const { container } = render(
+                <Avatar alt="John Doe's Profile Picture" />
+            )
             const avatar = container.querySelector('span')
             expect(avatar).toBeInTheDocument()
             expect(avatar).toHaveTextContent("John Doe's Profile Picture")
@@ -428,4 +448,3 @@ describe('Avatar Accessibility', () => {
         })
     })
 })
-
