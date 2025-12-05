@@ -60,7 +60,9 @@ const InputLabels = <TTokens extends InputLabelTokens>({
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
-                    id={labelId || (name ? `${name}-label` : undefined)}
+                    id={labelId}
+                    data-element="input-label"
+                    data-id={label || 'label'}
                     data-form-label={label}
                     as="label"
                     htmlFor={inputId || name}
@@ -97,6 +99,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 )}
                 {sublabel && (
                     <Text
+                        data-element="input-sublabel"
+                        data-id={sublabel || 'sublabel'}
                         // variant="body.md"
                         fontWeight={
                             tokens?.subLabel?.fontWeight ||

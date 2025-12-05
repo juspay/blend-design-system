@@ -388,7 +388,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     )
 
     return (
-        <Block width="100%" display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-multi-select={label || 'multi-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            width="100%"
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             {variant === MultiSelectVariant.CONTAINER &&
                 (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
                     <InputLabels
