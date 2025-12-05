@@ -48,6 +48,7 @@ const BreadcrumbItem = ({
         <>
             <PrimitiveLink
                 data-element="breadcrumb-item"
+                data-id={item.label}
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -70,7 +71,6 @@ const BreadcrumbItem = ({
                     </Block>
                 )}
                 <PrimitiveText
-                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
