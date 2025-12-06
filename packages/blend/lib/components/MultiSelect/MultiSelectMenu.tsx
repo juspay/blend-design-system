@@ -719,14 +719,6 @@ const MultiSelectMenu = ({
                                                 data-button-for={
                                                     secondaryAction.text
                                                 }
-                                                data-custom-value={
-                                                    secondaryAction.text
-                                                }
-                                                data-button-status={
-                                                    secondaryAction.disabled
-                                                        ? 'disabled'
-                                                        : 'enabled'
-                                                }
                                                 data-dynamic-button={
                                                     secondaryAction.text
                                                 }
@@ -754,14 +746,6 @@ const MultiSelectMenu = ({
                                             <Button
                                                 data-button-for={
                                                     primaryAction.text
-                                                }
-                                                data-custom-value={
-                                                    primaryAction.text
-                                                }
-                                                data-button-status={
-                                                    primaryAction.disabled
-                                                        ? 'disabled'
-                                                        : 'enabled'
                                                 }
                                                 data-dynamic-button={
                                                     primaryAction.text

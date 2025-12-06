@@ -63,6 +63,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
 
         return isMultiple ? (
             <StyledAccordionRoot
+                data-accordion="accordion"
                 type="multiple"
                 value={value as string[] | undefined}
                 defaultValue={defaultValue as string[] | undefined}
@@ -76,6 +77,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             </StyledAccordionRoot>
         ) : (
             <StyledAccordionRoot
+                data-accordion="accordion"
                 type="single"
                 collapsible={true}
                 value={value as string | undefined}

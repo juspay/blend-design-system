@@ -286,7 +286,13 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         })
 
     return (
-        <Block display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-single-select={label || 'single-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             {variant === SelectMenuVariant.CONTAINER &&
                 (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
                     <InputLabels

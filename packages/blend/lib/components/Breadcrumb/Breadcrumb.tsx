@@ -47,7 +47,7 @@ const BreadcrumbItem = ({
     return (
         <>
             <PrimitiveLink
-                data-breadcrumb={item.label}
+                data-element="breadcrumb-item"
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -65,9 +65,12 @@ const BreadcrumbItem = ({
                 onClick={!isActive && item.onClick ? handleClick : undefined}
             >
                 {item.leftSlot && (
-                    <Block contentCentered>{item.leftSlot}</Block>
+                    <Block data-element="leading-icon" contentCentered>
+                        {item.leftSlot}
+                    </Block>
                 )}
                 <PrimitiveText
+                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
@@ -75,7 +78,9 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block contentCentered>{item.rightSlot}</Block>
+                    <Block data-element="trailing-icon" contentCentered>
+                        {item.rightSlot}
+                    </Block>
                 )}
             </PrimitiveLink>
             {!isActive && (
@@ -113,13 +118,16 @@ const Breadcrumb = ({
     })
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
-
     return (
         <Block
             width={'full'}
             display="flex"
             alignItems="center"
             gap={breadcrumbTokens.gap}
+            data-breadcrumb="breadcrumb"
+            data-status={
+                shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
+            }
         >
             {baseItem && (
                 <BreadcrumbItem
