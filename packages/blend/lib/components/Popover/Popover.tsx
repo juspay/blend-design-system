@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import styled from 'styled-components'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
@@ -55,6 +55,14 @@ const Popover = ({
 
     const shouldShowSkeleton = skeleton?.show
     const skeletonVariant = skeleton?.variant || 'pulse'
+
+    // Generate unique IDs for accessibility (WCAG 4.1.2 Name, Role, Value)
+    const baseId = useId()
+    const headingId = heading ? `${baseId}-heading` : undefined
+    const descriptionId = description ? `${baseId}-description` : undefined
+
+    // Construct aria-describedby to link description if present (WCAG 1.3.1 Info and Relationships)
+    const ariaDescribedBy = descriptionId || undefined
 
     useEffect(() => {
         if (open !== undefined) {
@@ -118,6 +126,12 @@ const Popover = ({
             >
                 <AnimatedPopoverSurface
                     zIndex={999}
+                    {...(headingId
+                        ? { 'aria-labelledby': headingId }
+                        : { 'aria-label': heading || 'Popover dialog' })}
+                    {...(ariaDescribedBy
+                        ? { 'aria-describedby': ariaDescribedBy }
+                        : {})}
                     backgroundColor={popoverTokens.background}
                     boxShadow={
                         popoverTokens.shadow?.[shadow] ||
@@ -152,6 +166,8 @@ const Popover = ({
                         description={description}
                         showCloseButton={showCloseButton}
                         size={size}
+                        headingId={headingId}
+                        descriptionId={descriptionId}
                         onClose={() => {
                             setIsOpen(false)
                             if (onClose) {

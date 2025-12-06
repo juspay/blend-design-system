@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import {
     Drawer,
     DrawerTrigger,
@@ -50,6 +50,14 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
     const bodySkeletonWidth = skeleton?.bodySkeletonProps?.width || '100%'
     const bodySkeletonHeight = skeleton?.bodySkeletonProps?.height || 200
 
+    // Generate unique IDs for accessibility (WCAG 4.1.2 Name, Role, Value)
+    const baseId = useId()
+    const headingId = heading ? `${baseId}-heading` : undefined
+    const descriptionId = description ? `${baseId}-description` : undefined
+
+    // Construct aria-describedby to link description if present (WCAG 1.3.1 Info and Relationships)
+    const ariaDescribedBy = descriptionId || undefined
+
     return (
         <Drawer
             open={open}
@@ -72,6 +80,9 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                     direction="bottom"
                     showHandle={true}
                     contentDriven={true}
+                    aria-labelledby={headingId}
+                    aria-label={heading || 'Popover dialog'}
+                    aria-describedby={ariaDescribedBy}
                 >
                     {(heading || description || shouldShowSkeleton) && (
                         <DrawerHeader>
@@ -115,10 +126,14 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                                         gap={FOUNDATION_THEME.unit[4]}
                                     >
                                         {heading && (
-                                            <DrawerTitle>{heading}</DrawerTitle>
+                                            <DrawerTitle id={headingId}>
+                                                {heading}
+                                            </DrawerTitle>
                                         )}
                                         {description && (
-                                            <DrawerDescription>
+                                            <DrawerDescription
+                                                id={descriptionId}
+                                            >
                                                 {description}
                                             </DrawerDescription>
                                         )}
@@ -130,7 +145,12 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                                                 buttonType={
                                                     ButtonType.SECONDARY
                                                 }
-                                                leadingIcon={<X size={16} />}
+                                                leadingIcon={
+                                                    <X
+                                                        size={16}
+                                                        aria-hidden="true"
+                                                    />
+                                                }
                                                 onClick={() => {
                                                     if (onOpenChange) {
                                                         onOpenChange(false)
@@ -139,6 +159,7 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                                                         onClose()
                                                     }
                                                 }}
+                                                aria-label="Close popover"
                                             />
                                         </DrawerClose>
                                     )}

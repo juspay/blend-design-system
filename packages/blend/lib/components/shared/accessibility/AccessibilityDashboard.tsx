@@ -18,6 +18,7 @@ import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelec
 import TagAccessibility from '../../Tags/accessibility/TagAccessibility'
 import TooltipAccessibility from '../../Tooltip/accessibility/TooltipAccessibility'
 import ModalAccessibility from '../../Modal/accessibility/ModalAccessibility'
+import PopoverAccessibility from '../../Popover/accessibility/PopoverAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -111,6 +112,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Modal',
         displayName: 'Modal',
         component: ModalAccessibility,
+    },
+    {
+        name: 'Popover',
+        displayName: 'Popover',
+        component: PopoverAccessibility,
     },
     // Add more components here as they are added
 ]
