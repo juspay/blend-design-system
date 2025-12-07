@@ -285,6 +285,11 @@ const MultiSelectTrigger = ({
                             height={'100%'}
                             style={{ aspectRatio: 1 }}
                             onClick={() => onChange('')}
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
+                            }
                             outline={
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
@@ -303,6 +308,7 @@ const MultiSelectTrigger = ({
                             <X
                                 size={16}
                                 color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
                             />
                         </PrimitiveButton>
                     )}
