@@ -100,6 +100,15 @@ const SingleSelectDemo = () => {
     const [truncationCustomSelected, setTruncationCustomSelected] = useState('')
     const [truncationMixedSelected, setTruncationMixedSelected] = useState('')
 
+    // Custom value demo state
+    const [customValueBasicSelected, setCustomValueBasicSelected] = useState('')
+    const [customValueWithLabelSelected, setCustomValueWithLabelSelected] =
+        useState('')
+    const [customValueFormSelected, setCustomValueFormSelected] = useState('')
+
+    const [playgroundShowSkeleton, setPlaygroundShowSkeleton] = useState(false)
+    const [playgroundSkeletonCount, setPlaygroundSkeletonCount] = useState('3')
+
     // Sample data
     const simpleItems: SelectMenuGroupType[] = [
         {
@@ -413,6 +422,9 @@ const SingleSelectDemo = () => {
         setTruncationBasicSelected('')
         setTruncationCustomSelected('')
         setTruncationMixedSelected('')
+        setCustomValueBasicSelected('')
+        setCustomValueWithLabelSelected('')
+        setCustomValueFormSelected('')
         addSnackbar({
             header: 'Selections Cleared',
             description: 'All selections have been reset',
@@ -545,6 +557,13 @@ const SingleSelectDemo = () => {
 
                             <div className="border rounded-lg p-6 bg-gray-50">
                                 <SingleSelect
+                                    skeleton={{
+                                        count: parseInt(
+                                            playgroundSkeletonCount
+                                        ),
+                                        show: playgroundShowSkeleton,
+                                        variant: 'pulse',
+                                    }}
                                     fullWidth={true}
                                     // minDropdownWidth={100}
                                     error={playgroundError}
@@ -594,9 +613,32 @@ const SingleSelectDemo = () => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <Switch
+                                    label="Show Skeleton"
+                                    checked={playgroundShowSkeleton}
+                                    onChange={() =>
+                                        setPlaygroundShowSkeleton(
+                                            !playgroundShowSkeleton
+                                        )
+                                    }
+                                />
+                                <TextInput
+                                    label="Skeleton Count"
+                                    value={playgroundSkeletonCount.toString()}
+                                    onChange={(e) =>
+                                        setPlaygroundSkeletonCount(
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="Enter skeleton count"
+                                />
+                                <Switch
                                     label="Required"
                                     checked={playgroundRequired}
-                                    onChange={setPlaygroundRequired}
+                                    onChange={() =>
+                                        setPlaygroundRequired(
+                                            !playgroundRequired
+                                        )
+                                    }
                                 />
 
                                 <Switch
@@ -610,19 +652,31 @@ const SingleSelectDemo = () => {
                                 <Switch
                                     label="Disabled"
                                     checked={playgroundDisabled}
-                                    onChange={setPlaygroundDisabled}
+                                    onChange={() =>
+                                        setPlaygroundDisabled(
+                                            !playgroundDisabled
+                                        )
+                                    }
                                 />
 
                                 <Switch
                                     label="Enable Search"
                                     checked={playgroundEnableSearch}
-                                    onChange={setPlaygroundEnableSearch}
+                                    onChange={() =>
+                                        setPlaygroundEnableSearch(
+                                            !playgroundEnableSearch
+                                        )
+                                    }
                                 />
 
                                 <Switch
                                     label="Show Icon Slot"
                                     checked={playgroundShowSlot}
-                                    onChange={setPlaygroundShowSlot}
+                                    onChange={() =>
+                                        setPlaygroundShowSlot(
+                                            !playgroundShowSlot
+                                        )
+                                    }
                                 />
                             </div>
                         </div>
@@ -1278,6 +1332,229 @@ const SingleSelectDemo = () => {
                                 <code>tooltipProps</code> for configuration, or{' '}
                                 <code>disableTruncation: true</code> to disable
                                 auto-tooltips.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Custom Value Examples */}
+                <div className="space-y-6">
+                    <h2 className="text-2xl font-bold">
+                        ✨ Custom Value Examples
+                    </h2>
+                    <p className="text-gray-600">
+                        <strong>
+                            NEW: Allow users to specify custom values not in the
+                            options!
+                        </strong>{' '}
+                        Enable the <code>allowCustomValue</code> prop to let
+                        users type and select values that aren't in the
+                        predefined list. Perfect for scenarios where users need
+                        flexibility beyond preset options.
+                    </p>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">
+                                Basic Custom Value
+                            </h3>
+                            <SingleSelect
+                                label="Country"
+                                subLabel="Select or type a country name"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                label: 'United States',
+                                                value: 'us',
+                                            },
+                                            { label: 'Canada', value: 'ca' },
+                                            {
+                                                label: 'United Kingdom',
+                                                value: 'uk',
+                                            },
+                                            { label: 'Australia', value: 'au' },
+                                            { label: 'Germany', value: 'de' },
+                                        ],
+                                    },
+                                ]}
+                                selected={customValueBasicSelected}
+                                onSelect={(value) => {
+                                    setCustomValueBasicSelected(value)
+                                    addSnackbar({
+                                        header: 'Country Selected',
+                                        description: `Selected: ${value}`,
+                                    })
+                                }}
+                                placeholder="Select or type country..."
+                                enableSearch
+                                allowCustomValue
+                            />
+                            {customValueBasicSelected && (
+                                <div className="p-3 bg-blue-50 rounded-lg">
+                                    <p className="text-sm text-blue-700">
+                                        <strong>Selected Country:</strong>{' '}
+                                        {customValueBasicSelected}
+                                    </p>
+                                    <p className="text-xs text-blue-600 mt-1">
+                                        💡 Try typing a country not in the list!
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">Custom Label Text</h3>
+                            <SingleSelect
+                                label="Programming Language"
+                                subLabel="Choose from list or add your own"
+                                items={[
+                                    {
+                                        groupLabel: 'Popular Languages',
+                                        items: [
+                                            {
+                                                label: 'JavaScript',
+                                                value: 'js',
+                                            },
+                                            {
+                                                label: 'TypeScript',
+                                                value: 'ts',
+                                            },
+                                            { label: 'Python', value: 'py' },
+                                            { label: 'Java', value: 'java' },
+                                            { label: 'Go', value: 'go' },
+                                        ],
+                                    },
+                                ]}
+                                selected={customValueWithLabelSelected}
+                                onSelect={(value) => {
+                                    setCustomValueWithLabelSelected(value)
+                                    addSnackbar({
+                                        header: 'Language Selected',
+                                        description: `Selected: ${value}`,
+                                    })
+                                }}
+                                placeholder="Select language..."
+                                enableSearch
+                                allowCustomValue
+                                customValueLabel="Add custom"
+                            />
+                            {customValueWithLabelSelected && (
+                                <div className="p-3 bg-green-50 rounded-lg">
+                                    <p className="text-sm text-green-700">
+                                        <strong>Language:</strong>{' '}
+                                        {customValueWithLabelSelected}
+                                    </p>
+                                    <p className="text-xs text-green-600 mt-1">
+                                        ⚙️ Uses custom label "Add custom"
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">Form Use Case</h3>
+                            <SingleSelect
+                                label="City"
+                                subLabel="Select or enter your city"
+                                hintText="Type if your city isn't listed"
+                                items={[
+                                    {
+                                        groupLabel: 'Major Cities',
+                                        items: [
+                                            { label: 'New York', value: 'nyc' },
+                                            {
+                                                label: 'Los Angeles',
+                                                value: 'la',
+                                            },
+                                            { label: 'Chicago', value: 'chi' },
+                                            { label: 'Houston', value: 'hou' },
+                                            { label: 'Phoenix', value: 'phx' },
+                                        ],
+                                    },
+                                ]}
+                                selected={customValueFormSelected}
+                                onSelect={(value) => {
+                                    setCustomValueFormSelected(value)
+                                    addSnackbar({
+                                        header: 'City Selected',
+                                        description: `City: ${value}`,
+                                    })
+                                }}
+                                placeholder="Select or type city..."
+                                enableSearch
+                                allowCustomValue
+                                customValueLabel="Enter"
+                                required
+                                slot={<MapPin size={16} />}
+                            />
+                            {customValueFormSelected && (
+                                <div className="p-3 bg-purple-50 rounded-lg">
+                                    <p className="text-sm text-purple-700">
+                                        <strong>City:</strong>{' '}
+                                        {customValueFormSelected}
+                                    </p>
+                                    <p className="text-xs text-purple-600 mt-1">
+                                        ✓ Required field with custom values
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                        <h4 className="font-semibold text-green-900 mb-2">
+                            🎯 Custom Value Features:
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <ul className="text-sm text-green-800 space-y-1">
+                                <li>
+                                    • <strong>Flexible Input:</strong> Users can
+                                    type values not in the list
+                                </li>
+                                <li>
+                                    • <strong>Smart Detection:</strong> Only
+                                    shows custom option when no exact match
+                                    exists
+                                </li>
+                                <li>
+                                    • <strong>Search Required:</strong> Must
+                                    enable <code>enableSearch</code> to use this
+                                    feature
+                                </li>
+                                <li>
+                                    • <strong>Customizable Label:</strong> Use{' '}
+                                    <code>customValueLabel</code> to change the
+                                    prefix
+                                </li>
+                            </ul>
+                            <ul className="text-sm text-green-800 space-y-1">
+                                <li>
+                                    • <strong>Perfect for Forms:</strong> Great
+                                    for addresses, names, or open-ended fields
+                                </li>
+                                <li>
+                                    • <strong>Mobile Support:</strong> Works on
+                                    both desktop and mobile views
+                                </li>
+                                <li>
+                                    • <strong>No Duplicates:</strong>{' '}
+                                    Automatically prevents duplicate entries
+                                </li>
+                                <li>
+                                    • <strong>Easy Integration:</strong> Just
+                                    add <code>allowCustomValue</code> prop
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="mt-3 p-2 bg-white rounded border-l-4 border-green-400">
+                            <p className="text-sm text-green-700">
+                                <strong>Usage:</strong> Set{' '}
+                                <code>allowCustomValue=&#123;true&#125;</code>{' '}
+                                and <code>enableSearch=&#123;true&#125;</code>.
+                                Optionally customize with{' '}
+                                <code>customValueLabel="Your Label"</code>.
+                                Default label is "Specify".
                             </p>
                         </div>
                     </div>

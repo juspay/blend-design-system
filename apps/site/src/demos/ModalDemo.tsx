@@ -5,10 +5,11 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
+import { TextInput } from '../../../../packages/blend/lib/main'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
-
+    const [showSkeleton, setShowSkeleton] = useState(false)
     // Configuration state
     const [config, setConfig] = useState({
         title: 'Modal Heading',
@@ -57,380 +58,6 @@ const ModalDemo = () => {
                 return (
                     <div>
                         <p className="text-base text-gray-600">
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
-                            This is a configurable modal for demonstration
-                            purposes. You can adjust various settings using the
-                            controls. This is a configurable modal for
-                            demonstration purposes. You can adjust various
-                            settings using the controls. This is a configurable
-                            modal for demonstration purposes. You can adjust
-                            various settings using the controls. This is a
-                            configurable modal for demonstration purposes. You
-                            can adjust various settings using the controls. This
-                            is a configurable modal for demonstration purposes.
-                            You can adjust various settings using the controls.
                             This is a configurable modal for demonstration
                             purposes. You can adjust various settings using the
                             controls.
@@ -646,6 +273,20 @@ const ModalDemo = () => {
                                 <label className="flex items-center cursor-pointer text-gray-700">
                                     <input
                                         type="checkbox"
+                                        checked={showSkeleton}
+                                        onChange={() =>
+                                            setShowSkeleton(!showSkeleton)
+                                        }
+                                        className="mr-2 cursor-pointer"
+                                    />
+                                    <span>Show Skeleton</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label className="flex items-center cursor-pointer text-gray-700">
+                                    <input
+                                        type="checkbox"
                                         checked={config.closeOnBackdropClick}
                                         onChange={handleCheckboxChange(
                                             'closeOnBackdropClick'
@@ -833,6 +474,16 @@ const ModalDemo = () => {
 
             {/* Modal with current configuration */}
             <Modal
+                skeleton={{
+                    show: showSkeleton,
+                    bodySkeletonProps: {
+                        show: true,
+                        width: '900px',
+                        // height: '100%',
+                    },
+                    variant: 'pulse',
+                }}
+                data-component="popUpConfirm Some PopUp6"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={config.title}
@@ -909,6 +560,7 @@ const ConfirmationModalExample = () => {
 
 const FormModalExample = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const [projectName, setProjectName] = useState('')
 
     return (
         <>
@@ -937,15 +589,23 @@ const FormModalExample = () => {
                     buttonType: ButtonType.SECONDARY,
                 }}
             >
-                <div className="space-y-4">
+                <form
+                    onSubmit={(e) => {
+                        e.stopPropagation()
+                        console.log('submitted')
+                    }}
+                    className="space-y-4"
+                >
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Project Name
-                        </label>
-                        <input
-                            type="text"
+                        <TextInput
+                            label="Project Name"
+                            value={projectName}
+                            onChange={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                setProjectName(e.target.value)
+                            }}
                             placeholder="Enter project name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                     <div>
@@ -969,7 +629,7 @@ const FormModalExample = () => {
                             <option>Other</option>
                         </select>
                     </div>
-                </div>
+                </form>
             </Modal>
         </>
     )

@@ -3,7 +3,6 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { contentBaseStyle } from './Menu'
 import MenuItem from './MenuItem'
 import { ChevronRightIcon, Search } from 'lucide-react'
 import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
@@ -13,6 +12,7 @@ import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { FOUNDATION_THEME } from '../../tokens'
 import { filterMenuItem } from './utils'
 import React, { useState, useRef } from 'react'
+import { submenuContentAnimations } from './menu.animations'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -22,9 +22,20 @@ const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     )
 }
 
-const SubContent = styled(RadixMenu.SubContent)(() => ({
-    ...contentBaseStyle,
-}))
+const SubContent = styled(RadixMenu.SubContent)`
+    background-color: white;
+    box-shadow: ${FOUNDATION_THEME.shadows.sm};
+    z-index: 99;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+    padding-bottom: 6px;
+    border-radius: 8px;
+    border: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
+
+    ${submenuContentAnimations}
+`
 
 const getBgColor = (
     state: MenuItemStates,

@@ -36,34 +36,48 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'text',
-                hintText: 'The text content displayed in the tag',
+                content: 'Tag.text',
+                hintText:
+                    'Required string representing the text content displayed in the tag. Should be concise and descriptive, clearly identifying the label, category, or status (e.g., "Success", "Pending", "New"). The text is styled based on the variant and color props.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
-            { content: 'variant', hintText: 'The visual variant of the tag' },
+            {
+                content: 'Tag.variant',
+                hintText:
+                    'Optional TagVariant enum value that determines the visual variant of the tag. NO_FILL creates a tag with transparent background and colored border/text, ATTENTIVE creates a tag with solid background and white/bold text, SUBTLE creates a tag with light background and colored text. The variant affects the overall appearance and emphasis. Defaults to SUBTLE.',
+            },
             { content: 'TagVariant', hintText: 'enum' },
-            { content: 'SUBTLE' },
-        ],
-        [
-            { content: 'color', hintText: 'The color theme of the tag' },
-            { content: 'TagColor', hintText: 'enum' },
-            { content: 'PRIMARY' },
-        ],
-        [
-            { content: 'size', hintText: 'The size of the tag' },
-            { content: 'TagSize', hintText: 'enum' },
-            { content: 'SM' },
+            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
         ],
         [
             {
-                content: 'shape',
-                hintText: 'The border radius shape of the tag',
+                content: 'Tag.color',
+                hintText:
+                    'Optional TagColor enum value that determines the color theme of the tag. NEUTRAL creates a gray tag, PRIMARY creates a primary brand color tag, SUCCESS creates a green tag, ERROR creates a red tag, WARNING creates an orange tag, PURPLE creates a purple tag. The color works with the variant to create the final appearance. Defaults to PRIMARY.',
+            },
+            { content: 'TagColor', hintText: 'enum' },
+            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
+        ],
+        [
+            {
+                content: 'Tag.size',
+                hintText:
+                    'Optional TagSize enum value that determines the size variant affecting dimensions, padding, and font size. XS creates an extra-small tag, SM creates a small tag, MD creates a medium tag, LG creates a large tag. The size affects the overall tag dimensions and text size. Defaults to SM.',
+            },
+            { content: 'TagSize', hintText: 'enum' },
+            { content: 'XS, SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'Tag.shape',
+                hintText:
+                    'Optional TagShape enum value that determines the border radius shape of the tag. ROUNDED creates tags with rounded corners, SQUARICAL creates tags with square/sharp corners. The shape affects the visual style and should be chosen based on design system requirements. Defaults to SQUARICAL.',
             },
             { content: 'TagShape', hintText: 'enum' },
-            { content: 'SQUARICAL' },
+            { content: 'ROUNDED, SQUARICAL' },
         ],
         [
             {
@@ -95,116 +109,48 @@ function MyComponent() {
             { content: '' },
         ],
     ]}
-    isHoverable={true}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
 
-## Features
+## Component Tokens
 
-- Multiple tag variants (noFill, attentive, subtle)
-- Six color themes (neutral, primary, success, error, warning, purple)
-- Four sizes (xs, sm, md, lg)
-- Two shape options (rounded, squarical)
-- Optional click functionality
-- Left and right slot support for icons or additional content
-- Split tag positioning for special styling
-- Responsive design with proper spacing
-- Accessible keyboard navigation
-
-## Usage Examples
-
-### Basic Tag
-
-Simple tag with text content
+You can style the Tag component using the following tokens:
 
 ```tsx
-<Tag text="Label" color={TagColor.PRIMARY} />
-```
-
-### Success Tag
-
-Tag with success styling
-
-```tsx
-<Tag
-    text="Success"
-    variant={TagVariant.SUBTLE}
-    color={TagColor.SUCCESS}
-    size={TagSize.MD}
-/>
-```
-
-### Interactive Tag
-
-Clickable tag with custom handler
-
-```tsx
-<Tag
-    text="Clickable"
-    color={TagColor.PRIMARY}
-    onClick={() => console.log('Tag clicked')}
-/>
-```
-
-### Tag with Icon
-
-Tag with left slot icon
-
-```tsx
-import { CheckCircle } from 'lucide-react'
-;<Tag
-    text="Completed"
-    color={TagColor.SUCCESS}
-    leftSlot={<CheckCircle size={12} />}
-/>
-```
-
-### Warning Tag
-
-Tag with warning styling and right slot
-
-```tsx
-import { AlertTriangle } from 'lucide-react'
-;<Tag
-    text="Warning"
-    variant={TagVariant.ATTENTIVE}
-    color={TagColor.WARNING}
-    rightSlot={<AlertTriangle size={12} />}
-/>
-```
-
-### Large Rounded Tag
-
-Tag with large size and rounded shape
-
-```tsx
-<Tag
-    text="Featured"
-    color={TagColor.PURPLE}
-    size={TagSize.LG}
-    shape={TagShape.ROUNDED}
-/>
-```
-
-### No Fill Tag
-
-Tag with no background fill
-
-```tsx
-<Tag
-    text="Outline"
-    variant={TagVariant.NO_FILL}
-    color={TagColor.NEUTRAL}
-    size={TagSize.SM}
-/>
-```
-
-### Split Tag
-
-Tag with split positioning for special styling
-
-```tsx
-<Tag text="Split" color={TagColor.ERROR} splitTagPosition="left" />
+export type TagTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['backgroundColor']
+        }
+    }
+    borderRadius: {
+        [key in TagSize]: {
+            [key in TagShape]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TagSize]: CSSObject['padding']
+    }
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
+    }
+    text: {
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
+        }
+    }
+}
 ```

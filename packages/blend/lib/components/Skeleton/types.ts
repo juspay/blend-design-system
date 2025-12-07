@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import type { BlockProps } from '../Primitives/Block/Block'
 import type { SkeletonVariant, SkeletonShape } from './skeleton.tokens'
-import type { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 
 export type SkeletonSize = 'sm' | 'md' | 'lg'
 
@@ -17,6 +16,10 @@ export type SkeletonProps = BaseSkeletonProps &
         animate?: boolean
         width?: string | number
         height?: string | number
+        maxHeight?: string | number
+        minHeight?: string | number
+        maxWidth?: string | number
+        minWidth?: string | number
         shape?: SkeletonShape
     }
 
@@ -24,21 +27,6 @@ export type SkeletonAvatarProps = BaseSkeletonProps &
     Omit<BlockProps, 'children'> & {
         size?: SkeletonSize
         shape?: 'circle' | 'square'
-    }
-
-export type SkeletonButtonProps = BaseSkeletonProps &
-    Omit<BlockProps, 'children'> & {
-        // Mirror exact Button component props for perfect token matching
-        buttonType?: ButtonType
-        size?: ButtonSize
-        subType?: ButtonSubType
-        width?: string | number
-        fullWidth?: boolean
-        buttonGroupPosition?: 'center' | 'left' | 'right'
-        // Content props for dynamic sizing
-        text?: string
-        hasLeadingIcon?: boolean
-        hasTrailingIcon?: boolean
     }
 
 export type SkeletonCardProps = BaseSkeletonProps &

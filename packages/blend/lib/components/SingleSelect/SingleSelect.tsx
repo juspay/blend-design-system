@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useId, useRef, useState } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
@@ -21,6 +21,17 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import MobileSingleSelect from './MobileSingleSelect'
+import { useErrorShake } from '../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../common/error.animations'
+import styled from 'styled-components'
+import { setupAccessibility } from './utils'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const map = function getValueLabelMap(
     groups: SelectMenuGroupType[]
@@ -71,6 +82,7 @@ const SingleSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
+
     onBlur,
     onFocus,
     inline = false,
@@ -82,11 +94,24 @@ const SingleSelect = ({
     endReachedThreshold,
     hasMore,
     loadingComponent,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
+    maxTriggerWidth,
+    minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
+    ...rest
 }: SingleSelectProps) => {
+    console.log(slot, 'slot')
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
+
+    const isContainer = variant === SelectMenuVariant.CONTAINER
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
@@ -98,6 +123,20 @@ const SingleSelect = ({
     const isItemSelected = selected.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
+
+    const generatedId = useId()
+    const { uniqueName, hintTextId, errorMessageId, menuId, ariaAttributes } =
+        setupAccessibility({
+            name,
+            generatedId,
+            label,
+            hintText,
+            error,
+            errorMessage,
+            rest,
+            prefix: 'singleselect',
+            needsMenuId: true,
+        })
 
     const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
     const paddingX = toPixels(
@@ -113,6 +152,7 @@ const SingleSelect = ({
         (val: string) => onSelect(selected === val ? '' : val),
         [onSelect, selected]
     )
+    const shouldShake = useErrorShake(error)
 
     if (isMobile && useDrawerOnMobile) {
         return (
@@ -146,44 +186,54 @@ const SingleSelect = ({
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
+                skeleton={skeleton}
+                maxTriggerWidth={maxTriggerWidth}
+                minTriggerWidth={minTriggerWidth}
+                allowCustomValue={allowCustomValue}
+                customValueLabel={customValueLabel}
             />
         )
     }
 
     return (
         <Block
+            data-single-select={label || 'single-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             width="100%"
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
-            {variant === SelectMenuVariant.CONTAINER &&
+            {isContainer &&
                 (!isSmallScreen || size !== SelectMenuSize.LARGE) && (
                     <InputLabels
                         label={label}
                         sublabel={subLabel}
                         disabled={disabled}
                         helpIconHintText={helpIconText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
                         tokens={singleSelectTokens}
                     />
                 )}
             <Block
                 display="flex"
-                {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
+                {...((!inline || isContainer) && {
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
             >
-                <Block
+                <Wrapper
+                    position="relative"
+                    style={getErrorShakeStyle(shouldShake)}
                     width={fullWidth ? '100%' : 'fit-content'}
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
                 >
                     <SingleSelectMenu
+                        skeleton={skeleton}
                         open={open}
                         onOpenChange={(isOpen) => {
                             setOpen(isOpen)
@@ -216,11 +266,18 @@ const SingleSelect = ({
                         endReachedThreshold={endReachedThreshold}
                         hasMore={hasMore}
                         loadingComponent={loadingComponent}
+                        allowCustomValue={allowCustomValue}
+                        customValueLabel={customValueLabel}
+                        menuId={menuId}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
+                                    data-element="single-select-button"
                                     type="button"
-                                    name={name}
+                                    maxWidth={maxTriggerWidth}
+                                    minWidth={minTriggerWidth}
+                                    name={uniqueName}
+                                    id={uniqueName}
                                     position="relative"
                                     width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
@@ -229,11 +286,6 @@ const SingleSelect = ({
                                     justifyContent="space-between"
                                     gap={8}
                                     borderRadius={borderRadius}
-                                    boxShadow={
-                                        singleSelectTokens.trigger.boxShadow[
-                                            variant
-                                        ]
-                                    }
                                     outline={
                                         singleSelectTokens.trigger.outline[
                                             variant
@@ -245,9 +297,8 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
-                                    {...((!inline ||
-                                        variant ===
-                                            SelectMenuVariant.CONTAINER) && {
+                                    {...ariaAttributes}
+                                    {...((!inline || isContainer) && {
                                         paddingX: paddingX,
                                         paddingY: paddingY,
                                         backgroundColor:
@@ -298,6 +349,7 @@ const SingleSelect = ({
                                     >
                                         {slot && (
                                             <Block
+                                                data-element="icon"
                                                 ref={slotRef}
                                                 contentCentered
                                             >
@@ -305,8 +357,7 @@ const SingleSelect = ({
                                             </Block>
                                         )}
                                         {isSmallScreenWithLargeSize &&
-                                        variant ===
-                                            SelectMenuVariant.CONTAINER ? (
+                                        isContainer ? (
                                             <Block
                                                 as="span"
                                                 textAlign="left"
@@ -370,9 +421,22 @@ const SingleSelect = ({
                                                     <Text
                                                         variant="body.md"
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[600]
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
+                                                        }
+                                                        fontWeight={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontWeight
+                                                        }
+                                                        fontSize={
+                                                            singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
                                                         }
                                                         style={{
                                                             overflow: 'hidden',
@@ -382,38 +446,71 @@ const SingleSelect = ({
                                                                 'nowrap',
                                                         }}
                                                     >
-                                                        {
-                                                            valueLabelMap[
-                                                                selected
-                                                            ]
-                                                        }
+                                                        {valueLabelMap[
+                                                            selected
+                                                        ] || selected}
                                                     </Text>
                                                 )}
                                             </Block>
                                         ) : (
                                             <Text
-                                                variant="body.md"
+                                                data-element="placeholder"
                                                 color={
                                                     selected
-                                                        ? FOUNDATION_THEME
-                                                              .colors.gray[700]
-                                                        : FOUNDATION_THEME
-                                                              .colors.gray[600]
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .color
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder.color
                                                 }
-                                                fontWeight={500}
+                                                fontWeight={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontWeight
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontWeight
+                                                }
+                                                fontSize={
+                                                    selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontSize
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontSize
+                                                }
                                                 style={{
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
+                                                data-id={
+                                                    selected
+                                                        ? valueLabelMap[
+                                                              selected
+                                                          ] || selected
+                                                        : placeholder
+                                                }
                                             >
                                                 {selected
-                                                    ? valueLabelMap[selected]
+                                                    ? valueLabelMap[selected] ||
+                                                      selected
                                                     : placeholder}
                                             </Text>
                                         )}
                                     </Block>
-                                    <Block contentCentered>
+                                    <Block
+                                        data-element="chevron-icon"
+                                        contentCentered
+                                    >
                                         <ChevronDown
                                             size={16}
                                             color={
@@ -428,14 +525,16 @@ const SingleSelect = ({
                         size={size}
                         variant={variant}
                     />
-                </Block>
+                </Wrapper>
             </Block>
-            {variant === SelectMenuVariant.CONTAINER && (
+            {isContainer && (
                 <InputFooter
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
                     tokens={singleSelectTokens}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

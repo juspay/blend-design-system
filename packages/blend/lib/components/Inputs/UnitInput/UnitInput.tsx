@@ -1,5 +1,5 @@
 import { Weight } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useId } from 'react'
 import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
 import Text from '../../Text/Text'
@@ -13,6 +13,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const UnitInput = ({
     value,
@@ -46,6 +56,7 @@ const UnitInput = ({
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
     const [unitWidth, setUnitWidth] = useState(0)
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -56,7 +67,12 @@ const UnitInput = ({
     const paddingX = toPixels(unitInputTokens.inputContainer.padding.x[size])
     const paddingY =
         toPixels(unitInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
+
+    const generatedId = useId()
+    const inputId = rest.id || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
 
     const leftSlotRef = useRef<HTMLDivElement>(null)
     const rightSlotRef = useRef<HTMLDivElement>(null)
@@ -103,7 +119,9 @@ const UnitInput = ({
                 paddingX={unitInputTokens.inputContainer.unit.padding[size]}
                 margin={1}
                 contentCentered
-                backgroundColor={FOUNDATION_THEME.colors.gray[50]}
+                backgroundColor={
+                    unitInputTokens.inputContainer.unit.backgroundColor.default
+                }
                 borderLeft={unitInputTokens.inputContainer.border.default}
                 borderRadius={`0px ${unitInputTokens.inputContainer.borderRadius[size]} ${unitInputTokens.inputContainer.borderRadius[size]} 0px`}
             >
@@ -177,14 +195,16 @@ const UnitInput = ({
                     helpIconHintText={helpIconHintText}
                     disabled={disabled}
                     name={name}
+                    inputId={inputId}
                     required={required}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={8}
+                style={getErrorShakeStyle(shouldShake)}
             >
                 {leftSlot && (
                     <Block
@@ -244,13 +264,17 @@ const UnitInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    id={inputId}
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     type="number"
+                    lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
                     onChange={onChange}
                     step={step}
                     min={min}
                     max={max}
+                    name={name}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={
@@ -264,10 +288,11 @@ const UnitInput = ({
                             : paddingY
                     }
                     required={required}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
                     borderRadius={
                         unitInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={unitInputTokens.inputContainer.boxShadow}
                     border={
                         unitInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
@@ -277,6 +302,11 @@ const UnitInput = ({
                     fontWeight={unitInputTokens.inputContainer.fontWeight[size]}
                     outline="none"
                     width={'100%'}
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -292,12 +322,16 @@ const UnitInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     _focus={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -317,12 +351,14 @@ const UnitInput = ({
                     }}
                     {...rest}
                 />
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
             />
         </Block>
     )

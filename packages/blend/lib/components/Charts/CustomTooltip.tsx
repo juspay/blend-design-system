@@ -12,8 +12,10 @@ import {
     getAxisFormatter,
     createDateTimeFormatter,
 } from './ChartUtils'
+import { parseTimestamp } from './DateTimeFormatter'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
+import { useEffect, useRef } from 'react'
 
 import {
     Payload,
@@ -89,6 +91,29 @@ const formatAuxTooltipValue = (
     }
 
     return typeof value === 'number' ? formatNumber(value) : String(value)
+}
+
+const findDataPointByLabel = (
+    originalData: NewNestedDataPoint[],
+    label: string | number
+) => {
+    const labelAsString = String(label)
+    const directMatch = originalData.find((item) => item.name === labelAsString)
+    if (directMatch) {
+        return directMatch
+    }
+
+    const labelTimestamp =
+        typeof label === 'number' ? label : parseTimestamp(label)
+
+    if (labelTimestamp == null) {
+        return undefined
+    }
+
+    return originalData.find((item) => {
+        const itemTimestamp = parseTimestamp(item.name)
+        return itemTimestamp !== null && itemTimestamp === labelTimestamp
+    })
 }
 
 export const CustomTooltip = ({
@@ -185,12 +210,12 @@ const BarChartTooltip = ({
     yAxis,
 }: {
     originalData: NewNestedDataPoint[]
-    label: string
+    label: string | number
     getColor: (key: string) => string | undefined
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
 }) => {
-    const relevantData = originalData.find((item) => item.name === label)?.data
+    const relevantData = findDataPointByLabel(originalData, label)?.data
     return (
         <>
             <Block>
@@ -294,22 +319,30 @@ const LineChartTooltip = ({
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
 }) => {
-    if (active && hoveredKey == null) {
-        if (selectedKeys.length > 0) {
-            setHoveredKey(selectedKeys[0])
-        } else {
-            setHoveredKey(Object.keys(originalData[0].data)[0])
+    const updateScheduledRef = useRef(false)
+
+    useEffect(() => {
+        if (active && hoveredKey == null && !updateScheduledRef.current) {
+            updateScheduledRef.current = true
+            queueMicrotask(() => {
+                updateScheduledRef.current = false
+                if (selectedKeys.length > 0) {
+                    setHoveredKey(selectedKeys[0])
+                } else if (originalData.length > 0 && originalData[0].data) {
+                    setHoveredKey(Object.keys(originalData[0].data)[0])
+                }
+            })
+        } else if (!active) {
+            updateScheduledRef.current = false
         }
-    }
+    }, [active, hoveredKey, selectedKeys, setHoveredKey])
 
     if (!active || !payload || !payload.length || !hoveredKey || !label) {
         return null
     }
 
     const getRelevantData = () => {
-        const currentDataPoint = originalData.find(
-            (item) => item.name === label
-        )
+        const currentDataPoint = findDataPointByLabel(originalData, label)
 
         if (
             !currentDataPoint ||
@@ -432,13 +465,23 @@ const PieChartTooltip = ({
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
 }) => {
-    if (active && hoveredKey == null) {
-        if (selectedKeys.length > 0) {
-            setHoveredKey(selectedKeys[0])
-        } else {
-            setHoveredKey(Object.keys(originalData[0].data)[0])
+    const updateScheduledRef = useRef(false)
+
+    useEffect(() => {
+        if (active && hoveredKey == null && !updateScheduledRef.current) {
+            updateScheduledRef.current = true
+            queueMicrotask(() => {
+                updateScheduledRef.current = false
+                if (selectedKeys.length > 0) {
+                    setHoveredKey(selectedKeys[0])
+                } else if (originalData.length > 0 && originalData[0].data) {
+                    setHoveredKey(Object.keys(originalData[0].data)[0])
+                }
+            })
+        } else if (!active) {
+            updateScheduledRef.current = false
         }
-    }
+    }, [active, hoveredKey, selectedKeys, setHoveredKey])
 
     if (!active || !payload || !payload.length || !hoveredKey) {
         return null

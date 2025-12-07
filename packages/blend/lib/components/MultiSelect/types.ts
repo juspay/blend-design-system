@@ -1,3 +1,4 @@
+import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum MultiSelectVariant {
@@ -27,6 +28,12 @@ export enum MultiSelectMenuSize {
 export enum MultiSelectSelectionTagType {
     COUNT = 'count',
     TEXT = 'text',
+}
+
+export type MultiSelectSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
 }
 
 export type MultiSelectMenuItemType = {
@@ -92,6 +99,9 @@ export type MultiSelectProps = {
     // responsive behavior
     useDrawerOnMobile?: boolean
 
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+
     // dim
     minMenuWidth?: number
     maxMenuWidth?: number
@@ -141,6 +151,9 @@ export type MultiSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: MultiSelectSkeletonProps
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }
 
 // Multi Select Menu Dropdpown
@@ -197,4 +210,12 @@ export type MultiSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: MultiSelectSkeletonProps
+    // size and variant
+    size?: MultiSelectMenuSize
+    variant?: MultiSelectVariant
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
+    menuId?: string
 }

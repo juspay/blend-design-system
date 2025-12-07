@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import styled from 'styled-components'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
 import { PopoverProps, PopoverSize } from './types'
@@ -8,6 +9,12 @@ import { PopoverTokenType } from './popover.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobilePopover from './MobilePopover'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { popoverContentAnimations } from './popover.animations'
+import PopoverSkeleton from './PopoverSkeleton'
+
+const AnimatedPopoverSurface = styled(Block)`
+    ${popoverContentAnimations}
+`
 
 const Popover = ({
     heading,
@@ -36,6 +43,7 @@ const Popover = ({
     shadow = 'lg',
     useDrawerOnMobile = true,
     avoidCollisions = true,
+    skeleton,
 }: PopoverProps) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
@@ -44,6 +52,9 @@ const Popover = ({
 
     const isCustomPopover =
         !heading && !description && !primaryAction && !secondaryAction
+
+    const shouldShowSkeleton = skeleton?.show
+    const skeletonVariant = skeleton?.variant || 'pulse'
 
     useEffect(() => {
         if (open !== undefined) {
@@ -54,6 +65,7 @@ const Popover = ({
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobilePopover
+                skeleton={skeleton}
                 open={isOpen}
                 onOpenChange={(open) => {
                     setIsOpen(open)
@@ -95,6 +107,7 @@ const Popover = ({
                 {trigger}
             </RadixPopover.Trigger>
             <RadixPopover.Content
+                data-popover={'Popover'}
                 style={{ zIndex, outline: 'none', minWidth, maxWidth }}
                 asChild
                 sideOffset={sideOffset}
@@ -103,7 +116,7 @@ const Popover = ({
                 alignOffset={alignOffset}
                 avoidCollisions={avoidCollisions}
             >
-                <Block
+                <AnimatedPopoverSurface
                     zIndex={999}
                     backgroundColor={popoverTokens.background}
                     boxShadow={
@@ -145,14 +158,35 @@ const Popover = ({
                                 onClose()
                             }
                         }}
+                        showSkeleton={shouldShowSkeleton}
+                        skeletonVariant={skeletonVariant}
                     />
-                    {children}
+                    {shouldShowSkeleton && skeleton?.bodySkeletonProps?.show ? (
+                        <PopoverSkeleton
+                            popoverTokens={popoverTokens}
+                            size={size}
+                            bodySkeleton={{
+                                show:
+                                    skeleton?.bodySkeletonProps?.show || false,
+                                width:
+                                    skeleton?.bodySkeletonProps?.width ||
+                                    '100%',
+                                height:
+                                    skeleton?.bodySkeletonProps?.height || 200,
+                            }}
+                            skeletonVariant={skeletonVariant}
+                        />
+                    ) : (
+                        children
+                    )}
                     <PopoverFooter
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
                         size={size}
+                        showSkeleton={shouldShowSkeleton}
+                        skeletonVariant={skeletonVariant}
                     />
-                </Block>
+                </AnimatedPopoverSurface>
             </RadixPopover.Content>
         </RadixPopover.Root>
     )

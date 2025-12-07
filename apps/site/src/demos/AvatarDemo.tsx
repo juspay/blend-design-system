@@ -2,6 +2,7 @@ import {
     Avatar,
     AvatarSize,
     AvatarShape,
+    AvatarOnlinePosition,
 } from '../../../../packages/blend/lib/components/Avatar'
 
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -24,11 +25,13 @@ const AvatarDemo = () => {
     const [playgroundOnline, setPlaygroundOnline] = useState(false)
     const [showLeadingSlot, setShowLeadingSlot] = useState(false)
     const [showTrailingSlot, setShowTrailingSlot] = useState(false)
-
+    const [showSkeleton, setShowSkeleton] = useState(false)
+    const [playgroundOnlinePosition, setPlaygroundOnlinePosition] =
+        useState<AvatarOnlinePosition>(AvatarOnlinePosition.TOP)
     // Options for selects
     const sizeOptions = [
-        { value: AvatarSize.XS, label: 'Extra Small' },
         { value: AvatarSize.SM, label: 'Small' },
+        { value: AvatarSize.REGULAR, label: 'Regular' },
         { value: AvatarSize.MD, label: 'Medium' },
         { value: AvatarSize.LG, label: 'Large' },
         { value: AvatarSize.XL, label: 'Extra Large' },
@@ -37,6 +40,11 @@ const AvatarDemo = () => {
     const shapeOptions = [
         { value: AvatarShape.CIRCULAR, label: 'Circular' },
         { value: AvatarShape.ROUNDED, label: 'Rounded' },
+    ]
+
+    const onlinePositionOptions = [
+        { value: AvatarOnlinePosition.TOP, label: 'Top' },
+        { value: AvatarOnlinePosition.BOTTOM, label: 'Bottom' },
     ]
 
     // Sample avatar data for AvatarGroup
@@ -125,6 +133,17 @@ const AvatarDemo = () => {
                             }
                             placeholder="Select shape"
                         />
+                        <SingleSelect
+                            label="Online Position"
+                            items={[{ items: onlinePositionOptions }]}
+                            selected={playgroundOnlinePosition}
+                            onSelect={(value) =>
+                                setPlaygroundOnlinePosition(
+                                    value as AvatarOnlinePosition
+                                )
+                            }
+                            placeholder="Select online position"
+                        />
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -149,10 +168,16 @@ const AvatarDemo = () => {
                                 setShowTrailingSlot(!showTrailingSlot)
                             }
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Avatar
+                            skeleton={{ show: showSkeleton, variant: 'pulse' }}
                             src={playgroundSrc || undefined}
                             alt={playgroundAlt}
                             size={playgroundSize}
@@ -161,6 +186,7 @@ const AvatarDemo = () => {
                             leadingSlot={
                                 showLeadingSlot ? <User size={16} /> : undefined
                             }
+                            onlinePosition={playgroundOnlinePosition}
                             trailingSlot={
                                 showTrailingSlot ? (
                                     <Settings size={16} />
@@ -492,10 +518,10 @@ const AvatarDemo = () => {
                                                     <User
                                                         size={
                                                             size ===
-                                                            AvatarSize.XS
+                                                            AvatarSize.SM
                                                                 ? 10
                                                                 : size ===
-                                                                    AvatarSize.SM
+                                                                    AvatarSize.REGULAR
                                                                   ? 12
                                                                   : size ===
                                                                       AvatarSize.MD
@@ -503,7 +529,10 @@ const AvatarDemo = () => {
                                                                     : size ===
                                                                         AvatarSize.LG
                                                                       ? 20
-                                                                      : 24
+                                                                      : size ===
+                                                                          AvatarSize.XL
+                                                                        ? 24
+                                                                        : 28
                                                         }
                                                     />
                                                 }

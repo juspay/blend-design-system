@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { toast as sonnerToast, Toaster as Snackbar } from 'sonner'
+import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
     Info,
@@ -16,6 +16,7 @@ import {
     type AddToastOptions,
     type CustomToastProps,
     SnackbarVariant,
+    SnackbarPosition,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
@@ -44,11 +45,14 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     onClose,
     actionButton,
     toastId,
+    ...props
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
 
     return (
         <Block
+            data-snackbar={header ?? 'snackbar'}
+            data-status={variant}
             display="flex"
             justifyContent="space-between"
             gap={snackbarTokens.gap}
@@ -57,13 +61,18 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             padding={snackbarTokens.padding}
             maxWidth={snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
+            {...props}
         >
             {' '}
             {/*  need to fix line height to remove margin */}
-            <Block marginTop={4}>
+            <Block marginTop={4} data-element="icon">
                 <SnackbarIcon variant={variant} />
             </Block>
-            <Block display="flex" gap={snackbarTokens.gap}>
+            <Block
+                display="flex"
+                gap={snackbarTokens.gap}
+                data-element="content"
+            >
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -87,6 +96,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.header
                                     .fontWeight
                             }
+                            data-element="header"
+                            data-id={header}
                         >
                             {header}
                         </Text>
@@ -103,6 +114,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.description
                                     .fontWeight
                             }
+                            data-element="description"
+                            data-id={description}
                         >
                             {description}
                         </Text>
@@ -152,6 +165,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                     backgroundColor="transparent"
                     contentCentered
                     onClick={onClose}
+                    data-element="close-button"
                 >
                     <X
                         size={snackbarTokens.actions.closeButton.height}
@@ -172,7 +186,11 @@ export const addSnackbar = ({
     onClose,
     actionButton,
     duration,
+    position,
 }: AddToastOptions) => {
+    // Determine if position includes "center" for proper alignment
+    const isCenter = position?.includes('center')
+
     return sonnerToast.custom(
         (t) => (
             <StyledToast
@@ -189,9 +207,51 @@ export const addSnackbar = ({
         ),
         {
             duration,
+            position,
+            unstyled: true,
+            style: {
+                display: 'flex',
+                justifyContent: 'center',
+                width: isCenter ? '100%' : 'fit-content',
+                maxWidth: 'calc(100vw - 32px)',
+                margin: 0,
+                padding: 0,
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+            },
         }
     )
 }
 
-// Export the Toaster component
+type SnackbarProps = {
+    position?: SnackbarPosition
+}
+
+const Snackbar: React.FC<SnackbarProps> = ({
+    position = SnackbarPosition.BOTTOM_RIGHT,
+}) => {
+    const isCenter = position?.includes('center')
+
+    return (
+        <Toaster
+            position={position}
+            toastOptions={{
+                unstyled: true,
+                style: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: isCenter ? '100%' : 'fit-content',
+                    maxWidth: 'calc(100vw - 32px)',
+                    margin: 0,
+                    padding: 0,
+                    background: 'transparent',
+                    border: 'none',
+                    boxShadow: 'none',
+                },
+            }}
+        />
+    )
+}
+
 export default Snackbar

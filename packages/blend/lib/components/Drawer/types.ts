@@ -62,6 +62,8 @@ export type DrawerProps = {
      * @default false
      */
     snapToSequentialPoint?: boolean
+
+    disableDrag?: boolean
     /**
      * Custom mobile offset values (overrides token defaults)
      */
@@ -71,18 +73,6 @@ export type DrawerProps = {
         left?: string
         right?: string
     }
-    /**
-     * Custom class name for the drawer content
-     */
-    className?: string
-    /**
-     * Custom class name for the overlay
-     */
-    overlayClassName?: string
-    /**
-     * Custom styles for the drawer content
-     */
-    style?: React.CSSProperties
     /**
      * Children content
      */
@@ -121,6 +111,14 @@ export type DrawerContentProps = {
      * Custom styles
      */
     style?: React.CSSProperties
+    /**
+     * Accessibility label for the drawer content
+     */
+    'aria-label'?: string
+    /**
+     * ID of the element describing the drawer content
+     */
+    'aria-describedby'?: string
 }
 
 export type DrawerHeaderProps = {
@@ -143,6 +141,10 @@ export type DrawerTitleProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * ID for ARIA labeling
+     */
+    id?: string
 }
 
 export type DrawerDescriptionProps = {
@@ -154,6 +156,10 @@ export type DrawerDescriptionProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * ID for ARIA description
+     */
+    id?: string
 }
 
 export type DrawerFooterProps = {
@@ -165,6 +171,10 @@ export type DrawerFooterProps = {
      * Custom class name
      */
     className?: string
+    /**
+     * The direction of the drawer (used to apply appropriate border radius)
+     */
+    direction?: 'top' | 'bottom' | 'left' | 'right'
 }
 
 export type DrawerCloseProps = {

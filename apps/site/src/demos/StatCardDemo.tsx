@@ -4,6 +4,7 @@ import {
     StatCardVariant,
     ChangeType,
     StatCardDirection,
+    StatCardArrowDirection,
 } from '../../../../packages/blend/lib/components/StatCard'
 import { AxisType } from '../../../../packages/blend/lib/components/Charts'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -45,7 +46,12 @@ const StatCardDemo = () => {
     const [showHelpIcon, setShowHelpIcon] = useState(false)
     const [progressValue, setProgressValue] = useState(75)
     const [dropdownValue, setDropdownValue] = useState('INR')
+    const [arrowDirection, setArrowDirection] =
+        useState<StatCardArrowDirection>(StatCardArrowDirection.UP)
 
+    const [showSkeleton, setShowSkeleton] = useState(false)
+
+    const [dataDisplay, setDataDisplay] = useState(true)
     // Sample chart data
     const sampleLineData = [
         { value: 100, name: 'JAN' },
@@ -99,6 +105,10 @@ const StatCardDemo = () => {
 
     const handleDropdownSelect = (value: string) => {
         setDropdownValue(value)
+    }
+
+    const handleArrowDirectionChange = (value: StatCardArrowDirection) => {
+        setArrowDirection(value)
     }
 
     const InfoPopoverExample = () => {
@@ -158,6 +168,30 @@ const StatCardDemo = () => {
                             value={playgroundValue}
                             onChange={(e) => setPlaygroundValue(e.target.value)}
                             placeholder="Enter value"
+                        />
+                        <SingleSelect
+                            label="Arrow Direction"
+                            items={[
+                                {
+                                    items: [
+                                        {
+                                            label: 'Up',
+                                            value: StatCardArrowDirection.UP,
+                                        },
+                                        {
+                                            label: 'Down',
+                                            value: StatCardArrowDirection.DOWN,
+                                        },
+                                    ],
+                                },
+                            ]}
+                            selected={arrowDirection}
+                            onSelect={(value) =>
+                                handleArrowDirectionChange(
+                                    value as StatCardArrowDirection
+                                )
+                            }
+                            placeholder="Select arrow direction"
                         />
 
                         <TextInput
@@ -225,9 +259,24 @@ const StatCardDemo = () => {
                             checked={showHelpIcon}
                             onChange={() => setShowHelpIcon(!showHelpIcon)}
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
+                        <Switch
+                            label="Show Data Display"
+                            checked={dataDisplay}
+                            onChange={() => setDataDisplay(!dataDisplay)}
+                        />
                     </div>
                     <div className="w-[350px]">
                         <StatCard
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                            }}
+                            data-single-stat={playgroundTitle}
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',
@@ -254,6 +303,7 @@ const StatCardDemo = () => {
                                     ? {
                                           value: changeValue,
                                           valueType: changeType,
+                                          arrowDirection: arrowDirection,
                                           tooltip: (
                                               <code>
                                                   This is a delta tooltip
@@ -282,6 +332,7 @@ const StatCardDemo = () => {
                                       ? sampleBarData
                                       : undefined
                             }
+                            dataDisplay={dataDisplay}
                             progressValue={
                                 playgroundVariant ===
                                 StatCardVariant.PROGRESS_BAR
@@ -311,6 +362,7 @@ const StatCardDemo = () => {
                             change={{
                                 value: 12.5,
                                 valueType: ChangeType.INCREASE,
+                                arrowDirection: StatCardArrowDirection.DOWN,
                             }}
                             titleIcon={<DollarSign size={16} />}
                             dropdownProps={{
@@ -329,6 +381,7 @@ const StatCardDemo = () => {
                                 selected: dropdownValue,
                                 onSelect: handleDropdownSelect,
                             }}
+                            chartData={sampleLineData}
                         />
                     </div>
 

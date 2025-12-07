@@ -4,7 +4,7 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/TextInput/types'
 import { Search, Eye, EyeOff, User, Mail, Lock, Phone } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const InputDemo = () => {
     const [playgroundText, setPlaygroundText] = useState('Your Label')
@@ -16,6 +16,22 @@ const InputDemo = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [hasError, setHasError] = useState(false)
     const [playgroundValue, setPlaygroundValue] = useState('')
+    const [value, setValue] = useState('')
+    const [error, setError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+    const [isFocused, setIsFocused] = useState(false)
+
+    console.log({ isFocused, length: value.length })
+
+    useEffect(() => {
+        if (value.length === 0 && isFocused) {
+            setError(true)
+            setErrorMessage('This field is required')
+        } else {
+            setError(false)
+            setErrorMessage('')
+        }
+    }, [value, isFocused])
 
     // Options for selects
     const sizeOptions = [
@@ -127,7 +143,6 @@ const InputDemo = () => {
                         <div className="w-full max-w-md">
                             <TextInput
                                 data-id={'Enter text here...'}
-                                data-input-name={playgroundText}
                                 name={playgroundText}
                                 label={playgroundText}
                                 value={playgroundValue}
@@ -168,9 +183,17 @@ const InputDemo = () => {
                         <h3 className="text-lg font-semibold">Default Input</h3>
                         <TextInput
                             label="Default"
-                            value=""
-                            onChange={() => {}}
+                            value={value}
+                            onChange={(e) => setValue(e.target.value)}
                             placeholder="Enter text..."
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            error={error}
+                            errorMessage={
+                                errorMessage
+                                    ? 'This field has an error'
+                                    : undefined
+                            }
                         />
                     </div>
 

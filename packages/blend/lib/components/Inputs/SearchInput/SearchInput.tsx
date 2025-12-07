@@ -6,6 +6,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -73,6 +74,9 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
         const [leftSlotWidth, setLeftSlotWidth] = useState(0)
         const [rightSlotWidth, setRightSlotWidth] = useState(0)
+        const [isFocused, setIsFocused] = useState(false)
+
+        const isRequired = rest.required ?? false
 
         useEffect(() => {
             if (leftSlotRef.current) {
@@ -117,15 +121,27 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             : null
 
         return (
-            <Block position="relative" width={'100%'}>
+            <Block
+                data-searchinput={placeholder ?? ''}
+                data-status={rest.disabled ? 'disabled' : 'enabled'}
+                position="relative"
+                width={'100%'}
+            >
                 {styledLeftSlot && (
                     <Block
+                        data-element="left-slot"
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
                         left={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {styledLeftSlot}
                     </Block>
@@ -133,20 +149,32 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
                 {styledRightSlot && (
                     <Block
+                        data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {styledRightSlot}
                     </Block>
                 )}
 
                 <PrimitiveInput
+                    type={rest.type || 'search'}
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     ref={ref}
                     name={name}
+                    required={isRequired}
+                    aria-required={isRequired ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
@@ -175,6 +203,11 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                     }
                     fontSize={searchInputTokens.inputContainer.fontSize}
                     fontWeight={searchInputTokens.inputContainer.fontWeight}
+                    transition="border-bottom 200ms ease-in-out, color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         borderBottom: rest.disabled
                             ? searchInputTokens.inputContainer.borderBottom
@@ -199,6 +232,14 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                             : error
                               ? searchInputTokens.inputContainer.color.error
                               : searchInputTokens.inputContainer.color.focus,
+                    }}
+                    onFocus={(e) => {
+                        setIsFocused(true)
+                        rest.onFocus?.(e)
+                    }}
+                    onBlur={(e) => {
+                        setIsFocused(false)
+                        rest.onBlur?.(e)
                     }}
                     {...rest}
                 />

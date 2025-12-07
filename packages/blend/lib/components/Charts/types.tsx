@@ -5,6 +5,7 @@ import {
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 export type DataPoint = {
     primary: {
@@ -32,6 +33,8 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
+
+    SANKEY = 'sankey',
 }
 
 export enum LegendsChangeType {
@@ -106,6 +109,7 @@ export type StackedLegendsDataPoint = {
 }
 
 export type RenderChartProps = {
+    chartName?: string
     flattenedData: FlattenedDataPoint[]
     chartType: ChartType
     hoveredKey: string | null
@@ -119,6 +123,7 @@ export type RenderChartProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     noData?: NoDataProps
+    height?: number | string
 }
 
 export type CoreChartProps = {
@@ -137,6 +142,11 @@ export type CoreChartProps = {
     selectedKeys?: string[]
 
     enableHover?: boolean
+}
+
+export type ChartsSkeletonProps = {
+    show: boolean
+    variant: SkeletonVariant
 }
 
 export type ChartsProps = {
@@ -159,6 +169,8 @@ export type ChartsProps = {
     showCollapseIcon?: boolean
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
+    chartName?: string
+    skeleton?: ChartsSkeletonProps
 }
 
 export type FlattenedDataPoint = {
@@ -204,4 +216,64 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
     selectedKeys: string[]
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+}
+
+export type SankeyNode = {
+    name: string
+    id?: string
+    color?: string
+}
+
+export type SankeyLink = {
+    source: number | string
+    target: number | string
+    value: number
+    color?: string
+    hoverColor?: string
+}
+
+export type SankeyData = {
+    nodes: SankeyNode[]
+    links: SankeyLink[]
+}
+
+export type SankeyTooltipData = {
+    payload: {
+        name?: string
+        value?: number
+        source?: number | string
+        target?: number | string
+        sourceName?: string
+        targetName?: string
+        color?: string
+        hoverColor?: string
+    }
+}
+
+export type SankeyNodeProps = {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    index?: number
+    payload?: SankeyNode & { value?: number }
+    containerWidth?: number
+    nodeColors?: string[]
+    onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
+    onMouseLeave?: () => void
+}
+
+export type SankeyLinkProps = {
+    sourceX?: number
+    targetX?: number
+    sourceY?: number
+    targetY?: number
+    sourceControlX?: number
+    targetControlX?: number
+    linkWidth?: number
+    index?: number
+    payload?: SankeyLink
+    linkColors?: string[]
+    onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
+    onMouseLeave?: () => void
 }

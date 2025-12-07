@@ -1,6 +1,15 @@
 import type { ReactNode } from 'react'
 import { SingleSelectProps } from '../SingleSelect'
 import { AxisType } from '../Charts/types'
+import { SkeletonVariant } from '../Skeleton'
+
+export type StatCardSkeletonProps = {
+    variant: SkeletonVariant
+    show: boolean
+    height?: string | number
+    maxWidth?: string | number
+    minWidth?: string | number
+}
 
 export enum StatCardVariant {
     LINE = 'line',
@@ -14,6 +23,11 @@ export enum ChangeType {
     DECREASE = 'decrease',
 }
 
+export enum StatCardArrowDirection {
+    UP = 'up',
+    DOWN = 'down',
+}
+
 export type ChartDataPoint = {
     value: number
     name: string
@@ -22,6 +36,7 @@ export type ChartDataPoint = {
 export type StatCardChange = {
     value: number
     valueType: ChangeType
+    arrowDirection?: StatCardArrowDirection
     tooltip?: ReactNode
 }
 
@@ -55,9 +70,12 @@ export type StatCardProps = {
     helpIconText?: string
     dropdownProps?: SingleSelectProps
     maxWidth?: string
+    minWidth?: string
     xAxis?: StatCardAxisConfig
     yAxis?: StatCardAxisConfig
     valueFormatter?: AxisType
     height?: string
     direction?: StatCardDirection
+    skeleton?: StatCardSkeletonProps
+    dataDisplay?: boolean
 }

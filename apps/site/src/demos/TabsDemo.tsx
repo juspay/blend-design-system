@@ -9,8 +9,12 @@ import {
     TabItem,
 } from '../../../../packages/blend/lib/components/Tabs'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
-import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
+import {
+    MultiSelect,
+    MultiSelectVariant,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import Modal from '../../../../packages/blend/lib/components/Modal/Modal'
 import {
     Home,
     User,
@@ -24,7 +28,16 @@ import {
     Download,
     Upload,
     Trash2,
+    MessageSquare,
+    Pin,
 } from 'lucide-react'
+
+// Conversation tabs constants pattern
+const CONVERSATION_TABS = {
+    CHAT: 'chat',
+    FILES: 'files',
+    PINS: 'pins',
+} as const
 
 const sharedContent = (
     <div className="p-4 bg-gray-50 rounded-lg">
@@ -36,6 +49,39 @@ const sharedContent = (
         </p>
     </div>
 )
+
+const ANALYTICS_TABS_DATA = [
+    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: false },
+    {
+        value: 'payment_method_type',
+        label: 'Payment Method Type',
+        isDefault: false,
+    },
+    { value: 'payment_method', label: 'Payment Method', isDefault: false },
+    {
+        value: 'payment_instrument_group',
+        label: 'Payment Instrument Group',
+        isDefault: true,
+    },
+    { value: 'bank_name', label: 'Bank', isDefault: true },
+    {
+        value: 'actual_payment_status',
+        label: 'Actual Payment Status',
+        isDefault: true,
+    },
+    { value: 'order_status', label: 'Order Status', isDefault: true },
+    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: true },
+    { value: 'order_type', label: 'Order Type', isDefault: true },
+    { value: 'auth_type', label: 'Auth Type', isDefault: true },
+    { value: 'card_brand', label: 'Card Brand', isDefault: true },
+    {
+        value: 'card_last_four_digits',
+        label: 'Card Last Four Digits',
+        isDefault: true,
+    },
+    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: true },
+    { value: 'ticket_size', label: 'Ticket Size', isDefault: true },
+]
 
 const availableTabOptions = [
     { value: 'analytics', label: 'Analytics' },
@@ -59,27 +105,27 @@ const TabsDemo = () => {
     const [fitContent, setFitContent] = useState(false)
     const [showIcons, setShowIcons] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
-    const [activeTab, setActiveTab] = useState('tab1')
+    const [activeTab, setActiveTab] = useState('payment_gateway')
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
         // Default tabs - always visible at front, no X icon
         {
-            value: 'home',
+            value: 'payment_gateway',
             label: 'Home',
             content: (
                 <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Home Content</h3>
                     <p className="text-blue-600">
                         This is a default tab that cannot be closed. Default
-                        tabs are always visible at the front.
+                        tabs are alw ays visible at the front.
                     </p>
                 </div>
             ),
             isDefault: true,
         },
         {
-            value: 'dashboard',
+            value: 'payment_status',
             label: 'Dashboard',
             content: (
                 <div className="p-4 bg-green-50 rounded-lg">
@@ -96,13 +142,50 @@ const TabsDemo = () => {
         },
     ])
 
-    const [enhancedActiveTab, setEnhancedActiveTab] = useState('home')
+    const [enhancedActiveTab, setEnhancedActiveTab] =
+        useState('payment_gateway')
     const [showEnhancedDropdown, setShowEnhancedDropdown] = useState(true)
     const [showEnhancedAddButton, setShowEnhancedAddButton] = useState(true)
 
     // MultiSelect state
     const [selectedTabsToAdd, setSelectedTabsToAdd] = useState<string[]>([])
     const [showMultiSelect, setShowMultiSelect] = useState(false)
+
+    // Disabled state demo
+    const [globalDisable, setGlobalDisable] = useState(false)
+
+    // Skeleton state demo
+    const [showSkeleton, setShowSkeleton] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] = useState<
+        'pulse' | 'wave' | 'shimmer'
+    >('pulse')
+
+    // Conversation tabs state
+    const [conversationTab, setConversationTab] = useState<string>(
+        CONVERSATION_TABS.CHAT
+    )
+
+    const [analyticsTabsItems, setAnalyticsTabsItems] = useState<TabItem[]>(
+        ANALYTICS_TABS_DATA.slice(0, 4).map((tab) => ({
+            value: tab.value,
+            label: tab.label,
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold mb-2">{tab.label}</h4>
+                    <p className="text-gray-600">
+                        This demonstrates tabs with underscore values like "
+                        {tab.value}". The underline indicator should animate
+                        smoothly between tabs.
+                    </p>
+                </div>
+            ),
+            isDefault: tab.isDefault,
+            closable: !tab.isDefault,
+        }))
+    )
+    const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
+        ANALYTICS_TABS_DATA[0].value
+    )
 
     // Options for selects
     const variantOptions = [
@@ -157,21 +240,27 @@ const TabsDemo = () => {
     // Enhanced tabs handlers
     const handleTabClose = (value: string) => {
         const tabToClose = enhancedTabs.find((tab) => tab.value === value)
-
         if (!tabToClose) return
 
+        // Filter out the tab being closed and any concatenated tabs with same content
         const filteredTabs = enhancedTabs.filter((tab) => {
+            // Keep if it's not the tab being closed
             if (tab.value === value) return false
+            // Remove non-default tabs that share the same content (concatenated tabs)
             if (tab.content === tabToClose.content && !tab.isDefault)
                 return false
-
             return true
         })
 
+        // Check if active tab will be removed
+        const activeTabWillBeRemoved = !filteredTabs.some(
+            (tab) => tab.value === enhancedActiveTab
+        )
+
         setEnhancedTabs(filteredTabs)
 
-        // If closing active tab, switch to first remaining tab
-        if (value === enhancedActiveTab && filteredTabs.length > 0) {
+        // Switch to first remaining tab if active tab was removed
+        if (activeTabWillBeRemoved && filteredTabs.length > 0) {
             setEnhancedActiveTab(filteredTabs[0].value)
         }
     }
@@ -196,40 +285,94 @@ const TabsDemo = () => {
     const handleAddSelectedTabs = () => {
         if (selectedTabsToAdd.length === 0) return
 
-        const newTabs: TabItem[] = selectedTabsToAdd.map((value) => {
-            const item = availableTabOptions.find((opt) => opt.value === value)!
-            const content =
-                selectedTabsToAdd.length > 1 ? (
-                    sharedContent
-                ) : (
-                    <div className="p-4 bg-purple-50 rounded-lg">
-                        <h3 className="text-lg font-semibold mb-2">
-                            {item.label} Content
-                        </h3>
-                        <p className="text-purple-600">
-                            This is unique content for {item.label} tab.
-                        </p>
-                    </div>
+        // Create new tabs - multiple selections share content, single gets unique content
+        const isMultipleSelection = selectedTabsToAdd.length > 1
+        const newTabs: TabItem[] = selectedTabsToAdd.reduce<TabItem[]>(
+            (acc, value) => {
+                const item = availableTabOptions.find(
+                    (opt) => opt.value === value
                 )
+                if (!item) return acc
 
-            return {
-                value: item.value,
-                label: item.label,
-                content,
-                closable: true,
-                isDefault: false,
-            }
-        })
+                acc.push({
+                    value: item.value,
+                    label: item.label,
+                    content: isMultipleSelection ? (
+                        sharedContent
+                    ) : (
+                        <div className="p-4 bg-purple-50 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-2">
+                                {item.label} Content
+                            </h3>
+                            <p className="text-purple-600">
+                                This is unique content for {item.label} tab.
+                            </p>
+                        </div>
+                    ),
+                    closable: true,
+                    isDefault: false,
+                })
+                return acc
+            },
+            []
+        )
 
-        setEnhancedTabs([...enhancedTabs, ...newTabs])
-        setEnhancedActiveTab(newTabs[0].value)
+        // Add new tabs and activate the first one
+        setEnhancedTabs((prevTabs) => [...prevTabs, ...newTabs])
+        if (newTabs.length > 0) {
+            setEnhancedActiveTab(newTabs[0].value)
+        }
+
+        // Close modal and reset selection
         setSelectedTabsToAdd([])
         setShowMultiSelect(false)
     }
 
-    const handleCancelAdd = () => {
+    const handleCloseModal = () => {
         setSelectedTabsToAdd([])
         setShowMultiSelect(false)
+    }
+
+    const handleAnalyticsTabClose = (value: string) => {
+        const filteredTabs = analyticsTabsItems.filter(
+            (tab) => tab.value !== value
+        )
+        setAnalyticsTabsItems(filteredTabs)
+
+        if (value === analyticsActiveTab && filteredTabs.length > 0) {
+            setAnalyticsActiveTab(filteredTabs[0].value)
+        }
+    }
+
+    const handleAnalyticsTabAdd = () => {
+        const existingValues = new Set(
+            analyticsTabsItems.map((tab) => tab.value)
+        )
+        const remainingTabs = ANALYTICS_TABS_DATA.filter(
+            (tab) => !existingValues.has(tab.value)
+        )
+
+        if (remainingTabs.length > 0) {
+            const newTab = remainingTabs[0]
+            const newTabItem: TabItem = {
+                value: newTab.value,
+                label: newTab.label,
+                content: (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold mb-2">{newTab.label}</h4>
+                        <p className="text-gray-600">
+                            Newly added tab: {newTab.value}
+                        </p>
+                    </div>
+                ),
+                isDefault: newTab.isDefault || false,
+                closable: !newTab.isDefault,
+            }
+            setAnalyticsTabsItems((prev) => [...prev, newTabItem])
+            setAnalyticsActiveTab(newTab.value)
+        } else {
+            console.log('All available tabs have been added')
+        }
     }
 
     const multiSelectItems = [
@@ -245,144 +388,6 @@ const TabsDemo = () => {
 
     return (
         <div className="p-8 space-y-12">
-            {/* Enhanced Tabs Section */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">
-                    Enhanced Tabs with Dynamic Management
-                </h2>
-                <div className="space-y-6">
-                    <div className="flex items-center gap-6 flex-wrap">
-                        <Switch
-                            label="Show Dropdown"
-                            checked={showEnhancedDropdown}
-                            onChange={() =>
-                                setShowEnhancedDropdown(!showEnhancedDropdown)
-                            }
-                        />
-                        <Switch
-                            label="Show Add Button"
-                            checked={showEnhancedAddButton}
-                            onChange={() =>
-                                setShowEnhancedAddButton(!showEnhancedAddButton)
-                            }
-                        />
-                    </div>
-
-                    <div className="p-6 bg-white border rounded-lg">
-                        <h3 className="text-lg font-semibold mb-4">
-                            Features: Default Tabs • Closable Tabs • Dropdown
-                            (All Tabs) • MultiSelect Add • Auto Concatenation
-                        </h3>
-                        <Tabs
-                            items={enhancedTabs}
-                            value={enhancedActiveTab}
-                            onValueChange={setEnhancedActiveTab}
-                            onTabClose={handleTabClose}
-                            onTabAdd={handleTabAdd}
-                            showDropdown={showEnhancedDropdown}
-                            showAddButton={showEnhancedAddButton}
-                            dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
-                            addButtonTooltip="Add new tabs via MultiSelect"
-                            maxDisplayTabs={4}
-                        />
-                    </div>
-
-                    {showMultiSelect && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-                                <h3 className="text-lg font-semibold mb-4">
-                                    Add New Tabs
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    Select up to 3 tabs to add. If you select
-                                    multiple tabs, they will share content and
-                                    be concatenated as "TabA+TabB+TabC".
-                                </p>
-
-                                <MultiSelect
-                                    selectedValues={selectedTabsToAdd}
-                                    onChange={handleMultiSelectChange}
-                                    items={multiSelectItems}
-                                    placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
-                                    label="Available Tabs"
-                                    enableSearch={true}
-                                    searchPlaceholder="Search available tabs..."
-                                    showActionButtons={true}
-                                    primaryAction={{
-                                        text: 'Add Selected Tabs',
-                                        onClick: handleAddSelectedTabs,
-                                        disabled:
-                                            selectedTabsToAdd.length === 0,
-                                    }}
-                                    secondaryAction={{
-                                        text: 'Cancel',
-                                        onClick: handleCancelAdd,
-                                    }}
-                                    useDrawerOnMobile={false}
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-blue-50 rounded-lg">
-                            <h4 className="font-semibold text-blue-800 mb-2">
-                                Default Tabs:
-                            </h4>
-                            <ul className="text-blue-700 space-y-1 text-sm">
-                                <li>• Home and Dashboard are default tabs</li>
-                                <li>• Always visible at the front</li>
-                                <li>• Cannot be closed (no X button)</li>
-                                <li>
-                                    • User can define any number of default tabs
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className="p-4 bg-green-50 rounded-lg">
-                            <h4 className="font-semibold text-green-800 mb-2">
-                                Dynamic Features:
-                            </h4>
-                            <ul className="text-green-700 space-y-1 text-sm">
-                                <li>• + button opens MultiSelect</li>
-                                <li>
-                                    • Select multiple items to create
-                                    concatenated tab
-                                </li>
-                                <li>
-                                    • Same content = auto concatenation (max 3)
-                                </li>
-                                <li>
-                                    • Dropdown shows ALL tabs (even
-                                    scrolled-out)
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="p-4 bg-purple-50 rounded-lg">
-                        <h4 className="font-semibold text-purple-800 mb-2">
-                            Concatenation Examples:
-                        </h4>
-                        <div className="text-purple-700 text-sm space-y-1">
-                            <p>
-                                <strong>Select 3 items:</strong> Creates one tab
-                                "Analytics+Reports+Settings"
-                            </p>
-                            <p>
-                                <strong>Select 1 item:</strong> Creates
-                                individual tab with unique content
-                            </p>
-                            <p>
-                                <strong>Max limit:</strong> Only first 3 items
-                                are concatenated
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
                 <div className="space-y-6">
@@ -444,7 +449,7 @@ const TabsDemo = () => {
                                     fitContent={fitContent}
                                 >
                                     <TabsTrigger
-                                        value="tab1"
+                                        value="payment_gateway"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -458,10 +463,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Home
+                                        payment_gateway
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab2"
+                                        value="payment_status"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -475,10 +480,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Profile
+                                        payment_status
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab3"
+                                        value="payment_method"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -492,10 +497,10 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Settings
+                                        payment_method
                                     </TabsTrigger>
                                     <TabsTrigger
-                                        value="tab4"
+                                        value="payment_history"
                                         variant={playgroundVariant}
                                         size={playgroundSize}
                                         leftSlot={
@@ -509,11 +514,14 @@ const TabsDemo = () => {
                                                 : undefined
                                         }
                                     >
-                                        Documents
+                                        payment_history
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="tab1" className="mt-4">
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Home Content
@@ -526,7 +534,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab2" className="mt-4">
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Profile Content
@@ -540,7 +551,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab3" className="mt-4">
+                                <TabsContent
+                                    value="payment_method"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Settings Content
@@ -554,7 +568,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab4" className="mt-4">
+                                <TabsContent
+                                    value="payment_history"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h3 className="text-lg font-semibold mb-2">
                                             Documents Content
@@ -573,6 +590,1261 @@ const TabsDemo = () => {
                 </div>
             </div>
 
+            {/* Enhanced Tabs Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Enhanced Tabs with Dynamic Management
+                </h2>
+                <div className="space-y-6">
+                    <div className="flex items-center gap-6 flex-wrap">
+                        <Switch
+                            label="Show Dropdown"
+                            checked={showEnhancedDropdown}
+                            onChange={() =>
+                                setShowEnhancedDropdown(!showEnhancedDropdown)
+                            }
+                        />
+                        <Switch
+                            label="Show Add Button"
+                            checked={showEnhancedAddButton}
+                            onChange={() =>
+                                setShowEnhancedAddButton(!showEnhancedAddButton)
+                            }
+                        />
+                    </div>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Features: Default Tabs • Closable Tabs • Dropdown
+                            (All Tabs) • MultiSelect Add • Auto Concatenation
+                        </h3>
+                        <Tabs
+                            items={enhancedTabs}
+                            value={enhancedActiveTab}
+                            onValueChange={setEnhancedActiveTab}
+                            onTabClose={handleTabClose}
+                            onTabAdd={handleTabAdd}
+                            showDropdown={showEnhancedDropdown}
+                            showAddButton={showEnhancedAddButton}
+                            dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
+                            addButtonTooltip="Add new tabs via MultiSelect"
+                            maxDisplayTabs={4}
+                        />
+                    </div>
+
+                    <Modal
+                        isOpen={showMultiSelect}
+                        onClose={handleCloseModal}
+                        title="Add New Tabs"
+                        subtitle="Select up to 3 tabs to add. Multiple tabs will share content and be concatenated."
+                        minWidth="600px"
+                        primaryAction={{
+                            text: 'Add Selected Tabs',
+                            onClick: handleAddSelectedTabs,
+                            disabled: selectedTabsToAdd.length === 0,
+                        }}
+                        secondaryAction={{
+                            text: 'Cancel',
+                            onClick: handleCloseModal,
+                        }}
+                    >
+                        <MultiSelect
+                            selectedValues={selectedTabsToAdd}
+                            onChange={handleMultiSelectChange}
+                            items={multiSelectItems}
+                            placeholder={`Select up to 3 items (${selectedTabsToAdd.length}/3 selected)`}
+                            label="select tabs to add"
+                            enableSearch={true}
+                            searchPlaceholder="Search available tabs..."
+                            maxSelections={3}
+                            useDrawerOnMobile={false}
+                            fullWidth={true}
+                            variant={MultiSelectVariant.NO_CONTAINER}
+                        />
+                    </Modal>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Default Tabs:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>• Home and Dashboard are default tabs</li>
+                                <li>• Always visible at the front</li>
+                                <li>• Cannot be closed (no X button)</li>
+                                <li>
+                                    • User can define any number of default tabs
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Dynamic Features:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>• + button opens MultiSelect</li>
+                                <li>
+                                    • Select multiple items to create
+                                    concatenated tab
+                                </li>
+                                <li>
+                                    • Same content = auto concatenation (max 3)
+                                </li>
+                                <li>
+                                    • Dropdown shows ALL tabs (even
+                                    scrolled-out)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h4 className="font-semibold text-purple-800 mb-2">
+                            Concatenation Examples:
+                        </h4>
+                        <div className="text-purple-700 text-sm space-y-1">
+                            <p>
+                                <strong>Select 3 items:</strong> Creates one tab
+                                "Analytics+Reports+Settings"
+                            </p>
+                            <p>
+                                <strong>Select 1 item:</strong> Creates
+                                individual tab with unique content
+                            </p>
+                            <p>
+                                <strong>Max limit:</strong> Only first 3 items
+                                are concatenated
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Conversation Tabs Pattern
+                </h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This demonstrates a common pattern for tabs with
+                        conditional rendering. Using constants for tab values
+                        ensures type safety and prevents typos. The underline
+                        indicator animates smoothly between tabs.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <Tabs
+                            value={conversationTab}
+                            onValueChange={setConversationTab}
+                        >
+                            <TabsList>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.CHAT}
+                                    leftSlot={<MessageSquare size={16} />}
+                                >
+                                    Chat
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.FILES}
+                                    leftSlot={<FileText size={16} />}
+                                >
+                                    Files
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value={CONVERSATION_TABS.PINS}
+                                    leftSlot={<Pin size={16} />}
+                                >
+                                    Pins
+                                </TabsTrigger>
+                            </TabsList>
+
+                            {conversationTab === CONVERSATION_TABS.CHAT && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.CHAT}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-blue-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-blue-800">
+                                            Chat Messages
+                                        </h4>
+                                        <p className="text-blue-700">
+                                            This is where chat messages would be
+                                            displayed. The tab content is
+                                            conditionally rendered based on the
+                                            active tab value.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+
+                            {conversationTab === CONVERSATION_TABS.FILES && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.FILES}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-green-800">
+                                            Shared Files
+                                        </h4>
+                                        <p className="text-green-700">
+                                            This is where shared files would be
+                                            displayed. Using conditional
+                                            rendering allows for better control
+                                            over component lifecycle.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+
+                            {conversationTab === CONVERSATION_TABS.PINS && (
+                                <TabsContent
+                                    value={CONVERSATION_TABS.PINS}
+                                    className="mt-4"
+                                >
+                                    <div className="p-4 bg-purple-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2 text-purple-800">
+                                            Pinned Messages
+                                        </h4>
+                                        <p className="text-purple-700">
+                                            This is where pinned messages would
+                                            be displayed. Each tab content can
+                                            be unmounted when not active.
+                                        </p>
+                                    </div>
+                                </TabsContent>
+                            )}
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Pattern Benefits:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Constants prevent typos:{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    CONVERSATION_TABS.CHAT
+                                </code>
+                            </li>
+                            <li>
+                                • Conditional rendering allows unmounting
+                                inactive tabs
+                            </li>
+                            <li>
+                                • Works perfectly with underscore values (chat,
+                                files, pins)
+                            </li>
+                            <li>
+                                • Underline indicator animates smoothly between
+                                tabs
+                            </li>
+                            <li>
+                                • Type-safe with{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    as const
+                                </code>{' '}
+                                assertion
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Code Example:
+                        </h4>
+                        <div className="font-mono text-sm text-gray-700">
+                            <pre>{`const CONVERSATION_TABS = {
+  CHAT: 'chat',
+  FILES: 'files',
+  PINS: 'pins',
+} as const
+
+const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
+
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value={CONVERSATION_TABS.CHAT}>
+      Chat
+    </TabsTrigger>
+    {/* ... */}
+  </TabsList>
+
+  {activeTab === CONVERSATION_TABS.CHAT && (
+    <TabsContent value={CONVERSATION_TABS.CHAT}>
+      {/* Chat content */}
+    </TabsContent>
+  )}
+</Tabs>`}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Analytics Dashboard Tabs - Real World Example */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Analytics Dashboard - Real World Example
+                </h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This demonstrates a real-world analytics dashboard with
+                        many tabs using underscore values from a backend API.
+                        Features include default tabs, closable tabs, dropdown
+                        navigation, and add button for dynamic tab management.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Payment Analytics Dashboard
+                        </h3>
+                        <Tabs
+                            items={analyticsTabsItems}
+                            value={analyticsActiveTab}
+                            onValueChange={setAnalyticsActiveTab}
+                            onTabClose={handleAnalyticsTabClose}
+                            onTabAdd={handleAnalyticsTabAdd}
+                            showDropdown={true}
+                            showAddButton={true}
+                            dropdownTooltip="View all analytics dimensions"
+                            addButtonTooltip="Add dimension"
+                            maxDisplayTabs={5}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Underscore Values Work Perfectly:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>
+                                    • All values use underscores:{' '}
+                                    <code className="px-1 bg-blue-100 rounded">
+                                        payment_gateway
+                                    </code>
+                                    ,{' '}
+                                    <code className="px-1 bg-blue-100 rounded">
+                                        payment_method
+                                    </code>
+                                </li>
+                                <li>
+                                    • Underline indicator animates smoothly
+                                    between tabs
+                                </li>
+                                <li>
+                                    • Tabs scroll horizontally when overflow
+                                    occurs
+                                </li>
+                                <li>
+                                    • Dropdown shows all tabs (even scrolled-out
+                                    ones)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Dynamic Tab Management:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>
+                                    • Default tabs (
+                                    <code className="px-1 bg-green-100 rounded">
+                                        isDefault: true
+                                    </code>
+                                    ) cannot be closed
+                                </li>
+                                <li>
+                                    • Non-default tabs show close button (X)
+                                </li>
+                                <li>
+                                    • + button adds new dimension from remaining
+                                    options
+                                </li>
+                                <li>• Auto-scroll to newly added tab</li>
+                                <li>
+                                    • Handles 14+ tabs with smooth scrolling
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h4 className="font-semibold text-purple-800 mb-2">
+                            Current State:
+                        </h4>
+                        <div className="text-purple-700 text-sm space-y-2">
+                            <p>
+                                <strong>Active Tab:</strong>{' '}
+                                <code className="px-2 py-1 bg-purple-100 rounded">
+                                    {analyticsActiveTab}
+                                </code>
+                            </p>
+                            <p>
+                                <strong>Total Tabs:</strong>{' '}
+                                {analyticsTabsItems.length}
+                            </p>
+                            <p>
+                                <strong>Default Tabs:</strong>{' '}
+                                {
+                                    analyticsTabsItems.filter(
+                                        (tab) => tab.isDefault
+                                    ).length
+                                }
+                            </p>
+                            <p>
+                                <strong>Closable Tabs:</strong>{' '}
+                                {
+                                    analyticsTabsItems.filter(
+                                        (tab) => tab.closable
+                                    ).length
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Sample Tab Values:
+                        </h4>
+                        <div className="font-mono text-xs text-gray-700 grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {analyticsTabsItems.slice(0, 9).map((tab) => (
+                                <div
+                                    key={tab.value}
+                                    className="px-2 py-1 bg-white rounded border"
+                                >
+                                    {tab.value}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Data with Underscores</h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        This section demonstrates how the Tabs component
+                        correctly handles tab values with underscores that come
+                        from backend APIs. Values like{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_gateway
+                        </code>
+                        ,{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method
+                        </code>
+                        , and{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            payment_method_type
+                        </code>{' '}
+                        are treated as single tab values, not concatenated tabs.
+                    </p>
+
+                    <div className="p-6 bg-white border rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Simulated API Response
+                        </h3>
+                        <div className="mb-4 p-4 bg-gray-50 rounded-lg font-mono text-sm">
+                            <div className="text-gray-600 mb-2">
+                                {/* Simulated API response */}
+                                <pre>{`// Backend API returns:
+const apiTabs = [
+  { value: 'payment_gateway', label: 'Payment Gateway' },
+  { value: 'payment_method', label: 'Payment Method' },
+  { value: 'payment_method_type', label: 'Payment Method Type' },
+  { value: 'payment_status', label: 'Payment Status' },
+]`}</pre>
+                            </div>
+                        </div>
+                        <Tabs defaultValue="payment_gateway">
+                            <TabsList>
+                                <TabsTrigger value="payment_gateway">
+                                    Payment Gateway
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method">
+                                    Payment Method
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_method_type">
+                                    Payment Method Type
+                                </TabsTrigger>
+                                <TabsTrigger value="payment_status">
+                                    Payment Status
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent
+                                value="payment_gateway"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-blue-800">
+                                        Payment Gateway Content
+                                    </h4>
+                                    <p className="text-blue-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-blue-100 rounded">
+                                            payment_gateway
+                                        </code>
+                                        . This tab is fully clickable and works
+                                        correctly with underscore values from
+                                        backend APIs.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-green-800">
+                                        Payment Method Content
+                                    </h4>
+                                    <p className="text-green-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-green-100 rounded">
+                                            payment_method
+                                        </code>
+                                        . All tabs with underscores work
+                                        correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_method_type"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-purple-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-purple-800">
+                                        Payment Method Type Content
+                                    </h4>
+                                    <p className="text-purple-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-purple-100 rounded">
+                                            payment_method_type
+                                        </code>
+                                        . Even tabs with multiple underscores
+                                        work perfectly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent
+                                value="payment_status"
+                                className="mt-4"
+                            >
+                                <div className="p-4 bg-orange-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-orange-800">
+                                        Payment Status Content
+                                    </h4>
+                                    <p className="text-orange-700">
+                                        Tab value:{' '}
+                                        <code className="px-2 py-1 bg-orange-100 rounded">
+                                            payment_status
+                                        </code>
+                                        . Backend API data is handled correctly.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">
+                            Backend API Integration:
+                        </h4>
+                        <ul className="text-green-700 space-y-1 text-sm">
+                            <li>
+                                • Tab values with underscores (e.g.,{' '}
+                                <code className="px-1 bg-green-100 rounded">
+                                    payment_gateway
+                                </code>
+                                ) are treated as single values
+                            </li>
+                            <li>
+                                • Only concatenated tabs (created when multiple
+                                tabs share content) use underscores as
+                                separators
+                            </li>
+                            <li>
+                                • The component automatically distinguishes
+                                between single tabs with underscores and
+                                concatenated tabs
+                            </li>
+                            <li>
+                                • All tab operations (click, close, dropdown)
+                                work correctly with underscore values
+                            </li>
+                            <li>
+                                • Compatible with REST APIs, GraphQL, and any
+                                backend that uses underscore naming conventions
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Example: Using Backend API Data
+                        </h4>
+                        <div className="font-mono text-sm text-blue-700">
+                            <pre>{`// Fetch tabs from backend API
+const response = await fetch('/api/tabs')
+const apiTabs = await response.json()
+
+// Transform API response to TabItem format
+const tabs: TabItem[] = apiTabs.map(tab => ({
+  value: tab.id,           // e.g., 'payment_gateway'
+  label: tab.name,         // e.g., 'Payment Gateway'
+  content: <TabContent />,
+  isDefault: tab.isDefault || false,
+  closable: !tab.isDefault,
+}))
+
+// Use directly - underscores work correctly!
+<Tabs items={tabs} defaultValue={tabs[0].value} />`}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Disabled State Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Disabled State</h2>
+                <div className="space-y-8">
+                    {/* Individual Disabled Tabs */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Individual Disabled Tabs
+                        </h3>
+                        <p className="text-gray-600">
+                            Specific tabs can be disabled individually using the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                disable
+                            </code>{' '}
+                            property on each tab item.
+                        </p>
+                        <Tabs
+                            defaultValue="tab1"
+                            items={[
+                                {
+                                    value: 'tab1',
+                                    label: 'Active Tab',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Active Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is active and
+                                                clickable.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab2',
+                                    label: 'Disabled Tab',
+                                    disable: true,
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Disabled Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This content won't be
+                                                accessible.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab3',
+                                    label: 'Another Active Tab',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Another Active Tab Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is also active and
+                                                clickable.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab4',
+                                    label: 'Also Disabled',
+                                    disable: true,
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Also Disabled Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This tab is disabled too.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Global Disabled State */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Global Disabled State
+                        </h3>
+                        <p className="text-gray-600">
+                            All tabs can be disabled at once using the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                disable
+                            </code>{' '}
+                            property on the Tabs component.
+                        </p>
+                        <div className="flex items-center gap-4 mb-4">
+                            <Switch
+                                label="Disable All Tabs"
+                                checked={globalDisable}
+                                onChange={() =>
+                                    setGlobalDisable(!globalDisable)
+                                }
+                            />
+                        </div>
+                        <Tabs
+                            defaultValue="overview"
+                            disable={globalDisable}
+                            items={[
+                                {
+                                    value: 'overview',
+                                    label: 'Overview',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Overview Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                All tabs are{' '}
+                                                {globalDisable
+                                                    ? 'disabled'
+                                                    : 'enabled'}{' '}
+                                                based on the global state.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'analytics',
+                                    label: 'Analytics',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Analytics Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Analytics data and charts.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'reports',
+                                    label: 'Reports',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Reports Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Generated reports and exports.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Disabled with Children Pattern */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Disabled State with Children Pattern
+                        </h3>
+                        <p className="text-gray-600">
+                            The disable prop works with the children pattern as
+                            well, following the Accordion component pattern.
+                        </p>
+                        <Tabs defaultValue="tab1" disable={globalDisable}>
+                            <TabsList>
+                                <TabsTrigger
+                                    value="tab1"
+                                    leftSlot={<Home size={16} />}
+                                >
+                                    Home
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab2"
+                                    leftSlot={<User size={16} />}
+                                >
+                                    Profile
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab3"
+                                    leftSlot={<Settings size={16} />}
+                                >
+                                    Settings
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="tab1" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Home Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Toggle the switch above to see all tabs
+                                        disabled.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab2" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Profile Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Profile information and settings.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab3" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Settings Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Application settings and preferences.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    {/* Disabled Across Variants */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Disabled State Across Variants
+                        </h3>
+                        <p className="text-gray-600">
+                            The disabled state styling works consistently across
+                            all tab variants.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {Object.values(TabsVariant).map((variant) => (
+                                <div key={variant} className="space-y-2">
+                                    <h4 className="font-medium capitalize">
+                                        {variant} Variant
+                                    </h4>
+                                    <Tabs
+                                        disable={globalDisable}
+                                        defaultValue="tab1"
+                                    >
+                                        <TabsList variant={variant}>
+                                            <TabsTrigger
+                                                disable={true}
+                                                value="tab1"
+                                                variant={variant}
+                                            >
+                                                Active
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab2"
+                                                variant={variant}
+                                                disable={true}
+                                            >
+                                                Disabled
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab3"
+                                                variant={variant}
+                                            >
+                                                Active
+                                            </TabsTrigger>
+                                        </TabsList>
+
+                                        <TabsContent
+                                            value="tab1"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Active tab in {variant}{' '}
+                                                    variant
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab3"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Another active tab
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Disabled State Features:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Individual tabs can be disabled using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    disable
+                                </code>{' '}
+                                prop on TabItem
+                            </li>
+                            <li>
+                                • All tabs can be disabled globally using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    disable
+                                </code>{' '}
+                                prop on Tabs component
+                            </li>
+                            <li>
+                                • Works with both items pattern and children
+                                pattern
+                            </li>
+                            <li>
+                                • Disabled tabs show reduced opacity and are not
+                                clickable
+                            </li>
+                            <li>
+                                • Consistent styling across all variants and
+                                sizes
+                            </li>
+                            <li>
+                                • Follows the same pattern as Accordion
+                                component
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {/* Skeleton State Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Skeleton State</h2>
+                <div className="space-y-8">
+                    {/* Skeleton Controls */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton Loading State
+                        </h3>
+                        <p className="text-gray-600">
+                            The Tabs component supports skeleton loading state
+                            to show a loading placeholder while content is being
+                            fetched. Use the{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                showSkeleton
+                            </code>{' '}
+                            prop to enable skeleton state and{' '}
+                            <code className="px-2 py-1 bg-gray-100 rounded">
+                                skeletonVariant
+                            </code>{' '}
+                            to choose the animation style.
+                        </p>
+                        <div className="flex items-center gap-6 flex-wrap">
+                            <Switch
+                                label="Show Skeleton"
+                                checked={showSkeleton}
+                                onChange={() => setShowSkeleton(!showSkeleton)}
+                            />
+                            <SingleSelect
+                                label="Skeleton Variant"
+                                items={[
+                                    {
+                                        items: [
+                                            { value: 'pulse', label: 'Pulse' },
+                                            { value: 'wave', label: 'Wave' },
+                                            {
+                                                value: 'shimmer',
+                                                label: 'Shimmer',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={skeletonVariant}
+                                onSelect={(value) =>
+                                    setSkeletonVariant(
+                                        value as 'pulse' | 'wave' | 'shimmer'
+                                    )
+                                }
+                                placeholder="Select variant"
+                            />
+                        </div>
+                        <Tabs
+                            showSkeleton={showSkeleton}
+                            skeletonVariant={skeletonVariant}
+                            defaultValue="tab1"
+                            items={[
+                                {
+                                    value: 'tab1',
+                                    label: 'Overview',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Overview Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                This content is shown when
+                                                skeleton is disabled.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab2',
+                                    label: 'Analytics',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Analytics Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Analytics data and charts.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    value: 'tab3',
+                                    label: 'Reports',
+                                    content: (
+                                        <div className="p-4 bg-gray-50 rounded-lg">
+                                            <h4 className="font-semibold mb-2">
+                                                Reports Content
+                                            </h4>
+                                            <p className="text-gray-600">
+                                                Generated reports and exports.
+                                            </p>
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
+                    </div>
+
+                    {/* Skeleton Across Variants */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton State Across Variants
+                        </h3>
+                        <p className="text-gray-600">
+                            Skeleton state works consistently across all tab
+                            variants.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {Object.values(TabsVariant).map((variant) => (
+                                <div key={variant} className="space-y-2">
+                                    <h4 className="font-medium capitalize">
+                                        {variant} Variant
+                                    </h4>
+                                    <Tabs
+                                        showSkeleton={showSkeleton}
+                                        skeletonVariant={skeletonVariant}
+                                        defaultValue="tab1"
+                                    >
+                                        <TabsList variant={variant}>
+                                            <TabsTrigger
+                                                value="tab1"
+                                                variant={variant}
+                                            >
+                                                Overview
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab2"
+                                                variant={variant}
+                                            >
+                                                Analytics
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="tab3"
+                                                variant={variant}
+                                            >
+                                                Reports
+                                            </TabsTrigger>
+                                        </TabsList>
+
+                                        <TabsContent
+                                            value="tab1"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Content for {variant}{' '}
+                                                    variant
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab2"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Analytics content
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+
+                                        <TabsContent
+                                            value="tab3"
+                                            className="mt-4"
+                                        >
+                                            <div className="p-4 bg-gray-50 rounded-lg text-sm">
+                                                <p className="text-gray-600">
+                                                    Reports content
+                                                </p>
+                                            </div>
+                                        </TabsContent>
+                                    </Tabs>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Skeleton with Children Pattern */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Skeleton State with Children Pattern
+                        </h3>
+                        <p className="text-gray-600">
+                            The skeleton prop works with the children pattern as
+                            well.
+                        </p>
+                        <Tabs
+                            showSkeleton={showSkeleton}
+                            skeletonVariant={skeletonVariant}
+                            defaultValue="tab1"
+                        >
+                            <TabsList>
+                                <TabsTrigger
+                                    value="tab1"
+                                    leftSlot={<Home size={16} />}
+                                >
+                                    Home
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab2"
+                                    leftSlot={<User size={16} />}
+                                >
+                                    Profile
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="tab3"
+                                    leftSlot={<Settings size={16} />}
+                                >
+                                    Settings
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="tab1" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Home Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Toggle the skeleton switch above to see
+                                        the loading state.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab2" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Profile Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Profile information and settings.
+                                    </p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="tab3" className="mt-4">
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold mb-2">
+                                        Settings Content
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Application settings and preferences.
+                                    </p>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">
+                            Skeleton State Features:
+                        </h4>
+                        <ul className="text-blue-700 space-y-1 text-sm">
+                            <li>
+                                • Enable skeleton state using{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    showSkeleton
+                                </code>{' '}
+                                prop on Tabs component
+                            </li>
+                            <li>
+                                • Choose animation style with{' '}
+                                <code className="px-1 bg-blue-100 rounded">
+                                    skeletonVariant
+                                </code>{' '}
+                                prop (pulse, wave, shimmer)
+                            </li>
+                            <li>
+                                • Works with both items pattern and children
+                                pattern
+                            </li>
+                            <li>
+                                • Tab content becomes transparent and
+                                non-interactive when skeleton is active
+                            </li>
+                            <li>
+                                • Consistent behavior across all variants and
+                                sizes
+                            </li>
+                            <li>
+                                • Follows the same pattern as Button component
+                            </li>
+                            <li>
+                                • Skeleton wrapper provides visual loading
+                                feedback
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             {/* Tabs Variants */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Tabs Variants</h2>
@@ -584,21 +1856,24 @@ const TabsDemo = () => {
                             </h3>
                             <Tabs defaultValue="tab1">
                                 <TabsList variant={variant}>
-                                    <TabsTrigger value="tab1">
-                                        Overview
+                                    <TabsTrigger value="payment_gateway">
+                                        payment_gateway
                                     </TabsTrigger>
-                                    <TabsTrigger value="tab2">
-                                        Analytics
+                                    <TabsTrigger value="payment_status">
+                                        payment_status
                                     </TabsTrigger>
                                     <TabsTrigger value="tab3">
-                                        Reports
+                                        payment_method
                                     </TabsTrigger>
                                     <TabsTrigger value="tab4">
-                                        Settings
+                                        payment_history
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="tab1" className="mt-4">
+                                <TabsContent
+                                    value="payment_gateway"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Overview
@@ -610,7 +1885,10 @@ const TabsDemo = () => {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="tab2" className="mt-4">
+                                <TabsContent
+                                    value="payment_status"
+                                    className="mt-4"
+                                >
                                     <div className="p-4 bg-gray-50 rounded-lg">
                                         <h4 className="font-semibold mb-2">
                                             Analytics

@@ -37,6 +37,7 @@ const UploadingState: React.FC<UploadingStateProps> = ({
         )}
 
         <Block
+            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"

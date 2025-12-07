@@ -14,15 +14,27 @@ export type MerchantInfo = {
 export type TopbarProps = {
     children?: ReactNode
 
+    /** Sidebar expansion state */
     isExpanded?: boolean
 
     onToggleExpansion?: () => void
 
     showToggleButton?: boolean
 
+    /** When true, hides toggle button (used in panel only mode) */
+    panelOnlyMode?: boolean
+
+    /** Controlled mode: Show/hide topbar */
+    isVisible?: boolean
+
+    /** Callback when visibility changes (controlled mode) */
+    onVisibilityChange?: (visible: boolean) => void
+
+    /** Uncontrolled mode: Initial topbar visibility (defaults to true) */
+    defaultIsVisible?: boolean
+
     sidebarTopSlot?: ReactNode
     topbar?: ReactNode
-    title?: string
 
     leftAction?: ReactNode
 

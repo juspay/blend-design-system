@@ -143,7 +143,6 @@ export const getModalComponentTokens = (
             footer: {
                 padding: foundationToken.unit[16],
                 borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
-                // borderRadius: `0 0 ${foundationToken.border.radius[12]} ${foundationToken.border.radius[12]}`,
                 backgroundColor: foundationToken.colors.gray[0],
                 gap: foundationToken.unit[12],
             },
@@ -189,7 +188,6 @@ export const getModalComponentTokens = (
             footer: {
                 padding: foundationToken.unit[20],
                 borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
-                // borderRadius: `0 0 ${foundationToken.border.radius[16]} ${foundationToken.border.radius[16]}`,
                 backgroundColor: foundationToken.colors.gray[0],
                 gap: foundationToken.unit[16],
             },

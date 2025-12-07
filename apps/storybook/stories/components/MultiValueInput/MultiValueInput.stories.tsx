@@ -5,12 +5,20 @@ import {
     MultiValueInputSize,
 } from '@juspay/blend-design-system'
 import { Search, User, Mail, Tag } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof MultiValueInput> = {
     title: 'Components/Inputs/MultiValueInput',
     component: MultiValueInput,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -27,6 +35,33 @@ A specialized input component for managing multiple values as tags, ideal for fe
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Uses native \`<input type="text">\` for proper semantics
+- Labels are associated via \`label\`, \`sublabel\`, and \`name\` props
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with inputs via \`InputFooter\`
+- Focus styles and error shake patterns are keyboard-friendly
+- Tag removal buttons are keyboard accessible (Enter/Space to activate)
+- Left/right slot icons are decorative by default and should not replace accessible labels
+- Hint and help text provide additional instructions for users and assistive technologies
+- Tag keyboard navigation: Enter to add tag, Backspace on empty input to remove last tag
+
+**WCAG Compliance Target**: 2.1 Level AA (designed to support 2.2 as the latest version of WCAG [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)])
+
+**Intended coverage:**
+- **Perceivable**: Labels, hints, and error messages are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, Enter to add tags, Backspace to remove tags, Enter/Space on tag remove buttons)
+- **Understandable**: Clear labels, inline help, and error messaging patterns
+- **Robust**: Built with semantic HTML and ARIA-friendly props for screen readers
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA)
+- **jest-axe tests**: Run \`pnpm test MultiValueInput.accessibility\` to automate WCAG checks
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
+
+> Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
 
 ## Usage
 
@@ -557,6 +592,185 @@ export const WithLabelsAndHints: Story = {
             description: {
                 story: 'MultiValueInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
+        },
+    },
+}
+
+// Accessibility story
+export const Accessibility: Story = {
+    render: () => {
+        const [keywords, setKeywords] = useState<string[]>([])
+        const [categories, setCategories] = useState<string[]>([])
+        const [skills, setSkills] = useState<string[]>(['react', 'typescript'])
+        const [disabledTags] = useState(['readonly', 'tags'])
+
+        const keywordsError =
+            keywords.length === 0 ? 'At least one keyword is required' : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '32px',
+                    maxWidth: '600px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Required Fields, and Hints
+                    </h3>
+                    <MultiValueInput
+                        label="Keywords"
+                        sublabel="Add relevant keywords for searchability"
+                        hintText="Press Enter to add a keyword"
+                        placeholder="Type and press Enter..."
+                        tags={keywords}
+                        onTagAdd={(tag) =>
+                            setKeywords((prev) => [...prev, tag])
+                        }
+                        onTagRemove={(tag) =>
+                            setKeywords((prev) => prev.filter((t) => t !== tag))
+                        }
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <MultiValueInput
+                        label="Categories"
+                        placeholder="Add category..."
+                        tags={categories}
+                        onTagAdd={(tag) =>
+                            setCategories((prev) => [...prev, tag])
+                        }
+                        onTagRemove={(tag) =>
+                            setCategories((prev) =>
+                                prev.filter((t) => t !== tag)
+                            )
+                        }
+                        error={categories.length === 0}
+                        errorMessage={keywordsError}
+                        hintText="At least one category is required"
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <MultiValueInput
+                        label="Disabled MultiValueInput"
+                        tags={disabledTags}
+                        onTagAdd={() => {}}
+                        onTagRemove={() => {}}
+                        placeholder="This input is disabled"
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Keyboard and Screen Reader Friendly Layout
+                    </h3>
+                    <MultiValueInput
+                        label="Skills"
+                        sublabel="Add your technical skills"
+                        hintText="Press Enter to add, Backspace on empty input to remove last tag"
+                        helpIconHintText="Use keyboard: Tab to focus, Enter to add tags, Backspace to remove last tag, Enter/Space on tag remove buttons"
+                        tags={skills}
+                        onTagAdd={(tag) => setSkills((prev) => [...prev, tag])}
+                        onTagRemove={(tag) =>
+                            setSkills((prev) => prev.filter((t) => t !== tag))
+                        }
+                        placeholder="e.g., JavaScript, TypeScript, React..."
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Tag Removal with Keyboard
+                    </h3>
+                    <MultiValueInput
+                        label="Tags with Keyboard Removal"
+                        hintText="Focus a tag and press Enter or Space to remove it"
+                        tags={skills}
+                        onTagAdd={(tag) => setSkills((prev) => [...prev, tag])}
+                        onTagRemove={(tag) =>
+                            setSkills((prev) => prev.filter((t) => t !== tag))
+                        }
+                        placeholder="Add tag..."
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, keyboard-friendly focus behavior, and tag management.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations, error messaging, and tag button accessibility.
+
+2. **jest-axe tests**:
+   - Add \`MultiValueInput.accessibility.test.tsx\` and run:
+   \`\`\`bash
+   pnpm test MultiValueInput.accessibility
+   \`\`\`
+   - Validate WCAG 2.0, 2.1, 2.2 A and AA success criteria for form fields (labels, errors, keyboard support, tag interactions).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, Enter to add tags, Backspace to remove last tag).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, errors, and tag names are announced.
+   - Verify tag remove buttons are keyboard accessible (Enter/Space to activate).
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+   - Test tag removal via keyboard: Focus tag remove button and press Enter or Space.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
         },
     },
 }

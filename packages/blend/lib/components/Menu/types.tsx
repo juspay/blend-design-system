@@ -1,3 +1,4 @@
+import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum MenuAlignment {
@@ -11,6 +12,12 @@ export enum MenuSide {
     LEFT = 'left',
     RIGHT = 'right',
     BOTTOM = 'bottom',
+}
+
+export type MenuSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
 }
 
 export type MenuProps = {
@@ -37,6 +44,7 @@ export type MenuProps = {
     sideOffset?: number
     alignOffset?: number
     collisonBoundaryRef?: Element | null | Array<Element | null>
+    skeleton?: MenuSkeletonProps
 }
 
 export enum MenuItemVariant {

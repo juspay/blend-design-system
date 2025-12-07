@@ -2,7 +2,6 @@ import React from 'react'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
-import { foundationToken } from '../../foundationToken'
 import {
     AlertActionPlacement,
     type AlertProps,
@@ -44,6 +43,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         }
         return (
             <Block
+                data-alert={heading ?? 'blend-alert'}
                 ref={ref}
                 maxWidth={alertTokens.maxWidth}
                 backgroundColor={alertTokens.background[variant][style]}
@@ -67,6 +67,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     >
                         {icon && (
                             <Block
+                                data-element="icon"
                                 size={FOUNDATION_THEME.unit[16]}
                                 contentCentered
                             >
@@ -74,7 +75,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             </Block>
                         )}
                         <Text
-                            data-alert-heading={heading}
+                            data-element="header"
+                            data-id={heading}
                             color={alertTokens.text.heading.color[variant]}
                             fontWeight={alertTokens.text.heading.fontWeight}
                             fontSize={alertTokens.text.heading.fontSize}
@@ -86,6 +88,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     {onClose &&
                         actionPlacement === AlertActionPlacement.BOTTOM && (
                             <AlertCloseButton
+                                data-element="close-button"
                                 onClick={onClose}
                                 $color={
                                     alertTokens.button.closeButton.color[
@@ -95,7 +98,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             >
                                 <X
                                     size={16}
-                                    color={foundationToken.colors.gray[800]}
+                                    color={FOUNDATION_THEME.colors.gray[800]}
                                 />
                             </AlertCloseButton>
                         )}
@@ -113,7 +116,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     gap={FOUNDATION_THEME.unit[18]}
                 >
                     <Text
-                        data-alert-description={description}
+                        data-element="description"
+                        data-id={description}
                         fontWeight={alertTokens.text.description.fontWeight}
                         fontSize={alertTokens.text.description.fontSize}
                         lineHeight={alertTokens.text.description.lineHeight}
@@ -131,6 +135,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                 >
                                     {primaryAction && (
                                         <PrimitiveButton
+                                            data-element="primary-action"
+                                            data-id={primaryAction.label}
                                             onClick={primaryAction.onClick}
                                             style={{
                                                 border: 'none',
@@ -158,6 +164,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                     {secondaryAction && (
                                         <>
                                             <PrimitiveButton
+                                                data-element="secondary-action"
+                                                data-id={secondaryAction.label}
                                                 onClick={
                                                     secondaryAction.onClick
                                                 }
@@ -198,7 +206,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                             width={'1px'}
                                             height={FOUNDATION_THEME.unit[20]}
                                             backgroundColor={
-                                                foundationToken.colors.gray[300]
+                                                FOUNDATION_THEME.colors
+                                                    .gray[300]
                                             }
                                         />
                                         <AlertCloseButton
@@ -211,7 +220,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                             <X
                                                 size={16}
                                                 color={
-                                                    foundationToken.colors
+                                                    FOUNDATION_THEME.colors
                                                         .gray[800]
                                                 }
                                             />
@@ -237,6 +246,7 @@ const AlertCloseButton = ({
 }) => {
     return (
         <PrimitiveButton
+            data-element="close-button"
             border={'none'}
             backgroundColor={'transparent'}
             className="debug"

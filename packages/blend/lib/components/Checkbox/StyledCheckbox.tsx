@@ -7,6 +7,10 @@ import {
 } from './types'
 import type { CheckboxTokensType } from './checkbox.token'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    checkboxRootAnimations,
+    checkboxIndicatorAnimations,
+} from './checkbox.animations'
 
 const getInteractionState = (
     isDisabled: boolean,
@@ -40,6 +44,8 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
         const currentInteractionState = getInteractionState($isDisabled, $error)
 
         return css`
+            ${checkboxRootAnimations}
+
             border-radius: ${tokens.indicator.borderRadius[size]};
             background-color: ${tokens.indicator.backgroundColor[
                 currentCheckedState
@@ -53,7 +59,6 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
             margin: 0;
             padding: 0;
             flex-shrink: 0;
-            transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             &:focus-visible {
                 outline: ${tokens.indicator.outline};
@@ -91,38 +96,5 @@ export const StyledCheckboxIndicator = styled(CheckboxPrimitive.Indicator)<{
     width: 100%;
     height: 100%;
 
-    ${() => {
-        return css`
-            &[data-state='checked'],
-            &[data-state='indeterminate'] {
-                animation: scale-in 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            &[data-state='unchecked'] {
-                animation: scale-out 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            }
-        `
-    }}
-
-    @keyframes scale-in {
-        from {
-            transform: scale(0.8);
-            opacity: 0;
-        }
-        to {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-
-    @keyframes scale-out {
-        from {
-            transform: scale(1);
-            opacity: 1;
-        }
-        to {
-            transform: scale(0.8);
-            opacity: 0;
-        }
-    }
+    ${checkboxIndicatorAnimations}
 `

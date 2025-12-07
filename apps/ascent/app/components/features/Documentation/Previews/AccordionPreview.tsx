@@ -23,85 +23,8 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `type accordionType = [#border | #noBorder]
-type accordionChevronPosition = [#left | #right]
-
-@react.component
-let make = (
-  ~children: React.element,
-  ~accordionType: option<accordionType>=?,
-  ~defaultValue: option<string>=?,
-  ~value: option<string>=?,
-  ~isMultiple: option<bool>=?,
-  ~onValueChange: option<string => unit>=?,
-) => {
-  <AccordionBinding
-    ?accordionType
-    ?defaultValue
-    ?value
-    ?isMultiple
-    ?onValueChange
-    children
-  />
-}
-
-@react.component
-let makeItem = (
-  ~value: string,
-  ~title: string,
-  ~children: React.element,
-  ~subtext: option<string>=?,
-  ~leftSlot: option<React.element>=?,
-  ~rightSlot: option<React.element>=?,
-  ~subtextSlot: option<React.element>=?,
-  ~isDisabled: option<bool>=?,
-  ~chevronPosition: option<accordionChevronPosition>=?,
-  ~className: option<string>=?,
-) => {
-  <AccordionItemBinding
-    value
-    title
-    ?subtext
-    ?leftSlot
-    ?rightSlot
-    ?subtextSlot
-    ?isDisabled
-    ?chevronPosition
-    ?className
-    children
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~children: React.element,
-  ~accordionType: [#border | #noBorder]=?,
-  ~defaultValue: string=?,
-  ~value: string=?,
-  ~isMultiple: bool=?,
-  ~onValueChange: string => unit=?,
-) => React.element = "Accordion"
-
-@module("@juspay/blend-design-system") @react.component
-external makeItem: (
-  ~value: string,
-  ~title: string,
-  ~children: React.element,
-  ~subtext: string=?,
-  ~leftSlot: React.element=?,
-  ~rightSlot: React.element=?,
-  ~subtextSlot: React.element=?,
-  ~isDisabled: bool=?,
-  ~chevronPosition: [#left | #right]=?,
-  ~className: string=?,
-) => React.element = "AccordionItem"`
-
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <Accordion accordionType={AccordionType.BORDER}>
                 <AccordionItem
                     value="item-1"

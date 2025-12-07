@@ -44,253 +44,88 @@ function MyComponent() {
 
 ## API Reference
 
-### Snackbar Component
-
 <DocsTypeTable
     data={[
         [
             {
-                content: 'No props',
+                content: 'addSnackbar.header',
                 hintText:
-                    'The Snackbar component is a container that renders toast notifications',
+                    'Required string representing the main title text displayed prominently in the snackbar. Should be concise and action-oriented, clearly describing the notification (e.g., "Success!", "Error occurred", "Warning"). The header is styled prominently and appears at the top of the snackbar content.',
             },
-            { content: 'N/A', hintText: 'No props' },
-            { content: 'N/A' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### addSnackbar Function
-
-<DocsTypeTable
-    data={[
-        [
             {
-                content: 'header',
-                hintText: 'The main title text displayed in the snackbar',
+                content: 'string',
+                hintText: 'Text content for the snackbar header title',
             },
-            { content: 'string', hintText: 'string' },
             { content: '' },
         ],
         [
             {
-                content: 'description',
+                content: 'addSnackbar.description',
                 hintText:
-                    'Optional descriptive text displayed below the header',
+                    'Optional descriptive text string displayed below the header in the snackbar. Provides additional context, details, or explanation about the notification. Styled with smaller, lighter text than the header. Useful for providing more information about the action or error. If not provided, only the header is displayed.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Descriptive text shown below the header',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'variant',
-                hintText: 'The visual style variant of the snackbar',
-            },
-            { content: 'SnackbarVariant', hintText: 'enum' },
-            { content: 'SnackbarVariant.INFO' },
-        ],
-        [
-            {
-                content: 'onClose',
+                content: 'addSnackbar.variant',
                 hintText:
-                    'Callback function called when the snackbar is closed',
+                    'Optional SnackbarVariant enum value that determines the visual style and icon of the snackbar. INFO displays a blue info icon, SUCCESS displays a green checkmark icon, WARNING displays a yellow warning icon, ERROR displays a red error icon. The variant affects colors, icon, and overall appearance. Defaults to INFO.',
             },
-            { content: '() => void', hintText: 'function' },
+            {
+                content: 'SnackbarVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the snackbar',
+            },
+            { content: 'INFO, SUCCESS, WARNING, ERROR' },
+        ],
+        [
+            {
+                content: 'addSnackbar.onClose',
+                hintText:
+                    'Optional callback function invoked when the snackbar is closed. Receives no parameters. Called when the user clicks the close button, the snackbar auto-dismisses, or is programmatically dismissed. Useful for cleanup, tracking dismissal, or performing actions when the snackbar closes.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when snackbar is closed',
+            },
             { content: '' },
         ],
         [
             {
-                content: 'actionButton',
-                hintText: 'Optional action button configuration',
+                content: 'addSnackbar.actionButton',
+                hintText:
+                    'Optional object that configures an action button displayed in the snackbar. The button allows users to perform an action related to the notification (e.g., "Undo", "Retry", "View Details"). Contains: label (required string for button text), onClick (required callback function), and autoDismiss (optional boolean to auto-close snackbar on click). If not provided, no action button is shown.',
             },
             {
-                content: '{ label: string; onClick: () => void }',
-                hintText: 'object',
+                content:
+                    '{ label: string; onClick: () => void; autoDismiss?: boolean }',
+                hintText: 'Object with action button configuration properties',
             },
             { content: '' },
         ],
         [
             {
-                content: 'duration',
-                hintText: 'Optional toast duration',
+                content: 'addSnackbar.duration',
+                hintText:
+                    'Optional duration in milliseconds that the snackbar remains visible before auto-dismissing. After this duration, the snackbar automatically closes. Set to 0 or Infinity to prevent auto-dismissal. Useful for controlling how long users have to read and act on the notification. Defaults to 4000 milliseconds (4 seconds).',
             },
             {
                 content: 'number',
-                hintText: 'number',
+                hintText:
+                    'Positive number representing duration in milliseconds',
             },
-            { content: '4000' },
+            { content: '' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- Four visual variants (info, success, warning, error)
-- Optional description text
-- Optional action button with custom label and handler
-- Auto-dismiss functionality
-- Manual close button
-- Accessible by default
-- Customizable styling through tokens
-- Built on Sonner toast library
-- Non-intrusive notifications
-
-## Usage Examples
-
-### Basic Snackbar
-
-Simple snackbar with just a header
-
-```tsx
-import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1'
-
-function MyComponent() {
-    const showBasicSnackbar = () => {
-        addSnackbar({
-            header: 'Message sent successfully',
-            variant: SnackbarVariant.SUCCESS,
-        })
-    }
-
-    return (
-        <div>
-            <button onClick={showBasicSnackbar}>Show Basic Snackbar</button>
-            <Snackbar />
-        </div>
-    )
-}
-```
-
-### Snackbar with Description
-
-Snackbar with additional descriptive text
-
-```tsx
-const showDetailedSnackbar = () => {
-    addSnackbar({
-        header: 'File uploaded',
-        description:
-            'Your document has been successfully uploaded to the cloud.',
-        variant: SnackbarVariant.SUCCESS,
-    })
-}
-```
-
-### Snackbar with Action Button
-
-Snackbar with a custom action button
-
-```tsx
-const showSnackbarWithAction = () => {
-    addSnackbar({
-        header: 'Changes saved',
-        description: 'Your changes have been saved to the database.',
-        variant: SnackbarVariant.INFO,
-        actionButton: {
-            label: 'Undo',
-            onClick: () => {
-                // Handle undo action
-                console.log('Undo clicked')
-            },
-        },
-    })
-}
-```
-
-### Different Variants
-
-Snackbars with different visual styles
-
-```tsx
-// Info variant
-addSnackbar({
-    header: 'Information',
-    description: 'This is an informational message.',
-    variant: SnackbarVariant.INFO,
-})
-
-// Success variant
-addSnackbar({
-    header: 'Success!',
-    description: 'Operation completed successfully.',
-    variant: SnackbarVariant.SUCCESS,
-})
-
-// Warning variant
-addSnackbar({
-    header: 'Warning',
-    description: 'Please review your input before proceeding.',
-    variant: SnackbarVariant.WARNING,
-})
-
-// Error variant
-addSnackbar({
-    header: 'Error',
-    description: 'Something went wrong. Please try again.',
-    variant: SnackbarVariant.ERROR,
-})
-```
-
-### Snackbar with Close Handler
-
-Snackbar with custom close callback
-
-```tsx
-const showSnackbarWithCloseHandler = () => {
-    addSnackbar({
-        header: 'Notification',
-        description: 'This snackbar has a custom close handler.',
-        variant: SnackbarVariant.INFO,
-        onClose: () => {
-            console.log('Snackbar was closed')
-            // Perform cleanup or additional actions
-        },
-    })
-}
-```
-
-### Complete Example
-
-Full example with all features
-
-```tsx
-import { Snackbar, addSnackbar, SnackbarVariant } from 'blend-v1'
-
-function App() {
-    const handleSave = () => {
-        // Simulate save operation
-        addSnackbar({
-            header: 'Document saved',
-            description: 'Your changes have been saved successfully.',
-            variant: SnackbarVariant.SUCCESS,
-            onClose: () => {
-                console.log('Save notification closed')
-            },
-            actionButton: {
-                label: 'View',
-                onClick: () => {
-                    console.log('View document clicked')
-                    // Navigate to document view
-                },
-            },
-            duration: 8000,
-        })
-    }
-
-    return (
-        <div>
-            <button onClick={handleSave}>Save Document</button>
-            <Snackbar />
-        </div>
-    )
-}
-```
 
 ## Component Tokens
 
@@ -298,100 +133,52 @@ You can style the snackbar component using the following tokens:
 
 ```tsx
 export type SnackbarTokens = {
-    icon: {
+    backgroundColor: CSSObject['backgroundColor']
+    borderRadius: CSSObject['borderRadius']
+    padding: CSSObject['padding']
+    maxWidth: CSSObject['maxWidth']
+    boxShadow: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    infoIcon: {
         color: {
-            info: CSSObject['color']
-            success: CSSObject['color']
-            warning: CSSObject['color']
-            error: CSSObject['color']
+            [key in SnackbarVariant]: CSSObject['color']
         }
+        height: CSSObject['height' | 'width']
     }
-    container: {
-        backgroundColor: CSSObject['color']
-        borderRadius: CSSObject['borderRadius']
-        padding: CSSObject['padding']
-        minWidth: CSSObject['minWidth']
-        maxWidth: CSSObject['maxWidth']
-        boxShadow: CSSObject['boxShadow']
-    }
-    header: {
-        layout: {
+    content: {
+        gap: CSSObject['gap']
+        textContainer: {
             gap: CSSObject['gap']
-            marginBottom: CSSObject['marginBottom']
-            iconGap: CSSObject['gap']
-        }
-        text: {
-            color: CSSObject['color']
-            variant: VariantType
-        }
-    }
-    description: {
-        layout: {
-            paddingLeft: CSSObject['paddingLeft']
-            gap: CSSObject['gap']
-        }
-        text: {
-            color: CSSObject['color']
-            variant: VariantType
+            header: {
+                color: {
+                    [key in SnackbarVarious]: CSSObject['color']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+            description: {
+                color: {
+                    [key in SnackbarVariant]: CSSObject['color']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
         }
     }
-    actionButton: {
-        layout: {
-            paddingX: CSSObject['padding']
+    actions: {
+        primaryAction: {
+            color: {
+                [key in SnackbarVariant]: CSSObject['color']
+            }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
         }
-        text: {
-            color: CSSObject['color']
-            variant: VariantType
+        closeButton: {
+            height: CSSObject['height' | 'width']
+            color: {
+                [key in SnackbarVariant]: CSSObject['color']
+            }
         }
     }
 }
 ```
-
-## Enums
-
-### SnackbarVariant
-
-```tsx
-enum SnackbarVariant {
-    INFO = 'info',
-    SUCCESS = 'success',
-    WARNING = 'warning',
-    ERROR = 'error',
-}
-```
-
-## Setup Requirements
-
-To use the Snackbar component, you need to:
-
-1. **Add the Snackbar component to your app root:**
-
-```tsx
-import { Snackbar } from 'blend-v1'
-
-function App() {
-    return (
-        <div>
-            {/* Your app content */}
-            <Snackbar />
-        </div>
-    )
-}
-```
-
-2. **Import the addSnackbar function where needed:**
-
-```tsx
-import { addSnackbar, SnackbarVariant } from 'blend-v1'
-```
-
-3. **Call addSnackbar with your message options:**
-
-```tsx
-addSnackbar({
-    header: 'Your message',
-    variant: SnackbarVariant.SUCCESS,
-})
-```
-
-The snackbar will automatically appear and dismiss itself after a few seconds, or when the user clicks the close button.

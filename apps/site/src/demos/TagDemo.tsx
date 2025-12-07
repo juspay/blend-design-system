@@ -5,28 +5,50 @@ import {
     TagSize,
     TagShape,
 } from '../../../../packages/blend/lib/components/Tags'
+import { SplitTag } from '../../../../packages/blend/lib/components/SplitTag'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { Hash, X, Plus, Star } from 'lucide-react'
+import {
+    Hash,
+    X,
+    Star,
+    TrendingUp,
+    DollarSign,
+    Server,
+    Database,
+    Activity,
+    AlertCircle,
+} from 'lucide-react'
 import { useState } from 'react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+
 const TagDemo = () => {
-    const [playgroundText, setPlaygroundText] = useState('Playground Tag')
-    const [playgroundColor, setPlaygroundColor] = useState<TagColor>(
-        TagColor.PRIMARY
-    )
-    const [playgroundVariant, setPlaygroundVariant] = useState<TagVariant>(
-        TagVariant.SUBTLE
-    )
-    const [playgroundSize, setPlaygroundSize] = useState<TagSize>(TagSize.SM)
-    const [playgroundShape, setPlaygroundShape] = useState<TagShape>(
-        TagShape.SQUARICAL
-    )
+    // Tag Playground State
+    const [tagText, setTagText] = useState('Sample Tag')
+    const [tagColor, setTagColor] = useState<TagColor>(TagColor.PRIMARY)
+    const [tagVariant, setTagVariant] = useState<TagVariant>(TagVariant.SUBTLE)
+    const [tagSize, setTagSize] = useState<TagSize>(TagSize.SM)
+    const [tagShape, setTagShape] = useState<TagShape>(TagShape.SQUARICAL)
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
 
-    // Options for selects
+    // SplitTag Playground State
+    const [primaryText, setPrimaryText] = useState('Status')
+    const [secondaryText, setSecondaryText] = useState('Active')
+    const [primaryColor, setPrimaryColor] = useState<TagColor>(TagColor.NEUTRAL)
+    const [secondaryColor, setSecondaryColor] = useState<TagColor>(
+        TagColor.SUCCESS
+    )
+    const [primaryVariant, setPrimaryVariant] = useState<TagVariant>(
+        TagVariant.NO_FILL
+    )
+    const [secondaryVariant, setSecondaryVariant] = useState<TagVariant>(
+        TagVariant.ATTENTIVE
+    )
+    const [splitSize, setSplitSize] = useState<TagSize>(TagSize.SM)
+
+    // Options
     const colorOptions = [
         { value: TagColor.NEUTRAL, label: 'Neutral' },
         { value: TagColor.PRIMARY, label: 'Primary' },
@@ -43,10 +65,10 @@ const TagDemo = () => {
     ]
 
     const sizeOptions = [
-        { value: TagSize.XS, label: 'Extra Small' },
-        { value: TagSize.SM, label: 'Small' },
-        { value: TagSize.MD, label: 'Medium' },
-        { value: TagSize.LG, label: 'Large' },
+        { value: TagSize.XS, label: 'XS' },
+        { value: TagSize.SM, label: 'SM' },
+        { value: TagSize.MD, label: 'MD' },
+        { value: TagSize.LG, label: 'LG' },
     ]
 
     const shapeOptions = [
@@ -56,345 +78,419 @@ const TagDemo = () => {
 
     return (
         <div className="p-8 space-y-12">
-            {/* Playground Section */}
+            {/* Header */}
+            <div className="space-y-4">
+                <h1 className="text-3xl font-bold">Tag Components</h1>
+                <p className="text-gray-600">
+                    Interactive demos for Tag and SplitTag components with all
+                    available customization options.
+                </p>
+            </div>
+
+            {/* Tag Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">🏷️ Tag Playground</h2>
                 <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <TextInput
                             label="Text"
-                            value={playgroundText}
-                            onChange={(e) => setPlaygroundText(e.target.value)}
-                            placeholder="Enter tag text"
+                            value={tagText}
+                            onChange={(e) => setTagText(e.target.value)}
+                            placeholder="Enter text"
                         />
-
                         <SingleSelect
                             label="Color"
+                            placeholder="Select Color"
                             items={[{ items: colorOptions }]}
-                            selected={playgroundColor}
-                            onSelect={(value) =>
-                                setPlaygroundColor(value as TagColor)
-                            }
-                            placeholder="Select color"
+                            selected={tagColor}
+                            onSelect={(value) => setTagColor(value as TagColor)}
                         />
-
                         <SingleSelect
                             label="Variant"
+                            placeholder="Select Variant"
                             items={[{ items: variantOptions }]}
-                            selected={playgroundVariant}
+                            selected={tagVariant}
                             onSelect={(value) =>
-                                setPlaygroundVariant(value as TagVariant)
+                                setTagVariant(value as TagVariant)
                             }
-                            placeholder="Select variant"
                         />
-
                         <SingleSelect
                             label="Size"
+                            placeholder="Select Size"
                             items={[{ items: sizeOptions }]}
-                            selected={playgroundSize}
-                            onSelect={(value) =>
-                                setPlaygroundSize(value as TagSize)
-                            }
-                            placeholder="Select size"
+                            selected={tagSize}
+                            onSelect={(value) => setTagSize(value as TagSize)}
                         />
-
                         <SingleSelect
                             label="Shape"
+                            placeholder="Select Shape"
                             items={[{ items: shapeOptions }]}
-                            selected={playgroundShape}
-                            onSelect={(value) =>
-                                setPlaygroundShape(value as TagShape)
-                            }
-                            placeholder="Select shape"
+                            selected={tagShape}
+                            onSelect={(value) => setTagShape(value as TagShape)}
                         />
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex gap-4">
                         <Switch
-                            label="Left Slot"
+                            label="Left Icon"
                             checked={showLeftSlot}
                             onChange={() => setShowLeftSlot(!showLeftSlot)}
                         />
                         <Switch
-                            label="Right Slot"
+                            label="Right Icon"
                             checked={showRightSlot}
                             onChange={() => setShowRightSlot(!showRightSlot)}
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
+                    <div className="min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
                         <Tag
-                            text={playgroundText}
-                            color={playgroundColor}
-                            variant={playgroundVariant}
-                            size={playgroundSize}
-                            shape={playgroundShape}
+                            text={tagText}
+                            color={tagColor}
+                            variant={tagVariant}
+                            size={tagSize}
+                            shape={tagShape}
                             leftSlot={
-                                showLeftSlot ? <Hash size={12} /> : undefined
+                                showLeftSlot ? <Star size={12} /> : undefined
                             }
                             rightSlot={
                                 showRightSlot ? <X size={12} /> : undefined
                             }
-                            onClick={() => {
-                                addSnackbar({
-                                    header: 'Tag clicked!',
-                                    // description: "This is a tag",
-                                })
-                            }}
+                            onClick={() =>
+                                addSnackbar({ header: 'Tag clicked!' })
+                            }
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Variants Grid */}
+            {/* SplitTag Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Variants</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <h2 className="text-2xl font-bold">🔀 SplitTag Playground</h2>
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <TextInput
+                            label="Primary Text"
+                            value={primaryText}
+                            onChange={(e) => setPrimaryText(e.target.value)}
+                        />
+                        <TextInput
+                            label="Secondary Text"
+                            value={secondaryText}
+                            onChange={(e) => setSecondaryText(e.target.value)}
+                        />
+                        <SingleSelect
+                            label="Size"
+                            placeholder="Select Size"
+                            items={[{ items: sizeOptions }]}
+                            selected={splitSize}
+                            onSelect={(value) => setSplitSize(value as TagSize)}
+                        />
+                        <SingleSelect
+                            label="Primary Color"
+                            placeholder="Select Color"
+                            items={[{ items: colorOptions }]}
+                            selected={primaryColor}
+                            onSelect={(value) =>
+                                setPrimaryColor(value as TagColor)
+                            }
+                        />
+                        <SingleSelect
+                            label="Secondary Color"
+                            placeholder="Select Color"
+                            items={[{ items: colorOptions }]}
+                            selected={secondaryColor}
+                            onSelect={(value) =>
+                                setSecondaryColor(value as TagColor)
+                            }
+                        />
+                        <div /> {/* Spacer */}
+                        <SingleSelect
+                            label="Primary Variant"
+                            placeholder="Select Variant"
+                            items={[{ items: variantOptions }]}
+                            selected={primaryVariant}
+                            onSelect={(value) =>
+                                setPrimaryVariant(value as TagVariant)
+                            }
+                        />
+                        <SingleSelect
+                            label="Secondary Variant"
+                            placeholder="Select Variant"
+                            items={[{ items: variantOptions }]}
+                            selected={secondaryVariant}
+                            onSelect={(value) =>
+                                setSecondaryVariant(value as TagVariant)
+                            }
+                        />
+                    </div>
+
+                    <div className="min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
+                        <SplitTag
+                            primaryTag={{
+                                text: primaryText,
+                                color: primaryColor,
+                                variant: primaryVariant,
+                            }}
+                            secondaryTag={{
+                                text: secondaryText,
+                                color: secondaryColor,
+                                variant: secondaryVariant,
+                            }}
+                            size={splitSize}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Tag Variants */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Tag Variants</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {Object.values(TagVariant).map((variant) => (
-                        <div key={variant} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
+                        <div
+                            key={variant}
+                            className="space-y-3 p-4 border rounded-lg bg-white"
+                        >
+                            <h3 className="text-sm font-semibold capitalize">
                                 {variant}
                             </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {Object.values(TagColor).map((color) => (
-                                    <Tag
-                                        key={`${variant}-${color}`}
-                                        text={
-                                            color.charAt(0).toUpperCase() +
-                                            color.slice(1)
-                                        }
-                                        variant={variant}
-                                        color={color}
-                                        leftSlot={<Hash size={12} />}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Sizes */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Sizes</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {Object.values(TagSize).map((size) => (
-                        <div key={size} className="space-y-3">
-                            <h3 className="text-sm font-medium uppercase">
-                                {size}
-                            </h3>
-                            <div className="space-y-2">
+                            <div className="flex flex-wrap gap-2">
                                 <Tag
                                     text="Primary"
-                                    size={size}
+                                    variant={variant}
                                     color={TagColor.PRIMARY}
-                                    leftSlot={
-                                        <Hash
-                                            size={
-                                                size === TagSize.XS
-                                                    ? 10
-                                                    : size === TagSize.SM
-                                                      ? 12
-                                                      : size === TagSize.MD
-                                                        ? 14
-                                                        : 16
-                                            }
-                                        />
-                                    }
                                 />
                                 <Tag
                                     text="Success"
-                                    size={size}
+                                    variant={variant}
                                     color={TagColor.SUCCESS}
-                                    leftSlot={
-                                        <Plus
-                                            size={
-                                                size === TagSize.XS
-                                                    ? 10
-                                                    : size === TagSize.SM
-                                                      ? 12
-                                                      : size === TagSize.MD
-                                                        ? 14
-                                                        : 16
-                                            }
-                                        />
-                                    }
                                 />
                                 <Tag
                                     text="Error"
-                                    size={size}
+                                    variant={variant}
                                     color={TagColor.ERROR}
-                                    rightSlot={
-                                        <X
-                                            size={
-                                                size === TagSize.XS
-                                                    ? 10
-                                                    : size === TagSize.SM
-                                                      ? 12
-                                                      : size === TagSize.MD
-                                                        ? 14
-                                                        : 16
-                                            }
-                                        />
-                                    }
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Shapes */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Shapes</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {Object.values(TagShape).map((shape) => (
-                        <div key={shape} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
-                                {shape}
-                            </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                <Tag
-                                    text="Primary"
-                                    shape={shape}
-                                    color={TagColor.PRIMARY}
-                                    leftSlot={<Hash size={12} />}
-                                />
-                                <Tag
-                                    text="Success"
-                                    shape={shape}
-                                    color={TagColor.SUCCESS}
-                                    leftSlot={<Plus size={12} />}
-                                />
-                                <Tag
-                                    text="Error"
-                                    shape={shape}
-                                    color={TagColor.ERROR}
-                                    rightSlot={<X size={12} />}
                                 />
                                 <Tag
                                     text="Warning"
-                                    shape={shape}
+                                    variant={variant}
                                     color={TagColor.WARNING}
-                                    leftSlot={<Star size={12} />}
-                                />
-                                <Tag
-                                    text="Purple"
-                                    shape={shape}
-                                    color={TagColor.PURPLE}
-                                    leftSlot={<Hash size={12} />}
-                                />
-                                <Tag
-                                    text="Neutral"
-                                    shape={shape}
-                                    color={TagColor.NEUTRAL}
-                                    leftSlot={<Hash size={12} />}
                                 />
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+
+            {/* SplitTag Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">SplitTag Examples</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Server Monitoring */}
+                    <div className="space-y-3 p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold">
+                            Server Metrics
+                        </h3>
+                        <div className="space-y-2">
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'CPU',
+                                    color: TagColor.NEUTRAL,
+                                    leftSlot: <Server size={12} />,
+                                }}
+                                secondaryTag={{
+                                    text: '45%',
+                                    color: TagColor.SUCCESS,
+                                }}
+                                size={TagSize.SM}
+                            />
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Memory',
+                                    color: TagColor.NEUTRAL,
+                                    leftSlot: <Database size={12} />,
+                                }}
+                                secondaryTag={{
+                                    text: '78%',
+                                    color: TagColor.WARNING,
+                                }}
+                                size={TagSize.SM}
+                            />
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Disk',
+                                    color: TagColor.NEUTRAL,
+                                    leftSlot: <Activity size={12} />,
+                                }}
+                                secondaryTag={{
+                                    text: '92%',
+                                    color: TagColor.ERROR,
+                                    leftSlot: <AlertCircle size={12} />,
+                                }}
+                                size={TagSize.SM}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Financial Metrics */}
+                    <div className="space-y-3 p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold">
+                            Financial Data
+                        </h3>
+                        <div className="space-y-2">
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Revenue',
+                                    color: TagColor.NEUTRAL,
+                                    leftSlot: <DollarSign size={12} />,
+                                }}
+                                secondaryTag={{
+                                    text: '$847K',
+                                    color: TagColor.SUCCESS,
+                                }}
+                                size={TagSize.SM}
+                            />
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Growth',
+                                    color: TagColor.NEUTRAL,
+                                    leftSlot: <TrendingUp size={12} />,
+                                }}
+                                secondaryTag={{
+                                    text: '+23.4%',
+                                    color: TagColor.SUCCESS,
+                                }}
+                                size={TagSize.SM}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Custom Variants */}
+                    <div className="space-y-3 p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold">
+                            Custom Variants
+                        </h3>
+                        <div className="space-y-2">
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Priority',
+                                    color: TagColor.PRIMARY,
+                                    variant: TagVariant.ATTENTIVE,
+                                }}
+                                secondaryTag={{
+                                    text: 'High',
+                                    color: TagColor.ERROR,
+                                    variant: TagVariant.ATTENTIVE,
+                                }}
+                                size={TagSize.SM}
+                            />
+                            <SplitTag
+                                primaryTag={{
+                                    text: 'Build',
+                                    color: TagColor.NEUTRAL,
+                                    variant: TagVariant.SUBTLE,
+                                }}
+                                secondaryTag={{
+                                    text: '#1234',
+                                    color: TagColor.PRIMARY,
+                                    variant: TagVariant.ATTENTIVE,
+                                }}
+                                size={TagSize.SM}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Sizes Comparison */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Sizes</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3 p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold">Tag Sizes</h3>
+                        <div className="space-y-2">
+                            {Object.values(TagSize).map((size) => (
+                                <div
+                                    key={size}
+                                    className="flex items-center gap-4"
+                                >
+                                    <span className="text-xs font-medium w-8 uppercase">
+                                        {size}
+                                    </span>
+                                    <Tag
+                                        text="Sample"
+                                        size={size}
+                                        color={TagColor.PRIMARY}
+                                        leftSlot={<Hash size={12} />}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="space-y-3 p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold">
+                            SplitTag Sizes
+                        </h3>
+                        <div className="space-y-2">
+                            {Object.values(TagSize).map((size) => (
+                                <div
+                                    key={size}
+                                    className="flex items-center gap-4"
+                                >
+                                    <span className="text-xs font-medium w-8 uppercase">
+                                        {size}
+                                    </span>
+                                    <SplitTag
+                                        primaryTag={{
+                                            text: 'Status',
+                                            color: TagColor.NEUTRAL,
+                                        }}
+                                        secondaryTag={{
+                                            text: 'Active',
+                                            color: TagColor.SUCCESS,
+                                        }}
+                                        size={size}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Interactive Examples */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Interactive Examples</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Tag
                         text="Clickable"
                         color={TagColor.PRIMARY}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Primary tag clicked!',
-                            })
-                        }}
-                    />
-                    <Tag
-                        text="Removable"
-                        color={TagColor.SUCCESS}
-                        rightSlot={<X size={12} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Success tag clicked!',
-                            })
-                        }}
+                        onClick={() => addSnackbar({ header: 'Tag clicked!' })}
                     />
                     <Tag
                         text="With Icon"
-                        color={TagColor.WARNING}
+                        color={TagColor.SUCCESS}
                         leftSlot={<Star size={12} />}
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Warning tag clicked!',
-                            })
-                        }}
+                        onClick={() => addSnackbar({ header: 'Success!' })}
                     />
                     <Tag
-                        text="Split Left"
-                        color={TagColor.ERROR}
-                        splitTagPosition="left"
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Split left tag clicked!',
-                            })
-                        }}
+                        text="Removable"
+                        color={TagColor.WARNING}
+                        rightSlot={<X size={12} />}
+                        onClick={() => addSnackbar({ header: 'Remove tag' })}
                     />
-                    <Tag
-                        text="Split Right"
-                        color={TagColor.PURPLE}
-                        splitTagPosition="right"
-                        onClick={() => {
-                            addSnackbar({
-                                header: 'Split right tag clicked!',
-                            })
+                    <SplitTag
+                        primaryTag={{ text: 'ENV', color: TagColor.NEUTRAL }}
+                        secondaryTag={{
+                            text: 'Production',
+                            color: TagColor.ERROR,
+                            onClick: () =>
+                                addSnackbar({
+                                    header: 'Environment: Production',
+                                }),
                         }}
+                        size={TagSize.SM}
                     />
-                </div>
-            </div>
-
-            {/* All Combinations */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">All Combinations</h2>
-                <div className="space-y-8">
-                    {Object.values(TagVariant).map((variant) => (
-                        <div key={variant} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
-                                {variant} Variant
-                            </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                                {Object.values(TagColor).map((color) => (
-                                    <div key={color} className="space-y-2">
-                                        <h4 className="text-xs font-medium capitalize text-gray-600">
-                                            {color}
-                                        </h4>
-                                        <div className="space-y-1">
-                                            <Tag
-                                                text="S"
-                                                variant={variant}
-                                                color={color}
-                                                size={TagSize.SM}
-                                                leftSlot={<Hash size={12} />}
-                                            />
-                                            <Tag
-                                                text="M"
-                                                variant={variant}
-                                                color={color}
-                                                size={TagSize.MD}
-                                                leftSlot={<Hash size={14} />}
-                                            />
-                                            <Tag
-                                                text="L"
-                                                variant={variant}
-                                                color={color}
-                                                size={TagSize.LG}
-                                                leftSlot={<Hash size={16} />}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

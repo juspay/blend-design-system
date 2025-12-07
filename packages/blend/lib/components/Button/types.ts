@@ -1,5 +1,6 @@
 import React from 'react'
 import type { CSSObject } from 'styled-components'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 
 export enum ButtonType {
     PRIMARY = 'primary',
@@ -26,6 +27,7 @@ export enum ButtonState {
     ACTIVE = 'active',
     DISABLED = 'disabled',
 }
+
 export type ButtonProps = {
     buttonType?: ButtonType
     size?: ButtonSize
@@ -34,10 +36,13 @@ export type ButtonProps = {
     leadingIcon?: React.ReactNode
     trailingIcon?: React.ReactNode
     disabled?: boolean
-    onClick?: () => void
+    onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void
     loading?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
     buttonGroupPosition?: 'center' | 'left' | 'right'
     fullWidth?: boolean
+    width?: string | number
     justifyContent?: CSSObject['justifyContent']
     state?: ButtonState
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>

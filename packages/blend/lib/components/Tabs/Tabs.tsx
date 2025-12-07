@@ -1,4 +1,5 @@
-import { forwardRef, useState, useEffect } from 'react'
+import * as React from 'react'
+import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
 import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
 import TabsList from './TabsList'
@@ -17,14 +18,18 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             addButtonTooltip = 'Add new tab',
             maxDisplayTabs = 6,
             value,
+            defaultValue,
             onValueChange,
+            disable = false,
+            showSkeleton = false,
+            skeletonVariant = 'pulse',
             children,
             ...props
         },
         ref
     ) => {
         const [activeTab, setActiveTab] = useState<string>(
-            value || items[0]?.value || ''
+            value || defaultValue || items[0]?.value || ''
         )
 
         useEffect(() => {
@@ -33,32 +38,58 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             }
         }, [value])
 
-        const handleValueChange = (newValue: string) => {
-            setActiveTab(newValue)
-            onValueChange?.(newValue)
-        }
+        const handleValueChange = useCallback(
+            (newValue: string) => {
+                setActiveTab(newValue)
+                onValueChange?.(newValue)
+            },
+            [onValueChange]
+        )
 
-        const handleTabClose = (tabValue: string) => {
-            onTabClose?.(tabValue)
-            if (tabValue === activeTab && items.length > 1) {
-                const currentIndex = items.findIndex(
-                    (item) => item.value === tabValue
-                )
-                const nextTab =
-                    items[currentIndex + 1] || items[currentIndex - 1]
-                if (nextTab) {
-                    handleValueChange(nextTab.value)
+        const handleTabClose = useCallback(
+            (tabValue: string) => {
+                onTabClose?.(tabValue)
+
+                if (tabValue === activeTab && items.length > 1) {
+                    const currentIndex = items.findIndex(
+                        (item) => item.value === tabValue
+                    )
+                    const nextTab =
+                        items[currentIndex + 1] || items[currentIndex - 1]
+                    if (nextTab) {
+                        handleValueChange(nextTab.value)
+                    }
                 }
-            }
-        }
+            },
+            [activeTab, items, onTabClose, handleValueChange]
+        )
 
-        const handleTabChange = (tabValue: string) => {
-            handleValueChange(tabValue)
-        }
+        const handleTabChange = useCallback(
+            (tabValue: string) => {
+                handleValueChange(tabValue)
+            },
+            [handleValueChange]
+        )
+
+        const processedItems = useMemo(() => {
+            return items.map((item) => ({
+                ...item,
+                disable: item.disable || disable,
+                showSkeleton:
+                    item.showSkeleton !== undefined
+                        ? item.showSkeleton
+                        : showSkeleton,
+                skeletonVariant:
+                    item.skeletonVariant !== undefined
+                        ? item.skeletonVariant
+                        : skeletonVariant,
+            }))
+        }, [items, disable, showSkeleton, skeletonVariant])
 
         if (items.length > 0) {
             return (
                 <StyledTabs
+                    data-tabs={value ?? 'tabs'}
                     ref={ref}
                     className={className}
                     value={activeTab}
@@ -66,7 +97,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     {...props}
                 >
                     <TabsList
-                        items={items}
+                        data-element="tab-list"
+                        items={processedItems}
                         onTabClose={handleTabClose}
                         onTabAdd={onTabAdd}
                         showDropdown={showDropdown}
@@ -87,15 +119,61 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             )
         }
 
+        const renderChildren = () => {
+            return React.Children.map(children, (child) => {
+                if (!React.isValidElement(child)) return child
+
+                const existingProps = child.props as Record<string, unknown>
+                const childDisable =
+                    'disable' in existingProps
+                        ? (existingProps.disable as boolean | undefined)
+                        : undefined
+
+                const isTabsList =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsList'
+
+                const isTabsTrigger =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsTrigger'
+
+                const childProps = {
+                    ...existingProps,
+                    disable: childDisable || disable,
+                    ...(isTabsList && {
+                        activeTab,
+                        showSkeleton,
+                        skeletonVariant,
+                    }),
+                    ...(isTabsTrigger && {
+                        showSkeleton:
+                            'showSkeleton' in existingProps
+                                ? existingProps.showSkeleton
+                                : showSkeleton,
+                        skeletonVariant:
+                            'skeletonVariant' in existingProps
+                                ? existingProps.skeletonVariant
+                                : skeletonVariant,
+                    }),
+                }
+
+                return React.cloneElement(child, childProps)
+            })
+        }
+
         return (
             <StyledTabs
+                data-tabs={value ?? 'tabs'}
                 ref={ref}
                 className={className}
-                value={value}
-                onValueChange={onValueChange}
+                value={activeTab}
+                defaultValue={defaultValue}
+                onValueChange={handleValueChange}
                 {...props}
             >
-                {children}
+                {renderChildren()}
             </StyledTabs>
         )
     }

@@ -866,6 +866,160 @@ export const ResponsiveExample: Story = {
     },
 }
 
+export const SankeyChartExample: Story = {
+    render: () => {
+        const sankeyData: NewNestedDataPoint[] = [
+            {
+                name: 'payment-flow',
+                data: {
+                    sankeyData: {
+                        primary: {
+                            nodes: [
+                                { id: 'Visa', name: 'Visa', color: '#1e3a8a' },
+                                {
+                                    id: 'Mastercard',
+                                    name: 'Mastercard',
+                                    color: '#1e3a8a',
+                                },
+                                {
+                                    id: 'Out 3DS Scope',
+                                    name: 'Out 3DS Scope',
+                                    color: '#1e3a8a',
+                                },
+                                {
+                                    id: 'In 3DS Scope',
+                                    name: 'In 3DS Scope',
+                                    color: '#1e3a8a',
+                                },
+                                {
+                                    id: 'Received',
+                                    name: 'Received',
+                                    color: '#1e3a8a',
+                                },
+                                {
+                                    id: 'Authorised',
+                                    name: 'Authorised',
+                                    color: '#1e3a8a',
+                                },
+                                {
+                                    id: 'Failed',
+                                    name: 'Failed',
+                                    color: '#991b1b',
+                                },
+                            ],
+                            links: [
+                                {
+                                    source: 'Visa',
+                                    target: 'Out 3DS Scope',
+                                    value: 165.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'Visa',
+                                    target: 'In 3DS Scope',
+                                    value: 78.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'Mastercard',
+                                    target: 'Out 3DS Scope',
+                                    value: 30.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'Mastercard',
+                                    target: 'In 3DS Scope',
+                                    value: 14.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'Out 3DS Scope',
+                                    target: 'Received',
+                                    value: 195.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'In 3DS Scope',
+                                    target: 'Received',
+                                    value: 92.0,
+                                    color: 'rgba(59, 130, 246, 0.4)',
+                                    hoverColor: 'rgba(59, 130, 246, 0.8)',
+                                },
+                                {
+                                    source: 'Received',
+                                    target: 'Authorised',
+                                    value: 220.0,
+                                    color: 'rgba(16, 185, 129, 0.4)',
+                                    hoverColor: 'rgba(16, 185, 129, 0.8)',
+                                },
+                                {
+                                    source: 'Received',
+                                    target: 'Failed',
+                                    value: 67.0,
+                                    color: 'rgba(239, 68, 68, 0.4)',
+                                    hoverColor: 'rgba(239, 68, 68, 0.9)',
+                                },
+                            ],
+                        } as any,
+                        aux: [],
+                    },
+                },
+            },
+        ]
+
+        return (
+            <div style={{ width: '900px', height: '600px' }}>
+                <Charts
+                    chartType={ChartType.SANKEY}
+                    data={sankeyData}
+                    height={500}
+                    chartHeaderSlot={
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            <Activity size={20} />
+                            <span
+                                style={{ fontSize: '18px', fontWeight: 'bold' }}
+                            >
+                                Payment Card Flow
+                            </span>
+                        </div>
+                    }
+                    slot1={
+                        <div
+                            style={{
+                                padding: '4px 8px',
+                                background: '#dbeafe',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                color: '#1e40af',
+                            }}
+                        >
+                            3DS Authentication
+                        </div>
+                    }
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Sankey diagram visualizing payment card flow through 3DS authentication with custom colors and hover effects. Shows flow from card types through authentication to authorization.',
+            },
+        },
+    },
+}
+
 // Interactive Playground
 export const InteractivePlayground: Story = {
     args: {

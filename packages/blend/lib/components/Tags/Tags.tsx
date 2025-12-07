@@ -5,6 +5,7 @@ import Text from '../Text/Text'
 import { TagColor, type TagProps, TagShape, TagSize, TagVariant } from './types'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useRipple, RippleContainer } from '../animations/Ripple'
 
 const Tag = forwardRef<HTMLDivElement, TagProps>(
     (
@@ -23,6 +24,15 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
         ref
     ) => {
         const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
+        const { ripples, createRipple } = useRipple()
+        const isInteractive = typeof onClick === 'function'
+
+        const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+            if (isInteractive && onClick) {
+                createRipple(event)
+                onClick(event)
+            }
+        }
 
         const isSplitTag = splitTagPosition !== undefined
         let borderRadius = tagTokens.borderRadius[size][shape]
@@ -48,18 +58,20 @@ const Tag = forwardRef<HTMLDivElement, TagProps>(
                 color={tagTokens.text.color[variant][color]}
                 border={tagTokens.border[variant][color]}
                 borderRadius={borderRadius}
-                cursor={onClick ? 'pointer' : 'default'}
-                onClick={onClick}
+                cursor={isInteractive ? 'pointer' : 'default'}
+                position={isInteractive ? 'relative' : undefined}
+                overflow={isInteractive ? 'hidden' : undefined}
+                onClick={isInteractive ? handleClick : undefined}
             >
                 {leftSlot && <Block contentCentered>{leftSlot}</Block>}
                 <Text
                     fontSize={tagTokens.text.fontSize[size]}
                     fontWeight={tagTokens.text.fontWeight[size]}
-                    data-label={text}
                 >
                     {text}
                 </Text>
                 {rightSlot && <Block contentCentered>{rightSlot}</Block>}
+                {isInteractive && <RippleContainer ripples={ripples} />}
             </Block>
         )
     }

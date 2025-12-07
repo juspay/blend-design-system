@@ -1,15 +1,18 @@
 import {
     forwardRef,
-    useEffect,
+    useLayoutEffect,
     useRef,
     useState,
     useCallback,
     useMemo,
+    useEffect,
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
+import { motion } from 'framer-motion'
 import { DateRange, CustomRangeConfig } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
+import Skeleton from '../Skeleton/Skeleton'
 import {
     handleCustomRangeCalendarDateClick,
     getDayNames,
@@ -34,11 +37,52 @@ type CalendarGridProps = {
     customDisableDates?: (date: Date) => boolean
     customRangeConfig?: CustomRangeConfig
     showDateTimePicker?: boolean
+    resetScrollPosition?: number // Used to trigger scroll reset when popover reopens
 }
 
 const CONTAINER_HEIGHT = 340
 
-const StyledDayCell = styled(Block)<{
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: 0.2,
+            ease: [0.4, 0, 0.2, 1] as const,
+        },
+    },
+}
+
+const monthVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: (custom: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.3,
+            delay: custom * 0.03,
+            ease: [0.25, 0.46, 0.45, 0.94] as const,
+        },
+    }),
+}
+
+const dayCellVariants = {
+    hidden: { opacity: 0, scale: 0.92 },
+    visible: (custom: number) => ({
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.2,
+            delay: custom * 0.008,
+            ease: [0.4, 0, 0.2, 1] as const,
+        },
+    }),
+}
+
+// Styled Components with Motion
+const MotionBlock = motion(Block)
+
+const StyledDayCell = styled(MotionBlock)<{
     $cellStyles: CSSObject
     $textColor: string
     $isDisabled: boolean
@@ -48,18 +92,86 @@ const StyledDayCell = styled(Block)<{
     ${(props) => props.$cellStyles}
     color: ${(props) => props.$textColor};
     cursor: ${(props) => (props.$isDisabled ? 'not-allowed' : 'pointer')};
+    transition: transform 0.15s ease-in-out;
 
     ${(props) =>
         !props.$isDisabled &&
         `
     &:hover {
-      outline: ${props.$calendarToken.calendar.calendarGrid.day.cell.outline.hover};
+      outline: ${props.$calendarToken.calendar.calendarGrid.day.cell.border.hover};
+      outline-offset: -1px;
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.cell.borderRadius};
       z-index: 10;
       position: relative;
+      transform: scale(1.05);
+    }
+  `}
+
+    ${(props) =>
+        !props.$isDisabled &&
+        `
+    &:active {
+      transform: scale(0.95);
     }
   `}
 `
+
+const CalendarSkeleton = ({
+    calendarToken,
+}: {
+    calendarToken: CalendarTokenType
+}) => {
+    return (
+        <Block
+            style={{
+                maxHeight: CONTAINER_HEIGHT,
+                padding: FOUNDATION_THEME.unit[16],
+            }}
+        >
+            <Skeleton
+                width="100%"
+                height="24px"
+                variant="wave"
+                shape="rounded"
+                style={{
+                    marginBottom: FOUNDATION_THEME.unit[16],
+                    marginLeft:
+                        calendarToken.calendar.calendarGrid.week.padding.x,
+                    marginRight:
+                        calendarToken.calendar.calendarGrid.week.padding.x,
+                }}
+            />
+
+            <Block
+                style={{
+                    padding: `0 ${calendarToken.calendar.calendarGrid.week.padding.x}`,
+                }}
+            >
+                <Skeleton
+                    width="140px"
+                    height="24px"
+                    variant="wave"
+                    shape="rounded"
+                    style={{ marginBottom: FOUNDATION_THEME.unit[12] }}
+                />
+
+                {Array.from({ length: 5 }).map((_, rowIndex) => (
+                    <Skeleton
+                        key={rowIndex}
+                        width="100%"
+                        height="36px"
+                        variant="wave"
+                        shape="rounded"
+                        style={{
+                            marginBottom:
+                                calendarToken.calendar.calendarGrid.week.gap,
+                        }}
+                    />
+                ))}
+            </Block>
+        </Block>
+    )
+}
 
 function generateMonthsList(
     today: Date,
@@ -113,14 +225,23 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             customDisableDates,
             customRangeConfig,
             showDateTimePicker = true,
+            resetScrollPosition,
         },
         ref
     ) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null)
-        const [scrollTop, setScrollTop] = useState(0)
-        const isInitialized = useRef(false)
-
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+
+        // Internal loading state for initial render
+        const [isInternalLoading, setIsInternalLoading] = useState(true)
+
+        useEffect(() => {
+            // Brief loading delay for skeleton to show
+            const timer = setTimeout(() => {
+                setIsInternalLoading(false)
+            }, 300)
+            return () => clearTimeout(timer)
+        }, [])
 
         const months = useMemo(
             () => generateMonthsList(today, hideFutureDates, hidePastDates),
@@ -146,6 +267,29 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             })
         }, [months])
 
+        const initialScrollTop = useMemo(() => {
+            if (monthData.length === 0) return 0
+
+            const targetDate = selectedRange?.startDate || today
+            const currentMonthIndex = findCurrentMonthIndex(months, targetDate)
+
+            if (currentMonthIndex !== -1) {
+                const monthInfo = monthData[currentMonthIndex]
+                if (monthInfo) {
+                    return Math.max(
+                        0,
+                        monthInfo.topPosition -
+                            CONTAINER_HEIGHT / 2 +
+                            monthInfo.height / 2
+                    )
+                }
+            }
+            return 0
+        }, [monthData, months, selectedRange, today, resetScrollPosition])
+
+        const [scrollTop, setScrollTop] = useState(initialScrollTop)
+        const [isScrollPositioned, setIsScrollPositioned] = useState(false)
+
         const totalHeight =
             monthData.length > 0
                 ? monthData[monthData.length - 1].topPosition +
@@ -166,37 +310,13 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
             setScrollTop(e.currentTarget.scrollTop)
         }, [])
-
-        useEffect(() => {
-            if (
-                !isInitialized.current &&
-                scrollContainerRef.current &&
-                monthData.length > 0
-            ) {
-                isInitialized.current = true
-
-                const currentMonthIndex = findCurrentMonthIndex(months, today)
-                if (currentMonthIndex !== -1) {
-                    const monthInfo = monthData[currentMonthIndex]
-                    if (monthInfo) {
-                        const centeredPosition = Math.max(
-                            0,
-                            monthInfo.topPosition -
-                                CONTAINER_HEIGHT / 2 +
-                                monthInfo.height / 2
-                        )
-
-                        requestAnimationFrame(() => {
-                            if (scrollContainerRef.current) {
-                                scrollContainerRef.current.scrollTop =
-                                    centeredPosition
-                                setScrollTop(centeredPosition)
-                            }
-                        })
-                    }
-                }
+        useLayoutEffect(() => {
+            if (scrollContainerRef.current) {
+                scrollContainerRef.current.scrollTop = initialScrollTop
+                setScrollTop(initialScrollTop)
+                setIsScrollPositioned(true)
             }
-        }, [monthData, months, today])
+        }, [initialScrollTop])
 
         const handleDateClick = useCallback(
             (
@@ -235,7 +355,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
         const renderMonth = useCallback(
             (monthInfo: (typeof monthData)[0]) => {
-                const { year, month, topPosition, height } = monthInfo
+                const { year, month, topPosition, height, index } = monthInfo
 
                 const monthCalendarData = createCalendarMonthData(
                     year,
@@ -263,7 +383,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 }
 
                 return (
-                    <Block
+                    <MotionBlock
                         key={`month-${year}-${month}`}
                         style={{
                             position: 'absolute',
@@ -276,6 +396,10 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                             paddingTop: FOUNDATION_THEME.unit[16],
                             paddingBottom: FOUNDATION_THEME.unit[16],
                         }}
+                        variants={monthVariants}
+                        initial="hidden"
+                        animate="visible"
+                        custom={index % 3}
                     >
                         {/* Month Header */}
                         <Block
@@ -294,6 +418,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                     calendarToken.calendar.calendarGrid.month
                                         .header.gap,
                             }}
+                            data-calendar-month={monthCalendarData.monthName}
+                            data-calendar-year={year}
+                            data-calendar-month-year={`${monthCalendarData.monthName} ${year}`}
                         >
                             {monthCalendarData.monthName} {year}
                         </Block>
@@ -384,6 +511,17 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                     cellProps.dateStates
                                                         .isSingleDate
 
+                                                const isToday =
+                                                    cellProps.dateStates
+                                                        .isTodayDay
+
+                                                const isDisabled =
+                                                    cellProps.dateStates
+                                                        .isDisabled
+
+                                                const cellIndex =
+                                                    weekIndex * 7 + dayIndex
+
                                                 return (
                                                     <StyledDayCell
                                                         key={`${year}-${month}-${day}`}
@@ -394,13 +532,38 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                             cellProps.textColor ||
                                                                 ''
                                                         )}
-                                                        $isDisabled={
-                                                            cellProps.dateStates
-                                                                .isDisabled
-                                                        }
+                                                        $isDisabled={isDisabled}
                                                         $isSelected={isSelected}
                                                         $calendarToken={
                                                             calendarToken
+                                                        }
+                                                        variants={
+                                                            dayCellVariants
+                                                        }
+                                                        initial="hidden"
+                                                        animate="visible"
+                                                        custom={cellIndex}
+                                                        whileHover={
+                                                            !isDisabled
+                                                                ? {
+                                                                      scale: 1.05,
+                                                                      transition:
+                                                                          {
+                                                                              duration: 0.15,
+                                                                          },
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        whileTap={
+                                                            !isDisabled
+                                                                ? {
+                                                                      scale: 0.95,
+                                                                      transition:
+                                                                          {
+                                                                              duration: 0.1,
+                                                                          },
+                                                                  }
+                                                                : undefined
                                                         }
                                                         onClick={() =>
                                                             handleDateClick(
@@ -418,6 +581,21 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                 true
                                                             )
                                                         }
+                                                        data-calendar-date={
+                                                            isSelected
+                                                                ? 'selected'
+                                                                : 'not selected'
+                                                        }
+                                                        data-calendar-date-disabled={
+                                                            isDisabled
+                                                                ? 'disabled'
+                                                                : 'enabled'
+                                                        }
+                                                        data-calendar-date-today={
+                                                            isToday
+                                                                ? 'true'
+                                                                : 'false'
+                                                        }
                                                     >
                                                         <span
                                                             style={{
@@ -432,11 +610,34 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         {cellProps.showTodayIndicator && (
                                                             <Block
                                                                 style={{
-                                                                    ...calendarToken
+                                                                    width: calendarToken
                                                                         .calendar
                                                                         .calendarGrid
                                                                         .day
-                                                                        .todayIndicator,
+                                                                        .todayIndicator
+                                                                        .width,
+                                                                    height: calendarToken
+                                                                        .calendar
+                                                                        .calendarGrid
+                                                                        .day
+                                                                        .todayIndicator
+                                                                        .width,
+                                                                    backgroundColor:
+                                                                        calendarToken
+                                                                            .calendar
+                                                                            .calendarGrid
+                                                                            .day
+                                                                            .todayIndicator
+                                                                            .backgroundColor,
+                                                                    borderRadius:
+                                                                        '50%',
+                                                                    position:
+                                                                        'absolute',
+                                                                    bottom: FOUNDATION_THEME
+                                                                        .unit[2],
+                                                                    left: '50%',
+                                                                    transform:
+                                                                        'translateX(-50%)',
                                                                 }}
                                                             />
                                                         )}
@@ -448,7 +649,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                 )
                             )}
                         </Block>
-                    </Block>
+                    </MotionBlock>
                 )
             },
             [
@@ -464,8 +665,13 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             ]
         )
 
+        // Show skeleton during initial load
+        if (isInternalLoading) {
+            return <CalendarSkeleton calendarToken={calendarToken} />
+        }
+
         return (
-            <Block
+            <MotionBlock
                 style={{
                     maxHeight: CONTAINER_HEIGHT,
                     overflowY: 'auto',
@@ -473,6 +679,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     position: 'relative',
                 }}
                 ref={ref}
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
             >
                 {/* Day Names Header */}
                 <Block
@@ -511,6 +720,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                     .color,
                             }}
                             key={index}
+                            data-weekday={day}
                         >
                             {day}
                         </Block>
@@ -518,12 +728,20 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 </Block>
 
                 <Block
-                    ref={scrollContainerRef}
+                    ref={(node) => {
+                        if (node && scrollContainerRef.current !== node) {
+                            scrollContainerRef.current = node as HTMLDivElement
+                            node.scrollTop = initialScrollTop
+                            setIsScrollPositioned(true)
+                        }
+                    }}
                     style={{
                         maxHeight: CONTAINER_HEIGHT,
                         overflowY: 'auto',
                         overflow: 'auto',
                         position: 'relative',
+                        visibility: isScrollPositioned ? 'visible' : 'hidden',
+                        scrollBehavior: 'auto',
                     }}
                     onScroll={handleScroll}
                 >
@@ -536,7 +754,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                         {visibleMonths.map(renderMonth)}
                     </Block>
                 </Block>
-            </Block>
+            </MotionBlock>
         )
     }
 )

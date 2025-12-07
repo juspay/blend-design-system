@@ -1,5 +1,6 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import styled, { type CSSObject } from 'styled-components'
+import { isValidElement } from 'react'
 import {
     type TooltipProps,
     TooltipAlign,
@@ -11,11 +12,16 @@ import type { TooltipTokensType } from './tooltip.tokens'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { tooltipContentAnimations } from './tooltip.animations'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
     $color: CSSObject['backgroundColor']
 }>`
     fill: ${({ $color }) => $color};
+`
+
+const AnimatedTooltipContent = styled(RadixTooltip.Content)`
+    ${tooltipContentAnimations}
 `
 
 export const Tooltip = ({
@@ -33,13 +39,27 @@ export const Tooltip = ({
     maxWidth,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
+
+    const isNativeElement =
+        isValidElement(trigger) && typeof trigger.type === 'string'
+    const shouldWrapTrigger = !isNativeElement
+
+    const wrappedTrigger = shouldWrapTrigger ? (
+        <span style={{ display: 'inline-flex' }}>{trigger}</span>
+    ) : (
+        trigger
+    )
+
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>
             <RadixTooltip.Root open={open}>
-                <RadixTooltip.Trigger asChild>{trigger}</RadixTooltip.Trigger>
+                <RadixTooltip.Trigger asChild>
+                    {wrappedTrigger}
+                </RadixTooltip.Trigger>
                 {content && (
                     <RadixTooltip.Portal>
-                        <RadixTooltip.Content
+                        <AnimatedTooltipContent
+                            data-tooltip={'tooltip'}
                             side={side}
                             align={align}
                             sideOffset={offset}
@@ -67,6 +87,7 @@ export const Tooltip = ({
                                     )}
                                 <Block flexGrow={1} overflow="hidden">
                                     <PrimitiveText
+                                        data-text={content}
                                         color={tooltipTokens.text.color}
                                         fontSize={
                                             tooltipTokens.text.fontSize[size]
@@ -96,7 +117,7 @@ export const Tooltip = ({
                                     $color={tooltipTokens.background}
                                 />
                             )}
-                        </RadixTooltip.Content>
+                        </AnimatedTooltipContent>
                     </RadixTooltip.Portal>
                 )}
             </RadixTooltip.Root>

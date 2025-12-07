@@ -28,49 +28,6 @@ function MyComponent() {
   );
 }`
 
-    const reCode = `@react.component
-let make = () => {
-  let (quantity, setQuantity) = React.useState(() => Some(1))
-  
-  let handleChange = e => {
-    let value = ReactEvent.Form.target(e)["value"]
-    setQuantity(_ => value === "" ? None : Some(Float.fromString(value)))
-  }
-  
-  <NumberInputBinding
-    label="Quantity"
-    placeholder="Enter quantity"
-    value=quantity
-    onChange=handleChange
-    min=0
-    max=100
-    step=1
-    hintText="Select quantity between 0 and 100"
-  />
-}`
-
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
-external make: (
-  ~value: option<float>,
-  ~onChange: ReactEvent.Form.t => unit,
-  ~step: int=?,
-  ~error: bool=?,
-  ~errorMessage: string=?,
-  ~size: [#md | #lg]=?,
-  ~label: string=?,
-  ~sublabel: string=?,
-  ~helpIconHintText: string=?,
-  ~hintText: string=?,
-  ~onBlur: ReactEvent.Focus.t => unit=?,
-  ~onFocus: ReactEvent.Focus.t => unit=?,
-  ~required: bool=?,
-  ~disabled: bool=?,
-  ~placeholder: string=?,
-  ~name: string=?,
-  ~min: int=?,
-  ~max: int=?,
-) => React.element = "NumberInput"`
-
     const [quantity, setQuantity] = useState<number | undefined>(5)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,11 +36,7 @@ external make: (
     }
 
     return (
-        <ComponentPreview
-            ts={tsCode}
-            rescript={reCode}
-            rescriptBinding={bindingCode}
-        >
+        <ComponentPreview ts={tsCode}>
             <div
                 style={{
                     display: 'flex',

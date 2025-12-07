@@ -1,6 +1,6 @@
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useId } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import { TextInputSize, type TextInputProps } from './types'
@@ -11,6 +11,16 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const TextInput = ({
     size = TextInputSize.MEDIUM,
@@ -31,12 +41,19 @@ const TextInput = ({
     onBlur,
     onFocus,
     cursor = 'text',
+    id: providedId,
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
 
+    const generatedId = useId()
+    const inputId = providedId || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -50,10 +67,18 @@ const TextInput = ({
     const [leftSlotWidth, setLeftSlotWidth] = useState(0)
     const [rightSlotWidth, setRightSlotWidth] = useState(0)
 
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
+
     const paddingX = toPixels(textInputTokens.inputContainer.padding.x[size])
     const paddingY =
         toPixels(textInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(textInputTokens.gap)
 
     const paddingInlineStart = leftSlot
@@ -82,27 +107,40 @@ const TextInput = ({
             flexDirection="column"
             gap={8}
             width={'100%'}
-            data-component-field-wrapper={`field-${name}`}
+            data-textinput={label ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
         >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
+                    tokens={textInputTokens}
                     label={label}
                     sublabel={sublabel}
                     helpIconHintText={helpIconHintText}
                     disabled={disabled}
-                    name={name}
+                    inputId={inputId}
                     required={required}
                 />
             )}
-            <Block position="relative" width={'100%'}>
+            <Wrapper
+                position="relative"
+                width={'100%'}
+                style={getErrorShakeStyle(shouldShake)}
+            >
                 {leftSlot && (
                     <Block
+                        data-element="left-slot"
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
                         left={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {leftSlot}
                     </Block>
@@ -110,6 +148,7 @@ const TextInput = ({
 
                 {label && isSmallScreenWithLargeSize && (
                     <Block
+                        data-element="label"
                         position="absolute"
                         top={inputFocusedOrWithValue ? paddingY : '50%'}
                         left={paddingInlineStart}
@@ -132,6 +171,8 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
+                    id={inputId}
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
                     type="text"
@@ -141,7 +182,9 @@ const TextInput = ({
                     width={'100%'}
                     disabled={disabled}
                     cursor={disabled ? 'not-allowed' : cursor}
-                    //styling props
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={
@@ -157,7 +200,6 @@ const TextInput = ({
                     borderRadius={
                         textInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={textInputTokens.inputContainer.boxShadow}
                     border={
                         textInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
@@ -166,6 +208,8 @@ const TextInput = ({
                     fontSize={textInputTokens.inputContainer.fontSize[size]}
                     fontWeight={textInputTokens.inputContainer.fontWeight[size]}
                     lineHeight={FOUNDATION_THEME.unit[20]}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -180,6 +224,12 @@ const TextInput = ({
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
                     }}
                     _disabled={{
                         backgroundColor:
@@ -200,22 +250,31 @@ const TextInput = ({
                 />
                 {rightSlot && (
                     <Block
+                        data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        style={{
+                            transition:
+                                'transform 200ms ease-in-out, opacity 200ms ease-in-out',
+                            transform: isFocused ? 'scale(1.05)' : 'scale(1)',
+                            opacity: isFocused ? 1 : 0.7,
+                        }}
                     >
                         {rightSlot}
                     </Block>
                 )}
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
             />
         </Block>
     )

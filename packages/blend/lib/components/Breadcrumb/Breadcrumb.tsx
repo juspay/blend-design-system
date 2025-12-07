@@ -5,23 +5,49 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { BreadcrumbTokenType } from './breadcrumb.tokens'
-import type { BreadcrumbItemType } from './types'
+import type { BreadcrumbItemType, BreadcrumbSkeletonProps } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { SkeletonVariant } from '../Skeleton'
+import BreadcrumbSkeleton from './BreadcrumbSkeleton'
 
 const MAX_ITEMS = 4
 
 const BreadcrumbItem = ({
     item,
     isActive,
+    skeleton,
 }: {
     item: BreadcrumbItemType
     isActive: boolean
+    skeleton?: BreadcrumbSkeletonProps
 }) => {
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
+
+    const showSkeleton = skeleton?.show
+    const skeletonVariant = skeleton?.variant as SkeletonVariant
+
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (item.onClick) {
+            event.preventDefault()
+            item.onClick(event)
+        }
+    }
+
+    if (showSkeleton) {
+        return (
+            <BreadcrumbSkeleton
+                breadcrumbTokens={breadcrumbTokens}
+                skeletonVariant={skeletonVariant}
+                isActive={isActive}
+            />
+        )
+    }
+
     return (
         <>
             <PrimitiveLink
+                data-element="breadcrumb-item"
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -36,11 +62,15 @@ const BreadcrumbItem = ({
                 }}
                 href={isActive ? undefined : item.href}
                 textDecoration="none"
+                onClick={!isActive && item.onClick ? handleClick : undefined}
             >
                 {item.leftSlot && (
-                    <Block contentCentered>{item.leftSlot}</Block>
+                    <Block data-element="leading-icon" contentCentered>
+                        {item.leftSlot}
+                    </Block>
                 )}
                 <PrimitiveText
+                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
@@ -48,7 +78,9 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block contentCentered>{item.rightSlot}</Block>
+                    <Block data-element="trailing-icon" contentCentered>
+                        {item.rightSlot}
+                    </Block>
                 )}
             </PrimitiveLink>
             {!isActive && (
@@ -58,7 +90,13 @@ const BreadcrumbItem = ({
     )
 }
 
-const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
+const Breadcrumb = ({
+    items,
+    skeleton,
+}: {
+    items: BreadcrumbItemType[]
+    skeleton?: BreadcrumbSkeletonProps
+}) => {
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
     if (items.length === 0) return null
@@ -80,19 +118,23 @@ const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
     })
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
-
     return (
         <Block
             width={'full'}
             display="flex"
             alignItems="center"
             gap={breadcrumbTokens.gap}
+            data-breadcrumb="breadcrumb"
+            data-status={
+                shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
+            }
         >
             {baseItem && (
                 <BreadcrumbItem
                     item={baseItem}
                     key={`breadcrumb-item-${0}`}
                     isActive={items.length == 1 ? true : false}
+                    skeleton={skeleton}
                 />
             )}
             {menuItems.length > 0 && (
@@ -121,6 +163,7 @@ const Breadcrumb = ({ items }: { items: BreadcrumbItemType[] }) => {
                     key={`breadcrumb-item-${index}`}
                     item={item}
                     isActive={index === restItems.length - 1}
+                    skeleton={skeleton}
                 />
             ))}
         </Block>

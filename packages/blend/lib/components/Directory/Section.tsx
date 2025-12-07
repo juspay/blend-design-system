@@ -5,7 +5,8 @@ import NavItem from './NavItem'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import styled from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DirectoryTokenType } from './directory.tokens'
 
 const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
     display: flex;
@@ -28,6 +29,7 @@ const Section = ({
     // totalSections,
     onNavigateBetweenSections,
 }: SectionProps) => {
+    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isOpen, setIsOpen] = React.useState(section.defaultOpen !== false)
     const sectionRef = React.useRef<HTMLDivElement>(null)
     const headerRef = React.useRef<HTMLDivElement>(null)
@@ -106,19 +108,20 @@ const Section = ({
         <Block
             display="flex"
             flexDirection="column"
-            gap="4px"
+            gap={tokens.section.gap}
             width="100%"
-            padding="12px 8px"
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
+            data-sidebar-section={section.label || `section-${sectionIndex}`}
+            data-sidebar-expanded={isOpen}
             key={`section-${sectionIndex}`}
         >
             {section.label && (
                 <Block
                     display="flex"
                     alignItems="center"
-                    gap="8px"
-                    padding="2px 12px"
+                    paddingX={tokens.section.header.padding.x}
+                    paddingY={tokens.section.header.padding.y}
                     // userSelect="none"
                     cursor={isCollapsible ? 'pointer' : undefined}
                     ref={headerRef}
@@ -136,15 +139,16 @@ const Section = ({
                 >
                     <Text
                         variant="body.sm"
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        fontWeight={500}
+                        color={tokens.section.header.label.color}
+                        fontWeight={tokens.section.header.label.fontWeight}
                     >
                         {section.label.toUpperCase()}
                     </Text>
                     {isCollapsible && (
                         <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
                             <ChevronDown
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                color={tokens.section.header.chevron.color}
+                                size={tokens.section.header.chevron.width}
                             />
                         </ChevronWrapper>
                     )}
@@ -157,7 +161,7 @@ const Section = ({
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '8px',
+                        gap: tokens.section.itemList.gap,
                     }}
                     id={`section-content-${sectionIndex}`}
                     role="menu"

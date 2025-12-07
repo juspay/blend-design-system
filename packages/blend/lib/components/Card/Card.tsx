@@ -11,9 +11,10 @@ import {
     isCustomCard,
 } from './utils'
 import { DefaultCard, AlignedCard, CustomCard } from './CardComponents'
+import CardSkeleton from './CardSkeleton'
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ maxWidth = 'auto', ...props }, ref) => {
+    ({ maxWidth = 'auto', minHeight, maxHeight, skeleton, ...props }, ref) => {
         const cardToken = useResponsiveTokens<CardTokenType>('CARD')
         const variant = getCardVariant(
             'variant' in props ? props.variant : undefined
@@ -27,6 +28,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant?: undefined }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -38,6 +40,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant: 'aligned' }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -49,6 +52,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                             props as Extract<CardProps, { variant: 'custom' }>
                         }
                         cardToken={cardToken}
+                        maxHeight={maxHeight}
                     />
                 )
             }
@@ -76,6 +80,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         ? toPixels(maxWidth)
                         : cardToken.maxWidth
                 }
+                maxHeight={maxHeight ? toPixels(maxHeight) : undefined}
+                minHeight={minHeight ? toPixels(minHeight) : undefined}
                 outline={cardToken.border}
                 borderRadius={cardToken.borderRadius}
                 backgroundColor={cardToken.backgroundColor}
@@ -85,8 +91,18 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 flexDirection="column"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
+                data-card="true"
             >
-                {renderCardContent()}
+                {skeleton?.show ? (
+                    <CardSkeleton
+                        skeleton={skeleton}
+                        maxHeight={maxHeight}
+                        minHeight={minHeight}
+                        maxWidth={maxWidth}
+                    />
+                ) : (
+                    renderCardContent()
+                )}
             </Block>
         )
     }

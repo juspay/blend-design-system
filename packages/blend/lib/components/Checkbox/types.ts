@@ -19,8 +19,9 @@ export enum CheckboxInteractionState {
 }
 
 export type CheckboxProps = {
+    label?: string
     id?: string
-    value?: string
+    name?: string
     checked?: boolean | 'indeterminate'
     defaultChecked?: boolean
     onCheckedChange?: (checked: boolean | 'indeterminate') => void
@@ -31,4 +32,8 @@ export type CheckboxProps = {
     children?: ReactNode
     subtext?: string
     slot?: ReactNode
+    maxLength?: {
+        label?: number
+        subtext?: number
+    }
 }

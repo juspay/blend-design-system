@@ -9,30 +9,41 @@ import {
     type MultiSelectMenuItemType,
     type MultiSelectMenuProps,
     MultiSelectMenuSide,
+    MultiSelectMenuSize,
+    MultiSelectVariant,
 } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { SearchInput } from '../Inputs'
 import { filterMenuGroups, getAllAvailableValues } from './utils'
+import {
+    hasExactMatch as checkExactMatch,
+    getFilteredItemsWithCustomValue,
+} from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
+import { dropdownContentAnimations } from './multiSelect.animations'
+import MultiSelectSkeleton from './MultiSelectSkeleton'
 
-const Content = styled(RadixMenu.Content)(() => ({
-    position: 'relative',
-    backgroundColor: FOUNDATION_THEME.colors.gray[0],
-    borderRadius: FOUNDATION_THEME.border.radius[8],
-    boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 49,
-    border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-}))
+const Content = styled(RadixMenu.Content)`
+    position: relative;
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
+    border-radius: ${FOUNDATION_THEME.border.radius[8]};
+    box-shadow: ${FOUNDATION_THEME.shadows.sm};
+    z-index: 99;
+    border: ${FOUNDATION_THEME.border.width[1]} solid
+        ${FOUNDATION_THEME.colors.gray[200]};
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ${dropdownContentAnimations}
+`
 
 const StickyHeader = styled(Block)(() => ({
     position: 'sticky',
@@ -138,6 +149,16 @@ const MultiSelectMenu = ({
     onEndReached,
     endReachedThreshold,
     hasMore,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
+    size = MultiSelectMenuSize.MEDIUM,
+    variant = MultiSelectVariant.CONTAINER,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
+    menuId,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -146,10 +167,30 @@ const MultiSelectMenu = ({
     const searchInputRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
 
-    const filteredItems = React.useMemo(
-        () => filterMenuGroups(items, searchText),
-        [items, searchText]
+    const hasMatch = React.useMemo(
+        () => checkExactMatch(searchText, items),
+        [searchText, items]
     )
+
+    const filteredItems = React.useMemo(() => {
+        const baseFilteredItems = filterMenuGroups(items, searchText)
+
+        return getFilteredItemsWithCustomValue(
+            baseFilteredItems,
+            searchText,
+            hasMatch,
+            allowCustomValue,
+            enableSearch || false,
+            customValueLabel
+        )
+    }, [
+        items,
+        searchText,
+        allowCustomValue,
+        hasMatch,
+        enableSearch,
+        customValueLabel,
+    ])
     const availableValues = React.useMemo(
         () => getAllAvailableValues(filteredItems),
         [filteredItems]
@@ -243,285 +284,496 @@ const MultiSelectMenu = ({
             <RadixMenu.Trigger asChild disabled={disabled}>
                 {trigger}
             </RadixMenu.Trigger>
-            <Content
-                ref={contentRef}
-                align={alignment}
-                sideOffset={sideOffset}
-                alignOffset={alignOffset}
-                side={side}
-                avoidCollisions={false}
-                onKeyDown={handleKeyDown}
-                style={{
-                    minWidth: minMenuWidth || 250,
-                    width: 'max(var(--radix-dropdown-menu-trigger-width))',
-                    maxWidth:
-                        maxMenuWidth ||
-                        'var(--radix-dropdown-menu-trigger-width)',
-                    maxHeight:
-                        maxMenuHeight || 'var(--radix-popper-available-height)',
-                }}
-            >
-                <StickyHeader>
-                    {enableSearch && (
-                        <Block>
-                            <SearchInput
-                                ref={searchInputRef}
-                                placeholder={searchPlaceholder}
-                                value={searchText}
-                                onChange={handleSearchChange}
-                                autoFocus
-                            />
-                        </Block>
-                    )}
-                    {enableSelectAll &&
-                        onSelectAll &&
-                        availableValues.length > 0 && (
-                            <Block
-                                borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                padding={`0 ${multiSelectTokens.menu.item.gap}`}
-                            >
-                                <SelectAllItem
-                                    selected={selected}
-                                    availableValues={availableValues}
-                                    onSelectAll={onSelectAll}
-                                    selectAllText={selectAllText}
-                                    disabled={disabled}
-                                />
-                            </Block>
-                        )}
-                </StickyHeader>
-                <ScrollableContent
+            <RadixMenu.Portal>
+                <Content
+                    id={menuId}
+                    data-dropdown="dropdown"
+                    ref={contentRef}
+                    align={alignment}
+                    sideOffset={sideOffset}
+                    alignOffset={alignOffset}
+                    side={side}
+                    avoidCollisions={false}
+                    onKeyDown={handleKeyDown}
+                    role="listbox"
+                    aria-multiselectable="true"
                     style={{
-                        maxHeight: maxMenuHeight
-                            ? `${maxMenuHeight - 80}px`
-                            : '320px',
+                        minWidth: minMenuWidth || 250,
+                        width: 'max(var(--radix-dropdown-menu-trigger-width))',
+                        maxWidth:
+                            maxMenuWidth ||
+                            'var(--radix-dropdown-menu-trigger-width)',
+                        maxHeight:
+                            maxMenuHeight ||
+                            'var(--radix-popper-available-height)',
                     }}
                 >
-                    {items.length === 0 ? (
-                        <Block
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            padding={multiSelectTokens.menu.item.padding}
-                        >
-                            <PrimitiveText
-                                fontSize={14}
-                                color={
-                                    multiSelectTokens.menu.item.optionsLabel
-                                        .color.default
-                                }
-                                textAlign="center"
-                            >
-                                No items available
-                            </PrimitiveText>
-                        </Block>
-                    ) : filteredItems.length === 0 && searchText.length > 0 ? (
-                        <Block
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            padding={multiSelectTokens.menu.item.padding}
-                        >
-                            <PrimitiveText
-                                fontSize={14}
-                                color={FOUNDATION_THEME.colors.gray[400]}
-                                textAlign="center"
-                            >
-                                No results found
-                            </PrimitiveText>
-                        </Block>
-                    ) : enableVirtualization && flattenedItems.length > 0 ? (
-                        <Block
-                            padding={FOUNDATION_THEME.unit[6]}
-                            style={{
-                                paddingTop: enableSearch
-                                    ? 0
-                                    : FOUNDATION_THEME.unit[6],
-                            }}
-                        >
-                            <VirtualList
-                                items={flattenedItems}
-                                height={(maxMenuHeight || 400) - 80}
-                                itemHeight={virtualListItemHeight}
-                                overscan={virtualListOverscan}
-                                onEndReached={onEndReached}
-                                endReachedThreshold={endReachedThreshold}
-                                hasMore={hasMore}
-                                renderItem={({ item: flatItem }) => {
-                                    const typed =
-                                        flatItem as FlattenedMultiSelectItem
-
-                                    if (typed.type === 'label') {
-                                        return (
-                                            <RadixMenu.Label asChild>
-                                                <PrimitiveText
-                                                    fontSize={12}
-                                                    padding={
-                                                        multiSelectTokens.menu
-                                                            .item.padding
-                                                    }
-                                                    userSelect="none"
-                                                    textTransform="uppercase"
-                                                    color={
-                                                        multiSelectTokens.menu
-                                                            .item.optionsLabel
-                                                            .color.default
-                                                    }
-                                                >
-                                                    {typed.label}
-                                                </PrimitiveText>
-                                            </RadixMenu.Label>
-                                        )
-                                    }
-
-                                    if (typed.type === 'separator') {
-                                        return (
-                                            <RadixMenu.Separator asChild>
-                                                <Block
-                                                    height={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .height
-                                                    }
-                                                    backgroundColor={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .color
-                                                    }
-                                                    margin={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .margin
-                                                    }
-                                                />
-                                            </RadixMenu.Separator>
-                                        )
-                                    }
-
-                                    if (typed.type === 'item' && typed.item) {
-                                        return (
-                                            <MultiSelectMenuItem
-                                                selected={selected}
-                                                item={typed.item}
-                                                onSelect={onSelect}
-                                                maxSelections={maxSelections}
-                                                allItems={filteredItems.flatMap(
-                                                    (g) => g.items
-                                                )}
-                                            />
-                                        )
-                                    }
-
-                                    return null
-                                }}
-                            />
-                        </Block>
+                    {skeleton.show ? (
+                        <MultiSelectSkeleton
+                            multiSelectTokens={multiSelectTokens}
+                            skeleton={skeleton}
+                        />
                     ) : (
-                        filteredItems.map(
-                            (
-                                group: MultiSelectMenuGroupType,
-                                groupId: number
-                            ) => (
-                                <React.Fragment key={groupId}>
-                                    {group.groupLabel && (
-                                        <RadixMenu.Label asChild>
-                                            <PrimitiveText
-                                                fontSize={
-                                                    multiSelectTokens.menu.item
-                                                        .optionsLabel.fontSize
-                                                }
-                                                fontWeight={
-                                                    multiSelectTokens.menu.item
-                                                        .optionsLabel.fontWeight
-                                                }
-                                                padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
-                                                userSelect="none"
-                                                textTransform="uppercase"
-                                                color={
-                                                    multiSelectTokens.menu.item
-                                                        .optionsLabel.color
-                                                        .default
-                                                }
-                                            >
-                                                {group.groupLabel}
-                                            </PrimitiveText>
-                                        </RadixMenu.Label>
-                                    )}
-                                    {group.items.map(
-                                        (
-                                            item: MultiSelectMenuItemType,
-                                            itemIndex: number
-                                        ) => (
-                                            <MultiSelectMenuItem
-                                                key={`${groupId}-${itemIndex}`}
+                        <>
+                            {' '}
+                            <StickyHeader>
+                                {enableSearch && (
+                                    <Block>
+                                        <SearchInput
+                                            ref={searchInputRef}
+                                            placeholder={searchPlaceholder}
+                                            value={searchText}
+                                            onChange={handleSearchChange}
+                                            autoFocus
+                                            aria-label={
+                                                searchPlaceholder ||
+                                                'Search options'
+                                            }
+                                        />
+                                    </Block>
+                                )}
+                                {enableSelectAll &&
+                                    onSelectAll &&
+                                    availableValues.length > 0 && (
+                                        <Block
+                                            borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                            padding={`0 ${multiSelectTokens.menu.item.gap}`}
+                                        >
+                                            <SelectAllItem
                                                 selected={selected}
-                                                item={item}
-                                                onSelect={onSelect}
-                                                maxSelections={maxSelections}
-                                                allItems={filteredItems.flatMap(
-                                                    (g) => g.items
-                                                )}
+                                                availableValues={
+                                                    availableValues
+                                                }
+                                                onSelectAll={onSelectAll}
+                                                selectAllText={selectAllText}
+                                                disabled={disabled}
                                             />
-                                        )
+                                        </Block>
                                     )}
-                                    {groupId !== filteredItems.length - 1 &&
-                                        group.showSeparator && (
-                                            <RadixMenu.Separator asChild>
-                                                <Block
-                                                    height={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .height
-                                                    }
-                                                    backgroundColor={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .color
-                                                    }
-                                                    margin={
-                                                        multiSelectTokens.menu
-                                                            .item.seperator
-                                                            .margin
-                                                    }
-                                                ></Block>
-                                            </RadixMenu.Separator>
+                            </StickyHeader>
+                            <ScrollableContent
+                                style={{
+                                    maxHeight: maxMenuHeight
+                                        ? `${maxMenuHeight - 80}px`
+                                        : '320px',
+                                }}
+                            >
+                                {items.length === 0 ? (
+                                    <Block
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        padding={
+                                            multiSelectTokens.menu.item.padding
+                                        }
+                                    >
+                                        <PrimitiveText
+                                            fontSize={14}
+                                            color={
+                                                multiSelectTokens.menu.item
+                                                    .optionsLabel.color.default
+                                            }
+                                            textAlign="center"
+                                        >
+                                            No items available
+                                        </PrimitiveText>
+                                    </Block>
+                                ) : filteredItems.length === 0 &&
+                                  searchText.length > 0 ? (
+                                    <Block
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        padding={
+                                            multiSelectTokens.menu.item.padding
+                                        }
+                                    >
+                                        <PrimitiveText
+                                            fontSize={14}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            textAlign="center"
+                                        >
+                                            No results found
+                                        </PrimitiveText>
+                                    </Block>
+                                ) : enableVirtualization &&
+                                  flattenedItems.length > 0 ? (
+                                    <Block
+                                        padding={FOUNDATION_THEME.unit[6]}
+                                        style={{
+                                            paddingTop: enableSearch
+                                                ? 0
+                                                : FOUNDATION_THEME.unit[6],
+                                        }}
+                                    >
+                                        <VirtualList
+                                            items={flattenedItems}
+                                            height={(maxMenuHeight || 400) - 80}
+                                            itemHeight={virtualListItemHeight}
+                                            overscan={virtualListOverscan}
+                                            onEndReached={onEndReached}
+                                            endReachedThreshold={
+                                                endReachedThreshold
+                                            }
+                                            hasMore={hasMore}
+                                            renderItem={({
+                                                item: flatItem,
+                                            }) => {
+                                                const typed =
+                                                    flatItem as FlattenedMultiSelectItem
+
+                                                const VirtualItemWrapper = ({
+                                                    children,
+                                                }: {
+                                                    children: React.ReactNode
+                                                }) => (
+                                                    <Block
+                                                        style={{
+                                                            height: virtualListItemHeight,
+                                                            minHeight:
+                                                                virtualListItemHeight,
+                                                            maxHeight:
+                                                                virtualListItemHeight,
+                                                            display: 'flex',
+                                                            alignItems:
+                                                                'center',
+                                                            overflow: 'hidden',
+                                                        }}
+                                                    >
+                                                        {children}
+                                                    </Block>
+                                                )
+
+                                                if (typed.type === 'label') {
+                                                    return (
+                                                        <VirtualItemWrapper>
+                                                            <RadixMenu.Label
+                                                                asChild
+                                                            >
+                                                                <PrimitiveText
+                                                                    fontSize={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .fontSize
+                                                                    }
+                                                                    fontWeight={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .fontWeight
+                                                                    }
+                                                                    padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                                    userSelect="none"
+                                                                    textTransform="uppercase"
+                                                                    color={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .optionsLabel
+                                                                            .color
+                                                                            .default
+                                                                    }
+                                                                    style={{
+                                                                        margin: 0,
+                                                                        width: '100%',
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        typed.label
+                                                                    }
+                                                                </PrimitiveText>
+                                                            </RadixMenu.Label>
+                                                        </VirtualItemWrapper>
+                                                    )
+                                                }
+
+                                                if (
+                                                    typed.type === 'separator'
+                                                ) {
+                                                    return (
+                                                        <VirtualItemWrapper>
+                                                            <RadixMenu.Separator
+                                                                asChild
+                                                            >
+                                                                <Block
+                                                                    height={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .height
+                                                                    }
+                                                                    backgroundColor={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .color
+                                                                    }
+                                                                    width="100%"
+                                                                />
+                                                            </RadixMenu.Separator>
+                                                        </VirtualItemWrapper>
+                                                    )
+                                                }
+
+                                                if (
+                                                    typed.type === 'item' &&
+                                                    typed.item
+                                                ) {
+                                                    const itemIndex = (() => {
+                                                        let idx = 0
+                                                        for (const item of flattenedItems) {
+                                                            if (
+                                                                item.id ===
+                                                                flatItem.id
+                                                            ) {
+                                                                break
+                                                            }
+                                                            if (
+                                                                (
+                                                                    item as FlattenedMultiSelectItem
+                                                                ).type ===
+                                                                'item'
+                                                            ) {
+                                                                idx++
+                                                            }
+                                                        }
+                                                        return idx
+                                                    })()
+                                                    return (
+                                                        <VirtualItemWrapper>
+                                                            <Block
+                                                                width="100%"
+                                                                style={{
+                                                                    minWidth: 0,
+                                                                }}
+                                                            >
+                                                                <MultiSelectMenuItem
+                                                                    selected={
+                                                                        selected
+                                                                    }
+                                                                    item={
+                                                                        typed.item
+                                                                    }
+                                                                    onSelect={
+                                                                        onSelect
+                                                                    }
+                                                                    maxSelections={
+                                                                        maxSelections
+                                                                    }
+                                                                    allItems={filteredItems.flatMap(
+                                                                        (g) =>
+                                                                            g.items
+                                                                    )}
+                                                                    index={
+                                                                        itemIndex
+                                                                    }
+                                                                />
+                                                            </Block>
+                                                        </VirtualItemWrapper>
+                                                    )
+                                                }
+
+                                                return null
+                                            }}
+                                        />
+                                    </Block>
+                                ) : (
+                                    <Block
+                                        paddingX={
+                                            multiSelectTokens.menu.padding[
+                                                size
+                                            ][variant].x
+                                        }
+                                        paddingY={
+                                            multiSelectTokens.menu.padding[
+                                                size
+                                            ][variant].y
+                                        }
+                                    >
+                                        {filteredItems.map((group, groupId) => {
+                                            const groupStartIndex =
+                                                filteredItems
+                                                    .slice(0, groupId)
+                                                    .reduce(
+                                                        (acc, g) =>
+                                                            acc +
+                                                            g.items.length,
+                                                        0
+                                                    )
+
+                                            return (
+                                                <React.Fragment key={groupId}>
+                                                    {group.groupLabel && (
+                                                        <RadixMenu.Label
+                                                            asChild
+                                                        >
+                                                            <PrimitiveText
+                                                                fontSize={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .optionsLabel
+                                                                        .fontSize
+                                                                }
+                                                                fontWeight={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .optionsLabel
+                                                                        .fontWeight
+                                                                }
+                                                                padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[8]}`}
+                                                                userSelect="none"
+                                                                textTransform="uppercase"
+                                                                color={
+                                                                    multiSelectTokens
+                                                                        .menu
+                                                                        .item
+                                                                        .optionsLabel
+                                                                        .color
+                                                                        .default
+                                                                }
+                                                            >
+                                                                {
+                                                                    group.groupLabel
+                                                                }
+                                                            </PrimitiveText>
+                                                        </RadixMenu.Label>
+                                                    )}
+                                                    {group.items.map(
+                                                        (item, itemIndex) => (
+                                                            <MultiSelectMenuItem
+                                                                key={`${groupId}-${itemIndex}`}
+                                                                selected={
+                                                                    selected
+                                                                }
+                                                                item={item}
+                                                                onSelect={
+                                                                    onSelect
+                                                                }
+                                                                maxSelections={
+                                                                    maxSelections
+                                                                }
+                                                                allItems={filteredItems.flatMap(
+                                                                    (g) =>
+                                                                        g.items
+                                                                )}
+                                                                index={
+                                                                    groupStartIndex +
+                                                                    itemIndex
+                                                                }
+                                                            />
+                                                        )
+                                                    )}
+                                                    {groupId !==
+                                                        filteredItems.length -
+                                                            1 &&
+                                                        group.showSeparator && (
+                                                            <RadixMenu.Separator
+                                                                asChild
+                                                            >
+                                                                <Block
+                                                                    height={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .height
+                                                                    }
+                                                                    backgroundColor={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .color
+                                                                    }
+                                                                    margin={
+                                                                        multiSelectTokens
+                                                                            .menu
+                                                                            .item
+                                                                            .seperator
+                                                                            .margin
+                                                                    }
+                                                                />
+                                                            </RadixMenu.Separator>
+                                                        )}
+                                                </React.Fragment>
+                                            )
+                                        })}
+                                    </Block>
+                                )}
+                            </ScrollableContent>
+                            {showActionButtons &&
+                                (primaryAction || secondaryAction) && (
+                                    <FixedActionButtons>
+                                        {secondaryAction && (
+                                            <Button
+                                                data-button-for={
+                                                    secondaryAction.text
+                                                }
+                                                data-dynamic-button={
+                                                    secondaryAction.text
+                                                }
+                                                data-batch-value={
+                                                    secondaryAction.text
+                                                }
+                                                buttonType={
+                                                    ButtonType.SECONDARY
+                                                }
+                                                size={ButtonSize.SMALL}
+                                                text={secondaryAction.text}
+                                                onClick={() => {
+                                                    secondaryAction.onClick()
+                                                    onOpenChange(false)
+                                                }}
+                                                disabled={
+                                                    secondaryAction.disabled
+                                                }
+                                                loading={
+                                                    secondaryAction.loading
+                                                }
+                                            />
                                         )}
-                                </React.Fragment>
-                            )
-                        )
+                                        {primaryAction && (
+                                            <Button
+                                                data-button-for={
+                                                    primaryAction.text
+                                                }
+                                                data-dynamic-button={
+                                                    primaryAction.text
+                                                }
+                                                data-batch-value={
+                                                    primaryAction.text
+                                                }
+                                                buttonType={ButtonType.PRIMARY}
+                                                size={ButtonSize.SMALL}
+                                                text={primaryAction.text}
+                                                onClick={() => {
+                                                    primaryAction.onClick(
+                                                        selected
+                                                    )
+                                                    onOpenChange(false)
+                                                }}
+                                                disabled={
+                                                    primaryAction.disabled
+                                                }
+                                                loading={primaryAction.loading}
+                                            />
+                                        )}
+                                    </FixedActionButtons>
+                                )}
+                        </>
                     )}
-                </ScrollableContent>
-                {showActionButtons && (primaryAction || secondaryAction) && (
-                    <FixedActionButtons>
-                        {secondaryAction && (
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                text={secondaryAction.text}
-                                onClick={() => {
-                                    secondaryAction.onClick()
-                                    onOpenChange(false)
-                                }}
-                                disabled={secondaryAction.disabled}
-                                loading={secondaryAction.loading}
-                            />
-                        )}
-                        {primaryAction && (
-                            <Button
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.SMALL}
-                                text={primaryAction.text}
-                                onClick={() => {
-                                    primaryAction.onClick(selected)
-                                    onOpenChange(false)
-                                }}
-                                disabled={primaryAction.disabled}
-                                loading={primaryAction.loading}
-                            />
-                        )}
-                    </FixedActionButtons>
-                )}
-            </Content>
+                </Content>
+            </RadixMenu.Portal>
         </RadixMenu.Root>
     )
 }

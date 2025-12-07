@@ -1,10 +1,12 @@
 import { ColumnDefinition, RowActionsConfig } from '../types'
 import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
+import type { SkeletonVariant } from '../../Skeleton/skeleton.tokens'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
     visibleColumns: ColumnDefinition<T>[]
     idField: string
+    tableTitle?: string
     selectedRows: Record<string, boolean>
     editingRows: Record<string, boolean>
     editValues: Record<string, T>
@@ -38,4 +40,8 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     ) => React.CSSProperties
     getRowStyle?: (row: T, index: number) => React.CSSProperties
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    isLoading?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
+    isRowLoading?: (row: T, index: number) => boolean
 }

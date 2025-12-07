@@ -159,14 +159,17 @@ export const getUnitInputTokens = (
             },
             inputContainer: {
                 borderRadius: {
+                    sm: foundationTokens.unit[10],
                     md: foundationTokens.unit[10],
                     lg: foundationTokens.unit[10],
                 },
                 fontSize: {
+                    sm: foundationTokens.font.size.body.md.fontSize,
                     md: foundationTokens.font.size.body.md.fontSize,
                     lg: foundationTokens.font.size.body.md.fontSize,
                 },
                 fontWeight: {
+                    sm: foundationTokens.font.weight[500],
                     md: foundationTokens.font.weight[500],
                     lg: foundationTokens.font.weight[500],
                 },
@@ -179,10 +182,12 @@ export const getUnitInputTokens = (
                 },
                 padding: {
                     x: {
+                        sm: foundationTokens.unit[10],
                         md: foundationTokens.unit[12],
                         lg: foundationTokens.unit[14],
                     },
                     y: {
+                        sm: foundationTokens.unit[6],
                         md: foundationTokens.unit[8],
                         lg: foundationTokens.unit[14],
                     },
@@ -204,10 +209,12 @@ export const getUnitInputTokens = (
                 boxShadow: foundationTokens.shadows.sm,
                 unit: {
                     fontSize: {
+                        sm: foundationTokens.font.size.body.md.fontSize,
                         md: foundationTokens.font.size.body.md.fontSize,
                         lg: foundationTokens.font.size.body.md.fontSize,
                     },
                     fontWeight: {
+                        sm: foundationTokens.font.weight[500],
                         md: foundationTokens.font.weight[500],
                         lg: foundationTokens.font.weight[500],
                     },
@@ -219,11 +226,12 @@ export const getUnitInputTokens = (
                         disabled: foundationTokens.colors.gray[300],
                     },
                     padding: {
+                        sm: foundationTokens.unit[10],
                         md: foundationTokens.unit[12],
                         lg: foundationTokens.unit[14],
                     },
                     backgroundColor: {
-                        default: foundationTokens.colors.gray[0],
+                        default: foundationTokens.colors.gray[50],
                         disabled: foundationTokens.colors.gray[50],
                         hover: foundationTokens.colors.gray[0],
                         focus: foundationTokens.colors.gray[0],
@@ -287,14 +295,17 @@ export const getUnitInputTokens = (
             },
             inputContainer: {
                 borderRadius: {
+                    sm: foundationTokens.unit[10],
                     md: foundationTokens.unit[10],
                     lg: foundationTokens.unit[10],
                 },
                 fontSize: {
+                    sm: foundationTokens.font.size.body.md.fontSize,
                     md: foundationTokens.font.size.body.md.fontSize,
                     lg: foundationTokens.font.size.body.md.fontSize,
                 },
                 fontWeight: {
+                    sm: foundationTokens.font.weight[500],
                     md: foundationTokens.font.weight[500],
                     lg: foundationTokens.font.weight[500],
                 },
@@ -307,10 +318,12 @@ export const getUnitInputTokens = (
                 },
                 padding: {
                     x: {
+                        sm: foundationTokens.unit[10],
                         md: foundationTokens.unit[12],
                         lg: foundationTokens.unit[14],
                     },
                     y: {
+                        sm: foundationTokens.unit[6],
                         md: foundationTokens.unit[8],
                         lg: foundationTokens.unit[10],
                     },
@@ -332,10 +345,12 @@ export const getUnitInputTokens = (
                 boxShadow: foundationTokens.shadows.sm,
                 unit: {
                     fontSize: {
+                        sm: foundationTokens.font.size.body.md.fontSize,
                         md: foundationTokens.font.size.body.md.fontSize,
                         lg: foundationTokens.font.size.body.md.fontSize,
                     },
                     fontWeight: {
+                        sm: foundationTokens.font.weight[500],
                         md: foundationTokens.font.weight[500],
                         lg: foundationTokens.font.weight[500],
                     },
@@ -347,11 +362,12 @@ export const getUnitInputTokens = (
                         disabled: foundationTokens.colors.gray[300],
                     },
                     padding: {
+                        sm: foundationTokens.unit[10],
                         md: foundationTokens.unit[12],
                         lg: foundationTokens.unit[14],
                     },
                     backgroundColor: {
-                        default: foundationTokens.colors.gray[0],
+                        default: foundationTokens.colors.gray[50],
                         disabled: foundationTokens.colors.gray[50],
                         hover: foundationTokens.colors.gray[0],
                         focus: foundationTokens.colors.gray[0],

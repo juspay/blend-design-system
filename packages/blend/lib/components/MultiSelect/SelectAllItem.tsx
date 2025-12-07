@@ -44,6 +44,7 @@ const SelectAllItem = ({
     return (
         <RadixMenu.Item asChild data-disabled={disabled}>
             <Block
+                data-element="selectAll-checkbox"
                 padding={FOUNDATION_THEME.unit[8]}
                 display="flex"
                 alignItems="center"
@@ -68,6 +69,7 @@ const SelectAllItem = ({
                 onClick={handleClick}
             >
                 <PrimitiveText
+                    data-id={selectAllText || 'selectAll-checkbox'}
                     fontSize={multiSelectTokens.menu.item.optionsLabel.fontSize}
                     fontWeight={
                         multiSelectTokens.menu.item.optionsLabel.fontWeight
@@ -87,7 +89,17 @@ const SelectAllItem = ({
                 >
                     {selectAllText}
                 </PrimitiveText>
-                <Checkbox checked={getCheckboxState()} disabled={disabled} />
+
+                <Checkbox
+                    data-status={disabled ? 'disabled' : 'enabled'}
+                    data-element="checkbox"
+                    data-id={selectAllText || 'checkbox'}
+                    data-state={
+                        getCheckboxState() ? 'selected' : 'not selected'
+                    }
+                    checked={getCheckboxState()}
+                    disabled={disabled}
+                />
             </Block>
         </RadixMenu.Item>
     )

@@ -140,6 +140,7 @@ const SwitchDemo = () => {
                         />
                         <Switch
                             label="Error"
+                            subtext="This is an error message"
                             checked={playgroundError}
                             onChange={() =>
                                 setPlaygroundError(!playgroundError)
@@ -166,12 +167,13 @@ const SwitchDemo = () => {
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
                         <Switch
+                            maxLength={{ label: 3, subtext: 3 }}
                             label={playgroundLabel}
                             checked={playgroundChecked}
-                            onChange={(checked) => {
-                                setPlaygroundChecked(checked)
+                            onChange={() => {
+                                setPlaygroundChecked(!playgroundChecked)
                                 addSnackbar({
-                                    header: `Switch ${checked ? 'enabled' : 'disabled'}!`,
+                                    header: `Switch ${!playgroundChecked ? 'enabled' : 'disabled'}!`,
                                 })
                             }}
                             size={playgroundSize}
@@ -186,9 +188,12 @@ const SwitchDemo = () => {
                                     <Bell size={16} className="text-blue-500" />
                                 ) : undefined
                             }
-                            data-bool-for="redirectModeOnly"
-                            data-toggle-status="enabled"
-                            data-bool-value="on"
+                            data-element="switch"
+                            data-id={
+                                playgroundDisabled
+                                    ? 'Disabled notifications'
+                                    : 'Enable notifications'
+                            }
                         />
                     </div>
                 </div>
@@ -213,9 +218,8 @@ const SwitchDemo = () => {
                                         header: `Small switch ${checked ? 'enabled' : 'disabled'}!`,
                                     })
                                 }}
-                                data-bool-for="redirectModeOnly"
-                                data-toggle-status="enabled"
-                                data-bool-value="on"
+                                data-id="Enable notifications"
+                                data-status="enabled"
                             />
                             <Switch
                                 label="With Subtext"

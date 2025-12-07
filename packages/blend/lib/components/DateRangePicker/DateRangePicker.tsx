@@ -73,44 +73,39 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     calendarToken,
 }) => (
     <Block
-        paddingX={calendarToken?.calendar?.inputs?.padding?.x}
-        paddingY={calendarToken?.calendar?.inputs?.padding?.y}
+        paddingX={calendarToken?.calendar?.header?.padding?.x}
+        paddingY={calendarToken?.calendar?.header?.padding?.y}
     >
         <Block
             display="flex"
             flexDirection="column"
-            gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+            gap={calendarToken?.calendar?.header?.dateInput?.gap}
         >
             <Block
                 display="flex"
-                gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                gap={calendarToken?.calendar?.header?.dateInput?.gap}
                 alignItems="center"
             >
                 <PrimitiveText
                     as="span"
                     color={
-                        calendarToken?.calendar?.inputs?.dateInput?.label?.color
+                        calendarToken?.calendar?.header?.dateInput?.label?.color
                     }
                     fontWeight={
-                        calendarToken?.calendar?.inputs?.dateInput?.label
+                        calendarToken?.calendar?.header?.dateInput?.label
                             ?.fontWeight
                     }
                     fontSize={
-                        calendarToken?.calendar?.inputs?.dateInput?.label
+                        calendarToken?.calendar?.header?.dateInput?.label
                             ?.fontSize
                     }
-                    style={{
-                        minWidth:
-                            calendarToken?.calendar?.inputs?.dateInput?.label
-                                ?.width,
-                    }}
                 >
                     Start
                 </PrimitiveText>
                 <Block
                     display="flex"
                     alignItems="start"
-                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                    gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     width="100%"
                 >
                     <Block flexGrow={1}>
@@ -131,7 +126,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             onChange={onStartTimeChange}
                             autoFocus={false}
                             tabIndex={-1}
-                            calendarToken={calendarToken}
                         />
                     )}
                 </Block>
@@ -143,27 +137,25 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         selectedRange.endDate.getTime())) && (
                 <Block
                     display="flex"
-                    gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                    gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     alignItems="center"
                 >
                     <PrimitiveText
                         as="span"
                         color={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.color
                         }
                         fontWeight={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontWeight
                         }
                         fontSize={
-                            calendarToken?.calendar?.inputs?.dateInput?.label
+                            calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontSize
                         }
                         style={{
-                            minWidth:
-                                calendarToken?.calendar?.inputs?.dateInput
-                                    ?.label?.width,
+                            minWidth: '30.6px',
                         }}
                     >
                         End
@@ -171,7 +163,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                     <Block
                         display="flex"
                         alignItems="start"
-                        gap={calendarToken?.calendar?.inputs?.dateInput?.gap}
+                        gap={calendarToken?.calendar?.header?.dateInput?.gap}
                         width="100%"
                     >
                         <Block flexGrow={1}>
@@ -192,7 +184,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 onChange={onEndTimeChange}
                                 autoFocus={false}
                                 tabIndex={-1}
-                                calendarToken={calendarToken}
                             />
                         )}
                     </Block>
@@ -216,7 +207,9 @@ type CalendarSectionProps = {
     showDateTimePicker: boolean
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({
+const CalendarSection: React.FC<
+    CalendarSectionProps & { resetScrollPosition?: number }
+> = ({
     selectedRange,
     today,
     allowSingleDateSelection,
@@ -228,6 +221,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     customRangeConfig,
     onDateSelect,
     showDateTimePicker,
+    resetScrollPosition,
 }) => (
     <Block>
         <CalendarGrid
@@ -242,6 +236,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
             customDisableDates={customDisableDates}
             customRangeConfig={customRangeConfig}
             showDateTimePicker={showDateTimePicker}
+            resetScrollPosition={resetScrollPosition}
         />
     </Block>
 )
@@ -276,18 +271,25 @@ const FooterControls: React.FC<FooterControlsProps> = ({
                 onClick={onCancel}
                 text="Cancel"
             />
-            <Tooltip
-                content={isApplyDisabled ? applyDisabledMessage : undefined}
-                open={isApplyDisabled ? undefined : false}
-            >
+            {isApplyDisabled ? (
+                <Tooltip content={applyDisabledMessage}>
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.SMALL}
+                        onClick={onApply}
+                        text="Apply"
+                        disabled={true}
+                    />
+                </Tooltip>
+            ) : (
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.SMALL}
                     onClick={onApply}
                     text="Apply"
-                    disabled={isApplyDisabled}
+                    disabled={false}
                 />
-            </Tooltip>
+            )}
         </Block>
     </Block>
 )
@@ -332,6 +334,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [selectedRange, setSelectedRange] = useState<DateRange>(
             value || getPresetDateRange(DateRangePreset.TODAY)
         )
+        const lastExternalValueRef = React.useRef<{
+            start: number | null
+            end: number | null
+            dateFormat: string
+        } | null>(null)
 
         const [activePreset, setActivePreset] = useState<DateRangePreset>(
             DateRangePreset.TODAY
@@ -372,7 +379,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         // Calculate if apply button should be disabled and get validation message
         const applyButtonValidation = React.useMemo(() => {
-            // Check if date inputs are invalid
+            // Check if date header are invalid
             if (!startDateValidation.isValid) {
                 return {
                     isDisabled: true,
@@ -413,16 +420,39 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const isApplyDisabled = applyButtonValidation.isDisabled
 
         useEffect(() => {
-            if (value) {
-                setSelectedRange(value)
-                setStartDate(formatDate(value.startDate, dateFormat))
-                setEndDate(formatDate(value.endDate, dateFormat))
-                setStartTime(formatDate(value.startDate, 'HH:mm'))
-                setEndTime(formatDate(value.endDate, 'HH:mm'))
-
-                const detectedPreset = detectPresetFromRange(value)
-                setActivePreset(detectedPreset)
+            if (!value) {
+                lastExternalValueRef.current = null
+                return
             }
+
+            const nextSignature = {
+                start: value.startDate?.getTime() ?? null,
+                end: value.endDate?.getTime() ?? null,
+                dateFormat,
+            }
+
+            const prevSignature = lastExternalValueRef.current
+            const hasRangeChanged =
+                !prevSignature ||
+                prevSignature.start !== nextSignature.start ||
+                prevSignature.end !== nextSignature.end
+            const hasFormatChanged =
+                !prevSignature || prevSignature.dateFormat !== dateFormat
+
+            if (!hasRangeChanged && !hasFormatChanged) {
+                return
+            }
+
+            lastExternalValueRef.current = nextSignature
+
+            setSelectedRange(value)
+            setStartDate(formatDate(value.startDate, dateFormat))
+            setEndDate(formatDate(value.endDate, dateFormat))
+            setStartTime(formatDate(value.startDate, 'HH:mm'))
+            setEndTime(formatDate(value.endDate, 'HH:mm'))
+
+            const detectedPreset = detectPresetFromRange(value)
+            setActivePreset(detectedPreset)
         }, [value, dateFormat])
 
         const handleDateSelect = useCallback(
@@ -682,7 +712,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             cursor: isDisabled ? 'not-allowed' : 'pointer',
                             ...triggerConfig?.style,
                         }}
-                        className={triggerConfig?.className}
                     >
                         {triggerConfig?.element || triggerElement}
                     </Block>
@@ -786,7 +815,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
                     disabled={isDisabled}
-                    className={triggerConfig?.className}
+                    data-component-field-wrapper=""
+                    data-date-picker="dateRangePicker-Filter"
+                    data-button-for={displayText
+                        .replace(/\s/g, '')
+                        .replace(/-/g, '➟')}
+                    data-custom-value="calendar_button"
+                    data-button-status={isDisabled ? 'disabled' : 'enabled'}
+                    data-dynamic-button="dynamicButton"
+                    type="button"
                 >
                     <Block
                         flexGrow={1}
@@ -992,6 +1029,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             customRangeConfig={customRangeConfig}
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
+                            resetScrollPosition={popoverKey}
                         />
 
                         <FooterControls

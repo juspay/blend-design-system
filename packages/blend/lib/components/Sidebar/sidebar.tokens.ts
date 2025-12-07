@@ -78,7 +78,14 @@ export type SidebarTokenType = {
             backgroundColor: {
                 [key in SidebarState]: CSSObject['backgroundColor'] // Button background per state
             }
+            width: CSSObject['width']
         }
+    }
+
+    directory: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
     }
 
     // Controls the bottom footer section containing actions and information
@@ -156,7 +163,14 @@ export const getSidebarTokens = (
                         hover: foundationToken.colors.gray[100],
                         active: foundationToken.colors.gray[100],
                     },
+                    width: foundationToken.unit[16],
                 },
+            },
+
+            directory: {
+                gap: foundationToken.unit[24],
+                paddingX: foundationToken.unit[12],
+                paddingY: foundationToken.unit[12],
             },
 
             // Footer section (bottom actions and info)
@@ -216,7 +230,7 @@ export const getSidebarTokens = (
                 backgroundColor: foundationToken.colors.gray[25],
                 padding: {
                     x: foundationToken.unit[12],
-                    y: foundationToken.unit[14],
+                    y: foundationToken.unit[15],
                 },
                 gap: foundationToken.unit[16],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -228,7 +242,14 @@ export const getSidebarTokens = (
                         hover: foundationToken.colors.gray[100],
                         active: foundationToken.colors.gray[100],
                     },
+                    width: foundationToken.unit[16],
                 },
+            },
+
+            directory: {
+                gap: foundationToken.unit[24],
+                paddingX: foundationToken.unit[12],
+                paddingY: foundationToken.unit[12],
             },
 
             // Footer section (bottom actions and info)

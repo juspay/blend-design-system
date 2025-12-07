@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useId } from 'react'
 import Block from '../Primitives/Block/Block'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
@@ -22,6 +22,17 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
+import { useErrorShake } from '../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../common/error.animations'
+import styled from 'styled-components'
+import { setupAccessibility } from '../SingleSelect/utils'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const MultiSelect = ({
     selectedValues,
@@ -72,6 +83,15 @@ const MultiSelect = ({
     endReachedThreshold,
     hasMore,
     loadingComponent,
+    skeleton = {
+        count: 3,
+        show: false,
+        variant: 'pulse',
+    },
+    maxTriggerWidth,
+    minTriggerWidth,
+    allowCustomValue = false,
+    customValueLabel = 'Specify',
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -121,6 +141,27 @@ const MultiSelect = ({
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
+    const shouldShake = useErrorShake(error || false)
+
+    const generatedId = useId()
+    const {
+        uniqueName,
+        labelId,
+        hintTextId,
+        errorMessageId,
+        menuId,
+        ariaAttributes,
+    } = setupAccessibility({
+        name,
+        generatedId,
+        label,
+        hintText,
+        error,
+        errorMessage,
+        prefix: 'multiselect',
+        needsMenuId: true,
+    })
+
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobileMultiSelect
@@ -169,6 +210,9 @@ const MultiSelect = ({
                 endReachedThreshold={endReachedThreshold}
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
+                skeleton={skeleton}
+                allowCustomValue={allowCustomValue}
+                customValueLabel={customValueLabel}
             />
         )
     }
@@ -188,118 +232,127 @@ const MultiSelect = ({
                         sublabel={sublabel}
                         disabled={disabled}
                         helpIconHintText={helpIconHintText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
                         tokens={multiSelectTokens}
+                        labelId={labelId}
                     />
                 )}
 
-            <MultiSelectMenu
-                items={items}
-                selected={selectedValues}
-                onSelect={onChange}
-                disabled={disabled}
-                enableSearch={enableSearch}
-                searchPlaceholder={searchPlaceholder}
-                enableSelectAll={enableSelectAll}
-                selectAllText={selectAllText}
-                maxSelections={maxSelections}
-                onSelectAll={
-                    enableSelectAll
-                        ? (selectAll: boolean) =>
-                              handleSelectAll(
-                                  selectAll,
-                                  items,
-                                  selectedValues,
-                                  onChange
-                              )
-                        : undefined
-                }
-                minMenuWidth={minMenuWidth}
-                maxMenuWidth={maxMenuWidth}
-                maxMenuHeight={maxMenuHeight}
-                alignment={alignment}
-                side={side}
-                sideOffset={sideOffset}
-                alignOffset={alignOffset}
-                open={open}
-                onOpenChange={(isOpen) => {
-                    setOpen(isOpen)
-                    if (isOpen) {
-                        onFocus?.()
-                    } else {
-                        onBlur?.()
-                    }
-                }}
-                showActionButtons={shouldShowActionButtons}
-                primaryAction={
-                    primaryAction
-                        ? {
-                              ...primaryAction,
-                              onClick: () =>
-                                  primaryAction.onClick(selectedValues),
-                          }
-                        : undefined
-                }
-                secondaryAction={secondaryAction}
-                enableVirtualization={enableVirtualization}
-                virtualListItemHeight={virtualListItemHeight}
-                virtualListOverscan={virtualListOverscan}
-                itemsToRender={itemsToRender}
-                onEndReached={onEndReached}
-                endReachedThreshold={endReachedThreshold}
-                hasMore={hasMore}
-                loadingComponent={loadingComponent}
-                trigger={
-                    customTrigger || (
-                        <Block
-                            display="flex"
-                            {...((!inline ||
-                                variant === MultiSelectVariant.CONTAINER) && {
-                                height: toPixels(
-                                    multiSelectTokens.trigger.height[size][
-                                        variant
-                                    ]
-                                ),
-                                maxHeight: toPixels(
-                                    multiSelectTokens.trigger.height[size][
-                                        variant
-                                    ]
-                                ),
-                            })}
-                        >
-                            <Block
-                                width={fullWidth ? '100%' : 'fit-content'}
-                                maxWidth={fullWidth ? '100%' : 'fit-content'}
-                                display="flex"
-                                alignItems="center"
-                            >
-                                <Tooltip
-                                    content={
-                                        (showTooltip &&
-                                            selectedValues
-                                                .map((v) => valueLabelMap[v])
-                                                .join(', ')) ||
-                                        ''
-                                    }
-                                >
+            <Block
+                display="flex"
+                {...((!inline || variant === MultiSelectVariant.CONTAINER) && {
+                    height: toPixels(
+                        multiSelectTokens.trigger.height[size][variant]
+                    ),
+                    maxHeight: toPixels(
+                        multiSelectTokens.trigger.height[size][variant]
+                    ),
+                })}
+                data-selectbox-value={placeholder}
+            >
+                <Wrapper
+                    position="relative"
+                    style={getErrorShakeStyle(shouldShake)}
+                    width={fullWidth ? '100%' : 'fit-content'}
+                    maxWidth={fullWidth ? '100%' : 'fit-content'}
+                    display="flex"
+                    alignItems="center"
+                    data-dropdown-for={placeholder}
+                >
+                    <Tooltip
+                        content={
+                            (showTooltip &&
+                                selectedValues
+                                    .map((v) => valueLabelMap[v] || v)
+                                    .join(', ')) ||
+                            ''
+                        }
+                    >
+                        <MultiSelectMenu
+                            skeleton={skeleton}
+                            items={items}
+                            selected={selectedValues}
+                            onSelect={onChange}
+                            disabled={disabled}
+                            enableSearch={enableSearch}
+                            searchPlaceholder={searchPlaceholder}
+                            enableSelectAll={enableSelectAll}
+                            selectAllText={selectAllText}
+                            maxSelections={maxSelections}
+                            onSelectAll={
+                                enableSelectAll
+                                    ? (selectAll: boolean) =>
+                                          handleSelectAll(
+                                              selectAll,
+                                              items,
+                                              selectedValues,
+                                              onChange
+                                          )
+                                    : undefined
+                            }
+                            minMenuWidth={minMenuWidth}
+                            maxMenuWidth={maxMenuWidth}
+                            maxMenuHeight={maxMenuHeight}
+                            alignment={alignment}
+                            side={side}
+                            sideOffset={sideOffset}
+                            alignOffset={alignOffset}
+                            open={open}
+                            onOpenChange={(isOpen) => {
+                                setOpen(isOpen)
+                                if (isOpen) {
+                                    onFocus?.()
+                                } else {
+                                    onBlur?.()
+                                }
+                            }}
+                            showActionButtons={shouldShowActionButtons}
+                            primaryAction={
+                                primaryAction
+                                    ? {
+                                          ...primaryAction,
+                                          onClick: () =>
+                                              primaryAction.onClick(
+                                                  selectedValues
+                                              ),
+                                      }
+                                    : undefined
+                            }
+                            secondaryAction={secondaryAction}
+                            enableVirtualization={enableVirtualization}
+                            virtualListItemHeight={virtualListItemHeight}
+                            virtualListOverscan={virtualListOverscan}
+                            itemsToRender={itemsToRender}
+                            onEndReached={onEndReached}
+                            endReachedThreshold={endReachedThreshold}
+                            hasMore={hasMore}
+                            loadingComponent={loadingComponent}
+                            menuId={menuId}
+                            trigger={
+                                customTrigger || (
                                     <PrimitiveButton
+                                        id={uniqueName}
+                                        data-value={placeholder}
+                                        data-custom-value={placeholder}
+                                        data-button-status={
+                                            disabled ? 'disabled' : 'enabled'
+                                        }
                                         type="button"
                                         position="relative"
                                         width={
                                             fullWidth ? '100%' : 'fit-content'
                                         }
+                                        maxWidth={maxTriggerWidth}
+                                        minWidth={minTriggerWidth}
                                         display="flex"
                                         alignItems="center"
                                         overflow="hidden"
                                         justifyContent="space-between"
                                         gap={8}
                                         borderRadius={appliedBorderRadius}
-                                        boxShadow={
-                                            multiSelectTokens.trigger.boxShadow[
-                                                variant
-                                            ]
-                                        }
+                                        style={getErrorShakeStyle(shouldShake)}
+                                        {...ariaAttributes}
                                         outline={
                                             multiSelectTokens.trigger.outline[
                                                 variant
@@ -411,17 +464,21 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens.label
-                                                            .color.default
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                                     }
                                                     fontWeight={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontWeight
                                                     }
                                                     fontSize={
-                                                        multiSelectTokens.label
+                                                        multiSelectTokens
+                                                            .trigger.placeholder
                                                             .fontSize
                                                     }
+                                                    data-button-text={label}
                                                 >
                                                     {label}
                                                 </Text>
@@ -487,17 +544,24 @@ const MultiSelect = ({
                                                         // variant="body.md"
                                                         color={
                                                             multiSelectTokens
-                                                                .label.color
-                                                                .default
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
-                                                                .label
+                                                                .trigger
+                                                                .placeholder
                                                                 .fontWeight
                                                         }
                                                         fontSize={
                                                             multiSelectTokens
-                                                                .label.fontSize
+                                                                .trigger
+                                                                .placeholder
+                                                                .fontSize
+                                                        }
+                                                        data-button-text={
+                                                            placeholder
                                                         }
                                                     >
                                                         {placeholder}
@@ -512,7 +576,8 @@ const MultiSelect = ({
                                                             .trigger
                                                             .selectionTag
                                                             .container[
-                                                            selectionTagType
+                                                            MultiSelectSelectionTagType
+                                                                .COUNT
                                                         ].color
                                                     }
                                                     fontWeight={500}
@@ -524,31 +589,17 @@ const MultiSelect = ({
                                                                 .trigger
                                                                 .selectionTag
                                                                 .container[
-                                                                selectionTagType
+                                                                MultiSelectSelectionTagType
+                                                                    .COUNT
                                                             ].backgroundColor,
                                                         borderRadius: 4,
-                                                        padding:
-                                                            selectionTagType ===
-                                                            MultiSelectSelectionTagType.COUNT
-                                                                ? '0px 6px'
-                                                                : '0px 0px',
-                                                        overflow: 'hidden',
-                                                        textOverflow:
-                                                            'ellipsis',
-                                                        whiteSpace: 'nowrap',
+                                                        padding: '0px 6px',
                                                     }}
+                                                    data-badge-value={
+                                                        selectedValues.length
+                                                    }
                                                 >
-                                                    {selectionTagType ===
-                                                    MultiSelectSelectionTagType.COUNT
-                                                        ? selectedValues.length
-                                                        : selectedValues
-                                                              .map(
-                                                                  (v) =>
-                                                                      valueLabelMap[
-                                                                          v
-                                                                      ]
-                                                              )
-                                                              .join(', ')}
+                                                    {selectedValues.length}
                                                 </Text>
                                             )}
                                         </Block>
@@ -561,55 +612,54 @@ const MultiSelect = ({
                                             contentCentered
                                             flexShrink={0}
                                         >
-                                            <ChevronDown size={16} />
+                                            <ChevronDown
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
                                         </Block>
                                     </PrimitiveButton>
-                                </Tooltip>
+                                )
+                            }
+                            allowCustomValue={allowCustomValue}
+                            customValueLabel={customValueLabel}
+                        />
+                    </Tooltip>
 
-                                {variant === MultiSelectVariant.CONTAINER &&
-                                    selectedValues.length > 0 && (
-                                        <PrimitiveButton
-                                            type="button"
-                                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
-                                            backgroundColor={
-                                                FOUNDATION_THEME.colors.gray[0]
-                                            }
-                                            contentCentered
-                                            height={'100%'}
-                                            style={{ aspectRatio: 1 }}
-                                            onClick={() => onChange('')}
-                                            outline={
-                                                multiSelectTokens.trigger
-                                                    .outline[variant][
-                                                    error ? 'error' : 'closed'
-                                                ]
-                                            }
-                                            _hover={{
-                                                backgroundColor:
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[25],
-                                            }}
-                                            _focus={{
-                                                backgroundColor:
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[25],
-                                                outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
-                                            }}
-                                        >
-                                            <X
-                                                size={16}
-                                                color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[400]
-                                                }
-                                            />
-                                        </PrimitiveButton>
-                                    )}
-                            </Block>
-                        </Block>
-                    )
-                }
-            />
+                    {variant === MultiSelectVariant.CONTAINER &&
+                        selectedValues.length > 0 && (
+                            <PrimitiveButton
+                                type="button"
+                                borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                                backgroundColor={
+                                    FOUNDATION_THEME.colors.gray[0]
+                                }
+                                contentCentered
+                                height={'100%'}
+                                style={{ aspectRatio: 1 }}
+                                onClick={() => onChange('')}
+                                outline={
+                                    multiSelectTokens.trigger.outline[variant][
+                                        error ? 'error' : 'closed'
+                                    ]
+                                }
+                                _hover={{
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[25],
+                                }}
+                                _focus={{
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[25],
+                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                                }}
+                            >
+                                <X
+                                    size={16}
+                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                />
+                            </PrimitiveButton>
+                        )}
+                </Wrapper>
+            </Block>
 
             {variant === MultiSelectVariant.CONTAINER && (
                 <InputFooter
@@ -617,6 +667,8 @@ const MultiSelect = ({
                     error={error}
                     errorMessage={errorMessage}
                     tokens={multiSelectTokens}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

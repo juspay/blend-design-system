@@ -36,6 +36,7 @@ const DefaultState: React.FC<DefaultStateProps> = ({
         )}
 
         <Block
+            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"

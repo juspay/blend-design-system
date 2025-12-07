@@ -13,7 +13,14 @@ import {
     ScatterChart,
     Scatter,
 } from 'recharts'
-import { ChartType, RenderChartProps, TickProps, AxisType } from './types'
+import {
+    ChartType,
+    RenderChartProps,
+    TickProps,
+    AxisType,
+    SankeyData,
+} from './types'
+import SankeyChartWrapper from './SankeyChartWrapper'
 import {
     formatNumber,
     getAxisFormatter,
@@ -21,6 +28,7 @@ import {
     transformScatterData,
     generateConsistentDateTimeTicks,
 } from './ChartUtils'
+import { parseTimestamp } from './DateTimeFormatter'
 import { CustomTooltip } from './CustomTooltip'
 import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
@@ -28,6 +36,7 @@ import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
 
 export const renderChart = ({
+    chartName,
     flattenedData,
     chartType,
     hoveredKey,
@@ -41,6 +50,7 @@ export const renderChart = ({
     xAxis,
     yAxis,
     noData,
+    height,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -58,9 +68,11 @@ export const renderChart = ({
         ...yAxis,
     }
 
+    const isDateTimeAxis = finalXAxis.type === AxisType.DATE_TIME
+
     // Auto-generate consistent ticks for DATE_TIME axes (like Highcharts)
     if (
-        finalXAxis.type === AxisType.DATE_TIME &&
+        isDateTimeAxis &&
         finalXAxis.autoConsistentTicks !== false &&
         !finalXAxis.ticks &&
         originalData.length > 0
@@ -78,7 +90,9 @@ export const renderChart = ({
             useUTC: finalXAxis.useUTC,
             formatString: finalXAxis.formatString,
         })
-        finalXAxis.ticks = ticks
+        finalXAxis.ticks = isDateTimeAxis
+            ? ticks.map((tick) => parseTimestamp(tick) ?? Number(tick))
+            : ticks
 
         // Enable smart date/time format by default (alternates between date and time)
         // Only if user hasn't specified dateOnly, timeOnly, or formatString
@@ -128,7 +142,26 @@ export const renderChart = ({
         gridStroke: FOUNDATION_THEME.colors.gray[150],
     }
 
-    if (flattenedData.length === 0) {
+    const processedData = isDateTimeAxis
+        ? flattenedData.map((item) => {
+              const numericTimestamp =
+                  typeof item.name === 'number'
+                      ? item.name
+                      : parseTimestamp(item.name)
+              return {
+                  ...item,
+                  __blendTimestamp:
+                      numericTimestamp ??
+                      (typeof item.name === 'string'
+                          ? Number(item.name)
+                          : item.name),
+              }
+          })
+        : flattenedData
+
+    const xAxisDataKey = isDateTimeAxis ? '__blendTimestamp' : 'name'
+
+    if (processedData.length === 0) {
         return (
             <Block
                 display="flex"
@@ -136,6 +169,7 @@ export const renderChart = ({
                 justifyContent="center"
                 flexDirection="column"
                 gap={28}
+                data-chart="No-Data"
             >
                 <Block
                     display="flex"
@@ -191,7 +225,8 @@ export const renderChart = ({
         case ChartType.LINE:
             return (
                 <LineChart
-                    data={flattenedData}
+                    data-chart={chartName}
+                    data={processedData}
                     margin={{
                         top: 10,
                         right: 30,
@@ -206,12 +241,20 @@ export const renderChart = ({
                     onMouseLeave={() => setHoveredKey(null)}
                 >
                     <XAxis
-                        dataKey="name"
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        ticks={finalXAxis.ticks}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
@@ -334,6 +377,7 @@ export const renderChart = ({
         case ChartType.BAR:
             return (
                 <BarChart
+                    data-chart={chartName}
                     data={flattenedData}
                     margin={{
                         top: 10,
@@ -354,12 +398,20 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
-                        dataKey="name"
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
                         axisLine={false}
                         tickLine={false}
                         interval={finalXAxis.interval}
                         tickMargin={20}
-                        ticks={finalXAxis.ticks}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
                         tickFormatter={
                             finalXAxis.customTick
                                 ? undefined
@@ -474,7 +526,10 @@ export const renderChart = ({
             }))
 
             return (
-                <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 30 }}>
+                <PieChart
+                    data-chart={chartName}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
+                >
                     <Pie
                         data={pieData}
                         cx="50%"
@@ -677,6 +732,100 @@ export const renderChart = ({
                         />
                     ))}
                 </ScatterChart>
+            )
+        }
+
+        case ChartType.SANKEY: {
+            const sankeyData = originalData[0]?.data?.sankeyData
+                ?.primary as unknown as SankeyData
+
+            if (!sankeyData || !sankeyData.nodes || !sankeyData.links) {
+                return (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        flexDirection="column"
+                        gap={28}
+                        data-chart="No-Data"
+                    >
+                        <Text
+                            variant="body.lg"
+                            color={FOUNDATION_THEME.colors.gray[800]}
+                            fontWeight={600}
+                        >
+                            Invalid Sankey data format
+                        </Text>
+                        <Text
+                            variant="body.md"
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            fontWeight={500}
+                        >
+                            Please provide nodes and links
+                        </Text>
+                    </Block>
+                )
+            }
+
+            // Transform data to handle both numeric indices and string IDs
+            const nodeMap = new Map<string, number>()
+            sankeyData.nodes.forEach((node, index) => {
+                const nodeId = node.id || node.name || index.toString()
+                nodeMap.set(nodeId, index)
+            })
+
+            // Extract node and link colors if provided
+            const nodeColors = sankeyData.nodes
+                .map((node) => node.color)
+                .filter(Boolean) as string[]
+            const linkColors = sankeyData.links
+                .map((link) => link.color)
+                .filter(Boolean) as string[]
+
+            // Transform links to use numeric indices if they're strings
+            const transformedData = {
+                nodes: sankeyData.nodes.map((node) => ({
+                    name: node.name,
+                })),
+                links: sankeyData.links.map((link) => {
+                    const sourceIndex =
+                        typeof link.source === 'number'
+                            ? link.source
+                            : (nodeMap.get(link.source as string) ?? 0)
+
+                    const targetIndex =
+                        typeof link.target === 'number'
+                            ? link.target
+                            : (nodeMap.get(link.target as string) ?? 0)
+
+                    return {
+                        source: sourceIndex,
+                        target: targetIndex,
+                        value: link.value,
+                        color: link.color,
+                        hoverColor: link.hoverColor,
+                        // Add source and target names for tooltip
+                        sourceName: sankeyData.nodes[sourceIndex]?.name,
+                        targetName: sankeyData.nodes[targetIndex]?.name,
+                    }
+                }),
+            }
+
+            const sankeyWidth = isSmallScreen ? 800 : 1200
+            const defaultHeight = isSmallScreen ? 400 : 600
+            const sankeyHeight =
+                typeof height === 'number' ? height : defaultHeight
+
+            return (
+                <SankeyChartWrapper
+                    chartName={chartName}
+                    transformedData={transformedData}
+                    nodeColors={nodeColors}
+                    linkColors={linkColors}
+                    sankeyWidth={sankeyWidth}
+                    sankeyHeight={sankeyHeight}
+                    isSmallScreen={isSmallScreen}
+                />
             )
         }
 

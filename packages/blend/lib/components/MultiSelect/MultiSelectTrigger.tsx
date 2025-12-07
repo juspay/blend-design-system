@@ -30,6 +30,9 @@ export type MultiSelectTriggerProps = {
     multiSelectTokens: MultiSelectTokensType
     inline?: boolean
     error?: boolean
+    disabled?: boolean
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
 }
 const MultiSelectTrigger = ({
     selectedValues,
@@ -42,13 +45,13 @@ const MultiSelectTrigger = ({
     label,
     placeholder,
     required,
-    selectionTagType,
-    valueLabelMap,
     open,
     onClick,
     multiSelectTokens,
     inline = false,
     error,
+    maxTriggerWidth,
+    minTriggerWidth,
 }: MultiSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -94,6 +97,9 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    type="button"
+                    maxWidth={maxTriggerWidth}
+                    minWidth={minTriggerWidth}
                     onClick={onClick}
                     position="relative"
                     width={'100%'}
@@ -103,7 +109,6 @@ const MultiSelectTrigger = ({
                     justifyContent="space-between"
                     gap={8}
                     borderRadius={appliedBorderRadius}
-                    boxShadow={multiSelectTokens.trigger.boxShadow[variant]}
                     outline={
                         multiSelectTokens.trigger.outline[variant][
                             error ? 'error' : open ? 'open' : 'closed'
@@ -147,7 +152,12 @@ const MultiSelectTrigger = ({
                     })}
                 >
                     {slot && (
-                        <Block as="span" ref={slotRef} contentCentered>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            ref={slotRef}
+                            contentCentered
+                        >
                             {slot}
                         </Block>
                     )}
@@ -212,7 +222,6 @@ const MultiSelectTrigger = ({
                                     />
                                 </Block>
                             )}
-                        {/* Variant == Container - always show the placeholder*/}
                         {variant === MultiSelectVariant.CONTAINER &&
                             (selectedValues.length > 0 ||
                                 !isSmallScreen ||
@@ -232,7 +241,9 @@ const MultiSelectTrigger = ({
                                 variant="body.md"
                                 color={
                                     multiSelectTokens.trigger.selectionTag
-                                        .container[selectionTagType].color
+                                        .container[
+                                        MultiSelectSelectionTagType.COUNT
+                                    ].color
                                 }
                                 fontWeight={500}
                                 style={{
@@ -240,22 +251,14 @@ const MultiSelectTrigger = ({
                                     marginLeft: 8,
                                     backgroundColor:
                                         multiSelectTokens.trigger.selectionTag
-                                            .container[selectionTagType]
-                                            .backgroundColor,
+                                            .container[
+                                            MultiSelectSelectionTagType.COUNT
+                                        ].backgroundColor,
                                     borderRadius: 4,
-                                    padding:
-                                        selectionTagType ===
-                                        MultiSelectSelectionTagType.COUNT
-                                            ? '0px 6px'
-                                            : '0px 0px',
+                                    padding: '0px 6px',
                                 }}
                             >
-                                {selectionTagType ===
-                                MultiSelectSelectionTagType.COUNT
-                                    ? selectedValues.length
-                                    : selectedValues
-                                          .map((v) => valueLabelMap[v])
-                                          .join(', ')}
+                                {selectedValues.length}
                             </Text>
                         )}
                     </Block>
@@ -268,13 +271,14 @@ const MultiSelectTrigger = ({
                         contentCentered
                         flexShrink={0}
                     >
-                        <ChevronDown size={16} />
+                        <ChevronDown size={16} aria-hidden="true" />
                     </Block>
                 </PrimitiveButton>
 
                 {variant === MultiSelectVariant.CONTAINER &&
                     selectedValues.length > 0 && (
                         <PrimitiveButton
+                            type="button"
                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered

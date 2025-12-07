@@ -12,7 +12,7 @@ import {
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
-import Tag from '../../../../packages/blend/lib/components/Tags/Tags'
+import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
     TagColor,
     TagVariant,
@@ -37,6 +37,8 @@ import {
     Smartphone,
     Watch,
     Settings,
+    Download,
+    Trash2,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -701,7 +703,8 @@ const SimpleDataTableExample = () => {
                     if (fieldName === 'category' && typeof value === 'object') {
                         updated.category = value as DropdownColumnProps
                     } else {
-                        ;(updated as Record<string, unknown>)[fieldName] = value
+                        const updatedRecord = updated as Record<string, unknown>
+                        updatedRecord[fieldName] = value
                     }
                     return updated
                 }
@@ -832,23 +835,21 @@ const SimpleDataTableExample = () => {
                 }}
                 headerSlot1={
                     <Button
+                        text="Manage Products"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Package />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Product action clicked')}
-                    >
-                        Manage Products
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Schedule"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<Calendar />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Calendar action clicked')}
-                    >
-                        Schedule
-                    </Button>
+                    />
                 }
             />
 
@@ -919,27 +920,25 @@ const SimpleDataTableExample = () => {
                     onFieldChange={handleFieldChange}
                     headerSlot1={
                         <Button
+                            text="Manage Products"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Package />}
                             size={ButtonSize.SMALL}
                             onClick={() =>
                                 console.log('Product action clicked')
                             }
-                        >
-                            Manage Products
-                        </Button>
+                        />
                     }
                     headerSlot2={
                         <Button
+                            text="Schedule"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Calendar />}
                             size={ButtonSize.SMALL}
                             onClick={() =>
                                 console.log('Calendar action clicked')
                             }
-                        >
-                            Schedule
-                        </Button>
+                        />
                     }
                 />
             </div>
@@ -980,13 +979,12 @@ const SimpleDataTableExample = () => {
                 </div>
 
                 <Button
+                    text="Open Column Sorting Demo Table"
                     buttonType={ButtonType.PRIMARY}
                     leadingIcon={<Settings size={16} />}
                     size={ButtonSize.MEDIUM}
                     onClick={() => setIsTableModalOpen(true)}
-                >
-                    Open Column Sorting Demo Table
-                </Button>
+                />
 
                 {/* Modal with Table */}
                 <Modal
@@ -1428,23 +1426,21 @@ const EmptyDataTableExamples = () => {
                 }}
                 headerSlot1={
                     <Button
+                        text="Refresh"
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<RefreshCw size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Refresh clicked')}
-                    >
-                        Refresh
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Add User"
                         buttonType={ButtonType.PRIMARY}
                         leadingIcon={<Package size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={() => console.log('Add User clicked')}
-                    >
-                        Add User
-                    </Button>
+                    />
                 }
             />
 
@@ -1506,13 +1502,12 @@ const EmptyDataTableExamples = () => {
                     }}
                     headerSlot1={
                         <Button
+                            text="Add Product"
                             buttonType={ButtonType.PRIMARY}
                             leadingIcon={<Package size={16} />}
                             size={ButtonSize.SMALL}
                             onClick={() => console.log('Add Product clicked')}
-                        >
-                            Add Product
-                        </Button>
+                        />
                     }
                 />
             </div>
@@ -1987,8 +1982,28 @@ const DataTableDemo = () => {
         searchQuery: string,
         filters: FilterRule[],
         page: number,
-        size: number
+        size: number,
+        sortField?: string,
+        sortDirection?: SortDirection
     ) => {
+        if (!size || size <= 0 || !Number.isInteger(size)) {
+            console.warn(
+                '🚫 Invalid page size in fetchServerData:',
+                size,
+                'aborting API call'
+            )
+            return
+        }
+
+        if (!page || page <= 0 || !Number.isInteger(page)) {
+            console.warn(
+                '🚫 Invalid page number in fetchServerData:',
+                page,
+                'aborting API call'
+            )
+            return
+        }
+
         setIsLoading(true)
 
         // Simulate API delay
@@ -2047,7 +2062,58 @@ const DataTableDemo = () => {
             }
         })
 
-        // Apply server-side pagination
+        // Apply server-side sorting
+        if (
+            sortField &&
+            sortDirection &&
+            sortDirection !== SortDirection.NONE
+        ) {
+            filteredData.sort((a, b) => {
+                let aValue = (a as Record<string, unknown>)[sortField]
+                let bValue = (b as Record<string, unknown>)[sortField]
+
+                // Handle complex object fields for sorting
+                if (
+                    sortField === 'name' &&
+                    aValue &&
+                    typeof aValue === 'object'
+                ) {
+                    aValue = (aValue as AvatarColumnProps).label
+                    bValue = (bValue as AvatarColumnProps).label
+                } else if (
+                    sortField === 'status' &&
+                    aValue &&
+                    typeof aValue === 'object'
+                ) {
+                    aValue = (aValue as TagColumnProps).text
+                    bValue = (bValue as TagColumnProps).text
+                }
+
+                // Convert to string for comparison if not a number
+                let aCompareValue: string | number
+                let bCompareValue: string | number
+
+                if (typeof aValue !== 'number' && typeof bValue !== 'number') {
+                    aCompareValue = String(aValue || '').toLowerCase()
+                    bCompareValue = String(bValue || '').toLowerCase()
+                } else {
+                    aCompareValue = typeof aValue === 'number' ? aValue : 0
+                    bCompareValue = typeof bValue === 'number' ? bValue : 0
+                }
+
+                let result = 0
+                if (aCompareValue < bCompareValue) {
+                    result = -1
+                } else if (aCompareValue > bCompareValue) {
+                    result = 1
+                }
+
+                return sortDirection === SortDirection.DESCENDING
+                    ? -result
+                    : result
+            })
+        }
+
         const startIndex = (page - 1) * size
         const paginatedData = filteredData.slice(startIndex, startIndex + size)
 
@@ -2094,7 +2160,9 @@ const DataTableDemo = () => {
                 searchConfig.query,
                 serverState.filters,
                 1,
-                pageSize
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
             )
         } else {
             // Local: Let DataTable handle it internally
@@ -2118,7 +2186,14 @@ const DataTableDemo = () => {
 
         if (isServerSideMode || switched) {
             // Server-side: Make API call (either already in server mode or just switched)
-            fetchServerData(serverState.searchQuery, typedFilters, 1, pageSize)
+            fetchServerData(
+                serverState.searchQuery,
+                typedFilters,
+                1,
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
+            )
         } else {
             // Local: Just update the server state for consistency
             setServerState((prev) => ({ ...prev, filters: typedFilters }))
@@ -2140,7 +2215,9 @@ const DataTableDemo = () => {
                 serverState.searchQuery,
                 serverState.filters,
                 page,
-                pageSize
+                pageSize,
+                sortConfig.field,
+                sortConfig.direction
             )
         } else {
             console.log('💻 Local pagination - no server call needed')
@@ -2150,22 +2227,37 @@ const DataTableDemo = () => {
     const handlePageSizeChange = (size: number) => {
         console.log('🔄 Page size change requested:', {
             size,
+            currentPageSize: pageSize,
             isServerSideMode,
         })
-        setPageSize(size)
-        setCurrentPage(1)
 
-        if (isServerSideMode) {
-            // For server-side mode, fetch new data with new page size
-            console.log('📡 Fetching server data with new page size:', size)
-            fetchServerData(
-                serverState.searchQuery,
-                serverState.filters,
-                1,
-                size
-            )
+        // Validate page size - must be a positive number
+        if (!size || size <= 0 || !Number.isInteger(size)) {
+            console.log('🚫 Invalid page size:', size, 'skipping operation')
+            return
+        }
+
+        // Only proceed if the page size actually changed
+        if (size !== pageSize) {
+            setPageSize(size)
+            setCurrentPage(1)
+
+            if (isServerSideMode) {
+                // For server-side mode, fetch new data with new page size
+                console.log('📡 Fetching server data with new page size:', size)
+                fetchServerData(
+                    serverState.searchQuery,
+                    serverState.filters,
+                    1,
+                    size,
+                    sortConfig.field,
+                    sortConfig.direction
+                )
+            } else {
+                console.log('💻 Local pagination - no server call needed')
+            }
         } else {
-            console.log('💻 Local pagination - no server call needed')
+            console.log('🚫 Page size unchanged, skipping operation')
         }
     }
 
@@ -2197,6 +2289,35 @@ const DataTableDemo = () => {
                 pageSize: 10,
                 totalRecords: 3000,
             })
+        }
+    }
+
+    const handleSortChange = (newSortConfig: {
+        field: string
+        direction: SortDirection
+    }) => {
+        console.log(
+            '🔄 Sort change requested:',
+            newSortConfig,
+            'Mode:',
+            isServerSideMode ? 'server' : 'local'
+        )
+        setSortConfig(newSortConfig)
+
+        if (isServerSideMode) {
+            console.log('📡 Fetching server data with new sort:', newSortConfig)
+            // Use serverState.pageSize to maintain current page size, and reset to page 1 for new sort
+            setCurrentPage(1)
+            fetchServerData(
+                serverState.searchQuery,
+                serverState.filters,
+                1,
+                serverState.pageSize, // Use server state page size, not local
+                newSortConfig.field,
+                newSortConfig.direction
+            )
+        } else {
+            console.log('💻 Local sorting - handled by DataTable component')
         }
     }
 
@@ -2614,6 +2735,32 @@ const DataTableDemo = () => {
         )
     }
 
+    // Handle row selection change
+    const handleRowSelectionChange = (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: Record<string, unknown>
+    ) => {
+        const userData = rowData as UserRow
+        const userName = (userData.name as AvatarColumnProps).label
+
+        console.log('🔄 Row selection changed:', {
+            action: isSelected ? 'SELECTED' : 'DESELECTED',
+            rowId,
+            userName,
+            email: userData.email,
+            role: userData.role,
+            totalSelectedCount: selectedRowIds.length,
+            allSelectedRowIds: selectedRowIds,
+        })
+
+        console.log(
+            `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
+        )
+        console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+    }
+
     return (
         <div>
             {/* Mode Toggle and Controls */}
@@ -2655,7 +2802,7 @@ const DataTableDemo = () => {
                             }}
                         >
                             {isServerSideMode
-                                ? `🚀 Server-side mode: Simulating 3,000 records with API calls for search/filter. Currently showing ${data.length} records.`
+                                ? `🚀 Server-side mode: Simulating 3,000 records with API calls for search/filter/sorting. Currently showing ${data.length} records.`
                                 : `💻 Local mode: All operations handled client-side with ${data.length} records. Both column filters and advanced filters work locally.`}
                             <span style={{ marginLeft: '8px' }}>
                                 {columnFreeze > 0 ? (
@@ -2681,6 +2828,15 @@ const DataTableDemo = () => {
                             to see the full text in a tooltip! Visual elements
                             like avatars and tags don't show tooltips as they're
                             not text-based content.
+                            <br />
+                            <strong>🎯 BULK ACTIONS DEMO:</strong> Enable row
+                            selection to see the new bulk actions bar with React
+                            elements (icons)! The bulk actions include Export,
+                            Send Email, Archive, Share, Add to Favorites, and
+                            Delete - each with beautiful leading icons and some
+                            with trailing icons. Select rows to activate the
+                            bulk action bar and try the different action
+                            buttons.
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -2788,6 +2944,7 @@ const DataTableDemo = () => {
                             </div>
                         </div>
                         <Button
+                            text={`Auto API Switch: ${autoSwitchToApi ? 'ON' : 'OFF'}`}
                             buttonType={
                                 autoSwitchToApi
                                     ? ButtonType.PRIMARY
@@ -2797,10 +2954,9 @@ const DataTableDemo = () => {
                             size={ButtonSize.SMALL}
                             onClick={toggleAutoSwitch}
                             disabled={isServerSideMode}
-                        >
-                            Auto API Switch: {autoSwitchToApi ? 'ON' : 'OFF'}
-                        </Button>
+                        />
                         <Button
+                            text={`Switch to ${isServerSideMode ? 'Local' : 'Server-Side'}`}
                             buttonType={
                                 isServerSideMode
                                     ? ButtonType.PRIMARY
@@ -2816,10 +2972,7 @@ const DataTableDemo = () => {
                             size={ButtonSize.SMALL}
                             onClick={toggleMode}
                             disabled={isLoading}
-                        >
-                            Switch to{' '}
-                            {isServerSideMode ? 'Local' : 'Server-Side'}
-                        </Button>
+                        />
                     </div>
                 </div>
 
@@ -2904,6 +3057,10 @@ const DataTableDemo = () => {
                 enableAdvancedFilter
                 advancedFilterComponent={AdvancedFilterComponent}
                 advancedFilters={serverState.filters}
+                enableColumnReordering={true}
+                onColumnReorder={(newColumns) => {
+                    console.log('🔄 Columns reordered:', newColumns)
+                }}
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
@@ -2919,8 +3076,12 @@ const DataTableDemo = () => {
                 serverSidePagination={isServerSideMode}
                 isLoading={isLoading}
                 pagination={{
-                    currentPage,
-                    pageSize,
+                    currentPage: isServerSideMode
+                        ? serverState.currentPage
+                        : currentPage,
+                    pageSize: isServerSideMode
+                        ? serverState.pageSize
+                        : pageSize,
                     totalRows: isServerSideMode
                         ? serverState.totalRecords
                         : data.length,
@@ -2929,7 +3090,7 @@ const DataTableDemo = () => {
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 defaultSort={sortConfig}
-                onSortChange={(newSortConfig) => setSortConfig(newSortConfig)}
+                onSortChange={handleSortChange}
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
                 onAdvancedFiltersChange={handleAdvancedFiltersChange}
@@ -2937,26 +3098,106 @@ const DataTableDemo = () => {
                 onRowCancel={handleRowCancel}
                 onRowExpansionChange={handleRowExpansionChange}
                 onRowClick={handleRowClick}
+                onRowSelectionChange={handleRowSelectionChange}
+                bulkActions={{
+                    showSelectAll: true,
+                    showDeselectAll: true,
+                    onSelectAll: () => {
+                        console.log('🔄 Select All clicked')
+                        // Select all rows on current page
+                        const newSelectedRows: Record<string, boolean> = {}
+                        data.forEach((row) => {
+                            const rowId = String(row.id)
+                            newSelectedRows[rowId] = true
+                        })
+                        // This would be handled by the DataTable internally, this is just for demo logging
+                        alert('Selected all rows on current page!')
+                    },
+                    onDeselectAll: () => {
+                        console.log('🔄 Deselect All clicked')
+                        alert('Deselected all rows!')
+                    },
+                    customActions: (
+                        <>
+                            <Button
+                                key="download"
+                                text="Download"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Download size={16} />}
+                                onClick={() => {
+                                    const selectedRowIds = Object.entries({}) // Get actual selected rows
+                                        .filter(([, selected]) => selected)
+                                        .map(([rowId]) => rowId)
+                                    console.log(
+                                        '📥 Download clicked with selected rows:',
+                                        selectedRowIds
+                                    )
+                                    alert(
+                                        `Downloading selected users to CSV format.`
+                                    )
+                                }}
+                            />
+                            <Button
+                                key="send-email"
+                                text="Send Email"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Calendar size={16} />}
+                                onClick={() => {
+                                    console.log('📧 Send Email clicked')
+                                    alert('Sending email to selected users!')
+                                }}
+                            />
+                            <Button
+                                key="archive"
+                                text="Archive"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Package size={16} />}
+                                onClick={() => {
+                                    console.log('📦 Archive clicked')
+                                    alert('Archiving selected users!')
+                                }}
+                            />
+                            <Button
+                                key="delete"
+                                text="Delete"
+                                buttonType={ButtonType.DANGER}
+                                size={ButtonSize.SMALL}
+                                leadingIcon={<Trash2 size={16} />}
+                                onClick={() => {
+                                    console.log('🗑️ Delete clicked')
+                                    if (
+                                        confirm(
+                                            'Are you sure you want to delete the selected users?'
+                                        )
+                                    ) {
+                                        alert('Deleted selected users!')
+                                    }
+                                }}
+                            />
+                        </>
+                    ),
+                }}
                 headerSlot1={
                     <Button
+                        text={isLoading ? 'Loading...' : 'Refresh'}
                         buttonType={ButtonType.SECONDARY}
                         leadingIcon={<RefreshCw size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={handleRefreshData}
                         disabled={isLoading}
-                    >
-                        {isLoading ? 'Loading...' : 'Refresh'}
-                    </Button>
+                    />
                 }
                 headerSlot2={
                     <Button
+                        text="Action"
                         buttonType={ButtonType.DANGER}
                         leadingIcon={<CircleX size={16} />}
                         size={ButtonSize.SMALL}
                         onClick={handleRefreshData}
-                    >
-                        Action
-                    </Button>
+                    />
                 }
                 rowActions={{
                     showEditAction: true, // Show edit actions alongside custom actions
@@ -3007,7 +3248,638 @@ const DataTableDemo = () => {
             />
 
             <SimpleDataTableExample />
+
+            {/* Table Body Height Control Demo */}
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0f4ff',
+                        borderRadius: '8px',
+                        border: '1px solid #c7d2fe',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        📏 Table Body Height Control Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#312e81',
+                        }}
+                    >
+                        🎯 <strong>NEW FEATURE:</strong> Control the height of
+                        the table body (where rows are displayed) using the{' '}
+                        <code>tableBodyHeight</code> property. This creates a
+                        fixed-height table with scrollable content, perfect for
+                        dashboard layouts or when you need consistent table
+                        dimensions. The table below has a fixed height of{' '}
+                        <strong>400px</strong> - try scrolling within the table
+                        body!
+                    </p>
+                </div>
+
+                <DataTable
+                    data={data.slice(0, 20)} // Show more rows to demonstrate scrolling
+                    columns={
+                        columns.slice(0, 5) as unknown as ColumnDefinition<
+                            Record<string, unknown>
+                        >[]
+                    } // Show fewer columns for demo
+                    idField="id"
+                    title="Fixed Height Table (400px)"
+                    description="This table has a fixed body height with scrollable content"
+                    enableSearch={true}
+                    enableFiltering={true}
+                    enableAdvancedFilter={false}
+                    enableInlineEdit={false}
+                    enableRowExpansion={false}
+                    enableRowSelection={true}
+                    enableColumnManager={false}
+                    showSettings={false}
+                    columnFreeze={0}
+                    tableBodyHeight={200} // Fixed height of 400px
+                    pagination={{
+                        currentPage: 1,
+                        pageSize: 50, // Show more rows to demonstrate scrolling
+                        totalRows: 20,
+                        pageSizeOptions: [20, 50, 100],
+                    }}
+                    onRowSelectionChange={handleRowSelectionChange}
+                    headerSlot1={
+                        <Button
+                            text="Settings"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Settings size={16} />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => console.log('Settings clicked')}
+                        />
+                    }
+                    headerSlot2={
+                        <Button
+                            text="Add User"
+                            buttonType={ButtonType.PRIMARY}
+                            leadingIcon={<Package size={16} />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => console.log('Add User clicked')}
+                        />
+                    }
+                />
+
+                {/* Height with CSS units demo */}
+                <div style={{ marginTop: '30px' }}>
+                    <div
+                        style={{
+                            marginBottom: '20px',
+                            padding: '16px',
+                            backgroundColor: '#fef3c7',
+                            borderRadius: '8px',
+                            border: '1px solid #f59e0b',
+                        }}
+                    >
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                color: '#92400e',
+                            }}
+                        >
+                            📐 CSS Units Support Demo
+                        </h4>
+                        <p
+                            style={{
+                                margin: 0,
+                                fontSize: '14px',
+                                color: '#92400e',
+                            }}
+                        >
+                            The <code>tableBodyHeight</code> property supports
+                            both numbers (pixels) and CSS strings. This table
+                            uses <strong>"50vh"</strong> (50% of viewport
+                            height) to create a responsive height that adapts to
+                            the browser window size.
+                        </p>
+                    </div>
+
+                    <DataTable
+                        data={data.slice(0, 15)}
+                        columns={
+                            columns.slice(0, 4) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        title="Responsive Height Table (50vh)"
+                        description="This table uses viewport height units for responsive sizing"
+                        enableSearch={true}
+                        enableFiltering={false}
+                        enableAdvancedFilter={false}
+                        enableInlineEdit={false}
+                        enableRowExpansion={false}
+                        enableRowSelection={false}
+                        enableColumnManager={false}
+                        showSettings={false}
+                        columnFreeze={0}
+                        tableBodyHeight="50vh" // 50% of viewport height
+                        pagination={{
+                            currentPage: 1,
+                            pageSize: 50,
+                            totalRows: 15,
+                            pageSizeOptions: [15, 30, 50],
+                        }}
+                    />
+                </div>
+            </div>
+
             <EmptyDataTableExamples />
+
+            <SkeletonLoadingDemo />
+        </div>
+    )
+}
+
+// Skeleton Loading Demo Component
+const SkeletonLoadingDemo = () => {
+    const [globalSkeletonLoading, setGlobalSkeletonLoading] = useState(false)
+    const [skeletonVariant, setSkeletonVariant] = useState<'pulse' | 'wave'>(
+        'pulse'
+    )
+    const [simulateApiCall, setSimulateApiCall] = useState(false)
+    const [loadingRowIds, setLoadingRowIds] = useState<Set<number>>(new Set())
+
+    type DemoRow = {
+        id: number
+        name: AvatarColumnProps
+        email: string
+        role: string
+        status: TagColumnProps
+        department: string
+    }
+
+    const demoData: DemoRow[] = [
+        {
+            id: 1,
+            name: {
+                label: 'Alice Johnson',
+                sublabel: 'Joined March 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/women/1.jpg',
+            },
+            email: 'alice.johnson@example.com',
+            role: 'Admin',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+        {
+            id: 2,
+            name: {
+                label: 'Bob Smith',
+                sublabel: 'Joined June 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg',
+            },
+            email: 'bob.smith@example.com',
+            role: 'Developer',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+        {
+            id: 3,
+            name: {
+                label: 'Carol Williams',
+                sublabel: 'Joined September 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/women/3.jpg',
+            },
+            email: 'carol.williams@example.com',
+            role: 'Designer',
+            status: {
+                text: 'Pending',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+            department: 'Design',
+        },
+        {
+            id: 4,
+            name: {
+                label: 'David Brown',
+                sublabel: 'Joined December 2023',
+                imageUrl: 'https://randomuser.me/api/portraits/men/4.jpg',
+            },
+            email: 'david.brown@example.com',
+            role: 'Manager',
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            department: 'Marketing',
+        },
+        {
+            id: 5,
+            name: {
+                label: 'Emma Davis',
+                sublabel: 'Joined January 2024',
+                imageUrl: 'https://randomuser.me/api/portraits/women/5.jpg',
+            },
+            email: 'emma.davis@example.com',
+            role: 'Developer',
+            status: {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+            department: 'Engineering',
+        },
+    ]
+
+    const demoColumns: ColumnDefinition<DemoRow>[] = [
+        {
+            field: 'name',
+            header: 'User',
+            type: ColumnType.AVATAR,
+            renderCell: (value: AvatarColumnProps) => (
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '12px',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Avatar src={value.imageUrl} alt={value.label} />
+                    <div>
+                        <div style={{ fontWeight: 500, fontSize: '14px' }}>
+                            {value.label}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                            {value.sublabel}
+                        </div>
+                    </div>
+                </div>
+            ),
+            isSortable: true,
+            minWidth: '200px',
+            maxWidth: '300px',
+            // This column always shows skeleton when ANY loading is active
+            showSkeleton: undefined,
+            skeletonVariant: 'pulse',
+        },
+        {
+            field: 'email',
+            header: 'Email',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '200px',
+            maxWidth: '300px',
+        },
+        {
+            field: 'role',
+            header: 'Role (Wave Animation)',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '120px',
+            maxWidth: '160px',
+            // This column uses wave variant
+            showSkeleton: undefined,
+            skeletonVariant: 'wave',
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+            isSortable: true,
+            minWidth: '100px',
+            maxWidth: '140px',
+        },
+        {
+            field: 'department',
+            header: 'Department',
+            type: ColumnType.TEXT,
+            isSortable: true,
+            isEditable: true,
+            minWidth: '130px',
+            maxWidth: '180px',
+        },
+    ]
+
+    const handleSimulateApiCall = () => {
+        setSimulateApiCall(true)
+        setTimeout(() => {
+            setSimulateApiCall(false)
+        }, 2000)
+    }
+
+    const handleSimulateRowUpdate = (rowId: number) => {
+        setLoadingRowIds((prev) => new Set(prev).add(rowId))
+        setTimeout(() => {
+            setLoadingRowIds((prev) => {
+                const newSet = new Set(prev)
+                newSet.delete(rowId)
+                return newSet
+            })
+        }, 1500)
+    }
+
+    const isRowLoading = (row: Record<string, unknown>) => {
+        const demoRow = row as DemoRow
+        return loadingRowIds.has(demoRow.id)
+    }
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0f9ff',
+                    borderRadius: '8px',
+                    border: '1px solid #bae6fd',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#0369a1',
+                    }}
+                >
+                    ⚡ Skeleton Loading States Demo
+                </h3>
+                <p
+                    style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        color: '#075985',
+                    }}
+                >
+                    🎯 <strong>NEW FEATURE:</strong> The DataTable now supports
+                    granular skeleton loading control similar to the Tabs
+                    component!
+                    <br />
+                    <br />
+                    <strong>Features demonstrated:</strong>
+                    <br />• <strong>Global skeleton loading</strong> - Toggle to
+                    show skeleton for all cells (including checkboxes and
+                    expansion buttons)
+                    <br />• <strong>Per-column animation</strong> - "Role"
+                    column uses wave animation, others use pulse
+                    <br />• <strong>Per-row loading</strong> - Click "Update
+                    Row" buttons to simulate individual row updates
+                    <br />• <strong>API call simulation</strong> - Simulate a
+                    2-second API call; shows "Loading data..." instead of "No
+                    data" when loading
+                    <br />• <strong>Different variants</strong> - Switch between
+                    pulse and wave animations globally
+                </p>
+            </div>
+
+            {/* Controls */}
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#fefce8',
+                    borderRadius: '8px',
+                    border: '1px solid #fef08a',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    text={
+                        globalSkeletonLoading
+                            ? '✓ Global Skeleton ON'
+                            : 'Global Skeleton OFF'
+                    }
+                    buttonType={
+                        globalSkeletonLoading
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() =>
+                        setGlobalSkeletonLoading(!globalSkeletonLoading)
+                    }
+                />
+
+                <Button
+                    text={
+                        simulateApiCall
+                            ? 'Loading... (2s)'
+                            : 'Simulate API Call'
+                    }
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<RefreshCw size={16} />}
+                    onClick={handleSimulateApiCall}
+                    disabled={simulateApiCall}
+                />
+
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                    }}
+                >
+                    <label htmlFor="skeleton-variant">Animation:</label>
+                    <select
+                        id="skeleton-variant"
+                        value={skeletonVariant}
+                        onChange={(e) =>
+                            setSkeletonVariant(
+                                e.target.value as 'pulse' | 'wave'
+                            )
+                        }
+                        style={{
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            border: '1px solid #d1d5db',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <option value="pulse">Pulse</option>
+                        <option value="wave">Wave</option>
+                    </select>
+                </div>
+
+                <div
+                    style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}
+                >
+                    {demoData.map((row) => (
+                        <Button
+                            key={row.id}
+                            text={
+                                loadingRowIds.has(row.id)
+                                    ? `Row ${row.id} Loading...`
+                                    : `Update Row ${row.id}`
+                            }
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.SMALL}
+                            onClick={() => handleSimulateRowUpdate(row.id)}
+                            disabled={loadingRowIds.has(row.id)}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            <DataTable
+                data={demoData}
+                columns={
+                    demoColumns as unknown as ColumnDefinition<
+                        Record<string, unknown>
+                    >[]
+                }
+                idField="id"
+                title="Skeleton Loading Examples"
+                description="Demonstrates global, per-column, and per-row skeleton loading states"
+                enableSearch={true}
+                enableFiltering={false}
+                enableAdvancedFilter={false}
+                enableInlineEdit={false}
+                enableRowExpansion={false}
+                enableRowSelection={true}
+                enableColumnManager={true}
+                showSettings={false}
+                columnFreeze={0}
+                showSkeleton={globalSkeletonLoading}
+                skeletonVariant={skeletonVariant}
+                isLoading={simulateApiCall}
+                isRowLoading={isRowLoading}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 10,
+                    totalRows: demoData.length,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                headerSlot1={
+                    <Button
+                        text="Settings"
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={<Settings size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Settings clicked')}
+                    />
+                }
+                headerSlot2={
+                    <Button
+                        text="Add User"
+                        buttonType={ButtonType.PRIMARY}
+                        leadingIcon={<Package size={16} />}
+                        size={ButtonSize.SMALL}
+                        onClick={() => console.log('Add User clicked')}
+                    />
+                }
+            />
+
+            {/* Explanation Card */}
+            <div
+                style={{
+                    marginTop: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h4
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    📚 How It Works
+                </h4>
+                <div
+                    style={{
+                        fontSize: '14px',
+                        color: '#166534',
+                        lineHeight: '1.6',
+                    }}
+                >
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>1. Global Skeleton Loading:</strong> Use{' '}
+                        <code>showSkeleton={'{true}'}</code> prop to show
+                        skeleton for all cells (including checkboxes and
+                        expansion buttons), or <code>isLoading={'{true}'}</code>{' '}
+                        for backward compatibility.
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>2. Per-Row Loading:</strong> Use{' '}
+                        <code>isRowLoading</code> function to show skeleton for
+                        specific rows that are being updated (e.g., during an
+                        API call for that row).
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>3. Per-Column Control:</strong> You can set{' '}
+                        <code>showSkeleton: false</code> on a column definition
+                        to prevent that column from showing skeleton, or use{' '}
+                        <code>skeletonVariant</code> to customize the animation
+                        for specific columns.
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>4. Animation Variants:</strong> Set{' '}
+                        <code>skeletonVariant="wave"</code> globally or
+                        per-column using <code>column.skeletonVariant</code>{' '}
+                        (pulse or wave).
+                    </p>
+                    <p style={{ margin: '0 0 8px 0' }}>
+                        <strong>5. Empty State:</strong> When loading with no
+                        data, shows "Loading data..." spinner instead of "No
+                        data available".
+                    </p>
+                    <p style={{ margin: '0' }}>
+                        <strong>Priority:</strong> Column-level{' '}
+                        <code>showSkeleton</code> &gt; Row-level{' '}
+                        <code>isRowLoading</code> &gt; Global{' '}
+                        <code>showSkeleton/isLoading</code>
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }

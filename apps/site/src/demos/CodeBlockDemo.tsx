@@ -415,63 +415,68 @@ fibonacci n
                 {/* Live Preview */}
                 <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Live Preview</h3>
-                    <CodeBlock
-                        code={
-                            variant === CodeBlockVariant.DIFF ? '' : customCode
-                        }
-                        variant={variant}
-                        showLineNumbers={showLineNumbers}
-                        showHeader={showHeader}
-                        header={headerText}
-                        diffLines={
-                            variant === CodeBlockVariant.DIFF
-                                ? [
-                                      {
-                                          content:
-                                              'function getPaymentPriority(order) {',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content: '  const priorities = [];',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content:
-                                              "  if (order.udf3 === 'insurance' && order.udf4 === 'health' && order.paymentMethod === 'UPI') {",
-                                          type: DiffLineType.REMOVED,
-                                      },
-                                      {
-                                          content:
-                                              "  if (order.type === 'insurance' && order.category === 'health' && order.method === 'UPI') {",
-                                          type: DiffLineType.ADDED,
-                                      },
-                                      {
-                                          content:
-                                              "    priorities.push('PAYU');",
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content: '  }',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                      {
-                                          content:
-                                              "  return priorities.length ? priorities : ['DEFAULT'];",
-                                          type: DiffLineType.REMOVED,
-                                      },
-                                      {
-                                          content:
-                                              "  return priorities.length > 0 ? priorities : ['DEFAULT'];",
-                                          type: DiffLineType.ADDED,
-                                      },
-                                      {
-                                          content: '}',
-                                          type: DiffLineType.UNCHANGED,
-                                      },
-                                  ]
-                                : undefined
-                        }
-                    />
+                    <form>
+                        <CodeBlock
+                            code={
+                                variant === CodeBlockVariant.DIFF
+                                    ? ''
+                                    : customCode
+                            }
+                            variant={variant}
+                            showLineNumbers={showLineNumbers}
+                            showHeader={showHeader}
+                            header={headerText}
+                            diffLines={
+                                variant === CodeBlockVariant.DIFF
+                                    ? [
+                                          {
+                                              content:
+                                                  'function getPaymentPriority(order) {',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  '  const priorities = [];',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  "  if (order.udf3 === 'insurance' && order.udf4 === 'health' && order.paymentMethod === 'UPI') {",
+                                              type: DiffLineType.REMOVED,
+                                          },
+                                          {
+                                              content:
+                                                  "  if (order.type === 'insurance' && order.category === 'health' && order.method === 'UPI') {",
+                                              type: DiffLineType.ADDED,
+                                          },
+                                          {
+                                              content:
+                                                  "    priorities.push('PAYU');",
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content: '  }',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                          {
+                                              content:
+                                                  "  return priorities.length ? priorities : ['DEFAULT'];",
+                                              type: DiffLineType.REMOVED,
+                                          },
+                                          {
+                                              content:
+                                                  "  return priorities.length > 0 ? priorities : ['DEFAULT'];",
+                                              type: DiffLineType.ADDED,
+                                          },
+                                          {
+                                              content: '}',
+                                              type: DiffLineType.UNCHANGED,
+                                          },
+                                      ]
+                                    : undefined
+                            }
+                        />
+                    </form>
                 </div>
             </div>
 
@@ -656,6 +661,154 @@ fibonacci n
                             code={codeExamples.api}
                             header="ApiClient.js"
                         />
+                    </div>
+                </div>
+            </div>
+
+            {/* Auto-Formatting Feature */}
+            <div className="space-y-6" id="auto-formatting">
+                <h2 className="text-2xl font-bold">
+                    Auto-Formatting (NEW! 🎉)
+                </h2>
+                <p className="text-gray-600">
+                    CodeBlock now supports automatic code formatting with the{' '}
+                    <code className="px-2 py-1 bg-gray-100 rounded text-sm font-mono">
+                        autoFormat
+                    </code>{' '}
+                    prop
+                </p>
+
+                <div className="grid grid-cols-1 gap-6">
+                    {/* JSON Formatting */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            JSON Auto-Formatting
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Unformatted JSON is automatically formatted with
+                            proper indentation
+                        </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-gray-500 uppercase">
+                                    Without autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`{"name":"John Doe","age":30,"email":"john@example.com","address":{"city":"New York","zip":"10001"},"active":true}`}
+                                    header="unformatted.json"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-green-600 uppercase">
+                                    With autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`{"name":"John Doe","age":30,"email":"john@example.com","address":{"city":"New York","zip":"10001"},"active":true}`}
+                                    autoFormat={true}
+                                    language="json"
+                                    header="formatted.json"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* JavaScript Formatting */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            JavaScript Auto-Formatting
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Unformatted JavaScript code is automatically
+                            indented
+                        </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-gray-500 uppercase">
+                                    Without autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`function processPayment(data){const amount=data.amount;if(amount>0){console.log('Processing payment');return{success:true,amount};}return{success:false};}`}
+                                    header="messy.js"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-green-600 uppercase">
+                                    With autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`function processPayment(data){const amount=data.amount;if(amount>0){console.log('Processing payment');return{success:true,amount};}return{success:false};}`}
+                                    autoFormat={true}
+                                    language="javascript"
+                                    header="formatted.js"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CSS Formatting */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            CSS Auto-Formatting
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Unformatted CSS is automatically structured with
+                            proper indentation
+                        </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-gray-500 uppercase">
+                                    Without autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`.button{background:#007bff;color:white;padding:10px 20px;border-radius:5px;}.button:hover{background:#0056b3;}`}
+                                    header="styles.css"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-green-600 uppercase">
+                                    With autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`.button{background:#007bff;color:white;padding:10px 20px;border-radius:5px;}.button:hover{background:#0056b3;}`}
+                                    autoFormat={true}
+                                    language="css"
+                                    header="formatted.css"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* HTML Formatting */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            HTML Auto-Formatting
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Unformatted HTML is automatically indented with
+                            proper nesting
+                        </p>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-gray-500 uppercase">
+                                    Without autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`<div><header><h1>Welcome</h1></header><main><p>This is content</p></main><footer><p>Footer text</p></footer></div>`}
+                                    header="index.html"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <span className="text-xs font-semibold text-green-600 uppercase">
+                                    With autoFormat
+                                </span>
+                                <CodeBlock
+                                    code={`<div><header><h1>Welcome</h1></header><main><p>This is content</p></main><footer><p>Footer text</p></footer></div>`}
+                                    autoFormat={true}
+                                    language="html"
+                                    header="formatted.html"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

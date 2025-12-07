@@ -40,6 +40,47 @@ const BreadcrumbDemo = () => {
     ])
 
     const [showSlots, setShowSlots] = useState(false)
+    const [showSkeleton, setShowSkeleton] = useState(false)
+    const [currentPath, setCurrentPath] = useState(
+        '/products/electronics/smartphones'
+    )
+    const [navigationLog, setNavigationLog] = useState<string[]>([])
+
+    // Custom routing handler (simulates React Router navigate)
+    const handleNavigation = (path: string) => {
+        setCurrentPath(path)
+        setNavigationLog((prev) => [
+            ...prev,
+            `Navigated to: ${path} (${new Date().toLocaleTimeString()})`,
+        ])
+    }
+
+    // Breadcrumb items with onClick handlers for custom routing
+    const customRoutingBreadcrumb: BreadcrumbItemType[] = [
+        {
+            label: 'Home',
+            href: '/',
+            leftSlot: <Home size={16} />,
+            onClick: () => handleNavigation('/'),
+        },
+        {
+            label: 'Products',
+            href: '/products',
+            leftSlot: <Folder size={16} />,
+            onClick: () => handleNavigation('/products'),
+        },
+        {
+            label: 'Electronics',
+            href: '/products/electronics',
+            leftSlot: <Database size={16} />,
+            onClick: () => handleNavigation('/products/electronics'),
+        },
+        {
+            label: 'Smartphones',
+            href: '/products/electronics/smartphones',
+            leftSlot: <Globe size={16} />,
+        },
+    ]
 
     // Sample breadcrumb data for different scenarios
     const simpleBreadcrumb: BreadcrumbItemType[] = [
@@ -187,6 +228,11 @@ const BreadcrumbDemo = () => {
                             checked={showSlots}
                             onChange={() => setShowSlots(!showSlots)}
                         />
+                        <Switch
+                            label="Show Skeleton"
+                            checked={showSkeleton}
+                            onChange={() => setShowSkeleton(!showSkeleton)}
+                        />
                     </div>
 
                     <div className="min-h-20 rounded-2xl w-full flex items-center p-4 outline-1 outline-gray-200">
@@ -196,6 +242,10 @@ const BreadcrumbDemo = () => {
                                     ? breadcrumbWithSlots
                                     : playgroundItems
                             }
+                            skeleton={{
+                                show: showSkeleton,
+                                variant: 'pulse',
+                            }}
                         />
                     </div>
 
@@ -267,6 +317,70 @@ const BreadcrumbDemo = () => {
                         </h3>
                         <div className="p-4 border rounded-lg">
                             <Breadcrumb items={longBreadcrumb} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Custom Routing Example */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Custom Routing (No Page Reload)
+                </h2>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            With onClick Handler (React Router Style)
+                        </h3>
+                        <div className="p-6 border rounded-lg space-y-4">
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm font-medium text-blue-900">
+                                    Current Path:{' '}
+                                    <code className="px-2 py-1 bg-blue-100 rounded">
+                                        {currentPath}
+                                    </code>
+                                </p>
+                            </div>
+
+                            <Breadcrumb items={customRoutingBreadcrumb} />
+
+                            {navigationLog.length > 0 && (
+                                <div className="space-y-2">
+                                    <p className="text-sm font-medium text-gray-700">
+                                        Navigation Log:
+                                    </p>
+                                    <div className="p-3 bg-gray-50 rounded-lg space-y-1 max-h-32 overflow-y-auto">
+                                        {navigationLog
+                                            .slice()
+                                            .reverse()
+                                            .map((log, index) => (
+                                                <p
+                                                    key={index}
+                                                    className="text-xs text-gray-600 font-mono"
+                                                >
+                                                    {log}
+                                                </p>
+                                            ))}
+                                    </div>
+                                    <button
+                                        onClick={() => setNavigationLog([])}
+                                        className="text-xs text-blue-600 hover:text-blue-800"
+                                    >
+                                        Clear Log
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <p className="text-sm text-gray-700">
+                                <strong>✓ No Page Reload:</strong> Click any
+                                breadcrumb item to see custom routing in action.
+                                The onClick handler prevents default link
+                                behavior, allowing you to use React Router,
+                                Next.js router, or any custom navigation
+                                solution without triggering full page reloads or
+                                unnecessary API calls.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -534,6 +648,38 @@ const BreadcrumbDemo = () => {
                             <li>
                                 • Use rightSlot sparingly for additional context
                                 or actions
+                            </li>
+                            <li>
+                                • Use onClick handler for SPAs to prevent page
+                                reloads and avoid unnecessary API calls
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-2">
+                            Custom Routing
+                        </h3>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                            <li>
+                                • Use onClick prop with React Router's
+                                navigate() or Next.js router.push()
+                            </li>
+                            <li>
+                                • Prevents full page reloads and improves
+                                performance
+                            </li>
+                            <li>
+                                • Avoids re-triggering session APIs and other
+                                initialization logic
+                            </li>
+                            <li>
+                                • href prop is still required for SEO and
+                                accessibility
+                            </li>
+                            <li>
+                                • onClick automatically prevents default link
+                                behavior
                             </li>
                         </ul>
                     </div>

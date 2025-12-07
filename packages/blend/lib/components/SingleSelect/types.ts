@@ -1,3 +1,4 @@
+import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SelectMenuAlignment {
@@ -28,6 +29,12 @@ export type SelectMenuGroupType = {
     groupLabel?: string
     items: SelectMenuItemType[]
     showSeparator?: boolean
+}
+
+export type SingleSelectSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
 }
 
 export type SelectMenuProps = {
@@ -123,4 +130,10 @@ export type SingleSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
+    skeleton?: SingleSelectSkeletonProps
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
 }

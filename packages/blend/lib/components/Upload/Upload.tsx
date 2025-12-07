@@ -342,7 +342,11 @@ const Upload: React.FC<UploadProps> = ({
                             </Text>
 
                             {helpIconHintText && (
-                                <Block contentCentered size={16}>
+                                <Block
+                                    data-element="help-icon"
+                                    contentCentered
+                                    size={16}
+                                >
                                     <Tooltip
                                         content={helpIconHintText}
                                         size={TooltipSize.SMALL}
@@ -366,6 +370,8 @@ const Upload: React.FC<UploadProps> = ({
             )}
 
             <Block
+                data-upload={label ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 display="flex"
                 flexDirection="column"
                 border={

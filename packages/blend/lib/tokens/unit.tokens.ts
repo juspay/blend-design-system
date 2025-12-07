@@ -9,7 +9,9 @@ type UnitType =
 
 export type UnitTokensType = Readonly<{
     0: UnitType
+    0.5: UnitType
     1: UnitType
+    1.5: UnitType
     2: UnitType
     3: UnitType
     4: UnitType
@@ -21,6 +23,7 @@ export type UnitTokensType = Readonly<{
     10: UnitType
     12: UnitType
     14: UnitType
+    15: UnitType
     16: UnitType
     18: UnitType
     20: UnitType
@@ -43,7 +46,9 @@ export type UnitTokensType = Readonly<{
 
 const unitTokens: UnitTokensType = {
     0: '0px',
+    0.5: '0.5px',
     1: '1px',
+    1.5: '1.5px',
     2: '2px',
     3: '3px',
     4: '4px',
@@ -57,6 +62,7 @@ const unitTokens: UnitTokensType = {
     12: '12px',
     13: '13px',
     14: '14px',
+    15: '15px',
     16: '16px',
     18: '18px',
     20: '20px',
@@ -67,6 +73,7 @@ const unitTokens: UnitTokensType = {
     36: '36px',
     40: '40px',
     42: '42px',
+    44: '44px',
     48: '48px',
     50: '50px',
     52: '52px',

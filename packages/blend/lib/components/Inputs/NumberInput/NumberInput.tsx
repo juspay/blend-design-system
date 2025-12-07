@@ -8,11 +8,22 @@ import { NumberInputSize } from './types'
 import type { NumberInputTokensType } from './numberInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { Triangle } from 'lucide-react'
+import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import {
+    getErrorShakeStyle,
+    errorShakeAnimation,
+} from '../../common/error.animations'
+import styled from 'styled-components'
+
+const Wrapper = styled(Block)`
+    ${errorShakeAnimation}
+`
 
 const NumberInput = ({
     value,
@@ -28,7 +39,7 @@ const NumberInput = ({
     placeholder,
     sublabel,
     helpIconHintText,
-    label = 'Number Input',
+    label,
     hintText,
     name,
     onBlur,
@@ -38,7 +49,13 @@ const NumberInput = ({
     const numberInputTokens =
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
+    const generatedId = useId()
+    const inputId = rest.id || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
     const [isFocused, setIsFocused] = useState(false)
+    const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -49,7 +66,15 @@ const NumberInput = ({
     const paddingX = numberInputTokens.inputContainer.padding.x[size]
     const paddingY =
         toPixels(numberInputTokens.inputContainer.padding.y[size]) +
-        (isSmallScreenWithLargeSize ? 0.5 : 0)
+        (isSmallScreenWithLargeSize ? 0.5 : 1)
+
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
 
     return (
         <Block
@@ -61,22 +86,24 @@ const NumberInput = ({
         >
             {(!isSmallScreen || size !== NumberInputSize.LARGE) && (
                 <InputLabels
+                    tokens={numberInputTokens}
                     label={label}
                     sublabel={sublabel}
                     disabled={disabled}
                     helpIconHintText={helpIconHintText}
+                    inputId={inputId}
                     name={name}
                     required={required}
-                    tokens={numberInputTokens}
                 />
             )}
-            <Block
+            <Wrapper
                 position="relative"
                 width={'100%'}
                 display="flex"
                 borderRadius={
                     numberInputTokens.inputContainer.borderRadius[size]
                 }
+                style={getErrorShakeStyle(shouldShake)}
             >
                 {label && isSmallScreenWithLargeSize && (
                     <Block
@@ -101,6 +128,9 @@ const NumberInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    id={inputId}
+                    lineHeight={FOUNDATION_THEME.unit[20]}
+                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     name={name}
                     type="number"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
@@ -110,6 +140,9 @@ const NumberInput = ({
                     min={min}
                     max={max}
                     required={required}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     paddingX={paddingX}
                     paddingTop={
                         isSmallScreenWithLargeSize && inputFocusedOrWithValue
@@ -124,7 +157,6 @@ const NumberInput = ({
                     borderRadius={
                         numberInputTokens.inputContainer.borderRadius[size]
                     }
-                    boxShadow={numberInputTokens.inputContainer.boxShadow}
                     border={
                         numberInputTokens.inputContainer.border[
                             error ? 'error' : 'default'
@@ -141,6 +173,12 @@ const NumberInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    backgroundColor="transparent"
+                    transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
+                    placeholderStyles={{
+                        transition: 'opacity 150ms ease-out',
+                        opacity: isFocused ? 0 : 1,
+                    }}
                     _hover={{
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
@@ -150,7 +188,11 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow: numberInputTokens.inputContainer.boxShadow,
+                        boxShadow: '0 0 0 3px #EFF6FF',
+                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                    }}
+                    _focusVisible={{
+                        placeholderColor: 'transparent',
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -200,6 +242,10 @@ const NumberInput = ({
                         }
                     ></Block>
                     <PrimitiveButton
+                        type="button"
+                        aria-label={
+                            label ? `Increase ${label}` : 'Increase value'
+                        }
                         onClick={() =>
                             onChange({
                                 target: {
@@ -215,7 +261,6 @@ const NumberInput = ({
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
                         }
-                        // flexGrow={1}
                         width={
                             numberInputTokens.inputContainer.stepperButton
                                 .width[size]
@@ -272,6 +317,10 @@ const NumberInput = ({
                         />
                     </PrimitiveButton>
                     <PrimitiveButton
+                        type="button"
+                        aria-label={
+                            label ? `Decrease ${label}` : 'Decrease value'
+                        }
                         onClick={() =>
                             onChange({
                                 target: {
@@ -285,7 +334,6 @@ const NumberInput = ({
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
                         }
-                        // flexGrow={1}
                         width={
                             numberInputTokens.inputContainer.stepperButton
                                 .width[size]
@@ -343,12 +391,14 @@ const NumberInput = ({
                         />
                     </PrimitiveButton>
                 </Block>
-            </Block>
+            </Wrapper>
             <InputFooter
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
                 tokens={numberInputTokens}
             />
         </Block>

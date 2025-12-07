@@ -719,6 +719,9 @@ export const MenuDemo: React.FC = () => {
         useState('Search actions...')
     const [playgroundAsModal, setPlaygroundAsModal] = useState(false)
 
+    const [playgroundShowSkeleton, setPlaygroundShowSkeleton] = useState(false)
+    const [playgroundSkeletonCount, setPlaygroundSkeletonCount] = useState('3')
+
     return (
         <Block padding="32px" backgroundColor="gray.50" minHeight="100vh">
             {/* Header */}
@@ -781,6 +784,26 @@ export const MenuDemo: React.FC = () => {
                                     )
                                 }
                                 placeholder="200"
+                            />
+                        </Block>
+
+                        <Block display="flex" gap="16px">
+                            <Switch
+                                label="Show Skeleton"
+                                checked={playgroundShowSkeleton}
+                                onChange={() =>
+                                    setPlaygroundShowSkeleton(
+                                        !playgroundShowSkeleton
+                                    )
+                                }
+                            />
+                            <TextInput
+                                label="Skeleton Count"
+                                value={playgroundSkeletonCount.toString()}
+                                onChange={(e) =>
+                                    setPlaygroundSkeletonCount(e.target.value)
+                                }
+                                placeholder="Enter skeleton count"
                             />
                         </Block>
 
@@ -952,6 +975,11 @@ export const MenuDemo: React.FC = () => {
                             <Menu
                                 trigger={
                                     <Button
+                                        data-selectbox-value="Interactive Menu"
+                                        data-dropdown-for="Interactive Menu"
+                                        data-value="Interactive Menu"
+                                        data-custom-value="Interactive Menu"
+                                        data-button-status="enabled"
                                         buttonType={ButtonType.PRIMARY}
                                         text="Interactive Menu"
                                     />
@@ -967,6 +995,11 @@ export const MenuDemo: React.FC = () => {
                                 enableSearch={playgroundEnableSearch}
                                 searchPlaceholder={playgroundSearchPlaceholder}
                                 asModal={playgroundAsModal}
+                                skeleton={{
+                                    count: parseInt(playgroundSkeletonCount),
+                                    show: playgroundShowSkeleton,
+                                    variant: 'pulse',
+                                }}
                             />
                         </Block>
 

@@ -1,6 +1,7 @@
-import { forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import useScrollLock from '../../hooks/useScrollLock'
 import type { ModalProps } from './types'
@@ -11,30 +12,21 @@ import { ButtonSubType, ButtonType, Button } from '../Button'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileModal from './MobileModal'
+import {
+    modalBackdropAnimations,
+    modalContentAnimations,
+} from './modal.animations'
+import { useModal } from './useModal'
+import { type SkeletonVariant } from '../Skeleton'
+import ModalSkeleton from './ModalSkeleton'
 
-const getPortalContainer = (): HTMLElement => {
-    const PORTAL_ID = 'blend-modal-portal'
-    let portalContainer = document.getElementById(PORTAL_ID)
+const AnimatedBackdrop = styled(Block)<{ $isAnimatingIn: boolean }>`
+    ${({ $isAnimatingIn }) => modalBackdropAnimations($isAnimatingIn)}
+`
 
-    if (!portalContainer) {
-        portalContainer = document.createElement('div')
-        portalContainer.id = PORTAL_ID
-        portalContainer.style.position = 'relative'
-        portalContainer.style.zIndex = '99'
-        document.body.appendChild(portalContainer)
-    }
-
-    return portalContainer
-}
-
-const cleanupPortalContainer = (): void => {
-    const PORTAL_ID = 'blend-modal-portal'
-    const portalContainer = document.getElementById(PORTAL_ID)
-
-    if (portalContainer && portalContainer.children.length === 0) {
-        document.body.removeChild(portalContainer)
-    }
-}
+const AnimatedModalContent = styled(Block)<{ $isAnimatingIn: boolean }>`
+    ${({ $isAnimatingIn }) => modalContentAnimations($isAnimatingIn)}
+`
 
 const ModalHeader = ({
     title,
@@ -43,6 +35,8 @@ const ModalHeader = ({
     showCloseButton,
     headerRightSlot,
     showDivider,
+    showSkeleton,
+    skeletonVariant,
 }: {
     title?: string
     subtitle?: string
@@ -50,8 +44,27 @@ const ModalHeader = ({
     showCloseButton?: boolean
     headerRightSlot?: React.ReactNode
     showDivider?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
+
+    if (showSkeleton) {
+        return (
+            <ModalSkeleton
+                modalTokens={modalTokens}
+                headerSkeleton={{
+                    show: showSkeleton || false,
+                    showDivider: showDivider || false,
+                    showCloseButton: showCloseButton || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
+
     if (!title && !subtitle) return null
 
     return (
@@ -85,6 +98,8 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            data-element="header"
+                            data-id={title ?? ''}
                             variant="heading.sm"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
@@ -96,6 +111,8 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
+                        data-element="header-subtitle"
+                        data-id={subtitle}
                         variant="code.lg"
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={400}
@@ -121,16 +138,37 @@ const ModalFooter = ({
     primaryAction,
     secondaryAction,
     showDivider,
+    showSkeleton,
+    skeletonVariant,
 }: {
     primaryAction?: ModalProps['primaryAction']
     secondaryAction?: ModalProps['secondaryAction']
     showDivider?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
+
+    if (showSkeleton) {
+        return (
+            <ModalSkeleton
+                modalTokens={modalTokens}
+                footerSkeleton={{
+                    show: showSkeleton || false,
+                    showDivider: showDivider || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
+
     if (!primaryAction && !secondaryAction) return null
 
     return (
         <Block
+            data-element="footer"
             display="flex"
             backgroundColor={modalTokens.footer.backgroundColor}
             justifyContent="flex-end"
@@ -138,7 +176,7 @@ const ModalFooter = ({
             padding={modalTokens.footer.padding}
             flexShrink={0}
             borderTop={showDivider ? modalTokens.footer.borderTop : undefined}
-            // borderRadius={modalTokens.borderRadius}
+            borderRadius={`0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`}
         >
             {secondaryAction && (
                 <Button
@@ -182,56 +220,26 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             children,
             primaryAction,
             secondaryAction,
-            className,
             showCloseButton = true,
             closeOnBackdropClick = true,
             headerRightSlot,
             showDivider = true,
             minWidth = '500px',
             useDrawerOnMobile = true,
+            skeleton,
+            ...props
         },
         ref
     ) => {
         const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const [isMounted, setIsMounted] = useState(false)
-        const [portalContainer, setPortalContainer] =
-            useState<HTMLElement | null>(null)
+        const { shouldRender, isAnimatingIn, portalContainer } = useModal(
+            isOpen,
+            onClose
+        )
 
         useScrollLock(isOpen)
-
-        useEffect(() => {
-            setIsMounted(true)
-        }, [])
-
-        useEffect(() => {
-            const handleEscapeKey = (event: KeyboardEvent) => {
-                if (event.key === 'Escape' && isOpen) {
-                    onClose()
-                }
-            }
-
-            if (isOpen) {
-                document.addEventListener('keydown', handleEscapeKey)
-            }
-
-            return () => {
-                document.removeEventListener('keydown', handleEscapeKey)
-            }
-        }, [isOpen, onClose])
-
-        useEffect(() => {
-            if (isMounted && isOpen) {
-                const container = getPortalContainer()
-                setPortalContainer(container)
-            } else if (!isOpen && portalContainer) {
-                setPortalContainer(null)
-                setTimeout(() => {
-                    cleanupPortalContainer()
-                }, 0)
-            }
-        }, [isMounted, isOpen, portalContainer])
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -239,7 +247,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             }
         }, [closeOnBackdropClick, onClose])
 
-        if (!isMounted || !isOpen || !portalContainer) return null
+        if (!shouldRender || !portalContainer) return null
+
+        const shouldShowSkeleton = skeleton?.show
+        const skeletonVariant = skeleton?.variant || 'pulse'
 
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
@@ -247,11 +258,11 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     <MobileModal
                         isOpen={isOpen}
                         onClose={onClose}
+                        skeleton={skeleton}
                         title={title}
                         subtitle={subtitle}
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
-                        className={className}
                         showCloseButton={showCloseButton}
                         closeOnBackdropClick={closeOnBackdropClick}
                         headerRightSlot={headerRightSlot}
@@ -273,8 +284,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
                     boxShadow={modalTokens.boxShadow}
+                    {...props}
                 >
-                    <Block
+                    <AnimatedBackdrop
                         onClick={handleBackdropClick}
                         display="flex"
                         alignItems="center"
@@ -282,15 +294,15 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         position="fixed"
                         inset={0}
                         backgroundColor={FOUNDATION_THEME.colors.gray[700]}
-                        opacity={0.5}
                         pointerEvents="auto"
                         role="presentation"
                         aria-hidden="true"
+                        $isAnimatingIn={isAnimatingIn}
                     />
 
-                    <Block
+                    <AnimatedModalContent
+                        data-modal={title ?? 'modal'}
                         ref={ref}
-                        className={className}
                         display="flex"
                         flexDirection="column"
                         position="relative"
@@ -303,6 +315,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="modal-title"
+                        $isAnimatingIn={isAnimatingIn}
                     >
                         <ModalHeader
                             title={title}
@@ -311,22 +324,51 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             showCloseButton={showCloseButton}
                             headerRightSlot={headerRightSlot}
                             showDivider={showDivider}
+                            showSkeleton={shouldShowSkeleton}
+                            skeletonVariant={skeletonVariant}
                         />
 
                         <Block
+                            data-element="body"
                             padding={modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
+                            borderRadius={
+                                !primaryAction && !secondaryAction
+                                    ? `0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`
+                                    : undefined
+                            }
                         >
-                            {children}
+                            {shouldShowSkeleton &&
+                            skeleton?.bodySkeletonProps?.show ? (
+                                <ModalSkeleton
+                                    modalTokens={modalTokens}
+                                    bodySkeleton={{
+                                        show:
+                                            skeleton?.bodySkeletonProps?.show ||
+                                            false,
+                                        width:
+                                            skeleton?.bodySkeletonProps
+                                                ?.width || '100%',
+                                        height:
+                                            skeleton?.bodySkeletonProps
+                                                ?.height || 300,
+                                    }}
+                                    skeletonVariant={skeletonVariant}
+                                />
+                            ) : (
+                                children
+                            )}
                         </Block>
 
                         <ModalFooter
                             primaryAction={primaryAction}
                             secondaryAction={secondaryAction}
                             showDivider={showDivider}
+                            showSkeleton={shouldShowSkeleton}
+                            skeletonVariant={skeletonVariant}
                         />
-                    </Block>
+                    </AnimatedModalContent>
                 </Block>
             )
         })()

@@ -1,5 +1,6 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 
 export enum TabsVariant {
     BOXED = 'boxed',
@@ -19,6 +20,9 @@ export type TabItem = {
     content: ReactNode
     closable?: boolean
     isDefault?: boolean
+    disable?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
@@ -32,6 +36,9 @@ export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     dropdownTooltip?: string
     addButtonTooltip?: string
     maxDisplayTabs?: number
+    disable?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<
@@ -51,6 +58,9 @@ export type TabsListProps = ComponentPropsWithoutRef<
     maxDisplayTabs?: number
     onTabChange?: (value: string) => void
     activeTab?: string
+    disable?: boolean
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type TabsTriggerProps = ComponentPropsWithoutRef<
@@ -64,6 +74,12 @@ export type TabsTriggerProps = ComponentPropsWithoutRef<
     children: string | number
     closable?: boolean
     onClose?: () => void
+    disable?: boolean
+    isActive?: boolean
+    isOverlay?: boolean
+    tabsGroupId?: string
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
 }
 
 export type TabsContentProps = ComponentPropsWithoutRef<

@@ -66,91 +66,320 @@ function MyComponent() {
 }
 ```
 
+### Sankey Charts (Flow Diagrams)
+
+```tsx
+import { Charts, ChartType } from 'blend-v1'
+
+function SankeyChart() {
+    const data = [
+        {
+            name: 'payment-flow',
+            data: {
+                sankeyData: {
+                    primary: {
+                        nodes: [
+                            { id: 'Visa', name: 'Visa', color: '#1e3a8a' },
+                            {
+                                id: 'Received',
+                                name: 'Received',
+                                color: '#3B82F6',
+                            },
+                            {
+                                id: 'Authorised',
+                                name: 'Authorised',
+                                color: '#10B981',
+                            },
+                        ],
+                        links: [
+                            {
+                                source: 'Visa', // Can use string ID or numeric index
+                                target: 'Received',
+                                value: 165.0,
+                                color: 'rgba(59, 130, 246, 0.4)',
+                                hoverColor: 'rgba(59, 130, 246, 0.8)', // Optional hover effect
+                            },
+                            {
+                                source: 'Received',
+                                target: 'Authorised',
+                                value: 220.0,
+                                color: 'rgba(16, 185, 129, 0.4)',
+                                hoverColor: 'rgba(16, 185, 129, 0.8)',
+                            },
+                        ],
+                    },
+                    aux: [],
+                },
+            },
+        },
+    ]
+
+    return (
+        <Charts
+            chartType={ChartType.SANKEY}
+            data={data}
+            height={700}
+            chartHeaderSlot={<h3>Payment Flow Diagram</h3>}
+        />
+    )
+}
+```
+
 ## API Reference
 
 <DocsTypeTable
     data={[
         [
-            { content: 'chartType', hintText: 'The type of chart to render' },
-            { content: 'ChartType', hintText: 'enum' },
-            { content: 'ChartType.LINE' },
+            {
+                content: 'chartType',
+                hintText:
+                    'Determines the visualization type to render. LINE displays data as connected points for trends over time, BAR shows categorical comparisons with rectangular bars, PIE represents proportions as circular segments, SCATTER plots individual data points for correlation analysis, and SANKEY visualizes flows between nodes showing relationships and magnitudes. Defaults to LINE.',
+            },
+            {
+                content: 'ChartType',
+                hintText: 'Enum that determines the chart visualization type',
+            },
+            { content: 'LINE, BAR, PIE, SCATTER, SANKEY' },
         ],
         [
             {
                 content: 'data',
-                hintText: 'Array of nested data points for the chart',
+                hintText:
+                    'Required array of nested data points representing the chart dataset. Each object should have a name (category/label) and a data object containing key-value pairs where keys are data series names and values contain label and val properties. The structure supports multiple series per data point.',
             },
-            { content: 'NewNestedDataPoint[]', hintText: 'array' },
+            {
+                content: 'NewNestedDataPoint[]',
+                hintText:
+                    'Array of objects with name and nested data structure',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'colors',
-                hintText: 'Array of colors for chart elements',
+                hintText:
+                    'Optional array of color strings (hex codes, RGB, etc.) used to colorize chart elements. Each color in the array corresponds to a data series. If not provided or empty, the component uses DEFAULT_COLORS. Colors are applied in order to the data series.',
             },
-            { content: 'string[]', hintText: 'array' },
-            { content: 'DEFAULT_COLORS' },
-        ],
-        [
-            { content: 'slot1', hintText: 'First slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'string[]',
+                hintText:
+                    'Array of color strings (hex, RGB, named colors) for chart series',
+            },
             { content: '' },
         ],
         [
-            { content: 'slot2', hintText: 'Second slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'slot1',
+                hintText:
+                    'Optional React element displayed as the first slot in the chart header. Useful for adding icons, badges, or other visual elements at the start of the header area before other content.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the first header slot',
+            },
             { content: '' },
         ],
         [
-            { content: 'slot3', hintText: 'Third slot in the chart header' },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'slot2',
+                hintText:
+                    'Optional React element displayed as the second slot in the chart header. Positioned between slot1 and slot3, useful for additional controls or information in the header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the second header slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot3',
+                hintText:
+                    'Optional React element displayed as the third slot in the chart header. Typically positioned near the end of the header, useful for action buttons or supplementary information.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display in the third header slot',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'legendPosition',
-                hintText: 'Position of the chart legend',
+                hintText:
+                    'Controls where the chart legend is displayed relative to the chart area. TOP places the legend above the chart, RIGHT places it to the side. The legend shows all data series with their corresponding colors and allows interactive selection. Defaults to TOP.',
             },
-            { content: 'ChartLegendPosition', hintText: 'enum' },
-            { content: 'ChartLegendPosition.TOP' },
+            {
+                content: 'ChartLegendPosition',
+                hintText:
+                    "Enum that determines the legend's position relative to the chart",
+            },
+            { content: 'TOP, RIGHT' },
         ],
         [
             {
                 content: 'chartHeaderSlot',
-                hintText: 'Main content for the chart header',
+                hintText:
+                    'Required main content element displayed prominently in the chart header. Typically contains the chart title, description, or key information. This is the primary content area of the header section.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Main React element (title, heading, etc.) for the chart header',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'stackedLegends',
-                hintText: 'Whether to use stacked legend layout',
+                hintText:
+                    'When true, displays legends in a stacked layout with additional information like delta values and change indicators. Requires stackedLegendsData to be provided. Useful for showing comparative metrics alongside legend items. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables stacked legend layout, false uses standard legend',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'stackedLegendsData',
-                hintText: 'Data for stacked legends with delta values',
+                hintText:
+                    'Optional array of data points for stacked legends. Each object should have value, delta (change amount), and changeType properties. Used when stackedLegends is true to display rich legend information with metrics and trends.',
             },
-            { content: 'StackedLegendsDataPoint[]', hintText: 'array' },
+            {
+                content: 'StackedLegendsDataPoint[]',
+                hintText:
+                    'Array of objects with value, delta, and changeType properties',
+            },
             { content: '' },
         ],
         [
-            { content: 'barsize', hintText: 'Size of bars in bar charts' },
-            { content: 'number', hintText: 'number' },
+            {
+                content: 'barsize',
+                hintText:
+                    'Optional number controlling the width of bars in bar charts. Higher values create wider bars, lower values create narrower bars. Useful for adjusting bar spacing and visual density. Only applies to BAR chart type.',
+            },
+            {
+                content: 'number',
+                hintText: 'Numeric value determining bar width in bar charts',
+            },
             { content: '' },
         ],
         [
-            { content: 'xAxis', hintText: 'Configuration for the X-axis' },
-            { content: 'XAxisConfig', hintText: 'object' },
+            {
+                content: 'xAxis',
+                hintText:
+                    'Optional configuration object for the X-axis (horizontal axis). Can include label (axis title), type (numeric, date, category), showLabel (display axis label), interval (tick spacing), and show (visibility). Controls axis appearance, formatting, and behavior.',
+            },
+            {
+                content: 'XAxisConfig',
+                hintText:
+                    'Object with label, type, showLabel, interval, and show properties',
+            },
             { content: '' },
         ],
         [
-            { content: 'yAxis', hintText: 'Configuration for the Y-axis' },
-            { content: 'YAxisConfig', hintText: 'object' },
+            {
+                content: 'yAxis',
+                hintText:
+                    'Optional configuration object for the Y-axis (vertical axis). Can include label (axis title), type (numeric, currency, percentage), showLabel (display axis label), interval (tick spacing), and show (visibility). Controls axis appearance, formatting, and behavior.',
+            },
+            {
+                content: 'YAxisConfig',
+                hintText:
+                    'Object with label, type, showLabel, interval, and show properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'noData',
+                hintText:
+                    'Optional configuration object for the empty state displayed when no data is available. Can include custom message, icon, or other content to guide users when the chart has no data to display.',
+            },
+            {
+                content: 'NoDataProps',
+                hintText:
+                    'Object with properties for customizing the empty state display',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText:
+                    'Height of the chart area in pixels. Controls the vertical dimension of the visualization. Larger values provide more vertical space for data visualization, smaller values create more compact charts. Defaults to 400 pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Positive number representing chart height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showHeader',
+                hintText:
+                    'When true, displays the chart header section with slots and title. When false, hides the header completely, showing only the chart visualization. Useful for embedding charts in layouts where header is handled separately. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows header, false hides header completely',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCollapseIcon',
+                hintText:
+                    "When true, displays a collapse/expand icon in the chart header that allows users to toggle the chart's expanded state. Clicking the icon collapses or expands the chart content. Useful for space-constrained layouts. Defaults to true.",
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows collapse/expand icon, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isExpanded',
+                hintText:
+                    'Optional controlled state for whether the chart is expanded or collapsed. When provided, the component works in controlled mode, requiring onExpandedChange to update state. When undefined, the component manages expansion state internally.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true expands chart, false collapses chart',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onExpandedChange',
+                hintText:
+                    "Optional callback function invoked when the chart's expanded state changes (via collapse/expand icon). Receives the new isExpanded boolean value. Use this for controlled expansion behavior to synchronize state.",
+            },
+            {
+                content: '(isExpanded: boolean) => void',
+                hintText:
+                    'Function called with new expanded state when it changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'chartName',
+                hintText:
+                    'Optional name identifier string used for accessibility and in the noData empty state message. Helps screen readers identify the chart and provides context in error messages. Defaults to "Chart".',
+            },
+            {
+                content: 'string',
+                hintText: 'Name or identifier for the chart component',
+            },
             { content: '' },
         ],
     ]}
@@ -159,337 +388,47 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## Data Types
+## Sankey Chart Features
 
-### NewNestedDataPoint
+Sankey charts have unique features for visualizing flows:
 
-The main data structure for chart data:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'name',
-                hintText: 'Label for this data point (e.g., month, category)',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'data',
-                hintText: 'Object containing the data series for this point',
-            },
-            { content: '{ [key: string]: DataPoint }', hintText: 'object' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### DataPoint
-
-Structure for individual data series:
-
-<DocsTypeTable
-    data={[
-        [
-            {
-                content: 'primary',
-                hintText: 'Primary data with label and value',
-            },
-            { content: '{ label: string, val: number }', hintText: 'object' },
-            { content: '' },
-        ],
-        [
-            { content: 'aux', hintText: 'Optional auxiliary data points' },
-            { content: '{ label: string, val: number }[]', hintText: 'array' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-### AxisConfig
-
-Configuration for chart axes:
-
-<DocsTypeTable
-    data={[
-        [
-            { content: 'label', hintText: 'Label text for the axis' },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'showLabel',
-                hintText: 'Whether to display the axis label',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'interval',
-                hintText: 'Interval between ticks or interval type',
-            },
-            {
-                content: 'number | AxisIntervalType',
-                hintText: 'number or enum',
-            },
-            { content: '' },
-        ],
-        [
-            { content: 'show', hintText: 'Whether to display the axis' },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'true' },
-        ],
-        [
-            {
-                content: 'type',
-                hintText: 'Type of data displayed on this axis',
-            },
-            { content: 'AxisType', hintText: 'enum' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'tickFormatter',
-                hintText: 'Custom formatter for tick values',
-            },
-            {
-                content: '(value: string | number) => string',
-                hintText: 'function',
-            },
-            { content: '' },
-        ],
-        [
-            { content: 'customTick', hintText: 'Custom tick component' },
-            {
-                content: 'React.ComponentType<TickProps>',
-                hintText: 'component',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'dateOnly',
-                hintText: 'For date axes, show only date without time',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'smart',
-                hintText: 'Enable smart formatting and intervals',
-            },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: '' },
-        ],
-    ]}
-    className="mb-8"
-    emptyMessage="No props available"
-    loadingMessage="Loading props..."
-/>
-
-## Features
-
-- **3 Chart Types**: Line, Bar, and Pie charts for different data visualization needs
-- **Interactive Legends**: Clickable legends with hover effects and data series toggling
-- **Responsive Design**: Adapts to different screen sizes with mobile-optimized layouts
-- **Fullscreen Mode**: Built-in fullscreen toggle for detailed data analysis
-- **Custom Axes**: Configurable X and Y axes with multiple data types and formatting options
-- **Flexible Data Structure**: Nested data format supporting multiple series and auxiliary data
-- **Color Customization**: Customizable color schemes with default palette
-- **Header Slots**: Multiple slots for custom header content and controls
-- **Stacked Legends**: Advanced legend layout with delta values and change indicators
-- **Tooltip Integration**: Rich tooltips with custom formatting and data display
-- **Export Capabilities**: Built-in chart export and fullscreen viewing
-- **Accessibility Support**: Screen reader compatible with proper ARIA labels
-
-## Usage Examples
-
-### Basic Line Chart
-
-Simple line chart with two data series
+### Node and Link Customization
 
 ```tsx
-const salesData = [
-    {
-        name: 'Jan',
-        data: {
-            sales: { primary: { label: 'Sales', val: 4000 } },
-            profit: { primary: { label: 'Profit', val: 2400 } },
-        },
-    },
-    {
-        name: 'Feb',
-        data: {
-            sales: { primary: { label: 'Sales', val: 3000 } },
-            profit: { primary: { label: 'Profit', val: 1398 } },
-        },
-    },
-    {
-        name: 'Mar',
-        data: {
-            sales: { primary: { label: 'Sales', val: 2000 } },
-            profit: { primary: { label: 'Profit', val: 9800 } },
-        },
-    },
-]
+// Nodes support:
+{
+    id: 'unique-id',        // String identifier (optional, can use numeric indices)
+    name: 'Display Name',   // Visible label
+    color: '#1e3a8a'       // Custom color for the node
+}
 
-<Charts
-    chartType={ChartType.LINE}
-    data={salesData}
-    chartHeaderSlot={<h3>Sales Performance</h3>}
-    colors={['#8884d8', '#82ca9d']}
-/>
+// Links support:
+{
+    source: 'node-id',              // Source node (string ID or number)
+    target: 'target-id',            // Target node (string ID or number)
+    value: 100,                     // Flow magnitude
+    color: 'rgba(59, 130, 246, 0.4)',      // Link color
+    hoverColor: 'rgba(59, 130, 246, 0.8)'  // Color on hover (optional)
+}
 ```
 
-### Bar Chart with Custom Axes
+### Interactive Tooltips
 
-Bar chart with currency formatting on Y-axis
+Sankey charts display tooltips on hover:
 
-```tsx
-const revenueData = [
-    {
-        name: 'Q1',
-        data: {
-            revenue: { primary: { label: 'Revenue', val: 100000 } },
-            expenses: { primary: { label: 'Expenses', val: 75000 } },
-        },
-    },
-    {
-        name: 'Q2',
-        data: {
-            revenue: { primary: { label: 'Revenue', val: 120000 } },
-            expenses: { primary: { label: 'Expenses', val: 85000 } },
-        },
-    },
-]
+- **Node Tooltip**: Shows node name and total value
+- **Link Tooltip**: Displays source → target flow with value
 
-<Charts
-    chartType={ChartType.BAR}
-    data={revenueData}
-    chartHeaderSlot={<h3>Quarterly Financial Report</h3>}
-    barsize={40}
-    xAxis={{
-        label: 'Quarter',
-        showLabel: true,
-    }}
-    yAxis={{
-        label: 'Amount',
-        type: AxisType.CURRENCY,
-        showLabel: true,
-    }}
-/>
-```
+### Data Format Options
 
-### Pie Chart with Legend
-
-Pie chart showing market share distribution
+You can use either **numeric indices** or **string IDs** for links:
 
 ```tsx
-const marketData = [
-    {
-        name: 'Market Share',
-        data: {
-            mobile: { primary: { label: 'Mobile', val: 45 } },
-            desktop: { primary: { label: 'Desktop', val: 35 } },
-            tablet: { primary: { label: 'Tablet', val: 20 } },
-        },
-    },
-]
+// Option 1: Numeric indices (traditional)
+links: [{ source: 0, target: 1, value: 100 }]
 
-<Charts
-    chartType={ChartType.PIE}
-    data={marketData}
-    chartHeaderSlot={<h3>Device Usage Distribution</h3>}
-    legendPosition={ChartLegendPosition.RIGHT}
-    colors={['#0088FE', '#00C49F', '#FFBB28']}
-/>
-```
-
-### Chart with Header Slots
-
-Chart with custom header content in multiple slots
-
-```tsx
-<Charts
-    chartType={ChartType.LINE}
-    data={salesData}
-    chartHeaderSlot={<h3>Sales Dashboard</h3>}
-    slot1={<span>Last 30 days</span>}
-    slot2={
-        <div className="flex gap-2">
-            <button>Export</button>
-            <button>Settings</button>
-        </div>
-    }
-    slot3={<span>Updated 5 min ago</span>}
-/>
-```
-
-### Chart with Stacked Legends
-
-Chart with delta values and change indicators
-
-```tsx
-const stackedData = [
-    { value: 12500, delta: 15.2, changeType: LegendsChangeType.INCREASE },
-    { value: 8300, delta: -5.1, changeType: LegendsChangeType.DECREASE },
-]
-
-<Charts
-    chartType={ChartType.BAR}
-    data={salesData}
-    chartHeaderSlot={<h3>Performance Metrics</h3>}
-    stackedLegends={true}
-    stackedLegendsData={stackedData}
-/>
-```
-
-### Chart with Custom Tick Formatting
-
-Chart with percentage formatting and custom intervals
-
-```tsx
-<Charts
-    chartType={ChartType.LINE}
-    data={conversionData}
-    chartHeaderSlot={<h3>Conversion Rates</h3>}
-    yAxis={{
-        label: 'Conversion Rate',
-        type: AxisType.PERCENTAGE,
-        tickFormatter: (value) => `${value}%`,
-        interval: 'preserveStartEnd',
-    }}
-    xAxis={{
-        label: 'Date',
-        type: AxisType.DATE_TIME,
-        dateOnly: true,
-    }}
-/>
-```
-
-### Responsive Chart with Mobile Layout
-
-Chart optimized for different screen sizes
-
-```tsx
-<Charts
-    chartType={ChartType.BAR}
-    data={mobileData}
-    chartHeaderSlot={<h3>Mobile Analytics</h3>}
-    legendPosition={ChartLegendPosition.TOP}
-    colors={['#FF6B6B', '#4ECDC4', '#45B7D1']}
-/>
+// Option 2: String IDs (more readable)
+links: [{ source: 'Visa', target: 'Received', value: 165 }]
 ```
 
 ## Component Tokens
@@ -498,123 +437,46 @@ You can style the Charts component using the following tokens:
 
 ```tsx
 export type ChartTokensType = {
-    container: {
-        padding: CSSObject['padding']
-        backgroundColor: CSSObject['backgroundColor']
-        borderRadius: CSSObject['borderRadius']
-        border: CSSObject['border']
-    }
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
     header: {
-        padding: CSSObject['padding']
-        marginBottom: CSSObject['marginBottom']
-        title: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
         }
-    }
-    legend: {
-        gap: CSSObject['gap']
-        padding: CSSObject['padding']
-        item: {
-            padding: CSSObject['padding']
-            borderRadius: CSSObject['borderRadius']
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-        }
-    }
-    chart: {
-        height: CSSObject['height']
-        minHeight: CSSObject['minHeight']
-    }
-    tooltip: {
         backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
+        borderBottom: CSSObject['borderBottom']
         borderRadius: CSSObject['borderRadius']
-        padding: CSSObject['padding']
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
+        slots: {
+            gap: CSSObject['gap']
+        }
+    }
+    content: {
+        legend: {
+            gap: CSSObject['gap']
+            item: {
+                gap: CSSObject['gap']
+                color: {
+                    [key in ChartState]: CSSObject['color']
+                }
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+        }
+        padding: {
+            top: CSSObject['padding']
+            right: CSSObject['padding']
+            bottom: CSSObject['padding']
+            left: CSSObject['padding']
+        }
+        gap: CSSObject['gap']
+        backgroundColor: CSSObject['backgroundColor']
     }
 }
-```
 
-## Behavior
-
-### Interactive Features
-
-- **Legend Interaction**: Click legends to toggle data series visibility
-- **Hover Effects**: Hover over chart elements for detailed tooltips
-- **Fullscreen Mode**: Toggle fullscreen for detailed analysis
-- **Responsive Legends**: Legends adapt position based on screen size
-
-### Data Processing
-
-- **Data Transformation**: Automatically flattens nested data for chart libraries
-- **Series Management**: Dynamic handling of multiple data series
-- **Key Selection**: Interactive selection and deselection of data keys
-
-### Mobile Responsiveness
-
-- **Layout Adaptation**: Automatic layout changes for small screens
-- **Touch Interactions**: Optimized touch interactions for mobile devices
-- **Legend Positioning**: Smart legend positioning based on screen size
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support for interactive elements
-- **Screen Reader Support**: Proper ARIA labels and data announcements
-- **High Contrast**: Supports high contrast mode and custom color schemes
-- **Focus Management**: Clear focus indicators for all interactive elements
-- **Alternative Text**: Meaningful descriptions for chart data
-- **Color Independence**: Chart data conveyed through patterns and labels, not just color
-
-## Enums
-
-### ChartType
-
-```tsx
-enum ChartType {
-    LINE = 'line', // Line chart for trends over time
-    BAR = 'bar', // Bar chart for categorical comparisons
-    PIE = 'pie', // Pie chart for part-to-whole relationships
+export type ResponsiveChartTokens = {
+    [key in keyof BreakpointType]: ChartTokensType
 }
-```
 
-### ChartLegendPosition
-
-```tsx
-enum ChartLegendPosition {
-    TOP = 'top', // Legend positioned above the chart
-    RIGHT = 'right', // Legend positioned to the right of the chart
-}
-```
-
-### AxisType
-
-```tsx
-enum AxisType {
-    DATE_TIME = 'dateTime', // Date/time axis with date formatting
-    CURRENCY = 'currency', // Currency axis with monetary formatting
-    PERCENTAGE = 'percentage', // Percentage axis with % formatting
-    NUMBER = 'number', // Numeric axis with number formatting
-}
-```
-
-### AxisIntervalType
-
-```tsx
-enum AxisIntervalType {
-    PRESERVE_START = 'preserveStart', // Always show first tick
-    PRESERVE_END = 'preserveEnd', // Always show last tick
-    PRESERVE_START_END = 'preserveStartEnd', // Always show first and last ticks
-}
-```
-
-### LegendsChangeType
-
-```tsx
-enum LegendsChangeType {
-    INCREASE = 'increase', // Positive change indicator
-    DECREASE = 'decrease', // Negative change indicator
-}
+export type ChartState = 'default' | 'hover' | 'active'
 ```

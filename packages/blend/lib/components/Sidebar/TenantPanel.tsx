@@ -1,6 +1,7 @@
 import React from 'react'
 import { MoreHorizontal } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { SingleSelect } from '../SingleSelect'
 import {
     SelectMenuVariant,
@@ -19,20 +20,24 @@ type TenantPanelProps = {
     items: TenantItem[]
     selected: string
     onSelect: (label: string) => void
-    maxVisibleItems?: number
+    tenantSlot1?: React.ReactNode
+    tenantSlot2?: React.ReactNode
+    tenantFooter?: React.ReactNode
 }
 
 const TenantPanel: React.FC<TenantPanelProps> = ({
     items,
     selected,
     onSelect,
-    maxVisibleItems = 5,
+    tenantSlot1,
+    tenantSlot2,
+    tenantFooter,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+
     const { visibleTenants, hiddenTenants, hasMoreTenants } = arrangeTenants(
         items,
-        selected,
-        maxVisibleItems
+        selected
     )
 
     return (
@@ -62,6 +67,53 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
                     onSelect={onSelect}
                 />
             )}
+
+            {(tenantSlot1 || tenantSlot2) && (
+                <Block
+                    marginTop="auto"
+                    display="flex"
+                    flexDirection="column"
+                    gap={tokens.leftPanel.gap}
+                    alignItems="center"
+                >
+                    {tenantSlot1 && (
+                        <Block
+                            width={tokens.leftPanel.item.width}
+                            height={tokens.leftPanel.item.width}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            {tenantSlot1}
+                        </Block>
+                    )}
+
+                    {tenantSlot2 && (
+                        <Block
+                            width={tokens.leftPanel.item.width}
+                            height={tokens.leftPanel.item.width}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            {tenantSlot2}
+                        </Block>
+                    )}
+                </Block>
+            )}
+
+            {tenantFooter && (
+                <Block
+                    width={tokens.leftPanel.item.width}
+                    height={tokens.leftPanel.item.width}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    marginTop={tenantSlot1 || tenantSlot2 ? undefined : 'auto'}
+                >
+                    {tenantFooter}
+                </Block>
+            )}
         </Block>
     )
 }
@@ -80,8 +132,9 @@ const TenantItem: React.FC<{
             delayDuration={500}
             size={TooltipSize.SMALL}
         >
-            <Block
-                border="none"
+            <PrimitiveButton
+                type="button"
+                onClick={onSelect}
                 backgroundColor={tokens.leftPanel.item.backgroundColor.default}
                 width={tokens.leftPanel.item.width}
                 height={tokens.leftPanel.item.width}
@@ -90,11 +143,13 @@ const TenantItem: React.FC<{
                 alignItems="center"
                 justifyContent="center"
                 cursor="pointer"
-                style={{
-                    outline: isSelected
+                border={
+                    isSelected
                         ? tokens.leftPanel.item.border.active
-                        : tokens.leftPanel.item.border.default,
-                    transitionDuration: '75ms',
+                        : tokens.leftPanel.item.border.default
+                }
+                style={{
+                    transition: 'all 75ms ease',
                 }}
                 _hover={{
                     backgroundColor:
@@ -103,10 +158,9 @@ const TenantItem: React.FC<{
                         ? tokens.leftPanel.item.border.active
                         : tokens.leftPanel.item.border.hover,
                 }}
-                onClick={onSelect}
             >
                 {tenant.icon}
-            </Block>
+            </PrimitiveButton>
         </Tooltip>
     )
 }
@@ -154,7 +208,8 @@ const TenantOverflowMenu: React.FC<{
                     }
                 }}
                 customTrigger={
-                    <Block
+                    <PrimitiveButton
+                        type="button"
                         border="none"
                         backgroundColor={
                             tokens.leftPanel.item.backgroundColor.default
@@ -167,9 +222,9 @@ const TenantOverflowMenu: React.FC<{
                         justifyContent="center"
                         cursor="pointer"
                         title="More tenants"
+                        outline={tokens.leftPanel.item.border.default}
                         style={{
-                            outline: tokens.leftPanel.item.border.default,
-                            transitionDuration: '75ms',
+                            transition: 'all 75ms ease',
                         }}
                         _hover={{
                             backgroundColor:
@@ -183,7 +238,7 @@ const TenantOverflowMenu: React.FC<{
                             }}
                             color={FOUNDATION_THEME.colors.gray[600]}
                         />
-                    </Block>
+                    </PrimitiveButton>
                 }
             />
         </Block>

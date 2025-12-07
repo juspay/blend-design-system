@@ -7,11 +7,6 @@ export const getRadioDataState = (checked: boolean): string => {
     return checked ? 'checked' : 'unchecked'
 }
 
-export const extractPixelValue = (tokenValue: string): number => {
-    const match = tokenValue.match(/(\d+)/)
-    return match && match[1] ? parseInt(match[1], 10) : 16
-}
-
 export const getSpacingBySize = (
     size: RadioSize
 ): { marginLeft: string; marginTop: string } => {
@@ -27,36 +22,6 @@ export const getSpacingBySize = (
     }
 
     return sizeMap[size]
-}
-
-export const isControlledRadio = (checked: boolean | undefined): boolean => {
-    return checked !== undefined
-}
-
-export const createRadioInputProps = (
-    checked: boolean | undefined,
-    defaultChecked: boolean
-) => {
-    return isControlledRadio(checked)
-        ? { checked: checked }
-        : { defaultChecked: defaultChecked }
-}
-
-export const getCurrentCheckedState = (
-    checked: boolean | undefined,
-    defaultChecked: boolean
-): boolean => {
-    return isControlledRadio(checked) ? checked! : defaultChecked
-}
-
-export const createRadioChangeHandler = (
-    disabled: boolean,
-    onChange?: (checked: boolean) => void
-) => {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (disabled) return
-        onChange?.(e.target.checked)
-    }
 }
 
 export const isRadioElement = (

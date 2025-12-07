@@ -1,6 +1,9 @@
-import { forwardRef, useState, useRef, useEffect } from 'react'
+import React, { forwardRef, useState, useRef, useEffect } from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
+import type { DraggableAttributes } from '@dnd-kit/core'
+import type { useSortable } from '@dnd-kit/sortable'
+
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -11,6 +14,7 @@ import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip'
+import Skeleton from '../../Skeleton/Skeleton'
 
 import { TableHeaderProps } from './types'
 import { SortDirection } from '../types'
@@ -34,6 +38,7 @@ import {
     DrawerContent,
     DrawerBody,
 } from '../../Drawer'
+import { DraggableColumnHeader } from './DraggableColumnHeader'
 
 const FilterIcon = styled(ChevronsUpDown)`
     cursor: pointer;
@@ -64,8 +69,12 @@ const TableHeader = forwardRef<
             allVisibleColumns,
             initialColumns,
             selectAll,
+            sortConfig,
             enableInlineEdit = false,
             enableColumnManager = true,
+            enableColumnReordering = false,
+            showSkeleton = false,
+            isLoading = false,
             columnManagerMaxSelections,
             columnManagerAlwaysSelected,
             columnManagerPrimaryAction,
@@ -80,6 +89,8 @@ const TableHeader = forwardRef<
             mobileOverflowColumns = [],
             onMobileOverflowClick,
             onSort,
+            onSortAscending,
+            onSortDescending,
             onSelectAll,
             onColumnChange,
             onHeaderChange,
@@ -88,14 +99,14 @@ const TableHeader = forwardRef<
         },
         ref
     ) => {
+        const isDisabled = showSkeleton || isLoading
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
-        const [localColumns, setLocalColumns] = useState(visibleColumns)
         const editableRef = useRef<HTMLDivElement>(null)
 
         const [sortState, setSortState] = useState<SortState>({
-            currentSortField: null,
-            currentSortDirection: SortDirection.NONE,
+            currentSortField: sortConfig?.field || null,
+            currentSortDirection: sortConfig?.direction || SortDirection.NONE,
         })
 
         const [filterState, setFilterState] = useState<FilterState>({
@@ -111,19 +122,50 @@ const TableHeader = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
 
-        const sortHandlers = createSortHandlers(sortState, setSortState, onSort)
-        const filterHandlers = createFilterHandlers(setFilterState)
+        const sortHandlers = createSortHandlers(
+            sortState,
+            isDisabled ? () => {} : onSort,
+            isDisabled ? () => {} : onSortAscending,
+            isDisabled ? () => {} : onSortDescending
+        )
+        const filterHandlers = createFilterHandlers(
+            isDisabled ? () => {} : setFilterState
+        )
 
         useEffect(() => {
-            setLocalColumns(visibleColumns)
-        }, [visibleColumns])
+            setSortState({
+                currentSortField: sortConfig?.field || null,
+                currentSortDirection:
+                    sortConfig?.direction || SortDirection.NONE,
+            })
+        }, [sortConfig])
 
         useEffect(() => {
-            const handleScroll = () => {
+            const handleScroll = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
                 setOpenPopovers({})
             }
 
-            const handleWheel = () => {
+            const handleWheel = (e: Event) => {
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    if (popoverContent) return
+                }
+
                 setOpenPopovers({})
             }
 
@@ -202,17 +244,16 @@ const TableHeader = forwardRef<
             const valueToSave =
                 newValue || editableRef.current?.textContent || ''
             const trimmedValue = valueToSave.trim()
-            const currentColumn = localColumns.find(
+            const currentColumn = visibleColumns.find(
                 (col) => String(col.field) === field
             )
 
             if (currentColumn && trimmedValue !== currentColumn.header) {
-                const updatedColumns = localColumns.map((col) =>
+                const updatedColumns = visibleColumns.map((col) =>
                     String(col.field) === field
                         ? { ...col, header: trimmedValue }
                         : col
                 )
-                setLocalColumns(updatedColumns)
 
                 onHeaderChange?.(
                     field as keyof Record<string, unknown>,
@@ -232,7 +273,7 @@ const TableHeader = forwardRef<
             }
         }
 
-        return (
+        const tableHeaderContent = (
             <thead
                 ref={ref}
                 style={{
@@ -331,12 +372,13 @@ const TableHeader = forwardRef<
                                     checked={selectAll}
                                     onCheckedChange={onSelectAll}
                                     size={CheckboxSize.MEDIUM}
+                                    disabled={isDisabled}
                                 />
                             </Block>
                         </th>
                     )}
 
-                    {localColumns.map((column, index) => {
+                    {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
                         const isEditing = editingField === String(column.field)
                         const columnConfig = getColumnTypeConfig(
@@ -348,7 +390,7 @@ const TableHeader = forwardRef<
                             columnFreeze,
                             enableRowExpansion,
                             enableRowSelection,
-                            localColumns,
+                            visibleColumns,
                             getColumnWidth,
                             tableToken.dataTable.table.header.backgroundColor ||
                                 '#ffffff'
@@ -367,94 +409,117 @@ const TableHeader = forwardRef<
                                 mobileConfig?.enableColumnOverflow &&
                                 mobileOverflowColumns.length > 0
                             ) &&
-                            index === localColumns.length - 1
+                            index === visibleColumns.length - 1
 
-                        return (
-                            <th
-                                key={String(column.field)}
-                                style={{
-                                    ...tableToken.dataTable.table.header.cell,
-                                    ...(column.isSortable &&
-                                        tableToken.dataTable.table.header
-                                            .sortable),
-                                    ...columnStyles,
-                                    ...frozenStyles,
-                                    // Ensure border bottom is always present
-                                    borderBottom:
-                                        tableToken.dataTable.table.header
-                                            .borderBottom,
-                                    ...(isLastColumn && {
-                                        borderTopRightRadius:
-                                            tableToken.dataTable.borderRadius,
-                                    }),
-                                }}
+                        // Disable dragging for frozen columns
+                        const isDraggable =
+                            enableColumnReordering && index >= columnFreeze
+
+                        const headerStyle = {
+                            ...tableToken.dataTable.table.header.cell,
+                            ...(column.isSortable &&
+                                tableToken.dataTable.table.header.sortable),
+                            ...columnStyles,
+                            ...frozenStyles,
+                            // Ensure border bottom is always present
+                            borderBottom:
+                                tableToken.dataTable.table.header.borderBottom,
+                            ...(isLastColumn && {
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }),
+                        }
+
+                        const headerContent = (dragHandleProps?: {
+                            listeners?: ReturnType<
+                                typeof useSortable
+                            >['listeners']
+                            attributes?: DraggableAttributes
+                        }) => (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                gap="8px"
+                                width="100%"
+                                minWidth={0}
+                                onMouseEnter={() =>
+                                    setHoveredField(String(column.field))
+                                }
+                                onMouseLeave={() => setHoveredField(null)}
                             >
                                 <Block
                                     display="flex"
                                     alignItems="center"
-                                    justifyContent="space-between"
-                                    gap="8px"
-                                    width="100%"
                                     minWidth={0}
-                                    onMouseEnter={() =>
-                                        setHoveredField(String(column.field))
-                                    }
-                                    onMouseLeave={() => setHoveredField(null)}
+                                    flexGrow={1}
+                                    overflow="hidden"
                                 >
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        minWidth={0}
-                                        flexGrow={1}
-                                        overflow="hidden"
-                                    >
-                                        {isEditing ? (
-                                            <Block
-                                                ref={editableRef}
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                onBlur={(e) =>
-                                                    handleHeaderSave(
-                                                        String(column.field),
-                                                        e.currentTarget
-                                                            .textContent || ''
-                                                    )
-                                                }
-                                                onKeyDown={(e) =>
-                                                    handleHeaderKeyDown(
-                                                        e,
-                                                        String(column.field)
-                                                    )
-                                                }
-                                                style={{
-                                                    minWidth: 0,
-                                                    flex: 1,
-                                                    outline: 'none',
-                                                    cursor: 'text',
-                                                    whiteSpace: 'nowrap',
-                                                    overflow: 'hidden',
-                                                }}
-                                            >
-                                                {column.header}
-                                            </Block>
-                                        ) : (
+                                    {isEditing ? (
+                                        <Block
+                                            ref={editableRef}
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onBlur={(e) =>
+                                                handleHeaderSave(
+                                                    String(column.field),
+                                                    e.currentTarget
+                                                        .textContent || ''
+                                                )
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleHeaderKeyDown(
+                                                    e,
+                                                    String(column.field)
+                                                )
+                                            }
+                                            style={{
+                                                minWidth: 0,
+                                                flex: 1,
+                                                outline: 'none',
+                                                cursor: 'text',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            {column.header}
+                                        </Block>
+                                    ) : (
+                                        <Block
+                                            display="flex"
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            position="relative"
+                                            gap={
+                                                tableToken.dataTable.table
+                                                    .header.filter.gap
+                                            }
+                                        >
                                             <Block
                                                 display="flex"
+                                                flexDirection="column"
+                                                alignItems="flex-start"
                                                 minWidth={0}
                                                 flexGrow={1}
-                                                position="relative"
-                                                gap={
-                                                    tableToken.dataTable.table
-                                                        .header.filter.gap
-                                                }
+                                                style={{
+                                                    cursor: isDraggable
+                                                        ? 'grab'
+                                                        : 'default',
+                                                }}
+                                                {...(isDraggable &&
+                                                dragHandleProps
+                                                    ? dragHandleProps.listeners
+                                                    : {})}
                                             >
-                                                <Block
-                                                    display="flex"
-                                                    flexDirection="column"
-                                                    alignItems="flex-start"
-                                                    minWidth={0}
-                                                    flexGrow={1}
-                                                >
+                                                {isDisabled ? (
+                                                    <Skeleton
+                                                        variant="pulse"
+                                                        loading
+                                                        width="80%"
+                                                        height="16px"
+                                                        borderRadius="4px"
+                                                    />
+                                                ) : (
                                                     <Tooltip
                                                         content={column.header}
                                                         side={TooltipSide.TOP}
@@ -476,7 +541,9 @@ const TableHeader = forwardRef<
                                                                 width: '100%',
                                                                 display:
                                                                     'block',
-                                                                cursor: 'default',
+                                                                cursor: isDraggable
+                                                                    ? 'grab'
+                                                                    : 'default',
                                                                 fontSize:
                                                                     tableToken
                                                                         .dataTable
@@ -497,7 +564,21 @@ const TableHeader = forwardRef<
                                                             {column.header}
                                                         </PrimitiveText>
                                                     </Tooltip>
-                                                    {column.headerSubtext && (
+                                                )}
+                                                {column.headerSubtext &&
+                                                    (isDisabled ? (
+                                                        <Skeleton
+                                                            variant="pulse"
+                                                            loading
+                                                            width="60%"
+                                                            height="12px"
+                                                            borderRadius="4px"
+                                                            style={{
+                                                                marginTop:
+                                                                    '4px',
+                                                            }}
+                                                        />
+                                                    ) : (
                                                         <Tooltip
                                                             content={
                                                                 column.headerSubtext
@@ -525,7 +606,9 @@ const TableHeader = forwardRef<
                                                                     width: '100%',
                                                                     display:
                                                                         'block',
-                                                                    cursor: 'default',
+                                                                    cursor: isDraggable
+                                                                        ? 'grab'
+                                                                        : 'default',
                                                                     fontSize:
                                                                         tableToken
                                                                             .dataTable
@@ -549,42 +632,41 @@ const TableHeader = forwardRef<
                                                                 }
                                                             </PrimitiveText>
                                                         </Tooltip>
-                                                    )}
-                                                </Block>
-                                                {enableInlineEdit && (
-                                                    <Block
-                                                        as="span"
-                                                        className="edit-icon-wrapper"
-                                                        display="flex"
-                                                        alignItems="center"
-                                                        opacity={
-                                                            hoveredField ===
-                                                            String(column.field)
-                                                                ? 1
-                                                                : 0
-                                                        }
-                                                        transition="opacity 0.2s"
-                                                        zIndex={2}
-                                                        flexShrink={0}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            handleHeaderEdit(
-                                                                String(
-                                                                    column.field
-                                                                )
-                                                            )
-                                                        }}
-                                                    >
-                                                        <EditIcon size={14} />
-                                                    </Block>
-                                                )}
+                                                    ))}
                                             </Block>
-                                        )}
-                                    </Block>
+                                            {enableInlineEdit && (
+                                                <Block
+                                                    as="span"
+                                                    className="edit-icon-wrapper"
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    opacity={
+                                                        hoveredField ===
+                                                        String(column.field)
+                                                            ? 1
+                                                            : 0
+                                                    }
+                                                    transition="opacity 0.2s"
+                                                    zIndex={2}
+                                                    flexShrink={0}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleHeaderEdit(
+                                                            String(column.field)
+                                                        )
+                                                    }}
+                                                >
+                                                    <EditIcon size={14} />
+                                                </Block>
+                                            )}
+                                        </Block>
+                                    )}
+                                </Block>
 
-                                    {((columnConfig.supportsSorting &&
-                                        column.isSortable !== false) ||
-                                        columnConfig.supportsFiltering) && (
+                                {((columnConfig.supportsSorting &&
+                                    column.isSortable !== false) ||
+                                    columnConfig.supportsFiltering) &&
+                                    !isDisabled && (
                                         <Block
                                             display="flex"
                                             alignItems="center"
@@ -595,7 +677,70 @@ const TableHeader = forwardRef<
                                             onClick={(e) => e.stopPropagation()}
                                             _focus={{ outline: 'none' }}
                                             _focusVisible={{ outline: 'none' }}
+                                            position="relative"
                                         >
+                                            {(() => {
+                                                const fieldKey = String(
+                                                    column.field
+                                                )
+                                                const hasSort =
+                                                    sortState.currentSortField ===
+                                                        fieldKey &&
+                                                    sortState.currentSortDirection !==
+                                                        SortDirection.NONE
+                                                const hasFilter = (() => {
+                                                    const selectedValues =
+                                                        filterState
+                                                            .columnSelectedValues[
+                                                            fieldKey
+                                                        ]
+                                                    if (!selectedValues)
+                                                        return false
+
+                                                    if (
+                                                        Array.isArray(
+                                                            selectedValues
+                                                        )
+                                                    ) {
+                                                        return (
+                                                            selectedValues.length >
+                                                            0
+                                                        )
+                                                    }
+                                                    if (
+                                                        typeof selectedValues ===
+                                                            'object' &&
+                                                        selectedValues !==
+                                                            null &&
+                                                        'min' in
+                                                            selectedValues &&
+                                                        'max' in selectedValues
+                                                    ) {
+                                                        return true // Range filter
+                                                    }
+                                                    return false
+                                                })()
+
+                                                return (
+                                                    (hasSort || hasFilter) && (
+                                                        <Block
+                                                            position="absolute"
+                                                            top="-2px"
+                                                            right="-2px"
+                                                            width="6px"
+                                                            height="6px"
+                                                            borderRadius="50%"
+                                                            backgroundColor={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[500]
+                                                            }
+                                                            zIndex={1}
+                                                        />
+                                                    )
+                                                )
+                                            })()}
+
                                             {isMobile ? (
                                                 // Mobile: Use Drawer wrapper
                                                 <Drawer
@@ -605,14 +750,22 @@ const TableHeader = forwardRef<
                                                         ] || false
                                                     }
                                                     onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
+                                                        if (open) {
+                                                            setOpenPopovers({
                                                                 [String(
                                                                     column.field
-                                                                )]: open,
+                                                                )]: true,
                                                             })
-                                                        )
+                                                        } else {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                        }
                                                     }}
                                                     direction="bottom"
                                                     modal={true}
@@ -681,7 +834,7 @@ const TableHeader = forwardRef<
                                                     side="bottom"
                                                     align={getPopoverAlignment(
                                                         index,
-                                                        localColumns.length
+                                                        visibleColumns.length
                                                     )}
                                                     sideOffset={20}
                                                     open={
@@ -690,14 +843,22 @@ const TableHeader = forwardRef<
                                                         ] || false
                                                     }
                                                     onOpenChange={(open) => {
-                                                        setOpenPopovers(
-                                                            (prev) => ({
-                                                                ...prev,
+                                                        if (open) {
+                                                            setOpenPopovers({
                                                                 [String(
                                                                     column.field
-                                                                )]: open,
+                                                                )]: true,
                                                             })
-                                                        )
+                                                        } else {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                        }
                                                     }}
                                                 >
                                                     <ColumnFilter
@@ -732,7 +893,33 @@ const TableHeader = forwardRef<
                                             )}
                                         </Block>
                                     )}
-                                </Block>
+                            </Block>
+                        )
+
+                        // Conditionally wrap with DraggableColumnHeader
+                        if (isDraggable && !isMobile) {
+                            return (
+                                <DraggableColumnHeader
+                                    key={String(column.field)}
+                                    id={String(column.field)}
+                                    style={headerStyle}
+                                    data-table-column-heading={column.header}
+                                    disabled={false}
+                                >
+                                    {(dragHandleProps) =>
+                                        headerContent(dragHandleProps)
+                                    }
+                                </DraggableColumnHeader>
+                            )
+                        }
+
+                        return (
+                            <th
+                                key={String(column.field)}
+                                style={headerStyle}
+                                data-table-column-heading={column.header}
+                            >
+                                {headerContent()}
                             </th>
                         )
                     })}
@@ -835,7 +1022,7 @@ const TableHeader = forwardRef<
                                 <ColumnManager
                                     columns={initialColumns}
                                     visibleColumns={
-                                        allVisibleColumns || localColumns
+                                        allVisibleColumns || visibleColumns
                                     }
                                     onColumnChange={onColumnChange}
                                     maxSelections={columnManagerMaxSelections}
@@ -849,6 +1036,7 @@ const TableHeader = forwardRef<
                                         columnManagerSecondaryAction
                                     }
                                     multiSelectWidth={columnManagerWidth}
+                                    disabled={isDisabled}
                                 />
                             </Block>
                         </th>
@@ -856,6 +1044,9 @@ const TableHeader = forwardRef<
                 </tr>
             </thead>
         )
+
+        // Return thead (DndContext is now in DataTable)
+        return tableHeaderContent
     }
 )
 

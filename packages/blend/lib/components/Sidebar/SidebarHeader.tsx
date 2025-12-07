@@ -1,7 +1,7 @@
 import React from 'react'
 import { PanelsTopLeft, UserIcon } from 'lucide-react'
-import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { SingleSelect } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
 import { SelectMenuSize } from '../SingleSelect'
@@ -10,24 +10,6 @@ import { FOUNDATION_THEME } from '../../tokens'
 import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
-
-const ToggleButton = styled.button<{ tokens: SidebarTokenType }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: ${(props) =>
-        props.tokens.header.toggleButton.backgroundColor.default};
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 9px;
-    transition: background-color 0.15s ease;
-
-    &:hover {
-        background-color: ${(props) =>
-            props.tokens.header.toggleButton.backgroundColor.hover};
-    }
-`
 
 type SidebarHeaderProps = {
     sidebarTopSlot?: React.ReactNode
@@ -123,12 +105,31 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             <Tooltip
                 content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
             >
-                <ToggleButton tokens={tokens} onClick={onToggle}>
+                <PrimitiveButton
+                    type="button"
+                    onClick={onToggle}
+                    data-icon="sidebar-hamburger"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    border="none"
+                    backgroundColor={
+                        tokens.header.toggleButton.backgroundColor.default
+                    }
+                    borderRadius="10px"
+                    cursor="pointer"
+                    padding="9px"
+                    style={{ transition: 'background-color 0.15s ease' }}
+                    _hover={{
+                        backgroundColor:
+                            tokens.header.toggleButton.backgroundColor.hover,
+                    }}
+                >
                     <PanelsTopLeft
                         color={FOUNDATION_THEME.colors.gray[600]}
-                        size={14}
+                        size={tokens.header.toggleButton.width}
                     />
-                </ToggleButton>
+                </PrimitiveButton>
             </Tooltip>
         </Block>
     )

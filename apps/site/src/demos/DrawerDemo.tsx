@@ -85,7 +85,7 @@ export const BasicDrawerExample = () => {
                             can have, just a simple drawer with a trigger.
                         </p>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <DrawerClose>
                             <button
                                 style={{
@@ -407,7 +407,7 @@ export const SideDrawerExample = () => {
                             </div>
                         </div>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="right">
                         <DrawerClose>
                             <button
                                 style={{
@@ -1454,7 +1454,7 @@ export const NonDismissibleExample = () => {
                         </p>
                         <p>You must use the close button below to close it.</p>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <button
                             onClick={() => setIsOpen(false)}
                             style={{
@@ -3092,7 +3092,7 @@ export const NestedSingleSelectDrawerExample = () => {
 // Wide Right Drawer Example
 export const WideRightDrawerExample = () => {
     return (
-        <Drawer direction="right">
+        <Drawer direction="right" disableDrag={true}>
             <DrawerTrigger>
                 <button
                     style={{
@@ -3138,6 +3138,7 @@ export const WideRightDrawerExample = () => {
                                     margin: '0 0 8px 0',
                                     fontSize: '24px',
                                     fontWeight: '600',
+                                    userSelect: 'all',
                                 }}
                             >
                                 Data Analytics Dashboard
@@ -3147,6 +3148,7 @@ export const WideRightDrawerExample = () => {
                                     margin: '0',
                                     color: '#6b7280',
                                     fontSize: '14px',
+                                    userSelect: 'all',
                                 }}
                             >
                                 Real-time insights and performance metrics
@@ -3828,7 +3830,7 @@ export const ZIndexTestDrawerExample = () => {
                             </div>
                         </div>
                     </DrawerBody>
-                    <DrawerFooter>
+                    <DrawerFooter direction="bottom">
                         <DrawerClose>
                             <button
                                 style={{

@@ -24,9 +24,12 @@ const MultiValueInputDemo = () => {
     const [mediumTags, setMediumTags] = useState<string[]>(['Medium'])
     const [largeTags, setLargeTags] = useState<string[]>(['Large'])
 
+    const [inputValue, setInputValue] = useState<string>('')
+
     // Handlers for different examples
     const handleBasicTagAdd = (tag: string) => {
         setBasicTags([...basicTags, tag])
+        setInputValue('')
     }
 
     const handleBasicTagRemove = (tag: string) => {
@@ -134,6 +137,10 @@ const MultiValueInputDemo = () => {
                 </Block>
                 <Block maxWidth="500px">
                     <MultiValueInput
+                        onFocus={() => console.log('focused')}
+                        onBlur={() => console.log('blurred')}
+                        value={inputValue}
+                        onChange={(value) => setInputValue(value)}
                         label="Technologies"
                         sublabel="Add programming languages or frameworks"
                         placeholder="Type and press Enter to add"
@@ -142,6 +149,9 @@ const MultiValueInputDemo = () => {
                         onTagRemove={handleBasicTagRemove}
                         hintText="Press Enter to add a tag, Backspace to remove the last one"
                     />
+                    <button onClick={() => handleBasicTagAdd('Test')}>
+                        Test
+                    </button>
                 </Block>
             </Block>
 

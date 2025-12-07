@@ -1,7 +1,7 @@
 'use client'
 import './Drawer.css'
 
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useContext } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -17,6 +17,10 @@ import type {
     DrawerFooterProps,
     DrawerCloseProps,
 } from '../types'
+
+const DrawerConfigContext = React.createContext<{ disableDrag: boolean }>({
+    disableDrag: false,
+})
 
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
@@ -148,20 +152,22 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     ? `${customMaxWidth}px`
                     : customMaxWidth || '400px'
 
+            const hasOffset =
+                mobileOffset?.left !== undefined ||
+                mobileOffset?.right !== undefined ||
+                mobileOffset?.top !== undefined ||
+                mobileOffset?.bottom !== undefined
+
             return `
                 position: fixed;
-                top: ${offset.top};
-                bottom: ${offset.bottom};
-                left: ${offset.left};
-                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
-                width: calc(100% - calc(${offset.left} + ${offset.right}));
+                top: ${hasOffset ? offset.top : '0'};
+                bottom: ${hasOffset ? offset.bottom : '0'};
+                left: ${hasOffset ? offset.left : '0'};
+                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `0 ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} 0`};
+                width: ${maxWidthValue};
                 overflow: hidden;
-                max-width: ${maxWidthValue};
-                
+
                 @media (min-width: 1024px) {
-                    top: 0;
-                    bottom: 0;
-                    left: 0;
                     width: ${widthValue};
                 }
             `
@@ -176,22 +182,25 @@ const StyledContent = styled(VaulDrawer.Content)<{
                     ? `${customMaxWidth}px`
                     : customMaxWidth || '400px'
 
+            const hasOffset =
+                mobileOffset?.left !== undefined ||
+                mobileOffset?.right !== undefined ||
+                mobileOffset?.top !== undefined ||
+                mobileOffset?.bottom !== undefined
+
             return `
                 position: fixed;
-                top: ${offset.top};
-                bottom: ${offset.bottom};
-                right: ${offset.right};
-                border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};
-                width: calc(100% - calc(${offset.left} + ${offset.right}));
-                overflow: hidden;
+                top: ${hasOffset ? offset.top : '0'};
+                bottom: ${hasOffset ? offset.bottom : '0'};
+                right: ${hasOffset ? offset.right : '0'};
+                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `${tokens.borderRadius.topLeft} 0 0 ${tokens.borderRadius.bottomLeft}`};
+                width: ${widthValue};
                 max-width: ${maxWidthValue};
-                
-                @media (min-width: 1024px) {
-                    top: 0;
-                    bottom: 0;
-                    right: 0;
-                    width: ${widthValue};
-                }
+                overflow: hidden;
+                user-select: text;
+                -webkit-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
             `
         }
     }}
@@ -207,6 +216,25 @@ const StyledDescription = styled(VaulDrawer.Description)`
     opacity: 0.7;
 `
 
+const getDrawerBorderRadius = (
+    direction: 'top' | 'bottom' | 'left' | 'right',
+    tokens: DrawerTokensType
+) => {
+    if (direction === 'bottom') {
+        return `0 0 ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}`
+    }
+    if (direction === 'top') {
+        return `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} 0 0`
+    }
+    if (direction === 'left') {
+        return `0 0 0 ${tokens.borderRadius.bottomLeft}`
+    }
+    if (direction === 'right') {
+        return `0 0 ${tokens.borderRadius.bottomRight} 0`
+    }
+    return undefined
+}
+
 export const Drawer = ({
     open,
     onOpenChange,
@@ -219,6 +247,7 @@ export const Drawer = ({
     onSnapPointChange,
     fadeFromIndex,
     snapToSequentialPoint = false,
+    disableDrag = false,
     children,
 }: DrawerProps) => {
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
@@ -229,6 +258,7 @@ export const Drawer = ({
         direction,
         modal,
         dismissible,
+        handleOnly: disableDrag,
     }
 
     if (snapPoints) vaulProps.snapPoints = snapPoints
@@ -239,7 +269,11 @@ export const Drawer = ({
     if (snapToSequentialPoint)
         vaulProps.snapToSequentialPoint = snapToSequentialPoint
 
-    return <RootComponent {...vaulProps}>{children}</RootComponent>
+    return (
+        <DrawerConfigContext.Provider value={{ disableDrag }}>
+            <RootComponent {...vaulProps}>{children}</RootComponent>
+        </DrawerConfigContext.Provider>
+    )
 }
 
 export const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerProps>(
@@ -311,16 +345,20 @@ export const DrawerContent = forwardRef<
             width,
             maxWidth,
             mobileOffset,
+            'aria-label': ariaLabel,
+            'aria-describedby': ariaDescribedBy,
             ...props
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
+        const { disableDrag } = useContext(DrawerConfigContext)
+        const resolvedShowHandle = disableDrag ? false : showHandle
 
         return (
             <StyledContent
                 ref={ref}
-                className={className}
+                className={`drawer-content ${className || ''}`}
                 style={style}
                 tokens={tokens}
                 direction={direction}
@@ -329,9 +367,11 @@ export const DrawerContent = forwardRef<
                 customWidth={width}
                 customMaxWidth={maxWidth}
                 mobileOffset={mobileOffset}
+                aria-label={ariaLabel}
+                aria-describedby={ariaDescribedBy}
                 {...props}
             >
-                {showHandle &&
+                {resolvedShowHandle &&
                     (direction === 'bottom' || direction === 'top') &&
                     (handle || (
                         <Block
@@ -385,9 +425,9 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
 DrawerHeader.displayName = 'DrawerHeader'
 
 export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
-    ({ children, className, ...props }, ref) => {
+    ({ children, className, id, ...props }, ref) => {
         return (
-            <StyledTitle ref={ref} className={className} {...props}>
+            <StyledTitle ref={ref} className={className} id={id} {...props}>
                 {children}
             </StyledTitle>
         )
@@ -399,9 +439,9 @@ DrawerTitle.displayName = 'DrawerTitle'
 export const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
->(({ children, className, ...props }, ref) => {
+>(({ children, className, id, ...props }, ref) => {
     return (
-        <StyledDescription ref={ref} className={className} {...props}>
+        <StyledDescription ref={ref} className={className} id={id} {...props}>
             {children}
         </StyledDescription>
     )
@@ -417,6 +457,7 @@ export const DrawerBody = forwardRef<
         overflowY?: 'auto' | 'hidden' | 'scroll' | 'visible'
         noPadding?: boolean
         hasFooter?: boolean
+        direction?: 'top' | 'bottom' | 'left' | 'right'
     }
 >(
     (
@@ -425,6 +466,8 @@ export const DrawerBody = forwardRef<
             className,
             overflowY = 'auto',
             noPadding = false,
+            hasFooter = false,
+            direction = 'bottom',
             ...props
         },
         ref
@@ -434,7 +477,7 @@ export const DrawerBody = forwardRef<
         return (
             <Block
                 ref={ref}
-                className={className}
+                className={`drawer-body ${className || ''}`}
                 padding={
                     noPadding
                         ? 0
@@ -443,6 +486,11 @@ export const DrawerBody = forwardRef<
                           tokens.content.padding.y
                 }
                 backgroundColor={tokens.content.backgroundColor}
+                borderRadius={
+                    hasFooter
+                        ? undefined
+                        : getDrawerBorderRadius(direction, tokens)
+                }
                 flexGrow={1}
                 overflowY={overflowY}
                 {...props}
@@ -455,30 +503,32 @@ export const DrawerBody = forwardRef<
 
 DrawerBody.displayName = 'DrawerBody'
 
-export const DrawerFooter = forwardRef<HTMLDivElement, DrawerFooterProps>(
-    ({ children, className, ...props }, ref) => {
-        const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
-
-        return (
-            <Block
-                ref={ref}
-                className={className}
-                padding={
-                    tokens.content.padding.x + ' ' + tokens.content.padding.y
-                }
-                backgroundColor={tokens.content.backgroundColor}
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-end"
-                gap="12px"
-                flexShrink={0}
-                {...props}
-            >
-                {children}
-            </Block>
-        )
+export const DrawerFooter = forwardRef<
+    HTMLDivElement,
+    DrawerFooterProps & {
+        direction?: 'top' | 'bottom' | 'left' | 'right'
     }
-)
+>(({ children, className, direction = 'bottom', ...props }, ref) => {
+    const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
+
+    return (
+        <Block
+            ref={ref}
+            className={className}
+            padding={tokens.content.padding.x + ' ' + tokens.content.padding.y}
+            backgroundColor={tokens.content.backgroundColor}
+            borderRadius={getDrawerBorderRadius(direction, tokens)}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            gap="12px"
+            flexShrink={0}
+            {...props}
+        >
+            {children}
+        </Block>
+    )
+})
 
 DrawerFooter.displayName = 'DrawerFooter'
 

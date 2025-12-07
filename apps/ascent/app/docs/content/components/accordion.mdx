@@ -59,51 +59,72 @@ function MyComponent() {
 <DocsTypeTable
     data={[
         [
-            { content: 'children', hintText: 'The accordion items to render' },
+            {
+                content: 'children',
+                hintText:
+                    'React elements representing AccordionItem components to be rendered within the accordion. Each child should be an AccordionItem with a unique value prop.',
+            },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
                 content: 'accordionType',
-                hintText: 'The visual style variant of the accordion',
+                hintText:
+                    'Controls the visual styling of the accordion. BORDER displays borders around each item, while NO_BORDER removes borders for a cleaner look. Defaults to NO_BORDER.',
             },
             { content: 'AccordionType', hintText: 'enum' },
-            { content: 'AccordionType.NO_BORDER' },
+            { content: 'BORDER, NO_BORDER' },
         ],
         [
             {
                 content: 'defaultValue',
-                hintText: 'The default value(s) for the accordion',
+                hintText:
+                    'Sets the initial expanded state for uncontrolled accordions. Can be a single string value or an array of strings for multiple items. Use this for uncontrolled components where you want to set initial state.',
             },
-            { content: 'string | string[]', hintText: 'string or array' },
+            {
+                content: 'string | string[]',
+                hintText:
+                    'Single value for single accordion mode, or array for multiple mode',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'value',
-                hintText: 'The controlled value(s) for the accordion',
+                hintText:
+                    'Controlled value(s) that determine which accordion item(s) are currently expanded. Use with onValueChange for controlled accordion behavior. Must be a string for single mode or string[] for multiple mode.',
             },
-            { content: 'string | string[]', hintText: 'string or array' },
+            {
+                content: 'string | string[]',
+                hintText:
+                    'Single value for single accordion mode, or array for multiple mode',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isMultiple',
                 hintText:
-                    'Whether multiple items can be expanded simultaneously',
+                    'When true, allows multiple accordion items to be expanded simultaneously. When false, only one item can be expanded at a time, and expanding a new item will collapse the previously expanded one. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables multiple expansion, false allows only one item expanded',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'onValueChange',
-                hintText: 'Callback when the accordion value changes',
+                hintText:
+                    'Callback function invoked whenever the expanded state changes. Receives the new value (string or string[]) as a parameter. Use this for controlled accordion behavior to synchronize state.',
             },
             {
                 content: '(value: string | string[]) => void',
-                hintText: 'function',
+                hintText:
+                    'Function that receives the new expanded value(s) when state changes',
             },
             { content: '' },
         ],
@@ -120,224 +141,119 @@ function MyComponent() {
         [
             {
                 content: 'value',
-                hintText: 'Unique identifier for the accordion item',
+                hintText:
+                    "Required unique identifier string for this accordion item. This value is used to track which item is expanded and must match the value used in the parent Accordion component's value or defaultValue prop.",
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Unique string identifier that must be unique across all accordion items',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'title',
-                hintText: 'The title text displayed in the accordion trigger',
+                hintText:
+                    'Required main heading text displayed in the accordion trigger button. This is the primary text that users see and click to expand/collapse the item.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText: 'Text content for the accordion item heading',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'children',
                 hintText:
-                    'The content to display when the accordion item is expanded',
+                    'Required content that appears when the accordion item is expanded. Can be any React node including text, components, or complex layouts. This content is hidden when the item is collapsed.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any valid React content to display when item is expanded',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'subtext',
-                hintText: 'Optional subtitle text displayed below the title',
+                hintText:
+                    'Optional secondary text displayed below the main title in the trigger. Useful for providing additional context or description without expanding the item.',
             },
-            { content: 'string', hintText: 'string' },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the title in the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'leftSlot',
                 hintText:
-                    'Optional element to display on the left side of the trigger',
+                    'Optional React element displayed on the left side of the trigger, before the title. Commonly used for icons, badges, or other visual indicators.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the left side of the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'rightSlot',
                 hintText:
-                    'Optional element to display on the right side of the trigger',
+                    'Optional React element displayed on the right side of the trigger, typically between the title and chevron icon. Useful for action buttons, badges, or status indicators.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display on the right side of the trigger',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'subtextSlot',
-                hintText: 'Optional element to display alongside the subtext',
+                hintText:
+                    'Optional React element displayed alongside the subtext, typically on the right side. Useful for adding icons or small interactive elements next to the secondary text.',
             },
-            { content: 'ReactNode', hintText: 'React node' },
+            {
+                content: 'ReactNode',
+                hintText: 'Any React element to display alongside the subtext',
+            },
             { content: '' },
         ],
         [
             {
                 content: 'isDisabled',
                 hintText:
-                    'Whether the accordion item is disabled and non-interactive',
+                    'When true, disables the accordion item, making it non-interactive. Disabled items cannot be expanded or collapsed and typically have reduced visual opacity. Defaults to false.',
             },
-            { content: 'boolean', hintText: 'boolean' },
-            { content: 'false' },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables interaction, false allows normal interaction',
+            },
+            { content: '' },
         ],
         [
             {
                 content: 'chevronPosition',
                 hintText:
-                    'Position of the chevron icon relative to the trigger',
+                    'Controls the position of the expand/collapse chevron icon relative to the trigger content. LEFT places the chevron on the left side, RIGHT places it on the right side (default). The chevron automatically rotates to indicate expanded/collapsed state.',
             },
             { content: 'AccordionChevronPosition', hintText: 'enum' },
-            { content: 'AccordionChevronPosition.RIGHT' },
-        ],
-        [
-            {
-                content: 'className',
-                hintText: 'Additional CSS class name for the accordion item',
-            },
-            { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'LEFT, RIGHT' },
         ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
-
-## Features
-
-- **Visual Variants**: Two distinct styles - bordered and borderless for different design contexts
-- **Selection Modes**: Single or multiple item expansion with controlled state management
-- **Flexible Layout**: Customizable chevron positioning (left or right side)
-- **Rich Content Support**: Multiple content slots for icons, subtitles, and additional elements
-- **Interactive States**: Comprehensive state management including hover, active, and disabled states
-- **Accessibility First**: Full keyboard navigation with ARIA compliance and screen reader support
-- **Smooth Animations**: Built-in expand/collapse animations with smooth transitions
-- **Responsive Design**: Adapts to different screen sizes with responsive design tokens
-- **Controlled/Uncontrolled**: Support for both controlled and uncontrolled component patterns
-- **Customizable Styling**: Extensive theming through design tokens for consistent branding
-
-## Usage Examples
-
-### Basic Accordion
-
-Simple accordion with border styling
-
-```tsx
-<Accordion accordionType={AccordionType.BORDER}>
-    <AccordionItem value="item-1" title="What is Blend Design System?">
-        <p>
-            Blend is a comprehensive design system that provides reusable
-            components.
-        </p>
-    </AccordionItem>
-    <AccordionItem value="item-2" title="How to get started?">
-        <p>Install the package and import the components you need.</p>
-    </AccordionItem>
-</Accordion>
-```
-
-### No Border Accordion
-
-Accordion without border styling for a cleaner look
-
-```tsx
-<Accordion accordionType={AccordionType.NO_BORDER}>
-    <AccordionItem value="item-1" title="Getting Started">
-        <p>Learn the basics of using Blend Design System.</p>
-    </AccordionItem>
-    <AccordionItem value="item-2" title="Components">
-        <p>Explore all available components and their usage examples.</p>
-    </AccordionItem>
-</Accordion>
-```
-
-### Multiple Selection Accordion
-
-Allow multiple items to be expanded simultaneously
-
-```tsx
-<Accordion accordionType={AccordionType.BORDER} isMultiple={true}>
-    <AccordionItem value="item-1" title="React Development">
-        <p>Modern React development with hooks and functional components.</p>
-    </AccordionItem>
-    <AccordionItem value="item-2" title="TypeScript">
-        <p>Type-safe JavaScript development with TypeScript.</p>
-    </AccordionItem>
-    <AccordionItem value="item-3" title="Design Systems">
-        <p>Building scalable and maintainable design systems.</p>
-    </AccordionItem>
-</Accordion>
-```
-
-### Accordion with Icons and Slots
-
-Rich accordion items with icons and additional content
-
-```tsx
-<Accordion accordionType={AccordionType.BORDER}>
-    <AccordionItem
-        value="item-1"
-        title="Documentation"
-        subtext="Comprehensive guides and examples"
-        leftSlot={<span>📚</span>}
-        rightSlot={<span className="text-green-500">New</span>}
-    >
-        <p>
-            Access comprehensive documentation with examples and API references.
-        </p>
-    </AccordionItem>
-    <AccordionItem
-        value="item-2"
-        title="Components"
-        subtext="Reusable UI components"
-        leftSlot={<span>🧩</span>}
-        chevronPosition={AccordionChevronPosition.LEFT}
-    >
-        <p>Explore our collection of reusable components.</p>
-    </AccordionItem>
-</Accordion>
-```
-
-### Controlled Accordion
-
-Accordion with controlled state management
-
-```tsx
-const [value, setValue] = useState<string>('item-1')
-
-;<Accordion
-    accordionType={AccordionType.BORDER}
-    value={value}
-    onValueChange={setValue}
->
-    <AccordionItem value="item-1" title="Controlled Item 1">
-        <p>This item is controlled by external state.</p>
-    </AccordionItem>
-    <AccordionItem value="item-2" title="Controlled Item 2">
-        <p>This item is also controlled by external state.</p>
-    </AccordionItem>
-</Accordion>
-```
-
-### Disabled Accordion Item
-
-Accordion item that cannot be expanded
-
-```tsx
-<Accordion accordionType={AccordionType.BORDER}>
-    <AccordionItem value="item-1" title="Enabled Item">
-        <p>This item can be expanded and collapsed.</p>
-    </AccordionItem>
-    <AccordionItem value="item-2" title="Disabled Item" isDisabled={true}>
-        <p>This item is disabled and cannot be expanded.</p>
-    </AccordionItem>
-</Accordion>
-```
 
 ## Component Tokens
 
@@ -350,7 +266,6 @@ export type AccordionState =
     | 'active'
     | 'disabled'
     | 'open'
-    | 'closed'
 
 export type AccordionTokenType = {
     gap: {
@@ -359,21 +274,21 @@ export type AccordionTokenType = {
     borderRadius: {
         [key in AccordionType]: CSSObject['borderRadius']
     }
-    item: {
-        trigger: {
-            border: {
-                [key in AccordionType]: {
-                    [key in AccordionState]?: CSSObject['border']
-                }
+    trigger: {
+        border: {
+            [key in AccordionType]: {
+                [key in AccordionState]?: CSSObject['border']
             }
-            padding: {
-                [key in AccordionType]: CSSObject['padding']
+        }
+        padding: {
+            [key in AccordionType]: CSSObject['padding']
+        }
+        backgroundColor: {
+            [key in AccordionType]: {
+                [key in AccordionState]?: CSSObject['backgroundColor']
             }
-            backgroundColor: {
-                [key in AccordionType]: {
-                    [key in AccordionState]?: CSSObject['backgroundColor']
-                }
-            }
+        }
+        text: {
             title: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
@@ -389,60 +304,11 @@ export type AccordionTokenType = {
                 }
             }
         }
-        separator: {
-            color: {
-                [key in AccordionType]: CSSObject['color']
-            }
+    }
+    separator: {
+        color: {
+            [key in AccordionType]: CSSObject['color']
         }
     }
-}
-```
-
-## Behavior
-
-### Expansion Modes
-
-- **Single Mode**: Only one accordion item can be expanded at a time (default behavior)
-- **Multiple Mode**: Multiple items can be expanded simultaneously when `isMultiple={true}`
-- **Default Values**: Set initially expanded items using `defaultValue` prop
-
-### State Management
-
-- **Controlled**: Use `value` and `onValueChange` props for external state control
-- **Uncontrolled**: Component manages its own internal state when no `value` prop is provided
-- **Disabled Items**: Individual items can be disabled while maintaining visual consistency
-
-### Animations
-
-- **Smooth Transitions**: Built-in CSS transitions for expand/collapse animations
-- **Performance Optimized**: Uses transform and opacity changes for smooth rendering
-- **Accessibility Friendly**: Respects user's motion preferences
-
-## Accessibility
-
-- **Keyboard Navigation**: Full keyboard support with Enter/Space to toggle items
-- **ARIA Compliance**: Proper `aria-expanded`, `aria-controls`, and `aria-labelledby` attributes
-- **Screen Reader Support**: Descriptive labels and state announcements
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Semantic HTML**: Uses proper heading and button elements for structure
-- **High Contrast**: Supports high contrast mode and custom color schemes
-
-## Enums
-
-### AccordionType
-
-```tsx
-enum AccordionType {
-    BORDER = 'border', // Accordion with visible borders around items
-    NO_BORDER = 'noBorder', // Clean accordion without borders
-}
-```
-
-### AccordionChevronPosition
-
-```tsx
-enum AccordionChevronPosition {
-    LEFT = 'left', // Chevron icon positioned on the left side
-    RIGHT = 'right', // Chevron icon positioned on the right side (default)
 }
 ```

@@ -1,6 +1,6 @@
 {
     "name": "blend-design-system",
-    "packageManager": "pnpm@10.12.4",
+    "packageManager": "pnpm@10.21.0",
     "private": true,
     "scripts": {
         "dev": "turbo run dev",
@@ -36,7 +36,12 @@
         "test:blend:ui": "cd packages/blend && pnpm test:ui",
         "test:blend:coverage": "cd packages/blend && pnpm test:coverage",
         "test:blend:watch": "cd packages/blend && pnpm test:watch",
-        "test:blend:run": "cd packages/blend && pnpm test:run"
+        "test:blend:run": "cd packages/blend && pnpm test:run",
+        "test:a11y": "cd packages/blend && pnpm test:a11y",
+        "test:a11y:watch": "cd packages/blend && pnpm test:a11y:watch",
+        "test:a11y:file": "cd packages/blend && pnpm test:file",
+        "chromatic": "cd apps/storybook && pnpm chromatic",
+        "chromatic:ci": "cd apps/storybook && pnpm chromatic:ci"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",

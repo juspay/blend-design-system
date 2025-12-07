@@ -13,7 +13,7 @@ import type { SingleSelectTokensType } from '../../SingleSelect/singleSelect.tok
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
-        <Block flexShrink={0} height="auto" contentCentered>
+        <Block data-element="icon" flexShrink={0} height="auto" contentCentered>
             {slot}
         </Block>
     )
@@ -29,6 +29,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             showCheckmark = true,
             className,
             selectedPosition = 'none',
+            index = 0,
         },
         ref
     ) => {
@@ -81,7 +82,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             e.stopPropagation()
             onSelect(item.value)
         }
-
         const shouldShowAutoTooltip =
             (showTooltip && item.label) ||
             (showSubLabelTooltip && item.subLabel)
@@ -101,9 +101,21 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         const rightSlotContent = rightSlotConfig ? (
             rightSlotConfig.type === 'checkbox' ? (
-                <Checkbox {...rightSlotConfig.props} />
+                <Checkbox
+                    data-element="checkbox"
+                    data-id={item.value || 'checkbox'}
+                    data-state={isSelected ? 'selected' : 'not selected'}
+                    data-status={item.disabled ? 'disabled' : 'enabled'}
+                    {...rightSlotConfig.props}
+                />
             ) : (
-                <Check {...rightSlotConfig.props} />
+                <Check
+                    data-element="checkbox"
+                    data-id={item.value || 'checkbox'}
+                    data-state={isSelected ? 'selected' : 'not selected'}
+                    data-status={item.disabled ? 'disabled' : 'enabled'}
+                    {...rightSlotConfig.props}
+                />
             )
         ) : null
 
@@ -131,11 +143,23 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const itemContent = (
             <RadixMenu.Item
                 asChild
+                // onSelect={handleSelect}
                 onClick={handleClick}
                 data-disabled={item.disabled}
             >
                 <Block
+                    data-numeric={index + 1}
+                    data-state={isSelected ? 'selected' : 'not selected'}
+                    data-element="select-item"
+                    data-id={item.label || 'select-item'}
                     ref={ref}
+                    role={type === SelectItemType.MULTI ? 'option' : 'menuitem'}
+                    aria-selected={
+                        type === SelectItemType.MULTI ? isSelected : undefined
+                    }
+                    data-dropdown-numeric={index + 1}
+                    data-dropdown-value={item.label}
+                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
@@ -201,6 +225,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
                             <Block
+                                data-element="select-item-label"
+                                data-id={item.label || 'select-item-label'}
                                 flexGrow={1}
                                 display="flex"
                                 overflow="hidden"
@@ -208,6 +234,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                                 style={{ minWidth: 0, maxWidth: '100%' }}
                             >
                                 <PrimitiveText
+                                    data-text={item.label}
                                     fontSize={
                                         tokens?.menu?.item?.option?.fontSize
                                     }
@@ -253,6 +280,8 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     </Block>
                     {item.subLabel && (
                         <Block
+                            data-element="select-item-sublabel"
+                            data-id={item.subLabel || 'select-item-sublabel'}
                             ref={subLabelRef}
                             overflow="hidden"
                             style={{ minWidth: 0, maxWidth: '100%' }}

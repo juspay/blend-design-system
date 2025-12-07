@@ -13,7 +13,7 @@ export type AvatarVariant = 'withImage' | 'withoutImage'
  *
  * Structure:
  * - gap: Spacing between avatar and slots
- * - container: Main avatar container properties
+ * - avatar: Main avatar container properties
  * - text: Fallback text styling
  * - indicator: Online status indicator
  * - slot: Leading and trailing slot styling
@@ -68,9 +68,11 @@ export type AvatarTokensType = {
         }
         // Pattern: indicator.border.[state]
         border: {
-            [key in AvatarState]: {
-                color: CSSObject['borderColor']
-                width: CSSObject['borderWidth']
+            [key in AvatarSize]: {
+                [key in AvatarState]: {
+                    color: CSSObject['borderColor']
+                    width: CSSObject['borderWidth']
+                }
             }
         }
         // Pattern: indicator.size.[size]
@@ -109,25 +111,25 @@ export const getAvatarTokens = (
 
             container: {
                 size: {
-                    [AvatarSize.XS]: {
+                    [AvatarSize.SM]: {
                         width: foundationToken.unit[24], // 24px
                         height: foundationToken.unit[24], // 24px
                     },
-                    [AvatarSize.SM]: {
+                    [AvatarSize.REGULAR]: {
+                        width: foundationToken.unit[28], // 28px
+                        height: foundationToken.unit[28], // 28px
+                    },
+                    [AvatarSize.MD]: {
                         width: foundationToken.unit[32], // 32px
                         height: foundationToken.unit[32], // 32px
                     },
-                    [AvatarSize.MD]: {
-                        width: foundationToken.unit[48], // 48px
-                        height: foundationToken.unit[48], // 48px
-                    },
                     [AvatarSize.LG]: {
-                        width: foundationToken.unit[80], // 80px
-                        height: foundationToken.unit[80], // 80px
+                        width: foundationToken.unit[56], // 56px
+                        height: foundationToken.unit[56], // 56px
                     },
                     [AvatarSize.XL]: {
-                        width: foundationToken.unit[144], // 144px
-                        height: foundationToken.unit[144], // 144px
+                        width: foundationToken.unit[64], // 64px
+                        height: foundationToken.unit[64], // 64px
                     },
                 },
 
@@ -165,17 +167,18 @@ export const getAvatarTokens = (
                     online: foundationToken.colors.gray[900],
                 },
                 fontSize: {
-                    [AvatarSize.XS]: foundationToken.font.size.body.xs.fontSize, // body xs
-                    [AvatarSize.SM]: foundationToken.font.size.body.sm.fontSize, // body sm
-                    [AvatarSize.MD]: foundationToken.font.size.body.lg.fontSize, // body lg
+                    [AvatarSize.SM]: foundationToken.font.size.body.xs.fontSize, // body sm
+                    [AvatarSize.REGULAR]:
+                        foundationToken.font.size.body.xs.fontSize, // body md
+                    [AvatarSize.MD]: foundationToken.font.size.body.sm.fontSize, // body lg
                     [AvatarSize.LG]:
-                        foundationToken.font.size.heading.xl.fontSize, // heading xl
+                        foundationToken.font.size.heading.md.fontSize, // heading xl
                     [AvatarSize.XL]:
-                        foundationToken.font.size.display.sm.fontSize, // display sm
+                        foundationToken.font.size.heading.lg.fontSize, // heading xl
                 },
                 fontWeight: {
-                    [AvatarSize.XS]: foundationToken.font.weight[500],
                     [AvatarSize.SM]: foundationToken.font.weight[500],
+                    [AvatarSize.REGULAR]: foundationToken.font.weight[500],
                     [AvatarSize.MD]: foundationToken.font.weight[500],
                     [AvatarSize.LG]: foundationToken.font.weight[600],
                     [AvatarSize.XL]: foundationToken.font.weight[600],
@@ -188,35 +191,77 @@ export const getAvatarTokens = (
                     online: foundationToken.colors.green[400],
                 },
                 border: {
-                    default: {
-                        color: foundationToken.colors.gray[0],
-                        width: '2px',
+                    [AvatarSize.SM]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[0.5],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[0.5],
+                        },
                     },
-                    online: {
-                        color: foundationToken.colors.gray[0],
-                        width: '2px',
+                    [AvatarSize.REGULAR]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                    },
+                    [AvatarSize.MD]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                    },
+                    [AvatarSize.LG]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                    },
+                    [AvatarSize.XL]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
                     },
                 },
                 size: {
-                    [AvatarSize.XS]: {
-                        width: '7px',
-                        height: '7px',
-                    },
                     [AvatarSize.SM]: {
-                        width: '9px',
-                        height: '9px',
+                        width: foundationToken.unit[8],
+                        height: foundationToken.unit[8],
+                    },
+                    [AvatarSize.REGULAR]: {
+                        width: foundationToken.unit[10],
+                        height: foundationToken.unit[10],
                     },
                     [AvatarSize.MD]: {
-                        width: '11px',
-                        height: '11px',
+                        width: foundationToken.unit[12],
+                        height: foundationToken.unit[12],
                     },
                     [AvatarSize.LG]: {
-                        width: '13px',
-                        height: '13px',
+                        width: foundationToken.unit[18],
+                        height: foundationToken.unit[18],
                     },
                     [AvatarSize.XL]: {
-                        width: '15px',
-                        height: '15px',
+                        width: foundationToken.unit[20],
+                        height: foundationToken.unit[20],
                     },
                 },
                 borderRadius: foundationToken.border.radius.full,
@@ -236,17 +281,17 @@ export const getAvatarTokens = (
 
             container: {
                 size: {
-                    [AvatarSize.XS]: {
+                    [AvatarSize.SM]: {
                         width: foundationToken.unit[24], // 24px
                         height: foundationToken.unit[24], // 24px
                     },
-                    [AvatarSize.SM]: {
+                    [AvatarSize.REGULAR]: {
                         width: foundationToken.unit[32], // 32px
                         height: foundationToken.unit[32], // 32px
                     },
                     [AvatarSize.MD]: {
-                        width: foundationToken.unit[48], // 48px
-                        height: foundationToken.unit[48], // 48px
+                        width: foundationToken.unit[40], // 40px
+                        height: foundationToken.unit[40], // 40px
                     },
                     [AvatarSize.LG]: {
                         width: foundationToken.unit[80], // 80px
@@ -292,17 +337,18 @@ export const getAvatarTokens = (
                     online: foundationToken.colors.gray[900],
                 },
                 fontSize: {
-                    [AvatarSize.XS]: foundationToken.font.size.body.xs.fontSize, // body xs
-                    [AvatarSize.SM]: foundationToken.font.size.body.sm.fontSize, // body sm
-                    [AvatarSize.MD]: foundationToken.font.size.body.lg.fontSize, // body lg
+                    [AvatarSize.SM]: foundationToken.font.size.body.xs.fontSize, // body sm
+                    [AvatarSize.REGULAR]:
+                        foundationToken.font.size.body.xs.fontSize, // body md
+                    [AvatarSize.MD]: foundationToken.font.size.body.sm.fontSize, // body lg
                     [AvatarSize.LG]:
-                        foundationToken.font.size.heading.xl.fontSize, // heading xl
+                        foundationToken.font.size.heading.md.fontSize, // heading xl
                     [AvatarSize.XL]:
-                        foundationToken.font.size.display.sm.fontSize, // display sm
+                        foundationToken.font.size.heading.lg.fontSize, // heading xl
                 },
                 fontWeight: {
-                    [AvatarSize.XS]: foundationToken.font.weight[500],
                     [AvatarSize.SM]: foundationToken.font.weight[500],
+                    [AvatarSize.REGULAR]: foundationToken.font.weight[500],
                     [AvatarSize.MD]: foundationToken.font.weight[500],
                     [AvatarSize.LG]: foundationToken.font.weight[600],
                     [AvatarSize.XL]: foundationToken.font.weight[600],
@@ -315,27 +361,69 @@ export const getAvatarTokens = (
                     online: foundationToken.colors.green[400],
                 },
                 border: {
-                    default: {
-                        color: foundationToken.colors.gray[0],
-                        width: '2px',
+                    [AvatarSize.SM]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[0.5],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[0.5],
+                        },
                     },
-                    online: {
-                        color: foundationToken.colors.gray[0],
-                        width: '2px',
+                    [AvatarSize.REGULAR]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                    },
+                    [AvatarSize.MD]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[1],
+                        },
+                    },
+                    [AvatarSize.LG]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                    },
+                    [AvatarSize.XL]: {
+                        default: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
+                        online: {
+                            color: foundationToken.colors.gray[0],
+                            width: foundationToken.unit[2],
+                        },
                     },
                 },
                 size: {
-                    [AvatarSize.XS]: {
-                        width: foundationToken.unit[10],
-                        height: foundationToken.unit[10],
-                    },
                     [AvatarSize.SM]: {
+                        width: foundationToken.unit[8],
+                        height: foundationToken.unit[8],
+                    },
+                    [AvatarSize.REGULAR]: {
                         width: foundationToken.unit[12],
                         height: foundationToken.unit[12],
                     },
                     [AvatarSize.MD]: {
-                        width: foundationToken.unit[16],
-                        height: foundationToken.unit[16],
+                        width: foundationToken.unit[14],
+                        height: foundationToken.unit[14],
                     },
                     [AvatarSize.LG]: {
                         width: foundationToken.unit[20],
