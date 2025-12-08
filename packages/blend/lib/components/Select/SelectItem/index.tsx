@@ -157,8 +157,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     aria-selected={
                         type === SelectItemType.MULTI ? isSelected : undefined
                     }
-                    data-numeric={index + 1}
-                    data-state={isSelected ? 'selected' : 'not selected'}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
