@@ -27,7 +27,7 @@ const MenuSlot = ({
         )
 
     return (
-        <Block flexShrink={0} height="auto" contentCentered>
+        <Block data-element="icon" flexShrink={0} height="auto" contentCentered>
             {content}
         </Block>
     )
@@ -169,9 +169,13 @@ const MenuItem = ({
                     overflow="hidden"
                 >
                     {item.slot1 && (
-                        <MenuSlot slot={item.slot1} isDecorative={true} />
+                        <Block data-element="slot-1">
+                            <MenuSlot slot={item.slot1} isDecorative={true} />
+                        </Block>
                     )}
                     <Block
+                        data-element="select-item-label"
+                        data-id={item.label || 'select-item-label'}
                         display="flex"
                         flexGrow={1}
                         alignItems="center"
@@ -189,17 +193,29 @@ const MenuItem = ({
                         </Text>
                     </Block>
                     {item.slot2 && (
-                        <MenuSlot slot={item.slot2} isDecorative={true} />
+                        <Block data-element="slot-2">
+                            <MenuSlot slot={item.slot2} isDecorative={true} />
+                        </Block>
                     )}
                     {item.slot3 && (
-                        <MenuSlot slot={item.slot3} isDecorative={true} />
+                        <Block data-element="slot-3">
+                            <MenuSlot slot={item.slot3} isDecorative={true} />
+                        </Block>
                     )}
                     {item.slot4 && (
-                        <MenuSlot slot={item.slot4} isDecorative={true} />
+                        <Block data-element="slot-4">
+                            <MenuSlot slot={item.slot4} isDecorative={true} />
+                        </Block>
                     )}
                 </Block>
                 {item.subLabel && (
-                    <Block display="flex" alignItems="center" width="100%">
+                    <Block
+                        data-element="select-item-sublabel"
+                        data-id={item.subLabel || 'select-item-sublabel'}
+                        display="flex"
+                        alignItems="center"
+                        width="100%"
+                    >
                         <Text
                             color={getColor('default', menuTokens, item)}
                             fontWeight={menuTokens.item.description.fontWeight}

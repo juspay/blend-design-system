@@ -157,12 +157,17 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
 
         return (
             <Block
+                data-keyvaluepair={keyString || 'keyvaluepair'}
                 ref={ref}
                 style={containerStyles}
                 role="group"
                 aria-label={`${keyString}: ${value || ''}`}
             >
-                <Block style={keyContainerStyles}>
+                <Block
+                    data-element="key"
+                    data-id={keyString || 'key'}
+                    style={keyContainerStyles}
+                >
                     <ResponsiveText
                         as="div"
                         className="flex-1 min-w-0"
@@ -179,13 +184,24 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {keyString}
                     </ResponsiveText>
                     {keySlot && (
-                        <Block style={getSlotStyles()}>{keySlot}</Block>
+                        <Block data-element="key-slot" style={getSlotStyles()}>
+                            {keySlot}
+                        </Block>
                     )}
                 </Block>
 
-                <Block style={valueContainerStyles}>
+                <Block
+                    data-element="value"
+                    data-id={value || 'value'}
+                    style={valueContainerStyles}
+                >
                     {valueLeftSlot && (
-                        <Block style={getSlotStyles()}>{valueLeftSlot}</Block>
+                        <Block
+                            data-element="value-left-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueLeftSlot}
+                        </Block>
                     )}
                     <ResponsiveText
                         as="div"
@@ -203,7 +219,12 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {value || ''}
                     </ResponsiveText>
                     {valueRightSlot && (
-                        <Block style={getSlotStyles()}>{valueRightSlot}</Block>
+                        <Block
+                            data-element="value-right-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueRightSlot}
+                        </Block>
                     )}
                 </Block>
             </Block>

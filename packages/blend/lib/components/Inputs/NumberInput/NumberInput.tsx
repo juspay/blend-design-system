@@ -78,7 +78,8 @@ const NumberInput = ({
 
     return (
         <Block
-            data-component-field-wrapper={`field-${name}`}
+            data-numberinput={label || 'numberinput'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
             gap={numberInputTokens.gap}
@@ -214,6 +215,7 @@ const NumberInput = ({
                     {...rest}
                 />
                 <Block
+                    data-element="stepper"
                     display="flex"
                     flexDirection="column"
                     position="absolute"

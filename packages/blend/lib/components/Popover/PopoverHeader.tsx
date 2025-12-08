@@ -53,7 +53,8 @@ const PopoverHeader = ({
             <PrimitiveText
                 {...(headingId ? { id: headingId } : {})}
                 as="span"
-                data-popover-header={heading}
+                data-element="popover-header"
+                data-id={heading || 'popover-header'}
                 fontSize={popoverTokens.headerContainer.heading.fontSize[size]}
                 fontWeight={
                     popoverTokens.headerContainer.heading.fontWeight[size]
@@ -69,7 +70,8 @@ const PopoverHeader = ({
         return (
             <PrimitiveText
                 {...(descriptionId ? { id: descriptionId } : {})}
-                data-popover-description={description}
+                data-element="popover-description"
+                data-id={description || 'popover-description'}
                 fontSize={
                     popoverTokens.headerContainer.description.fontSize[size]
                 }
