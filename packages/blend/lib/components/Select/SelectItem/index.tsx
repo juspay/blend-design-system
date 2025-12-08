@@ -157,9 +157,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     aria-selected={
                         type === SelectItemType.MULTI ? isSelected : undefined
                     }
-                    data-dropdown-numeric={index + 1}
-                    data-dropdown-value={item.label}
-                    data-dropdown-value-selected={isSelected ? 'True' : 'False'}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"

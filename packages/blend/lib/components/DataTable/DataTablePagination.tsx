@@ -116,6 +116,7 @@ export function DataTablePagination({
             width="100%"
         >
             <Block
+                data-element="pagesize"
                 display="flex"
                 alignItems="center"
                 gap={FOUNDATION_THEME.unit[8]}
@@ -176,6 +177,7 @@ export function DataTablePagination({
             </Block>
 
             <Block
+                data-element="pagination"
                 display="flex"
                 alignItems="center"
                 gap={
@@ -188,6 +190,10 @@ export function DataTablePagination({
                 }}
             >
                 <PrimitiveButton
+                    data-element="previous-page"
+                    data-status={
+                        currentPage === 1 || !hasData ? 'disabled' : 'enabled'
+                    }
                     contentCentered
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}
@@ -235,6 +241,13 @@ export function DataTablePagination({
                         {pageNumbers.map((page, index) =>
                             typeof page === 'number' ? (
                                 <PrimitiveButton
+                                    data-element="page-number"
+                                    data-status={
+                                        currentPage === page
+                                            ? 'selected'
+                                            : 'not selected'
+                                    }
+                                    data-numeric={page}
                                     key={index}
                                     contentCentered
                                     minWidth={FOUNDATION_THEME.unit[32]}
@@ -392,6 +405,12 @@ export function DataTablePagination({
                 )}
 
                 <PrimitiveButton
+                    data-element="next-page"
+                    data-status={
+                        currentPage === totalPages || !hasData
+                            ? 'disabled'
+                            : 'enabled'
+                    }
                     contentCentered
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}
