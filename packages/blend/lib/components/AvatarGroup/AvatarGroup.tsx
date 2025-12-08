@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useRef, useCallback } from 'react'
+import { forwardRef, useState, useEffect, useCallback } from 'react'
 import { Avatar } from '../Avatar'
 import { AvatarShape, AvatarSize } from '../Avatar/types'
 import type { AvatarGroupProps } from './types'
@@ -6,6 +6,7 @@ import {
     StyledAvatarGroupContainer,
     StyledAvatarWrapper,
     StyledOverflowCounter,
+    VisuallyHidden,
 } from './StyledAvatarGroup'
 import { createMenuItems } from './avatarGroupUtils'
 import Menu from '../Menu/Menu'
@@ -28,26 +29,20 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
         ref
     ) => {
         const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
-        // Ensure maxCount is at least 1
         const safeMaxCount = Math.max(1, maxCount)
 
-        // State
         const [internalSelectedIds, setInternalSelectedIds] = useState<
             (string | number)[]
         >(selectedAvatarIds || [])
-        // Refs
-        const overflowCounterRef = useRef<HTMLButtonElement>(null)
 
         const visibleAvatars = avatars.slice(0, safeMaxCount)
         const overflowAvatars = avatars.slice(safeMaxCount)
-        const overflowCount = Math.max(0, overflowAvatars.length)
+        const overflowCount = overflowAvatars.length
 
-        // Sync internal state with props
         useEffect(() => {
             setInternalSelectedIds(selectedAvatarIds || [])
         }, [selectedAvatarIds])
 
-        // Handle avatar selection
         const handleSelect = useCallback(
             (id: string | number) => {
                 setInternalSelectedIds((prevSelected) => {
@@ -73,48 +68,69 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             <StyledAvatarGroupContainer
                 ref={ref}
                 role="group"
-                aria-label={`Group of ${avatars.length} avatars, ${internalSelectedIds.length} selected`}
+                aria-label={`Group of ${avatars.length} avatars${internalSelectedIds.length > 0 ? `, ${internalSelectedIds.length} selected` : ''}`}
+                aria-live="polite"
+                aria-atomic="true"
                 data-avatar-group="true"
                 data-avatar-group-count={avatars.length}
                 data-avatar-group-selected-count={internalSelectedIds.length}
                 data-avatar-group-max-count={safeMaxCount}
                 {...props}
             >
-                {visibleAvatars.map((avatar, index) => (
-                    <StyledAvatarWrapper
-                        key={avatar.id}
-                        $index={index}
-                        $total={visibleAvatars.length}
-                        $isSelected={internalSelectedIds.includes(avatar.id)}
-                        $size={size}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={internalSelectedIds.includes(avatar.id)}
-                        aria-label={`Select avatar ${avatar.alt || (typeof avatar.fallback === 'string' ? avatar.fallback : avatar.id)}`}
-                        data-avatar-group-item="true"
-                        data-avatar-group-item-id={avatar.id}
-                        data-avatar-group-item-index={index}
-                        data-avatar-group-item-selected={internalSelectedIds.includes(
-                            avatar.id
-                        )}
-                        onClick={() => handleSelect(avatar.id)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault()
-                                handleSelect(avatar.id)
+                {visibleAvatars.map((avatar, index) => {
+                    const isSelected = internalSelectedIds.includes(avatar.id)
+                    const avatarName =
+                        avatar.alt ||
+                        (typeof avatar.fallback === 'string'
+                            ? avatar.fallback
+                            : `Avatar ${avatar.id}`)
+                    const descriptionId = `avatar-group-item-${avatar.id}-description`
+
+                    return (
+                        <StyledAvatarWrapper
+                            key={avatar.id}
+                            $index={index}
+                            $total={visibleAvatars.length}
+                            $isSelected={isSelected}
+                            $size={size}
+                            role="button"
+                            tabIndex={0}
+                            aria-pressed={isSelected}
+                            aria-label={
+                                isSelected
+                                    ? `${avatarName}, selected`
+                                    : avatarName
                             }
-                        }}
-                    >
-                        <Avatar
-                            skeleton={skeleton}
-                            src={avatar.src}
-                            alt={avatar.alt}
-                            fallback={avatar.fallback}
-                            size={size}
-                            shape={shape}
-                        />
-                    </StyledAvatarWrapper>
-                ))}
+                            aria-describedby={descriptionId}
+                            data-avatar-group-item="true"
+                            data-avatar-group-item-id={avatar.id}
+                            data-avatar-group-item-index={index}
+                            data-avatar-group-item-selected={isSelected}
+                            onClick={() => handleSelect(avatar.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    handleSelect(avatar.id)
+                                }
+                            }}
+                        >
+                            <Avatar
+                                skeleton={skeleton}
+                                src={avatar.src}
+                                alt={avatar.alt}
+                                fallback={avatar.fallback}
+                                size={size}
+                                shape={shape}
+                            />
+                            <VisuallyHidden
+                                id={descriptionId}
+                                aria-hidden="false"
+                            >
+                                {`Avatar ${index + 1} of ${visibleAvatars.length}${overflowCount > 0 ? `, ${overflowCount} more available` : ''}`}
+                            </VisuallyHidden>
+                        </StyledAvatarWrapper>
+                    )
+                })}
 
                 {overflowCount > 0 &&
                     (skeleton?.show ? (
@@ -123,17 +139,18 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                             width={tokens.container.size[size].width}
                             height={tokens.container.size[size].height}
                             borderRadius={tokens.container.borderRadius[shape]}
+                            aria-label="Loading more avatars"
                         />
                     ) : (
                         <Menu
                             trigger={
                                 <StyledOverflowCounter
-                                    ref={overflowCounterRef}
                                     type="button"
                                     $size={size}
                                     $shape={shape}
                                     aria-haspopup="menu"
-                                    aria-label={`+${overflowCount} more avatars, click to view and select`}
+                                    aria-expanded="false"
+                                    aria-label={`${overflowCount} more avatar${overflowCount > 1 ? 's' : ''}, click to view and select`}
                                     data-avatar-group-overflow="true"
                                     data-avatar-group-overflow-count={
                                         overflowCount
