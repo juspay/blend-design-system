@@ -39,7 +39,6 @@ import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
-import { ResponsiveWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 
@@ -86,7 +85,6 @@ export const useComponentToken = (
     | ResponsiveSidebarTokens
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
-    | ResponsiveWorkflowTokens
     | ResponsiveMobileNavigationTokens
     | ResponsiveDirectoryTokens => {
     const { componentTokens } = useTheme()

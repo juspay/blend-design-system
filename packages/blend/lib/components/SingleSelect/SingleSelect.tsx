@@ -105,7 +105,6 @@ const SingleSelect = ({
     customValueLabel = 'Specify',
     ...rest
 }: SingleSelectProps) => {
-    console.log(slot, 'slot')
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
