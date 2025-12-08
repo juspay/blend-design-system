@@ -100,62 +100,57 @@ export const prepareDropdownItems = (
     tabs: TabItem[],
     originalItems?: TabItem[]
 ) => {
-    if (!tabs.length) return []
+    const itemsToShow =
+        originalItems && originalItems.length > 0 ? originalItems : tabs
 
-    const originalTabValues = originalItems
-        ? new Set(originalItems.map((item) => item.value))
-        : new Set<string>()
+    if (!itemsToShow.length) return []
 
     return [
         {
-            items: tabs.map((tab) => {
-                const value = originalTabValues.has(tab.value)
-                    ? tab.value
-                    : tab.value.includes('_')
-                      ? tab.value.split('_')[0]
-                      : tab.value
-
-                return {
-                    value,
-                    label: tab.label,
-                }
-            }),
+            items: itemsToShow.map((tab) => ({
+                value: tab.value,
+                label: tab.label,
+            })),
         },
     ]
 }
 
 /**
- * Returns tabs for display, limited by maxDisplayTabs if provided.
- * When limited, shows tabs centered around the active tab to ensure it's always visible.
+ * Returns tabs for display based on isDefault flag and maxDisplayTabs limit.
+ * - Default tabs (isDefault: true) are shown in the list
+ * - Non-default tabs are shown in dropdown
+ * - If maxDisplayTabs is set and there are more default tabs, only maxDisplayTabs are shown in list
  */
 export const getDisplayTabs = (
     tabs: TabItem[],
     maxDisplayTabs?: number,
     activeTab?: string
 ): TabItem[] => {
+    const defaultTabs = tabs.filter((tab) => tab.isDefault === true)
+
     if (
         !maxDisplayTabs ||
         maxDisplayTabs <= 0 ||
-        tabs.length <= maxDisplayTabs
+        defaultTabs.length <= maxDisplayTabs
     ) {
-        return tabs
+        return defaultTabs.length > 0 ? defaultTabs : tabs
     }
 
     const activeIndex = activeTab
-        ? tabs.findIndex((tab) => tab.value === activeTab)
+        ? defaultTabs.findIndex((tab) => tab.value === activeTab)
         : -1
 
     if (activeIndex === -1) {
-        return tabs.slice(0, maxDisplayTabs)
+        return defaultTabs.slice(0, maxDisplayTabs)
     }
 
     let startIndex = Math.max(0, activeIndex - Math.floor(maxDisplayTabs / 2))
 
-    if (startIndex + maxDisplayTabs > tabs.length) {
-        startIndex = Math.max(0, tabs.length - maxDisplayTabs)
+    if (startIndex + maxDisplayTabs > defaultTabs.length) {
+        startIndex = Math.max(0, defaultTabs.length - maxDisplayTabs)
     }
 
-    return tabs.slice(startIndex, startIndex + maxDisplayTabs)
+    return defaultTabs.slice(startIndex, startIndex + maxDisplayTabs)
 }
 
 /**

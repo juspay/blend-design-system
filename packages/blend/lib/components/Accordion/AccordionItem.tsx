@@ -1,3 +1,4 @@
+import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { forwardRef } from 'react'
@@ -361,6 +362,19 @@ const AccordionItem = forwardRef<
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
+                                            aria-hidden={
+                                                React.isValidElement(
+                                                    leftSlot
+                                                ) &&
+                                                (
+                                                    leftSlot.props as Record<
+                                                        string,
+                                                        unknown
+                                                    >
+                                                )?.['aria-label']
+                                                    ? undefined
+                                                    : 'true'
+                                            }
                                         >
                                             {leftSlot}
                                         </Block>
@@ -414,6 +428,19 @@ const AccordionItem = forwardRef<
                                                 display="flex"
                                                 alignItems="center"
                                                 justifyContent="center"
+                                                aria-hidden={
+                                                    React.isValidElement(
+                                                        rightSlot
+                                                    ) &&
+                                                    (
+                                                        rightSlot.props as Record<
+                                                            string,
+                                                            unknown
+                                                        >
+                                                    )?.['aria-label']
+                                                        ? undefined
+                                                        : 'true'
+                                                }
                                             >
                                                 {rightSlot}
                                             </Block>

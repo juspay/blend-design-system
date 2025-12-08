@@ -24,6 +24,10 @@ import TagAccessibility from '../../Tags/accessibility/TagAccessibility'
 import TooltipAccessibility from '../../Tooltip/accessibility/TooltipAccessibility'
 import ModalAccessibility from '../../Modal/accessibility/ModalAccessibility'
 import PopoverAccessibility from '../../Popover/accessibility/PopoverAccessibility'
+import KeyValuePairAccessibility from '../../KeyValuePair/accessibility/KeyValuePairAccessibility'
+import SnackbarAccessibility from '../../Snackbar/accessibility/SnackbarAccessibility'
+import AccordionAccessibility from '../../Accordion/accessibility/AccordionAccessibility'
+import TabsAccessibility from '../../Tabs/accessibility/TabsAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -147,6 +151,26 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Popover',
         displayName: 'Popover',
         component: PopoverAccessibility,
+    },
+    {
+        name: 'KeyValuePair',
+        displayName: 'KeyValuePair',
+        component: KeyValuePairAccessibility,
+    },
+    {
+        name: 'Snackbar',
+        displayName: 'Snackbar',
+        component: SnackbarAccessibility,
+    },
+    {
+        name: 'Accordion',
+        displayName: 'Accordion',
+        component: AccordionAccessibility,
+    },
+    {
+        name: 'Tabs',
+        displayName: 'Tabs',
+        component: TabsAccessibility,
     },
     // Add more components here as they are added
 ]

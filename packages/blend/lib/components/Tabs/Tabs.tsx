@@ -9,6 +9,10 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     (
         {
             className,
+            variant,
+            size,
+            expanded = false,
+            fitContent = false,
             items = [],
             onTabClose,
             onTabAdd,
@@ -98,7 +102,12 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 >
                     <TabsList
                         data-element="tab-list"
+                        variant={variant}
+                        size={size}
+                        expanded={expanded}
+                        fitContent={fitContent}
                         items={processedItems}
+                        originalItems={items}
                         onTabClose={handleTabClose}
                         onTabAdd={onTabAdd}
                         showDropdown={showDropdown}
@@ -146,6 +155,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         activeTab,
                         showSkeleton,
                         skeletonVariant,
+                        variant,
+                        size,
                     }),
                     ...(isTabsTrigger && {
                         showSkeleton:
