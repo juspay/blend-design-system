@@ -268,7 +268,7 @@ describe('Breadcrumb Accessibility', () => {
             render(<Breadcrumb items={items} />)
 
             const links = screen.getAllByRole('link')
-            expect(links.length).toBe(2) // Active item is not a link
+            expect(links.length).toBe(2)
             links.forEach((link) => {
                 expect(link).toHaveAttribute('href')
             })
@@ -369,8 +369,6 @@ describe('Breadcrumb Accessibility', () => {
             expect(links[1]).toHaveTextContent('Page 2')
         })
     })
-
-    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {})
 
     describe('Edge Cases and Error Handling', () => {
         it('handles empty items array gracefully - no errors with empty state', () => {
