@@ -6,9 +6,8 @@ import KeyValuePair from '../../../lib/components/KeyValuePair/KeyValuePair'
 import {
     KeyValuePairSize,
     KeyValuePairStateType,
-    TextOverflowMode,
 } from '../../../lib/components/KeyValuePair/types'
-import { Info, Star, ArrowRight, Settings } from 'lucide-react'
+import { Info, Star, ArrowRight } from 'lucide-react'
 
 describe('KeyValuePair Accessibility', () => {
     afterEach(() => {
@@ -221,7 +220,7 @@ describe('KeyValuePair Accessibility', () => {
 
     describe('WCAG 1.4.4 Resize Text (Level AA)', () => {
         it('text can be resized up to 200% without loss of content', () => {
-            const { container } = render(
+            render(
                 <KeyValuePair
                     keyString="Long Key Name"
                     value="This is a very long value that should wrap or truncate appropriately"
