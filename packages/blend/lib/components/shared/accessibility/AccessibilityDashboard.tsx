@@ -26,6 +26,7 @@ import ModalAccessibility from '../../Modal/accessibility/ModalAccessibility'
 import PopoverAccessibility from '../../Popover/accessibility/PopoverAccessibility'
 import KeyValuePairAccessibility from '../../KeyValuePair/accessibility/KeyValuePairAccessibility'
 import SnackbarAccessibility from '../../Snackbar/accessibility/SnackbarAccessibility'
+import AccordionAccessibility from '../../Accordion/accessibility/AccordionAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -159,6 +160,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Snackbar',
         displayName: 'Snackbar',
         component: SnackbarAccessibility,
+    },
+    {
+        name: 'Accordion',
+        displayName: 'Accordion',
+        component: AccordionAccessibility,
     },
     // Add more components here as they are added
 ]
