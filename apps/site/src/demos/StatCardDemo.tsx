@@ -276,7 +276,6 @@ const StatCardDemo = () => {
                                 show: showSkeleton,
                                 variant: 'pulse',
                             }}
-                            data-single-stat={playgroundTitle}
                             dropdownProps={{
                                 label: 'Currency',
                                 placeholder: 'Currency',

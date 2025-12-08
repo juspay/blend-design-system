@@ -16,7 +16,12 @@ import { submenuContentAnimations } from './menu.animations'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
-        <Block flexShrink={0} height="auto" contentCentered>
+        <Block
+            data-element="left-slot"
+            flexShrink={0}
+            height="auto"
+            contentCentered
+        >
             {slot}
         </Block>
     )
@@ -185,6 +190,10 @@ export const SubMenu = ({
                 style={{ outline: 'none', border: 'none' }}
             >
                 <Block
+                    data-element="menu-item"
+                    data-id={item.label || 'menu-item'}
+                    data-status={item.disabled ? 'disabled' : 'enabled'}
+                    data-numeric={idx + 1}
                     display="flex"
                     flexDirection="column"
                     gap={menuTokens.item.gap}
@@ -247,7 +256,12 @@ export const SubMenu = ({
                         {item.slot3 && <MenuSlot slot={item.slot3} />}
                         {item.slot4 && <MenuSlot slot={item.slot4} />}
 
-                        <Block flexShrink={0} size="auto" contentCentered>
+                        <Block
+                            data-element="chevron-icon"
+                            flexShrink={0}
+                            size="auto"
+                            contentCentered
+                        >
                             <ChevronRightIcon size={16} />
                         </Block>
                     </Block>

@@ -137,9 +137,17 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
         }
 
         return (
-            <Block ref={ref} style={containerStyles}>
+            <Block
+                data-keyvaluepair={keyString || 'keyvaluepair'}
+                ref={ref}
+                style={containerStyles}
+            >
                 {/* Key Section */}
-                <Block style={keyContainerStyles}>
+                <Block
+                    data-element="key"
+                    data-id={keyString || 'key'}
+                    style={keyContainerStyles}
+                >
                     <ResponsiveText
                         className="flex-1 min-w-0"
                         fontSize={keyValuePairTokens.key.fontSize}
@@ -152,14 +160,25 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {keyString}
                     </ResponsiveText>
                     {keySlot && (
-                        <Block style={getSlotStyles()}>{keySlot}</Block>
+                        <Block data-element="key-slot" style={getSlotStyles()}>
+                            {keySlot}
+                        </Block>
                     )}
                 </Block>
 
                 {/* Value Section */}
-                <Block style={valueContainerStyles}>
+                <Block
+                    data-element="value"
+                    data-id={value || 'value'}
+                    style={valueContainerStyles}
+                >
                     {valueLeftSlot && (
-                        <Block style={getSlotStyles()}>{valueLeftSlot}</Block>
+                        <Block
+                            data-element="value-left-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueLeftSlot}
+                        </Block>
                     )}
                     <ResponsiveText
                         className="flex-1 min-w-0"
@@ -173,7 +192,12 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {value || ''}
                     </ResponsiveText>
                     {valueRightSlot && (
-                        <Block style={getSlotStyles()}>{valueRightSlot}</Block>
+                        <Block
+                            data-element="value-right-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueRightSlot}
+                        </Block>
                     )}
                 </Block>
             </Block>
