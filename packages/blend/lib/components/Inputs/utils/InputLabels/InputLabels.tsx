@@ -85,6 +85,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 </Text>
                 {required && (
                     <sup
+                        data-element="required-icon"
                         aria-hidden="true"
                         style={{
                             color:

@@ -115,7 +115,7 @@ const Popover = ({
                 {trigger}
             </RadixPopover.Trigger>
             <RadixPopover.Content
-                data-popover={'Popover'}
+                data-popover={heading || 'Popover'}
                 style={{ zIndex, outline: 'none', minWidth, maxWidth }}
                 asChild
                 sideOffset={sideOffset}
