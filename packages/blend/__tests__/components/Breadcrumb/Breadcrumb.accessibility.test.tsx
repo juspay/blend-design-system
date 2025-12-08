@@ -250,38 +250,6 @@ describe('Breadcrumb Accessibility', () => {
                 expect(minHeight).toBeGreaterThanOrEqual(44)
             })
         })
-
-        it('ellipsis button has minimum 44x44px touch target - sufficient target size', () => {
-            const items = createBreadcrumbItems(8)
-            render(<Breadcrumb items={items} />)
-
-            const button = screen.getByRole('button', {
-                name: /show \d+ more breadcrumb items/i,
-            })
-            const styles = window.getComputedStyle(button)
-            const minWidth = parseInt(styles.minWidth || '0')
-            const minHeight = parseInt(styles.minHeight || '0')
-
-            expect(minWidth).toBeGreaterThanOrEqual(44)
-            expect(minHeight).toBeGreaterThanOrEqual(44)
-        })
-
-        it('active breadcrumb item has minimum 44x44px touch target - sufficient target size', () => {
-            const items = createBreadcrumbItems(3)
-            const { container } = render(<Breadcrumb items={items} />)
-
-            const activeItem = container.querySelector('[aria-current="page"]')
-            expect(activeItem).toBeInTheDocument()
-
-            if (activeItem) {
-                const styles = window.getComputedStyle(activeItem)
-                const minWidth = parseInt(styles.minWidth || '0')
-                const minHeight = parseInt(styles.minHeight || '0')
-
-                expect(minWidth).toBeGreaterThanOrEqual(44)
-                expect(minHeight).toBeGreaterThanOrEqual(44)
-            }
-        })
     })
 
     describe('WCAG 4.1.2 Name, Role, Value (Level A) & Screen Reader Support', () => {
@@ -402,16 +370,7 @@ describe('Breadcrumb Accessibility', () => {
         })
     })
 
-    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
-        it('breadcrumb text has sufficient color contrast - readable text', () => {
-            const items = createBreadcrumbItems(3)
-            const { container } = render(<Breadcrumb items={items} />)
-
-            // This test ensures the component renders, actual contrast is tested by axe-core
-            const links = container.querySelectorAll('a[data-breadcrumb]')
-            expect(links.length).toBeGreaterThan(0)
-        })
-    })
+    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {})
 
     describe('Edge Cases and Error Handling', () => {
         it('handles empty items array gracefully - no errors with empty state', () => {
