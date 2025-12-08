@@ -163,7 +163,7 @@ const StatCard = ({
                     statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
-                data-id={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
+                data-numeric={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
                 data-element="statcard-delta"
                 data-status={
                     change?.valueType === ChangeType.INCREASE
@@ -792,7 +792,7 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-id={formatMainValue(
+                                                data-numeric={formatMainValue(
                                                     value || '--'
                                                 )}
                                                 data-element="statcard-data"
@@ -1048,7 +1048,7 @@ const StatCard = ({
                                                     style={{
                                                         cursor: 'pointer',
                                                     }}
-                                                    data-id={formatMainValue(
+                                                    data-numeric={formatMainValue(
                                                         value || '--'
                                                     )}
                                                     data-element="statcard-data"

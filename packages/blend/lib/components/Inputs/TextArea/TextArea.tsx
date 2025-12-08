@@ -72,7 +72,6 @@ const TextArea = ({
 
     return (
         <Block
-            // data-component-field-wrapper={`field-textarea`}
             data-textarea={label || 'textarea'}
             data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"

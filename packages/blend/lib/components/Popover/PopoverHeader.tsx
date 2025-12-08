@@ -70,7 +70,6 @@ const PopoverHeader = ({
         return (
             <PrimitiveText
                 {...(descriptionId ? { id: descriptionId } : {})}
-                data-popover-description={description}
                 data-element="popover-description"
                 data-id={description || 'popover-description'}
                 fontSize={

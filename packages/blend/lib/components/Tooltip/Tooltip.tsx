@@ -65,7 +65,6 @@ export const Tooltip = ({
                             style={{ zIndex: 9999 }}
                         >
                             <Block
-                                data-tooltip={content || 'tooltip'}
                                 display="flex"
                                 alignItems="center"
                                 overflow="hidden"
