@@ -32,7 +32,6 @@ import {
     Settings,
     TrendingUp,
     Upload,
-    Workflow,
     Moon,
     Sun,
     HelpCircle,
@@ -103,7 +102,6 @@ import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import CodeEditorDemo from './CodeEditorDemo'
-import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
@@ -167,7 +165,6 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'codeEditor'
-        | 'workflowCanvas'
         | 'formElements'
     >('buttons')
 
@@ -449,8 +446,6 @@ const SidebarDemo = () => {
                 return <CodeBlockDemo />
             case 'codeEditor':
                 return <CodeEditorDemo />
-            case 'workflowCanvas':
-                return <WorkflowCanvasDemo />
             case 'formElements':
                 return <FormElementsDemo />
             default:
@@ -1026,14 +1021,6 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
-                },
-                {
-                    label: 'Workflow Canvas',
-                    leftSlot: (
-                        <Workflow style={{ width: '16px', height: '16px' }} />
-                    ),
-                    isSelected: activeComponent === 'workflowCanvas',
-                    onClick: () => setActiveComponent('workflowCanvas'),
                 },
             ],
         },
