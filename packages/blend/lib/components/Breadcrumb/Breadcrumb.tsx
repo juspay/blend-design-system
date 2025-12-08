@@ -76,10 +76,12 @@ const BreadcrumbItem = ({
                 }}
             >
                 {item.leftSlot && (
-                    <Block data-element="leading-icon" contentCentered aria-hidden="true">
-                        
+                    <Block
+                        data-element="leading-icon"
+                        contentCentered
+                        aria-hidden="true"
+                    >
                         {item.leftSlot}
-                    
                     </Block>
                 )}
                 <PrimitiveText
@@ -91,10 +93,12 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block data-element="trailing-icon" contentCentered aria-hidden="true">
-                        
+                    <Block
+                        data-element="trailing-icon"
+                        contentCentered
+                        aria-hidden="true"
+                    >
                         {item.rightSlot}
-                    
                     </Block>
                 )}
             </PrimitiveLink>
@@ -151,10 +155,10 @@ const Breadcrumb = ({
                     padding: 0,
                     width: '100%',
                 }}
-            data-breadcrumb="breadcrumb"
-            data-status={
-                shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
-            }
+                data-breadcrumb="breadcrumb"
+                data-status={
+                    shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
+                }
             >
                 {baseItem && (
                     <li
