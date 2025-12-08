@@ -51,36 +51,138 @@ const sharedContent = (
 )
 
 const ANALYTICS_TABS_DATA = [
-    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: false },
+    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: true },
     {
         value: 'payment_method_type',
         label: 'Payment Method Type',
-        isDefault: false,
+        isDefault: true,
     },
-    { value: 'payment_method', label: 'Payment Method', isDefault: false },
+    { value: 'payment_method', label: 'Payment Method', isDefault: true },
     {
         value: 'payment_instrument_group',
         label: 'Payment Instrument Group',
         isDefault: true,
     },
-    { value: 'bank_name', label: 'Bank', isDefault: true },
+    { value: 'bank_name', label: 'Bank', isDefault: false },
     {
         value: 'actual_payment_status',
         label: 'Actual Payment Status',
         isDefault: true,
     },
-    { value: 'order_status', label: 'Order Status', isDefault: true },
-    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: true },
-    { value: 'order_type', label: 'Order Type', isDefault: true },
-    { value: 'auth_type', label: 'Auth Type', isDefault: true },
-    { value: 'card_brand', label: 'Card Brand', isDefault: true },
+    { value: 'order_status', label: 'Order Status', isDefault: false },
+    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: false },
+    { value: 'order_type', label: 'Order Type', isDefault: false },
+    { value: 'auth_type', label: 'Auth Type', isDefault: false },
+    { value: 'card_brand', label: 'Card Brand', isDefault: false },
     {
         value: 'card_last_four_digits',
         label: 'Card Last Four Digits',
-        isDefault: true,
+        isDefault: false,
     },
-    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: true },
-    { value: 'ticket_size', label: 'Ticket Size', isDefault: true },
+    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: false },
+    { value: 'ticket_size', label: 'Ticket Size', isDefault: false },
+    {
+        value: 'gateway_reference_id',
+        label: 'Gateway Reference Id',
+        isDefault: false,
+    },
+    { value: 'emi', label: 'Is Emi', isDefault: false },
+    { value: 'emi_type', label: 'Emi Type', isDefault: false },
+    { value: 'emi_tenure', label: 'Emi Tenure', isDefault: false },
+    { value: 'business_region', label: 'Business Region', isDefault: false },
+    {
+        value: 'card_issuer_country',
+        label: 'Card Issuer Country',
+        isDefault: false,
+    },
+    { value: 'ord_currency', label: 'Order Currency', isDefault: false },
+    { value: 'emi_bank', label: 'Emi Bank', isDefault: false },
+    { value: 'is_token_bin', label: 'Is Token Bin', isDefault: false },
+    { value: 'is_offer_txn', label: 'Is Offer Txn', isDefault: false },
+    { value: 'is_upicc', label: 'Is UPI CC', isDefault: false },
+    { value: 'txn_conflict', label: 'Txn Conflict', isDefault: false },
+    { value: 'lob', label: 'Lob', isDefault: false },
+    { value: 'payment_status', label: 'Payment Status', isDefault: false },
+    {
+        value: 'status_sync_source',
+        label: 'Status Sync Source',
+        isDefault: false,
+    },
+    { value: 'token_repeat', label: 'Token Repeat', isDefault: false },
+    {
+        value: 'using_stored_card',
+        label: 'Using Stored Card',
+        isDefault: false,
+    },
+    {
+        value: 'priority_logic_tag',
+        label: 'Priority Logic Tag',
+        isDefault: false,
+    },
+    { value: 'is_tokenized', label: 'Is Tokenized', isDefault: false },
+    { value: 'run_day_ist', label: 'Run Day', isDefault: false },
+    { value: 'run_month_ist', label: 'Run Month', isDefault: false },
+    { value: 'run_week_ist', label: 'Run Week', isDefault: false },
+    { value: 'run_hour_ist', label: 'Run Hour', isDefault: false },
+    {
+        value: 'order_source_object_id',
+        label: 'Order Source Object Id',
+        isDefault: false,
+    },
+    {
+        value: 'source_object',
+        label: 'Payment Method Subtype',
+        isDefault: false,
+    },
+    {
+        value: 'order_source_object',
+        label: 'Order Source Object',
+        isDefault: false,
+    },
+    { value: 'is_cvv_less_txn', label: 'Is Cvv Less Txn', isDefault: false },
+    { value: 'udf1', label: 'Udf1', isDefault: false },
+    { value: 'udf2', label: 'Udf2', isDefault: false },
+    { value: 'udf3', label: 'Udf3', isDefault: false },
+    { value: 'udf4', label: 'Udf4', isDefault: false },
+    { value: 'udf5', label: 'Udf5', isDefault: false },
+    { value: 'udf6', label: 'Udf6', isDefault: false },
+    { value: 'udf7', label: 'Udf7', isDefault: false },
+    { value: 'udf8', label: 'Udf8', isDefault: false },
+    { value: 'udf9', label: 'Udf9', isDefault: false },
+    { value: 'udf10', label: 'Udf10', isDefault: false },
+    {
+        value: 'prev_txn_status',
+        label: 'Previous Txn Status',
+        isDefault: false,
+    },
+    { value: 'error_message', label: 'PG Error Message', isDefault: false },
+    { value: 'resp_message', label: 'PG Response', isDefault: false },
+    { value: 'original_card_isin', label: 'Card Bin', isDefault: false },
+    { value: 'card_sub_type', label: 'Card Sub Type', isDefault: false },
+    { value: 'card_exp_month', label: 'Card Exp Month', isDefault: false },
+    { value: 'card_exp_year', label: 'Card Exp Year', isDefault: false },
+    { value: 'txn_object_type', label: 'Txn Object Type', isDefault: false },
+    { value: 'txn_type', label: 'Txn Type', isDefault: false },
+    { value: 'resp_code', label: 'PG Error Code', isDefault: false },
+    { value: 'juspay_error_code', label: 'Error Code', isDefault: false },
+    { value: 'juspay_error_message', label: 'Error Message', isDefault: false },
+    {
+        value: 'unified_response_category',
+        label: 'Error Category',
+        isDefault: false,
+    },
+    {
+        value: 'entire_payment_flow',
+        label: 'Entire Payment Flow',
+        isDefault: false,
+    },
+    {
+        value: 'stored_card_vault_provider',
+        label: 'Card Flow',
+        isDefault: false,
+    },
+    { value: 'platform', label: 'Platform', isDefault: false },
+    { value: 'use_merchant_proxy', label: 'Gateway Connect', isDefault: false },
 ]
 
 const availableTabOptions = [
@@ -106,6 +208,73 @@ const TabsDemo = () => {
     const [showIcons, setShowIcons] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [activeTab, setActiveTab] = useState('payment_gateway')
+
+    const playgroundTabs: TabItem[] = [
+        {
+            value: 'payment_gateway',
+            label: 'payment_gateway',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">Home Content</h3>
+                    <p className="text-gray-600">
+                        This is the home tab content. You can put any content
+                        here including forms, lists, or other components.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+        {
+            value: 'payment_status',
+            label: 'payment_status',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Profile Content
+                    </h3>
+                    <p className="text-gray-600">
+                        This is the profile tab content. Here you can display
+                        user information, preferences, or account settings.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+        {
+            value: 'payment_method',
+            label: 'payment_method',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Settings Content
+                    </h3>
+                    <p className="text-gray-600">
+                        This is the settings tab content. You can include
+                        configuration options, preferences, or system settings
+                        here.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+        {
+            value: 'payment_history',
+            label: 'payment_history',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Documents Content
+                    </h3>
+                    <p className="text-gray-600">
+                        This is the documents tab content. You can display file
+                        lists, document management tools, or file upload
+                        interfaces here.
+                    </p>
+                </div>
+            ),
+            isDefault: true,
+        },
+    ]
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
@@ -353,25 +522,26 @@ const TabsDemo = () => {
         )
 
         if (remainingTabs.length > 0) {
-            const newTab = remainingTabs[0]
-            const newTabItem: TabItem = {
-                value: newTab.value,
-                label: newTab.label,
+            const newTabs: TabItem[] = remainingTabs.map((tab) => ({
+                value: tab.value,
+                label: tab.label,
                 content: (
                     <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold mb-2">{newTab.label}</h4>
+                        <h4 className="font-semibold mb-2">{tab.label}</h4>
                         <p className="text-gray-600">
-                            Newly added tab: {newTab.value}
+                            Tab content for {tab.label} ({tab.value})
                         </p>
                     </div>
                 ),
-                isDefault: newTab.isDefault || false,
-                closable: !newTab.isDefault,
+                isDefault: tab.isDefault || false,
+                closable: !tab.isDefault,
+            }))
+            setAnalyticsTabsItems((prev) => [...prev, ...newTabs])
+            if (newTabs.length > 0) {
+                setAnalyticsActiveTab(newTabs[0].value)
             }
-            setAnalyticsTabsItems((prev) => [...prev, newTabItem])
-            setAnalyticsActiveTab(newTab.value)
         } else {
-            console.log('All available tabs have been added')
+            console.log('All available tabs from initial data have been added')
         }
     }
 
@@ -437,154 +607,24 @@ const TabsDemo = () => {
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
-                        <div className="w-full ">
+                        <div className="w-full">
                             <Tabs
+                                items={playgroundTabs.map((tab) => ({
+                                    ...tab,
+                                    leftSlot: showIcons
+                                        ? getIconForTab(tab.value)
+                                        : undefined,
+                                    rightSlot: showRightSlot
+                                        ? getRightSlotForTab(tab.value)
+                                        : undefined,
+                                }))}
+                                variant={playgroundVariant}
+                                size={playgroundSize}
+                                expanded={expanded}
+                                fitContent={fitContent}
                                 value={activeTab}
                                 onValueChange={setActiveTab}
-                            >
-                                <TabsList
-                                    variant={playgroundVariant}
-                                    size={playgroundSize}
-                                    expanded={expanded}
-                                    fitContent={fitContent}
-                                >
-                                    <TabsTrigger
-                                        value="payment_gateway"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab1')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab1')
-                                                : undefined
-                                        }
-                                    >
-                                        payment_gateway
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="payment_status"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab2')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab2')
-                                                : undefined
-                                        }
-                                    >
-                                        payment_status
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="payment_method"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab3')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab3')
-                                                : undefined
-                                        }
-                                    >
-                                        payment_method
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value="payment_history"
-                                        variant={playgroundVariant}
-                                        size={playgroundSize}
-                                        leftSlot={
-                                            showIcons
-                                                ? getIconForTab('tab4')
-                                                : undefined
-                                        }
-                                        rightSlot={
-                                            showRightSlot
-                                                ? getRightSlotForTab('tab4')
-                                                : undefined
-                                        }
-                                    >
-                                        payment_history
-                                    </TabsTrigger>
-                                </TabsList>
-
-                                <TabsContent
-                                    value="payment_gateway"
-                                    className="mt-4"
-                                >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Home Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the home tab content. You
-                                            can put any content here including
-                                            forms, lists, or other components.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent
-                                    value="payment_status"
-                                    className="mt-4"
-                                >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Profile Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the profile tab content.
-                                            Here you can display user
-                                            information, preferences, or account
-                                            settings.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent
-                                    value="payment_method"
-                                    className="mt-4"
-                                >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Settings Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the settings tab content.
-                                            You can include configuration
-                                            options, preferences, or system
-                                            settings here.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent
-                                    value="payment_history"
-                                    className="mt-4"
-                                >
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h3 className="text-lg font-semibold mb-2">
-                                            Documents Content
-                                        </h3>
-                                        <p className="text-gray-600">
-                                            This is the documents tab content.
-                                            You can display file lists, document
-                                            management tools, or file upload
-                                            interfaces here.
-                                        </p>
-                                    </div>
-                                </TabsContent>
-                            </Tabs>
+                            />
                         </div>
                     </div>
                 </div>
@@ -737,6 +777,7 @@ const TabsDemo = () => {
                         <Tabs
                             value={conversationTab}
                             onValueChange={setConversationTab}
+                            variant={TabsVariant.UNDERLINE}
                         >
                             <TabsList>
                                 <TabsTrigger
@@ -899,17 +940,49 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                         <h3 className="text-lg font-semibold mb-4">
                             Payment Analytics Dashboard
                         </h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Total tabs: {ANALYTICS_TABS_DATA.length}. Default
+                            tabs (isDefault: true):{' '}
+                            {
+                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
+                                    .length
+                            }
+                            . Visible tabs: Up to{' '}
+                            {Math.min(
+                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
+                                    .length,
+                                12
+                            )}{' '}
+                            default tabs (maxDisplayTabs: 12). Dropdown shows
+                            all {ANALYTICS_TABS_DATA.length} tabs.
+                        </p>
                         <Tabs
-                            items={analyticsTabsItems}
+                            items={ANALYTICS_TABS_DATA.map((tab) => ({
+                                value: tab.value,
+                                label: tab.label,
+                                content: (
+                                    <div className="p-4 bg-gray-50 rounded-lg">
+                                        <h4 className="font-semibold mb-2">
+                                            {tab.label}
+                                        </h4>
+                                        <p className="text-gray-600">
+                                            Content for {tab.label} ({tab.value}
+                                            )
+                                        </p>
+                                    </div>
+                                ),
+                                isDefault: tab.isDefault,
+                                closable: !tab.isDefault,
+                            }))}
                             value={analyticsActiveTab}
                             onValueChange={setAnalyticsActiveTab}
                             onTabClose={handleAnalyticsTabClose}
                             onTabAdd={handleAnalyticsTabAdd}
                             showDropdown={true}
                             showAddButton={true}
-                            dropdownTooltip="View all analytics dimensions"
-                            addButtonTooltip="Add dimension"
-                            maxDisplayTabs={5}
+                            dropdownTooltip={`View all ${ANALYTICS_TABS_DATA.length} tabs`}
+                            addButtonTooltip={`Add remaining tabs from initial data (${ANALYTICS_TABS_DATA.length - analyticsTabsItems.length} remaining)`}
+                            maxDisplayTabs={4}
                         />
                     </div>
 
@@ -1060,7 +1133,10 @@ const apiTabs = [
 ]`}</pre>
                             </div>
                         </div>
-                        <Tabs defaultValue="payment_gateway">
+                        <Tabs
+                            defaultValue="payment_gateway"
+                            variant={TabsVariant.UNDERLINE}
+                        >
                             <TabsList>
                                 <TabsTrigger value="payment_gateway">
                                     Payment Gateway
@@ -1380,7 +1456,11 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                             The disable prop works with the children pattern as
                             well, following the Accordion component pattern.
                         </p>
-                        <Tabs defaultValue="tab1" disable={globalDisable}>
+                        <Tabs
+                            defaultValue="tab1"
+                            disable={globalDisable}
+                            variant={TabsVariant.UNDERLINE}
+                        >
                             <TabsList>
                                 <TabsTrigger
                                     value="tab1"
@@ -1744,6 +1824,7 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                             showSkeleton={showSkeleton}
                             skeletonVariant={skeletonVariant}
                             defaultValue="tab1"
+                            variant={TabsVariant.UNDERLINE}
                         >
                             <TabsList>
                                 <TabsTrigger
@@ -1854,8 +1935,8 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                             <h3 className="text-lg font-semibold capitalize">
                                 {variant} Variant
                             </h3>
-                            <Tabs defaultValue="tab1">
-                                <TabsList variant={variant}>
+                            <Tabs defaultValue="tab1" variant={variant}>
+                                <TabsList>
                                     <TabsTrigger value="payment_gateway">
                                         payment_gateway
                                     </TabsTrigger>
@@ -1938,15 +2019,15 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                             <h3 className="text-lg font-semibold capitalize">
                                 {size} Size
                             </h3>
-                            <Tabs defaultValue="tab1">
-                                <TabsList size={size}>
-                                    <TabsTrigger value="tab1" size={size}>
+                            <Tabs defaultValue="tab1" size={size}>
+                                <TabsList>
+                                    <TabsTrigger value="tab1">
                                         Dashboard
                                     </TabsTrigger>
-                                    <TabsTrigger value="tab2" size={size}>
+                                    <TabsTrigger value="tab2">
                                         Users
                                     </TabsTrigger>
-                                    <TabsTrigger value="tab3" size={size}>
+                                    <TabsTrigger value="tab3">
                                         Products
                                     </TabsTrigger>
                                 </TabsList>
@@ -1997,7 +2078,10 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                 <div className="space-y-8">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Left Icons</h3>
-                        <Tabs defaultValue="tab1">
+                        <Tabs
+                            defaultValue="tab1"
+                            variant={TabsVariant.UNDERLINE}
+                        >
                             <TabsList>
                                 <TabsTrigger
                                     value="tab1"

@@ -23,11 +23,15 @@ export type TabItem = {
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    leftSlot?: ReactNode
+    rightSlot?: ReactNode
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     variant?: TabsVariant
     size?: TabsSize
+    expanded?: boolean
+    fitContent?: boolean
     items?: TabItem[]
     onTabClose?: (value: string) => void
     onTabAdd?: () => void
@@ -49,6 +53,7 @@ export type TabsListProps = ComponentPropsWithoutRef<
     expanded?: boolean
     fitContent?: boolean
     items?: TabItem[]
+    originalItems?: TabItem[]
     onTabClose?: (value: string) => void
     onTabAdd?: () => void
     showDropdown?: boolean
