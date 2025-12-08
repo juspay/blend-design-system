@@ -50,7 +50,6 @@ const MultiSelectTrigger = ({
     multiSelectTokens,
     inline = false,
     error,
-    disabled,
     maxTriggerWidth,
     minTriggerWidth,
 }: MultiSelectTriggerProps) => {
@@ -101,11 +100,6 @@ const MultiSelectTrigger = ({
                     type="button"
                     maxWidth={maxTriggerWidth}
                     minWidth={minTriggerWidth}
-                    data-selectbox-value={placeholder}
-                    data-dropdown-for={placeholder}
-                    data-value={placeholder}
-                    data-custom-value={placeholder}
-                    data-button-status={disabled ? 'disabled' : 'enabled'}
                     onClick={onClick}
                     position="relative"
                     width={'100%'}
@@ -158,7 +152,12 @@ const MultiSelectTrigger = ({
                     })}
                 >
                     {slot && (
-                        <Block as="span" ref={slotRef} contentCentered>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            ref={slotRef}
+                            contentCentered
+                        >
                             {slot}
                         </Block>
                     )}

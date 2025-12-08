@@ -649,7 +649,10 @@ const SingleSelectMenu = ({
                                 </Block>
                             ) : enableVirtualization &&
                               filteredItems.length > 0 ? (
-                                <Block padding={FOUNDATION_THEME.unit[6]}>
+                                <Block
+                                    data-element="virtual-list"
+                                    padding={FOUNDATION_THEME.unit[6]}
+                                >
                                     <VirtualList
                                         items={flattenedItems}
                                         renderItem={renderVirtualItem}
@@ -666,6 +669,7 @@ const SingleSelectMenu = ({
                                 </Block>
                             ) : (
                                 <Block
+                                    data-element="menu-content"
                                     paddingX={
                                         singleSelectTokens.menu.padding[size][
                                             variant
@@ -685,7 +689,7 @@ const SingleSelectMenu = ({
                                     {filteredItems.map((group, groupId) => (
                                         <React.Fragment key={groupId}>
                                             {group.groupLabel && (
-                                                <Label>
+                                                <Label data-element="menu-group-label">
                                                     <Text
                                                         fontSize={
                                                             singleSelectTokens

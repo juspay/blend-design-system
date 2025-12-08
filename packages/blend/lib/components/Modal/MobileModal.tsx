@@ -132,8 +132,14 @@ const MobileModal: React.FC<MobileModalProps> = ({
                                                 buttonType={
                                                     ButtonType.SECONDARY
                                                 }
-                                                leadingIcon={<X size={16} />}
+                                                leadingIcon={
+                                                    <X
+                                                        size={16}
+                                                        aria-hidden="true"
+                                                    />
+                                                }
                                                 onClick={onClose}
+                                                aria-label="Close modal"
                                             />
                                         </DrawerClose>
                                     )}

@@ -15,6 +15,7 @@ const BreadcrumbSkeleton = ({
     return (
         <>
             <Block
+                data-element="breadcrumb-skeleton"
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 alignItems="center"

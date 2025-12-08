@@ -47,7 +47,7 @@ const BreadcrumbItem = ({
     return (
         <>
             <PrimitiveLink
-                data-breadcrumb={item.label}
+                data-element="breadcrumb-item"
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -76,11 +76,14 @@ const BreadcrumbItem = ({
                 }}
             >
                 {item.leftSlot && (
-                    <Block contentCentered aria-hidden="true">
+                    <Block data-element="leading-icon" contentCentered aria-hidden="true">
+                        
                         {item.leftSlot}
+                    
                     </Block>
                 )}
                 <PrimitiveText
+                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
@@ -88,8 +91,10 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block contentCentered aria-hidden="true">
+                    <Block data-element="trailing-icon" contentCentered aria-hidden="true">
+                        
                         {item.rightSlot}
+                    
                     </Block>
                 )}
             </PrimitiveLink>
@@ -134,7 +139,6 @@ const Breadcrumb = ({
     })
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
-
     return (
         <Block as="nav" width={'full'} aria-label="Breadcrumb navigation">
             <ol
@@ -147,6 +151,10 @@ const Breadcrumb = ({
                     padding: 0,
                     width: '100%',
                 }}
+            data-breadcrumb="breadcrumb"
+            data-status={
+                shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
+            }
             >
                 {baseItem && (
                     <li
