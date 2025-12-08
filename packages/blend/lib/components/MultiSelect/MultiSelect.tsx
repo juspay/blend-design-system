@@ -219,6 +219,8 @@ const MultiSelect = ({
 
     return (
         <Block
+            data-multi-select={label || 'multi-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             width={fullWidth ? '100%' : 'fit-content'}
             maxWidth={fullWidth ? '100%' : 'fit-content'}
             display="flex"
@@ -249,7 +251,6 @@ const MultiSelect = ({
                         multiSelectTokens.trigger.height[size][variant]
                     ),
                 })}
-                data-selectbox-value={placeholder}
             >
                 <Wrapper
                     position="relative"
@@ -258,7 +259,6 @@ const MultiSelect = ({
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
-                    data-dropdown-for={placeholder}
                 >
                     <Tooltip
                         content={
@@ -333,11 +333,7 @@ const MultiSelect = ({
                                 customTrigger || (
                                     <PrimitiveButton
                                         id={uniqueName}
-                                        data-value={placeholder}
-                                        data-custom-value={placeholder}
-                                        data-button-status={
-                                            disabled ? 'disabled' : 'enabled'
-                                        }
+                                        data-element="multi-select-button"
                                         type="button"
                                         position="relative"
                                         width={
@@ -427,6 +423,7 @@ const MultiSelect = ({
                                     >
                                         {slot && (
                                             <Block
+                                                data-element="icon"
                                                 as="span"
                                                 ref={slotRef}
                                                 contentCentered
@@ -478,7 +475,6 @@ const MultiSelect = ({
                                                             .trigger.placeholder
                                                             .fontSize
                                                     }
-                                                    data-button-text={label}
                                                 >
                                                     {label}
                                                 </Text>
@@ -540,6 +536,11 @@ const MultiSelect = ({
                                                     size !==
                                                         MultiSelectMenuSize.LARGE) && (
                                                     <Text
+                                                        data-element="placeholder"
+                                                        data-id={
+                                                            placeholder ||
+                                                            'placeholder'
+                                                        }
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
@@ -560,15 +561,17 @@ const MultiSelect = ({
                                                                 .placeholder
                                                                 .fontSize
                                                         }
-                                                        data-button-text={
-                                                            placeholder
-                                                        }
                                                     >
                                                         {placeholder}
                                                     </Text>
                                                 )}
                                             {selectedValues.length > 0 && (
                                                 <Text
+                                                    data-element="selection-tag"
+                                                    data-id={
+                                                        selectedValues.length ||
+                                                        'selection-tag'
+                                                    }
                                                     as="span"
                                                     variant="body.md"
                                                     color={
@@ -595,15 +598,13 @@ const MultiSelect = ({
                                                         borderRadius: 4,
                                                         padding: '0px 6px',
                                                     }}
-                                                    data-badge-value={
-                                                        selectedValues.length
-                                                    }
                                                 >
                                                     {selectedValues.length}
                                                 </Text>
                                             )}
                                         </Block>
                                         <Block
+                                            data-element="chevron-icon"
                                             as="span"
                                             display="flex"
                                             alignItems="center"
@@ -628,6 +629,7 @@ const MultiSelect = ({
                     {variant === MultiSelectVariant.CONTAINER &&
                         selectedValues.length > 0 && (
                             <PrimitiveButton
+                                data-element="clear-button"
                                 type="button"
                                 borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                                 backgroundColor={
@@ -637,6 +639,11 @@ const MultiSelect = ({
                                 height={'100%'}
                                 style={{ aspectRatio: 1 }}
                                 onClick={() => onChange('')}
+                                aria-label={
+                                    label
+                                        ? `Clear selection for ${label}`
+                                        : 'Clear selection'
+                                }
                                 outline={
                                     multiSelectTokens.trigger.outline[variant][
                                         error ? 'error' : 'closed'
@@ -655,6 +662,7 @@ const MultiSelect = ({
                                 <X
                                     size={16}
                                     color={FOUNDATION_THEME.colors.gray[400]}
+                                    aria-hidden="true"
                                 />
                             </PrimitiveButton>
                         )}

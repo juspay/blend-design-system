@@ -525,6 +525,7 @@ const DataTableHeader = forwardRef<
                                             <Popover
                                                 trigger={
                                                     <Button
+                                                        data-element="advanced-filter-button"
                                                         buttonType={
                                                             advancedFilters.length >
                                                             0
@@ -584,6 +585,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot1 && (
                             <Block
+                                data-element="header-slot-1"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={
@@ -598,6 +600,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot2 && (
                             <Block
+                                data-element="header-slot-2"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={
@@ -612,6 +615,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot3 && (
                             <Block
+                                data-element="header-slot-3"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={

@@ -84,11 +84,11 @@ const hashString = (str: string): number => {
  * Get a consistent color for an avatar based on the full name/text
  * Uses hash of the entire text to ensure unique colors for different names
  * @param text - The text to generate color from (e.g., name or alt text)
- * @returns A hex color code
+ * @returns A hex color code that provides sufficient contrast with white text (#FFFFFF)
  */
 export const getColorFromText = (text: string): string => {
     if (!text || !text.trim()) {
-        return '#94A3B8' // Default gray color
+        return '#94A3B8'
     }
 
     // Normalize the text (trim and lowercase for consistency)

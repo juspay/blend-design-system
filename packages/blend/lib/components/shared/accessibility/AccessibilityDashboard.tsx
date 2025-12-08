@@ -16,6 +16,15 @@ import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
 import StatCardAccessibility from '../../StatCard/accessibility/StatCardAccessibility'
+import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
+import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
+import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
+import AlertAccessibility from '../../Alert/accessibility/AlertAccessibility'
+import MenuAccessibility from '../../Menu/accessibility/MenuAccessibility'
+import TagAccessibility from '../../Tags/accessibility/TagAccessibility'
+import TooltipAccessibility from '../../Tooltip/accessibility/TooltipAccessibility'
+import ModalAccessibility from '../../Modal/accessibility/ModalAccessibility'
+import PopoverAccessibility from '../../Popover/accessibility/PopoverAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -99,6 +108,51 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'StatCard',
         displayName: 'StatCard',
         component: StatCardAccessibility,
+    },
+    {
+        name: 'Avatar',
+        displayName: 'Avatar',
+        component: AvatarAccessibility,
+    },
+    {
+        name: 'AvatarGroup',
+        displayName: 'AvatarGroup',
+        component: AvatarGroupAccessibility,
+    },
+    {
+        name: 'Breadcrumb',
+        displayName: 'Breadcrumb',
+        component: BreadcrumbAccessibility,
+    },
+    {
+        name: 'Alert',
+        displayName: 'Alert',
+        component: AlertAccessibility,
+    },
+    {
+        name: 'Menu',
+        displayName: 'Menu',
+        component: MenuAccessibility,
+    },
+    {
+        name: 'Tag',
+        displayName: 'Tag',
+        component: TagAccessibility,
+    },
+    {
+        name: 'Tooltip',
+        displayName: 'Tooltip',
+        component: TooltipAccessibility,
+    },
+    {
+        name: 'Modal',
+        displayName: 'Modal',
+        component: ModalAccessibility,
+    },
+    {
+        name: 'Popover',
+        displayName: 'Popover',
+        component: PopoverAccessibility,
     },
     // Add more components here as they are added
 ]

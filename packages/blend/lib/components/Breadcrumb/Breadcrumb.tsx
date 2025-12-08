@@ -48,6 +48,7 @@ const BreadcrumbItem = ({
         <>
             <PrimitiveLink
                 data-element="breadcrumb-item"
+                data-id={item.label}
                 padding={breadcrumbTokens.item.padding}
                 display="flex"
                 height={'full'}
@@ -63,14 +64,23 @@ const BreadcrumbItem = ({
                 href={isActive ? undefined : item.href}
                 textDecoration="none"
                 onClick={!isActive && item.onClick ? handleClick : undefined}
+                aria-label={
+                    isActive
+                        ? `Current page: ${item.label}`
+                        : `Navigate to ${item.label}`
+                }
+                aria-current={isActive ? 'page' : undefined}
             >
                 {item.leftSlot && (
-                    <Block data-element="leading-icon" contentCentered>
+                    <Block
+                        data-element="leading-icon"
+                        contentCentered
+                        aria-hidden="true"
+                    >
                         {item.leftSlot}
                     </Block>
                 )}
                 <PrimitiveText
-                    data-id={item.label}
                     as="span"
                     fontWeight={breadcrumbTokens.item.text.fontWeight}
                     fontSize={breadcrumbTokens.item.text.fontSize}
@@ -78,13 +88,23 @@ const BreadcrumbItem = ({
                     {item.label}
                 </PrimitiveText>
                 {item.rightSlot && (
-                    <Block data-element="trailing-icon" contentCentered>
+                    <Block
+                        data-element="trailing-icon"
+                        contentCentered
+                        aria-hidden="true"
+                    >
                         {item.rightSlot}
                     </Block>
                 )}
             </PrimitiveLink>
             {!isActive && (
-                <Block color={FOUNDATION_THEME.colors.gray[400]}>/</Block>
+                <Block
+                    color={FOUNDATION_THEME.colors.gray[400]}
+                    aria-hidden="true"
+                    role="separator"
+                >
+                    /
+                </Block>
             )}
         </>
     )
@@ -119,53 +139,86 @@ const Breadcrumb = ({
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
     return (
-        <Block
-            width={'full'}
-            display="flex"
-            alignItems="center"
-            gap={breadcrumbTokens.gap}
-            data-breadcrumb="breadcrumb"
-            data-status={
-                shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
-            }
-        >
-            {baseItem && (
-                <BreadcrumbItem
-                    item={baseItem}
-                    key={`breadcrumb-item-${0}`}
-                    isActive={items.length == 1 ? true : false}
-                    skeleton={skeleton}
-                />
-            )}
-            {menuItems.length > 0 && (
-                <>
-                    <PrimitiveButton
-                        background={'none'}
-                        borderRadius={FOUNDATION_THEME.border.radius[6]}
-                        // TODO: add a menu when menu items are fixed
-                        // _hover={{
-                        //   outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]}`,
-                        // }}
-                        contentCentered
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        size={24}
+        <Block as="nav" width={'full'} aria-label="Breadcrumb navigation">
+            <ol
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: breadcrumbTokens.gap,
+                    listStyle: 'none',
+                    margin: 0,
+                    padding: 0,
+                    width: '100%',
+                }}
+                data-breadcrumb="breadcrumb"
+                data-status={
+                    shouldShowMenu ? 'enabled-selected' : 'enabled-notselected'
+                }
+            >
+                {baseItem && (
+                    <li
+                        key={`breadcrumb-item-${0}`}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
                     >
-                        <Ellipsis
-                            size={FOUNDATION_THEME.unit[14]}
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                        <BreadcrumbItem
+                            item={baseItem}
+                            isActive={items.length == 1 ? true : false}
+                            skeleton={skeleton}
                         />
-                    </PrimitiveButton>
-                    <Block color={FOUNDATION_THEME.colors.gray[400]}>/</Block>
-                </>
-            )}
-            {restItems.map((item, index) => (
-                <BreadcrumbItem
-                    key={`breadcrumb-item-${index}`}
-                    item={item}
-                    isActive={index === restItems.length - 1}
-                    skeleton={skeleton}
-                />
-            ))}
+                    </li>
+                )}
+                {menuItems.length > 0 && (
+                    <li
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <PrimitiveButton
+                            background={'none'}
+                            borderRadius={FOUNDATION_THEME.border.radius[6]}
+                            contentCentered
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            size={24}
+                            aria-label={`Show ${menuItems.length} more breadcrumb items`}
+                            aria-expanded="false"
+                            aria-haspopup="menu"
+                            type="button"
+                        >
+                            <Ellipsis
+                                size={FOUNDATION_THEME.unit[14]}
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
+                            />
+                        </PrimitiveButton>
+                        <Block
+                            color={FOUNDATION_THEME.colors.gray[400]}
+                            aria-hidden="true"
+                            role="separator"
+                        >
+                            /
+                        </Block>
+                    </li>
+                )}
+                {restItems.map((item, index) => (
+                    <li
+                        key={`breadcrumb-item-${index}`}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <BreadcrumbItem
+                            item={item}
+                            isActive={index === restItems.length - 1}
+                            skeleton={skeleton}
+                        />
+                    </li>
+                ))}
+            </ol>
         </Block>
     )
 }

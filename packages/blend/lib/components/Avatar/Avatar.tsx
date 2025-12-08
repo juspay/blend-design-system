@@ -39,7 +39,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
-        // Get color based on first letter for initials
         const textForColor = typeof fallback === 'string' ? fallback : alt
         const initialsColor = getColorFromText(textForColor)
 
@@ -53,7 +52,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             return getInitialsFromText(alt)
         }
 
-        // Position maps for online indicator
         const INDICATOR_POSITIONS = {
             sm: {
                 [AvatarShape.CIRCULAR]: {
@@ -245,6 +243,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         src={src}
                         alt={alt}
                         onError={() => setImageError(true)}
+                        role="img"
                     />
                 ) : (
                     <Block
@@ -265,8 +264,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         {renderFallback()}
                     </Block>
                 )}
-
-                {/* Visually hidden text for screen readers */}
                 <Block
                     as="span"
                     position="absolute"
@@ -277,16 +274,17 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     overflow="hidden"
                     style={{
                         clip: 'rect(0, 0, 0, 0)',
+                        clipPath: 'inset(50%)',
                         borderWidth: 0,
                     }}
                     whiteSpace="nowrap"
+                    aria-hidden="false"
                 >
-                    {alt}
+                    {alt || 'Avatar'}
                 </Block>
             </Block>
         )
 
-        // If we have slots, use the wrapper
         if (leadingSlot || trailingSlot) {
             return (
                 <Block

@@ -1,4 +1,5 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
+import React from 'react'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
@@ -7,10 +8,27 @@ import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
 
-const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
+const MenuSlot = ({
+    slot,
+    isDecorative = true,
+}: {
+    slot: React.ReactNode
+    isDecorative?: boolean
+}) => {
+    const content =
+        isDecorative && React.isValidElement(slot) ? (
+            React.cloneElement(slot, {
+                'aria-hidden': 'true',
+            } as React.HTMLAttributes<HTMLElement>)
+        ) : isDecorative ? (
+            <span aria-hidden="true">{slot}</span>
+        ) : (
+            slot
+        )
+
     return (
         <Block flexShrink={0} height="auto" contentCentered>
-            {slot}
+            {content}
         </Block>
     )
 }
@@ -110,8 +128,10 @@ const MenuItem = ({
         >
             <Block
                 key={idx}
-                data-dropdown-numeric={idx + 1}
-                data-dropdown-value={item.label}
+                data-element="select-item"
+                data-status={item.disabled ? 'disabled' : 'enabled'}
+                data-numeric={idx + 1}
+                data-id={item.label}
                 display="flex"
                 paddingX={menuTokens.item.padding.x}
                 paddingY={menuTokens.item.padding.y}
@@ -148,7 +168,9 @@ const MenuItem = ({
                     width="100%"
                     overflow="hidden"
                 >
-                    {item.slot1 && <MenuSlot slot={item.slot1} />}
+                    {item.slot1 && (
+                        <MenuSlot slot={item.slot1} isDecorative={true} />
+                    )}
                     <Block
                         display="flex"
                         flexGrow={1}
@@ -166,9 +188,15 @@ const MenuItem = ({
                             {item.label}
                         </Text>
                     </Block>
-                    {item.slot2 && <MenuSlot slot={item.slot2} />}
-                    {item.slot3 && <MenuSlot slot={item.slot3} />}
-                    {item.slot4 && <MenuSlot slot={item.slot4} />}
+                    {item.slot2 && (
+                        <MenuSlot slot={item.slot2} isDecorative={true} />
+                    )}
+                    {item.slot3 && (
+                        <MenuSlot slot={item.slot3} isDecorative={true} />
+                    )}
+                    {item.slot4 && (
+                        <MenuSlot slot={item.slot4} isDecorative={true} />
+                    )}
                 </Block>
                 {item.subLabel && (
                     <Block display="flex" alignItems="center" width="100%">

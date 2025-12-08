@@ -1,4 +1,9 @@
-import { forwardRef, type CSSProperties, type MouseEvent } from 'react'
+import {
+    forwardRef,
+    type CSSProperties,
+    type MouseEvent,
+    type KeyboardEvent,
+} from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { TagTokensType } from './tag.tokens'
@@ -52,6 +57,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
     const effectiveCursor =
         !isSkeleton && hasClickHandler ? 'pointer' : 'default'
     const showRipple = !isSkeleton && hasClickHandler
+    const isInteractive = hasClickHandler && !isSkeleton
 
     const handleClick = (event: MouseEvent<HTMLDivElement>) => {
         if (!showRipple || !effectiveOnClick) {
@@ -62,11 +68,51 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
         effectiveOnClick(event)
     }
 
+    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        // Handle Enter and Space keys for keyboard accessibility
+        if (
+            isInteractive &&
+            effectiveOnClick &&
+            (event.key === 'Enter' || event.key === ' ')
+        ) {
+            event.preventDefault()
+            event.stopPropagation()
+            // Create a synthetic mouse event for ripple effect
+            const syntheticEvent = {
+                ...event,
+                currentTarget: event.currentTarget,
+                clientX: 0,
+                clientY: 0,
+            } as unknown as MouseEvent<HTMLDivElement>
+            createRipple(syntheticEvent)
+            effectiveOnClick(syntheticEvent)
+        }
+    }
+
+    // ARIA attributes for accessibility
+    // If aria-label is provided, use it; otherwise use text as accessible name for interactive tags
+    const ariaLabel = blockProps['aria-label'] as string | undefined
+    const accessibleName = ariaLabel || text
+
+    // Focus styles for interactive tags (WCAG 2.4.7 Focus Visible)
+    const focusVisibleStyles =
+        isInteractive && !isSkeleton
+            ? {
+                  outline: '2px solid #0561E2',
+                  outlineOffset: '2px',
+                  boxShadow: '0 0 0 3px rgba(5, 97, 226, 0.1)',
+              }
+            : undefined
+
     return (
         <Block
             {...blockProps}
             ref={ref}
             onClick={showRipple ? handleClick : effectiveOnClick}
+            onKeyDown={isInteractive ? handleKeyDown : undefined}
+            role={isInteractive ? 'button' : undefined}
+            tabIndex={isInteractive ? 0 : undefined}
+            aria-label={isInteractive ? accessibleName : ariaLabel}
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -91,6 +137,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             pointerEvents={isSkeleton ? 'none' : pointerEvents}
             position={showRipple ? 'relative' : blockProps.position}
             overflow={showRipple ? 'hidden' : blockProps.overflow}
+            _focusVisible={focusVisibleStyles}
             className={className}
             style={style}
             data-tag={text}
