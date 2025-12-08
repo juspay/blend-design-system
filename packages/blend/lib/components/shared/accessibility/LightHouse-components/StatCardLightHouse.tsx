@@ -5,7 +5,14 @@ import {
     ChangeType,
     type ChartDataPoint,
 } from '../../../StatCard'
-import { DollarSign, TrendingUp, Users, Activity, Target } from 'lucide-react'
+import {
+    DollarSign,
+    TrendingUp,
+    Users,
+    Activity,
+    Target,
+    ChevronRight,
+} from 'lucide-react'
 
 // Helper function to generate sample chart data
 const generateChartData = (
@@ -61,6 +68,12 @@ const StatCardLightHouse = () => {
                     value: 15.8,
                     valueType: ChangeType.INCREASE,
                 }}
+                actionIcon={
+                    <button>
+                        {' '}
+                        <ChevronRight size={16} />{' '}
+                    </button>
+                }
             />
             <StatCard
                 title="Monthly Sales"
