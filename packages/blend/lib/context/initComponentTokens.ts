@@ -43,7 +43,6 @@ import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
-import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -129,9 +128,6 @@ const initTokens = (
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
-        WORKFLOW_CANVAS:
-            componentTokens.WORKFLOW_CANVAS ??
-            getWorkflowTokens(foundationTokens),
     }
 }
 

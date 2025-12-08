@@ -243,7 +243,10 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         )
 
         const triggerElement = (
-            <Block style={{ width: '118px', flexShrink: 0 }}>
+            <Block
+                data-element="time-selector"
+                style={{ width: '118px', flexShrink: 0 }}
+            >
                 <TextInput
                     type="text"
                     value={inputValue}
