@@ -44,6 +44,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
         )}
 
         <Block
+            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"

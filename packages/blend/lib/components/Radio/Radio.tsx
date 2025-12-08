@@ -1,10 +1,6 @@
 import React from 'react'
 import { type RadioProps, RadioSize } from './types'
-import {
-    getRadioDataState,
-    getRadioTextProps,
-    getRadioLabelStyles,
-} from './utils'
+import { getRadioTextProps, getRadioLabelStyles } from './utils'
 import { StyledRadioInput } from './StyledRadio'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -30,6 +26,7 @@ export const Radio = ({
     subtext,
     slot,
     name,
+    value,
     maxLength,
     ...rest
 }: RadioProps) => {
@@ -40,8 +37,20 @@ export const Radio = ({
     const labelMaxLength = maxLength?.label
     const subtextMaxLength = maxLength?.subtext
 
+    const subtextId = subtext ? `${uniqueId}-subtext` : undefined
+    const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
+        'aria-describedby'
+    ]
+    const ariaDescribedBy =
+        subtextId && customAriaDescribedBy
+            ? `${customAriaDescribedBy} ${subtextId}`
+            : subtextId || customAriaDescribedBy
+
     return (
         <Block
+            data-radio={children ?? 'radio'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            data-id={value ?? ''}
             display="flex"
             alignItems={subtext ? 'flex-start' : 'center'}
             gap={radioTokens.gap}
@@ -49,19 +58,22 @@ export const Radio = ({
             <StyledRadioInput
                 type="radio"
                 id={uniqueId}
-                defaultChecked={defaultChecked}
                 name={name}
+                checked={checked}
+                defaultChecked={defaultChecked}
                 disabled={disabled}
                 required={required}
-                onChange={(e) => onChange?.(e.target.checked)}
-                data-state={getRadioDataState(checked || false)}
-                aria-checked={checked || false}
+                onChange={onChange}
                 size={size}
                 $isDisabled={disabled}
                 $isChecked={checked || false}
                 $error={error}
+                $tokens={radioTokens}
                 style={getErrorShakeStyle(shouldShake)}
                 {...rest}
+                aria-required={required ? true : undefined}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={ariaDescribedBy}
             />
 
             <RadioContent
@@ -76,6 +88,7 @@ export const Radio = ({
                 slot={slot}
                 labelMaxLength={labelMaxLength}
                 subtextMaxLength={subtextMaxLength}
+                subtextId={subtextId}
             />
         </Block>
     )
@@ -93,6 +106,7 @@ const RadioContent: React.FC<{
     slot?: React.ReactNode
     labelMaxLength?: number
     subtextMaxLength?: number
+    subtextId?: string
 }> = ({
     uniqueId,
     disabled,
@@ -105,6 +119,7 @@ const RadioContent: React.FC<{
     slot,
     labelMaxLength,
     subtextMaxLength,
+    subtextId,
 }) => {
     const labelStyles = getRadioLabelStyles(radioTokens, disabled)
     const textProps = getRadioTextProps(radioTokens, size, disabled, error)
@@ -129,7 +144,6 @@ const RadioContent: React.FC<{
     const labelContent = children ? (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -163,17 +177,22 @@ const RadioContent: React.FC<{
         )
 
     const subtextContent = subtext ? (
-        <PrimitiveText
-            data-description-text={subtext}
-            as="span"
-            fontSize={subtextProps.fontSize}
-            fontWeight={subtextProps.fontWeight}
-            color={subtextProps.color}
-        >
-            {subtextTruncation?.isTruncated
-                ? subtextTruncation.truncatedValue
-                : subtext}
-        </PrimitiveText>
+        <Block id={subtextId}>
+            <PrimitiveText
+                data-element="radio-description"
+                data-id={subtext ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
+                data-description-text={subtext}
+                as="span"
+                fontSize={subtextProps.fontSize}
+                fontWeight={subtextProps.fontWeight}
+                color={subtextProps.color}
+            >
+                {subtextTruncation?.isTruncated
+                    ? subtextTruncation.truncatedValue
+                    : subtext}
+            </PrimitiveText>
+        </Block>
     ) : null
 
     const subtextWithTooltip =
@@ -189,13 +208,19 @@ const RadioContent: React.FC<{
         <Block display="flex" flexDirection="column">
             {labelWithTooltip && (
                 <Block
+                    data-element="radio-label"
+                    data-id={children ?? ''}
                     display="flex"
                     alignItems="center"
                     gap={radioTokens.content.label.gap}
                 >
                     {labelWithTooltip}
                     {slot && (
-                        <Block as="span" width={radioTokens.slot[size]}>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            width={radioTokens.slot[size]}
+                        >
                             {slot}
                         </Block>
                     )}

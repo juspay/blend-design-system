@@ -133,6 +133,10 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
             children,
             backgroundColor,
             borderRadius,
+            maxHeight,
+            minHeight,
+            maxWidth,
+            minWidth,
             ...rest
         },
         ref
@@ -160,6 +164,10 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
                 $hasCustomBorderRadius={!!borderRadius}
                 width={width}
                 height={height}
+                maxHeight={maxHeight}
+                minHeight={minHeight}
+                maxWidth={maxWidth}
+                minWidth={minWidth}
                 borderRadius={borderRadius}
                 backgroundColor={
                     backgroundColor ||

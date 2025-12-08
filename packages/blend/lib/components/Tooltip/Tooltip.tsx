@@ -1,5 +1,6 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import styled, { type CSSObject } from 'styled-components'
+import { isValidElement } from 'react'
 import {
     type TooltipProps,
     TooltipAlign,
@@ -38,10 +39,22 @@ export const Tooltip = ({
     maxWidth,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
+
+    const isNativeElement =
+        isValidElement(trigger) && typeof trigger.type === 'string'
+    const shouldWrapTrigger = !isNativeElement
+
+    const wrappedTrigger = shouldWrapTrigger ? (
+        <span style={{ display: 'inline-flex' }}>{trigger}</span>
+    ) : (
+        trigger
+    )
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>
             <RadixTooltip.Root open={open}>
-                <RadixTooltip.Trigger asChild>{trigger}</RadixTooltip.Trigger>
+                <RadixTooltip.Trigger asChild>
+                    {wrappedTrigger}
+                </RadixTooltip.Trigger>
                 {content && (
                     <RadixTooltip.Portal>
                         <AnimatedTooltipContent
@@ -67,13 +80,19 @@ export const Tooltip = ({
                                 {slot &&
                                     slotDirection ===
                                         TooltipSlotDirection.LEFT && (
-                                        <Block contentCentered flexShrink={0}>
+                                        <Block
+                                            contentCentered
+                                            flexShrink={0}
+                                            role="presentation"
+                                            aria-hidden="true"
+                                        >
                                             {slot}
                                         </Block>
                                     )}
                                 <Block flexGrow={1} overflow="hidden">
                                     <PrimitiveText
-                                        data-text={content}
+                                        data-element="tooltip-text"
+                                        data-id={content || 'tooltip-text'}
                                         color={tooltipTokens.text.color}
                                         fontSize={
                                             tooltipTokens.text.fontSize[size]
@@ -92,7 +111,13 @@ export const Tooltip = ({
                                 {slot &&
                                     slotDirection ===
                                         TooltipSlotDirection.RIGHT && (
-                                        <Block contentCentered flexShrink={0}>
+                                        <Block
+                                            data-element="trailing-icon"
+                                            contentCentered
+                                            flexShrink={0}
+                                            role="presentation"
+                                            aria-hidden="true"
+                                        >
                                             {slot}
                                         </Block>
                                     )}
@@ -101,6 +126,7 @@ export const Tooltip = ({
                                 <Arrow
                                     offset={8}
                                     $color={tooltipTokens.background}
+                                    aria-hidden="true"
                                 />
                             )}
                         </AnimatedTooltipContent>

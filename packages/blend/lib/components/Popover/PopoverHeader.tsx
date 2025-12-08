@@ -6,6 +6,8 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { PopoverTokenType } from './popover.tokens'
 import { PopoverProps, PopoverSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { type SkeletonVariant } from '../Skeleton'
+import PopoverSkeleton from './PopoverSkeleton'
 
 const PopoverHeader = ({
     heading,
@@ -13,18 +15,46 @@ const PopoverHeader = ({
     showCloseButton,
     onClose,
     size = PopoverSize.MEDIUM,
+    showSkeleton,
+    skeletonVariant,
+    headingId,
+    descriptionId,
 }: Pick<
     PopoverProps,
     'heading' | 'description' | 'showCloseButton' | 'size' | 'onClose'
->) => {
+> & {
+    showSkeleton?: boolean
+    skeletonVariant?: SkeletonVariant
+    headingId?: string
+    descriptionId?: string
+}) => {
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
+
+    if (showSkeleton) {
+        return (
+            <PopoverSkeleton
+                popoverTokens={popoverTokens}
+                size={size}
+                headerSkeleton={{
+                    show: showSkeleton || false,
+                    showCloseButton: showCloseButton || false,
+                }}
+                skeletonVariant={
+                    skeletonVariant || ('pulse' as SkeletonVariant)
+                }
+            />
+        )
+    }
 
     if (!heading && !description) return null
 
     const Header = () => {
         return (
             <PrimitiveText
-                data-popover-header={heading}
+                {...(headingId ? { id: headingId } : {})}
+                as="span"
+                data-element="popover-header"
+                data-id={heading || 'popover-header'}
                 fontSize={popoverTokens.headerContainer.heading.fontSize[size]}
                 fontWeight={
                     popoverTokens.headerContainer.heading.fontWeight[size]
@@ -39,7 +69,9 @@ const PopoverHeader = ({
     const Description = () => {
         return (
             <PrimitiveText
-                data-popover-description={description}
+                {...(descriptionId ? { id: descriptionId } : {})}
+                data-element="popover-description"
+                data-id={description || 'popover-description'}
                 fontSize={
                     popoverTokens.headerContainer.description.fontSize[size]
                 }
@@ -71,8 +103,14 @@ const PopoverHeader = ({
                         <Button
                             subType={ButtonSubType.INLINE}
                             buttonType={ButtonType.SECONDARY}
-                            leadingIcon={<X size={FOUNDATION_THEME.unit[12]} />}
+                            leadingIcon={
+                                <X
+                                    size={FOUNDATION_THEME.unit[12]}
+                                    aria-hidden="true"
+                                />
+                            }
                             onClick={onClose}
+                            aria-label="Close popover"
                         ></Button>
                     </Block>
                 )}

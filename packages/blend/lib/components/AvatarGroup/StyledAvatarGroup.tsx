@@ -71,11 +71,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
             font-weight: ${FOUNDATION_THEME.font.weight[500]};
 
             color: ${tokens.overflowCounter.text.color};
-            background-color: ${
-                props.$isOpen
-                    ? tokens.overflowCounter.background.active
-                    : tokens.overflowCounter.background.default
-            };
+            background-color: ${tokens.overflowCounter.background.default};
 
             border-radius: ${tokens.overflowCounter.borderRadius[props.$shape]};
             border: ${tokens.overflowCounter.border.width} solid ${tokens.overflowCounter.border.color};
@@ -92,14 +88,10 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
                 outline-offset: 2px;
             }
 
-            ${
-                props.$isOpen
-                    ? `
+            ${`
                 box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
                 outline: ${tokens.avatar.selected.ringOffset} solid ${FOUNDATION_THEME.colors.gray[0]};
-            `
-                    : ''
-            }
+            `}
         `
     }}
 `

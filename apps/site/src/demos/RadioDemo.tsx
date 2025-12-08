@@ -149,7 +149,7 @@ const RadioDemo = () => {
                             value="playground"
                             checked={playgroundChecked}
                             onChange={(checked) => {
-                                setPlaygroundChecked(checked)
+                                setPlaygroundChecked(checked.target.checked)
                                 addSnackbar({
                                     header: `Radio ${checked ? 'checked' : 'unchecked'}!`,
                                 })
@@ -165,10 +165,6 @@ const RadioDemo = () => {
                                 showSlot ? (
                                     <Heart size={16} className="text-red-500" />
                                 ) : undefined
-                            }
-                            data-radio={playgroundChecked ? 'true' : 'false'}
-                            data-radio-enabled={
-                                playgroundDisabled ? 'disabled' : 'enabled'
                             }
                         >
                             {playgroundLabel}
@@ -254,7 +250,7 @@ const RadioDemo = () => {
                                 size={RadioSize.SMALL}
                                 checked={sizeSmallBasic}
                                 onChange={(checked) => {
-                                    setSizeSmallBasic(checked)
+                                    setSizeSmallBasic(checked.target.checked)
                                     addSnackbar({
                                         header: `Small radio ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -269,7 +265,7 @@ const RadioDemo = () => {
                                 subtext="This radio has additional information"
                                 checked={sizeSmallSubtext}
                                 onChange={(checked) => {
-                                    setSizeSmallSubtext(checked)
+                                    setSizeSmallSubtext(checked.target.checked)
                                     addSnackbar({
                                         header: `Small radio with subtext ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -289,7 +285,7 @@ const RadioDemo = () => {
                                 }
                                 checked={sizeSmallSlot}
                                 onChange={(checked) => {
-                                    setSizeSmallSlot(checked)
+                                    setSizeSmallSlot(checked.target.checked)
                                     addSnackbar({
                                         header: `Small radio with slot ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -311,7 +307,7 @@ const RadioDemo = () => {
                                 size={RadioSize.MEDIUM}
                                 checked={sizeMediumBasic}
                                 onChange={(checked) => {
-                                    setSizeMediumBasic(checked)
+                                    setSizeMediumBasic(checked.target.checked)
                                     addSnackbar({
                                         header: `Medium radio ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -326,7 +322,7 @@ const RadioDemo = () => {
                                 subtext="This radio has additional information"
                                 checked={sizeMediumSubtext}
                                 onChange={(checked) => {
-                                    setSizeMediumSubtext(checked)
+                                    setSizeMediumSubtext(checked.target.checked)
                                     addSnackbar({
                                         header: `Medium radio with subtext ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -346,7 +342,7 @@ const RadioDemo = () => {
                                 }
                                 checked={sizeMediumSlot}
                                 onChange={(checked) => {
-                                    setSizeMediumSlot(checked)
+                                    setSizeMediumSlot(checked.target.checked)
                                     addSnackbar({
                                         header: `Medium radio with slot ${checked ? 'checked' : 'unchecked'}!`,
                                     })
@@ -370,7 +366,7 @@ const RadioDemo = () => {
                             value="default"
                             checked={stateDefault}
                             onChange={(checked) => {
-                                setStateDefault(checked)
+                                setStateDefault(checked.target.checked)
                                 addSnackbar({
                                     header: `Default radio ${checked ? 'checked' : 'unchecked'}!`,
                                 })
@@ -387,7 +383,7 @@ const RadioDemo = () => {
                             value="checked"
                             checked={stateChecked}
                             onChange={(checked) => {
-                                setStateChecked(checked)
+                                setStateChecked(checked.target.checked)
                                 addSnackbar({
                                     header: `Checked radio ${checked ? 'checked' : 'unchecked'}!`,
                                 })
@@ -416,7 +412,7 @@ const RadioDemo = () => {
                             error={true}
                             checked={stateError}
                             onChange={(checked) => {
-                                setStateError(checked)
+                                setStateError(checked.target.checked)
                                 addSnackbar({
                                     header: `Error radio ${checked ? 'checked' : 'unchecked'}!`,
                                 })
@@ -643,7 +639,9 @@ const RadioDemo = () => {
                                     size={RadioSize.SMALL}
                                     checked={comboSmallBasic}
                                     onChange={(checked) => {
-                                        setComboSmallBasic(checked)
+                                        setComboSmallBasic(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Small basic radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })
@@ -664,7 +662,9 @@ const RadioDemo = () => {
                                     subtext="Additional information here"
                                     checked={comboSmallSubtext}
                                     onChange={(checked) => {
-                                        setComboSmallSubtext(checked)
+                                        setComboSmallSubtext(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Small subtext radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })
@@ -690,7 +690,9 @@ const RadioDemo = () => {
                                     }
                                     checked={comboSmallSlot}
                                     onChange={(checked) => {
-                                        setComboSmallSlot(checked)
+                                        setComboSmallSlot(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Small slot radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })
@@ -715,7 +717,9 @@ const RadioDemo = () => {
                                     size={RadioSize.MEDIUM}
                                     checked={comboMediumBasic}
                                     onChange={(checked) => {
-                                        setComboMediumBasic(checked)
+                                        setComboMediumBasic(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Medium basic radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })
@@ -736,7 +740,9 @@ const RadioDemo = () => {
                                     subtext="Additional information here"
                                     checked={comboMediumSubtext}
                                     onChange={(checked) => {
-                                        setComboMediumSubtext(checked)
+                                        setComboMediumSubtext(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Medium subtext radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })
@@ -762,7 +768,9 @@ const RadioDemo = () => {
                                     }
                                     checked={comboMediumSlot}
                                     onChange={(checked) => {
-                                        setComboMediumSlot(checked)
+                                        setComboMediumSlot(
+                                            checked.target.checked
+                                        )
                                         addSnackbar({
                                             header: `Medium slot radio ${checked ? 'checked' : 'unchecked'}!`,
                                         })

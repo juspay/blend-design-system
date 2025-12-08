@@ -28,7 +28,7 @@ import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import { dropdownContentAnimations } from './multiSelect.animations'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import MultiSelectSkeleton from './MultiSelectSkeleton'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -158,6 +158,7 @@ const MultiSelectMenu = ({
     variant = MultiSelectVariant.CONTAINER,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    menuId,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -285,6 +286,7 @@ const MultiSelectMenu = ({
             </RadixMenu.Trigger>
             <RadixMenu.Portal>
                 <Content
+                    id={menuId}
                     data-dropdown="dropdown"
                     ref={contentRef}
                     align={alignment}
@@ -293,6 +295,8 @@ const MultiSelectMenu = ({
                     side={side}
                     avoidCollisions={false}
                     onKeyDown={handleKeyDown}
+                    role="listbox"
+                    aria-multiselectable="true"
                     style={{
                         minWidth: minMenuWidth || 250,
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
@@ -305,33 +309,10 @@ const MultiSelectMenu = ({
                     }}
                 >
                     {skeleton.show ? (
-                        <Block
-                            padding={multiSelectTokens.menu.item.padding}
-                            display="flex"
-                            flexDirection="column"
-                            gap={multiSelectTokens.menu.item.gap || 4}
-                            borderRadius={
-                                multiSelectTokens.menu.item.borderRadius
-                            }
-                            outline="none"
-                            border="none"
-                            width="100%"
-                            maxWidth="100%"
-                        >
-                            {Array.from({ length: skeleton.count || 3 }).map(
-                                (_, index) => (
-                                    <Skeleton
-                                        key={index}
-                                        width="100%"
-                                        height="33px"
-                                        variant={
-                                            (skeleton.variant as SkeletonVariant) ||
-                                            'pulse'
-                                        }
-                                    />
-                                )
-                            )}
-                        </Block>
+                        <MultiSelectSkeleton
+                            multiSelectTokens={multiSelectTokens}
+                            skeleton={skeleton}
+                        />
                     ) : (
                         <>
                             {' '}
@@ -344,6 +325,10 @@ const MultiSelectMenu = ({
                                             value={searchText}
                                             onChange={handleSearchChange}
                                             autoFocus
+                                            aria-label={
+                                                searchPlaceholder ||
+                                                'Search options'
+                                            }
                                         />
                                     </Block>
                                 )}
@@ -734,14 +719,6 @@ const MultiSelectMenu = ({
                                                 data-button-for={
                                                     secondaryAction.text
                                                 }
-                                                data-custom-value={
-                                                    secondaryAction.text
-                                                }
-                                                data-button-status={
-                                                    secondaryAction.disabled
-                                                        ? 'disabled'
-                                                        : 'enabled'
-                                                }
                                                 data-dynamic-button={
                                                     secondaryAction.text
                                                 }
@@ -769,14 +746,6 @@ const MultiSelectMenu = ({
                                             <Button
                                                 data-button-for={
                                                     primaryAction.text
-                                                }
-                                                data-custom-value={
-                                                    primaryAction.text
-                                                }
-                                                data-button-status={
-                                                    primaryAction.disabled
-                                                        ? 'disabled'
-                                                        : 'enabled'
                                                 }
                                                 data-dynamic-button={
                                                     primaryAction.text

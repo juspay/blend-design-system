@@ -231,7 +231,7 @@ export const getUnitInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     backgroundColor: {
-                        default: foundationTokens.colors.gray[0],
+                        default: foundationTokens.colors.gray[50],
                         disabled: foundationTokens.colors.gray[50],
                         hover: foundationTokens.colors.gray[0],
                         focus: foundationTokens.colors.gray[0],
@@ -367,7 +367,7 @@ export const getUnitInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     backgroundColor: {
-                        default: foundationTokens.colors.gray[0],
+                        default: foundationTokens.colors.gray[50],
                         disabled: foundationTokens.colors.gray[50],
                         hover: foundationTokens.colors.gray[0],
                         focus: foundationTokens.colors.gray[0],

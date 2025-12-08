@@ -6,6 +6,7 @@ import {
     AvatarShape,
     AvatarSize,
 } from '../../../../packages/blend/lib/components/Avatar'
+import { Switch } from '../../../../packages/blend/lib/main'
 
 // Sample avatar data
 const sampleAvatars = [
@@ -88,6 +89,7 @@ const AvatarGroupDemo = () => {
     const [selectedAvatars, setSelectedAvatars] = useState<(string | number)[]>(
         [1, 3]
     )
+    const [showSkeleton, setShowSkeleton] = useState(false)
 
     const handleSelectionChange = (selectedIds: (string | number)[]) => {
         setSelectedAvatars(selectedIds)
@@ -105,6 +107,11 @@ const AvatarGroupDemo = () => {
                     overflow handling and selection states.
                 </p>
             </div>
+            <Switch
+                label="Show Skeleton"
+                checked={showSkeleton}
+                onChange={() => setShowSkeleton(!showSkeleton)}
+            />
 
             {/* Featured Demo */}
             <div className="p-6 bg-gray-50 rounded-lg">
@@ -116,8 +123,10 @@ const AvatarGroupDemo = () => {
                     an overflow counter for the rest. Users can select avatars
                     by clicking, with selected state visually indicated.
                 </p>
+
                 <div className="flex flex-col gap-6">
                     <AvatarGroup
+                        skeleton={{ show: showSkeleton, variant: 'pulse' }}
                         avatars={sampleAvatars}
                         maxCount={5}
                         size={AvatarSize.MD}

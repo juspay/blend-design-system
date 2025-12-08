@@ -32,7 +32,7 @@ const CardDemo = () => {
         CardAlignment.VERTICAL
     )
     const [centerAlign, setCenterAlign] = useState(false)
-    const [showSkeleton, setShowSkeleton] = useState(true)
+    const [showSkeleton, setShowSkeleton] = useState(false)
 
     const imageSlot = (
         <div

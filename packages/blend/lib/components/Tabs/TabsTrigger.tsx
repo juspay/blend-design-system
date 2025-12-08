@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from 'react'
+import React, { forwardRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { type TabsTriggerProps, TabsVariant, TabsSize } from './types'
 import { StyledTabsTrigger, IconContainer } from './StyledTabs'
@@ -33,19 +33,39 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
         const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
+        const isActive = props.isActive
+        const isDisabled = shouldShowSkeleton ? true : disable
+
         const handleCloseClick = useCallback(
             (e: React.MouseEvent) => {
                 e.stopPropagation()
                 e.preventDefault()
-                onClose?.()
+                if (!isDisabled) {
+                    onClose?.()
+                }
             },
-            [onClose]
+            [onClose, isDisabled]
+        )
+
+        const handleCloseKeyDown = useCallback(
+            (e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    if (!isDisabled) {
+                        onClose?.()
+                    }
+                }
+            },
+            [onClose, isDisabled]
         )
 
         const effectiveRightSlot = closable ? (
             <Block
                 as="span"
+                role="button"
                 onClick={handleCloseClick}
+                onKeyDown={handleCloseKeyDown}
                 width="16px"
                 height="16px"
                 borderRadius="50%"
@@ -55,6 +75,9 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 alignItems="center"
                 justifyContent="center"
                 transition="background-color 0.2s"
+                aria-label={`Close ${children || 'tab'}`}
+                tabIndex={isDisabled ? -1 : 0}
+                aria-disabled={isDisabled ? 'true' : undefined}
                 _hover={{
                     backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 }}
@@ -62,14 +85,11 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                     backgroundColor: 'rgba(0, 0, 0, 0.15)',
                 }}
             >
-                <X size={12} />
+                <X size={12} aria-hidden="true" />
             </Block>
         ) : (
             rightSlot
         )
-
-        const isActive = props.isActive
-        const isDisabled = shouldShowSkeleton ? true : disable
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
 
@@ -78,6 +98,8 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
+                data-status={isDisabled ? 'disabled' : 'enabled'}
+                data-id={children ?? ''}
                 ref={ref}
                 value={value}
                 $variant={variant}
@@ -121,8 +143,17 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {leftSlot && (
                     <IconContainer
+                        data-element="left-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                        aria-hidden={
+                            React.isValidElement(leftSlot) &&
+                            leftSlot.props &&
+                            typeof leftSlot.props === 'object' &&
+                            'aria-label' in leftSlot.props
+                                ? undefined
+                                : 'true'
+                        }
                     >
                         {leftSlot}
                     </IconContainer>
@@ -141,8 +172,20 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
                 {effectiveRightSlot && (
                     <IconContainer
+                        data-element="right-slot"
                         $tabsToken={tabsToken}
                         style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                        aria-hidden={
+                            closable
+                                ? undefined
+                                : React.isValidElement(effectiveRightSlot) &&
+                                    effectiveRightSlot.props &&
+                                    typeof effectiveRightSlot.props ===
+                                        'object' &&
+                                    'aria-label' in effectiveRightSlot.props
+                                  ? undefined
+                                  : 'true'
+                        }
                     >
                         {effectiveRightSlot}
                     </IconContainer>
@@ -153,6 +196,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         if (shouldShowSkeleton) {
             return (
                 <Skeleton
+                    data-element="skeleton"
                     variant={skeletonVariant}
                     loading
                     padding="0"

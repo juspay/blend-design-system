@@ -15,14 +15,18 @@ import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
-import { SelectMenuSize, SelectMenuVariant } from './types'
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelectSkeletonProps,
+} from './types'
 import VirtualList from '../VirtualList/VirtualList'
 import {
     dropdownContentAnimations,
     submenuContentAnimations,
     hoverTransition,
 } from './singleSelect.animations'
-import { Skeleton, SkeletonVariant } from '../Skeleton'
+import SingleSelectSkeleton from './SingleSelectSkeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
@@ -64,14 +68,10 @@ type SingleSelectMenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
-
+    skeleton?: SingleSelectSkeletonProps
     allowCustomValue?: boolean
     customValueLabel?: string
+    menuId?: string
 }
 
 type FlattenedItem = {
@@ -565,33 +565,10 @@ const SingleSelectMenu = ({
                     }}
                 >
                     {skeleton.show ? (
-                        <Block
-                            padding={singleSelectTokens.menu.item.padding}
-                            display="flex"
-                            flexDirection="column"
-                            gap={singleSelectTokens.menu.item.gap || 4}
-                            borderRadius={
-                                singleSelectTokens.menu.item.borderRadius
-                            }
-                            outline="none"
-                            border="none"
-                            width="100%"
-                            maxWidth="100%"
-                        >
-                            {Array.from({ length: skeleton.count || 3 }).map(
-                                (_, index) => (
-                                    <Skeleton
-                                        key={index}
-                                        width="100%"
-                                        height="33px"
-                                        variant={
-                                            (skeleton.variant as SkeletonVariant) ||
-                                            'pulse'
-                                        }
-                                    />
-                                )
-                            )}
-                        </Block>
+                        <SingleSelectSkeleton
+                            singleSelectTokens={singleSelectTokens}
+                            skeleton={skeleton}
+                        />
                     ) : (
                         <>
                             {enableSearch && (
@@ -620,6 +597,10 @@ const SingleSelectMenu = ({
                                                 setSearchText(e.target.value)
                                             }}
                                             autoFocus
+                                            aria-label={
+                                                searchPlaceholder ||
+                                                'Search options'
+                                            }
                                         />
                                     </Block>
                                 </Block>
@@ -668,7 +649,10 @@ const SingleSelectMenu = ({
                                 </Block>
                             ) : enableVirtualization &&
                               filteredItems.length > 0 ? (
-                                <Block padding={FOUNDATION_THEME.unit[6]}>
+                                <Block
+                                    data-element="virtual-list"
+                                    padding={FOUNDATION_THEME.unit[6]}
+                                >
                                     <VirtualList
                                         items={flattenedItems}
                                         renderItem={renderVirtualItem}
@@ -685,6 +669,7 @@ const SingleSelectMenu = ({
                                 </Block>
                             ) : (
                                 <Block
+                                    data-element="menu-content"
                                     paddingX={
                                         singleSelectTokens.menu.padding[size][
                                             variant
@@ -704,7 +689,7 @@ const SingleSelectMenu = ({
                                     {filteredItems.map((group, groupId) => (
                                         <React.Fragment key={groupId}>
                                             {group.groupLabel && (
-                                                <Label>
+                                                <Label data-element="menu-group-label">
                                                     <Text
                                                         fontSize={
                                                             singleSelectTokens

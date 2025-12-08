@@ -32,7 +32,6 @@ import {
     Settings,
     TrendingUp,
     Upload,
-    Workflow,
     Moon,
     Sun,
     HelpCircle,
@@ -103,14 +102,15 @@ import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
 import CodeBlockDemo from './CodeBlockDemo'
 import CodeEditorDemo from './CodeEditorDemo'
-import WorkflowCanvasDemo from './WorkflowCanvasDemo'
 import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
+import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
         | 'buttons'
+        | 'accessibility'
         | 'tooltips'
         | 'tags'
         | 'breadcrumb'
@@ -165,9 +165,8 @@ const SidebarDemo = () => {
         | 'upload'
         | 'codeBlock'
         | 'codeEditor'
-        | 'workflowCanvas'
         | 'formElements'
-    >('dataTable')
+    >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -359,6 +358,8 @@ const SidebarDemo = () => {
         switch (activeComponent) {
             case 'buttons':
                 return <ButtonDemo />
+            case 'accessibility':
+                return <AccessibilityDashboard />
             case 'buttonGroups':
                 return <ButtonGroupDemo />
             case 'tags':
@@ -445,8 +446,6 @@ const SidebarDemo = () => {
                 return <CodeBlockDemo />
             case 'codeEditor':
                 return <CodeEditorDemo />
-            case 'workflowCanvas':
-                return <WorkflowCanvasDemo />
             case 'formElements':
                 return <FormElementsDemo />
             default:
@@ -610,6 +609,7 @@ const SidebarDemo = () => {
                     },
                     showOnMobile: true,
                 },
+
                 {
                     label: 'Button Group',
                     leftSlot: (
@@ -1022,14 +1022,6 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
                 },
-                {
-                    label: 'Workflow Canvas',
-                    leftSlot: (
-                        <Workflow style={{ width: '16px', height: '16px' }} />
-                    ),
-                    isSelected: activeComponent === 'workflowCanvas',
-                    onClick: () => setActiveComponent('workflowCanvas'),
-                },
             ],
         },
         {
@@ -1092,6 +1084,7 @@ const SidebarDemo = () => {
                 },
             ],
         },
+
         {
             label: 'Design System',
             items: [
@@ -1110,6 +1103,20 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'allComponents',
                     onClick: () => setActiveComponent('allComponents'),
+                },
+                {
+                    label: 'Accessibility',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accessibility',
+                    onClick: () => {
+                        setActiveComponent('accessibility')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
                 },
             ],
         },

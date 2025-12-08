@@ -51,7 +51,7 @@ const SingleSelectTrigger = ({
     singleSelectTokens,
     inline = false,
     error,
-    disabled,
+    ...rest
 }: SingleSelectTriggerProps) => {
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
@@ -69,16 +69,12 @@ const SingleSelectTrigger = ({
     return (
         <>
             <PrimitiveButton
-                data-selectbox-value={placeholder}
-                data-dropdown-for={placeholder}
-                data-value={selected || placeholder}
-                data-custom-value={selected || placeholder}
-                data-button-status={disabled ? 'disabled' : 'enabled'}
                 onClick={onClick}
                 maxWidth={maxTriggerWidth}
                 minWidth={minTriggerWidth}
                 type="button"
                 name={name}
+                id={name}
                 position="relative"
                 width={'100%'}
                 display="flex"
@@ -92,6 +88,7 @@ const SingleSelectTrigger = ({
                         error ? 'error' : open ? 'open' : 'closed'
                     ]
                 }
+                {...rest}
                 {...((!inline || variant === SelectMenuVariant.CONTAINER) && {
                     paddingX: paddingX,
                     paddingY: paddingY,
@@ -191,9 +188,6 @@ const SingleSelectTrigger = ({
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                     }}
-                                    data-button-text={
-                                        valueLabelMap[selected] || selected
-                                    }
                                 >
                                     {valueLabelMap[selected] || selected}
                                 </Text>
@@ -227,11 +221,6 @@ const SingleSelectTrigger = ({
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                             }}
-                            data-button-text={
-                                selected
-                                    ? valueLabelMap[selected] || selected
-                                    : placeholder
-                            }
                         >
                             {selected
                                 ? valueLabelMap[selected] || selected

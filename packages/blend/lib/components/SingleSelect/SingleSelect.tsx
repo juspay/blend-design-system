@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useId, useRef, useState } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
@@ -27,6 +27,7 @@ import {
     errorShakeAnimation,
 } from '../common/error.animations'
 import styled from 'styled-components'
+import { setupAccessibility } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -102,6 +103,7 @@ const SingleSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -120,6 +122,20 @@ const SingleSelect = ({
     const isItemSelected = selected.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
+
+    const generatedId = useId()
+    const { uniqueName, hintTextId, errorMessageId, menuId, ariaAttributes } =
+        setupAccessibility({
+            name,
+            generatedId,
+            label,
+            hintText,
+            error,
+            errorMessage,
+            rest,
+            prefix: 'singleselect',
+            needsMenuId: true,
+        })
 
     const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
     const paddingX = toPixels(
@@ -180,6 +196,8 @@ const SingleSelect = ({
 
     return (
         <Block
+            data-single-select={label || 'single-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             width="100%"
             display="flex"
             flexDirection="column"
@@ -193,7 +211,7 @@ const SingleSelect = ({
                         sublabel={subLabel}
                         disabled={disabled}
                         helpIconHintText={helpIconText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
                         tokens={singleSelectTokens}
                     />
@@ -204,7 +222,6 @@ const SingleSelect = ({
                     height: singleSelectTokens.trigger.height[size][variant],
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
-                data-selectbox-value={placeholder}
             >
                 <Wrapper
                     position="relative"
@@ -213,7 +230,6 @@ const SingleSelect = ({
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
-                    data-dropdown-for={placeholder}
                 >
                     <SingleSelectMenu
                         skeleton={skeleton}
@@ -251,18 +267,16 @@ const SingleSelect = ({
                         loadingComponent={loadingComponent}
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
+                        menuId={menuId}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
-                                    data-value={selected || placeholder}
-                                    data-custom-value={selected || placeholder}
-                                    data-button-status={
-                                        disabled ? 'disabled' : 'enabled'
-                                    }
+                                    data-element="single-select-button"
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
-                                    name={name}
+                                    name={uniqueName}
+                                    id={uniqueName}
                                     position="relative"
                                     width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
@@ -282,6 +296,7 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
+                                    {...ariaAttributes}
                                     {...((!inline || isContainer) && {
                                         paddingX: paddingX,
                                         paddingY: paddingY,
@@ -333,6 +348,7 @@ const SingleSelect = ({
                                     >
                                         {slot && (
                                             <Block
+                                                data-element="icon"
                                                 ref={slotRef}
                                                 contentCentered
                                             >
@@ -428,11 +444,6 @@ const SingleSelect = ({
                                                             whiteSpace:
                                                                 'nowrap',
                                                         }}
-                                                        data-button-text={
-                                                            valueLabelMap[
-                                                                selected
-                                                            ] || selected
-                                                        }
                                                     >
                                                         {valueLabelMap[
                                                             selected
@@ -442,6 +453,7 @@ const SingleSelect = ({
                                             </Block>
                                         ) : (
                                             <Text
+                                                data-element="placeholder"
                                                 color={
                                                     selected
                                                         ? singleSelectTokens
@@ -479,7 +491,7 @@ const SingleSelect = ({
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
                                                 }}
-                                                data-button-text={
+                                                data-id={
                                                     selected
                                                         ? valueLabelMap[
                                                               selected
@@ -494,7 +506,10 @@ const SingleSelect = ({
                                             </Text>
                                         )}
                                     </Block>
-                                    <Block contentCentered>
+                                    <Block
+                                        data-element="chevron-icon"
+                                        contentCentered
+                                    >
                                         <ChevronDown
                                             size={16}
                                             color={
@@ -517,6 +532,8 @@ const SingleSelect = ({
                     error={error}
                     errorMessage={errorMessage}
                     tokens={singleSelectTokens}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

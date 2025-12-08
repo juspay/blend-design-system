@@ -38,6 +38,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             expanded = false,
             fitContent = false,
             items = [],
+            originalItems,
             onTabClose,
             onTabAdd,
             showDropdown = false,
@@ -64,14 +65,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const hasMountedRef = useRef(false)
         const prevItemsLengthRef = useRef(items.length)
 
+        const sourceItems = originalItems || items
+
         const processedItems = useMemo(
             () => processTabsWithConcatenation(items),
             [items]
-        )
-
-        const dropdownItems = useMemo(
-            () => prepareDropdownItems(processedItems, items),
-            [processedItems, items]
         )
 
         const displayTabs = useMemo(
@@ -79,9 +77,13 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             [processedItems, maxDisplayTabs, activeTab]
         )
 
+        const dropdownItems = useMemo(() => {
+            return prepareDropdownItems(sourceItems, sourceItems)
+        }, [sourceItems])
+
         const originalTabValues = useMemo(
-            () => new Set(items.map((item) => item.value)),
-            [items]
+            () => new Set<string>(sourceItems.map((item) => item.value)),
+            [sourceItems]
         )
 
         const hasAnySkeleton = useMemo(
@@ -144,13 +146,13 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
             const needsDelay =
                 !hasMountedRef.current ||
-                items.length !== prevItemsLengthRef.current
+                sourceItems.length !== prevItemsLengthRef.current
             const delay = needsDelay ? 100 : 0
 
             const timeout = setTimeout(() => {
                 updateIndicator()
                 hasMountedRef.current = true
-                prevItemsLengthRef.current = items.length
+                prevItemsLengthRef.current = sourceItems.length
             }, delay)
 
             window.addEventListener('resize', updateIndicator)
@@ -159,7 +161,13 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 clearTimeout(timeout)
                 window.removeEventListener('resize', updateIndicator)
             }
-        }, [activeTab, variant, hasAnySkeleton, items.length, updateIndicator])
+        }, [
+            activeTab,
+            variant,
+            hasAnySkeleton,
+            sourceItems.length,
+            updateIndicator,
+        ])
 
         useEffect(() => {
             if (!activeTab || isScrollingRef.current) {
@@ -213,7 +221,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         // Effect: Scroll to end when new tabs are added
         useEffect(() => {
-            const currentLength = items.length
+            const currentLength = sourceItems.length
             const previousLength = prevItemsLengthRef.current
 
             if (currentLength <= previousLength) {
@@ -242,7 +250,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             prevItemsLengthRef.current = currentLength
 
             return () => clearTimeout(scrollTimeout)
-        }, [items.length, updateIndicator])
+        }, [sourceItems.length, updateIndicator])
 
         const handleTabClose = useCallback(
             (processedTabValue: string) => {
@@ -294,6 +302,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         if (items.length > 0) {
             return (
                 <Block
+                    data-element="tabs-list"
                     style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -371,17 +380,18 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             skeletonVariant={
                                                 item.skeletonVariant
                                             }
+                                            leftSlot={item.leftSlot}
+                                            rightSlot={item.rightSlot}
                                             style={{
                                                 flexShrink: 0,
                                                 whiteSpace: 'nowrap',
                                             }}
-                                            data-tabs={item.label}
-                                            data-tab-selected={
-                                                tabValue === activeTab
+                                            data-status={
+                                                item.disable
+                                                    ? 'disabled'
+                                                    : 'enabled'
                                             }
-                                            data-tabs-disabled={
-                                                item.disable ? 'true' : 'false'
-                                            }
+                                            data-id={item.label}
                                         >
                                             {item.label}
                                         </TabsTrigger>
@@ -413,6 +423,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             width={FOUNDATION_THEME.unit[20]}
                                             backgroundColor="transparent"
                                             contentCentered
+                                            aria-label="Navigate to tab"
                                             _hover={{
                                                 backgroundColor:
                                                     FOUNDATION_THEME.colors
@@ -422,7 +433,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 FOUNDATION_THEME.unit[4]
                                             }
                                         >
-                                            <ChevronDown size={16} />
+                                            <ChevronDown
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
                                         </PrimitiveButton>
                                     }
                                     useDrawerOnMobile={false}
@@ -438,6 +452,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         width={FOUNDATION_THEME.unit[20]}
                                         backgroundColor="transparent"
                                         contentCentered
+                                        aria-label={addButtonTooltip}
                                         _hover={{
                                             backgroundColor:
                                                 FOUNDATION_THEME.colors
@@ -445,7 +460,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         }}
                                         borderRadius={FOUNDATION_THEME.unit[4]}
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={16} aria-hidden="true" />
                                     </PrimitiveButton>
                                 </Tooltip>
                             )}
@@ -501,6 +516,8 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
         return (
             <Block
+                data-element="tabs-list"
+                data-state={expanded ? 'expanded' : 'collapsed'}
                 style={{
                     borderBottom:
                         variant === TabsVariant.UNDERLINE &&

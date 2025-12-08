@@ -45,6 +45,7 @@ const PopoverDemo = () => {
         minWidth: 300,
         maxWidth: 400,
     })
+    const [showSkeleton, setShowSkeleton] = useState(false)
 
     const handleCheckboxChange =
         (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,6 +204,17 @@ const PopoverDemo = () => {
                                 value={config.heading}
                                 onChange={handleInputChange('heading')}
                                 className="w-full px-3 py-2 rounded border border-gray-300 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block mb-2 font-medium text-gray-700">
+                                Show Skeleton
+                            </label>
+                            <input
+                                type="checkbox"
+                                checked={showSkeleton}
+                                onChange={() => setShowSkeleton(!showSkeleton)}
                             />
                         </div>
 
@@ -422,6 +434,15 @@ const PopoverDemo = () => {
 
                 <div className="flex justify-center">
                     <Popover
+                        skeleton={{
+                            show: showSkeleton,
+                            variant: 'pulse',
+                            bodySkeletonProps: {
+                                show: showSkeleton,
+                                width: '100%',
+                                height: 100,
+                            },
+                        }}
                         heading={config.heading}
                         description={config.description}
                         trigger={

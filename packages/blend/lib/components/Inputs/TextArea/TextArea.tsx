@@ -5,7 +5,7 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
 import type { TextAreaTokensType } from './textarea.token'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -40,6 +40,8 @@ const TextArea = ({
     errorMessage,
     wrap,
     resize = 'none',
+    name,
+    id: providedId,
     ...rest
 }: TextAreaProps) => {
     const textAreaTokens = useResponsiveTokens<TextAreaTokensType>('TEXT_AREA')
@@ -48,6 +50,21 @@ const TextArea = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
+    // Generate unique IDs for accessibility
+    const generatedId = useId()
+    const textareaId = providedId || generatedId
+    const errorId = `${textareaId}-error`
+    const hintId = `${textareaId}-hint`
+
+    // Construct aria-describedby to link hint and error messages
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
+
     const inputFocusedOrWithValue = isFocused || value.length > 0
 
     const paddingX = toPixels(textAreaTokens.inputContainer.padding.x)
@@ -55,7 +72,8 @@ const TextArea = ({
 
     return (
         <Block
-            data-component-field-wrapper={`field-textarea`}
+            data-textarea={label || 'textarea'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
             gap={textAreaTokens.gap}
@@ -69,6 +87,8 @@ const TextArea = ({
                     sublabel={sublabel}
                     disabled={disabled}
                     helpIconHintText={helpIconHintText}
+                    inputId={textareaId}
+                    name={name}
                     required={required}
                 />
             )}
@@ -102,6 +122,8 @@ const TextArea = ({
                     </Block>
                 )}
                 <PrimitiveTextarea
+                    id={textareaId}
+                    name={name}
                     width={'100%'}
                     autoFocus={autoFocus}
                     value={value}
@@ -167,6 +189,9 @@ const TextArea = ({
                         border: textAreaTokens.inputContainer.border.disabled,
                         cursor: 'not-allowed',
                     }}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     {...rest}
                 />
             </Wrapper>
@@ -175,6 +200,8 @@ const TextArea = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
             />
         </Block>
     )

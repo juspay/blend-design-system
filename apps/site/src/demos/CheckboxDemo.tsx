@@ -146,7 +146,9 @@ const CheckboxDemo = () => {
                             name="playground"
                             maxLength={{ label: 3, subtext: 3 }}
                             checked={playgroundChecked}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={(
+                                checked: boolean | 'indeterminate'
+                            ) => {
                                 console.log(checked)
                                 setPlaygroundChecked(checked)
                                 addSnackbar({
@@ -165,11 +167,10 @@ const CheckboxDemo = () => {
                                     <Heart size={16} className="text-red-500" />
                                 ) : undefined
                             }
-                            data-selected-checkbox={
-                                playgroundChecked ? 'Selected' : 'NotSelected'
-                            }
-                            data-checkbox-name={playgroundLabel}
-                            data-checkbox-status={
+                            data-element="checkbox"
+                            data-id={playgroundLabel}
+                            label={playgroundLabel}
+                            data-status={
                                 playgroundDisabled ? 'disabled' : 'enabled'
                             }
                         >

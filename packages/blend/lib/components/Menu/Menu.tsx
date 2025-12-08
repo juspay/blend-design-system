@@ -155,6 +155,7 @@ const Menu = ({
                             margin="0px 6px"
                             textTransform="uppercase"
                             color={FOUNDATION_THEME.colors.gray[400]}
+                            aria-label={label}
                         >
                             {label}
                         </PrimitiveText>
@@ -166,9 +167,12 @@ const Menu = ({
                 return (
                     <RadixMenu.Separator asChild>
                         <Block
+                            as="div"
+                            role="separator"
                             height={menuTokens.item.seperator.height}
                             backgroundColor={menuTokens.item.seperator.color}
                             margin={menuTokens.item.seperator.margin.x}
+                            aria-hidden="true"
                         />
                     </RadixMenu.Separator>
                 )
@@ -192,12 +196,14 @@ const Menu = ({
 
     return (
         <RadixMenu.Root
+            data-element="menu"
             modal={asModal}
             open={open}
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <Content
+                data-menu="menu"
                 data-dropdown="dropdown"
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
@@ -287,12 +293,14 @@ const Menu = ({
                                                     .gray[400]
                                             }
                                             size={16}
+                                            aria-hidden="true"
                                         />
                                     }
                                     placeholder={searchPlaceholder}
                                     value={searchText}
                                     onChange={handleSearchChange}
                                     autoFocus
+                                    aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
                                 />
                             </Block>
                         )}
@@ -306,6 +314,7 @@ const Menu = ({
                                         : FOUNDATION_THEME.unit[6],
                                 }}
                             >
+                                s
                                 <VirtualList
                                     items={virtualListItems}
                                     height={
@@ -335,6 +344,11 @@ const Menu = ({
                                             {group.label && (
                                                 <RadixMenu.Label asChild>
                                                     <PrimitiveText
+                                                        data-element="menu-group-label"
+                                                        data-id={
+                                                            group.label ||
+                                                            'menu-group-label'
+                                                        }
                                                         fontSize={
                                                             menuTokens.item
                                                                 .optionsLabel
@@ -367,6 +381,7 @@ const Menu = ({
                                                                 .optionsLabel
                                                                 .color
                                                         }
+                                                        aria-label={group.label}
                                                     >
                                                         {group.label}
                                                     </PrimitiveText>
@@ -389,6 +404,8 @@ const Menu = ({
                                                         asChild
                                                     >
                                                         <Block
+                                                            as="div"
+                                                            role="separator"
                                                             height={
                                                                 menuTokens.item
                                                                     .seperator
@@ -409,6 +426,7 @@ const Menu = ({
                                                                     .seperator
                                                                     .margin.x
                                                             }
+                                                            aria-hidden="true"
                                                         ></Block>
                                                     </RadixMenu.Separator>
                                                 )}

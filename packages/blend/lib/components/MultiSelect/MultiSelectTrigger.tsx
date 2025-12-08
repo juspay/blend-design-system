@@ -50,7 +50,6 @@ const MultiSelectTrigger = ({
     multiSelectTokens,
     inline = false,
     error,
-    disabled,
     maxTriggerWidth,
     minTriggerWidth,
 }: MultiSelectTriggerProps) => {
@@ -98,13 +97,9 @@ const MultiSelectTrigger = ({
                 alignItems="center"
             >
                 <PrimitiveButton
+                    type="button"
                     maxWidth={maxTriggerWidth}
                     minWidth={minTriggerWidth}
-                    data-selectbox-value={placeholder}
-                    data-dropdown-for={placeholder}
-                    data-value={placeholder}
-                    data-custom-value={placeholder}
-                    data-button-status={disabled ? 'disabled' : 'enabled'}
                     onClick={onClick}
                     position="relative"
                     width={'100%'}
@@ -157,7 +152,12 @@ const MultiSelectTrigger = ({
                     })}
                 >
                     {slot && (
-                        <Block as="span" ref={slotRef} contentCentered>
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            ref={slotRef}
+                            contentCentered
+                        >
                             {slot}
                         </Block>
                     )}
@@ -271,19 +271,25 @@ const MultiSelectTrigger = ({
                         contentCentered
                         flexShrink={0}
                     >
-                        <ChevronDown size={16} />
+                        <ChevronDown size={16} aria-hidden="true" />
                     </Block>
                 </PrimitiveButton>
 
                 {variant === MultiSelectVariant.CONTAINER &&
                     selectedValues.length > 0 && (
                         <PrimitiveButton
+                            type="button"
                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered
                             height={'100%'}
                             style={{ aspectRatio: 1 }}
                             onClick={() => onChange('')}
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
+                            }
                             outline={
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
@@ -302,6 +308,7 @@ const MultiSelectTrigger = ({
                             <X
                                 size={16}
                                 color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
                             />
                         </PrimitiveButton>
                     )}

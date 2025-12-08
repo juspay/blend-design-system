@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { TextArea } from '@juspay/blend-design-system'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof TextArea> = {
     title: 'Components/Inputs/TextArea',
     component: TextArea,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -23,6 +31,31 @@ A multi-line text input component for longer text content with support for label
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Uses native \`<textarea>\` element for proper semantics
+- Labels are associated via \`label\`, \`sublabel\`, and \`name\` props
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with textarea via \`InputFooter\`
+- Focus styles and error shake patterns are keyboard-friendly
+- Hint and help text provide additional instructions for users and assistive technologies
+- Resize controls are accessible and keyboard-operable
+
+**WCAG Compliance Target**: 2.0, 2.1, 2.2 Level A, AA, AAA (designed to support 2.2 as the latest version of WCAG [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)])
+
+**Intended coverage:**
+- **Perceivable**: Labels, hints, and error messages are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, Enter for new lines, standard text editing)
+- **Understandable**: Clear labels, inline help, and error messaging patterns
+- **Robust**: Built with semantic HTML and ARIA-friendly props for screen readers
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA/AAA)
+- **jest-axe tests**: Run \`pnpm test TextArea.accessibility\` to automate WCAG checks
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
+
+> Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
 
 ## Usage
 
@@ -553,6 +586,177 @@ export const AutoFocus: Story = {
             description: {
                 story: 'TextArea with auto-focus enabled - it will receive focus when the component mounts.',
             },
+        },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => {
+        const [description, setDescription] = useState('')
+        const [feedback, setFeedback] = useState('')
+        const [disabledValue] = useState(
+            'This field is disabled and cannot be edited'
+        )
+        const [keyboardText, setKeyboardText] = useState('')
+
+        const descriptionError =
+            description.length > 0 && description.length < 10
+                ? 'Please enter at least 10 characters'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Required Fields, and Hints
+                    </h3>
+                    <TextArea
+                        label="Project Description"
+                        sublabel="Provide a detailed overview of your project"
+                        hintText="Enter at least 10 characters for a meaningful description"
+                        placeholder="Describe your project..."
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={4}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <TextArea
+                        label="Feedback"
+                        placeholder="Enter your feedback..."
+                        value={feedback}
+                        onChange={(e) => setFeedback(e.target.value)}
+                        rows={4}
+                        error={!!descriptionError}
+                        errorMessage={descriptionError}
+                        hintText="Minimum 10 characters required"
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <TextArea
+                        label="Disabled TextArea"
+                        value={disabledValue}
+                        onChange={() => {}}
+                        rows={4}
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Keyboard and Screen Reader Friendly Layout
+                    </h3>
+                    <TextArea
+                        label="Comments"
+                        sublabel="Use Tab to navigate, standard keyboard shortcuts for text editing"
+                        hintText="You can use standard text editing shortcuts (Ctrl/Cmd+A, Ctrl/Cmd+C, etc.)"
+                        placeholder="Enter your comments..."
+                        value={keyboardText}
+                        onChange={(e) => setKeyboardText(e.target.value)}
+                        rows={5}
+                        required
+                        helpIconHintText="Keyboard shortcuts: Tab/Shift+Tab to navigate, standard text editing shortcuts work as expected"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Character Count and Length Limits
+                    </h3>
+                    <TextArea
+                        label="Review Notes"
+                        sublabel="Maximum 500 characters"
+                        hintText={`${keyboardText.length}/500 characters`}
+                        placeholder="Enter review notes..."
+                        value={keyboardText}
+                        onChange={(e) => setKeyboardText(e.target.value)}
+                        rows={4}
+                        maxLength={500}
+                        required
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, keyboard navigation, and character limits.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations, error messaging, and keyboard navigation.
+
+2. **jest-axe tests**:
+   - Add \`TextArea.accessibility.test.tsx\` mirroring TextInput's tests and run:
+   \`\`\`bash
+   pnpm test:a11y:file __tests__/components/Inputs/TextArea.accessibility.test.tsx
+   \`\`\`
+   - Validate WCAG 2.0, 2.1, 2.2 A, AA, and AAA success criteria for form fields (labels, errors, keyboard support, focus management).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, standard text editing shortcuts).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+   - Test resize functionality with keyboard and screen readers.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
         },
     },
 }

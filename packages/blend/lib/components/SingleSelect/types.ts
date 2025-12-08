@@ -31,6 +31,12 @@ export type SelectMenuGroupType = {
     showSeparator?: boolean
 }
 
+export type SingleSelectSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
+}
+
 export type SelectMenuProps = {
     trigger?: React.ReactNode
     items: SelectMenuGroupType[]
@@ -124,11 +130,7 @@ export type SingleSelectProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: React.ReactNode
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
+    skeleton?: SingleSelectSkeletonProps
     maxTriggerWidth?: number
     minTriggerWidth?: number
 

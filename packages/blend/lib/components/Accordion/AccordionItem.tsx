@@ -1,3 +1,4 @@
+import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { forwardRef } from 'react'
@@ -261,6 +262,7 @@ const AccordionItem = forwardRef<
 
             return (
                 <ChevronAnimation
+                    data-element="accordion-item-chevron"
                     isOpen={false} // This will be controlled by Radix UI's data-state
                     direction={
                         chevronPosition === AccordionChevronPosition.RIGHT
@@ -303,6 +305,9 @@ const AccordionItem = forwardRef<
 
         return (
             <StyledAccordionItem
+                data-element="accordion-item"
+                data-id={title}
+                data-status={isDisabled ? 'disabled' : 'enabled'}
                 value={value}
                 disabled={isDisabled}
                 ref={ref}
@@ -321,7 +326,6 @@ const AccordionItem = forwardRef<
                         disabled={isDisabled}
                         data-type={accordionType}
                         data-disabled={isDisabled || undefined}
-                        data-accordion-expanded={isExpanded ? 'true' : 'false'}
                         $isSmallScreen={isSmallScreen}
                         $isFirst={isFirst}
                         $isLast={isLast}
@@ -338,6 +342,7 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.LEFT && (
                                     <Block
+                                        data-element="chevron-icon"
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="center"
@@ -352,10 +357,24 @@ const AccordionItem = forwardRef<
                                     chevronPosition !==
                                         AccordionChevronPosition.LEFT && (
                                         <Block
+                                            data-element="leading-icon"
                                             flexShrink={0}
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
+                                            aria-hidden={
+                                                React.isValidElement(
+                                                    leftSlot
+                                                ) &&
+                                                (
+                                                    leftSlot.props as Record<
+                                                        string,
+                                                        unknown
+                                                    >
+                                                )?.['aria-label']
+                                                    ? undefined
+                                                    : 'true'
+                                            }
                                         >
                                             {leftSlot}
                                         </Block>
@@ -394,17 +413,34 @@ const AccordionItem = forwardRef<
                                                           .text.title.color
                                                           .default
                                             }
-                                            data-header-text={title}
+                                            data-element="accordion-item-header"
+                                            data-id={
+                                                title || 'accordion-item-header'
+                                            }
                                         >
                                             {title}
                                         </PrimitiveText>
 
                                         {rightSlot && (
                                             <Block
+                                                data-element="trailing-icon"
                                                 flexShrink={0}
                                                 display="flex"
                                                 alignItems="center"
                                                 justifyContent="center"
+                                                aria-hidden={
+                                                    React.isValidElement(
+                                                        rightSlot
+                                                    ) &&
+                                                    (
+                                                        rightSlot.props as Record<
+                                                            string,
+                                                            unknown
+                                                        >
+                                                    )?.['aria-label']
+                                                        ? undefined
+                                                        : 'true'
+                                                }
                                             >
                                                 {rightSlot}
                                             </Block>
@@ -422,6 +458,8 @@ const AccordionItem = forwardRef<
                                         >
                                             {subtext && !isSmallScreen && (
                                                 <PrimitiveText
+                                                    data-element="accordion-item-subtext"
+                                                    data-id={subtext}
                                                     fontSize={
                                                         accordionToken.trigger
                                                             .text.subtext
@@ -454,6 +492,7 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.RIGHT && (
                                     <Block
+                                        data-element="chevron-icon"
                                         position="absolute"
                                         right={0}
                                         top={0}

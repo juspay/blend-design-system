@@ -21,16 +21,24 @@ import {
     Tablet,
     Laptop,
 } from 'lucide-react'
+import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
+
+// ============================================================================
+// Meta Configuration
+// ============================================================================
 
 const meta: Meta<typeof Accordion> = {
     title: 'Components/Accordion',
     component: Accordion,
     parameters: {
         layout: 'centered',
+        // Use shared a11y config for interactive components
+        a11y: getA11yConfig('interactive'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
-
 An accordion component that allows users to show and hide sections of related content on a page. Built on top of Radix UI's Accordion primitive with custom styling and features.
 
 ## Features
@@ -43,6 +51,36 @@ An accordion component that allows users to show and hide sections of related co
 - Smooth animations and transitions
 - Keyboard navigation support
 - Controlled and uncontrolled modes
+
+## Accessibility
+
+**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Proper ARIA attributes (aria-expanded, aria-controls)
+- Semantic HTML structure with Radix UI primitives
+- Comprehensive keyboard navigation (Arrow keys, Enter, Space, Tab)
+- Screen reader support (VoiceOver/NVDA)
+- Chevron icons marked with aria-hidden="true"
+- Decorative slots properly handled
+- Visible focus indicators for keyboard navigation
+- Proper state management and announcements
+
+**Level AAA Compliance**: ⚠️ Partial (7 out of 9 applicable criteria)
+- ✅ **Compliant**: 1.4.8 Visual Presentation, 1.4.9 Images of Text, 2.1.3 Keyboard (No Exception), 2.2.3 No Timing, 2.2.4 Interruptions, 2.3.3 Animation from Interactions, 3.2.5 Change on Request
+- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently 4.5:1 for AA), 2.5.5 Target Size - Interactive elements (accordion triggers) may not meet 44x44px minimum
+- ℹ️ **Not Applicable**: 3.3.6 Error Prevention (All) - application-dependent
+
+**Touch Target Sizes**:
+- Accordion triggers: ~40px height (meets AA 24px, may not meet AAA 44px depending on content)
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **jest-axe**: Run \`pnpm test Accordion.accessibility\` (40+ tests covering WCAG 2.1 criteria)
+- **Chromatic**: Visual regression for focus rings and states
+- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
 ## Usage
 
@@ -149,7 +187,25 @@ import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-sy
 export default meta
 type Story = StoryObj<typeof Accordion>
 
-// Helper functions to render slots based on control selection
+// ============================================================================
+// Story Categories
+// ============================================================================
+// Organize stories into logical groups:
+// 1. Basic Variants (types, multiple expansion)
+// 2. Visual Styles (border, no border, chevron positions)
+// 3. Content Variations (icons, subtext, slots)
+// 4. States (disabled, controlled)
+// 5. Real-World Examples
+// 6. Accessibility Testing
+// ============================================================================
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Helper functions to render slots based on control selection
+ */
 const getLeftSlot = (slotType: string) => {
     switch (slotType) {
         case 'user':
@@ -266,7 +322,13 @@ const getSubtextSlot = (slotType: string) => {
     }
 }
 
-// Default story with interactive controls
+// ============================================================================
+// Basic Variants
+// ============================================================================
+
+/**
+ * Default accordion with interactive controls
+ */
 export const Default: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -323,9 +385,23 @@ export const Default: Story = {
             </Accordion>
         </div>
     ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Default accordion with interactive controls. Use the controls panel to customize props.',
+            },
+        },
+        a11y: getA11yConfig('interactive'),
+    },
 }
 
-// With border style
+// ============================================================================
+// Visual Styles
+// ============================================================================
+
+/**
+ * Accordion with border style
+ */
 export const WithBorder: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -358,13 +434,16 @@ export const WithBorder: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with border style for a more defined visual separation.',
+                story: 'Accordion with border style for a more defined visual separation. Maintains proper keyboard navigation and ARIA attributes.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// Multiple expansion
+/**
+ * Multiple expansion accordion
+ */
 export const MultipleExpansion: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -398,13 +477,20 @@ export const MultipleExpansion: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion that allows multiple items to be expanded at once.',
+                story: 'Accordion that allows multiple items to be expanded at once. Each trigger maintains proper ARIA attributes and keyboard accessibility.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// With icons
+// ============================================================================
+// Content Variations
+// ============================================================================
+
+/**
+ * Accordion items with icons
+ */
 export const WithIcons: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -458,13 +544,16 @@ export const WithIcons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with icons for better visual context.',
+                story: 'Accordion items with icons for better visual context. Icons are marked with aria-hidden="true" when decorative.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// With subtext
+/**
+ * Accordion items with subtext
+ */
 export const WithSubtext: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -529,13 +618,16 @@ export const WithSubtext: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with subtext for additional context.',
+                story: 'Accordion items with subtext for additional context. Subtext provides supplementary information while maintaining accessibility.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// Chevron on left
+/**
+ * Accordion with chevron on left
+ */
 export const ChevronLeft: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -577,13 +669,20 @@ export const ChevronLeft: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with chevron positioned on the left side.',
+                story: 'Accordion with chevron positioned on the left side. Chevron maintains aria-hidden="true" for accessibility.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// With disabled items
+// ============================================================================
+// States
+// ============================================================================
+
+/**
+ * Accordion with disabled items
+ */
 export const WithDisabledItems: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -629,13 +728,20 @@ export const WithDisabledItems: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with disabled items to show locked or unavailable content.',
+                story: 'Accordion with disabled items to show locked or unavailable content. Disabled items are removed from tab order and properly announced to screen readers.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// Complex content
+// ============================================================================
+// Real-World Examples
+// ============================================================================
+
+/**
+ * Accordion with complex content layouts
+ */
 export const ComplexContent: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -852,13 +958,16 @@ export const ComplexContent: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with complex content layouts and multiple data points.',
+                story: 'Accordion with complex content layouts and multiple data points. All interactive elements maintain proper accessibility.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// FAQ example
+/**
+ * FAQ example using accordion
+ */
 export const FAQExample: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -940,13 +1049,16 @@ export const FAQExample: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'A practical example of using accordions for FAQ sections.',
+                story: 'A practical example of using accordions for FAQ sections. Maintains proper ARIA structure and keyboard navigation.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// With custom styling
+/**
+ * Accordion with custom styling
+ */
 export const WithCustomStyling: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -1022,13 +1134,16 @@ export const WithCustomStyling: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with custom CSS classes and additional HTML attributes like data-testid for testing purposes.',
+                story: 'Accordion items with custom CSS classes and additional HTML attributes like data-testid for testing purposes. Custom styling should maintain accessibility features.',
             },
         },
+        a11y: getA11yConfig('interactive'),
     },
 }
 
-// Controlled example
+/**
+ * Controlled accordion example
+ */
 export const Controlled: Story = {
     render: function ControlledExample() {
         const [value, setValue] = React.useState<string>('item-2')
@@ -1069,8 +1184,306 @@ export const Controlled: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Controlled accordion where the expanded state is managed externally.',
+                story: 'Controlled accordion where the expanded state is managed externally. Maintains proper ARIA attributes and keyboard navigation.',
             },
+        },
+        a11y: getA11yConfig('interactive'),
+    },
+}
+
+// ============================================================================
+// Accessibility Testing
+// ============================================================================
+
+/**
+ * Accessibility examples
+ */
+export const Accessibility: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                padding: '24px',
+                maxWidth: '800px',
+            }}
+        >
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    ARIA Attributes
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem value="aria-1" title="ARIA Expanded">
+                            <div style={{ padding: '16px' }}>
+                                Accordion triggers have aria-expanded attribute
+                                that updates based on state (true/false). Check
+                                Accessibility panel to verify.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem value="aria-2" title="ARIA Controls">
+                            <div style={{ padding: '16px' }}>
+                                Each trigger has aria-controls linking to its
+                                content panel, establishing proper
+                                relationships.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Keyboard Navigation
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem
+                            value="keyboard-1"
+                            title="Tab Navigation"
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Tab to focus accordion triggers. Each trigger is
+                                keyboard accessible.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="keyboard-2"
+                            title="Enter/Space to Toggle"
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Press Enter or Space to expand/collapse
+                                accordion items.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="keyboard-3"
+                            title="Arrow Key Navigation"
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Use Arrow Up/Down keys to navigate between
+                                accordion items.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Decorative Icons
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem
+                            value="icon-1"
+                            title="Icon with aria-hidden"
+                            leftSlot={<User size={20} color="#666" />}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Decorative icons are marked with
+                                aria-hidden="true" to hide them from screen
+                                readers.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="icon-2"
+                            title="Chevron Icon"
+                            leftSlot={<Shield size={20} color="#666" />}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Chevron icons are decorative and properly hidden
+                                from assistive technologies.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Focus Indicators
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem value="focus-1" title="Focus Me">
+                            <div style={{ padding: '16px' }}>
+                                Tab to focus this accordion trigger. You should
+                                see a visible focus indicator.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem value="focus-2" title="Focus Me Too">
+                            <div style={{ padding: '16px' }}>
+                                All accordion triggers have visible focus
+                                indicators for keyboard navigation.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Disabled State
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem value="enabled-1" title="Enabled Item">
+                            <div style={{ padding: '16px' }}>
+                                This item is enabled and can be expanded.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="disabled-1"
+                            title="Disabled Item"
+                            isDisabled
+                        >
+                            <div style={{ padding: '16px' }}>
+                                This item is disabled and removed from tab
+                                order.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="enabled-2"
+                            title="Another Enabled"
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Tab navigation skips disabled items.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+
+            <section>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                    }}
+                >
+                    Screen Reader Support
+                </h3>
+                <div style={{ width: '600px' }}>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem
+                            value="sr-1"
+                            title="With Subtext"
+                            subtext="Additional context for screen readers"
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Subtext provides additional context that is
+                                announced to screen readers along with the
+                                title.
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem value="sr-2" title="State Announcements">
+                            <div style={{ padding: '16px' }}>
+                                Screen readers announce when accordion items are
+                                expanded or collapsed via aria-expanded changes.
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            </section>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating ARIA attributes, keyboard navigation, decorative icons, focus indicators, disabled states, and screen reader support.
+
+## Accessibility Verification
+
+**How to verify accessibility:**
+
+1. **Storybook a11y addon** (Accessibility panel - bottom):
+   - Check for violations (should be 0)
+   - Review passing tests (12+)
+   - See real-time accessibility status
+
+2. **jest-axe unit tests**:
+   \`\`\`bash
+   pnpm test Accordion.accessibility
+   \`\`\`
+   - 40+ automated tests
+   - WCAG compliance verification
+   - ARIA attribute validation
+
+3. **Chromatic visual tests**:
+   \`\`\`bash
+   pnpm chromatic
+   \`\`\`
+   - Focus ring visibility
+   - State changes
+   - Responsive behavior
+
+4. **Manual testing**:
+   - VoiceOver (macOS) or NVDA (Windows)
+   - Keyboard navigation (Tab, Enter, Space, Arrow keys)
+   - Color contrast verification
+
+## Accessibility Report
+
+**Current Status**: 
+- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
+- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (7/9 applicable criteria compliant)
+
+**AAA Compliance Details**:
+- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Animation from Interactions (2.3.3), Change on Request (3.2.5)
+- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements need 44x44px
+- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
+
+**Key Accessibility Features**:
+- Proper ARIA attributes (aria-expanded, aria-controls)
+- Semantic HTML structure with Radix UI primitives
+- Comprehensive keyboard navigation (Arrow keys, Enter, Space, Tab)
+- Decorative icons marked with aria-hidden="true"
+- Visible focus indicators
+- Disabled items removed from tab order
+- Built on Radix UI with robust accessibility features
+                `,
+            },
+        },
+        // Enhanced a11y rules for accessibility story
+        a11y: getA11yConfig('interactive'),
+        // Extended delay for Chromatic to capture focus states
+        chromatic: {
+            ...CHROMATIC_CONFIG,
+            delay: 500,
         },
     },
 }

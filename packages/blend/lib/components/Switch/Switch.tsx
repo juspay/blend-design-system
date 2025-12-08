@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { forwardRef, useState, useCallback, useId } from 'react'
 import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
     getSwitchTextProps,
     getSwitchSubtextProps,
     getSwitchLabelStyles,
+    getSubtextId,
+    mergeAriaDescribedBy,
+    isControlledSwitch,
 } from './utils'
 import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
@@ -17,91 +20,151 @@ import { useErrorShake } from '../common/useErrorShake'
 import { getErrorShakeStyle } from '../common/error.animations'
 import { getTruncatedText } from '../../global-utils/GlobalUtils'
 
-export const Switch = ({
-    id,
-    checked,
-    defaultChecked = false,
-    onChange,
-    disabled = false,
-    required = false,
-    error = false,
-    size = SwitchSize.MEDIUM,
-    label,
-    subtext,
-    slot,
-    name,
-    value,
-    maxLength,
-    ...rest
-}: SwitchProps) => {
-    const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
-    const generatedId = React.useId()
-    const uniqueId = id || generatedId
-    const shouldShake = useErrorShake(error)
-    const labelMaxLength = maxLength?.label
-    const subtextMaxLength = maxLength?.subtext
+export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
+    (
+        {
+            id,
+            checked,
+            defaultChecked = false,
+            onChange,
+            disabled = false,
+            required = false,
+            error = false,
+            size = SwitchSize.MEDIUM,
+            label,
+            subtext,
+            slot,
+            name,
+            value,
+            maxLength,
+            ...rest
+        },
+        ref
+    ) => {
+        const tokens = useResponsiveTokens<SwitchTokensType>('SWITCH')
+        const generatedId = useId()
+        const uniqueId = id || generatedId
+        const shouldShake = useErrorShake(error)
+        const labelMaxLength = maxLength?.label
+        const subtextMaxLength = maxLength?.subtext
 
-    return (
-        <Block display="flex" gap={tokens.gap}>
-            <StyledSwitchRoot
-                type="button"
-                role="switch"
-                id={uniqueId}
-                aria-checked={checked || false}
-                defaultChecked={defaultChecked}
-                disabled={disabled}
-                onClick={() => onChange?.(checked || false)}
-                data-state={getSwitchDataState(checked || false)}
-                size={size}
-                $isDisabled={disabled}
-                $isChecked={checked || false}
-                $error={error}
-                value={value}
-                name={name}
-                style={getErrorShakeStyle(shouldShake)}
-                {...rest}
-            >
-                <StyledSwitchThumb size={size} $isChecked={checked || false} />
-            </StyledSwitchRoot>
+        const isControlled = isControlledSwitch(checked)
+
+        const [internalChecked, setInternalChecked] =
+            useState<boolean>(defaultChecked)
+
+        const currentChecked = isControlled
+            ? (checked ?? false)
+            : internalChecked
+        const subtextId = getSubtextId(uniqueId, !!subtext)
+
+        const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
+            rest as { 'aria-describedby'?: string; [key: string]: unknown }
+
+        const handleToggle = useCallback(() => {
+            if (disabled) return
+
+            const newChecked = !currentChecked
+
+            if (!isControlled) {
+                setInternalChecked(newChecked)
+            }
+
+            onChange?.(newChecked)
+        }, [disabled, currentChecked, isControlled, onChange])
+
+        const ariaAttributes = {
+            'aria-required': required ? true : undefined,
+            'aria-invalid': error ? true : undefined,
+            'aria-disabled': disabled ? true : undefined,
+            'aria-describedby': mergeAriaDescribedBy(
+                subtextId,
+                customAriaDescribedBy
+            ),
+        }
+
+        return (
             <Block
+                data-switch={label ?? 'switch'}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 display="flex"
-                flexDirection="column"
-                gap={tokens.content.gap}
+                gap={tokens.gap}
             >
-                <Block display="flex" alignItems="center">
-                    <SwitchContent
-                        uniqueId={uniqueId}
-                        disabled={disabled}
-                        error={error}
-                        required={required}
+                <StyledSwitchRoot
+                    ref={ref}
+                    type="button"
+                    role="switch"
+                    id={uniqueId}
+                    disabled={disabled}
+                    onClick={handleToggle}
+                    aria-checked={currentChecked}
+                    data-state={getSwitchDataState(currentChecked)}
+                    size={size}
+                    $isDisabled={disabled}
+                    $isChecked={currentChecked}
+                    $error={error}
+                    $tokens={tokens}
+                    value={value}
+                    name={name}
+                    style={getErrorShakeStyle(shouldShake)}
+                    {...restProps}
+                    {...ariaAttributes}
+                >
+                    <StyledSwitchThumb
                         size={size}
-                        label={label}
-                        tokens={tokens}
-                        maxLength={labelMaxLength}
+                        $isChecked={currentChecked}
+                        $tokens={tokens}
                     />
+                </StyledSwitchRoot>
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    gap={tokens.content.gap}
+                >
+                    <Block display="flex" alignItems="center">
+                        <SwitchContent
+                            uniqueId={uniqueId}
+                            disabled={disabled}
+                            error={error}
+                            required={required}
+                            size={size}
+                            label={label}
+                            tokens={tokens}
+                            maxLength={labelMaxLength}
+                        />
 
-                    {slot && (
-                        <Block as="span" marginLeft={tokens.content.label.gap}>
-                            {slot}
-                        </Block>
+                        {slot && (
+                            <Block
+                                data-element="icon"
+                                as="span"
+                                marginLeft={tokens.content.label.gap}
+                            >
+                                {slot}
+                            </Block>
+                        )}
+                    </Block>
+
+                    {subtext && (
+                        <SwitchSubtext
+                            id={subtextId}
+                            size={size}
+                            disabled={disabled}
+                            error={error}
+                            tokens={tokens}
+                            maxLength={subtextMaxLength}
+                        >
+                            {subtext}
+                        </SwitchSubtext>
                     )}
                 </Block>
-
-                {subtext && (
-                    <SwitchSubtext
-                        size={size}
-                        disabled={disabled}
-                        error={error}
-                        tokens={tokens}
-                        maxLength={subtextMaxLength}
-                    >
-                        {subtext}
-                    </SwitchSubtext>
-                )}
             </Block>
-        </Block>
-    )
-}
+        )
+    }
+)
+
+Switch.displayName = 'Switch'
+
+export default Switch
 
 const SwitchContent: React.FC<{
     uniqueId: string
@@ -134,7 +197,9 @@ const SwitchContent: React.FC<{
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={label}
+                data-element="switch-label"
+                data-id={label ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -162,13 +227,14 @@ const SwitchContent: React.FC<{
 }
 
 const SwitchSubtext: React.FC<{
+    id?: string
     size: SwitchSize
     disabled: boolean
     error: boolean
     tokens: SwitchTokensType
     children: React.ReactNode
     maxLength?: number
-}> = ({ size, disabled, error, tokens, children, maxLength }) => {
+}> = ({ id, size, disabled, error, tokens, children, maxLength }) => {
     const subtextProps = getSwitchSubtextProps(tokens, size, disabled, error)
     const isStringLike =
         typeof children === 'string' || typeof children === 'number'
@@ -179,6 +245,10 @@ const SwitchSubtext: React.FC<{
 
     const content = (
         <PrimitiveText
+            data-element="switch-description"
+            data-id={children ?? ''}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            id={id}
             data-description-text={children}
             as="span"
             color={subtextProps.color}
@@ -194,5 +264,3 @@ const SwitchSubtext: React.FC<{
 
     return content
 }
-
-Switch.displayName = 'Switch'

@@ -1,5 +1,6 @@
-import { forwardRef, useRef, useEffect, useState } from 'react'
+import { forwardRef, useRef, useEffect, useState, useId } from 'react'
 import type { CSSObject } from 'styled-components'
+import React from 'react'
 import {
     KeyValuePairPropTypes,
     KeyValuePairSize,
@@ -29,6 +30,11 @@ const ResponsiveText = ({
     textOverflow = 'truncate',
     maxLines = 2,
     showTooltipOnTruncate = true,
+    as: Component = 'div',
+    id,
+    role,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
 }: {
     children: string
     fontSize: CSSObject['fontSize']
@@ -38,6 +44,11 @@ const ResponsiveText = ({
     textOverflow?: TextOverflowMode
     maxLines?: number
     showTooltipOnTruncate?: boolean
+    as?: React.ElementType
+    id?: string
+    role?: string
+    'aria-label'?: string
+    'aria-labelledby'?: string
 }) => {
     const textRef = useRef<HTMLDivElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
@@ -72,10 +83,14 @@ const ResponsiveText = ({
     }, [children, textOverflow, maxLines, showTooltipOnTruncate])
 
     const textElement = (
-        <Block
+        <Component
             ref={textRef}
             className={className}
             style={getTextStyles(textOverflow, maxLines)}
+            id={id}
+            role={role}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
         >
             <PrimitiveText
                 fontSize={fontSize}
@@ -85,7 +100,7 @@ const ResponsiveText = ({
             >
                 {children}
             </PrimitiveText>
-        </Block>
+        </Component>
     )
 
     if (showTooltipOnTruncate && isTruncated) {
@@ -136,11 +151,25 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
             alignItems: 'center',
         }
 
+        const baseId = useId()
+        const keyId = `${baseId}-key`
+        const valueId = `${baseId}-value`
+
         return (
-            <Block ref={ref} style={containerStyles}>
-                {/* Key Section */}
-                <Block style={keyContainerStyles}>
+            <Block
+                data-keyvaluepair={keyString || 'keyvaluepair'}
+                ref={ref}
+                style={containerStyles}
+                role="group"
+                aria-label={`${keyString}: ${value || ''}`}
+            >
+                <Block
+                    data-element="key"
+                    data-id={keyString || 'key'}
+                    style={keyContainerStyles}
+                >
                     <ResponsiveText
+                        as="div"
                         className="flex-1 min-w-0"
                         fontSize={keyValuePairTokens.key.fontSize}
                         color={keyValuePairTokens.key.color}
@@ -148,20 +177,34 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         textOverflow="wrap"
                         maxLines={maxLines}
                         showTooltipOnTruncate={false}
+                        id={keyId}
+                        role="term"
+                        aria-label={keyString}
                     >
                         {keyString}
                     </ResponsiveText>
                     {keySlot && (
-                        <Block style={getSlotStyles()}>{keySlot}</Block>
+                        <Block data-element="key-slot" style={getSlotStyles()}>
+                            {keySlot}
+                        </Block>
                     )}
                 </Block>
 
-                {/* Value Section */}
-                <Block style={valueContainerStyles}>
+                <Block
+                    data-element="value"
+                    data-id={value || 'value'}
+                    style={valueContainerStyles}
+                >
                     {valueLeftSlot && (
-                        <Block style={getSlotStyles()}>{valueLeftSlot}</Block>
+                        <Block
+                            data-element="value-left-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueLeftSlot}
+                        </Block>
                     )}
                     <ResponsiveText
+                        as="div"
                         className="flex-1 min-w-0"
                         fontSize={keyValuePairTokens.value.fontSize[size]}
                         color={keyValuePairTokens.value.color}
@@ -169,11 +212,19 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         textOverflow={textOverflow}
                         maxLines={maxLines}
                         showTooltipOnTruncate={showTooltipOnTruncate}
+                        id={valueId}
+                        role="definition"
+                        aria-labelledby={keyId}
                     >
                         {value || ''}
                     </ResponsiveText>
                     {valueRightSlot && (
-                        <Block style={getSlotStyles()}>{valueRightSlot}</Block>
+                        <Block
+                            data-element="value-right-slot"
+                            style={getSlotStyles()}
+                        >
+                            {valueRightSlot}
+                        </Block>
                     )}
                 </Block>
             </Block>

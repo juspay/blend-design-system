@@ -30,8 +30,10 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     disabled?: boolean
     helpIconHintText?: string
     name?: string
+    inputId?: string // Unique ID for input association
     required?: boolean
     tokens?: Partial<TTokens>
+    labelId?: string
 }
 
 /**
@@ -40,6 +42,7 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
  * @param {string} sublabel - The sublabel for the input field.
  * @param {boolean} disabled - Whether the input field is disabled.
  * @param {string} helpIconHintText - The hint text for the help icon.
+ * @param {string} inputId - Unique ID for proper label association (WCAG 3.3.2).
  * @param {boolean} required - Whether the input field is required.
  */
 const InputLabels = <TTokens extends InputLabelTokens>({
@@ -48,16 +51,20 @@ const InputLabels = <TTokens extends InputLabelTokens>({
     disabled,
     helpIconHintText,
     name,
+    inputId,
     required,
     tokens,
+    labelId,
 }: InputLabelsProps<TTokens>) => {
     return (
         label && (
             <Block display="flex" alignItems="center" gap={4} width={'100%'}>
                 <Text
-                    data-form-label={label}
+                    id={labelId}
+                    data-element="input-label"
+                    data-id={label || 'label'}
                     as="label"
-                    htmlFor={name}
+                    htmlFor={inputId || name}
                     // variant="body.md"
                     fontWeight={tokens?.label?.fontWeight}
                     fontSize={
@@ -77,6 +84,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 </Text>
                 {required && (
                     <sup
+                        data-element="required-icon"
+                        aria-hidden="true"
                         style={{
                             color:
                                 tokens?.required?.color ||
@@ -90,6 +99,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 )}
                 {sublabel && (
                     <Text
+                        data-element="input-sublabel"
+                        data-id={sublabel || 'sublabel'}
                         // variant="body.md"
                         fontWeight={
                             tokens?.subLabel?.fontWeight ||
@@ -113,7 +124,7 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                 )}
 
                 {helpIconHintText && (
-                    <Block contentCentered size={16}>
+                    <Block data-element="icon" contentCentered size={16}>
                         <Tooltip
                             content={helpIconHintText}
                             size={TooltipSize.SMALL}

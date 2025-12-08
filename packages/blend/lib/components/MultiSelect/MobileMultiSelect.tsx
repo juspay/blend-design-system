@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useId } from 'react'
 import {
     Drawer,
     DrawerTrigger,
@@ -43,6 +43,7 @@ import { TextInputSize } from '../Inputs/TextInput/types'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import Skeleton from '../Skeleton/Skeleton'
+import { setupAccessibility } from '../SingleSelect/utils'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -343,6 +344,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const [searchText, setSearchText] = useState('')
     const valueLabelMap = map(items)
 
+    const generatedId = useId()
+    const { uniqueName, labelId, hintTextId, errorMessageId } =
+        setupAccessibility({
+            name,
+            generatedId,
+            label,
+            hintText,
+            error,
+            errorMessage,
+            prefix: 'multiselect',
+            needsMenuId: false,
+        })
+
     const hasMatch = React.useMemo(
         () => checkExactMatch(searchText, items),
         [searchText, items]
@@ -374,7 +388,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     )
 
     return (
-        <Block width="100%" display="flex" flexDirection="column" gap={8}>
+        <Block
+            data-multi-select={label || 'multi-select'}
+            data-status={disabled ? 'disabled' : 'enabled'}
+            width="100%"
+            display="flex"
+            flexDirection="column"
+            gap={8}
+        >
             {variant === MultiSelectVariant.CONTAINER &&
                 (!isSmallScreen || size !== MultiSelectMenuSize.LARGE) && (
                     <InputLabels
@@ -382,8 +403,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         sublabel={sublabel}
                         disabled={disabled}
                         helpIconHintText={helpIconHintText}
-                        name={name}
+                        name={uniqueName}
                         required={required}
+                        labelId={labelId}
                     />
                 )}
 
@@ -407,7 +429,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                             maxTriggerWidth={maxTriggerWidth}
                             minTriggerWidth={minTriggerWidth}
                             onChange={onChange}
-                            name={name || ''}
+                            name={uniqueName}
                             label={label}
                             placeholder={placeholder}
                             required={required || false}
@@ -498,6 +520,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         gap={4}
                                         overflow="auto"
                                         flexGrow={1}
+                                        role="listbox"
+                                        aria-multiselectable="true"
                                     >
                                         {enableSearch && (
                                             <Block
@@ -529,6 +553,10 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                         setSearchText(
                                                             e.target.value
                                                         )
+                                                    }
+                                                    aria-label={
+                                                        searchPlaceholder ||
+                                                        'Search options'
                                                     }
                                                 />
                                             </Block>
@@ -950,6 +978,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                     hintText={hintText}
                     error={error}
                     errorMessage={errorMessage}
+                    hintTextId={hintTextId}
+                    errorMessageId={errorMessageId}
                 />
             )}
         </Block>

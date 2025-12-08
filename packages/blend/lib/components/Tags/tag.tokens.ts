@@ -4,7 +4,7 @@ import { type BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { getTagLightTokens } from './tag.light.tokens'
 import { getTagDarkTokens } from './tag.dark.tokens'
-import { Theme } from '../../context/ThemeProvider'
+import { Theme } from '../../context/theme.enum'
 
 /**
  * Tag Tokens following the pattern: [target].CSSProp.[size].[variant].[subType]
