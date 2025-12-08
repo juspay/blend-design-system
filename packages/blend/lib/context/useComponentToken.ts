@@ -170,8 +170,6 @@ export const useComponentToken = (
             return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
-        case 'WORKFLOW_CANVAS':
-            return componentTokens.WORKFLOW_CANVAS
         case 'MOBILE_NAVIGATION':
             return componentTokens.MOBILE_NAVIGATION
         case 'DIRECTORY':
