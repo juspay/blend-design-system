@@ -17,12 +17,16 @@ const PopoverHeader = ({
     size = PopoverSize.MEDIUM,
     showSkeleton,
     skeletonVariant,
+    headingId,
+    descriptionId,
 }: Pick<
     PopoverProps,
     'heading' | 'description' | 'showCloseButton' | 'size' | 'onClose'
 > & {
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    headingId?: string
+    descriptionId?: string
 }) => {
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
 
@@ -47,6 +51,8 @@ const PopoverHeader = ({
     const Header = () => {
         return (
             <PrimitiveText
+                {...(headingId ? { id: headingId } : {})}
+                as="span"
                 data-popover-header={heading}
                 fontSize={popoverTokens.headerContainer.heading.fontSize[size]}
                 fontWeight={
@@ -62,6 +68,7 @@ const PopoverHeader = ({
     const Description = () => {
         return (
             <PrimitiveText
+                {...(descriptionId ? { id: descriptionId } : {})}
                 data-popover-description={description}
                 fontSize={
                     popoverTokens.headerContainer.description.fontSize[size]
@@ -94,8 +101,14 @@ const PopoverHeader = ({
                         <Button
                             subType={ButtonSubType.INLINE}
                             buttonType={ButtonType.SECONDARY}
-                            leadingIcon={<X size={FOUNDATION_THEME.unit[12]} />}
+                            leadingIcon={
+                                <X
+                                    size={FOUNDATION_THEME.unit[12]}
+                                    aria-hidden="true"
+                                />
+                            }
                             onClick={onClose}
+                            aria-label="Close popover"
                         ></Button>
                     </Block>
                 )}

@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from 'react'
+import { forwardRef, useCallback, useId } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import styled from 'styled-components'
@@ -37,6 +37,8 @@ const ModalHeader = ({
     showDivider,
     showSkeleton,
     skeletonVariant,
+    titleId,
+    subtitleId,
 }: {
     title?: string
     subtitle?: string
@@ -46,6 +48,8 @@ const ModalHeader = ({
     showDivider?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    titleId?: string
+    subtitleId?: string
 }) => {
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
 
@@ -98,9 +102,11 @@ const ModalHeader = ({
                 >
                     {title && (
                         <Text
+                            id={titleId}
                             data-element="header"
                             data-id={title ?? ''}
                             variant="heading.sm"
+                            as="span"
                             fontWeight={600}
                             color={modalTokens.header.text.title.color}
                         >
@@ -111,6 +117,7 @@ const ModalHeader = ({
                 </Block>
                 {subtitle && (
                     <Text
+                        id={subtitleId}
                         data-element="header-subtitle"
                         data-id={subtitle}
                         variant="code.lg"
@@ -125,9 +132,9 @@ const ModalHeader = ({
                 <Button
                     subType={ButtonSubType.INLINE}
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={<X size={16} />}
+                    leadingIcon={<X size={16} aria-hidden="true" />}
                     onClick={onClose}
-                    // ariaLabel="Close"
+                    aria-label="Close modal"
                 />
             )}
         </Block>
@@ -239,6 +246,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             onClose
         )
 
+        const baseId = useId()
+        const titleId = title ? `${baseId}-title` : undefined
+        const subtitleId = subtitle ? `${baseId}-subtitle` : undefined
+
+        const ariaDescribedBy = subtitleId || undefined
+
         useScrollLock(isOpen)
 
         const handleBackdropClick = useCallback(() => {
@@ -314,7 +327,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         boxShadow={FOUNDATION_THEME.shadows.xs}
                         role="dialog"
                         aria-modal="true"
-                        aria-labelledby="modal-title"
+                        aria-labelledby={titleId}
+                        aria-label={title || 'Modal dialog'}
+                        aria-describedby={ariaDescribedBy}
                         $isAnimatingIn={isAnimatingIn}
                     >
                         <ModalHeader
@@ -326,6 +341,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                             showDivider={showDivider}
                             showSkeleton={shouldShowSkeleton}
                             skeletonVariant={skeletonVariant}
+                            titleId={titleId}
+                            subtitleId={subtitleId}
                         />
 
                         <Block

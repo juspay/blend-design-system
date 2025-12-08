@@ -15,6 +15,10 @@ import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
+import TagAccessibility from '../../Tags/accessibility/TagAccessibility'
+import TooltipAccessibility from '../../Tooltip/accessibility/TooltipAccessibility'
+import ModalAccessibility from '../../Modal/accessibility/ModalAccessibility'
+import PopoverAccessibility from '../../Popover/accessibility/PopoverAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -93,6 +97,26 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'MultiSelect',
         displayName: 'MultiSelect',
         component: MultiSelectAccessibility,
+    },
+    {
+        name: 'Tag',
+        displayName: 'Tag',
+        component: TagAccessibility,
+    },
+    {
+        name: 'Tooltip',
+        displayName: 'Tooltip',
+        component: TooltipAccessibility,
+    },
+    {
+        name: 'Modal',
+        displayName: 'Modal',
+        component: ModalAccessibility,
+    },
+    {
+        name: 'Popover',
+        displayName: 'Popover',
+        component: PopoverAccessibility,
     },
     // Add more components here as they are added
 ]
