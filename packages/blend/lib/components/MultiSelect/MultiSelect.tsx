@@ -251,7 +251,6 @@ const MultiSelect = ({
                         multiSelectTokens.trigger.height[size][variant]
                     ),
                 })}
-                data-selectbox-value={placeholder}
             >
                 <Wrapper
                     position="relative"
@@ -260,7 +259,6 @@ const MultiSelect = ({
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
-                    data-dropdown-for={placeholder}
                 >
                     <Tooltip
                         content={
@@ -335,11 +333,6 @@ const MultiSelect = ({
                                 customTrigger || (
                                     <PrimitiveButton
                                         id={uniqueName}
-                                        data-value={placeholder}
-                                        data-custom-value={placeholder}
-                                        data-button-status={
-                                            disabled ? 'disabled' : 'enabled'
-                                        }
                                         data-element="multi-select-button"
                                         type="button"
                                         position="relative"
