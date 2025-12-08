@@ -1,4 +1,5 @@
 import type { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 export type PopoverActionType = Omit<
     ButtonProps,
@@ -8,6 +9,18 @@ export type PopoverActionType = Omit<
 export enum PopoverSize {
     SMALL = 'small',
     MEDIUM = 'medium',
+}
+
+type BodySkeletonProps = {
+    show?: boolean
+    width?: string
+    height?: string | number
+}
+
+export type PopoverSkeletonProps = {
+    show?: boolean
+    variant?: SkeletonVariant
+    bodySkeletonProps?: BodySkeletonProps
 }
 
 export type PopoverProps = {
@@ -37,4 +50,5 @@ export type PopoverProps = {
     shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
     useDrawerOnMobile?: boolean
     avoidCollisions?: boolean
+    skeleton?: PopoverSkeletonProps
 }

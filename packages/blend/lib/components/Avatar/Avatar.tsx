@@ -12,6 +12,7 @@ import { AvatarTokensType } from './avatar.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { Skeleton } from '../Skeleton'
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
     (
@@ -25,18 +26,19 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             onlinePosition = AvatarOnlinePosition.TOP,
             leadingSlot,
             trailingSlot,
+            skeleton,
             ...props
         },
         ref
     ) => {
         const [imageError, setImageError] = useState(false)
         const hasImage = src && !imageError
+        const shouldShowSkeleton = skeleton?.show
         const variant = hasImage ? 'withImage' : 'withoutImage'
         const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
-        // Get color based on first letter for initials
         const textForColor = typeof fallback === 'string' ? fallback : alt
         const initialsColor = getColorFromText(textForColor)
 
@@ -50,7 +52,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             return getInitialsFromText(alt)
         }
 
-        // Position maps for online indicator
         const INDICATOR_POSITIONS = {
             sm: {
                 [AvatarShape.CIRCULAR]: {
@@ -184,19 +185,17 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         const renderContent = () => (
             <Block
                 ref={ref}
-                data-avatar="true"
-                data-avatar-size={size}
-                data-avatar-shape={shape}
-                data-avatar-online={online}
-                data-avatar-has-image={!!hasImage}
+                data-avatar={alt ?? 'avatar'}
                 position="relative"
                 display="inline-flex"
                 alignItems="center"
                 justifyContent="center"
                 backgroundColor={
-                    hasImage
-                        ? tokens.container.backgroundColor[variant].default
-                        : initialsColor
+                    shouldShowSkeleton
+                        ? 'transparent'
+                        : hasImage
+                          ? tokens.container.backgroundColor[variant].default
+                          : initialsColor
                 }
                 border={tokens.container.border[variant].default}
                 width={tokens.container.size[size].width}
@@ -205,8 +204,9 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 fontSize={tokens.text.fontSize[size]}
                 fontWeight={tokens.text.fontWeight[size]}
                 {...props}
+                data-status={online ? 'online' : 'offline'}
             >
-                {online && (
+                {online && !shouldShowSkeleton && (
                     <Block
                         aria-hidden="true"
                         data-avatar-indicator="true"
@@ -231,12 +231,19 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     />
                 )}
 
-                {hasImage ? (
+                {shouldShowSkeleton ? (
+                    <Skeleton
+                        variant={skeleton?.variant || 'pulse'}
+                        width="100%"
+                        height="100%"
+                        borderRadius={tokens.container.borderRadius[shape]}
+                    />
+                ) : hasImage ? (
                     <StyledAvatarImage
                         src={src}
                         alt={alt}
                         onError={() => setImageError(true)}
-                        data-avatar-image="true"
+                        role="img"
                     />
                 ) : (
                     <Block
@@ -257,8 +264,6 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         {renderFallback()}
                     </Block>
                 )}
-
-                {/* Visually hidden text for screen readers */}
                 <Block
                     as="span"
                     position="absolute"
@@ -269,16 +274,17 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     overflow="hidden"
                     style={{
                         clip: 'rect(0, 0, 0, 0)',
+                        clipPath: 'inset(50%)',
                         borderWidth: 0,
                     }}
                     whiteSpace="nowrap"
+                    aria-hidden="false"
                 >
-                    {alt}
+                    {alt || 'Avatar'}
                 </Block>
             </Block>
         )
 
-        // If we have slots, use the wrapper
         if (leadingSlot || trailingSlot) {
             return (
                 <Block
@@ -286,10 +292,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     position="relative"
                     display="inline-flex"
                     alignItems="center"
+                    data-status={online ? 'online' : 'offline'}
                 >
                     {leadingSlot && (
                         <Block
-                            data-avatar-slot="leading"
+                            data-element="leading-slot"
                             display="flex"
                             alignItems="center"
                             marginRight={tokens.slot.spacing}
@@ -301,7 +308,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     {renderContent()}
                     {trailingSlot && (
                         <Block
-                            data-avatar-slot="trailing"
+                            data-element="trailing-slot"
                             display="flex"
                             alignItems="center"
                             marginLeft={tokens.slot.spacing}

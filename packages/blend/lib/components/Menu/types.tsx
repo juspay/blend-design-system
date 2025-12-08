@@ -14,6 +14,12 @@ export enum MenuSide {
     BOTTOM = 'bottom',
 }
 
+export type MenuSkeletonProps = {
+    count?: number
+    show?: boolean
+    variant?: SkeletonVariant
+}
+
 export type MenuProps = {
     trigger: React.ReactNode
     items?: MenuGroupType[]
@@ -38,11 +44,7 @@ export type MenuProps = {
     sideOffset?: number
     alignOffset?: number
     collisonBoundaryRef?: Element | null | Array<Element | null>
-    skeleton?: {
-        count?: number
-        show?: boolean
-        variant?: SkeletonVariant
-    }
+    skeleton?: MenuSkeletonProps
 }
 
 export enum MenuItemVariant {

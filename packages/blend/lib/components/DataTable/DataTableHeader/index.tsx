@@ -108,8 +108,15 @@ const DataTableHeader = forwardRef<
             return null
         }
 
-        // Don't render if no content to show and toolbar is disabled
-        if (!title && !description && !showToolbar) {
+        const hasToolbarContent =
+            showToolbar &&
+            (enableSearch ||
+                enableAdvancedFilter ||
+                headerSlot1 ||
+                headerSlot2 ||
+                headerSlot3)
+
+        if (!title && !description && !hasToolbarContent) {
             return null
         }
 
@@ -403,6 +410,8 @@ const DataTableHeader = forwardRef<
             )
         }
 
+        const hasTitleOrDescription = Boolean(title || description)
+
         return (
             <Block
                 ref={ref}
@@ -417,44 +426,50 @@ const DataTableHeader = forwardRef<
                 style={{
                     minWidth: 0,
                     height: 'auto',
-                    minHeight: FOUNDATION_THEME.unit[48],
+                    minHeight: hasTitleOrDescription
+                        ? FOUNDATION_THEME.unit[48]
+                        : 'auto',
                 }}
             >
-                <Block
-                    display="flex"
-                    flexDirection="column"
-                    gap={FOUNDATION_THEME.unit[10]}
-                    style={{
-                        minWidth: 0,
-                        flexShrink: 1,
-                        maxWidth: '40%',
-                        minHeight: FOUNDATION_THEME.unit[40],
-                    }}
-                >
-                    {title && (
-                        <PrimitiveText
-                            as="h2"
-                            fontSize={tableToken.header.title.fontSize}
-                            fontWeight={tableToken.header.title.fontWeight}
-                            color={tableToken.header.title.color}
-                            style={{ minWidth: 0, lineHeight: '1.2' }}
-                            truncate
-                        >
-                            {title}
-                        </PrimitiveText>
-                    )}
-                    {description && (
-                        <PrimitiveText
-                            as="p"
-                            fontSize={tableToken.header.description.fontSize}
-                            color={tableToken.header.description.color}
-                            style={{ lineHeight: '1.4', minWidth: 0 }}
-                            truncate
-                        >
-                            {description}
-                        </PrimitiveText>
-                    )}
-                </Block>
+                {hasTitleOrDescription && (
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        gap={FOUNDATION_THEME.unit[10]}
+                        style={{
+                            minWidth: 0,
+                            flexShrink: 1,
+                            maxWidth: '40%',
+                            minHeight: FOUNDATION_THEME.unit[40],
+                        }}
+                    >
+                        {title && (
+                            <PrimitiveText
+                                as="h2"
+                                fontSize={tableToken.header.title.fontSize}
+                                fontWeight={tableToken.header.title.fontWeight}
+                                color={tableToken.header.title.color}
+                                style={{ minWidth: 0, lineHeight: '1.2' }}
+                                truncate
+                            >
+                                {title}
+                            </PrimitiveText>
+                        )}
+                        {description && (
+                            <PrimitiveText
+                                as="p"
+                                fontSize={
+                                    tableToken.header.description.fontSize
+                                }
+                                color={tableToken.header.description.color}
+                                style={{ lineHeight: '1.4', minWidth: 0 }}
+                                truncate
+                            >
+                                {description}
+                            </PrimitiveText>
+                        )}
+                    </Block>
+                )}
 
                 {showToolbar && (
                     <Block
@@ -510,6 +525,7 @@ const DataTableHeader = forwardRef<
                                             <Popover
                                                 trigger={
                                                     <Button
+                                                        data-element="advanced-filter-button"
                                                         buttonType={
                                                             advancedFilters.length >
                                                             0
@@ -569,6 +585,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot1 && (
                             <Block
+                                data-element="header-slot-1"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={
@@ -583,6 +600,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot2 && (
                             <Block
+                                data-element="header-slot-2"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={
@@ -597,6 +615,7 @@ const DataTableHeader = forwardRef<
 
                         {headerSlot3 && (
                             <Block
+                                data-element="header-slot-3"
                                 display="flex"
                                 alignItems="center"
                                 maxHeight={

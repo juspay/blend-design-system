@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { OTPInput } from '@juspay/blend-design-system'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof OTPInput> = {
     title: 'Components/Inputs/OTPInput',
     component: OTPInput,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -23,6 +31,33 @@ A specialized input component for One-Time Password (OTP) entry with individual 
 - Paste support for complete OTP codes
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Uses native \`<input>\` elements for each OTP digit with proper semantics
+- Labels are associated via \`label\`, \`sublabel\`, and \`name\` props
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with inputs via \`InputFooter\`
+- Keyboard navigation: Tab/Shift+Tab to move between fields, Arrow keys for navigation, Backspace for deletion
+- Auto-focus progression ensures efficient keyboard entry
+- Paste support allows users to paste complete OTP codes
+- Focus styles and error shake patterns are keyboard-friendly
+- Hint and help text provide additional instructions for users and assistive technologies
+
+**WCAG Compliance Target**: 2.0, 2.1, 2.2 Level A, AA, AAA (designed to support 2.2 as the latest version of WCAG [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)])
+
+**Intended coverage:**
+- **Perceivable**: Labels, hints, and error messages are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, Arrow keys for navigation, Backspace for deletion, Paste support)
+- **Understandable**: Clear labels, inline help, and error messaging patterns
+- **Robust**: Built with semantic HTML and ARIA-friendly props for screen readers
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA/AAA)
+- **jest-axe tests**: Run \`pnpm test OTPInput.accessibility\` to automate WCAG checks
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
+
+> Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
 
 ## Usage
 
@@ -477,6 +512,194 @@ export const VerificationFlow: Story = {
             description: {
                 story: 'OTPInput with simulated verification flow - automatically verifies when 6 digits are entered.',
             },
+        },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => {
+        const [basicOtp, setBasicOtp] = useState('')
+        const [requiredOtp, setRequiredOtp] = useState('')
+        const [errorOtp, setErrorOtp] = useState('123')
+        const [disabledOtp, setDisabledOtp] = useState('123456')
+        const [keyboardOtp, setKeyboardOtp] = useState('')
+
+        const errorMessage =
+            errorOtp.length > 0 && errorOtp.length < 6
+                ? 'Please enter all 6 digits'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Required Fields, and Hints
+                    </h3>
+                    <OTPInput
+                        label="Verification Code"
+                        sublabel="Enter the 6-digit code sent to your email"
+                        hintText="Check your email for the verification code"
+                        length={6}
+                        value={basicOtp}
+                        onChange={setBasicOtp}
+                        required
+                        autoFocus
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <OTPInput
+                        label="Two-Factor Authentication Code"
+                        sublabel="Enter the code from your authenticator app"
+                        length={6}
+                        value={errorOtp}
+                        onChange={setErrorOtp}
+                        error={!!errorMessage}
+                        errorMessage={errorMessage}
+                        hintText="Code must be 6 digits"
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled State
+                    </h3>
+                    <OTPInput
+                        label="Disabled OTP Input"
+                        sublabel="This field is disabled and cannot be edited"
+                        length={6}
+                        value={disabledOtp}
+                        onChange={() => {}}
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Keyboard and Screen Reader Friendly Layout
+                    </h3>
+                    <OTPInput
+                        label="Security Code"
+                        sublabel="Use Tab to navigate, Arrow keys to move between fields, Backspace to delete"
+                        hintText="You can also paste a complete code to fill all fields at once"
+                        length={6}
+                        value={keyboardOtp}
+                        onChange={setKeyboardOtp}
+                        required
+                        helpIconHintText="Keyboard shortcuts: Tab/Shift+Tab to navigate, Arrow keys to move, Backspace to delete, Paste to fill all fields"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Different OTP Lengths
+                    </h3>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px',
+                        }}
+                    >
+                        <OTPInput
+                            label="4-Digit PIN"
+                            length={4}
+                            value=""
+                            onChange={() => {}}
+                            hintText="Enter 4-digit PIN"
+                        />
+                        <OTPInput
+                            label="6-Digit Code"
+                            length={6}
+                            value=""
+                            onChange={() => {}}
+                            hintText="Enter 6-digit verification code"
+                        />
+                        <OTPInput
+                            label="8-Digit Code"
+                            length={8}
+                            value=""
+                            onChange={() => {}}
+                            hintText="Enter 8-digit security code"
+                        />
+                    </div>
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, keyboard navigation, and different OTP lengths.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations, error messaging, and keyboard navigation.
+
+2. **jest-axe tests**:
+   - Add \`OTPInput.accessibility.test.tsx\` mirroring TextInput's tests and run:
+   \`\`\`bash
+   pnpm test:a11y:file __tests__/components/Inputs/OTPInput.accessibility.test.tsx
+   \`\`\`
+   - Validate WCAG 2.0, 2.1, 2.2 A, AA, and AAA success criteria for form fields (labels, errors, keyboard support, focus management).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, Arrow keys, Backspace, Paste).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+   - Test paste functionality with complete OTP codes.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
         },
     },
 }

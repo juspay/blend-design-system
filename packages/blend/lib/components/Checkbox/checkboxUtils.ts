@@ -114,6 +114,31 @@ export const getAccessibilityAttributes = (
     }
 }
 
+/**
+ * Generates subtext ID for aria-describedby connection
+ * WCAG 4.1.2: aria-describedby must connect to subtext/error messages
+ */
+export const getSubtextId = (
+    uniqueId: string,
+    hasSubtext: boolean
+): string | undefined => {
+    return hasSubtext ? `${uniqueId}-subtext` : undefined
+}
+
+/**
+ * Merges custom aria-describedby with subtext ID
+ * WCAG 4.1.2: Supports multiple IDs space-separated
+ */
+export const mergeAriaDescribedBy = (
+    subtextId: string | undefined,
+    customAriaDescribedBy?: string
+): string | undefined => {
+    if (!subtextId && !customAriaDescribedBy) return undefined
+    if (!subtextId) return customAriaDescribedBy
+    if (!customAriaDescribedBy) return subtextId
+    return `${customAriaDescribedBy} ${subtextId}`.trim()
+}
+
 // getIconSize is now handled by tokens.indicator.iconSize
 // getSpacingBySize is now handled by tokens.subtext.spacing and tokens.slotGap
 // getFocusRingStyles is now handled by tokens.root.focus

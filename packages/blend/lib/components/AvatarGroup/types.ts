@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react'
 import type { AvatarProps } from '../Avatar/types'
 import { AvatarSize, AvatarShape } from '../Avatar/types'
+import { SkeletonVariant } from '../Skeleton'
 
 export interface AvatarData extends Omit<AvatarProps, 'className' | 'id'> {
     id: string | number
@@ -15,6 +16,10 @@ export type AvatarGroupProps = {
     shape?: AvatarShape
     selectedAvatarIds?: (string | number)[]
     onSelectionChange?: (selectedIds: (string | number)[]) => void
+    skeleton?: {
+        show: boolean
+        variant?: SkeletonVariant
+    }
 } & Omit<HTMLAttributes<HTMLDivElement>, 'children'>
 
 export type StyledAvatarGroupContainerProps = {
@@ -31,5 +36,4 @@ export type StyledAvatarWrapperProps = {
 export type StyledOverflowCounterProps = {
     $size: AvatarSize
     $shape: AvatarShape
-    $isOpen: boolean
 }

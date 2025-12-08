@@ -27,6 +27,7 @@ export enum ButtonState {
     ACTIVE = 'active',
     DISABLED = 'disabled',
 }
+
 export type ButtonProps = {
     buttonType?: ButtonType
     size?: ButtonSize

@@ -791,7 +791,11 @@ export const MenuDemo: React.FC = () => {
                             <Switch
                                 label="Show Skeleton"
                                 checked={playgroundShowSkeleton}
-                                onChange={setPlaygroundShowSkeleton}
+                                onChange={() =>
+                                    setPlaygroundShowSkeleton(
+                                        !playgroundShowSkeleton
+                                    )
+                                }
                             />
                             <TextInput
                                 label="Skeleton Count"

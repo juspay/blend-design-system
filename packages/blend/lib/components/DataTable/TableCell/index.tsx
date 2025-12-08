@@ -155,7 +155,7 @@ const TableCell = forwardRef<
                 typeof rowIndex === 'number' &&
                 typeof colIndex === 'number'
             ) {
-                attrs['data-table-location'] =
+                attrs['data-element'] =
                     `${tableTitle}_tr${rowIndex + 1}_td${colIndex + 1}`
             }
 
@@ -168,7 +168,7 @@ const TableCell = forwardRef<
                     valueToCheck.constructor === Object)
             ) {
                 if (row.id) {
-                    attrs['data-order-customer-id'] = String(row.id)
+                    attrs['data-row-id'] = String(row.id)
                 }
                 return attrs
             }
@@ -177,10 +177,10 @@ const TableCell = forwardRef<
                 column.type === ColumnType.NUMBER ||
                 typeof valueToCheck === 'number'
             ) {
-                attrs['data-cell-type'] = 'numeric'
+                attrs['data-type'] = 'numeric'
                 attrs['data-numeric'] = String(valueToCheck || 0)
             } else if (column.type === ColumnType.DATE) {
-                attrs['data-cell-type'] = 'date'
+                attrs['data-type'] = 'date'
                 const dateData = valueToCheck as DateColumnProps
                 if (dateData && dateData.date) {
                     const date = new Date(dateData.date)
@@ -204,26 +204,26 @@ const TableCell = forwardRef<
                     /^\s*[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]?[\d,]+\.?\d*\s*$/
 
                 if (emailPattern.test(valueToCheck)) {
-                    attrs['data-cell-type'] = 'email'
-                    attrs['data-email'] = valueToCheck
+                    attrs['data-type'] = 'email'
+                    attrs['data-id'] = valueToCheck
                 } else if (
                     moneyPattern.test(valueToCheck) ||
                     (numberPattern.test(valueToCheck) &&
                         column.header?.toLowerCase().includes('amount'))
                 ) {
-                    attrs['data-cell-type'] = 'money'
+                    attrs['data-type'] = 'money'
                     attrs['data-money-cell'] = valueToCheck
                 } else {
-                    attrs['data-cell-type'] = 'text'
-                    attrs['data-text'] = valueToCheck
+                    attrs['data-type'] = 'text'
+                    attrs['data-id'] = valueToCheck
                 }
             } else if (typeof valueToCheck === 'boolean') {
-                attrs['data-cell-type'] = 'boolean'
+                attrs['data-type'] = 'boolean'
                 attrs['data-boolean'] = String(valueToCheck)
             }
 
             if (row.id) {
-                attrs['data-order-customer-id'] = String(row.id)
+                attrs['data-row-id'] = String(row.id)
             }
 
             return attrs

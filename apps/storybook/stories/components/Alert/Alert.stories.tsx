@@ -12,13 +12,21 @@ import {
     XCircle,
     Info,
     Settings,
+    Keyboard,
+    Eye,
 } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof Alert> = {
     title: 'Components/Alert',
     component: Alert,
     parameters: {
         layout: 'centered',
+        a11y: getA11yConfig('interactive'),
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -33,6 +41,44 @@ A versatile alert component for displaying important messages, notifications, an
 - Custom icon support
 - Flexible action placement (bottom, right)
 - Responsive design
+- Full accessibility support
+
+## Accessibility
+
+**WCAG Compliance**: 2.0, 2.1, 2.2 Level AA Compliant
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Proper ARIA roles: role="alert" for error/warning (assertive), role="status" for others (polite)
+- Semantic HTML structure with h3 for heading and p for description
+- Comprehensive ARIA relationships via aria-labelledby and aria-describedby
+- Complete keyboard navigation support (Tab, Enter, Space)
+- Visible focus indicators on all interactive elements
+- Decorative content properly hidden from screen readers
+- Close button has descriptive aria-label
+- Unique ID generation for ARIA relationships
+- Error and warning alerts announced immediately via role="alert"
+- Non-error alerts announced politely via role="status"
+
+**Key Accessibility Features**:
+- ✅ ARIA Roles: role="alert" for error/warning (assertive), role="status" for others (polite)
+- ✅ Semantic HTML: Uses h3 for heading and p for description
+- ✅ ARIA Relationships: aria-labelledby links heading, aria-describedby links description
+- ✅ Keyboard Navigation: Full keyboard support with logical tab order
+- ✅ Focus Management: Visible focus indicators on all buttons
+- ✅ Screen Reader Support: Proper announcements, decorative content hidden
+- ✅ Status Messages: Error/warning alerts announced assertively, others politely
+
+**Note on Level AAA**:
+- Touch target sizes (44x44px for WCAG 2.5.5) are planned for future implementation
+- Currently meets Level A and Level AA requirements
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **jest-axe**: Run \`pnpm test Alert.accessibility\` (comprehensive tests covering WCAG 2.0, 2.1, 2.2 criteria)
+- **Chromatic**: Visual regression for focus rings and states
+- **Manual**: Test with VoiceOver/NVDA, verify ARIA announcements
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
 ## Usage
 
@@ -245,7 +291,7 @@ export const AlertVariants: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different alert variants for various message types and contexts.',
+                story: 'Different alert variants for various message types and contexts. Error and warning variants use role="alert" for assertive announcements, while others use role="status" for polite announcements. All variants are keyboard accessible and meet WCAG 2.4.7 focus visibility requirements.',
             },
         },
     },
@@ -279,7 +325,7 @@ export const AlertStyles: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different visual styles: subtle background vs no-fill with border only.',
+                story: 'Different visual styles: subtle background vs no-fill with border only. Both styles maintain proper color contrast ratios and accessibility features. Icons are marked with aria-hidden="true" to prevent screen reader announcements.',
             },
         },
     },
@@ -325,7 +371,7 @@ export const WithIcons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Alerts with custom icons to enhance visual communication.',
+                story: 'Alerts with custom icons to enhance visual communication. Icons are marked with aria-hidden="true" to prevent screen reader announcements, as the text labels provide all necessary information. All alerts maintain proper ARIA roles and keyboard accessibility.',
             },
         },
     },
@@ -374,7 +420,7 @@ export const WithActions: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Alerts with primary and secondary action buttons for user interaction.',
+                story: 'Alerts with primary and secondary action buttons for user interaction. All buttons are keyboard accessible (Tab, Enter, Space) and have visible focus indicators. Button labels provide clear purpose and context.',
             },
         },
     },
@@ -424,7 +470,7 @@ export const ActionPlacement: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different action button placements: right-aligned or bottom-stacked.',
+                story: 'Different action button placements: right-aligned or bottom-stacked. Both placements maintain keyboard accessibility and logical tab order. The bottom placement is particularly useful for mobile experiences and maintains accessibility compliance.',
             },
         },
     },
@@ -462,7 +508,462 @@ export const ClosableAlerts: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Alerts that can be dismissed by users with close functionality.',
+                story: 'Alerts that can be dismissed by users with close functionality. The close button has aria-label="Close" for screen reader support and is keyboard accessible.',
+            },
+        },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {/* ARIA Roles */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Eye size={18} color="#3b82f6" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#1e40af',
+                        }}
+                    >
+                        1. ARIA Roles (WCAG 4.1.2, 4.1.3)
+                    </h3>
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Error Alert (role="alert" - Assertive)
+                        </h4>
+                        <Alert
+                            heading="Error Alert"
+                            description="This alert uses role='alert' for immediate attention. Screen readers will announce this assertively."
+                            variant={AlertVariant.ERROR}
+                            icon={<AlertTriangle size={16} />}
+                        />
+                    </div>
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Warning Alert (role="alert" - Assertive)
+                        </h4>
+                        <Alert
+                            heading="Warning Alert"
+                            description="This alert uses role='alert' for immediate attention."
+                            variant={AlertVariant.WARNING}
+                            icon={<AlertTriangle size={16} />}
+                        />
+                    </div>
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Success Alert (role="status" - Polite)
+                        </h4>
+                        <Alert
+                            heading="Success Alert"
+                            description="This alert uses role='status' for polite announcements. Screen readers will announce this when they finish current announcements."
+                            variant={AlertVariant.SUCCESS}
+                            icon={<CheckCircle size={16} />}
+                        />
+                    </div>
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Info Alert (role="status" - Polite)
+                        </h4>
+                        <Alert
+                            heading="Info Alert"
+                            description="This alert uses role='status' for polite announcements."
+                            variant={AlertVariant.PRIMARY}
+                            icon={<Info size={16} />}
+                        />
+                    </div>
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#eff6ff',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#1e40af',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>ARIA roles:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>
+                            Error and warning alerts use role="alert" for
+                            immediate (assertive) announcements
+                        </li>
+                        <li>
+                            Other alerts use role="status" for polite
+                            announcements
+                        </li>
+                        <li>
+                            Screen readers announce alerts without requiring
+                            focus
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            {/* Semantic HTML */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Eye size={18} color="#10b981" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#059669',
+                        }}
+                    >
+                        2. Semantic HTML Structure (WCAG 1.3.1)
+                    </h3>
+                </div>
+                <div style={{ maxWidth: '600px' }}>
+                    <Alert
+                        heading="Semantic Structure"
+                        description="This alert uses semantic HTML: h3 for heading and p for description. The structure is programmatically determinable."
+                        variant={AlertVariant.PRIMARY}
+                    />
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#059669',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>Semantic HTML:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>Heading uses h3 element for proper hierarchy</li>
+                        <li>
+                            Description uses p element for paragraph structure
+                        </li>
+                        <li>Structure is programmatically determinable</li>
+                    </ul>
+                </div>
+            </section>
+
+            {/* ARIA Relationships */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Eye size={18} color="#8b5cf6" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#7c3aed',
+                        }}
+                    >
+                        3. ARIA Relationships (WCAG 4.1.2)
+                    </h3>
+                </div>
+                <div style={{ maxWidth: '600px' }}>
+                    <Alert
+                        heading="ARIA Relationships"
+                        description="This alert uses aria-labelledby to link the heading and aria-describedby to link the description. Screen readers can properly associate the heading and description with the alert container."
+                        variant={AlertVariant.PRIMARY}
+                    />
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#faf5ff',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#7c3aed',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>ARIA relationships:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>
+                            aria-labelledby links alert container to heading
+                        </li>
+                        <li>
+                            aria-describedby links alert container to
+                            description
+                        </li>
+                        <li>
+                            Unique IDs generated using useId() for proper
+                            relationships
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            {/* Keyboard Navigation */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Keyboard size={18} color="#10b981" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#059669',
+                        }}
+                    >
+                        4. Keyboard Navigation (WCAG 2.1.1)
+                    </h3>
+                </div>
+                <div style={{ maxWidth: '600px' }}>
+                    <Alert
+                        heading="Keyboard Accessible"
+                        description="All buttons in this alert are keyboard accessible. Press Tab to navigate, Enter or Space to activate."
+                        variant={AlertVariant.PRIMARY}
+                        primaryAction={{
+                            label: 'Primary Action',
+                            onClick: () => alert('Primary action clicked'),
+                        }}
+                        secondaryAction={{
+                            label: 'Secondary Action',
+                            onClick: () => alert('Secondary action clicked'),
+                        }}
+                        onClose={() => alert('Close clicked')}
+                    />
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#059669',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>Keyboard support:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>
+                            <strong>Tab:</strong> Navigate through buttons in
+                            logical order
+                        </li>
+                        <li>
+                            <strong>Enter:</strong> Activate focused button
+                        </li>
+                        <li>
+                            <strong>Space:</strong> Activate focused button
+                        </li>
+                        <li>
+                            <strong>Shift+Tab:</strong> Navigate backwards
+                        </li>
+                    </ul>
+                    <p style={{ margin: '12px 0 0 0', fontStyle: 'italic' }}>
+                        Try it: Press Tab to navigate through the buttons above.
+                    </p>
+                </div>
+            </section>
+
+            {/* Focus Indicators */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Eye size={18} color="#f59e0b" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#d97706',
+                        }}
+                    >
+                        5. Focus Visible Indicators (WCAG 2.4.7)
+                    </h3>
+                </div>
+                <div style={{ maxWidth: '600px' }}>
+                    <Alert
+                        heading="Focus Indicators"
+                        description="All interactive elements have visible focus indicators. Tab through the buttons to see the focus outlines."
+                        variant={AlertVariant.PRIMARY}
+                        primaryAction={{
+                            label: 'Focus Me',
+                            onClick: () => {},
+                        }}
+                        onClose={() => {}}
+                    />
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#fffbeb',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#d97706',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>Focus indicators:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>
+                            All interactive elements have visible focus
+                            indicators
+                        </li>
+                        <li>
+                            Close button uses custom focus style with variant
+                            color
+                        </li>
+                        <li>
+                            Focus indicators meet WCAG 2.4.7 Level AA
+                            requirements
+                        </li>
+                    </ul>
+                    <p style={{ margin: '12px 0 0 0', fontStyle: 'italic' }}>
+                        Try it: Tab through the buttons to see the focus
+                        indicators.
+                    </p>
+                </div>
+            </section>
+
+            {/* Decorative Content */}
+            <section>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                    }}
+                >
+                    <Eye size={18} color="#ef4444" />
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#dc2626',
+                        }}
+                    >
+                        6. Decorative Content Handling (WCAG 1.1.1)
+                    </h3>
+                </div>
+                <div style={{ maxWidth: '600px' }}>
+                    <Alert
+                        heading="Decorative Icons"
+                        description="Icons in alerts are marked with aria-hidden='true' to prevent screen reader announcements. The text provides all necessary information."
+                        variant={AlertVariant.PRIMARY}
+                        icon={<Info size={16} />}
+                        onClose={() => {}}
+                    />
+                </div>
+                <div
+                    style={{
+                        padding: '12px',
+                        backgroundColor: '#fef2f2',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#dc2626',
+                        marginTop: '12px',
+                        maxWidth: '600px',
+                    }}
+                >
+                    <strong>Decorative content:</strong>
+                    <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                        <li>
+                            Icons are marked with aria-hidden="true" to prevent
+                            screen reader announcements
+                        </li>
+                        <li>
+                            Close icon (X) is marked with aria-hidden="true"
+                        </li>
+                        <li>
+                            Separator between actions and close button is marked
+                            with aria-hidden="true" and role="separator"
+                        </li>
+                        <li>
+                            Text labels provide all necessary information for
+                            screen reader users
+                        </li>
+                    </ul>
+                    <p style={{ margin: '12px 0 0 0', fontStyle: 'italic' }}>
+                        Test with screen reader: Use VoiceOver (macOS) or NVDA
+                        (Windows) to verify icons are not announced.
+                    </p>
+                </div>
+            </section>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Comprehensive accessibility demonstrations showing ARIA roles, semantic HTML, keyboard navigation, focus indicators, and decorative content handling. All examples meet WCAG 2.0, 2.1, 2.2 Level AA requirements.',
             },
         },
     },

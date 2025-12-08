@@ -6,6 +6,10 @@ import {
     TextInputSize,
 } from '@juspay/blend-design-system'
 import { Globe, MapPin, Phone } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 // Sample dropdown data
 const countryData = [
@@ -56,6 +60,10 @@ const meta: Meta<typeof DropdownInput> = {
     component: DropdownInput,
     parameters: {
         layout: 'padded',
+        // Use shared a11y config for interactive form controls
+        a11y: getA11yConfig('form'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -76,6 +84,31 @@ A combination input component that pairs a text input with a dropdown selector, 
 - Disabled state support
 - Form integration ready
 - Accessible design with proper labeling
+
+## Accessibility
+
+- Combines a text input and dropdown, each built from accessible primitives with proper labeling, roles, and keyboard behavior
+- Labels and sublabels are associated via shared InputLabels utilities
+- Required state is visually indicated and exposed via \`required\` / \`aria-required\`
+- Error state is exposed via error text and can be associated with the input via InputFooter
+- Focus styles are keyboard-friendly; dropdown uses SingleSelect with accessible menu patterns
+- Hint and help text provide additional instructions for users and assistive technologies
+
+**WCAG Compliance Target**: 2.1/2.2 Level AA (designed to support WCAG 2.0, 2.1, and 2.2 for composite form controls)
+
+**Intended coverage:**
+- **Perceivable**: Labels, hints, and dropdown choices are visible and can be programmatically associated
+- **Operable**: Fully keyboard operable (Tab / Shift+Tab focus, typing in input, keyboard navigation in dropdown)
+- **Understandable**: Clear labels, contextual sublabels, and inline help for both input and dropdown
+- **Robust**: Built with semantic HTML and ARIA-friendly props via input and SingleSelect primitives
+
+**Verification:**
+- **Storybook a11y addon**: Use the Accessibility panel to check for violations (expected 0 for A/AA)
+- **jest-axe tests**: Add \`DropdownInput.accessibility.test.tsx\` (mirroring TextInput/NumberInput) and run:
+\`\`\`bash
+pnpm test DropdownInput.accessibility
+\`\`\`
+- **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 ## Usage
 
@@ -696,5 +729,139 @@ export const WithLabelsAndHints: Story = {
                 story: 'DropdownInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: () => {
+        const [phoneNumber, setPhoneNumber] = useState('')
+        const [phoneCode, setPhoneCode] = useState('+1')
+        const [city, setCity] = useState('')
+        const [country, setCountry] = useState('')
+
+        const phoneError =
+            phoneNumber.length > 0 && phoneNumber.length < 6
+                ? 'Please enter a valid phone number'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Sublabels, and Hints
+                    </h3>
+                    <DropdownInput
+                        label="Shipping Address"
+                        sublabel="Select country and enter city details"
+                        hintText="We ship to major cities worldwide"
+                        helpIconHintText="Shipping costs will be calculated based on your location"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        dropDownValue={country}
+                        onDropDownChange={setCountry}
+                        dropDownItems={countryData}
+                        placeholder="Enter city name"
+                        slot={<MapPin size={16} />}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <DropdownInput
+                        label="Phone Number"
+                        sublabel="Include country code"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        dropDownValue={phoneCode}
+                        onDropDownChange={setPhoneCode}
+                        dropDownItems={phoneCodeData}
+                        dropdownPosition={DropdownPosition.LEFT}
+                        placeholder="Enter phone number"
+                        slot={<Phone size={16} />}
+                        type="tel"
+                        error={!!phoneError}
+                        errorMessage={phoneError}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <DropdownInput
+                        label="Disabled Country and City"
+                        value="New York"
+                        onChange={() => {}}
+                        dropDownValue="US"
+                        onDropDownChange={() => {}}
+                        dropDownItems={countryData}
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior for composite DropdownInput.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to input label / control associations and dropdown menu semantics.
+
+2. **jest-axe tests**:
+   - Add \`DropdownInput.accessibility.test.tsx\` mirroring TextInput/NumberInput tests and run:
+   \`\`\`bash
+   pnpm test DropdownInput.accessibility
+   \`\`\`
+   - Validate WCAG 2.0/2.1/2.2 A and AA success criteria for composite form fields (labels, errors, keyboard support, dropdown navigation).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, arrow keys within dropdown, Enter/Escape).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, dropdown labels, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }

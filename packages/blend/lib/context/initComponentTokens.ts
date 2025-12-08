@@ -10,7 +10,7 @@ import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
 import { type ThemeType } from '../tokens'
 import { type ComponentTokenType } from './ThemeContext'
-import { Theme } from './ThemeProvider'
+import { Theme } from './theme.enum'
 import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
@@ -43,7 +43,6 @@ import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
-import { getWorkflowTokens } from '../components/WorkflowCanvas/workflow.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -129,9 +128,6 @@ const initTokens = (
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
-        WORKFLOW_CANVAS:
-            componentTokens.WORKFLOW_CANVAS ??
-            getWorkflowTokens(foundationTokens),
     }
 }
 

@@ -3,11 +3,12 @@ import { Check, Minus } from 'lucide-react'
 import type { CheckboxProps } from './types'
 import { CheckboxSize } from './types'
 import {
-    getCheckboxDataState,
     getCheckboxIconColor,
     getCheckboxTextProps,
     getCheckboxSubtextProps,
     getCheckboxLabelStyles,
+    getSubtextId,
+    mergeAriaDescribedBy,
 } from './checkboxUtils'
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckbox'
 import Block from '../Primitives/Block/Block'
@@ -23,6 +24,7 @@ import { getTruncatedText } from '../../global-utils/GlobalUtils'
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
         {
+            label,
             id,
             name,
             checked,
@@ -44,17 +46,37 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         const generatedId = useId()
         const uniqueId = id || generatedId
         const shouldShake = useErrorShake(error)
+
         const labelMaxLength = maxLength?.label
         const subtextMaxLength = maxLength?.subtext
 
+        const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
+            rest as { 'aria-describedby'?: string; [key: string]: unknown }
+
+        const subtextId = getSubtextId(uniqueId, !!subtext)
+
+        const ariaAttributes = {
+            'aria-required': required ? true : undefined,
+            'aria-invalid': error ? true : undefined,
+            'aria-describedby': mergeAriaDescribedBy(
+                subtextId,
+                customAriaDescribedBy
+            ),
+        }
+
         return (
-            <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
+            <Block
+                data-checkbox={label ?? 'checkbox'}
+                data-status={disabled ? 'disabled' : 'enabled'}
+                display="flex"
+                alignItems="flex-start"
+                gap={tokens.gap}
+            >
                 <StyledCheckboxRoot
                     id={uniqueId}
                     name={name}
                     ref={ref}
-                    data-state={getCheckboxDataState(checked || false)}
-                    data-error={error}
+                    checked={checked}
                     defaultChecked={defaultChecked}
                     onCheckedChange={onCheckedChange}
                     disabled={disabled}
@@ -64,7 +86,8 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     $checked={checked || false}
                     $error={error}
                     style={getErrorShakeStyle(shouldShake)}
-                    {...rest}
+                    {...ariaAttributes}
+                    {...restProps}
                 >
                     <CheckboxIndicator
                         checked={checked || false}
@@ -94,6 +117,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
                             {slot && (
                                 <Block
+                                    data-element="icon"
                                     as="span"
                                     marginLeft={tokens.slot.marginLeft}
                                 >
@@ -104,6 +128,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
 
                         {subtext && (
                             <CheckboxSubtext
+                                id={subtextId}
                                 size={size}
                                 disabled={disabled}
                                 error={error}
@@ -126,8 +151,8 @@ const CheckboxIndicator: React.FC<{
     tokens: CheckboxTokensType
     disabled: boolean
 }> = ({ checked, size, tokens, disabled }) => (
-    <StyledCheckboxIndicator forceMount={true} size={size}>
-        {checked && (
+    <StyledCheckboxIndicator forceMount={true} size={size} aria-hidden="true">
+        {checked ? (
             <Block
                 as="span"
                 display="flex"
@@ -141,16 +166,20 @@ const CheckboxIndicator: React.FC<{
                         size={tokens.indicator.icon.width[size]}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
                         strokeWidth={tokens.indicator.icon.strokeWidth[size]}
+                        aria-hidden="true"
+                        focusable={false}
                     />
                 ) : (
                     <Check
                         size={tokens.indicator.icon.width[size]}
                         color={getCheckboxIconColor(tokens, checked, disabled)}
                         strokeWidth={tokens.indicator.icon.strokeWidth[size]}
+                        aria-hidden="true"
+                        focusable={false}
                     />
                 )}
             </Block>
-        )}
+        ) : null}
     </StyledCheckboxIndicator>
 )
 
@@ -186,7 +215,9 @@ const CheckboxContent: React.FC<{
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
-                data-text={children}
+                data-element="checkbox-label"
+                data-id={children ?? ''}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
@@ -214,13 +245,14 @@ const CheckboxContent: React.FC<{
 }
 
 const CheckboxSubtext: React.FC<{
+    id?: string
     size: CheckboxSize
     disabled: boolean
     error: boolean
     tokens: CheckboxTokensType
     children: React.ReactNode
     maxLength?: number
-}> = ({ size, disabled, error, tokens, children, maxLength }) => {
+}> = ({ id, size, disabled, error, tokens, children, maxLength }) => {
     const subtextProps = getCheckboxSubtextProps(tokens, size, disabled, error)
     const isStringLike =
         typeof children === 'string' || typeof children === 'number'
@@ -229,9 +261,11 @@ const CheckboxSubtext: React.FC<{
         : null
 
     const content = (
-        <Block>
+        <Block id={id}>
             <PrimitiveText
-                data-description-text={children}
+                data-id={children ?? ''}
+                data-element="checkbox-description"
+                data-status={disabled ? 'disabled' : 'enabled'}
                 as="span"
                 color={subtextProps.color}
                 fontSize={subtextProps.fontSize}
@@ -241,13 +275,11 @@ const CheckboxSubtext: React.FC<{
         </Block>
     )
 
-    if (truncation?.isTruncated) {
-        return <Tooltip content={truncation.fullValue}>{content}</Tooltip>
-    }
-
-    return content
+    return truncation?.isTruncated ? (
+        <Tooltip content={truncation.fullValue}>{content}</Tooltip>
+    ) : (
+        content
+    )
 }
 
 Checkbox.displayName = 'Checkbox'
-
-export default Checkbox

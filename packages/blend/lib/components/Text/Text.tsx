@@ -20,12 +20,13 @@ export type SemanticTagType = keyof Pick<
     | 'label'
 >
 
-export type TextProps = PrimitiveTextProps & {
-    children: React.ReactNode
-    variant?: VariantType
-    as?: SemanticTagType
-    style?: React.CSSProperties
-}
+export type TextProps = PrimitiveTextProps &
+    Omit<React.HTMLAttributes<HTMLElement>, 'color'> & {
+        children: React.ReactNode
+        variant?: VariantType
+        as?: SemanticTagType
+        style?: React.CSSProperties
+    }
 
 export type VariantType =
     | 'body.xs'
@@ -93,6 +94,8 @@ const formatLineHeight = (
 }
 
 const Text = ({
+    id,
+    role,
     children,
     variant,
     as,
@@ -109,6 +112,8 @@ const Text = ({
     if (variant === undefined) {
         return (
             <PrimitiveText
+                id={id}
+                role={role}
                 as={Tag}
                 fontSize={fontSize}
                 fontWeight={fontWeight}

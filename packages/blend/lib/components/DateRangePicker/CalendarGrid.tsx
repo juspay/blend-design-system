@@ -418,9 +418,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                     calendarToken.calendar.calendarGrid.month
                                         .header.gap,
                             }}
-                            data-calendar-month={monthCalendarData.monthName}
-                            data-calendar-year={year}
-                            data-calendar-month-year={`${monthCalendarData.monthName} ${year}`}
+                            data-element="month-year"
+                            data-id={`${monthCalendarData.monthName} ${year}`}
                         >
                             {monthCalendarData.monthName} {year}
                         </Block>
@@ -581,20 +580,22 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                 true
                                                             )
                                                         }
-                                                        data-calendar-date={
+                                                        data-element="days"
+                                                        data-id={day}
+                                                        data-state={
                                                             isSelected
                                                                 ? 'selected'
                                                                 : 'not selected'
                                                         }
-                                                        data-calendar-date-disabled={
+                                                        data-status={
                                                             isDisabled
                                                                 ? 'disabled'
                                                                 : 'enabled'
                                                         }
                                                         data-calendar-date-today={
                                                             isToday
-                                                                ? 'true'
-                                                                : 'false'
+                                                                ? 'today'
+                                                                : 'not today'
                                                         }
                                                     >
                                                         <span
@@ -720,7 +721,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                     .color,
                             }}
                             key={index}
-                            data-weekday={day}
+                            data-element="weekday"
+                            data-id={day}
                         >
                             {day}
                         </Block>

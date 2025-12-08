@@ -15,6 +15,8 @@ const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
 
         return (
             <StyledTabsContent
+                data-element="content"
+                data-id={props.value ?? 'tabs-content'}
                 ref={ref}
                 className={className}
                 $tabsToken={tabsToken}

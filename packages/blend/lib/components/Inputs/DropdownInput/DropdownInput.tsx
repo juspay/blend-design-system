@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useId } from 'react'
 import Block from '../../Primitives/Block/Block'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
@@ -86,6 +86,19 @@ const DropdownInput = ({
         (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(dropdownInputTokens.inputContainer.gap)
 
+    const generatedId = useId()
+    const inputId = rest.id || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
+
     const paddingInlineStart =
         dropdownPosition === DropdownPosition.LEFT
             ? paddingX + (slotWidth ? slotWidth : 0) + dropdownWidth + GAP
@@ -123,6 +136,7 @@ const DropdownInput = ({
                     disabled={disabled}
                     helpIconHintText={helpIconHintText}
                     name={name}
+                    inputId={inputId}
                     required={required}
                     tokens={dropdownInputTokens}
                 />
@@ -181,6 +195,9 @@ const DropdownInput = ({
                         <SingleSelect
                             inline={true}
                             disabled={disabled}
+                            aria-label={
+                                dropdownName || label || 'Select option'
+                            }
                             variant={SelectMenuVariant.NO_CONTAINER}
                             size={SelectMenuSize.SMALL}
                             placeholder={placeholder || ''}
@@ -213,6 +230,7 @@ const DropdownInput = ({
                 )}
 
                 <PrimitiveInput
+                    id={inputId}
                     lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
@@ -233,6 +251,9 @@ const DropdownInput = ({
                             : paddingY
                     }
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     borderRadius={
                         dropdownInputTokens.inputContainer.borderRadius?.[size]
                     }
@@ -303,6 +324,9 @@ const DropdownInput = ({
                         <SingleSelect
                             inline={true}
                             disabled={disabled}
+                            aria-label={
+                                dropdownName || label || 'Select option'
+                            }
                             variant={SelectMenuVariant.NO_CONTAINER}
                             size={SelectMenuSize.SMALL}
                             placeholder={placeholder || ''}
@@ -339,6 +363,8 @@ const DropdownInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
                 tokens={dropdownInputTokens}
             />
         </Block>

@@ -11,8 +11,11 @@ import {
     Checkbox,
     Radio,
     SingleSelect,
-    Tags,
 } from '@juspay/blend-design-system'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 import {
     Settings,
     User,
@@ -66,6 +69,10 @@ const meta: Meta<typeof Popover> = {
     component: Popover,
     parameters: {
         layout: 'centered',
+        // Use shared a11y config for interactive components
+        a11y: getA11yConfig('interactive'),
+        // Chromatic visual regression testing
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -81,6 +88,42 @@ A comprehensive popover component for displaying contextual content, forms, and 
 - **Custom Content**: Support for any React content with flexible dimensions
 - **Modal Mode**: Can behave as a modal for important interactions
 - **Action Buttons**: Primary and secondary actions with full button customization
+
+## Accessibility
+
+**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Keyboard accessible (Tab, Shift+Tab, Escape)
+- Screen reader support (VoiceOver/NVDA)
+- Proper ARIA attributes (role, aria-describedby when description provided)
+- Focus management (focus moves to popover content when opened)
+- Escape key closes popover
+- Trigger element maintains focus relationship
+- Color contrast ratios meet WCAG 2.1 Level AA standards (4.5:1 for normal text, 3:1 for large text)
+
+**Level AAA Compliance**: ⚠️ Partial (3 out of 4 applicable criteria)
+- ✅ **Compliant**: 1.4.8 Visual Presentation, 2.1.3 Keyboard (No Exception), 3.2.5 Change on Request
+- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently 4.5:1 for AA)
+- ℹ️ **Not Applicable**: 2.2.3 No Timing, 2.2.4 Interruptions
+
+**Accessibility Features**:
+- Popover content is properly associated with trigger via Radix UI's built-in ARIA attributes
+- Heading and description are programmatically associated when provided
+- Focus moves to popover content when opened (keyboard users)
+- Escape key closes popover
+- Click outside closes popover (when not in modal mode)
+- Modal mode provides backdrop and focus trapping
+- Close button is keyboard accessible
+- Action buttons are keyboard accessible
+- Portal rendering ensures proper DOM hierarchy for screen readers
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
+- **Keyboard Testing**: Tab to trigger, Enter/Space to open, Escape to close, verify focus management
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
 ## Usage
 
@@ -539,7 +582,7 @@ export const WithActions: Story = {
                 description="This action cannot be undone. Are you sure you want to delete this item?"
                 primaryAction={{
                     text: 'Delete',
-                    buttonType: ButtonType.DESTRUCTIVE,
+                    buttonType: ButtonType.DANGER,
                     onClick: () => setIsDeleted(true),
                 }}
                 secondaryAction={{
@@ -663,21 +706,18 @@ export const UserProfile: Story = {
                             size={ButtonSize.SMALL}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Edit size={14} />}
-                            style={{ justifyContent: 'flex-start' }}
                             text="Edit Profile"
                         />
                         <Button
                             size={ButtonSize.SMALL}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Settings size={14} />}
-                            style={{ justifyContent: 'flex-start' }}
                             text="Settings"
                         />
                         <Button
                             size={ButtonSize.SMALL}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<HelpCircle size={14} />}
-                            style={{ justifyContent: 'flex-start' }}
                             text="Help & Support"
                         />
                     </div>
@@ -820,7 +860,6 @@ export const SettingsForm: Story = {
                                             privacy: e.target.value,
                                         }))
                                     }
-                                    label={option.label}
                                 />
                             ))}
                         </div>
@@ -851,7 +890,7 @@ export const SettingsForm: Story = {
                                             setting.id as keyof typeof settings.notifications
                                         ]
                                     }
-                                    onChange={(checked) =>
+                                    onCheckedChange={(checked) =>
                                         setSettings((prev) => ({
                                             ...prev,
                                             notifications: {
@@ -995,7 +1034,6 @@ export const ShareDialog: Story = {
                                         option.icon,
                                         { style: { color: option.color } }
                                     )}
-                                    style={{ justifyContent: 'flex-start' }}
                                     onClick={() =>
                                         console.log(`Share via ${option.name}`)
                                     }
@@ -1131,7 +1169,7 @@ export const FilterPopover: Story = {
                                 <Checkbox
                                     key={status}
                                     checked={filters.status.includes(status)}
-                                    onChange={(checked) => {
+                                    onCheckedChange={(checked) => {
                                         setFilters((prev) => ({
                                             ...prev,
                                             status: checked
@@ -1171,7 +1209,7 @@ export const FilterPopover: Story = {
                                     checked={filters.priority.includes(
                                         priority
                                     )}
-                                    onChange={(checked) => {
+                                    onCheckedChange={(checked) => {
                                         setFilters((prev) => ({
                                             ...prev,
                                             priority: checked
@@ -1232,7 +1270,6 @@ export const FilterPopover: Story = {
                                             dateRange: e.target.value,
                                         }))
                                     }
-                                    label={range.label}
                                 />
                             ))}
                         </div>
@@ -1751,6 +1788,398 @@ export const CustomContent: Story = {
             description: {
                 story: 'Custom popover content without header or footer - perfect for color pickers, palettes, or custom widgets.',
             },
+        },
+    },
+}
+
+// Accessibility story
+export const Accessibility: Story = {
+    render: () => {
+        const AccessibilityDemo = () => {
+            const [basicOpen, setBasicOpen] = useState(false)
+            const [keyboardOpen, setKeyboardOpen] = useState(false)
+            const [ariaOpen, setAriaOpen] = useState(false)
+            const [escapeOpen, setEscapeOpen] = useState(false)
+            const [modalOpen, setModalOpen] = useState(false)
+            const [focusOpen, setFocusOpen] = useState(false)
+
+            return (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '32px',
+                        maxWidth: '800px',
+                        padding: '20px',
+                    }}
+                >
+                    {/* Basic Accessible Popover */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Basic Accessible Popover
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Popover with proper ARIA attributes and
+                            heading/description for screen readers.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Open Accessible Popover"
+                                />
+                            }
+                            heading="Accessible Popover"
+                            description="This popover has proper ARIA attributes and structure"
+                            open={basicOpen}
+                            onOpenChange={setBasicOpen}
+                            primaryAction={{
+                                text: 'Save',
+                                onClick: () => setBasicOpen(false),
+                            }}
+                            secondaryAction={{
+                                text: 'Cancel',
+                                onClick: () => setBasicOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <p>
+                                    This popover demonstrates proper
+                                    accessibility features including heading and
+                                    description for screen readers, keyboard
+                                    navigation, and proper focus management.
+                                </p>
+                            </div>
+                        </Popover>
+                    </div>
+
+                    {/* Keyboard Accessible Popover */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Keyboard Accessible Popover
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Popover is fully keyboard accessible. Tab to
+                            trigger, Enter/Space to open, Escape to close.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Open Keyboard Popover"
+                                />
+                            }
+                            heading="Keyboard Accessible Popover"
+                            description="Use Tab, Enter/Space, and Escape to navigate"
+                            open={keyboardOpen}
+                            onOpenChange={setKeyboardOpen}
+                            primaryAction={{
+                                text: 'Confirm',
+                                onClick: () => setKeyboardOpen(false),
+                            }}
+                            secondaryAction={{
+                                text: 'Cancel',
+                                onClick: () => setKeyboardOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '12px',
+                                    }}
+                                >
+                                    <p>
+                                        <strong>Keyboard Navigation:</strong>
+                                    </p>
+                                    <ul
+                                        style={{
+                                            margin: 0,
+                                            paddingLeft: '20px',
+                                        }}
+                                    >
+                                        <li>
+                                            Tab - Navigate to trigger button
+                                        </li>
+                                        <li>Enter/Space - Open popover</li>
+                                        <li>Tab - Navigate within popover</li>
+                                        <li>Escape - Close popover</li>
+                                        <li>Enter/Space - Activate buttons</li>
+                                    </ul>
+                                    <p style={{ marginTop: '12px' }}>
+                                        Focus moves to popover content when
+                                        opened.
+                                    </p>
+                                </div>
+                            </div>
+                        </Popover>
+                    </div>
+
+                    {/* ARIA Attributes */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            ARIA Attributes (Screen Reader Support)
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Popover has proper ARIA attributes for screen
+                            readers. Heading and description are
+                            programmatically associated.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Open ARIA Popover"
+                                />
+                            }
+                            heading="ARIA Attributes Test"
+                            description="Screen readers will announce both the heading and description when this popover opens"
+                            open={ariaOpen}
+                            onOpenChange={setAriaOpen}
+                            primaryAction={{
+                                text: 'OK',
+                                onClick: () => setAriaOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <p>
+                                    This popover demonstrates proper ARIA
+                                    relationships. The heading and description
+                                    are programmatically associated with the
+                                    popover content for screen reader users.
+                                </p>
+                            </div>
+                        </Popover>
+                    </div>
+
+                    {/* Escape Key Support */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Escape Key Support
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Press Escape key to close the popover.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Open Escape Test Popover"
+                                />
+                            }
+                            heading="Escape Key Test"
+                            description="Press Escape to close this popover"
+                            open={escapeOpen}
+                            onOpenChange={setEscapeOpen}
+                            primaryAction={{
+                                text: 'Close',
+                                onClick: () => setEscapeOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <p>
+                                    This popover can be closed by pressing the
+                                    Escape key. This is a standard keyboard
+                                    interaction for dismissible overlays.
+                                </p>
+                            </div>
+                        </Popover>
+                    </div>
+
+                    {/* Modal Mode */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Modal Mode (Focus Trap)
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Popover in modal mode with backdrop and focus
+                            trapping.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Open Modal Popover"
+                                />
+                            }
+                            heading="Modal Mode Popover"
+                            description="This popover behaves as a modal with backdrop"
+                            asModal={true}
+                            open={modalOpen}
+                            onOpenChange={setModalOpen}
+                            primaryAction={{
+                                text: 'OK',
+                                onClick: () => setModalOpen(false),
+                            }}
+                            secondaryAction={{
+                                text: 'Cancel',
+                                onClick: () => setModalOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <p>
+                                    When in modal mode, the popover includes a
+                                    backdrop overlay and focus is trapped within
+                                    the popover content. This is useful for
+                                    important interactions that require user
+                                    attention.
+                                </p>
+                            </div>
+                        </Popover>
+                    </div>
+
+                    {/* Focus Management */}
+                    <div>
+                        <h3
+                            style={{
+                                marginBottom: '12px',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            Focus Management
+                        </h3>
+                        <p
+                            style={{
+                                marginBottom: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                            }}
+                        >
+                            Focus moves to popover content when opened and
+                            returns to trigger when closed.
+                        </p>
+                        <Popover
+                            trigger={
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    text="Test Focus Management"
+                                />
+                            }
+                            heading="Focus Management Test"
+                            description="Focus moves to popover when opened"
+                            open={focusOpen}
+                            onOpenChange={setFocusOpen}
+                            primaryAction={{
+                                text: 'Close',
+                                onClick: () => setFocusOpen(false),
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <p>
+                                    When this popover opens, focus moves to the
+                                    popover content (first focusable element).
+                                    When closed, focus returns to the trigger
+                                    button.
+                                </p>
+                                <TextInput
+                                    label="Test Input"
+                                    placeholder="Tab to this input"
+                                    value={''}
+                                    onChange={() => {}}
+                                />
+                            </div>
+                        </Popover>
+                    </div>
+                </div>
+            )
+        }
+
+        return <AccessibilityDemo />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Interactive examples demonstrating the Popover component's accessibility features including keyboard navigation, ARIA attributes, focus management, and screen reader support.
+
+**Test these features:**
+- Tab to trigger buttons and press Enter/Space to open popovers
+- Press Escape to close popovers
+- Navigate within popover content using Tab/Shift+Tab
+- Test with screen readers (VoiceOver/NVDA) to hear proper announcements
+- Verify focus management (focus moves to popover, returns to trigger)
+- Test modal mode with backdrop and focus trapping
+
+**Accessibility Checklist:**
+- ✅ Keyboard accessible (Tab, Enter/Space, Escape)
+- ✅ Screen reader support (proper ARIA attributes)
+- ✅ Focus management (focus moves to content, returns to trigger)
+- ✅ Escape key closes popover
+- ✅ Heading and description programmatically associated
+- ✅ Close button accessible via keyboard
+- ✅ Action buttons accessible via keyboard
+- ✅ Modal mode provides focus trapping
+                `,
+            },
+        },
+        // Enhanced a11y rules for accessibility story
+        a11y: getA11yConfig('interactive'),
+        // Extended delay for Chromatic to capture focus states
+        chromatic: {
+            ...CHROMATIC_CONFIG,
+            delay: 500,
         },
     },
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { X } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -32,18 +32,28 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
     ) => {
         const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
 
-        // this is to make sure that the close button is always visible if there is an onClose prop
-        // but no primary or secondary actions are provided
-        if (
+        const shouldShowCloseAtBottom =
             onClose &&
             primaryAction === undefined &&
             secondaryAction === undefined
-        ) {
-            actionPlacement = AlertActionPlacement.BOTTOM
-        }
+        const finalActionPlacement = shouldShowCloseAtBottom
+            ? AlertActionPlacement.BOTTOM
+            : actionPlacement
+        const baseId = useId()
+        const headingId = `${baseId}-heading`
+        const descriptionId = `${baseId}-description`
+
+        const isErrorOrWarning =
+            variant === AlertVariant.ERROR || variant === AlertVariant.WARNING
+        const alertRole = isErrorOrWarning ? 'alert' : 'status'
+
         return (
             <Block
+                data-alert={heading ?? 'blend-alert'}
                 ref={ref}
+                role={alertRole}
+                aria-labelledby={headingId}
+                aria-describedby={descriptionId}
                 maxWidth={alertTokens.maxWidth}
                 backgroundColor={alertTokens.background[variant][style]}
                 padding={alertTokens.padding}
@@ -66,14 +76,19 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     >
                         {icon && (
                             <Block
+                                data-element="icon"
                                 size={FOUNDATION_THEME.unit[16]}
                                 contentCentered
+                                aria-hidden="true"
                             >
                                 {icon}
                             </Block>
                         )}
                         <Text
-                            data-alert-heading={heading}
+                            data-element="header"
+                            data-id={heading}
+                            id={headingId}
+                            as="h3"
                             color={alertTokens.text.heading.color[variant]}
                             fontWeight={alertTokens.text.heading.fontWeight}
                             fontSize={alertTokens.text.heading.fontSize}
@@ -83,9 +98,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                         </Text>
                     </Block>
                     {onClose &&
-                        actionPlacement === AlertActionPlacement.BOTTOM && (
+                        finalActionPlacement ===
+                            AlertActionPlacement.BOTTOM && (
                             <AlertCloseButton
+                                data-element="close-button"
                                 onClick={onClose}
+                                aria-label="Close"
                                 $color={
                                     alertTokens.button.closeButton.color[
                                         variant
@@ -95,6 +113,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                 <X
                                     size={16}
                                     color={FOUNDATION_THEME.colors.gray[800]}
+                                    aria-hidden="true"
                                 />
                             </AlertCloseButton>
                         )}
@@ -103,7 +122,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     paddingLeft={icon ? FOUNDATION_THEME.unit[24] : 0}
                     display="flex"
                     flexDirection={
-                        actionPlacement === AlertActionPlacement.BOTTOM
+                        finalActionPlacement === AlertActionPlacement.BOTTOM
                             ? 'column'
                             : 'row'
                     }
@@ -112,7 +131,10 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     gap={FOUNDATION_THEME.unit[18]}
                 >
                     <Text
-                        data-alert-description={description}
+                        data-element="description"
+                        data-id={description}
+                        id={descriptionId}
+                        as="p"
                         fontWeight={alertTokens.text.description.fontWeight}
                         fontSize={alertTokens.text.description.fontSize}
                         lineHeight={alertTokens.text.description.lineHeight}
@@ -120,7 +142,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                     >
                         {description}
                     </Text>
-                    {(primaryAction || secondaryAction) && (
+
+                    {(primaryAction || secondaryAction || onClose) && (
                         <Block display="flex" gap={FOUNDATION_THEME.unit[16]}>
                             {(primaryAction || secondaryAction) && (
                                 <Block
@@ -130,6 +153,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                 >
                                     {primaryAction && (
                                         <PrimitiveButton
+                                            data-element="primary-action"
+                                            data-id={primaryAction.label}
                                             onClick={primaryAction.onClick}
                                             style={{
                                                 border: 'none',
@@ -139,7 +164,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                     .primaryAction.color[
                                                     variant
                                                 ],
-
                                                 fontWeight:
                                                     alertTokens.button
                                                         .primaryAction
@@ -154,46 +178,46 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                             {primaryAction.label}
                                         </PrimitiveButton>
                                     )}
-                                    {secondaryAction && (
-                                        <>
-                                            <PrimitiveButton
-                                                onClick={
-                                                    secondaryAction.onClick
-                                                }
-                                                style={{
-                                                    border: 'none',
-                                                    background: 'none',
-                                                    cursor: 'pointer',
-                                                    color: alertTokens.button
-                                                        .secondaryAction.color[
-                                                        variant
-                                                    ],
 
-                                                    fontWeight:
-                                                        alertTokens.button
-                                                            .secondaryAction
-                                                            .fontWeight,
-                                                    fontSize:
-                                                        alertTokens.button
-                                                            .secondaryAction
-                                                            .fontSize,
-                                                    width: 'fit-content',
-                                                    whiteSpace: 'nowrap',
-                                                }}
-                                            >
-                                                {secondaryAction.label}
-                                            </PrimitiveButton>
-                                        </>
+                                    {secondaryAction && (
+                                        <PrimitiveButton
+                                            data-element="secondary-action"
+                                            data-id={secondaryAction.label}
+                                            onClick={secondaryAction.onClick}
+                                            style={{
+                                                border: 'none',
+                                                background: 'none',
+                                                cursor: 'pointer',
+                                                color: alertTokens.button
+                                                    .secondaryAction.color[
+                                                    variant
+                                                ],
+                                                fontWeight:
+                                                    alertTokens.button
+                                                        .secondaryAction
+                                                        .fontWeight,
+                                                fontSize:
+                                                    alertTokens.button
+                                                        .secondaryAction
+                                                        .fontSize,
+                                                width: 'fit-content',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {secondaryAction.label}
+                                        </PrimitiveButton>
                                     )}
                                 </Block>
                             )}
+
                             {onClose &&
-                                actionPlacement ===
+                                finalActionPlacement ===
                                     AlertActionPlacement.RIGHT && (
                                     <>
                                         <Block
                                             as="span"
                                             aria-hidden="true"
+                                            role="separator"
                                             width={'1px'}
                                             height={FOUNDATION_THEME.unit[20]}
                                             backgroundColor={
@@ -203,6 +227,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                         />
                                         <AlertCloseButton
                                             onClick={onClose}
+                                            aria-label="Close"
                                             $color={
                                                 alertTokens.button.closeButton
                                                     .color[variant]
@@ -214,6 +239,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                     FOUNDATION_THEME.colors
                                                         .gray[800]
                                                 }
+                                                aria-hidden="true"
                                             />
                                         </AlertCloseButton>
                                     </>
@@ -230,22 +256,27 @@ const AlertCloseButton = ({
     $color,
     children,
     onClick,
+    'aria-label': ariaLabel,
 }: {
     $color: CSSObject['color']
     children: React.ReactNode
     onClick: () => void
+    'aria-label'?: string
 }) => {
     return (
         <PrimitiveButton
+            data-element="close-button"
             border={'none'}
             backgroundColor={'transparent'}
             className="debug"
             color={$color}
             contentCentered
+            aria-label={ariaLabel}
             _focusVisible={{
                 outline: `1px solid ${$color}`,
             }}
             onClick={onClick}
+            type="button"
         >
             {children}
         </PrimitiveButton>

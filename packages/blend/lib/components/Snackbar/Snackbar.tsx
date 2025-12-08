@@ -1,6 +1,7 @@
 'use client'
 
 import type React from 'react'
+import { useId } from 'react'
 import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
@@ -30,6 +31,7 @@ const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
     const props = {
         color: snackbarTokens.infoIcon.color[variant],
         size: snackbarTokens.infoIcon.height,
+        'aria-hidden': 'true' as const,
     }
     if (variant == SnackbarVariant.SUCCESS) return <CircleCheckBig {...props} />
     else if (variant == SnackbarVariant.WARNING)
@@ -48,9 +50,22 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     ...props
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
+    const baseId = useId()
+    const role =
+        variant === SnackbarVariant.ERROR || variant === SnackbarVariant.WARNING
+            ? 'alert'
+            : 'status'
+    const idPrefix = toastId ? `snackbar-${toastId}` : baseId
+    const headerId = `${idPrefix}-header`
+    const descriptionId = description ? `${idPrefix}-description` : undefined
 
     return (
         <Block
+            role={role}
+            aria-labelledby={headerId}
+            aria-describedby={descriptionId}
+            data-snackbar={header ?? 'snackbar'}
+            data-status={variant}
             display="flex"
             justifyContent="space-between"
             gap={snackbarTokens.gap}
@@ -61,12 +76,14 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             boxShadow={snackbarTokens.boxShadow}
             {...props}
         >
-            {' '}
-            {/*  need to fix line height to remove margin */}
-            <Block marginTop={4}>
+            <Block marginTop={4} data-element="icon" aria-hidden="true">
                 <SnackbarIcon variant={variant} />
             </Block>
-            <Block display="flex" gap={snackbarTokens.gap}>
+            <Block
+                display="flex"
+                gap={snackbarTokens.gap}
+                data-element="content"
+            >
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -78,6 +95,8 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         flexDirection="column"
                     >
                         <Text
+                            id={headerId}
+                            as="p"
                             color={
                                 snackbarTokens.content.textContainer.header
                                     .color[variant]
@@ -90,27 +109,33 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 snackbarTokens.content.textContainer.header
                                     .fontWeight
                             }
-                            data-snackbar-header={header}
+                            data-element="header"
+                            data-id={header}
                         >
                             {header}
                         </Text>
-                        <Text
-                            color={
-                                snackbarTokens.content.textContainer.description
-                                    .color[variant]
-                            }
-                            fontSize={
-                                snackbarTokens.content.textContainer.description
-                                    .fontSize
-                            }
-                            fontWeight={
-                                snackbarTokens.content.textContainer.description
-                                    .fontWeight
-                            }
-                            data-snackbar-body={description}
-                        >
-                            {description}
-                        </Text>
+                        {description && (
+                            <Text
+                                id={descriptionId}
+                                as="p"
+                                color={
+                                    snackbarTokens.content.textContainer
+                                        .description.color[variant]
+                                }
+                                fontSize={
+                                    snackbarTokens.content.textContainer
+                                        .description.fontSize
+                                }
+                                fontWeight={
+                                    snackbarTokens.content.textContainer
+                                        .description.fontWeight
+                                }
+                                data-element="description"
+                                data-id={description}
+                            >
+                                {description}
+                            </Text>
+                        )}
                     </Block>
                     {actionButton && (
                         <PrimitiveButton
@@ -120,6 +145,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                     variant
                                 ]
                             }
+                            aria-label={actionButton.label}
                             onClick={() => {
                                 actionButton.onClick()
                                 if (
@@ -152,17 +178,19 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                 </Block>
             </Block>
             <Block>
-                {' '}
                 <PrimitiveButton
                     backgroundColor="transparent"
                     contentCentered
                     onClick={onClose}
+                    aria-label="Close notification"
+                    data-element="close-button"
                 >
                     <X
                         size={snackbarTokens.actions.closeButton.height}
                         color={
                             snackbarTokens.actions.closeButton.color[variant]
                         }
+                        aria-hidden="true"
                     />
                 </PrimitiveButton>
             </Block>

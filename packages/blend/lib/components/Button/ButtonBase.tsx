@@ -1,4 +1,5 @@
 import { forwardRef, type MouseEvent } from 'react'
+import styled from 'styled-components'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
@@ -8,6 +9,18 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
+
+const VisuallyHidden = styled.span`
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+`
 
 export type ButtonBaseProps = Omit<
     ButtonProps,
@@ -68,6 +81,11 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const lineHeight = formatLineHeight(
             FOUNDATION_THEME.font.size.body.md.lineHeight
         )
+        const buttonStatus = isLoading
+            ? 'loading'
+            : isDisabled
+              ? 'disabled'
+              : 'enabled'
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
             if (isSkeleton || isDisabled || isLoading) return
             onClick?.(event)
@@ -92,6 +110,13 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               .default
                 }
                 disabled={isDisabled}
+                tabIndex={
+                    isDisabled
+                        ? -1
+                        : htmlProps.tabIndex !== undefined
+                          ? Math.max(-1, Math.min(0, htmlProps.tabIndex))
+                          : undefined
+                }
                 color={
                     isSkeleton
                         ? 'transparent'
@@ -109,6 +134,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         : buttonTokens.outline[buttonType][subType].default
                 }
                 transition="transform 0.15s ease-in-out"
+                aria-busy={isLoading || isSkeleton ? 'true' : undefined}
+                aria-label={
+                    isSkeleton && text && !htmlProps['aria-label']
+                        ? text
+                        : htmlProps['aria-label']
+                          ? htmlProps['aria-label']
+                          : undefined
+                }
                 _active={
                     isSkeleton || isDisabled
                         ? undefined
@@ -117,8 +150,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
                                   ].active,
-                              //   border: buttonTokens.border[buttonType][subType]
-                              //       .active,
+                              border: buttonTokens.border[buttonType][subType]
+                                  .active,
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
@@ -136,7 +169,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               color: buttonTokens.text.color[buttonType][
                                   subType
                               ].hover,
-                              //   transform: 'scale(1.01)',
+                              border: buttonTokens.border[buttonType][subType]
+                                  .hover,
                           }
                 }
                 _focusVisible={
@@ -148,6 +182,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               outline:
                                   buttonTokens.outline[buttonType][subType]
                                       .active,
+                              outlineOffset: FOUNDATION_THEME.unit[2],
                           }
                 }
                 _disabled={
@@ -169,25 +204,36 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 }
                 paddingX={paddingTokens.x}
                 paddingY={paddingTokens.y}
+                data-button={text}
+                data-status={buttonStatus}
                 {...htmlProps}
             >
                 {isLoading ? (
-                    <LoaderCircle
-                        size={16}
-                        color={
-                            buttonTokens.text.color[buttonType][subType].default
-                        }
-                        style={{
-                            animation: 'spin 1s linear infinite',
-                        }}
-                    />
+                    <>
+                        <LoaderCircle
+                            size={16}
+                            color={
+                                buttonTokens.text.color[buttonType][subType]
+                                    .default
+                            }
+                            data-status="loading"
+                            aria-hidden="true"
+                            style={{
+                                animation: 'spin 1s linear infinite',
+                            }}
+                        />
+                        <VisuallyHidden aria-live="polite">
+                            Loading, please wait
+                        </VisuallyHidden>
+                    </>
                 ) : (
                     <>
                         {leadingIcon && (
                             <Block
                                 as="span"
                                 contentCentered
-                                data-button-left-slot
+                                data-element="leading-icon"
+                                aria-hidden={text ? 'true' : undefined}
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {leadingIcon}
@@ -208,6 +254,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 aria-hidden={isSkeleton ? true : undefined}
                                 lineHeight={lineHeight}
                                 textAlign="center"
+                                data-id={text}
                             >
                                 {text}
                             </Text>
@@ -216,7 +263,8 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             <Block
                                 as="span"
                                 contentCentered
-                                data-button-right-slot
+                                data-element="trailing-icon"
+                                aria-hidden={text ? 'true' : undefined}
                                 style={{ opacity: isSkeleton ? 0 : 1 }}
                             >
                                 {trailingIcon}

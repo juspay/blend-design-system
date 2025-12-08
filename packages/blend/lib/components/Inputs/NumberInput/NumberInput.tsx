@@ -8,7 +8,7 @@ import { NumberInputSize } from './types'
 import type { NumberInputTokensType } from './numberInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -49,6 +49,11 @@ const NumberInput = ({
     const numberInputTokens =
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
+    const generatedId = useId()
+    const inputId = rest.id || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
     const [isFocused, setIsFocused] = useState(false)
     const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -63,9 +68,18 @@ const NumberInput = ({
         toPixels(numberInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 1)
 
+    const ariaDescribedBy =
+        [
+            hintText && !error ? hintId : null,
+            error && errorMessage ? errorId : null,
+        ]
+            .filter(Boolean)
+            .join(' ') || undefined
+
     return (
         <Block
-            data-component-field-wrapper={`field-${name}`}
+            data-numberinput={label || 'numberinput'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
             gap={numberInputTokens.gap}
@@ -73,13 +87,14 @@ const NumberInput = ({
         >
             {(!isSmallScreen || size !== NumberInputSize.LARGE) && (
                 <InputLabels
+                    tokens={numberInputTokens}
                     label={label}
                     sublabel={sublabel}
                     disabled={disabled}
                     helpIconHintText={helpIconHintText}
+                    inputId={inputId}
                     name={name}
                     required={required}
-                    tokens={numberInputTokens}
                 />
             )}
             <Wrapper
@@ -114,6 +129,7 @@ const NumberInput = ({
                     </Block>
                 )}
                 <PrimitiveInput
+                    id={inputId}
                     lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     name={name}
@@ -125,6 +141,9 @@ const NumberInput = ({
                     min={min}
                     max={max}
                     required={required}
+                    aria-required={required ? 'true' : undefined}
+                    aria-invalid={error ? 'true' : 'false'}
+                    aria-describedby={ariaDescribedBy}
                     paddingX={paddingX}
                     paddingTop={
                         isSmallScreenWithLargeSize && inputFocusedOrWithValue
@@ -196,6 +215,7 @@ const NumberInput = ({
                     {...rest}
                 />
                 <Block
+                    data-element="stepper"
                     display="flex"
                     flexDirection="column"
                     position="absolute"
@@ -224,6 +244,10 @@ const NumberInput = ({
                         }
                     ></Block>
                     <PrimitiveButton
+                        type="button"
+                        aria-label={
+                            label ? `Increase ${label}` : 'Increase value'
+                        }
                         onClick={() =>
                             onChange({
                                 target: {
@@ -239,7 +263,6 @@ const NumberInput = ({
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
                         }
-                        // flexGrow={1}
                         width={
                             numberInputTokens.inputContainer.stepperButton
                                 .width[size]
@@ -296,6 +319,10 @@ const NumberInput = ({
                         />
                     </PrimitiveButton>
                     <PrimitiveButton
+                        type="button"
+                        aria-label={
+                            label ? `Decrease ${label}` : 'Decrease value'
+                        }
                         onClick={() =>
                             onChange({
                                 target: {
@@ -309,7 +336,6 @@ const NumberInput = ({
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
                         }
-                        // flexGrow={1}
                         width={
                             numberInputTokens.inputContainer.stepperButton
                                 .width[size]
@@ -373,6 +399,8 @@ const NumberInput = ({
                 errorMessage={errorMessage}
                 hintText={hintText}
                 disabled={disabled}
+                errorId={errorId}
+                hintId={hintId}
                 tokens={numberInputTokens}
             />
         </Block>
