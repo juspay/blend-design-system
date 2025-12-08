@@ -545,7 +545,7 @@ const MultiSelect = ({
                                                     <Text
                                                         data-element="placeholder"
                                                         data-id={
-                                                            label ||
+                                                            placeholder ||
                                                             'placeholder'
                                                         }
                                                         as="span"
