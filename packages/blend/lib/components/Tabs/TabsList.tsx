@@ -413,6 +413,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             width={FOUNDATION_THEME.unit[20]}
                                             backgroundColor="transparent"
                                             contentCentered
+                                            aria-label="Navigate to tab"
                                             _hover={{
                                                 backgroundColor:
                                                     FOUNDATION_THEME.colors
@@ -422,7 +423,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                                 FOUNDATION_THEME.unit[4]
                                             }
                                         >
-                                            <ChevronDown size={16} />
+                                            <ChevronDown
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
                                         </PrimitiveButton>
                                     }
                                     useDrawerOnMobile={false}
@@ -438,6 +442,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         width={FOUNDATION_THEME.unit[20]}
                                         backgroundColor="transparent"
                                         contentCentered
+                                        aria-label={addButtonTooltip}
                                         _hover={{
                                             backgroundColor:
                                                 FOUNDATION_THEME.colors
@@ -445,7 +450,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                         }}
                                         borderRadius={FOUNDATION_THEME.unit[4]}
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={16} aria-hidden="true" />
                                     </PrimitiveButton>
                                 </Tooltip>
                             )}

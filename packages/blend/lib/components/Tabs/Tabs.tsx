@@ -9,6 +9,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     (
         {
             className,
+            variant,
+            size,
             items = [],
             onTabClose,
             onTabAdd,
@@ -98,6 +100,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 >
                     <TabsList
                         data-element="tab-list"
+                        variant={variant}
+                        size={size}
                         items={processedItems}
                         onTabClose={handleTabClose}
                         onTabAdd={onTabAdd}
