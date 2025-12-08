@@ -47,7 +47,7 @@ const InputFooter = ({
                         role="alert"
                         aria-live="polite"
                         data-element="form-error"
-                        data-form-error={errorMessage}
+                        data-id={errorMessage || 'error-message'}
                         color={
                             tokens?.errorMessage?.color ||
                             FOUNDATION_THEME.colors.red[600]

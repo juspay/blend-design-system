@@ -111,6 +111,8 @@ const UnitInput = ({
     const RightUnitSlot = () => {
         return (
             <Block
+                data-element="unit"
+                data-id={unit || 'unit'}
                 ref={unitRef}
                 position="absolute"
                 top={0}
@@ -182,6 +184,8 @@ const UnitInput = ({
 
     return (
         <Block
+            data-unitinput={label || 'unitinput'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             data-component-field-wrapper={`field-${name}`}
             display="flex"
             flexDirection="column"
@@ -208,6 +212,7 @@ const UnitInput = ({
             >
                 {leftSlot && (
                     <Block
+                        data-element="left-slot"
                         ref={leftSlotRef}
                         position="absolute"
                         top={paddingY}
@@ -224,6 +229,7 @@ const UnitInput = ({
                 )}
                 {rightSlot && (
                     <Block
+                        data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
                         top={paddingY}

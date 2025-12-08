@@ -63,7 +63,6 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                     id={labelId}
                     data-element="input-label"
                     data-id={label || 'label'}
-                    data-form-label={label}
                     as="label"
                     htmlFor={inputId || name}
                     // variant="body.md"
