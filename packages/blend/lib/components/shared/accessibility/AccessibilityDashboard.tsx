@@ -19,6 +19,7 @@ import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
 import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
 import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
 import AlertAccessibility from '../../Alert/accessibility/AlertAccessibility'
+import MenuAccessibility from '../../Menu/accessibility/MenuAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -117,6 +118,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Alert',
         displayName: 'Alert',
         component: AlertAccessibility,
+    },
+    {
+        name: 'Menu',
+        displayName: 'Menu',
+        component: MenuAccessibility,
     },
     // Add more components here as they are added
 ]
