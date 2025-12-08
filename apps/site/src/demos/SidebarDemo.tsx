@@ -32,7 +32,6 @@ import {
     Settings,
     TrendingUp,
     Upload,
-    Workflow,
     Moon,
     Sun,
     HelpCircle,
