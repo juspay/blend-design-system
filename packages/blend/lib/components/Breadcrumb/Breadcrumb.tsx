@@ -69,11 +69,6 @@ const BreadcrumbItem = ({
                         : `Navigate to ${item.label}`
                 }
                 aria-current={isActive ? 'page' : undefined}
-                style={{
-                    minWidth: '44px',
-                    minHeight: '44px',
-                    alignItems: 'center',
-                }}
             >
                 {item.leftSlot && (
                     <Block
@@ -188,8 +183,6 @@ const Breadcrumb = ({
                             contentCentered
                             color={FOUNDATION_THEME.colors.gray[400]}
                             size={24}
-                            minWidth="44px"
-                            minHeight="44px"
                             aria-label={`Show ${menuItems.length} more breadcrumb items`}
                             aria-expanded="false"
                             aria-haspopup="menu"
