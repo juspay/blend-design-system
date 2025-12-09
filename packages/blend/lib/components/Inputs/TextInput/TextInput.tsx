@@ -175,7 +175,6 @@ const TextInput = ({
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
-                    type="text"
                     name={name}
                     onChange={onChange}
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
