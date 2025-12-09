@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useState, useCallback, useMemo, useId } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Tooltip, TooltipSize } from '../Tooltip'
@@ -65,6 +65,10 @@ const Upload: React.FC<UploadProps> = ({
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const uploadId = useId()
+    const labelId = label ? `${uploadId}-label` : undefined
+    const descriptionId = description ? `${uploadId}-description` : undefined
+    const hintId = helpIconHintText ? `${uploadId}-hint` : undefined
 
     // Internal state management
     const [internalState, setInternalState] = useState<UploadState>(
@@ -218,6 +222,11 @@ const Upload: React.FC<UploadProps> = ({
         multiple
     )
 
+    const hasError =
+        !!errorText ||
+        (uploadContent.hasErrorFiles && uploadContent.errorFiles.length > 0)
+    const errorId = hasError ? `${uploadId}-error` : undefined
+
     const renderContent = () => {
         if (uploadContent.hasUploadingFiles && uploadContent.uploadingFile) {
             return (
@@ -300,6 +309,9 @@ const Upload: React.FC<UploadProps> = ({
                         gap={uploadTokens.header.label.gap}
                     >
                         <Text
+                            id={labelId}
+                            as="label"
+                            htmlFor={uploadId}
                             fontSize={uploadTokens.header.label.text.fontSize}
                             fontWeight={
                                 uploadTokens.header.label.text.fontWeight
@@ -352,6 +364,7 @@ const Upload: React.FC<UploadProps> = ({
                                         size={TooltipSize.SMALL}
                                     >
                                         <HelpCircle
+                                            id={hintId}
                                             size={
                                                 uploadTokens.header.helpIcon
                                                     .width
@@ -360,6 +373,7 @@ const Upload: React.FC<UploadProps> = ({
                                                 uploadTokens.header.helpIcon
                                                     .color
                                             }
+                                            aria-label={helpIconHintText}
                                         />
                                     </Tooltip>
                                 </Block>
@@ -388,6 +402,13 @@ const Upload: React.FC<UploadProps> = ({
                 padding={uploadTokens.container.padding}
                 cursor={disabled ? 'not-allowed' : 'pointer'}
                 style={{ transition: 'all 0.2s ease-in-out' }}
+                role="region"
+                aria-label={label || 'File upload area'}
+                aria-describedby={
+                    [descriptionId, errorId, hintId]
+                        .filter(Boolean)
+                        .join(' ') || undefined
+                }
                 onClick={handleClick}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -398,12 +419,80 @@ const Upload: React.FC<UploadProps> = ({
 
                 <input
                     ref={fileInputRef}
+                    id={uploadId}
                     type="file"
                     multiple={multiple}
                     accept={accept.join(',')}
                     onChange={handleFileInputChange}
+                    disabled={disabled}
+                    required={required}
+                    aria-required={required}
+                    aria-invalid={!!errorId}
+                    aria-describedby={
+                        [descriptionId, errorId, hintId]
+                            .filter(Boolean)
+                            .join(' ') || undefined
+                    }
+                    aria-label={label ? undefined : 'File upload'}
                     style={{ display: 'none' }}
                 />
+                {description && (
+                    <Text
+                        id={descriptionId}
+                        as="span"
+                        fontSize={
+                            uploadTokens.container.content.text.subtitle
+                                .fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.text.subtitle
+                                .fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.text.subtitle.color
+                        }
+                        style={{ display: 'none' }}
+                    >
+                        {description}
+                    </Text>
+                )}
+                {(errorText || uploadContent.hasErrorFiles) && (
+                    <Text
+                        id={errorId}
+                        role="alert"
+                        aria-live="polite"
+                        as="span"
+                        fontSize={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.color
+                        }
+                        style={{
+                            position: 'absolute',
+                            width: '1px',
+                            height: '1px',
+                            padding: 0,
+                            margin: '-1px',
+                            overflow: 'hidden',
+                            clip: 'rect(0, 0, 0, 0)',
+                            whiteSpace: 'nowrap',
+                            borderWidth: 0,
+                        }}
+                    >
+                        {errorText ||
+                            (uploadContent.hasErrorFiles &&
+                            uploadContent.errorFiles.length > 0
+                                ? `${uploadContent.errorFiles.length} file(s) failed to upload`
+                                : 'Upload failed')}
+                    </Text>
+                )}
             </Block>
         </Block>
     )
