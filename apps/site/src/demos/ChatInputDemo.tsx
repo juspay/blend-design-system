@@ -199,7 +199,7 @@ const ChatInputDemo = () => {
                     </div>
 
                     {/* Interactive Component */}
-                    <div className="min-h-32 rounded-2xl w-full flex justify-center items-center bg-gray-50 p-8">
+                    <div className="min-h-32 rounded-2xl w-full flex justify-center items-center bg-gray-50 ">
                         <div style={{ width: playgroundWidth }}>
                             <ChatInput
                                 onKeyDown={(
@@ -217,7 +217,7 @@ const ChatInputDemo = () => {
                                 slot1={
                                     <Button
                                         buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.SMALL}
+                                        size={ButtonSize.MEDIUM}
                                         subType={ButtonSubType.ICON_ONLY}
                                         leadingIcon={<AudioLines size={14} />}
                                         onClick={handlePlaygroundVoiceRecord}

@@ -16,7 +16,7 @@ import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
 import { Paperclip, X, Plus, FileMinus, Image, FileText } from 'lucide-react'
-import { getChatInputTokens } from './chatInput.tokens'
+import { ChatInputTokensType } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     createOverflowMenuItems,
@@ -27,6 +27,9 @@ import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -86,7 +89,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         },
         ref
     ) => {
-        const tokens = getChatInputTokens(FOUNDATION_THEME).sm
+        const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isMobile = breakPointLabel === 'sm'
+        const isDesktop = breakPointLabel === 'lg'
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
         const filesContainerRef = useRef<HTMLDivElement>(null)
@@ -264,178 +270,112 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 handleFileClick
             )
         }, [hiddenFiles, handleFileRemove, handleFileClick])
+        const mobileStyle: React.CSSProperties = {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            // gap: tokens.container.gap
+        }
 
         return (
             <Block
-                ref={containerRef}
+                data-component="chat-input"
                 display="flex"
                 flexDirection="column"
-                width="100%"
-                backgroundColor={
-                    disabled
-                        ? tokens.container.backgroundColor.disabled
-                        : attachedFiles.length > 0
-                          ? FOUNDATION_THEME.colors.gray[50]
-                          : tokens.container.backgroundColor.default
-                }
-                border={tokens.container.border.default}
-                borderRadius={tokens.container.borderRadius}
-                paddingTop={tokens.container.paddingTop}
-                paddingRight={tokens.container.paddingRight}
-                paddingBottom={tokens.container.paddingBottom}
-                paddingLeft={tokens.container.paddingLeft}
                 gap={tokens.container.gap}
-                minHeight={tokens.container.minHeight}
-                position="relative"
-                transition={tokens.container.transition}
-                cursor={disabled ? 'not-allowed' : 'default'}
-                boxShadow={tokens.container.boxShadow.default}
             >
-                {/* Hidden file input */}
-                <PrimitiveInput
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    onChange={handleFileInputChange}
-                    style={{ display: 'none' }}
-                    accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                />
-                {/* Files container */}
-                {attachedFiles.length > 0 && (
-                    <Block
-                        ref={filesContainerRef}
-                        display="flex"
-                        gap={tokens.filesContainer.gap}
-                        maxHeight={tokens.filesContainer.maxHeight}
-                        overflowY={tokens.filesContainer.overflowY}
-                    >
-                        {visibleFiles.map((file) => (
-                            <Tag
-                                key={file.id}
-                                text={capitalizeFirstLetter(file.type)}
-                                variant={TagVariant.SUBTLE}
-                                color={TagColor.NEUTRAL}
-                                size={TagSize.XS}
-                                leftSlot={getDocIcon(file.type)}
-                                rightSlot={
-                                    <X
-                                        size={12}
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleFileRemove(file.id)
-                                        }}
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                }
-                                onClick={() => handleFileClick(file)}
-                            />
-                        ))}
-
-                        {hasOverflow && (
-                            <Block className="overflow-menu-trigger">
-                                <Menu
-                                    trigger={
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            subType={ButtonSubType.INLINE}
-                                            leadingIcon={<Plus size={14} />}
-                                            text={`${hiddenFiles.length} more`}
-                                        >
-                                            <Plus size={14} />
-                                            {hiddenFiles.length} more
-                                        </Button>
-                                    }
-                                    items={[
-                                        {
-                                            items: overflowMenuItems,
-                                        },
-                                    ]}
-                                    open={overflowMenuOpen}
-                                    onOpenChange={setOverflowMenuOpen}
-                                    {...overflowMenuProps}
-                                />
-                            </Block>
-                        )}
-                    </Block>
-                )}
-
                 <Block
-                    backgroundColor={
-                        attachedFiles.length > 0
-                            ? tokens.attachmentContainer.backgroundColor
-                            : 'transparent'
-                    }
-                    borderRadius={
-                        attachedFiles.length > 0
-                            ? tokens.attachmentContainer.borderRadius
-                            : 0
-                    }
-                    padding={
-                        attachedFiles.length > 0
-                            ? tokens.attachmentContainer.padding
-                            : 0
-                    }
+                    display="flex"
+                    flexDirection="row"
+                    gap={tokens.container.gap}
+                    alignItems="center"
                 >
-                    <textarea
-                        ref={textareaElement}
-                        value={value}
-                        onChange={handleTextareaChange}
-                        placeholder={placeholder}
-                        disabled={disabled}
-                        maxLength={maxLength}
-                        aria-label={ariaLabel}
-                        aria-describedby={ariaDescribedBy}
-                        rows={1}
-                        style={{
-                            backgroundColor: tokens.textarea.backgroundColor,
-                            color: tokens.textarea.color,
-                            fontSize: tokens.textarea.fontSize,
-                            lineHeight: tokens.textarea.lineHeight,
-                            padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
-                            border: tokens.textarea.border,
-                            borderRadius: tokens.textarea.borderRadius,
-                            outline: 'none',
-                            resize: tokens.textarea.resize,
-                            fontFamily: tokens.textarea.fontFamily,
-                            width: '100%',
-                            minHeight: tokens.textarea.minHeight,
-                            maxHeight: tokens.textarea.maxHeight,
-                            overflowY: tokens.textarea.overflowY,
-                            cursor: disabled ? 'not-allowed' : 'text',
-                        }}
-                        onFocus={(e) => {
-                            setIsTextareaFocused(true)
-                            const container =
-                                e.currentTarget.parentElement!.parentElement!
-                            container.style.boxShadow = tokens.container
-                                .boxShadow.focus as string
-                            container.style.border = tokens.container.border
-                                .focus as string
-                        }}
-                        onBlur={(e) => {
-                            setIsTextareaFocused(false)
-                            const container =
-                                e.currentTarget.parentElement!.parentElement!
-                            container.style.boxShadow = tokens.container
-                                .boxShadow.default as string
-                            container.style.border = tokens.container.border
-                                .default as string
-                        }}
-                        {...textAreaProps}
-                    />
-                    <Block
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={tokens.bottomActions.justifyContent}
-                        paddingX={tokens.bottomActions.paddingX}
-                        paddingY={tokens.bottomActions.paddingY}
-                        gap={tokens.bottomActions.gap}
-                        marginTop={tokens.bottomActions.gap}
-                    >
+                    {attachedFiles.length > 0 && isMobile && (
+                        <Block style={{ visibility: 'hidden' }}>
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    attachButtonIcon || <Paperclip size={14} />
+                                }
+                                onClick={handleAttachClick}
+                                disabled={disabled}
+                                aria-label="Attach files"
+                            />
+                        </Block>
+                    )}
+                    {attachedFiles.length > 0 && isMobile && (
+                        <Block
+                            ref={filesContainerRef}
+                            display="flex"
+                            gap={tokens.filesContainer.gap}
+                            maxHeight={tokens.filesContainer.maxHeight}
+                            overflowY={tokens.filesContainer.overflowY}
+                        >
+                            {visibleFiles.map((file) => (
+                                <Tag
+                                    key={file.id}
+                                    text={capitalizeFirstLetter(file.type)}
+                                    variant={TagVariant.SUBTLE}
+                                    color={TagColor.NEUTRAL}
+                                    size={TagSize.XS}
+                                    leftSlot={getDocIcon(file.type)}
+                                    rightSlot={
+                                        <X
+                                            size={12}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleFileRemove(file.id)
+                                            }}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                    }
+                                    onClick={() => handleFileClick(file)}
+                                />
+                            ))}
+
+                            {hasOverflow && (
+                                <Block className="overflow-menu-trigger">
+                                    <Menu
+                                        trigger={
+                                            <Button
+                                                buttonType={
+                                                    ButtonType.SECONDARY
+                                                }
+                                                size={ButtonSize.SMALL}
+                                                subType={ButtonSubType.INLINE}
+                                                leadingIcon={<Plus size={14} />}
+                                                text={`${hiddenFiles.length} more`}
+                                            >
+                                                <Plus size={14} />
+                                                {hiddenFiles.length} more
+                                            </Button>
+                                        }
+                                        items={[
+                                            {
+                                                items: overflowMenuItems,
+                                            },
+                                        ]}
+                                        open={overflowMenuOpen}
+                                        onOpenChange={setOverflowMenuOpen}
+                                        {...overflowMenuProps}
+                                    />
+                                </Block>
+                            )}
+                        </Block>
+                    )}
+                </Block>
+                <Block
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    gap={tokens.container.gap}
+                >
+                    {isMobile && (
                         <Button
                             buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
+                            size={ButtonSize.MEDIUM}
                             subType={ButtonSubType.ICON_ONLY}
                             leadingIcon={
                                 attachButtonIcon || <Paperclip size={14} />
@@ -444,120 +384,365 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             disabled={disabled}
                             aria-label="Attach files"
                         />
-
-                        {slot1}
-                    </Block>
-                </Block>
-
-                {topQueries && topQueries.length > 0 && isTextareaFocused && (
+                    )}
                     <Block
-                        borderTop={tokens.topQueries.container.borderTop}
-                        paddingTop={tokens.topQueries.container.paddingTop}
+                        ref={containerRef}
                         display="flex"
                         flexDirection="column"
-                        maxHeight={
-                            topQueriesMaxHeight
-                                ? `${topQueriesMaxHeight}px`
-                                : undefined
+                        width="100%"
+                        justifyContent="center"
+                        backgroundColor={
+                            isMobile && disabled
+                                ? 'transparent'
+                                : disabled
+                                  ? tokens.container.backgroundColor.disabled
+                                  : attachedFiles.length > 0
+                                    ? FOUNDATION_THEME.colors.gray[50]
+                                    : tokens.container.backgroundColor.default
+                        }
+                        border={tokens.container.border.default}
+                        borderRadius={tokens.container.borderRadius}
+                        paddingTop={tokens.container.paddingTop}
+                        paddingRight={tokens.container.paddingRight}
+                        paddingBottom={tokens.container.paddingBottom}
+                        paddingLeft={tokens.container.paddingLeft}
+                        gap={tokens.container.gap}
+                        minHeight={tokens.container.minHeight}
+                        position="relative"
+                        transition={tokens.container.transition}
+                        cursor={disabled ? 'not-allowed' : 'default'}
+                        boxShadow={
+                            isDesktop
+                                ? tokens.container.boxShadow.default
+                                : 'none'
                         }
                     >
-                        <Block
-                            backgroundColor={
-                                tokens.topQueries.header.backgroundColor
-                            }
-                            flexShrink={tokens.topQueries.header.flexShrink}
-                            paddingX={tokens.topQueries.header.paddingX}
-                            paddingY={tokens.topQueries.header.paddingY}
-                        >
-                            <Text
-                                color={tokens.topQueries.header.color}
-                                fontSize={tokens.topQueries.header.fontSize}
-                                fontWeight={tokens.topQueries.header.fontWeight}
-                                textTransform={
-                                    tokens.topQueries.header.textTransform
-                                }
+                        {/* Hidden file input */}
+                        <PrimitiveInput
+                            ref={fileInputRef}
+                            type="file"
+                            multiple
+                            onChange={handleFileInputChange}
+                            style={{ display: 'none' }}
+                            accept="image/*,.pdf,.csv,.txt,.doc,.docx"
+                        />
+                        {/* Files container */}
+                        {attachedFiles.length > 0 && isDesktop && (
+                            <Block
+                                ref={filesContainerRef}
+                                display="flex"
+                                gap={tokens.filesContainer.gap}
+                                maxHeight={tokens.filesContainer.maxHeight}
+                                overflowY={tokens.filesContainer.overflowY}
                             >
-                                Top Queries
-                            </Text>
-                        </Block>
+                                {visibleFiles.map((file) => (
+                                    <Tag
+                                        key={file.id}
+                                        text={capitalizeFirstLetter(file.type)}
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.NEUTRAL}
+                                        size={TagSize.XS}
+                                        leftSlot={getDocIcon(file.type)}
+                                        rightSlot={
+                                            <X
+                                                size={12}
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    handleFileRemove(file.id)
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        }
+                                        onClick={() => handleFileClick(file)}
+                                    />
+                                ))}
+
+                                {hasOverflow && (
+                                    <Block className="overflow-menu-trigger">
+                                        <Menu
+                                            trigger={
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.SECONDARY
+                                                    }
+                                                    size={ButtonSize.SMALL}
+                                                    subType={
+                                                        ButtonSubType.INLINE
+                                                    }
+                                                    leadingIcon={
+                                                        <Plus size={14} />
+                                                    }
+                                                    text={`${hiddenFiles.length} more`}
+                                                >
+                                                    <Plus size={14} />
+                                                    {hiddenFiles.length} more
+                                                </Button>
+                                            }
+                                            items={[
+                                                {
+                                                    items: overflowMenuItems,
+                                                },
+                                            ]}
+                                            open={overflowMenuOpen}
+                                            onOpenChange={setOverflowMenuOpen}
+                                            {...overflowMenuProps}
+                                        />
+                                    </Block>
+                                )}
+                            </Block>
+                        )}
+
                         <Block
-                            overflowY={
-                                tokens.topQueries.scrollContainer.overflowY
+                            style={isMobile ? mobileStyle : {}}
+                            backgroundColor={
+                                attachedFiles.length > 0
+                                    ? tokens.attachmentContainer.backgroundColor
+                                    : 'transparent'
                             }
-                            maxHeight={
-                                topQueriesMaxHeight
-                                    ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
-                                    : undefined
+                            borderRadius={
+                                attachedFiles.length > 0
+                                    ? tokens.attachmentContainer.borderRadius
+                                    : 0
+                            }
+                            padding={
+                                attachedFiles.length > 0 && isDesktop
+                                    ? tokens.attachmentContainer.padding
+                                    : 0
                             }
                         >
-                            {topQueries.map((query) => (
-                                <PrimitiveButton
-                                    key={query.id}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault()
-                                        handleTopQueryClick(query)
-                                    }}
-                                    disabled={disabled}
-                                    style={{
-                                        display: 'block',
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        background: disabled
-                                            ? (tokens.topQueries.item
-                                                  .backgroundColor
-                                                  .disabled as string)
-                                            : (tokens.topQueries.item
-                                                  .backgroundColor
-                                                  .default as string),
-                                        border: tokens.topQueries.item.border,
-                                        color: disabled
-                                            ? (tokens.topQueries.item.color
-                                                  .disabled as string)
-                                            : (tokens.topQueries.item.color
-                                                  .default as string),
-                                        fontSize:
-                                            tokens.topQueries.item.fontSize,
-                                        fontWeight:
-                                            tokens.topQueries.item.fontWeight,
-                                        padding: `${tokens.topQueries.item.paddingY} ${tokens.topQueries.item.paddingX}`,
-                                        cursor: disabled
-                                            ? 'not-allowed'
-                                            : tokens.topQueries.item.cursor,
-                                        transition:
-                                            tokens.topQueries.item.transition,
-                                        opacity: disabled
-                                            ? tokens.topQueries.item.opacity
-                                                  .disabled
-                                            : tokens.topQueries.item.opacity
-                                                  .default,
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        if (!disabled) {
-                                            e.currentTarget.style.backgroundColor =
-                                                tokens.topQueries.item
-                                                    .backgroundColor
-                                                    .hover as string
-                                            e.currentTarget.style.color = tokens
-                                                .topQueries.item.color
-                                                .hover as string
-                                        }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.backgroundColor =
-                                            tokens.topQueries.item
-                                                .backgroundColor
-                                                .default as string
-                                        e.currentTarget.style.color = tokens
-                                            .topQueries.item.color
-                                            .default as string
-                                    }}
+                            <textarea
+                                ref={textareaElement}
+                                value={value}
+                                onChange={handleTextareaChange}
+                                placeholder={placeholder}
+                                disabled={disabled}
+                                maxLength={maxLength}
+                                aria-label={ariaLabel}
+                                aria-describedby={ariaDescribedBy}
+                                rows={1}
+                                style={{
+                                    backgroundColor:
+                                        tokens.textarea.backgroundColor,
+                                    color: tokens.textarea.color,
+                                    fontSize: tokens.textarea.fontSize,
+                                    lineHeight: tokens.textarea.lineHeight,
+                                    padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
+                                    border: tokens.textarea.border,
+                                    borderRadius: tokens.textarea.borderRadius,
+                                    outline: 'none',
+                                    resize: tokens.textarea.resize,
+                                    fontFamily: tokens.textarea.fontFamily,
+                                    width: '100%',
+                                    minHeight: tokens.textarea.minHeight,
+                                    maxHeight: tokens.textarea.maxHeight,
+                                    overflowY: tokens.textarea.overflowY,
+                                    cursor: disabled ? 'not-allowed' : 'text',
+                                    justifyContent: 'center',
+                                }}
+                                onFocus={(e) => {
+                                    setIsTextareaFocused(true)
+                                    const container =
+                                        e.currentTarget.parentElement!
+                                            .parentElement!
+                                    container.style.boxShadow = isDesktop
+                                        ? (tokens.container.boxShadow
+                                              .focus as string)
+                                        : 'none'
+                                    container.style.border = tokens.container
+                                        .border.focus as string
+                                }}
+                                onBlur={(e) => {
+                                    setIsTextareaFocused(false)
+                                    const container =
+                                        e.currentTarget.parentElement!
+                                            .parentElement!
+                                    container.style.boxShadow = isDesktop
+                                        ? (tokens.container.boxShadow
+                                              .default as string)
+                                        : 'none'
+                                    container.style.border = tokens.container
+                                        .border.default as string
+                                }}
+                                {...textAreaProps}
+                            />
+                            {isMobile && <Block>{slot1}</Block>}
+                            {isDesktop && (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent={
+                                        tokens.bottomActions.justifyContent
+                                    }
+                                    paddingX={tokens.bottomActions.paddingX}
+                                    paddingY={tokens.bottomActions.paddingY}
+                                    gap={tokens.bottomActions.gap}
+                                    marginTop={tokens.bottomActions.gap}
                                 >
-                                    {query.text}
-                                </PrimitiveButton>
-                            ))}
+                                    <Button
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.SMALL}
+                                        subType={ButtonSubType.ICON_ONLY}
+                                        leadingIcon={
+                                            attachButtonIcon || (
+                                                <Paperclip size={14} />
+                                            )
+                                        }
+                                        onClick={handleAttachClick}
+                                        disabled={disabled}
+                                        aria-label="Attach files"
+                                    />
+
+                                    {slot1}
+                                </Block>
+                            )}
                         </Block>
+
+                        {topQueries &&
+                            topQueries.length > 0 &&
+                            isTextareaFocused && (
+                                <Block
+                                    borderTop={
+                                        tokens.topQueries.container.borderTop
+                                    }
+                                    paddingTop={
+                                        tokens.topQueries.container.paddingTop
+                                    }
+                                    display="flex"
+                                    flexDirection="column"
+                                    maxHeight={
+                                        topQueriesMaxHeight
+                                            ? `${topQueriesMaxHeight}px`
+                                            : undefined
+                                    }
+                                >
+                                    <Block
+                                        backgroundColor={
+                                            tokens.topQueries.header
+                                                .backgroundColor
+                                        }
+                                        flexShrink={
+                                            tokens.topQueries.header.flexShrink
+                                        }
+                                        paddingX={
+                                            tokens.topQueries.header.paddingX
+                                        }
+                                        paddingY={
+                                            tokens.topQueries.header.paddingY
+                                        }
+                                    >
+                                        <Text
+                                            color={
+                                                tokens.topQueries.header.color
+                                            }
+                                            fontSize={
+                                                tokens.topQueries.header
+                                                    .fontSize
+                                            }
+                                            fontWeight={
+                                                tokens.topQueries.header
+                                                    .fontWeight
+                                            }
+                                            textTransform={
+                                                tokens.topQueries.header
+                                                    .textTransform
+                                            }
+                                        >
+                                            Top Queries
+                                        </Text>
+                                    </Block>
+                                    <Block
+                                        overflowY={
+                                            tokens.topQueries.scrollContainer
+                                                .overflowY
+                                        }
+                                        maxHeight={
+                                            topQueriesMaxHeight
+                                                ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
+                                                : undefined
+                                        }
+                                    >
+                                        {topQueries.map((query) => (
+                                            <PrimitiveButton
+                                                key={query.id}
+                                                onMouseDown={(e) => {
+                                                    e.preventDefault()
+                                                    handleTopQueryClick(query)
+                                                }}
+                                                disabled={disabled}
+                                                style={{
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    textAlign: 'left',
+                                                    background: disabled
+                                                        ? (tokens.topQueries
+                                                              .item
+                                                              .backgroundColor
+                                                              .disabled as string)
+                                                        : (tokens.topQueries
+                                                              .item
+                                                              .backgroundColor
+                                                              .default as string),
+                                                    border: tokens.topQueries
+                                                        .item.border,
+                                                    color: disabled
+                                                        ? (tokens.topQueries
+                                                              .item.color
+                                                              .disabled as string)
+                                                        : (tokens.topQueries
+                                                              .item.color
+                                                              .default as string),
+                                                    fontSize:
+                                                        tokens.topQueries.item
+                                                            .fontSize,
+                                                    fontWeight:
+                                                        tokens.topQueries.item
+                                                            .fontWeight,
+                                                    padding: `${tokens.topQueries.item.paddingY} ${tokens.topQueries.item.paddingX}`,
+                                                    cursor: disabled
+                                                        ? 'not-allowed'
+                                                        : tokens.topQueries.item
+                                                              .cursor,
+                                                    transition:
+                                                        tokens.topQueries.item
+                                                            .transition,
+                                                    opacity: disabled
+                                                        ? tokens.topQueries.item
+                                                              .opacity.disabled
+                                                        : tokens.topQueries.item
+                                                              .opacity.default,
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (!disabled) {
+                                                        e.currentTarget.style.backgroundColor =
+                                                            tokens.topQueries
+                                                                .item
+                                                                .backgroundColor
+                                                                .hover as string
+                                                        e.currentTarget.style.color =
+                                                            tokens.topQueries
+                                                                .item.color
+                                                                .hover as string
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor =
+                                                        tokens.topQueries.item
+                                                            .backgroundColor
+                                                            .default as string
+                                                    e.currentTarget.style.color =
+                                                        tokens.topQueries.item
+                                                            .color
+                                                            .default as string
+                                                }}
+                                            >
+                                                {query.text}
+                                            </PrimitiveButton>
+                                        ))}
+                                    </Block>
+                                </Block>
+                            )}
                     </Block>
-                )}
+                </Block>
             </Block>
         )
     }

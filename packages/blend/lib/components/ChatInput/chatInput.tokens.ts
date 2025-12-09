@@ -148,13 +148,13 @@ export type ChatInputTokensType = Readonly<{
     }
 }>
 
-export type ResponsiveChatInputTokensType = {
+export type ResponsiveChatInputTokens = {
     [key in keyof BreakpointType]: ChatInputTokensType
 }
 
 export const getChatInputTokens = (
     foundationToken: FoundationTokenType
-): ResponsiveChatInputTokensType => {
+): ResponsiveChatInputTokens => {
     return {
         sm: {
             container: {
@@ -167,11 +167,11 @@ export const getChatInputTokens = (
                     default: `1px solid ${foundationToken.colors.gray[200]}`,
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                 },
-                borderRadius: foundationToken.unit[12],
-                paddingTop: foundationToken.unit[12],
-                paddingRight: foundationToken.unit[12],
-                paddingBottom: foundationToken.unit[8],
-                paddingLeft: foundationToken.unit[12],
+                borderRadius: foundationToken.unit[52],
+                paddingTop: foundationToken.unit[5],
+                paddingRight: foundationToken.unit[5],
+                paddingBottom: foundationToken.unit[5],
+                paddingLeft: foundationToken.unit[10],
                 gap: foundationToken.unit[8],
                 minHeight: '52px',
                 transition: 'all 0.2s ease',
