@@ -147,7 +147,8 @@ export function DataTablePagination({
                     }}
                 >
                     <SingleSelect
-                        label="rows per page"
+                        label="Rows per page"
+                        aria-label="Select number of rows per page"
                         items={pageSizeMenuItems}
                         selected={String(pageSize)}
                         onSelect={(value) => {
@@ -276,6 +277,12 @@ export function DataTablePagination({
                                         !hasData ||
                                         page > totalPages
                                     }
+                                    aria-label={`Go to page ${page}`}
+                                    aria-current={
+                                        currentPage === page
+                                            ? 'page'
+                                            : undefined
+                                    }
                                     onClick={() =>
                                         hasData &&
                                         page <= totalPages &&
@@ -313,6 +320,7 @@ export function DataTablePagination({
                                 <SingleSelect
                                     key={index}
                                     label="Jump to page"
+                                    aria-label="Jump to page"
                                     items={[
                                         {
                                             groupLabel: 'Go to page',
@@ -383,6 +391,7 @@ export function DataTablePagination({
                                                     .radius[8]
                                             }
                                             disabled={isLoading || !hasData}
+                                            aria-label={`Jump to page (currently showing page ${currentPage} of ${totalPages})`}
                                             _hover={{
                                                 backgroundColor:
                                                     FOUNDATION_THEME.colors

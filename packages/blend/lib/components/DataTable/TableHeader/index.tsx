@@ -6,6 +6,7 @@ import type { useSortable } from '@dnd-kit/sortable'
 
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { Popover } from '../../Popover'
 import { Checkbox } from '../../Checkbox'
@@ -294,6 +295,8 @@ const TableHeader = forwardRef<
                 >
                     {enableRowExpansion && (
                         <th
+                            scope="col"
+                            aria-label="Expand row"
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 width: '50px',
@@ -328,6 +331,8 @@ const TableHeader = forwardRef<
 
                     {enableRowSelection && (
                         <th
+                            scope="col"
+                            aria-label="Select all rows"
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 width: '60px',
@@ -779,7 +784,28 @@ const TableHeader = forwardRef<
                                                     showHandle={true}
                                                 >
                                                     <DrawerTrigger>
-                                                        <FilterIcon size={16} />
+                                                        <PrimitiveButton
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: 0,
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                            />
+                                                        </PrimitiveButton>
                                                     </DrawerTrigger>
                                                     <DrawerPortal>
                                                         <DrawerOverlay />
@@ -833,7 +859,28 @@ const TableHeader = forwardRef<
                                             ) : (
                                                 <Popover
                                                     trigger={
-                                                        <FilterIcon size={16} />
+                                                        <PrimitiveButton
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: 0,
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                            />
+                                                        </PrimitiveButton>
                                                     }
                                                     maxWidth={220}
                                                     minWidth={220}
@@ -902,12 +949,30 @@ const TableHeader = forwardRef<
                             </Block>
                         )
 
-                        // Conditionally wrap with DraggableColumnHeader
                         if (isDraggable && !isMobile) {
+                            const sortDirection =
+                                sortState.currentSortField ===
+                                String(column.field)
+                                    ? sortState.currentSortDirection
+                                    : SortDirection.NONE
+                            const ariaSortValue =
+                                sortDirection === SortDirection.ASCENDING
+                                    ? 'ascending'
+                                    : sortDirection === SortDirection.DESCENDING
+                                      ? 'descending'
+                                      : 'none'
+
                             return (
                                 <DraggableColumnHeader
                                     key={String(column.field)}
                                     id={String(column.field)}
+                                    scope="col"
+                                    aria-sort={
+                                        column.isSortable !== false
+                                            ? ariaSortValue
+                                            : undefined
+                                    }
+                                    aria-label={column.header}
                                     style={headerStyle}
                                     data-element="table-header"
                                     data-id={column.header}
@@ -920,9 +985,27 @@ const TableHeader = forwardRef<
                             )
                         }
 
+                        const sortDirection =
+                            sortState.currentSortField === String(column.field)
+                                ? sortState.currentSortDirection
+                                : SortDirection.NONE
+                        const ariaSortValue =
+                            sortDirection === SortDirection.ASCENDING
+                                ? 'ascending'
+                                : sortDirection === SortDirection.DESCENDING
+                                  ? 'descending'
+                                  : 'none'
+
                         return (
                             <th
                                 key={String(column.field)}
+                                scope="col"
+                                aria-sort={
+                                    column.isSortable !== false
+                                        ? ariaSortValue
+                                        : undefined
+                                }
+                                aria-label={column.header}
                                 style={headerStyle}
                                 data-element="table-header"
                                 data-id={column.header}
@@ -938,6 +1021,8 @@ const TableHeader = forwardRef<
                             mobileConfig?.enableColumnOverflow
                         ) && (
                             <th
+                                scope="col"
+                                aria-label="Actions"
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
                                     width: '200px',
@@ -983,6 +1068,8 @@ const TableHeader = forwardRef<
                         mobileOverflowColumns.length > 0 &&
                         onMobileOverflowClick && (
                             <th
+                                scope="col"
+                                aria-label="View more columns"
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
                                     width: '40px',
@@ -1005,6 +1092,8 @@ const TableHeader = forwardRef<
 
                     {enableColumnManager && (
                         <th
+                            scope="col"
+                            aria-label="Column manager"
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 overflow: 'hidden',

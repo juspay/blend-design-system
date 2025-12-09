@@ -30,11 +30,17 @@ const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
         backgroundColor="transparent"
         border="none"
         cursor="pointer"
+        aria-label="Close search"
+        type="button"
         _hover={{
             backgroundColor: FOUNDATION_THEME.colors.gray[100],
         }}
     >
-        <X size={16} color={FOUNDATION_THEME.colors.gray[600]} />
+        <X
+            size={16}
+            color={FOUNDATION_THEME.colors.gray[600]}
+            aria-hidden="true"
+        />
     </PrimitiveButton>
 )
 
@@ -191,8 +197,10 @@ const DataTableHeader = forwardRef<
                                                             .searchIcon.width
                                                     )
                                                 )}
+                                                aria-hidden="true"
                                             />
                                         }
+                                        aria-label="Open search"
                                         size={ButtonSize.SMALL}
                                         onClick={() => setIsSearchOpen(true)}
                                     />
@@ -217,8 +225,10 @@ const DataTableHeader = forwardRef<
                                                             .filterIcon.width
                                                     )
                                                 )}
+                                                aria-hidden="true"
                                             />
                                         }
+                                        aria-label={`Advanced filters${advancedFilters.length > 0 ? ` (${advancedFilters.length} active)` : ''}`}
                                         size={ButtonSize.SMALL}
                                         onClick={() => setIsDrawerOpen(true)}
                                     />
@@ -390,6 +400,7 @@ const DataTableHeader = forwardRef<
                                                             ButtonType.SECONDARY
                                                         }
                                                         size={ButtonSize.SMALL}
+                                                        aria-label="Clear all filters"
                                                         onClick={() => {
                                                             onClearAllFilters()
                                                             setIsDrawerOpen(
@@ -532,7 +543,10 @@ const DataTableHeader = forwardRef<
                                                                 ? ButtonType.PRIMARY
                                                                 : ButtonType.SECONDARY
                                                         }
-                                                        leadingIcon={<Filter />}
+                                                        leadingIcon={
+                                                            <Filter aria-hidden="true" />
+                                                        }
+                                                        aria-label={`Advanced filters${advancedFilters.length > 0 ? ` (${advancedFilters.length} active)` : ''}`}
                                                         size={ButtonSize.SMALL}
                                                     >
                                                         Advanced Filters{' '}

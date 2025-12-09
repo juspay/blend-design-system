@@ -189,6 +189,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
             disabled={disabled}
+            aria-label="Manage columns"
+            title="Manage columns"
             style={{
                 opacity: disabled ? 0.4 : 1,
             }}
@@ -196,6 +198,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             <Plus
                 size={tableTokens.header.actionIcons.columnManagerIcon.width}
                 color={FOUNDATION_THEME.colors.gray[400]}
+                aria-hidden="true"
             />
         </PrimitiveButton>
     )

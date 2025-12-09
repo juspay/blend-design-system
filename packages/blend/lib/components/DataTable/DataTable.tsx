@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, forwardRef, useRef } from 'react'
+import { useState, useEffect, useMemo, forwardRef, useRef, useId } from 'react'
 import {
     DndContext,
     closestCenter,
@@ -144,6 +144,12 @@ const DataTable = forwardRef(
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const tableId = useId()
+        const tableLabelId = title ? `${tableId}-label` : undefined
+        const tableDescriptionId = description
+            ? `${tableId}-description`
+            : undefined
+        const statusRegionId = `${tableId}-status`
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(
             defaultSort || null
@@ -977,7 +983,32 @@ const DataTable = forwardRef(
                     flexDirection: tableToken.flexDirection,
                 }}
                 data-table={title}
+                role="region"
+                aria-label={title || 'Data table'}
+                aria-describedby={
+                    [tableLabelId, tableDescriptionId]
+                        .filter(Boolean)
+                        .join(' ') || undefined
+                }
             >
+                {title && (
+                    <h2
+                        id={tableLabelId}
+                        style={{ display: 'none' }}
+                        aria-hidden="true"
+                    >
+                        {title}
+                    </h2>
+                )}
+                {description && (
+                    <p
+                        id={tableDescriptionId}
+                        style={{ display: 'none' }}
+                        aria-hidden="true"
+                    >
+                        {description}
+                    </p>
+                )}
                 <DataTableHeader
                     title={title}
                     description={description}
@@ -1011,6 +1042,7 @@ const DataTable = forwardRef(
                                             buttonType={ButtonType.SECONDARY}
                                             leadingIcon={<Settings />}
                                             size={ButtonSize.SMALL}
+                                            aria-label="Table settings"
                                         >
                                             Settings
                                         </Button>
@@ -1041,6 +1073,29 @@ const DataTable = forwardRef(
                         onDeselectAll={handleDeselectAll}
                         customActions={renderBulkActions()}
                     />
+                    <div
+                        id={statusRegionId}
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        style={{
+                            position: 'absolute',
+                            width: '1px',
+                            height: '1px',
+                            padding: 0,
+                            margin: '-1px',
+                            overflow: 'hidden',
+                            clip: 'rect(0, 0, 0, 0)',
+                            whiteSpace: 'nowrap',
+                            borderWidth: 0,
+                        }}
+                    >
+                        {isLoading
+                            ? 'Loading table data'
+                            : currentData.length === 0
+                              ? 'No data available'
+                              : `Showing ${currentData.length} of ${totalRows} rows`}
+                    </div>
 
                     <Block
                         style={{
@@ -1084,6 +1139,27 @@ const DataTable = forwardRef(
                                     }}
                                 >
                                     <table
+                                        id={tableId}
+                                        role="table"
+                                        aria-label={title || 'Data table'}
+                                        aria-rowcount={
+                                            totalRows > 0
+                                                ? totalRows
+                                                : undefined
+                                        }
+                                        aria-colcount={
+                                            visibleColumns.length +
+                                            (enableRowSelection ? 1 : 0) +
+                                            (enableRowExpansion ? 1 : 0) +
+                                            (enableInlineEdit || rowActions
+                                                ? 1
+                                                : 0)
+                                        }
+                                        aria-describedby={
+                                            [tableDescriptionId, statusRegionId]
+                                                .filter(Boolean)
+                                                .join(' ') || undefined
+                                        }
                                         style={{
                                             width: tableToken.dataTable.table
                                                 .width,
@@ -1372,6 +1448,9 @@ const DataTable = forwardRef(
                                                                 ? 1
                                                                 : 0)
                                                         }
+                                                        role="status"
+                                                        aria-live="polite"
+                                                        aria-atomic="true"
                                                         style={{
                                                             padding: '0',
                                                             height: '100%',

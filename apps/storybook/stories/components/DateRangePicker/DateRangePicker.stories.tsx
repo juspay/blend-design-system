@@ -5,7 +5,10 @@ import {
     Button,
     ButtonType,
 } from '@juspay/blend-design-system'
-import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 // Import types that might not be exported from main
 type DateRange = {

@@ -113,10 +113,16 @@ const ExpandButton = styled.button`
     cursor: pointer;
     border-radius: ${FOUNDATION_THEME.border.radius[4]};
     color: ${FOUNDATION_THEME.colors.gray[600]};
+    visibility: visible;
+    opacity: 1;
 
     &:hover {
         background-color: ${FOUNDATION_THEME.colors.gray[100]};
         color: ${FOUNDATION_THEME.colors.gray[800]};
+    }
+
+    &:focus-visible {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]};
     }
 `
 
@@ -206,6 +212,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="save"
                             onClick={() => onSaveRow(row[idField])}
+                            aria-label="Save row"
                             title="Save"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Save size={16} />}
@@ -225,6 +232,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="cancel"
                             onClick={() => onCancelEdit(row[idField])}
+                            aria-label="Cancel editing row"
                             title="Cancel"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<X size={16} />}
@@ -245,6 +253,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="edit"
                             onClick={() => onEditRow(row[idField])}
+                            aria-label="Edit row"
                             title="Edit"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Edit size={16} />}
@@ -470,6 +479,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                             size={ButtonSize.SMALL}
                             subType={ButtonSubType.ICON_ONLY}
                             leadingIcon={<MoreHorizontal size={16} />}
+                            aria-label="More actions"
                             title="More actions"
                         />
                     }
@@ -615,6 +625,9 @@ const TableBody = forwardRef<
                           const rowShouldShowSkeleton =
                               rowIsLoading || globalShouldShowSkeleton
 
+                          const isSelected = selectedRows[rowId] || false
+                          const rowAriaLabel = `Row ${index + 1}${isSelected ? ', selected' : ''}${isExpanded ? ', expanded' : ''}`
+
                           return (
                               <React.Fragment key={rowId}>
                                   <TableRow
@@ -623,6 +636,19 @@ const TableBody = forwardRef<
                                           rowStyling.backgroundColor
                                       }
                                       $hasCustomBackground={hasCustomBackground}
+                                      role="row"
+                                      aria-rowindex={index + 1}
+                                      aria-selected={
+                                          enableRowSelection
+                                              ? isSelected
+                                              : undefined
+                                      }
+                                      aria-expanded={
+                                          enableRowExpansion && canExpand
+                                              ? isExpanded
+                                              : undefined
+                                      }
+                                      aria-label={rowAriaLabel}
                                       onClick={() =>
                                           onRowClick && onRowClick(row, index)
                                       }
@@ -686,6 +712,17 @@ const TableBody = forwardRef<
                                                   >
                                                       {canExpand ? (
                                                           <ExpandButton
+                                                              type="button"
+                                                              aria-label={
+                                                                  isExpanded
+                                                                      ? 'Collapse row'
+                                                                      : 'Expand row'
+                                                              }
+                                                              aria-expanded={
+                                                                  isExpanded
+                                                                      ? 'true'
+                                                                      : 'false'
+                                                              }
                                                               onClick={() =>
                                                                   onRowExpand(
                                                                       row[
@@ -698,6 +735,10 @@ const TableBody = forwardRef<
                                                                       ? 'Collapse row'
                                                                       : 'Expand row'
                                                               }
+                                                              style={{
+                                                                  display:
+                                                                      'flex',
+                                                              }}
                                                           >
                                                               {isExpanded ? (
                                                                   <ChevronDown
@@ -1065,12 +1106,14 @@ const TableBody = forwardRef<
                                                       }}
                                                   >
                                                       <ExpandButton
+                                                          type="button"
+                                                          aria-label="View more details"
+                                                          title="View more details"
                                                           onClick={() =>
                                                               onMobileOverflowClick(
                                                                   row
                                                               )
                                                           }
-                                                          title="View more details"
                                                           style={{
                                                               color: FOUNDATION_THEME
                                                                   .colors
