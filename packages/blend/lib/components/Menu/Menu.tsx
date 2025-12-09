@@ -196,12 +196,14 @@ const Menu = ({
 
     return (
         <RadixMenu.Root
+            data-element="menu"
             modal={asModal}
             open={open}
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <Content
+                data-menu="menu"
                 data-dropdown="dropdown"
                 sideOffset={sideOffset}
                 alignOffset={alignOffset}
@@ -312,6 +314,7 @@ const Menu = ({
                                         : FOUNDATION_THEME.unit[6],
                                 }}
                             >
+                                s
                                 <VirtualList
                                     items={virtualListItems}
                                     height={
@@ -341,6 +344,11 @@ const Menu = ({
                                             {group.label && (
                                                 <RadixMenu.Label asChild>
                                                     <PrimitiveText
+                                                        data-element="menu-group-label"
+                                                        data-id={
+                                                            group.label ||
+                                                            'menu-group-label'
+                                                        }
                                                         fontSize={
                                                             menuTokens.item
                                                                 .optionsLabel

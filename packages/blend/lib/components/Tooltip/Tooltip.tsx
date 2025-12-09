@@ -49,7 +49,6 @@ export const Tooltip = ({
     ) : (
         trigger
     )
-
     return (
         <RadixTooltip.Provider delayDuration={delayDuration}>
             <RadixTooltip.Root open={open}>
@@ -92,7 +91,8 @@ export const Tooltip = ({
                                     )}
                                 <Block flexGrow={1} overflow="hidden">
                                     <PrimitiveText
-                                        data-text={content}
+                                        data-element="tooltip-text"
+                                        data-id={content || 'tooltip-text'}
                                         color={tooltipTokens.text.color}
                                         fontSize={
                                             tooltipTokens.text.fontSize[size]
@@ -112,6 +112,7 @@ export const Tooltip = ({
                                     slotDirection ===
                                         TooltipSlotDirection.RIGHT && (
                                         <Block
+                                            data-element="trailing-icon"
                                             contentCentered
                                             flexShrink={0}
                                             role="presentation"

@@ -213,7 +213,13 @@ const StatCard = ({
                     statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
-                data-ss-delta={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
+                data-numeric={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
+                data-element="statcard-delta"
+                data-status={
+                    change?.valueType === ChangeType.INCREASE
+                        ? 'increase'
+                        : 'decrease'
+                }
             >
                 {change.value >= 0 ? '+' : ''}
                 {change.value.toFixed(2)}%
@@ -351,6 +357,7 @@ const StatCard = ({
                     >
                         {titleIcon && !isSmallScreen && (
                             <Block
+                                data-element="title-icon"
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
@@ -390,13 +397,15 @@ const StatCard = ({
                                         textOverflow: 'ellipsis',
                                         wordBreak: 'break-word',
                                     }}
-                                    data-ss-text={title}
+                                    data-element="statcard-header"
+                                    data-id={title || 'statcard-header'}
                                 >
                                     {title}
                                 </Text>
                             </Tooltip>
                             {helpIconText && (
                                 <Block
+                                    data-element="help-icon"
                                     display="flex"
                                     alignItems="center"
                                     justifyContent="center"
@@ -483,7 +492,8 @@ const StatCard = ({
                                     statCardToken.textContainer.stats.subtitle
                                         .fontWeight
                                 }
-                                data-ss-subtitle={subtitle}
+                                data-element="statcard-subtitle"
+                                data-id={subtitle || 'statcard-subtitle'}
                             >
                                 {subtitle}
                             </Text>
@@ -522,6 +532,7 @@ const StatCard = ({
             // gap={statCardToken.gap}
             justifyContent="space-between"
             data-statcard-variant={normalizedVariant}
+            data-statcard={title || 'single-stat'}
             maxWidth={maxWidth}
             minWidth={minWidth}
             role="region"
@@ -547,6 +558,7 @@ const StatCard = ({
                                 <>
                                     {titleIcon && !isSmallScreen && (
                                         <Block
+                                            data-element="title-icon"
                                             width={
                                                 statCardToken.textContainer
                                                     .header.titleIcon.width
@@ -625,13 +637,18 @@ const StatCard = ({
                                                             'ellipsis',
                                                         wordBreak: 'break-word',
                                                     }}
-                                                    data-ss-text={title}
+                                                    data-element="statcard-header"
+                                                    data-id={
+                                                        title ||
+                                                        'statcard-header'
+                                                    }
                                                 >
                                                     {title}
                                                 </Text>
                                             </Tooltip>
                                             {helpIconText && (
                                                 <Block
+                                                    data-element="help-icon"
                                                     flexShrink={0}
                                                     display="flex"
                                                     alignItems="center"
@@ -665,6 +682,7 @@ const StatCard = ({
                                     )}
                                     {actionIcon && !isSmallScreen && (
                                         <Block
+                                            data-element="view-more"
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
@@ -697,6 +715,7 @@ const StatCard = ({
                                         >
                                             {titleIcon && (
                                                 <Block
+                                                    data-element="title-icon"
                                                     width={
                                                         statCardToken
                                                             .textContainer
@@ -760,13 +779,18 @@ const StatCard = ({
                                                             wordBreak:
                                                                 'break-word',
                                                         }}
-                                                        data-ss-text={title}
+                                                        data-element="statcard-header"
+                                                        data-id={
+                                                            title ||
+                                                            'statcard-header'
+                                                        }
                                                     >
                                                         {title}
                                                     </Text>
                                                 </Tooltip>
                                                 {helpIconText && (
                                                     <Block
+                                                        data-element="help-icon"
                                                         flexShrink={0}
                                                         display="flex"
                                                         alignItems="center"
@@ -834,9 +858,10 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-ss-numeric={formatMainValue(
+                                                data-numeric={formatMainValue(
                                                     value || '--'
                                                 )}
+                                                data-element="statcard-data"
                                             >
                                                 {formatMainValue(value || '--')}
                                             </Text>
@@ -849,9 +874,16 @@ const StatCard = ({
                                                 <Block
                                                     id={changeId}
                                                     cursor="pointer"
-                                                    data-ss-delta={`${change?.valueType === ChangeType.INCREASE ? '+' : ''}${change?.value.toFixed(
+                                                    data-id={`${change?.valueType === ChangeType.INCREASE ? '+' : ''}${change?.value.toFixed(
                                                         2
                                                     )}%`}
+                                                    data-element="statcard-delta"
+                                                    data-status={
+                                                        change?.valueType ===
+                                                        ChangeType.INCREASE
+                                                            ? 'increase'
+                                                            : 'decrease'
+                                                    }
                                                 >
                                                     {formattedChange}
                                                 </Block>
@@ -874,7 +906,10 @@ const StatCard = ({
                                                 statCardToken.textContainer
                                                     .stats.subtitle.fontWeight
                                             }
-                                            data-ss-subtitle={subtitle}
+                                            data-element="statcard-subtitle"
+                                            data-id={
+                                                subtitle || 'statcard-subtitle'
+                                            }
                                         >
                                             {subtitle}
                                         </Text>
@@ -926,6 +961,7 @@ const StatCard = ({
                             >
                                 {actionIcon && !isSmallScreen && (
                                     <Block
+                                        data-element="action-icon"
                                         display="flex"
                                         alignItems="flex-start"
                                         justifyContent="center"
@@ -946,6 +982,7 @@ const StatCard = ({
                                 >
                                     {titleIcon && !isSmallScreen && (
                                         <Block
+                                            data-element="title-icon"
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
@@ -989,13 +1026,17 @@ const StatCard = ({
                                                     textOverflow: 'ellipsis',
                                                     wordBreak: 'break-word',
                                                 }}
-                                                data-ss-text={title}
+                                                data-element="statcard-header"
+                                                data-id={
+                                                    title || 'statcard-header'
+                                                }
                                             >
                                                 {title}
                                             </Text>
                                         </Tooltip>
                                         {helpIconText && (
                                             <Block
+                                                data-element="help-icon"
                                                 display="flex"
                                                 alignItems="center"
                                                 justifyContent="center"
@@ -1083,9 +1124,10 @@ const StatCard = ({
                                                     style={{
                                                         cursor: 'pointer',
                                                     }}
-                                                    data-ss-numeric={formatMainValue(
+                                                    data-numeric={formatMainValue(
                                                         value || '--'
                                                     )}
+                                                    data-element="statcard-data"
                                                 >
                                                     {formatMainValue(
                                                         value || '--'
@@ -1147,7 +1189,10 @@ const StatCard = ({
                                                 statCardToken.textContainer
                                                     .stats.subtitle.fontWeight
                                             }
-                                            data-ss-subtitle={subtitle}
+                                            data-element="statcard-subtitle"
+                                            data-id={
+                                                subtitle || 'statcard-subtitle'
+                                            }
                                         >
                                             {subtitle}
                                         </Text>

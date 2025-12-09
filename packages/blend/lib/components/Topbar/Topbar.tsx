@@ -337,6 +337,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
 
         return (
             <Block
+                data-topbar="topbar"
                 ref={ref}
                 width="100%"
                 top="0"
