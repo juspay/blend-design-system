@@ -17,6 +17,7 @@ import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSe
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
 import StatCardAccessibility from '../../StatCard/accessibility/StatCardAccessibility'
 import CardAccessibility from '../../Card/accessibility/CardAccessibility'
+import ChartsAccessibility from '../../Charts/accessibility/ChartsAccessibility'
 import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
 import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
 import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
@@ -118,6 +119,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Card',
         displayName: 'Card',
         component: CardAccessibility,
+    },
+    {
+        name: 'Charts',
+        displayName: 'Charts',
+        component: ChartsAccessibility,
     },
     {
         name: 'Avatar',

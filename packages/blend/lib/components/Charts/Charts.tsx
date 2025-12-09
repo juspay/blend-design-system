@@ -3,7 +3,7 @@ import { ResponsiveContainer } from 'recharts'
 import { DEFAULT_COLORS } from './utils'
 import ChartHeader from './ChartHeader'
 import ChartLegends from './ChartLegend'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useId, useMemo } from 'react'
 import { renderChart } from './renderChart'
 import { transformNestedData } from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
@@ -91,6 +91,55 @@ const Charts: React.FC<ChartsProps> = ({
         show: yAxis?.show ?? true,
         ...yAxis,
     }
+
+    const baseId = useId()
+    const chartId = `${baseId}-chart`
+    const headerId = `${baseId}-header`
+    const chartDescriptionId = `${baseId}-chart-description`
+
+    const chartLabel = useMemo(() => {
+        const parts: string[] = []
+        if (chartHeaderSlot) {
+            if (typeof chartHeaderSlot === 'string') {
+                parts.push(chartHeaderSlot)
+            } else if (
+                chartHeaderSlot &&
+                typeof chartHeaderSlot === 'object' &&
+                'props' in chartHeaderSlot &&
+                chartHeaderSlot.props &&
+                typeof chartHeaderSlot.props === 'object' &&
+                'children' in chartHeaderSlot.props
+            ) {
+                const children = chartHeaderSlot.props.children
+                if (typeof children === 'string') {
+                    parts.push(children)
+                }
+            }
+        }
+        if (xAxis?.label) {
+            parts.push(`X-axis: ${xAxis.label}`)
+        }
+        if (yAxis?.label) {
+            parts.push(`Y-axis: ${yAxis.label}`)
+        }
+        return parts.length > 0
+            ? `${chartName} - ${parts.join(', ')}`
+            : chartName
+    }, [chartHeaderSlot, xAxis?.label, yAxis?.label, chartName])
+
+    const chartDescription = useMemo(() => {
+        const parts: string[] = []
+        if (chartType) {
+            parts.push(`${chartType} chart`)
+        }
+        if (data.length > 0) {
+            parts.push(`showing ${data.length} data points`)
+        }
+        if (lineKeys.length > 0) {
+            parts.push(`with ${lineKeys.length} series: ${lineKeys.join(', ')}`)
+        }
+        return parts.join(', ')
+    }, [chartType, data.length, lineKeys])
 
     const isLargeScreen = () => {
         return window.innerWidth >= 1024
@@ -258,6 +307,7 @@ const Charts: React.FC<ChartsProps> = ({
                         {' '}
                         {showHeader && (
                             <ChartHeader
+                                id={headerId}
                                 slot1={slot1}
                                 slot2={slot2}
                                 slot3={slot3}
@@ -270,6 +320,21 @@ const Charts: React.FC<ChartsProps> = ({
                                 showCollapseIcon={showCollapseIcon}
                             />
                         )}
+                        {/* Hidden description for screen readers */}
+                        <div
+                            id={chartDescriptionId}
+                            style={{
+                                position: 'absolute',
+                                width: '1px',
+                                height: '1px',
+                                overflow: 'hidden',
+                                clip: 'rect(0, 0, 0, 0)',
+                                whiteSpace: 'nowrap',
+                            }}
+                            aria-live="polite"
+                        >
+                            {chartDescription}
+                        </div>
                         {showHorizontallyStackedLegends()
                             ? isExpanded && (
                                   <Block
@@ -318,38 +383,52 @@ const Charts: React.FC<ChartsProps> = ({
                                           gap={chartTokens.content.gap}
                                           alignItems="center"
                                       >
-                                          <ResponsiveContainer
-                                              width="100%"
-                                              height={250}
+                                          <div
+                                              role="img"
+                                              aria-label={chartLabel}
+                                              aria-describedby={
+                                                  chartDescriptionId
+                                              }
+                                              style={{
+                                                  width: '100%',
+                                                  height: '250px',
+                                              }}
                                           >
-                                              {renderChart({
-                                                  flattenedData,
-                                                  chartType,
-                                                  hoveredKey,
-                                                  lineKeys,
-                                                  colors,
-                                                  setHoveredKey,
-                                                  data,
-                                                  selectedKeys,
-                                                  isSmallScreen: false,
-                                                  barsize,
-                                                  xAxis: mergedXAxis,
-                                                  yAxis: {
-                                                      ...mergedYAxis,
-                                                      label: isSmallScreen
-                                                          ? undefined
-                                                          : mergedYAxis.label,
-                                                      showLabel: isSmallScreen
-                                                          ? false
-                                                          : mergedYAxis.showLabel,
-                                                  },
-                                                  noData,
-                                                  height:
-                                                      typeof height === 'number'
-                                                          ? height
-                                                          : undefined,
-                                              })}
-                                          </ResponsiveContainer>
+                                              <ResponsiveContainer
+                                                  width="100%"
+                                                  height={250}
+                                              >
+                                                  {renderChart({
+                                                      flattenedData,
+                                                      chartType,
+                                                      hoveredKey,
+                                                      lineKeys,
+                                                      colors,
+                                                      setHoveredKey,
+                                                      data,
+                                                      selectedKeys,
+                                                      isSmallScreen: false,
+                                                      barsize,
+                                                      xAxis: mergedXAxis,
+                                                      yAxis: {
+                                                          ...mergedYAxis,
+                                                          label: isSmallScreen
+                                                              ? undefined
+                                                              : mergedYAxis.label,
+                                                          showLabel:
+                                                              isSmallScreen
+                                                                  ? false
+                                                                  : mergedYAxis.showLabel,
+                                                      },
+                                                      noData,
+                                                      height:
+                                                          typeof height ===
+                                                          'number'
+                                                              ? height
+                                                              : undefined,
+                                                  })}
+                                              </ResponsiveContainer>
+                                          </div>
                                       </Block>
                                   </Block>
                               )
@@ -371,38 +450,52 @@ const Charts: React.FC<ChartsProps> = ({
                                       gap={chartTokens.content.gap}
                                   >
                                       <Block style={{ flex: 1, width: '100%' }}>
-                                          <ResponsiveContainer
-                                              width="100%"
-                                              height={300}
+                                          <div
+                                              role="img"
+                                              aria-label={chartLabel}
+                                              aria-describedby={
+                                                  chartDescriptionId
+                                              }
+                                              style={{
+                                                  width: '100%',
+                                                  height: '300px',
+                                              }}
                                           >
-                                              {renderChart({
-                                                  flattenedData,
-                                                  chartType,
-                                                  hoveredKey,
-                                                  lineKeys,
-                                                  colors,
-                                                  setHoveredKey,
-                                                  data,
-                                                  selectedKeys,
-                                                  isSmallScreen,
-                                                  barsize,
-                                                  xAxis: mergedXAxis,
-                                                  yAxis: {
-                                                      ...mergedYAxis,
-                                                      label: isSmallScreen
-                                                          ? undefined
-                                                          : mergedYAxis.label,
-                                                      showLabel: isSmallScreen
-                                                          ? false
-                                                          : mergedYAxis.showLabel,
-                                                  },
-                                                  noData,
-                                                  height:
-                                                      typeof height === 'number'
-                                                          ? height
-                                                          : undefined,
-                                              })}
-                                          </ResponsiveContainer>
+                                              <ResponsiveContainer
+                                                  width="100%"
+                                                  height={300}
+                                              >
+                                                  {renderChart({
+                                                      flattenedData,
+                                                      chartType,
+                                                      hoveredKey,
+                                                      lineKeys,
+                                                      colors,
+                                                      setHoveredKey,
+                                                      data,
+                                                      selectedKeys,
+                                                      isSmallScreen,
+                                                      barsize,
+                                                      xAxis: mergedXAxis,
+                                                      yAxis: {
+                                                          ...mergedYAxis,
+                                                          label: isSmallScreen
+                                                              ? undefined
+                                                              : mergedYAxis.label,
+                                                          showLabel:
+                                                              isSmallScreen
+                                                                  ? false
+                                                                  : mergedYAxis.showLabel,
+                                                      },
+                                                      noData,
+                                                      height:
+                                                          typeof height ===
+                                                          'number'
+                                                              ? height
+                                                              : undefined,
+                                                  })}
+                                              </ResponsiveContainer>
+                                          </div>
                                       </Block>
                                       <Block
                                           width={'25%'}
@@ -478,10 +571,15 @@ const Charts: React.FC<ChartsProps> = ({
         <>
             <Block
                 ref={chartContainerRef}
+                id={chartId}
                 width="100%"
                 height="100%"
                 border={chartTokens.border}
                 borderRadius={chartTokens.borderRadius}
+                role="region"
+                aria-label={chartLabel}
+                aria-labelledby={headerId}
+                aria-describedby={chartDescriptionId}
                 {...props}
             >
                 {skeleton?.show ? (
@@ -494,6 +592,7 @@ const Charts: React.FC<ChartsProps> = ({
                     <>
                         {showHeader && (
                             <ChartHeader
+                                id={headerId}
                                 slot1={slot1}
                                 slot2={slot2}
                                 slot3={slot3}
@@ -505,6 +604,21 @@ const Charts: React.FC<ChartsProps> = ({
                                 showCollapseIcon={showCollapseIcon}
                             />
                         )}
+                        {/* Hidden description for screen readers */}
+                        <div
+                            id={chartDescriptionId}
+                            style={{
+                                position: 'absolute',
+                                width: '1px',
+                                height: '1px',
+                                overflow: 'hidden',
+                                clip: 'rect(0, 0, 0, 0)',
+                                whiteSpace: 'nowrap',
+                            }}
+                            aria-live="polite"
+                        >
+                            {chartDescription}
+                        </div>
                         {showHorizontallyStackedLegends()
                             ? isExpanded && (
                                   <Block
@@ -568,41 +682,55 @@ const Charts: React.FC<ChartsProps> = ({
                                           alignItems="center"
                                           height={height || 400}
                                       >
-                                          <ResponsiveContainer
-                                              width="100%"
-                                              height={'100%'}
-                                              //   height="100%"
-                                              //   height={'auto'}
+                                          <div
+                                              role="img"
+                                              aria-label={chartLabel}
+                                              aria-describedby={
+                                                  chartDescriptionId
+                                              }
+                                              style={{
+                                                  width: '100%',
+                                                  height: '100%',
+                                              }}
                                           >
-                                              {renderChart({
-                                                  chartName,
-                                                  flattenedData,
-                                                  chartType,
-                                                  hoveredKey,
-                                                  lineKeys,
-                                                  colors,
-                                                  setHoveredKey,
-                                                  data,
-                                                  selectedKeys,
-                                                  isSmallScreen,
-                                                  barsize,
-                                                  xAxis: mergedXAxis,
-                                                  yAxis: {
-                                                      ...mergedYAxis,
-                                                      label: isSmallScreen
-                                                          ? undefined
-                                                          : mergedYAxis.label,
-                                                      showLabel: isSmallScreen
-                                                          ? false
-                                                          : mergedYAxis.showLabel,
-                                                  },
-                                                  noData,
-                                                  height:
-                                                      typeof height === 'number'
-                                                          ? height
-                                                          : undefined,
-                                              })}
-                                          </ResponsiveContainer>
+                                              <ResponsiveContainer
+                                                  width="100%"
+                                                  height={'100%'}
+                                                  //   height="100%"
+                                                  //   height={'auto'}
+                                              >
+                                                  {renderChart({
+                                                      chartName,
+                                                      flattenedData,
+                                                      chartType,
+                                                      hoveredKey,
+                                                      lineKeys,
+                                                      colors,
+                                                      setHoveredKey,
+                                                      data,
+                                                      selectedKeys,
+                                                      isSmallScreen,
+                                                      barsize,
+                                                      xAxis: mergedXAxis,
+                                                      yAxis: {
+                                                          ...mergedYAxis,
+                                                          label: isSmallScreen
+                                                              ? undefined
+                                                              : mergedYAxis.label,
+                                                          showLabel:
+                                                              isSmallScreen
+                                                                  ? false
+                                                                  : mergedYAxis.showLabel,
+                                                      },
+                                                      noData,
+                                                      height:
+                                                          typeof height ===
+                                                          'number'
+                                                              ? height
+                                                              : undefined,
+                                                  })}
+                                              </ResponsiveContainer>
+                                          </div>
                                           {isSmallScreen && (
                                               <Block
                                                   display="flex"
@@ -730,38 +858,52 @@ const Charts: React.FC<ChartsProps> = ({
                                               height: height || 400,
                                           }}
                                       >
-                                          <ResponsiveContainer
-                                              width="100%"
-                                              height={'100%'}
+                                          <div
+                                              role="img"
+                                              aria-label={chartLabel}
+                                              aria-describedby={
+                                                  chartDescriptionId
+                                              }
+                                              style={{
+                                                  width: '100%',
+                                                  height: '100%',
+                                              }}
                                           >
-                                              {renderChart({
-                                                  flattenedData,
-                                                  chartType,
-                                                  hoveredKey,
-                                                  lineKeys,
-                                                  colors,
-                                                  setHoveredKey,
-                                                  data,
-                                                  selectedKeys,
-                                                  isSmallScreen,
-                                                  barsize,
-                                                  xAxis: mergedXAxis,
-                                                  yAxis: {
-                                                      ...mergedYAxis,
-                                                      label: isSmallScreen
-                                                          ? undefined
-                                                          : mergedYAxis.label,
-                                                      showLabel: isSmallScreen
-                                                          ? false
-                                                          : mergedYAxis.showLabel,
-                                                  },
-                                                  noData,
-                                                  height:
-                                                      typeof height === 'number'
-                                                          ? height
-                                                          : undefined,
-                                              })}
-                                          </ResponsiveContainer>
+                                              <ResponsiveContainer
+                                                  width="100%"
+                                                  height={'100%'}
+                                              >
+                                                  {renderChart({
+                                                      flattenedData,
+                                                      chartType,
+                                                      hoveredKey,
+                                                      lineKeys,
+                                                      colors,
+                                                      setHoveredKey,
+                                                      data,
+                                                      selectedKeys,
+                                                      isSmallScreen,
+                                                      barsize,
+                                                      xAxis: mergedXAxis,
+                                                      yAxis: {
+                                                          ...mergedYAxis,
+                                                          label: isSmallScreen
+                                                              ? undefined
+                                                              : mergedYAxis.label,
+                                                          showLabel:
+                                                              isSmallScreen
+                                                                  ? false
+                                                                  : mergedYAxis.showLabel,
+                                                      },
+                                                      noData,
+                                                      height:
+                                                          typeof height ===
+                                                          'number'
+                                                              ? height
+                                                              : undefined,
+                                                  })}
+                                              </ResponsiveContainer>
+                                          </div>
                                       </Block>
                                       <Block
                                           width={'25%'}
