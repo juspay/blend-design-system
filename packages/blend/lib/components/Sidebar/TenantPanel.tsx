@@ -148,6 +148,8 @@ const TenantItem: React.FC<{
                         ? tokens.leftPanel.item.border.active
                         : tokens.leftPanel.item.border.default
                 }
+                aria-label={`Select tenant: ${tenant.label}`}
+                aria-pressed={isSelected}
                 style={{
                     transition: 'all 75ms ease',
                 }}
@@ -159,7 +161,7 @@ const TenantItem: React.FC<{
                         : tokens.leftPanel.item.border.hover,
                 }}
             >
-                {tenant.icon}
+                <span aria-hidden="true">{tenant.icon}</span>
             </PrimitiveButton>
         </Tooltip>
     )
@@ -221,6 +223,7 @@ const TenantOverflowMenu: React.FC<{
                         alignItems="center"
                         justifyContent="center"
                         cursor="pointer"
+                        aria-label="More tenants"
                         title="More tenants"
                         outline={tokens.leftPanel.item.border.default}
                         style={{
@@ -237,6 +240,7 @@ const TenantOverflowMenu: React.FC<{
                                 height: FOUNDATION_THEME.unit[16],
                             }}
                             color={FOUNDATION_THEME.colors.gray[600]}
+                            aria-hidden="true"
                         />
                     </PrimitiveButton>
                 }

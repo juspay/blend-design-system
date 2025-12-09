@@ -47,4 +47,7 @@ export type TopbarProps = {
     leftPanel?: LeftPanelInfo
 
     merchantInfo?: MerchantInfo
+
+    /** ARIA controls ID for the sidebar navigation */
+    ariaControls?: string
 }

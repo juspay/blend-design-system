@@ -161,8 +161,10 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                         onNavigate,
                     })
                 }
-                aria-expanded={hasChildren ? isExpanded : undefined}
-                role={!item.href ? 'button' : undefined}
+                aria-expanded={
+                    hasChildren ? (isExpanded ? true : false) : undefined
+                }
+                aria-label={item.label}
                 tabIndex={0}
                 data-sidebar-selected={isActive}
                 data-sidebar-sub-option={item.label}
@@ -222,10 +224,14 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                 <NestedList
                     as="ul"
                     $tokens={tokens}
-                    role="group"
+                    role="list"
                     aria-label={`${item.label} submenu`}
+                    style={{
+                        listStyle: 'none',
+                        margin: 0,
+                        padding: 0,
+                    }}
                 >
-                    <Block aria-hidden="true" />
                     {item.items &&
                         item.items.map((childItem, childIdx) => (
                             <NavItem

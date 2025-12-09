@@ -1,11 +1,3 @@
-/**
- * StatCard Component Accessibility Report Data
- * WCAG 2.1 Level AA Compliance Analysis
- *
- * Note: Items marked with "unsure" require manual verification
- * Color contrast ratios verified using actual color values from theme tokens
- */
-
 export type WCAGSuccessCriterion = {
     id: string
     level: 'A' | 'AA' | 'AAA'
@@ -40,6 +32,13 @@ export type AccessibilityReport = {
             A: string[]
             AA: string[]
             AAA: string[]
+        }
+    }
+    accessibilityBestPractices?: {
+        [key: string]: {
+            status: 'compliant' | 'non-compliant' | 'unsure' | 'not-applicable'
+            implementation: string
+            verification: string
         }
     }
 }
