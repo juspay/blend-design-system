@@ -119,6 +119,8 @@ Upload component for file selection and upload with drag-and-drop support, multi
 
 ## Usage
 
+### Basic Usage
+
 \`\`\`tsx
 import { Upload } from '@juspay/blend-design-system';
 
@@ -130,6 +132,41 @@ import { Upload } from '@juspay/blend-design-system';
   onDrop={(acceptedFiles, rejectedFiles) => {
     console.log('Accepted:', acceptedFiles);
     console.log('Rejected:', rejectedFiles);
+  }}
+/>
+\`\`\`
+
+### Form Integration
+
+For form integration, use \`value\` and \`onChange\` props:
+
+**Single File:**
+\`\`\`tsx
+const [file, setFile] = useState<File | null>(null);
+
+<Upload
+  label="Upload File"
+  value={file}
+  onChange={(value) => {
+    setFile(value); // File | null
+    // Extract metadata: value?.name, value?.type
+  }}
+/>
+\`\`\`
+
+**Multiple Files:**
+\`\`\`tsx
+const [files, setFiles] = useState<File[]>([]);
+
+<Upload
+  label="Upload Files"
+  multiple={true}
+  value={files}
+  onChange={(value) => {
+    setFiles(value); // File[]
+    // Extract metadata:
+    // const filenames = value.map(f => f.name);
+    // const filemimes = value.map(f => f.type);
   }}
 />
 \`\`\`

@@ -3,6 +3,7 @@ import {
     Upload,
     UploadState,
 } from '../../../../packages/blend/lib/components/Upload'
+import type { UploadFormValue } from '../../../../packages/blend/lib/components/Upload/types'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     Upload as UploadIcon,
@@ -380,6 +381,173 @@ const UploadDemo = () => {
                         <UploadIcon size={32} color="#6366f1" />
                     </Upload>
                 </div>
+            </div>
+
+            {/* Form Integration Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Form Integration</h2>
+                <p className="text-gray-600">
+                    Examples showing how Upload component integrates with forms,
+                    capturing all file metadata (files, filenames, filemimes).
+                </p>
+
+                {/* Single File Form Integration */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                        Single File Upload with Form Integration
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        For single file uploads, the form value is:
+                        <code className="block mt-2 p-2 bg-gray-100 rounded text-xs">
+                            {`File | null`}
+                        </code>
+                        Extract metadata:{' '}
+                        <code className="text-xs">file?.name</code>,{' '}
+                        <code className="text-xs">file?.type</code>
+                    </p>
+                    <SingleFileFormExample />
+                </div>
+
+                {/* Multiple Files Form Integration */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                        Multiple Files Upload with Form Integration
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        For multiple file uploads, the form value is:
+                        <code className="block mt-2 p-2 bg-gray-100 rounded text-xs">
+                            {`File[]`}
+                        </code>
+                        Extract metadata:{' '}
+                        <code className="text-xs">
+                            files.map(f =&gt; f.name)
+                        </code>
+                        ,{' '}
+                        <code className="text-xs">
+                            files.map(f =&gt; f.type)
+                        </code>
+                    </p>
+                    <MultipleFilesFormExample />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// Single File Form Integration Example
+const SingleFileFormExample = () => {
+    const [file, setFile] = useState<File | null>(null)
+
+    const handleChange = (value: UploadFormValue) => {
+        const fileValue = Array.isArray(value) ? value[0] || null : value
+        setFile(fileValue)
+        console.log('Single File Form Value:', fileValue)
+    }
+
+    // Extract metadata from File object
+    const filename = file?.name || null
+    const filemime = file?.type || null
+
+    return (
+        <div className="space-y-4">
+            <div className="max-w-md">
+                <Upload
+                    label="Upload Single File"
+                    description="PDF files only, max 5MB"
+                    accept={['.pdf']}
+                    maxSize={5 * 1024 * 1024}
+                    value={file}
+                    onChange={handleChange}
+                >
+                    <FileText size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* Form State Display */}
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold mb-2">Form State:</h4>
+                <pre className="text-xs overflow-auto">
+                    {JSON.stringify(
+                        {
+                            file: file
+                                ? {
+                                      name: file.name,
+                                      size: file.size,
+                                      type: file.type,
+                                  }
+                                : null,
+                            filename,
+                            filemime,
+                        },
+                        null,
+                        2
+                    )}
+                </pre>
+            </div>
+        </div>
+    )
+}
+
+// Multiple Files Form Integration Example
+const MultipleFilesFormExample = () => {
+    const [files, setFiles] = useState<File[]>([])
+
+    const handleChange = (value: UploadFormValue) => {
+        const filesValue = Array.isArray(value) ? value : value ? [value] : []
+        setFiles(filesValue)
+        console.log('Multiple Files Form Value:', filesValue)
+    }
+
+    // Extract metadata from File objects
+    const filenames = files.map((f) => f.name)
+    const filemimes = files.map((f) => f.type)
+
+    return (
+        <div className="space-y-4">
+            <div className="max-w-md">
+                <Upload
+                    label="Upload Multiple Files"
+                    description="Upload up to 5 files"
+                    multiple={true}
+                    maxFiles={5}
+                    value={files}
+                    onChange={handleChange}
+                >
+                    <UploadIcon size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* Form State Display */}
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold mb-2">Form State:</h4>
+                <div className="space-y-2">
+                    <div>
+                        <strong>Files Count:</strong> {files.length}
+                    </div>
+                    <div>
+                        <strong>Filenames:</strong>{' '}
+                        {filenames.length > 0 ? filenames.join(', ') : 'None'}
+                    </div>
+                    <div>
+                        <strong>File MIME Types:</strong>{' '}
+                        {filemimes.length > 0 ? filemimes.join(', ') : 'None'}
+                    </div>
+                </div>
+                <pre className="text-xs overflow-auto mt-4">
+                    {JSON.stringify(
+                        {
+                            files: files.map((f) => ({
+                                name: f.name,
+                                size: f.size,
+                                type: f.type,
+                            })),
+                            filenames,
+                            filemimes,
+                        },
+                        null,
+                        2
+                    )}
+                </pre>
             </div>
         </div>
     )

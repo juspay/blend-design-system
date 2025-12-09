@@ -9,6 +9,7 @@ import type {
     UploadedFileWithStatus,
     UploadFile,
     FileRejection,
+    UploadFormValue,
 } from './types'
 import type { UploadTokenType } from './upload.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -52,6 +53,8 @@ const Upload: React.FC<UploadProps> = ({
     uploadingFiles: externalUploadingFiles,
     uploadedFiles: externalUploadedFiles,
     failedFiles: externalFailedFiles,
+    value: controlledValue,
+    onChange,
     onDrop,
     onDropAccepted,
     onDropRejected,
@@ -84,9 +87,28 @@ const Upload: React.FC<UploadProps> = ({
         UploadedFileWithStatus[]
     >([])
 
+    const getFilesFromValue = useCallback(
+        (value: UploadFormValue | undefined): File[] => {
+            if (!value) return []
+            if (Array.isArray(value)) return value
+            return [value]
+        },
+        []
+    )
+
+    const valueFiles = useMemo(() => {
+        return getFilesFromValue(controlledValue)
+    }, [controlledValue, getFilesFromValue])
+
     const state = externalState ?? internalState
     const uploadingFiles = externalUploadingFiles ?? internalUploadingFiles
-    const uploadedFiles = externalUploadedFiles ?? internalUploadedFiles
+    const uploadedFiles = controlledValue
+        ? valueFiles.map((file, index) => ({
+              file,
+              id: `value-${index}-${file.name}`,
+              status: 'success' as const,
+          }))
+        : (externalUploadedFiles ?? internalUploadedFiles)
     const failedFiles = externalFailedFiles ?? internalFailedFiles
 
     const { internalDragState, setInternalDragState, setDragCounter } =
@@ -151,6 +173,36 @@ const Upload: React.FC<UploadProps> = ({
         []
     )
 
+    const handleFileRemoveWithOnChange = useCallback(
+        (fileId: string) => {
+            if (controlledValue && onChange) {
+                const currentFiles = getFilesFromValue(controlledValue)
+                const fileToRemove = uploadedFiles.find((f) => f.id === fileId)
+                if (fileToRemove) {
+                    const remainingFiles = currentFiles.filter(
+                        (f) => f !== fileToRemove.file
+                    )
+                    const formValue: UploadFormValue = multiple
+                        ? remainingFiles
+                        : remainingFiles[0] || null
+                    onChange(formValue)
+                }
+            } else {
+                handleInternalFileRemove(fileId)
+            }
+            onFileRemove?.(fileId)
+        },
+        [
+            controlledValue,
+            onChange,
+            getFilesFromValue,
+            uploadedFiles,
+            multiple,
+            handleInternalFileRemove,
+            onFileRemove,
+        ]
+    )
+
     const handleInternalReplaceFile = useMemo(
         () =>
             createFileReplacementHandler(
@@ -162,7 +214,9 @@ const Upload: React.FC<UploadProps> = ({
     )
 
     const finalOnDrop = onDrop || handleInternalDrop
-    const finalOnFileRemove = onFileRemove || handleInternalFileRemove
+    const finalOnFileRemove = onChange
+        ? handleFileRemoveWithOnChange
+        : onFileRemove || handleInternalFileRemove
     const finalOnReplaceFile = onReplaceFile || handleInternalReplaceFile
 
     const processFilesFn = useCallback(
@@ -182,6 +236,16 @@ const Upload: React.FC<UploadProps> = ({
                 }
             })
 
+            if (onChange && acceptedFiles.length > 0) {
+                if (multiple) {
+                    const existingFiles = getFilesFromValue(controlledValue)
+                    const allFiles = [...existingFiles, ...acceptedFiles]
+                    onChange(allFiles)
+                } else {
+                    onChange(acceptedFiles[0] || null)
+                }
+            }
+
             if (finalOnDrop) {
                 finalOnDrop(acceptedFiles, rejectedFiles)
             } else {
@@ -193,7 +257,17 @@ const Upload: React.FC<UploadProps> = ({
                 }
             }
         },
-        [disabled, validateFile, finalOnDrop, onDropAccepted, onDropRejected]
+        [
+            disabled,
+            validateFile,
+            finalOnDrop,
+            onDropAccepted,
+            onDropRejected,
+            onChange,
+            multiple,
+            controlledValue,
+            getFilesFromValue,
+        ]
     )
 
     const updateDragStateFn = updateDragState(
