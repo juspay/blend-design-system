@@ -18,6 +18,7 @@ import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelec
 import StatCardAccessibility from '../../StatCard/accessibility/StatCardAccessibility'
 import CardAccessibility from '../../Card/accessibility/CardAccessibility'
 import ChartsAccessibility from '../../Charts/accessibility/ChartsAccessibility'
+import SplitTagAccessibility from '../../SplitTag/accessibility/SplitTagAccessibility'
 import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
 import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
 import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
@@ -124,6 +125,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Charts',
         displayName: 'Charts',
         component: ChartsAccessibility,
+    },
+    {
+        name: 'SplitTag',
+        displayName: 'SplitTag',
+        component: SplitTagAccessibility,
     },
     {
         name: 'Avatar',
