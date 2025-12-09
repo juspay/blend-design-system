@@ -164,6 +164,9 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                     customTrigger={
                         <Block
                             data-element="single-select-button"
+                            role="button"
+                            tabIndex={isDisabled ? -1 : 0}
+                            aria-disabled={isDisabled}
                             style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
