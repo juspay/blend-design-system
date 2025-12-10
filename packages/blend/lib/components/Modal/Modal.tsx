@@ -232,6 +232,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             headerRightSlot,
             showDivider = true,
             minWidth = '500px',
+            maxWidth = 'calc(100vw - 156px)',
             useDrawerOnMobile = true,
             skeleton,
             ...props
@@ -321,7 +322,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         position="relative"
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                         minWidth={minWidth}
-                        maxWidth={'calc(100vw - 156px)'}
+                        maxWidth={maxWidth}
                         maxHeight={'calc(100vh - 156px)'}
                         borderRadius={FOUNDATION_THEME.border.radius[12]}
                         boxShadow={FOUNDATION_THEME.shadows.xs}

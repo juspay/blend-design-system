@@ -35,4 +35,5 @@ export type ModalProps = {
     minWidth?: string
     useDrawerOnMobile?: boolean
     skeleton?: ModalSkeletonProps
+    maxWidth?: string
 }
