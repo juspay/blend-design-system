@@ -1,12 +1,11 @@
 import { forwardRef, useState, useRef, useEffect, useCallback } from 'react'
 import { Filter, Search, ListFilter, X } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
-import { Button } from '../../../main'
+import { Button, TextInput } from '../../../main'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
-import { SearchInput } from '../../Inputs/SearchInput'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { TableTokenType } from '../dataTable.tokens'
 import { Popover } from '../../Popover'
@@ -58,7 +57,7 @@ const MobileSearchInput = ({
     onClose: () => void
 }) => (
     <Block style={{ minWidth: '150px', maxWidth: '200px' }}>
-        <SearchInput
+        <TextInput
             placeholder={searchPlaceholder}
             value={searchConfig.query}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -615,7 +614,7 @@ const DataTableHeader = forwardRef<
                                             flex: 1,
                                         }}
                                     >
-                                        <SearchInput
+                                        <TextInput
                                             placeholder={searchPlaceholder}
                                             value={searchConfig.query}
                                             onChange={(
