@@ -11,10 +11,15 @@ const InputDemo = () => {
     const [playgroundSize, setPlaygroundSize] = useState<TextInputSize>(
         TextInputSize.LARGE
     )
+
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [isDisabled, setIsDisabled] = useState(false)
     const [hasError, setHasError] = useState(false)
+    const [isPasswordType, setIsPasswordType] = useState(false)
+    const [showPlaygroundPassword, setShowPlaygroundPassword] = useState(false)
     const [playgroundValue, setPlaygroundValue] = useState('')
     const [value, setValue] = useState('')
     const [error, setError] = useState(false)
@@ -32,6 +37,12 @@ const InputDemo = () => {
             setErrorMessage('')
         }
     }, [value, isFocused])
+
+    useEffect(() => {
+        if (!isPasswordType) {
+            setShowPlaygroundPassword(false)
+        }
+    }, [isPasswordType])
 
     // Options for selects
     const sizeOptions = [
@@ -137,6 +148,11 @@ const InputDemo = () => {
                             checked={hasError}
                             onChange={() => setHasError(!hasError)}
                         />
+                        <Switch
+                            label="Password Type"
+                            checked={isPasswordType}
+                            onChange={() => setIsPasswordType(!isPasswordType)}
+                        />
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
@@ -149,15 +165,49 @@ const InputDemo = () => {
                                 onChange={(e) =>
                                     setPlaygroundValue(e.target.value)
                                 }
-                                placeholder="Enter text here..."
+                                placeholder={
+                                    isPasswordType
+                                        ? 'Enter password here...'
+                                        : 'Enter text here...'
+                                }
+                                type={
+                                    isPasswordType
+                                        ? showPlaygroundPassword
+                                            ? 'text'
+                                            : 'password'
+                                        : 'text'
+                                }
                                 size={playgroundSize}
                                 leftSlot={
-                                    showLeftSlot ? getLeftSlotIcon() : undefined
+                                    isPasswordType ? (
+                                        <Lock size={16} />
+                                    ) : showLeftSlot ? (
+                                        getLeftSlotIcon()
+                                    ) : undefined
                                 }
                                 rightSlot={
-                                    showRightSlot
-                                        ? getRightSlotIcon()
-                                        : undefined
+                                    isPasswordType ? (
+                                        <div
+                                            onClick={() =>
+                                                setShowPlaygroundPassword(
+                                                    !showPlaygroundPassword
+                                                )
+                                            }
+                                            style={{
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            {showPlaygroundPassword ? (
+                                                <Eye size={16} />
+                                            ) : (
+                                                <EyeOff size={16} />
+                                            )}
+                                        </div>
+                                    ) : showRightSlot ? (
+                                        getRightSlotIcon()
+                                    ) : undefined
                                 }
                                 disabled={isDisabled}
                                 error={hasError}
@@ -227,6 +277,7 @@ const InputDemo = () => {
                             With Hint Text
                         </h3>
                         <TextInput
+                            type="password"
                             label="Password"
                             value=""
                             onChange={() => {}}
@@ -395,6 +446,7 @@ const InputDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">User Input</h3>
                         <TextInput
+                            type="text"
                             label="Username"
                             value=""
                             onChange={() => {}}
@@ -406,12 +458,29 @@ const InputDemo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Lock Input</h3>
                         <TextInput
+                            type={showPassword ? 'password' : 'text'}
                             label="Password"
-                            value=""
-                            onChange={() => {}}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter password"
                             leftSlot={<Lock size={16} />}
-                            rightSlot={<EyeOff size={16} />}
+                            rightSlot={
+                                showPassword ? (
+                                    <EyeOff
+                                        size={16}
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                    />
+                                ) : (
+                                    <Eye
+                                        size={16}
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                    />
+                                )
+                            }
                         />
                     </div>
                 </div>
