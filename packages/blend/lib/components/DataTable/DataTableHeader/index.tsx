@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useState, useRef, useEffect, useCallback } from 'react'
 import { Filter, Search, ListFilter, X } from 'lucide-react'
 import { DataTableHeaderProps } from './types'
 import { Button } from '../../../main'
@@ -20,6 +20,8 @@ import {
     DrawerBody,
 } from '../../Drawer'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import Tooltip from '../../Tooltip/Tooltip'
+import { TooltipSize } from '../../Tooltip/types'
 
 const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
     <PrimitiveButton
@@ -77,6 +79,99 @@ const MobileSearchInput = ({
         />
     </Block>
 )
+
+const TruncatedTextWithTooltip = ({
+    children,
+    ...textProps
+}: {
+    children: React.ReactNode
+    [key: string]: unknown
+}) => {
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [isTruncated, setIsTruncated] = useState(false)
+
+    const checkTruncation = useCallback(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const textElement =
+            (wrapper.querySelector('p') as HTMLElement) ||
+            (wrapper.firstElementChild as HTMLElement)
+
+        if (!textElement) {
+            setIsTruncated(false)
+            return
+        }
+
+        if (textElement.offsetWidth === 0 || textElement.offsetHeight === 0) {
+            setIsTruncated(false)
+            return
+        }
+
+        const truncated = textElement.scrollWidth > textElement.clientWidth
+        setIsTruncated(truncated)
+    }, [])
+
+    useEffect(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const timeoutId = setTimeout(checkTruncation, 0)
+
+        const resizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(checkTruncation)
+        })
+        resizeObserver.observe(wrapper)
+
+        const observeTextElement = () => {
+            const textElement = wrapper.querySelector('p') as HTMLElement
+            if (textElement) {
+                resizeObserver.observe(textElement)
+            }
+        }
+
+        const observeTimeoutId = setTimeout(observeTextElement, 100)
+
+        window.addEventListener('resize', checkTruncation, { passive: true })
+
+        return () => {
+            clearTimeout(timeoutId)
+            clearTimeout(observeTimeoutId)
+            resizeObserver.disconnect()
+            window.removeEventListener('resize', checkTruncation)
+        }
+    }, [children, checkTruncation])
+
+    const handleMouseEnter = useCallback(() => {
+        if (!isTruncated) {
+            checkTruncation()
+        }
+    }, [isTruncated, checkTruncation])
+
+    const content = (
+        <Block
+            ref={wrapperRef}
+            onMouseEnter={handleMouseEnter}
+            style={{
+                width: '100%',
+                minWidth: 0,
+                cursor: isTruncated ? 'pointer' : 'default',
+            }}
+        >
+            <PrimitiveText {...textProps}>{children}</PrimitiveText>
+        </Block>
+    )
+
+    if (isTruncated && children) {
+        return (
+            <Tooltip content={children} size={TooltipSize.LARGE}>
+                {content}
+            </Tooltip>
+        )
+    }
+
+    return content
+}
 
 const DataTableHeader = forwardRef<
     HTMLDivElement,
@@ -449,8 +544,8 @@ const DataTableHeader = forwardRef<
                         gap={FOUNDATION_THEME.unit[10]}
                         style={{
                             minWidth: 0,
+                            flex: 1,
                             flexShrink: 1,
-                            maxWidth: '40%',
                             minHeight: FOUNDATION_THEME.unit[40],
                         }}
                     >
@@ -467,17 +562,22 @@ const DataTableHeader = forwardRef<
                             </PrimitiveText>
                         )}
                         {description && (
-                            <PrimitiveText
+                            <TruncatedTextWithTooltip
                                 as="p"
                                 fontSize={
                                     tableToken.header.description.fontSize
                                 }
                                 color={tableToken.header.description.color}
-                                style={{ lineHeight: '1.4', minWidth: 0 }}
+                                style={{
+                                    lineHeight: '1.4',
+                                    minWidth: 0,
+                                    width: '100%',
+                                    maxWidth: '100%',
+                                }}
                                 truncate
                             >
                                 {description}
-                            </PrimitiveText>
+                            </TruncatedTextWithTooltip>
                         )}
                     </Block>
                 )}
