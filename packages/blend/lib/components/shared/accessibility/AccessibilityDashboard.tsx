@@ -33,6 +33,7 @@ import SnackbarAccessibility from '../../Snackbar/accessibility/SnackbarAccessib
 import AccordionAccessibility from '../../Accordion/accessibility/AccordionAccessibility'
 import TabsAccessibility from '../../Tabs/accessibility/TabsAccessibility'
 import SidebarAccessibility from '../../Sidebar/accessibility/SidebarAccessibility'
+import DrawerAccessibility from '../../Drawer/accessibility/DrawerAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -201,6 +202,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Sidebar',
         displayName: 'Sidebar',
         component: SidebarAccessibility,
+    },
+    {
+        name: 'Drawer',
+        displayName: 'Drawer',
+        component: DrawerAccessibility,
     },
     // Add more components here as they are added
 ]
