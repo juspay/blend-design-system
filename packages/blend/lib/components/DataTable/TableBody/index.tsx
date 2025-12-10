@@ -127,7 +127,7 @@ const ExpandButton = styled.button`
 `
 
 // Actions Cell Component with Responsive Overflow
-interface ActionsCellProps {
+type ActionsCellProps = {
     row: Record<string, unknown>
     index: number
     isEditing: boolean
@@ -813,6 +813,7 @@ const TableBody = forwardRef<
                                                           isEditing ||
                                                           rowShouldShowSkeleton
                                                       }
+                                                      aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
                                                   />
                                               </Block>
                                           </StyledTableCell>
@@ -1016,11 +1017,13 @@ const TableBody = forwardRef<
                                           ) && (
                                               <StyledTableCell
                                                   $customBackgroundColor={
-                                                      rowStyling.backgroundColor
-                                                  }
-                                                  $hasCustomBackground={
                                                       hasCustomBackground
+                                                          ? rowStyling.backgroundColor
+                                                          : FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[100]
                                                   }
+                                                  $hasCustomBackground={true}
                                                   $width="200px"
                                                   $isFirstRow={index === 0}
                                                   style={{
@@ -1150,9 +1153,11 @@ const TableBody = forwardRef<
                                                   position: 'sticky',
                                                   right: 0,
                                                   backgroundColor:
-                                                      rowStyling.backgroundColor ||
-                                                      FOUNDATION_THEME.colors
-                                                          .gray[25],
+                                                      hasCustomBackground
+                                                          ? rowStyling.backgroundColor
+                                                          : FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[100],
                                               }}
                                           />
                                       )}

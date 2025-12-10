@@ -378,6 +378,7 @@ const TableHeader = forwardRef<
                                     onCheckedChange={onSelectAll}
                                     size={CheckboxSize.MEDIUM}
                                     disabled={isDisabled}
+                                    aria-label="Select all rows"
                                 />
                             </Block>
                         </th>
@@ -1054,8 +1055,11 @@ const TableHeader = forwardRef<
                                         as="span"
                                         style={{
                                             fontSize:
-                                                FOUNDATION_THEME.font.size.body
-                                                    .sm.fontSize,
+                                                tableToken.dataTable.table
+                                                    .header.cell.fontSize,
+                                            fontWeight:
+                                                tableToken.dataTable.table
+                                                    .header.cell.fontWeight,
                                         }}
                                     >
                                         Actions
