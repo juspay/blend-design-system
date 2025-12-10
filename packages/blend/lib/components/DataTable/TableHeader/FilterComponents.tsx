@@ -806,7 +806,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     }
                     maxWidth={220}
                     minWidth={220}
-                    zIndex={10}
                     side="right"
                     align="start"
                     sideOffset={10}

@@ -114,96 +114,109 @@ const Popover = ({
             <RadixPopover.Trigger asChild style={{ outline: 'none' }}>
                 {trigger}
             </RadixPopover.Trigger>
-            <RadixPopover.Content
-                data-popover={heading || 'Popover'}
-                style={{ zIndex, outline: 'none', minWidth, maxWidth }}
-                asChild
-                sideOffset={sideOffset}
-                side={side}
-                align={align}
-                alignOffset={alignOffset}
-                avoidCollisions={avoidCollisions}
-            >
-                <AnimatedPopoverSurface
-                    zIndex={999}
-                    {...(headingId
-                        ? { 'aria-labelledby': headingId }
-                        : { 'aria-label': heading || 'Popover dialog' })}
-                    {...(ariaDescribedBy
-                        ? { 'aria-describedby': ariaDescribedBy }
-                        : {})}
-                    backgroundColor={popoverTokens.background}
-                    boxShadow={
-                        popoverTokens.shadow?.[shadow] ||
-                        popoverTokens.shadow?.lg
-                    }
-                    borderRadius={popoverTokens.borderRadius[size]}
-                    border={popoverTokens.border}
-                    width={width}
-                    minWidth={minWidth}
-                    maxWidth={maxWidth}
-                    height={height}
-                    minHeight={minHeight}
-                    maxHeight={maxHeight}
-                    display="flex"
-                    flexDirection="column"
-                    gap={popoverTokens.gap[size]}
-                    paddingLeft={
-                        isCustomPopover ? 0 : popoverTokens.padding.left[size]
-                    }
-                    paddingRight={
-                        isCustomPopover ? 0 : popoverTokens.padding.right[size]
-                    }
-                    paddingTop={
-                        isCustomPopover ? 0 : popoverTokens.padding.top[size]
-                    }
-                    paddingBottom={
-                        isCustomPopover ? 0 : popoverTokens.padding.bottom[size]
-                    }
+            <RadixPopover.Portal>
+                <RadixPopover.Content
+                    data-popover={heading || 'Popover'}
+                    style={{ zIndex, outline: 'none', minWidth, maxWidth }}
+                    asChild
+                    sideOffset={sideOffset}
+                    side={side}
+                    align={align}
+                    alignOffset={alignOffset}
+                    avoidCollisions={avoidCollisions}
                 >
-                    <PopoverHeader
-                        heading={heading}
-                        description={description}
-                        showCloseButton={showCloseButton}
-                        size={size}
-                        headingId={headingId}
-                        descriptionId={descriptionId}
-                        onClose={() => {
-                            setIsOpen(false)
-                            if (onClose) {
-                                onClose()
-                            }
-                        }}
-                        showSkeleton={shouldShowSkeleton}
-                        skeletonVariant={skeletonVariant}
-                    />
-                    {shouldShowSkeleton && skeleton?.bodySkeletonProps?.show ? (
-                        <PopoverSkeleton
-                            popoverTokens={popoverTokens}
+                    <AnimatedPopoverSurface
+                        style={{ zIndex }}
+                        {...(headingId
+                            ? { 'aria-labelledby': headingId }
+                            : { 'aria-label': heading || 'Popover dialog' })}
+                        {...(ariaDescribedBy
+                            ? { 'aria-describedby': ariaDescribedBy }
+                            : {})}
+                        backgroundColor={popoverTokens.background}
+                        boxShadow={
+                            popoverTokens.shadow?.[shadow] ||
+                            popoverTokens.shadow?.lg
+                        }
+                        borderRadius={popoverTokens.borderRadius[size]}
+                        border={popoverTokens.border}
+                        width={width}
+                        minWidth={minWidth}
+                        maxWidth={maxWidth}
+                        height={height}
+                        minHeight={minHeight}
+                        maxHeight={maxHeight}
+                        display="flex"
+                        flexDirection="column"
+                        gap={popoverTokens.gap[size]}
+                        paddingLeft={
+                            isCustomPopover
+                                ? 0
+                                : popoverTokens.padding.left[size]
+                        }
+                        paddingRight={
+                            isCustomPopover
+                                ? 0
+                                : popoverTokens.padding.right[size]
+                        }
+                        paddingTop={
+                            isCustomPopover
+                                ? 0
+                                : popoverTokens.padding.top[size]
+                        }
+                        paddingBottom={
+                            isCustomPopover
+                                ? 0
+                                : popoverTokens.padding.bottom[size]
+                        }
+                    >
+                        <PopoverHeader
+                            heading={heading}
+                            description={description}
+                            showCloseButton={showCloseButton}
                             size={size}
-                            bodySkeleton={{
-                                show:
-                                    skeleton?.bodySkeletonProps?.show || false,
-                                width:
-                                    skeleton?.bodySkeletonProps?.width ||
-                                    '100%',
-                                height:
-                                    skeleton?.bodySkeletonProps?.height || 200,
+                            headingId={headingId}
+                            descriptionId={descriptionId}
+                            onClose={() => {
+                                setIsOpen(false)
+                                if (onClose) {
+                                    onClose()
+                                }
                             }}
+                            showSkeleton={shouldShowSkeleton}
                             skeletonVariant={skeletonVariant}
                         />
-                    ) : (
-                        children
-                    )}
-                    <PopoverFooter
-                        primaryAction={primaryAction}
-                        secondaryAction={secondaryAction}
-                        size={size}
-                        showSkeleton={shouldShowSkeleton}
-                        skeletonVariant={skeletonVariant}
-                    />
-                </AnimatedPopoverSurface>
-            </RadixPopover.Content>
+                        {shouldShowSkeleton &&
+                        skeleton?.bodySkeletonProps?.show ? (
+                            <PopoverSkeleton
+                                popoverTokens={popoverTokens}
+                                size={size}
+                                bodySkeleton={{
+                                    show:
+                                        skeleton?.bodySkeletonProps?.show ||
+                                        false,
+                                    width:
+                                        skeleton?.bodySkeletonProps?.width ||
+                                        '100%',
+                                    height:
+                                        skeleton?.bodySkeletonProps?.height ||
+                                        200,
+                                }}
+                                skeletonVariant={skeletonVariant}
+                            />
+                        ) : (
+                            children
+                        )}
+                        <PopoverFooter
+                            primaryAction={primaryAction}
+                            secondaryAction={secondaryAction}
+                            size={size}
+                            showSkeleton={shouldShowSkeleton}
+                            skeletonVariant={skeletonVariant}
+                        />
+                    </AnimatedPopoverSurface>
+                </RadixPopover.Content>
+            </RadixPopover.Portal>
         </RadixPopover.Root>
     )
 }
