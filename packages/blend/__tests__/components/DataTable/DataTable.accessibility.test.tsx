@@ -98,7 +98,7 @@ describe('DataTable Accessibility', () => {
                     title="Users"
                 />
             )
-            const table = screen.getByRole('table', { name: 'Users' })
+            const table = screen.getByRole('grid', { name: 'Users' })
             expect(table).toBeInTheDocument()
             expect(table).toHaveAttribute('aria-rowcount', '3')
             expect(table).toHaveAttribute('aria-colcount')
@@ -222,7 +222,7 @@ describe('DataTable Accessibility', () => {
                     description="User management table"
                 />
             )
-            const table = screen.getByRole('table', { name: 'Users' })
+            const table = screen.getByRole('grid', { name: 'Users' })
             expect(table).toHaveAttribute('aria-describedby')
         })
 
@@ -278,7 +278,7 @@ describe('DataTable Accessibility', () => {
                 />
             )
             const currentPageButton = screen.getByRole('button', {
-                name: 'Go to page 1',
+                name: /Go to page 1/i,
             })
             expect(currentPageButton).toHaveAttribute('aria-current', 'page')
         })
@@ -556,7 +556,7 @@ describe('DataTable Accessibility', () => {
                     title="Users"
                 />
             )
-            expect(screen.getByRole('table')).toBeInTheDocument()
+            expect(screen.getByRole('grid')).toBeInTheDocument()
             expect(screen.getAllByRole('columnheader').length).toBeGreaterThan(
                 0
             )
@@ -596,7 +596,7 @@ describe('DataTable Accessibility', () => {
                     title="Users"
                 />
             )
-            const table = screen.getByRole('table')
+            const table = screen.getByRole('grid')
             expect(table).toBeInTheDocument()
             // Component uses theme tokens which should ensure WCAG AA contrast
         })
