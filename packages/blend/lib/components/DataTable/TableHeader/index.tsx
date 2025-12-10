@@ -289,12 +289,14 @@ const TableHeader = forwardRef<
                 }}
             >
                 <tr
+                    role="row"
                     style={{
                         ...tableToken.dataTable.table.header.row,
                     }}
                 >
                     {enableRowExpansion && (
                         <th
+                            role="columnheader"
                             scope="col"
                             aria-label="Expand row"
                             style={{
@@ -331,6 +333,7 @@ const TableHeader = forwardRef<
 
                     {enableRowSelection && (
                         <th
+                            role="columnheader"
                             scope="col"
                             aria-label="Select all rows"
                             style={{
@@ -967,6 +970,7 @@ const TableHeader = forwardRef<
                                 <DraggableColumnHeader
                                     key={String(column.field)}
                                     id={String(column.field)}
+                                    role="columnheader"
                                     scope="col"
                                     aria-sort={
                                         column.isSortable !== false
@@ -1000,6 +1004,7 @@ const TableHeader = forwardRef<
                         return (
                             <th
                                 key={String(column.field)}
+                                role="columnheader"
                                 scope="col"
                                 aria-sort={
                                     column.isSortable !== false
@@ -1022,6 +1027,7 @@ const TableHeader = forwardRef<
                             mobileConfig?.enableColumnOverflow
                         ) && (
                             <th
+                                role="columnheader"
                                 scope="col"
                                 aria-label="Actions"
                                 style={{
@@ -1072,6 +1078,7 @@ const TableHeader = forwardRef<
                         mobileOverflowColumns.length > 0 &&
                         onMobileOverflowClick && (
                             <th
+                                role="columnheader"
                                 scope="col"
                                 aria-label="View more columns"
                                 style={{
@@ -1096,6 +1103,7 @@ const TableHeader = forwardRef<
 
                     {enableColumnManager && (
                         <th
+                            role="columnheader"
                             scope="col"
                             aria-label="Column manager"
                             style={{

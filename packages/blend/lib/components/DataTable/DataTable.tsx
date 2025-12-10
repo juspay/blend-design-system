@@ -244,7 +244,17 @@ const DataTable = forwardRef(
 
         const [internalLoading, setInternalLoading] = useState<boolean>(false)
 
+        useEffect(() => {
+            if (serverSidePagination && !isLoading && internalLoading) {
+                setInternalLoading(false)
+            }
+        }, [serverSidePagination, isLoading, internalLoading])
+
         const [activeId, setActiveId] = useState<string | null>(null)
+        const [focusedCell, setFocusedCell] = useState<{
+            rowIndex: number
+            colIndex: number
+        } | null>(null)
 
         const sensors = useSensors(
             useSensor(PointerSensor),
@@ -764,32 +774,30 @@ const DataTable = forwardRef(
 
         const handlePageChange = (page: number) => {
             if (page !== currentPage) {
-                setInternalLoading(true)
                 setCurrentPage(page)
+
+                if (serverSidePagination) {
+                    setInternalLoading(true)
+                }
 
                 if (onPageChange) {
                     onPageChange(page)
                 }
-
-                setTimeout(() => {
-                    setInternalLoading(false)
-                }, 300)
             }
         }
 
         const handlePageSizeChange = (size: number) => {
             if (size !== pageSize) {
-                setInternalLoading(true)
                 setPageSize(size)
                 setCurrentPage(1)
+
+                if (serverSidePagination) {
+                    setInternalLoading(true)
+                }
 
                 if (onPageSizeChange) {
                     onPageSizeChange(size)
                 }
-
-                setTimeout(() => {
-                    setInternalLoading(false)
-                }, 300)
             }
         }
 
@@ -964,6 +972,146 @@ const DataTable = forwardRef(
             setMobileDrawerOpen(true)
         }
 
+        const handleTableFocus = () => {
+            if (!focusedCell && currentData.length > 0) {
+                setFocusedCell({ rowIndex: 0, colIndex: 0 })
+                setTimeout(() => {
+                    const firstCell = document.querySelector(
+                        '[data-row-index="0"][data-col-index="0"]'
+                    ) as HTMLElement
+                    if (firstCell) {
+                        firstCell.focus()
+                    }
+                }, 0)
+            }
+        }
+
+        const handleTableKeyDown = (
+            event: React.KeyboardEvent<HTMLTableElement>
+        ) => {
+            if (event.key === 'Tab') {
+                return
+            }
+
+            const target = event.target as HTMLElement
+            if (
+                target.tagName === 'INPUT' ||
+                target.tagName === 'TEXTAREA' ||
+                target.tagName === 'SELECT' ||
+                target.isContentEditable ||
+                target.closest('button') ||
+                target.closest('[role="button"]') ||
+                target.closest('[role="menuitem"]')
+            ) {
+                return
+            }
+
+            const totalColumns =
+                effectiveVisibleColumns.length +
+                (enableRowSelection ? 1 : 0) +
+                (enableRowExpansion ? 1 : 0) +
+                ((enableInlineEdit || rowActions) &&
+                !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
+                    ? 1
+                    : 0) +
+                (mobileConfig.enableColumnOverflow &&
+                mobileOverflowColumns.length > 0
+                    ? 1
+                    : 0) +
+                (effectiveEnableColumnManager ? 1 : 0)
+
+            let newRowIndex = focusedCell?.rowIndex ?? 0
+            let newColIndex = focusedCell?.colIndex ?? 0
+
+            switch (event.key) {
+                case 'ArrowRight':
+                    event.preventDefault()
+                    if (newColIndex < totalColumns - 1) {
+                        newColIndex++
+                    }
+                    break
+                case 'ArrowLeft':
+                    event.preventDefault()
+                    if (newColIndex > 0) {
+                        newColIndex--
+                    }
+                    break
+                case 'ArrowDown':
+                    event.preventDefault()
+                    if (newRowIndex < currentData.length - 1) {
+                        newRowIndex++
+                    }
+                    break
+                case 'ArrowUp':
+                    event.preventDefault()
+                    if (newRowIndex > 0) {
+                        newRowIndex--
+                    }
+                    break
+                case 'Home':
+                    event.preventDefault()
+                    if (event.ctrlKey || event.metaKey) {
+                        newRowIndex = 0
+                        newColIndex = 0
+                    } else {
+                        newColIndex = 0
+                    }
+                    break
+                case 'End':
+                    event.preventDefault()
+                    if (event.ctrlKey || event.metaKey) {
+                        newRowIndex = currentData.length - 1
+                        newColIndex = totalColumns - 1
+                    } else {
+                        newColIndex = totalColumns - 1
+                    }
+                    break
+                case 'PageDown':
+                    event.preventDefault()
+                    if (newRowIndex < currentData.length - 1) {
+                        newRowIndex = Math.min(
+                            newRowIndex + pageSize,
+                            currentData.length - 1
+                        )
+                    }
+                    break
+                case 'PageUp':
+                    event.preventDefault()
+                    if (newRowIndex > 0) {
+                        newRowIndex = Math.max(newRowIndex - pageSize, 0)
+                    }
+                    break
+                case 'Enter':
+                case ' ':
+                    if (onRowClick && focusedCell !== null) {
+                        const row = currentData[focusedCell.rowIndex]
+                        if (row) {
+                            onRowClick(row, focusedCell.rowIndex)
+                        }
+                    }
+                    return
+                default:
+                    return
+            }
+
+            setFocusedCell({ rowIndex: newRowIndex, colIndex: newColIndex })
+
+            setTimeout(() => {
+                const cellSelector = `[data-row-index="${newRowIndex}"][data-col-index="${newColIndex}"]`
+                const cellElement = document.querySelector(
+                    cellSelector
+                ) as HTMLElement
+                if (cellElement) {
+                    cellElement.focus()
+                    cellElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'nearest',
+                    })
+                }
+            }, 0)
+        }
+
         return (
             <Block
                 ref={ref}
@@ -1132,7 +1280,7 @@ const DataTable = forwardRef(
                                 >
                                     <table
                                         id={tableId}
-                                        role="table"
+                                        role="grid"
                                         aria-label={title || 'Data table'}
                                         aria-rowcount={
                                             totalRows > 0
@@ -1140,10 +1288,21 @@ const DataTable = forwardRef(
                                                 : undefined
                                         }
                                         aria-colcount={
-                                            visibleColumns.length +
+                                            effectiveVisibleColumns.length +
                                             (enableRowSelection ? 1 : 0) +
                                             (enableRowExpansion ? 1 : 0) +
-                                            (enableInlineEdit || rowActions
+                                            ((enableInlineEdit || rowActions) &&
+                                            !(
+                                                mobileConfig.isMobile &&
+                                                mobileConfig.enableColumnOverflow
+                                            )
+                                                ? 1
+                                                : 0) +
+                                            (mobileConfig.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                                ? 1
+                                                : 0) +
+                                            (effectiveEnableColumnManager
                                                 ? 1
                                                 : 0)
                                         }
@@ -1152,6 +1311,9 @@ const DataTable = forwardRef(
                                                 .filter(Boolean)
                                                 .join(' ') || undefined
                                         }
+                                        onKeyDown={handleTableKeyDown}
+                                        onFocus={handleTableFocus}
+                                        tabIndex={0}
                                         style={{
                                             width: tableToken.dataTable.table
                                                 .width,
@@ -1173,6 +1335,7 @@ const DataTable = forwardRef(
                                                     ? '100%'
                                                     : 'auto',
                                             backgroundColor: 'none',
+                                            outline: 'none',
                                         }}
                                     >
                                         <TableHeader
@@ -1317,6 +1480,16 @@ const DataTable = forwardRef(
                                                 columnFreeze={
                                                     effectiveColumnFreeze
                                                 }
+                                                focusedCell={focusedCell}
+                                                onCellFocus={(
+                                                    rowIndex,
+                                                    colIndex
+                                                ) =>
+                                                    setFocusedCell({
+                                                        rowIndex,
+                                                        colIndex,
+                                                    })
+                                                }
                                                 renderExpandedRow={
                                                     renderExpandedRow as
                                                         | ((expandedData: {
@@ -1404,7 +1577,9 @@ const DataTable = forwardRef(
                                                         | undefined
                                                 }
                                                 isLoading={
-                                                    isLoading || internalLoading
+                                                    isLoading ||
+                                                    (serverSidePagination &&
+                                                        internalLoading)
                                                 }
                                                 showSkeleton={showSkeleton}
                                                 skeletonVariant={

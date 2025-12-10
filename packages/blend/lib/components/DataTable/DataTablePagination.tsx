@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef, useEffect } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -107,13 +107,90 @@ export function DataTablePagination({
         },
     ]
 
+    const paginationRef = useRef<HTMLDivElement>(null)
+
+    const canNavigate = () => hasData && !isLoading
+
+    const handlePreviousPage = () => {
+        if (canNavigate() && currentPage > 1) {
+            onPageChange(currentPage - 1)
+        }
+    }
+
+    const handleNextPage = () => {
+        if (canNavigate() && currentPage < totalPages) {
+            onPageChange(currentPage + 1)
+        }
+    }
+
+    const handlePageClick = (page: number) => {
+        if (
+            canNavigate() &&
+            page >= 1 &&
+            page <= totalPages &&
+            page !== currentPage
+        ) {
+            onPageChange(page)
+        }
+    }
+
+    useEffect(() => {
+        const handleKeyboardNavigation = (event: KeyboardEvent) => {
+            const target = event.target as HTMLElement
+
+            if (
+                !paginationRef.current?.contains(target) ||
+                target.closest('[role="combobox"]') ||
+                target.tagName === 'INPUT' ||
+                event.key === 'Tab'
+            ) {
+                return
+            }
+
+            if (!canNavigate()) return
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                    event.preventDefault()
+                    if (currentPage > 1) onPageChange(currentPage - 1)
+                    break
+
+                case 'ArrowRight':
+                    event.preventDefault()
+                    if (currentPage < totalPages) onPageChange(currentPage + 1)
+                    break
+
+                case 'Home':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault()
+                        if (currentPage !== 1) onPageChange(1)
+                    }
+                    break
+
+                case 'End':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault()
+                        if (currentPage !== totalPages) onPageChange(totalPages)
+                    }
+                    break
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyboardNavigation)
+        return () =>
+            document.removeEventListener('keydown', handleKeyboardNavigation)
+    }, [currentPage, totalPages, hasData, isLoading, onPageChange])
+
     return (
         <Block
+            ref={paginationRef}
             data-table-pagination="true"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
             width="100%"
+            role="navigation"
+            aria-label="Pagination"
         >
             <Block
                 data-element="pagesize"
@@ -215,8 +292,17 @@ export function DataTablePagination({
                             : FOUNDATION_THEME.colors.gray[600]
                     }
                     disabled={currentPage === 1 || isLoading || !hasData}
-                    onClick={() => hasData && onPageChange(currentPage - 1)}
-                    aria-label="Previous page"
+                    onClick={handlePreviousPage}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handlePreviousPage()
+                        }
+                    }}
+                    aria-label={`Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`}
+                    tabIndex={
+                        currentPage === 1 || isLoading || !hasData ? -1 : 0
+                    }
                     _hover={{
                         backgroundColor:
                             currentPage === 1 || !hasData
@@ -277,18 +363,32 @@ export function DataTablePagination({
                                         !hasData ||
                                         page > totalPages
                                     }
-                                    aria-label={`Go to page ${page}`}
+                                    aria-label={`Go to page ${page}${currentPage === page ? ' (current page)' : ''}`}
                                     aria-current={
                                         currentPage === page
                                             ? 'page'
                                             : undefined
                                     }
-                                    onClick={() =>
-                                        hasData &&
-                                        page <= totalPages &&
-                                        page !== currentPage &&
-                                        onPageChange(page)
+                                    onClick={() => handlePageClick(page)}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault()
+                                            handlePageClick(page)
+                                        }
+                                    }}
+                                    tabIndex={
+                                        isLoading ||
+                                        !hasData ||
+                                        page > totalPages
+                                            ? -1
+                                            : currentPage === page
+                                              ? 0
+                                              : -1
                                     }
+                                    role="button"
                                     _hover={{
                                         backgroundColor:
                                             currentPage === page ||
@@ -442,8 +542,19 @@ export function DataTablePagination({
                     disabled={
                         currentPage === totalPages || isLoading || !hasData
                     }
-                    onClick={() => hasData && onPageChange(currentPage + 1)}
-                    aria-label="Next page"
+                    onClick={handleNextPage}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handleNextPage()
+                        }
+                    }}
+                    aria-label={`Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`}
+                    tabIndex={
+                        currentPage === totalPages || isLoading || !hasData
+                            ? -1
+                            : 0
+                    }
                     _hover={{
                         backgroundColor:
                             currentPage === totalPages || !hasData

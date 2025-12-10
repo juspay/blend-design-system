@@ -144,6 +144,12 @@ const TableCell = forwardRef<
             hasCustomBackground,
             onFieldChange,
             getDisplayValue,
+            'data-row-index': dataRowIndex,
+            'data-col-index': dataColIndex,
+            tabIndex: cellTabIndex,
+            onFocus: cellOnFocus,
+            onClick: cellOnClick,
+            role: cellRole,
         },
         ref
     ) => {
@@ -493,11 +499,18 @@ const TableCell = forwardRef<
                 $isFirstRow={isFirstRow}
                 $customBackgroundColor={customBackgroundColor}
                 $hasCustomBackground={hasCustomBackground}
+                data-row-index={dataRowIndex}
+                data-col-index={dataColIndex}
+                tabIndex={cellTabIndex}
+                onFocus={cellOnFocus}
+                onClick={cellOnClick}
+                role={cellRole || 'gridcell'}
                 style={{
                     ...width,
                     ...frozenStyles,
                     verticalAlign: 'middle',
                     position: frozenStyles?.position || 'relative',
+                    outline: 'none',
                 }}
                 {...dataAttributes}
             >

@@ -64,6 +64,7 @@ export const SortOptions: React.FC<{
             display="flex"
             flexDirection="column"
             paddingBottom={FOUNDATION_THEME.unit[2]}
+            role="menu"
         >
             <Block
                 display="flex"
@@ -89,6 +90,14 @@ export const SortOptions: React.FC<{
                             .hoverBackground,
                 }}
                 onClick={() => sortHandlers.handleSortAscending(fieldKey)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        sortHandlers.handleSortAscending(fieldKey)
+                    }
+                }}
+                tabIndex={0}
+                role="menuitem"
                 _focus={{ outline: 'none' }}
                 _focusVisible={{ outline: 'none' }}
             >
@@ -145,6 +154,16 @@ export const SortOptions: React.FC<{
                             .hoverBackground,
                 }}
                 onClick={() => sortHandlers.handleSortDescending(fieldKey)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        sortHandlers.handleSortDescending(fieldKey)
+                    }
+                }}
+                tabIndex={0}
+                role="menuitem"
+                _focus={{ outline: 'none' }}
+                _focusVisible={{ outline: 'none' }}
             >
                 <ArrowDown
                     size={FOUNDATION_THEME.unit[16]}
@@ -298,6 +317,23 @@ export const SingleSelectItems: React.FC<{
                                 )
                                 onPopoverClose?.()
                             }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    filterHandlers.handleSelectFilter(
+                                        column,
+                                        fieldKey,
+                                        item.value,
+                                        onColumnFilter
+                                    )
+                                    onPopoverClose?.()
+                                }
+                            }}
+                            tabIndex={0}
+                            role="menuitemradio"
+                            aria-checked={isSelected}
+                            _focus={{ outline: 'none' }}
+                            _focusVisible={{ outline: 'none' }}
                         >
                             <PrimitiveText
                                 style={{
@@ -402,6 +438,22 @@ export const MultiSelectItems: React.FC<{
                                     onColumnFilter
                                 )
                             }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    filterHandlers.handleMultiSelectFilter(
+                                        column,
+                                        fieldKey,
+                                        item.value,
+                                        onColumnFilter
+                                    )
+                                }
+                            }}
+                            tabIndex={0}
+                            role="menuitemcheckbox"
+                            aria-checked={isSelected}
+                            _focus={{ outline: 'none' }}
+                            _focusVisible={{ outline: 'none' }}
                         >
                             <PrimitiveText
                                 style={{
@@ -723,6 +775,12 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             flexDirection="column"
             gap={FOUNDATION_THEME.unit[0]}
             padding={FOUNDATION_THEME.unit[4]}
+            onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                    onPopoverClose?.()
+                }
+            }}
+            role="menu"
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >
@@ -764,6 +822,16 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                                     tableToken.dataTable.table.header.filter
                                         .sortOption.hoverBackground,
                             }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    setNestedFilterOpen(!nestedFilterOpen)
+                                }
+                            }}
+                            tabIndex={0}
+                            role="menuitem"
+                            _focus={{ outline: 'none' }}
+                            _focusVisible={{ outline: 'none' }}
                         >
                             <Block
                                 display="flex"
