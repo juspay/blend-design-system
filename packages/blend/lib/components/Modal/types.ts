@@ -18,6 +18,7 @@ export type ModalSkeletonProps = {
 
 export type ModalProps = {
     isOpen: boolean
+    isCustom?: boolean
     onClose: () => void
     title?: string
     subtitle?: string

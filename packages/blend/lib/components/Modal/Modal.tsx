@@ -221,6 +221,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
     (
         {
             isOpen,
+            isCustom = false,
             onClose,
             title,
             subtitle,
@@ -348,7 +349,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
                         <Block
                             data-element="body"
-                            padding={modalTokens.body.padding}
+                            padding={isCustom ? '0' : modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
                             borderRadius={
