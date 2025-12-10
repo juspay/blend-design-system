@@ -35,7 +35,7 @@ const TableRow = styled.tr<{
     $hasCustomBackground?: boolean
 }>`
     border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
-    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
 
     ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
         ${$customBackgroundColor &&
@@ -72,7 +72,7 @@ const StyledTableCell = styled.td<{
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: middle;
-    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
         css`
@@ -950,6 +950,12 @@ const TableBody = forwardRef<
                                                   return (
                                                       <StyledTableCell
                                                           key={`${rowId}-${String(column.field)}`}
+                                                          $customBackgroundColor={
+                                                              rowStyling.backgroundColor
+                                                          }
+                                                          $hasCustomBackground={
+                                                              hasCustomBackground
+                                                          }
                                                           style={{
                                                               ...columnStyles,
                                                               ...(colIndex <
@@ -977,6 +983,19 @@ const TableBody = forwardRef<
                                                   )
                                               }
 
+                                              const frozenBodyStyles =
+                                                  getFrozenBodyStyles()
+                                              const frozenStylesWithoutBg =
+                                                  frozenBodyStyles &&
+                                                  'backgroundColor' in
+                                                      frozenBodyStyles
+                                                      ? (() => {
+                                                            const { ...rest } =
+                                                                frozenBodyStyles
+                                                            return rest
+                                                        })()
+                                                      : frozenBodyStyles
+
                                               return (
                                                   <TableCell
                                                       key={`${rowId}-${String(column.field)}`}
@@ -996,8 +1015,16 @@ const TableBody = forwardRef<
                                                           currentValue
                                                       }
                                                       width={columnStyles}
-                                                      frozenStyles={getFrozenBodyStyles()}
+                                                      frozenStyles={
+                                                          frozenStylesWithoutBg
+                                                      }
                                                       isFirstRow={index === 0}
+                                                      customBackgroundColor={
+                                                          rowStyling.backgroundColor
+                                                      }
+                                                      hasCustomBackground={
+                                                          hasCustomBackground
+                                                      }
                                                       onFieldChange={(value) =>
                                                           onFieldChange(
                                                               row[idField],

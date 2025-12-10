@@ -11,6 +11,8 @@ export type TableCellProps<T extends Record<string, unknown>> = {
     width: React.CSSProperties
     frozenStyles?: React.CSSProperties
     isFirstRow?: boolean
+    customBackgroundColor?: string
+    hasCustomBackground?: boolean
     onFieldChange: (value: unknown) => void
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
 }

@@ -18,10 +18,15 @@ const StyledTableCell = styled.td<{
     $hasCustomContent?: boolean
     $tableToken?: TableTokenType
     $isFirstRow?: boolean
+    $customBackgroundColor?: string
+    $hasCustomBackground?: boolean
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
-    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
+    background-color: ${({ $customBackgroundColor, $hasCustomBackground }) =>
+        $hasCustomBackground && $customBackgroundColor
+            ? $customBackgroundColor
+            : FOUNDATION_THEME.colors.gray[0]} !important;
     box-sizing: border-box;
     max-width: 0;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
@@ -135,6 +140,8 @@ const TableCell = forwardRef<
             width,
             frozenStyles,
             isFirstRow,
+            customBackgroundColor,
+            hasCustomBackground,
             onFieldChange,
             getDisplayValue,
         },
@@ -484,6 +491,8 @@ const TableCell = forwardRef<
                     (isEditing && column.isEditable)
                 }
                 $isFirstRow={isFirstRow}
+                $customBackgroundColor={customBackgroundColor}
+                $hasCustomBackground={hasCustomBackground}
                 style={{
                     ...width,
                     ...frozenStyles,
