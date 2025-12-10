@@ -233,20 +233,16 @@ const DataTable = forwardRef(
             Record<string, boolean>
         >({})
 
-        // Formatting state
         const [isFormatEnabled, setIsFormatEnabled] = useState<boolean>(true)
 
-        // Mobile column overflow state
         const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
         const [selectedRowForDrawer, setSelectedRowForDrawer] =
             useState<T | null>(null)
         const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
             useState<number>(-1)
 
-        // Internal loading state for animations
         const [internalLoading, setInternalLoading] = useState<boolean>(false)
 
-        // Drag and drop for column reordering
         const [activeId, setActiveId] = useState<string | null>(null)
 
         const sensors = useSensors(
@@ -305,7 +301,6 @@ const DataTable = forwardRef(
             .filter((_, index) => index >= columnFreeze)
             .map((col) => String(col.field))
 
-        // Apply mobile configurations
         const effectiveColumnFreeze = mobileConfig.disableColumnFreeze
             ? 0
             : columnFreeze
@@ -313,7 +308,6 @@ const DataTable = forwardRef(
             ? false
             : enableColumnManager
 
-        // Calculate visible and overflow columns for mobile
         const { mobileVisibleColumns, mobileOverflowColumns } = useMemo(() => {
             if (!mobileConfig.enableColumnOverflow) {
                 return {
@@ -347,7 +341,6 @@ const DataTable = forwardRef(
         // Calculate minimum height for empty state based on page size
         // This ensures consistent height whether data is present or not
         const emptyStateMinHeight = useMemo(() => {
-            // If custom tableBodyHeight is provided, use default 400px
             if (tableBodyHeight) {
                 return '400px'
             }
@@ -777,7 +770,6 @@ const DataTable = forwardRef(
                     onPageChange(page)
                 }
 
-                // Reset loading state after a short delay to show skeleton animation
                 setTimeout(() => {
                     setInternalLoading(false)
                 }, 300)
@@ -794,7 +786,6 @@ const DataTable = forwardRef(
                     onPageSizeChange(size)
                 }
 
-                // Reset loading state after a short delay to show skeleton animation
                 setTimeout(() => {
                     setInternalLoading(false)
                 }, 300)
@@ -1073,7 +1064,7 @@ const DataTable = forwardRef(
                         onDeselectAll={handleDeselectAll}
                         customActions={renderBulkActions()}
                     />
-                    <div
+                    <Block
                         id={statusRegionId}
                         role="status"
                         aria-live="polite"
@@ -1095,7 +1086,7 @@ const DataTable = forwardRef(
                             : currentData.length === 0
                               ? 'No data available'
                               : `Showing ${currentData.length} of ${totalRows} rows`}
-                    </div>
+                    </Block>
 
                     <Block
                         style={{
@@ -1180,6 +1171,7 @@ const DataTable = forwardRef(
                                                 currentData.length === 0
                                                     ? '100%'
                                                     : 'auto',
+                                            backgroundColor: 'none',
                                         }}
                                     >
                                         <TableHeader

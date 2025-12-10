@@ -9,14 +9,6 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
-
-// Import types that might not be exported from main
-type DateRange = {
-    startDate: Date
-    endDate: Date
-    showTimePicker?: boolean
-}
-
 import {
     Calendar,
     CalendarDays,
@@ -26,6 +18,12 @@ import {
     BarChart,
     AlertCircle,
 } from 'lucide-react'
+
+type DateRange = {
+    startDate: Date
+    endDate: Date
+    showTimePicker?: boolean
+}
 
 const meta: Meta<typeof DateRangePicker> = {
     title: 'Components/DateRangePicker',
@@ -100,8 +98,6 @@ A comprehensive date range picker component with calendar interface, time select
 ## Usage
 
 \`\`\`tsx
-import { DateRangePicker } from '@juspay/blend-design-system';
-
 const [dateRange, setDateRange] = useState({
   startDate: new Date(),
   endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),

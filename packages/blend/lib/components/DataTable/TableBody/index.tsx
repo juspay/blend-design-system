@@ -34,7 +34,8 @@ const TableRow = styled.tr<{
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
 }>`
-    border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
+    border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
+    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
 
     ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
         ${$customBackgroundColor &&
@@ -71,7 +72,7 @@ const StyledTableCell = styled.td<{
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: middle;
-    background-color: ${FOUNDATION_THEME.colors.gray[25]};
+    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
         css`
@@ -100,7 +101,7 @@ const StyledTableCell = styled.td<{
 
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
-    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+    background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
 `
 
 const ExpandButton = styled.button`
@@ -126,7 +127,6 @@ const ExpandButton = styled.button`
     }
 `
 
-// Actions Cell Component with Responsive Overflow
 type ActionsCellProps = {
     row: Record<string, unknown>
     index: number
@@ -603,6 +603,9 @@ const TableBody = forwardRef<
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
+                style={{
+                    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+                }}
             >
                 {currentData.length > 0
                     ? currentData.map((row, index) => {
@@ -681,7 +684,7 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[25],
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -780,7 +783,7 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[25],
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -927,9 +930,9 @@ const TableBody = forwardRef<
                                                               rowStyling.backgroundColor ||
                                                               FOUNDATION_THEME
                                                                   .colors
-                                                                  .gray[25],
+                                                                  .gray[0],
                                                           ...(isLastFrozenColumn && {
-                                                              borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                                              borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
                                                           }),
                                                       }
                                                   }
@@ -1020,8 +1023,7 @@ const TableBody = forwardRef<
                                                       hasCustomBackground
                                                           ? rowStyling.backgroundColor
                                                           : FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[100]
+                                                                .colors.gray[0]
                                                   }
                                                   $hasCustomBackground={true}
                                                   $width="200px"
@@ -1156,8 +1158,7 @@ const TableBody = forwardRef<
                                                       hasCustomBackground
                                                           ? rowStyling.backgroundColor
                                                           : FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[100],
+                                                                .colors.gray[0],
                                               }}
                                           />
                                       )}

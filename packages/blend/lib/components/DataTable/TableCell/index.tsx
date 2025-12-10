@@ -21,6 +21,7 @@ const StyledTableCell = styled.td<{
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
+    background-color: ${FOUNDATION_THEME.colors.gray[0]} !important;
     box-sizing: border-box;
     max-width: 0;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}

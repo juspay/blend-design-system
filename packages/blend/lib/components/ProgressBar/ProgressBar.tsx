@@ -1,41 +1,67 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ProgressBarSize, ProgressBarVariant, ProgressBarType } from './types'
 import type { ProgressBarProps } from './types'
 import type { ProgressBarTokenType } from './progressbar.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    clampValue,
+    calculatePercentage,
+    extractAriaProps,
+    generateDefaultAriaLabel,
+    getCircularDimensions,
+    calculateCircularStroke,
+} from './utils'
+import { FOUNDATION_THEME } from '../../tokens'
 
-const CircularProgressBar: React.FC<{
+type ProgressBarInternalProps = {
     value: number
-    size: ProgressBarSize
-    type: ProgressBarType
-    tokens: ProgressBarTokenType
+    min: number
+    max: number
+    ariaLabel?: string
+    ariaLabelledby?: string
     showLabel: boolean
-}> = ({ value, size, type, tokens, showLabel }) => {
-    const clampedValue = Math.min(100, Math.max(0, value))
-    const circularSize = String(tokens.circular.size[size])
-    const strokeWidth = tokens.circular.strokeWidth[size]
-    const radius = (parseInt(circularSize) - strokeWidth) / 2
-    const circumference = 2 * Math.PI * radius
-    const center = parseInt(circularSize) / 2
+    tokens: ProgressBarTokenType
+}
 
-    // Calculate dash array for segmented style to match linear segmented
-    const segmentLength = 8
-    const gapLength = 4
-    const dashArray = `${segmentLength} ${gapLength}`
+const CircularProgressBar: React.FC<
+    ProgressBarInternalProps & {
+        size: ProgressBarSize
+        type: ProgressBarType
+    }
+> = ({
+    value,
+    size,
+    type,
+    tokens,
+    showLabel,
+    ariaLabel,
+    ariaLabelledby,
+    min,
+    max,
+}) => {
+    const clampedValue = useMemo(
+        () => clampValue(value, min, max),
+        [value, min, max]
+    )
+    const percentage = useMemo(
+        () => calculatePercentage(value, min, max),
+        [value, min, max]
+    )
 
-    const totalDashLength = segmentLength + gapLength
-    const totalSegments = Math.floor(circumference / totalDashLength)
-    const progressSegments = Math.floor((clampedValue / 100) * totalSegments)
-    const progressLength = progressSegments * totalDashLength
+    const { circularSize, strokeWidth, radius, center, circumference } =
+        useMemo(() => getCircularDimensions(size, tokens), [size, tokens])
 
-    const strokeDasharray =
-        type === ProgressBarType.SEGMENTED ? dashArray : circumference
-    const strokeDashoffset =
-        type === ProgressBarType.SEGMENTED
-            ? circumference - progressLength
-            : circumference - (clampedValue / 100) * circumference
+    const { strokeDasharray, strokeDashoffset, dashArray } = useMemo(
+        () =>
+            calculateCircularStroke(
+                type === ProgressBarType.SEGMENTED ? 'segmented' : 'solid',
+                circumference,
+                percentage
+            ),
+        [type, circumference, percentage]
+    )
 
     return (
         <Block
@@ -45,11 +71,18 @@ const CircularProgressBar: React.FC<{
             justifyContent="center"
             width={circularSize}
             height={circularSize}
+            role="progressbar"
+            aria-valuenow={clampedValue}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
         >
             <svg
                 width={circularSize}
                 height={circularSize}
                 style={{ transform: 'rotate(-90deg)' }}
+                aria-hidden="true"
             >
                 <circle
                     cx={center}
@@ -93,8 +126,9 @@ const CircularProgressBar: React.FC<{
                         fontSize={tokens.label.fontSize}
                         fontWeight={tokens.label.fontWeight}
                         color={tokens.label.color}
+                        aria-hidden="true"
                     >
-                        {Math.round(clampedValue)}%
+                        {Math.round(percentage)}%
                     </Text>
                 </Block>
             )}
@@ -102,14 +136,31 @@ const CircularProgressBar: React.FC<{
     )
 }
 
-const LinearProgressBar: React.FC<{
-    value: number
-    size: ProgressBarSize
-    variant: Exclude<ProgressBarVariant, ProgressBarVariant.CIRCULAR>
-    tokens: ProgressBarTokenType
-    showLabel: boolean
-}> = ({ value, size, variant, tokens, showLabel }) => {
-    const clampedValue = Math.min(100, Math.max(0, value))
+const LinearProgressBar: React.FC<
+    ProgressBarInternalProps & {
+        size: ProgressBarSize
+        variant: Exclude<ProgressBarVariant, ProgressBarVariant.CIRCULAR>
+    }
+> = ({
+    value,
+    size,
+    variant,
+    tokens,
+    showLabel,
+    ariaLabel,
+    ariaLabelledby,
+    min,
+    max,
+}) => {
+    const clampedValue = useMemo(
+        () => clampValue(value, min, max),
+        [value, min, max]
+    )
+    const percentage = useMemo(
+        () => calculatePercentage(value, min, max),
+        [value, min, max]
+    )
+
     const containerHeight = tokens.linear.height[size]
     const fillBackgroundColor = tokens.linear.fill.backgroundColor[variant]
     const fillBorderRadius = tokens.linear.fill.borderRadius[variant]
@@ -117,26 +168,38 @@ const LinearProgressBar: React.FC<{
     const containerBorderRadius = tokens.linear.borderRadius[variant]
 
     return (
-        <Block display="flex" alignItems="center" gap="8px" width="100%">
+        <Block
+            display="flex"
+            alignItems="center"
+            gap={FOUNDATION_THEME.unit[8]}
+            width="100%"
+            role="progressbar"
+            aria-valuenow={clampedValue}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+        >
             <Block
                 width="100%"
                 height={containerHeight}
                 display="flex"
                 flexGrow={1}
                 borderRadius={containerBorderRadius}
-                overflow={'hidden'}
+                overflow="hidden"
                 backgroundColor={
                     variant === ProgressBarVariant.SOLID
                         ? emptyBackgroundColor
                         : 'transparent'
                 }
+                aria-hidden="true"
             >
                 <Block
                     height="100%"
                     backgroundColor={fillBackgroundColor}
                     borderRadius={fillBorderRadius}
                     style={{
-                        width: `${clampedValue}%`,
+                        width: `${percentage}%`,
                         transition: tokens.transition,
                     }}
                 />
@@ -151,7 +214,7 @@ const LinearProgressBar: React.FC<{
                             tokens.linear.empty.backgroundSize.segmented
                         }
                         style={{
-                            width: `${100 - clampedValue}%`,
+                            width: `${100 - percentage}%`,
                         }}
                     />
                 )}
@@ -164,8 +227,9 @@ const LinearProgressBar: React.FC<{
                         fontWeight={tokens.label.fontWeight}
                         color={tokens.label.color}
                         fontSize={tokens.label.fontSize}
+                        aria-hidden="true"
                     >
-                        {Math.round(clampedValue)}%
+                        {Math.round(percentage)}%
                     </Text>
                 </Block>
             )}
@@ -179,34 +243,45 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     variant = ProgressBarVariant.SOLID,
     type = ProgressBarType.SOLID,
     showLabel = false,
-    ...props
+    min = 0,
+    max = 100,
+    ...rest
 }) => {
     const progressBarToken =
         useResponsiveTokens<ProgressBarTokenType>('PROGRESS_BAR')
 
+    const {
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledby,
+        restProps,
+    } = extractAriaProps(rest)
+
+    const defaultAriaLabel = useMemo(() => {
+        if (ariaLabel || ariaLabelledby) return ariaLabel
+        return generateDefaultAriaLabel(value, min, max)
+    }, [value, min, max, ariaLabel, ariaLabelledby])
+
+    const sharedProps: ProgressBarInternalProps = {
+        value,
+        min,
+        max,
+        ariaLabel: defaultAriaLabel,
+        ariaLabelledby,
+        showLabel,
+        tokens: progressBarToken,
+    }
+
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (
-            <Block {...props}>
-                <CircularProgressBar
-                    value={value}
-                    size={size}
-                    type={type}
-                    tokens={progressBarToken}
-                    showLabel={showLabel}
-                />
+            <Block {...restProps}>
+                <CircularProgressBar {...sharedProps} size={size} type={type} />
             </Block>
         )
     }
 
     return (
-        <Block {...props}>
-            <LinearProgressBar
-                value={value}
-                size={size}
-                variant={variant}
-                tokens={progressBarToken}
-                showLabel={showLabel}
-            />
+        <Block {...restProps}>
+            <LinearProgressBar {...sharedProps} size={size} variant={variant} />
         </Block>
     )
 }

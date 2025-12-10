@@ -579,13 +579,6 @@ describe('DataTable Accessibility', () => {
                 'button, [role="button"], input[type="checkbox"], a'
             )
             interactiveElements.forEach((element) => {
-                const styles = window.getComputedStyle(element)
-                // Check if element has focus styles (outline or box-shadow)
-                const hasFocusStyles =
-                    styles.outline !== 'none' ||
-                    styles.outlineWidth !== '0px' ||
-                    styles.boxShadow !== 'none'
-                // Note: This is a basic check. In real scenarios, focus styles should be tested visually
                 expect(element).toBeInTheDocument()
             })
         })
