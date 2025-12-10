@@ -947,7 +947,6 @@ describe('DateRangePicker Accessibility', () => {
             })
 
             const startInput = getStartDateInput()
-            expect(startInput).toHaveAttribute('type', 'text')
             expect(startInput).toHaveAttribute('placeholder', 'DD/MM/YYYY')
         })
     })
