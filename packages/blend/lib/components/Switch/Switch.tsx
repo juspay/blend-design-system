@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useCallback, useId } from 'react'
+import React, { forwardRef, useId } from 'react'
 import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
@@ -7,19 +7,16 @@ import {
     getSwitchLabelStyles,
     getSubtextId,
     mergeAriaDescribedBy,
-    isControlledSwitch,
 } from './utils'
 import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../Tooltip/Tooltip'
 import type { SwitchTokensType } from './switch.token'
-
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useErrorShake } from '../common/useErrorShake'
 import { getErrorShakeStyle } from '../common/error.animations'
 import { getTruncatedText } from '../../global-utils/GlobalUtils'
-
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
     (
         {
@@ -47,32 +44,9 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         const shouldShake = useErrorShake(error)
         const labelMaxLength = maxLength?.label
         const subtextMaxLength = maxLength?.subtext
-
-        const isControlled = isControlledSwitch(checked)
-
-        const [internalChecked, setInternalChecked] =
-            useState<boolean>(defaultChecked)
-
-        const currentChecked = isControlled
-            ? (checked ?? false)
-            : internalChecked
         const subtextId = getSubtextId(uniqueId, !!subtext)
-
         const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
             rest as { 'aria-describedby'?: string; [key: string]: unknown }
-
-        const handleToggle = useCallback(() => {
-            if (disabled) return
-
-            const newChecked = !currentChecked
-
-            if (!isControlled) {
-                setInternalChecked(newChecked)
-            }
-
-            onChange?.(newChecked)
-        }, [disabled, currentChecked, isControlled, onChange])
-
         const ariaAttributes = {
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
@@ -82,7 +56,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                 customAriaDescribedBy
             ),
         }
-
         return (
             <Block
                 data-switch={label ?? 'switch'}
@@ -96,12 +69,13 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                     role="switch"
                     id={uniqueId}
                     disabled={disabled}
-                    onClick={handleToggle}
-                    aria-checked={currentChecked}
-                    data-state={getSwitchDataState(currentChecked)}
+                    defaultChecked={defaultChecked}
+                    onClick={() => onChange?.(!checked)}
+                    aria-checked={checked ?? false}
+                    data-state={getSwitchDataState(checked ?? false)}
                     size={size}
                     $isDisabled={disabled}
-                    $isChecked={currentChecked}
+                    $isChecked={checked ?? false}
                     $error={error}
                     $tokens={tokens}
                     value={value}
@@ -112,7 +86,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                 >
                     <StyledSwitchThumb
                         size={size}
-                        $isChecked={currentChecked}
+                        $isChecked={checked ?? false}
                         $tokens={tokens}
                     />
                 </StyledSwitchRoot>
@@ -132,7 +106,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                             tokens={tokens}
                             maxLength={labelMaxLength}
                         />
-
                         {slot && (
                             <Block
                                 data-element="icon"
@@ -143,7 +116,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                             </Block>
                         )}
                     </Block>
-
                     {subtext && (
                         <SwitchSubtext
                             id={subtextId}
@@ -161,11 +133,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         )
     }
 )
-
 Switch.displayName = 'Switch'
-
 export default Switch
-
 const SwitchContent: React.FC<{
     uniqueId: string
     disabled: boolean
@@ -186,14 +155,12 @@ const SwitchContent: React.FC<{
     maxLength,
 }) => {
     if (!label) return null
-
     const labelStyles = getSwitchLabelStyles(disabled)
     const textProps = getSwitchTextProps(tokens, size, disabled, error)
     const { truncatedValue, fullValue, isTruncated } = getTruncatedText(
         label,
         maxLength
     )
-
     const content = (
         <label htmlFor={uniqueId} style={labelStyles}>
             <PrimitiveText
@@ -218,14 +185,12 @@ const SwitchContent: React.FC<{
             </PrimitiveText>
         </label>
     )
-
     return isTruncated ? (
         <Tooltip content={fullValue}>{content}</Tooltip>
     ) : (
         content
     )
 }
-
 const SwitchSubtext: React.FC<{
     id?: string
     size: SwitchSize
@@ -242,7 +207,6 @@ const SwitchSubtext: React.FC<{
     const truncation = isStringLike
         ? getTruncatedText(stringValue, maxLength)
         : null
-
     const content = (
         <PrimitiveText
             data-element="switch-description"
@@ -257,10 +221,8 @@ const SwitchSubtext: React.FC<{
             {truncation?.isTruncated ? truncation.truncatedValue : children}
         </PrimitiveText>
     )
-
     if (truncation?.isTruncated) {
         return <Tooltip content={truncation.fullValue}>{content}</Tooltip>
     }
-
     return content
 }
