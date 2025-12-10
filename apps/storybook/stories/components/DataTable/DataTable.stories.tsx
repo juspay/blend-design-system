@@ -390,6 +390,16 @@ const columns: ColumnDefinition<User>[] = [
                 category: 'UI State',
             },
         },
+        showFooter: {
+            control: { type: 'boolean' },
+            description:
+                'Show the pagination footer at the bottom of the table',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'UI State',
+            },
+        },
 
         // Inline Edit Props
         enableInlineEdit: {
@@ -1004,6 +1014,34 @@ export const EmptyState: Story = {
         docs: {
             description: {
                 story: 'DataTable with no data showing empty state.',
+            },
+        },
+    },
+}
+
+// Footer hidden
+export const FooterHidden: Story = {
+    args: {
+        data: sampleUsers.slice(0, 2) as any[],
+        columns: userColumns.slice(0, 4) as any[],
+        idField: 'id',
+        title: 'Compact User View',
+        description:
+            'Table with footer hidden - perfect for displaying only 1-2 rows',
+        enableSearch: true,
+        enableFiltering: true,
+        showFooter: false,
+        pagination: {
+            currentPage: 1,
+            pageSize: 10,
+            totalRows: 2,
+            pageSizeOptions: [10, 20, 50],
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with footer hidden using showFooter={false}. Ideal for compact displays with only a few rows where pagination controls are unnecessary.',
             },
         },
     },

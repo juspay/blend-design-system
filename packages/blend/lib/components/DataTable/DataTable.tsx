@@ -104,6 +104,7 @@ const DataTable = forwardRef(
             showHeader = true,
             showToolbar = true,
             showSettings = false,
+            showFooter = true,
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
@@ -1560,17 +1561,19 @@ const DataTable = forwardRef(
                         </DndContext>
                     </Block>
 
-                    <TableFooter
-                        pagination={pagination}
-                        currentPage={currentPage}
-                        pageSize={pageSize}
-                        totalRows={totalRows}
-                        isLoading={isLoading}
-                        showSkeleton={showSkeleton}
-                        hasData={currentData.length > 0}
-                        onPageChange={handlePageChange}
-                        onPageSizeChange={handlePageSizeChange}
-                    />
+                    {showFooter && (
+                        <TableFooter
+                            pagination={pagination}
+                            currentPage={currentPage}
+                            pageSize={pageSize}
+                            totalRows={totalRows}
+                            isLoading={isLoading}
+                            showSkeleton={showSkeleton}
+                            hasData={currentData.length > 0}
+                            onPageChange={handlePageChange}
+                            onPageSizeChange={handlePageSizeChange}
+                        />
+                    )}
                 </Block>
 
                 {mobileConfig.enableColumnOverflow && selectedRowForDrawer && (
