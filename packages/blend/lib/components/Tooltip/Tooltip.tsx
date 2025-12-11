@@ -104,7 +104,19 @@ export const Tooltip = ({
                                             tooltipTokens.text.lineHeight[size]
                                         }
                                     >
-                                        {content}
+                                        {typeof content === 'string' &&
+                                        content.includes('\n')
+                                            ? content
+                                                  .split('\n')
+                                                  .map((line, index, array) => (
+                                                      <span key={index}>
+                                                          {line}
+                                                          {index <
+                                                              array.length -
+                                                                  1 && <br />}
+                                                      </span>
+                                                  ))
+                                            : content}
                                     </PrimitiveText>
                                 </Block>
 
