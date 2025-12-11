@@ -104,13 +104,41 @@ addSnackbar({
             },
         },
     },
-    // Note: Snackbar component itself is just a container (Toaster)
-    // All configuration is done via addSnackbar() function
-    // No argTypes needed since component has no props
+    argTypes: {
+        position: {
+            control: { type: 'select' },
+            options: [
+                'top-left',
+                'top-right',
+                'bottom-left',
+                'bottom-right',
+                'top-center',
+                'bottom-center',
+            ],
+            description: 'Position where snackbars appear on the screen',
+            table: {
+                type: { summary: 'SnackbarPosition' },
+                category: 'Layout',
+            },
+        },
+        dismissOnClickAway: {
+            control: { type: 'boolean' },
+            description:
+                'When true, clicking outside snackbars will dismiss all snackbars. When false, snackbars will not dismiss on click away.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Behavior',
+            },
+        },
+    },
     decorators: [
-        (Story) => (
+        (Story, context) => (
             <>
-                <Snackbar />
+                <Snackbar
+                    position={context.args.position}
+                    dismissOnClickAway={context.args.dismissOnClickAway}
+                />
                 <div
                     style={{
                         height: 'auto',
