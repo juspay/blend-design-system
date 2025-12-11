@@ -50,6 +50,7 @@ export const Radio = ({
         <Block
             data-radio={children ?? 'radio'}
             data-status={disabled ? 'disabled' : 'enabled'}
+            data-state={checked ? 'checked' : 'unchecked'}
             data-id={value ?? ''}
             display="flex"
             alignItems={subtext ? 'flex-start' : 'center'}
