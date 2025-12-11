@@ -75,7 +75,7 @@ const MultiSelect = ({
     showItemDividers = false,
     showHeaderBorder = false,
     fullWidth = false,
-    enableVirtualization = false,
+    enableVirtualization = items.length > 20 ? true : false,
     virtualListItemHeight = 48,
     virtualListOverscan = 5,
     itemsToRender,
