@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useState, useId, useEffect } from 'react'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
@@ -44,6 +44,8 @@ const LineNumberGutter: React.FC<LineNumberGutterProps> = ({
         flexShrink="0"
         textAlign="right"
         alignSelf="stretch"
+        role="presentation"
+        aria-hidden="true"
     >
         {lineIndex + 1}
     </Block>
@@ -120,13 +122,13 @@ type PreElementProps = {
     lineHeight: string | number | undefined
 }
 
-const PreElement: React.FC<PreElementProps> = ({
-    children,
-    fontFamily,
-    fontSize,
-    lineHeight,
-}) => (
+const PreElement: React.FC<
+    PreElementProps & {
+        id?: string
+    }
+> = ({ children, fontFamily, fontSize, lineHeight, id }) => (
     <pre
+        id={id}
         style={{
             margin: 0,
             fontFamily: fontFamily || 'monospace',
@@ -160,6 +162,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
     ) => {
         const tokens = useResponsiveTokens<CodeBlockTokenType>('CODE_BLOCK')
         const [isCopied, setIsCopied] = useState(false)
+        const codeBlockId = useId().replace(/:/g, '-')
+        const codeContentId = `${codeBlockId}-code`
+        const headerId = `${codeBlockId}-header`
 
         // Format code if autoFormat is enabled
         const formattedCode = autoFormat ? formatCode(code, language) : code
@@ -179,6 +184,45 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             formattedCode,
             setIsCopied
         )
+
+        // Screen reader announcement for copy status
+        useEffect(() => {
+            if (isCopied) {
+                // Announce copy success to screen readers
+                const announcement = document.createElement('div')
+                announcement.setAttribute('role', 'status')
+                announcement.setAttribute('aria-live', 'polite')
+                announcement.setAttribute('aria-atomic', 'true')
+                announcement.style.position = 'absolute'
+                announcement.style.left = '-10000px'
+                announcement.style.width = '1px'
+                announcement.style.height = '1px'
+                announcement.style.overflow = 'hidden'
+                announcement.textContent = `Code from ${header || 'code block'} copied to clipboard`
+                document.body.appendChild(announcement)
+
+                // Reset after 2 seconds
+                const timer = setTimeout(() => {
+                    setIsCopied(false)
+                    if (document.body.contains(announcement)) {
+                        document.body.removeChild(announcement)
+                    }
+                }, 2000)
+
+                return () => {
+                    clearTimeout(timer)
+                    if (document.body.contains(announcement)) {
+                        document.body.removeChild(announcement)
+                    }
+                }
+            }
+        }, [isCopied, header])
+
+        // Generate accessible label for code block
+        const codeBlockLabel = header ? `Code block: ${header}` : 'Code block'
+        const codeBlockDescription = language
+            ? `${codeBlockLabel}, ${language} language`
+            : codeBlockLabel
 
         // Use utility functions
         const tokenizeLineLocal = (line: string) => tokenizeLine(line, language)
@@ -203,10 +247,13 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 overflow="hidden"
                 backgroundColor={tokens.backgroundColor}
                 boxShadow={tokens.boxShadow}
+                role="region"
+                aria-label={codeBlockDescription}
             >
                 {/* Header */}
                 {showHeader && (
                     <Block
+                        id={headerId}
                         display="flex"
                         justifyContent="space-between"
                         alignItems="center"
@@ -214,6 +261,8 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                         backgroundColor={tokens.header.backgroundColor}
                         borderBottom={tokens.header.borderBottom}
                         gap={tokens.header.gap}
+                        role="group"
+                        aria-label={`Code block header: ${header}`}
                     >
                         <Block
                             display="flex"
@@ -222,17 +271,23 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             style={{ flex: 1 }}
                         >
                             {headerLeftSlot || (
-                                <FileCode style={{ flexShrink: 0 }} />
+                                <FileCode
+                                    style={{ flexShrink: 0 }}
+                                    aria-hidden="true"
+                                />
                             )}
-                            <Block
-                                as="span"
-                                fontSize={tokens.header.text.fontSize}
-                                fontWeight={tokens.header.text.fontWeight}
-                                lineHeight={tokens.header.text.lineHeight}
-                                color={tokens.header.text.color}
+                            <h2
+                                id={`${headerId}-title`}
+                                style={{
+                                    margin: 0,
+                                    fontSize: tokens.header.text.fontSize,
+                                    fontWeight: tokens.header.text.fontWeight,
+                                    lineHeight: tokens.header.text.lineHeight,
+                                    color: tokens.header.text.color,
+                                }}
                             >
                                 {header}
-                            </Block>
+                            </h2>
                             {headerRightSlot && (
                                 <Block
                                     style={{ flexShrink: 0 }}
@@ -251,11 +306,16 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 buttonType={ButtonType.SECONDARY}
                                 subType={ButtonSubType.ICON_ONLY}
                                 size={ButtonSize.SMALL}
+                                aria-label={
+                                    isCopied
+                                        ? `Code from ${header || 'code block'} copied to clipboard`
+                                        : `Copy code from ${header || 'code block'}`
+                                }
                                 leadingIcon={
                                     isCopied ? (
-                                        <Check size={16} />
+                                        <Check size={16} aria-hidden="true" />
                                     ) : (
-                                        <Copy size={16} />
+                                        <Copy size={16} aria-hidden="true" />
                                     )
                                 }
                             />
@@ -265,6 +325,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
                 {/* Code content */}
                 <Block
+                    id={codeContentId}
                     padding={
                         isDiffMode
                             ? '0'
@@ -289,8 +350,11 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
                                 alignSelf="stretch"
                                 backgroundColor={tokens.backgroundColor}
+                                role="group"
+                                aria-label="Removed code"
                             >
                                 <PreElement
+                                    id={`${codeContentId}-removed`}
                                     fontFamily={tokens.body.code.fontFamily}
                                     fontSize={tokens.body.code.fontSize}
                                     lineHeight={tokens.body.code.lineHeight}
@@ -362,8 +426,11 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
                                 alignSelf="stretch"
                                 backgroundColor={tokens.backgroundColor}
+                                role="group"
+                                aria-label="Added code"
                             >
                                 <PreElement
+                                    id={`${codeContentId}-added`}
                                     fontFamily={tokens.body.code.fontFamily}
                                     fontSize={tokens.body.code.fontSize}
                                     lineHeight={tokens.body.code.lineHeight}
