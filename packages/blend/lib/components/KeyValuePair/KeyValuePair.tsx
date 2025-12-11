@@ -33,6 +33,7 @@ const ResponsiveText = ({
     as: Component = 'div',
     id,
     role,
+    slotPresent,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
 }: {
@@ -47,6 +48,7 @@ const ResponsiveText = ({
     as?: React.ElementType
     id?: string
     role?: string
+    slotPresent: boolean
     'aria-label'?: string
     'aria-labelledby'?: string
 }) => {
@@ -86,7 +88,7 @@ const ResponsiveText = ({
         <Component
             ref={textRef}
             className={className}
-            style={getTextStyles(textOverflow, maxLines)}
+            style={getTextStyles(textOverflow, maxLines, slotPresent)}
             id={id}
             role={role}
             aria-label={ariaLabel}
@@ -154,6 +156,8 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
         const baseId = useId()
         const keyId = `${baseId}-key`
         const valueId = `${baseId}-value`
+        const keyFlexClass = keySlot ? '' : 'flex-1'
+        const valueFlexClass = valueRightSlot ? '' : 'flex-1'
 
         return (
             <Block
@@ -170,7 +174,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                 >
                     <ResponsiveText
                         as="div"
-                        className="min-w-0"
+                        className={`${keyFlexClass} min-w-0`}
                         fontSize={keyValuePairTokens.key.fontSize}
                         color={keyValuePairTokens.key.color}
                         fontWeight={keyValuePairTokens.key.fontWeight}
@@ -179,6 +183,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         showTooltipOnTruncate={false}
                         id={keyId}
                         role="term"
+                        slotPresent={!!keySlot}
                         aria-label={keyString}
                     >
                         {keyString}
@@ -205,7 +210,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                     )}
                     <ResponsiveText
                         as="div"
-                        className="min-w-0"
+                        className={`${valueFlexClass} min-w-0`}
                         fontSize={keyValuePairTokens.value.fontSize[size]}
                         color={keyValuePairTokens.value.color}
                         fontWeight={keyValuePairTokens.value.fontWeight}
@@ -214,6 +219,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         showTooltipOnTruncate={showTooltipOnTruncate}
                         id={valueId}
                         role="definition"
+                        slotPresent={!!valueRightSlot}
                         aria-labelledby={keyId}
                     >
                         {value || ''}
