@@ -273,6 +273,14 @@ import { Modal, Button, ButtonType } from '@juspay/blend-design-system';
                 category: 'Customization',
             },
         },
+        isCustom: {
+            control: { type: 'boolean' },
+            description: 'Whether the modal is custom',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'Customization',
+            },
+        },
         headerRightSlot: {
             control: false,
             description: 'Content displayed on the right side of the header',
