@@ -3,6 +3,7 @@ import {
     Upload,
     UploadState,
 } from '../../../../packages/blend/lib/components/Upload'
+import type { UploadFormValue } from '../../../../packages/blend/lib/components/Upload/types'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
     Upload as UploadIcon,
@@ -147,6 +148,19 @@ const UploadDemo = () => {
                         </Upload>
                     </div>
                 </div>
+            </div>
+
+            {/* Real-World API Upload Demo */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Real-World API Upload Demo
+                </h2>
+                <p className="text-gray-600">
+                    This demo shows how to upload files to a real API endpoint.
+                    File objects contain the actual file content and can be
+                    uploaded using FormData.
+                </p>
+                <ApiUploadExample />
             </div>
 
             {/* Label Examples */}
@@ -381,6 +395,430 @@ const UploadDemo = () => {
                     </Upload>
                 </div>
             </div>
+
+            {/* Form Integration Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Form Integration</h2>
+                <p className="text-gray-600">
+                    Examples showing how Upload component integrates with forms,
+                    capturing all file metadata (files, filenames, filemimes).
+                </p>
+
+                {/* Single File Form Integration */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                        Single File Upload with Form Integration
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        For single file uploads, the form value is:
+                        <code className="block mt-2 p-2 bg-gray-100 rounded text-xs">
+                            {`File | null`}
+                        </code>
+                        Extract metadata:{' '}
+                        <code className="text-xs">file?.name</code>,{' '}
+                        <code className="text-xs">file?.type</code>
+                    </p>
+                    <SingleFileFormExample />
+                </div>
+
+                {/* Multiple Files Form Integration */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                        Multiple Files Upload with Form Integration
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        For multiple file uploads, the form value is:
+                        <code className="block mt-2 p-2 bg-gray-100 rounded text-xs">
+                            {`File[]`}
+                        </code>
+                        Extract metadata:{' '}
+                        <code className="text-xs">
+                            files.map(f =&gt; f.name)
+                        </code>
+                        ,{' '}
+                        <code className="text-xs">
+                            files.map(f =&gt; f.type)
+                        </code>
+                    </p>
+                    <MultipleFilesFormExample />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// Single File Form Integration Example
+const SingleFileFormExample = () => {
+    const [file, setFile] = useState<File | null>(null)
+
+    const handleChange = (value: UploadFormValue) => {
+        const fileValue = Array.isArray(value) ? value[0] || null : value
+        setFile(fileValue)
+        console.log('Single File Form Value:', fileValue)
+    }
+
+    // Extract metadata from File object
+    const filename = file?.name || null
+    const filemime = file?.type || null
+
+    return (
+        <div className="space-y-4">
+            <div className="max-w-md">
+                <Upload
+                    label="Upload Single File"
+                    description="PDF files only, max 5MB"
+                    accept={['.pdf']}
+                    maxSize={5 * 1024 * 1024}
+                    value={file}
+                    onChange={handleChange}
+                >
+                    <FileText size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* Form State Display */}
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold mb-2">Form State:</h4>
+                <pre className="text-xs overflow-auto">
+                    {JSON.stringify(
+                        {
+                            file: file
+                                ? {
+                                      name: file.name,
+                                      size: file.size,
+                                      type: file.type,
+                                  }
+                                : null,
+                            filename,
+                            filemime,
+                        },
+                        null,
+                        2
+                    )}
+                </pre>
+            </div>
+        </div>
+    )
+}
+
+// Multiple Files Form Integration Example
+const MultipleFilesFormExample = () => {
+    const [files, setFiles] = useState<File[]>([])
+
+    const handleChange = (value: UploadFormValue) => {
+        const filesValue = Array.isArray(value) ? value : value ? [value] : []
+        setFiles(filesValue)
+        console.log('Multiple Files Form Value:', filesValue)
+    }
+
+    // Extract metadata from File objects
+    const filenames = files.map((f) => f.name)
+    const filemimes = files.map((f) => f.type)
+
+    return (
+        <div className="space-y-4">
+            <div className="max-w-md">
+                <Upload
+                    label="Upload Multiple Files"
+                    description="Upload up to 5 files"
+                    multiple={true}
+                    maxFiles={5}
+                    value={files}
+                    onChange={handleChange}
+                >
+                    <UploadIcon size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* Form State Display */}
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold mb-2">Form State:</h4>
+                <div className="space-y-2">
+                    <div>
+                        <strong>Files Count:</strong> {files.length}
+                    </div>
+                    <div>
+                        <strong>Filenames:</strong>{' '}
+                        {filenames.length > 0 ? filenames.join(', ') : 'None'}
+                    </div>
+                    <div>
+                        <strong>File MIME Types:</strong>{' '}
+                        {filemimes.length > 0 ? filemimes.join(', ') : 'None'}
+                    </div>
+                </div>
+                <pre className="text-xs overflow-auto mt-4">
+                    {JSON.stringify(
+                        {
+                            files: files.map((f) => ({
+                                name: f.name,
+                                size: f.size,
+                                type: f.type,
+                            })),
+                            filenames,
+                            filemimes,
+                        },
+                        null,
+                        2
+                    )}
+                </pre>
+            </div>
+        </div>
+    )
+}
+
+// Real-World API Upload Example
+const ApiUploadExample = () => {
+    const [files, setFiles] = useState<File[]>([])
+    const [uploading, setUploading] = useState(false)
+    const [uploadResults, setUploadResults] = useState<
+        Array<{
+            file: File
+            success: boolean
+            response?: any
+            error?: string
+        }>
+    >([])
+
+    const handleChange = (value: UploadFormValue) => {
+        const filesValue = Array.isArray(value) ? value : value ? [value] : []
+        setFiles(filesValue)
+        setUploadResults([]) // Clear previous results when new files are selected
+    }
+
+    // Helper function to get file extension
+    const getFileExtension = (filename: string): string => {
+        return filename.split('.').pop() || ''
+    }
+
+    // Upload file to API
+    const uploadFileToApi = async (file: File): Promise<any> => {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch(
+            'https://api.escuelajs.co/api/v1/files/upload',
+            {
+                method: 'POST',
+                body: formData,
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`)
+        }
+
+        return response.json()
+    }
+
+    // Handle upload button click
+    const handleUpload = async () => {
+        if (files.length === 0) return
+
+        setUploading(true)
+        setUploadResults([])
+
+        const results = await Promise.allSettled(
+            files.map(async (file) => {
+                try {
+                    const response = await uploadFileToApi(file)
+                    return {
+                        file,
+                        success: true,
+                        response,
+                    }
+                } catch (error) {
+                    return {
+                        file,
+                        success: false,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : 'Unknown error',
+                    }
+                }
+            })
+        )
+
+        const uploadResults = results.map((result) => {
+            if (result.status === 'fulfilled') {
+                return result.value
+            } else {
+                return {
+                    file: files[results.indexOf(result)],
+                    success: false,
+                    error: result.reason?.message || 'Upload failed',
+                }
+            }
+        })
+
+        setUploadResults(uploadResults)
+        setUploading(false)
+    }
+
+    // File details for display
+    const fileDetails = files.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        extension: getFileExtension(file.name),
+        file: file, // The actual File object containing the content
+    }))
+
+    return (
+        <div className="space-y-6">
+            <div className="max-w-2xl">
+                <Upload
+                    label="Select Files to Upload"
+                    description="Select files and click Upload to send them to the API"
+                    multiple={true}
+                    maxFiles={5}
+                    value={files}
+                    onChange={handleChange}
+                    accept={['*']}
+                >
+                    <UploadIcon size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* File Details Display */}
+            {files.length > 0 && (
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">
+                            Selected Files ({files.length})
+                        </h3>
+                        <button
+                            onClick={handleUpload}
+                            disabled={uploading || files.length === 0}
+                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                        >
+                            {uploading ? 'Uploading...' : 'Upload to API'}
+                        </button>
+                    </div>
+
+                    <div className="space-y-3">
+                        {fileDetails.map((fileDetail, index) => {
+                            const uploadResult = uploadResults[index]
+                            return (
+                                <div
+                                    key={index}
+                                    className={`p-4 border rounded-lg ${
+                                        uploadResult?.success
+                                            ? 'border-green-500 bg-green-50'
+                                            : uploadResult?.success === false
+                                              ? 'border-red-500 bg-red-50'
+                                              : 'border-gray-200 bg-gray-50'
+                                    }`}
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex-1">
+                                            <div className="font-semibold text-sm mb-2">
+                                                {fileDetail.name}
+                                            </div>
+                                            <div className="text-xs space-y-1 text-gray-600">
+                                                <div>
+                                                    <strong>Size:</strong>{' '}
+                                                    {(
+                                                        fileDetail.size / 1024
+                                                    ).toFixed(2)}{' '}
+                                                    KB
+                                                </div>
+                                                <div>
+                                                    <strong>Type:</strong>{' '}
+                                                    {fileDetail.type ||
+                                                        'Unknown'}
+                                                </div>
+                                                <div>
+                                                    <strong>Extension:</strong>{' '}
+                                                    {fileDetail.extension}
+                                                </div>
+                                                <div className="mt-2 text-xs text-gray-500">
+                                                    <strong>
+                                                        File Object:
+                                                    </strong>{' '}
+                                                    {fileDetail.file instanceof
+                                                    File
+                                                        ? '✓ Available (contains file content)'
+                                                        : '✗ Not available'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {uploadResult && (
+                                            <div className="ml-4">
+                                                {uploadResult.success ? (
+                                                    <CheckCircle
+                                                        size={20}
+                                                        color="#10b981"
+                                                    />
+                                                ) : (
+                                                    <AlertCircle
+                                                        size={20}
+                                                        color="#ef4444"
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {uploadResult && (
+                                        <div className="mt-3 pt-3 border-t border-gray-200">
+                                            {uploadResult.success ? (
+                                                <div className="text-xs">
+                                                    <div className="text-green-700 font-semibold mb-1">
+                                                        ✓ Upload Successful
+                                                    </div>
+                                                    <pre className="text-xs bg-white p-2 rounded overflow-auto max-h-32">
+                                                        {JSON.stringify(
+                                                            uploadResult.response,
+                                                            null,
+                                                            2
+                                                        )}
+                                                    </pre>
+                                                </div>
+                                            ) : (
+                                                <div className="text-xs text-red-700">
+                                                    <div className="font-semibold mb-1">
+                                                        ✗ Upload Failed
+                                                    </div>
+                                                    <div>
+                                                        {uploadResult.error}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    {/* JSON Output Example */}
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-sm">
+                            File Details JSON (as you would use in your app):
+                        </h4>
+                        <pre className="text-xs overflow-auto max-h-64 bg-white p-3 rounded border">
+                            {JSON.stringify(
+                                fileDetails.map((fd) => ({
+                                    name: fd.name,
+                                    size: fd.size,
+                                    type: fd.type,
+                                    extension: fd.extension,
+                                    file:
+                                        fd.file instanceof File ? 'File' : null,
+                                })),
+                                null,
+                                2
+                            )}
+                        </pre>
+                        <p className="text-xs text-gray-600 mt-2">
+                            Note: The File object contains the actual file
+                            content and can be uploaded using FormData. In
+                            production, you would use the File object directly
+                            for API uploads.
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

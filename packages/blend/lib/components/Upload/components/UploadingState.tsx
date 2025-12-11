@@ -85,7 +85,15 @@ const UploadingState: React.FC<UploadingStateProps> = ({
             )}
         </Block>
 
-        <Block width="100%" gap={uploadTokens.container.content.actionable.gap}>
+        <Block
+            width="100%"
+            gap={uploadTokens.container.content.actionable.gap}
+            role="progressbar"
+            aria-valuenow={uploadingFile.progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Uploading ${uploadingFile.file.name}, ${uploadingFile.progress}% complete`}
+        >
             <ProgressBar
                 value={uploadingFile.progress}
                 size={ProgressBarSize.SMALL}

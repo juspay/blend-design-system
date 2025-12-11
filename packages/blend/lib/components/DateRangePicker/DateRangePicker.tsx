@@ -72,77 +72,30 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     onStartTimeChange,
     onEndTimeChange,
     calendarToken,
-}) => (
-    <Block
-        paddingX={calendarToken?.calendar?.header?.padding?.x}
-        paddingY={calendarToken?.calendar?.header?.padding?.y}
-    >
+}) => {
+    const startDateId = React.useId()
+    const endDateId = React.useId()
+    const startTimeId = React.useId()
+    const endTimeId = React.useId()
+
+    return (
         <Block
-            display="flex"
-            flexDirection="column"
-            gap={calendarToken?.calendar?.header?.dateInput?.gap}
+            paddingX={calendarToken?.calendar?.header?.padding?.x}
+            paddingY={calendarToken?.calendar?.header?.padding?.y}
         >
             <Block
                 display="flex"
+                flexDirection="column"
                 gap={calendarToken?.calendar?.header?.dateInput?.gap}
-                alignItems="center"
             >
-                <PrimitiveText
-                    as="span"
-                    color={
-                        calendarToken?.calendar?.header?.dateInput?.label?.color
-                    }
-                    fontWeight={
-                        calendarToken?.calendar?.header?.dateInput?.label
-                            ?.fontWeight
-                    }
-                    fontSize={
-                        calendarToken?.calendar?.header?.dateInput?.label
-                            ?.fontSize
-                    }
-                >
-                    Start
-                </PrimitiveText>
-                <Block
-                    display="flex"
-                    alignItems="start"
-                    gap={calendarToken?.calendar?.header?.dateInput?.gap}
-                    width="100%"
-                >
-                    <Block data-element="start-date-selector" flexGrow={1}>
-                        <TextInput
-                            label=""
-                            placeholder="DD/MM/YYYY"
-                            value={startDate}
-                            onChange={onStartDateChange}
-                            error={!startDateValidation.isValid}
-                            size={TextInputSize.SMALL}
-                            autoFocus={false}
-                            tabIndex={-1}
-                        />
-                    </Block>
-                    {showDateTimePicker && (
-                        <TimeSelector
-                            value={startTime}
-                            onChange={onStartTimeChange}
-                            autoFocus={false}
-                            tabIndex={-1}
-                        />
-                    )}
-                </Block>
-            </Block>
-
-            {(!allowSingleDateSelection ||
-                (allowSingleDateSelection &&
-                    selectedRange.startDate.getTime() !==
-                        selectedRange.endDate.getTime())) && (
                 <Block
                     display="flex"
                     gap={calendarToken?.calendar?.header?.dateInput?.gap}
                     alignItems="center"
                 >
                     <PrimitiveText
-                        as="span"
+                        as="label"
+                        htmlFor={startDateId}
                         color={
                             calendarToken?.calendar?.header?.dateInput?.label
                                 ?.color
@@ -155,11 +108,8 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             calendarToken?.calendar?.header?.dateInput?.label
                                 ?.fontSize
                         }
-                        style={{
-                            minWidth: '30.6px',
-                        }}
                     >
-                        End
+                        Start
                     </PrimitiveText>
                     <Block
                         display="flex"
@@ -167,32 +117,111 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         gap={calendarToken?.calendar?.header?.dateInput?.gap}
                         width="100%"
                     >
-                        <Block data-element="end-date-selector" flexGrow={1}>
+                        <Block data-element="start-date-selector" flexGrow={1}>
                             <TextInput
+                                id={startDateId}
                                 label=""
                                 placeholder="DD/MM/YYYY"
-                                value={endDate}
-                                onChange={onEndDateChange}
-                                error={!endDateValidation.isValid}
+                                value={startDate}
+                                onChange={onStartDateChange}
+                                error={!startDateValidation.isValid}
+                                errorMessage={
+                                    !startDateValidation.isValid
+                                        ? startDateValidation.message
+                                        : undefined
+                                }
                                 size={TextInputSize.SMALL}
                                 autoFocus={false}
-                                tabIndex={-1}
+                                aria-invalid={!startDateValidation.isValid}
                             />
                         </Block>
                         {showDateTimePicker && (
                             <TimeSelector
-                                value={endTime}
-                                onChange={onEndTimeChange}
+                                id={startTimeId}
+                                value={startTime}
+                                onChange={onStartTimeChange}
                                 autoFocus={false}
-                                tabIndex={-1}
+                                aria-label="Start time"
                             />
                         )}
                     </Block>
                 </Block>
-            )}
+
+                {(!allowSingleDateSelection ||
+                    (allowSingleDateSelection &&
+                        selectedRange.startDate.getTime() !==
+                            selectedRange.endDate.getTime())) && (
+                    <Block
+                        display="flex"
+                        gap={calendarToken?.calendar?.header?.dateInput?.gap}
+                        alignItems="center"
+                    >
+                        <PrimitiveText
+                            as="label"
+                            htmlFor={endDateId}
+                            color={
+                                calendarToken?.calendar?.header?.dateInput
+                                    ?.label?.color
+                            }
+                            fontWeight={
+                                calendarToken?.calendar?.header?.dateInput
+                                    ?.label?.fontWeight
+                            }
+                            fontSize={
+                                calendarToken?.calendar?.header?.dateInput
+                                    ?.label?.fontSize
+                            }
+                            style={{
+                                minWidth: '30.6px',
+                            }}
+                        >
+                            End
+                        </PrimitiveText>
+                        <Block
+                            display="flex"
+                            alignItems="start"
+                            gap={
+                                calendarToken?.calendar?.header?.dateInput?.gap
+                            }
+                            width="100%"
+                        >
+                            <Block
+                                data-element="end-date-selector"
+                                flexGrow={1}
+                            >
+                                <TextInput
+                                    id={endDateId}
+                                    label=""
+                                    placeholder="DD/MM/YYYY"
+                                    value={endDate}
+                                    onChange={onEndDateChange}
+                                    error={!endDateValidation.isValid}
+                                    errorMessage={
+                                        !endDateValidation.isValid
+                                            ? endDateValidation.message
+                                            : undefined
+                                    }
+                                    size={TextInputSize.SMALL}
+                                    autoFocus={false}
+                                    aria-invalid={!endDateValidation.isValid}
+                                />
+                            </Block>
+                            {showDateTimePicker && (
+                                <TimeSelector
+                                    id={endTimeId}
+                                    value={endTime}
+                                    onChange={onEndTimeChange}
+                                    autoFocus={false}
+                                    aria-label="End time"
+                                />
+                            )}
+                        </Block>
+                    </Block>
+                )}
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 type CalendarSectionProps = {
     selectedRange: DateRange
@@ -815,6 +844,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     boxShadow={FOUNDATION_THEME.shadows.xs}
                     aria-expanded={isOpen}
                     aria-disabled={isDisabled}
+                    aria-label={`Date range picker, ${displayText || 'Select date range'}`}
+                    aria-haspopup="dialog"
                     disabled={isDisabled}
                     data-component-field-wrapper=""
                     data-date-picker="dateRangePicker-Filter"
@@ -846,7 +877,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             alignItems="center"
                             gap={calendarToken?.trigger?.dateInput?.gap}
                         >
-                            {iconElement}
+                            {iconElement && (
+                                <span aria-hidden="true">{iconElement}</span>
+                            )}
                             <span
                                 data-element="placeholder"
                                 data-id={displayText}
@@ -860,6 +893,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                                 size={
                                     calendarToken?.trigger?.dateInput?.iconSize
                                 }
+                                aria-hidden="true"
                                 style={{
                                     marginLeft:
                                         calendarToken?.trigger?.dateInput?.gap,
@@ -870,6 +904,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                                 size={
                                     calendarToken?.trigger?.dateInput?.iconSize
                                 }
+                                aria-hidden="true"
                                 style={{
                                     marginLeft:
                                         calendarToken?.trigger?.dateInput?.gap,
