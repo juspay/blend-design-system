@@ -213,6 +213,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Modal.isCustom',
+                hintText:
+                    'When true, indicates that the modal is using custom styling or behavior. This boolean flag can be used to apply custom styles or handle the modal differently in custom implementations.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true indicates custom modal, false indicates default modal',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'Modal.minWidth',
                 hintText:
                     'Optional CSS width string that sets the minimum width constraint for the modal. Accepts any valid CSS width value (e.g., "500px", "50%", "40rem"). The modal will not shrink below this width, ensuring readability and proper layout. Defaults to "500px".',
@@ -220,6 +233,44 @@ function MyComponent() {
             {
                 content: 'string',
                 hintText: 'CSS width value for minimum modal width constraint',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.minHeight',
+                hintText:
+                    'Optional CSS height string that sets the minimum height constraint for the modal. Accepts any valid CSS height value (e.g., "300px", "50vh", "20rem"). The modal will not shrink below this height, ensuring readability and proper layout.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS height value for minimum modal height constraint',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.maxWidth',
+                hintText:
+                    'Optional CSS width string that sets the maximum width constraint for the modal. Accepts any valid CSS width value (e.g., "800px", "90%", "60rem","90vw"). The modal will not expand beyond this width, ensuring optimal layout on larger screens.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS width value for maximum modal width constraint',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.maxHeight',
+                hintText:
+                    'Optional CSS height string that sets the maximum height constraint for the modal. Accepts any valid CSS height value (e.g., "600px", "80vh", "40rem"). The modal will not expand beyond this height, ensuring the content remains within viewport bounds and becomes scrollable if needed.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS height value for maximum modal height constraint',
             },
             { content: '' },
         ],

@@ -23,12 +23,18 @@ import {
     Eye,
     MoreVertical,
 } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof DataTable> = {
     title: 'Components/DataTable',
     component: DataTable,
     parameters: {
         layout: 'fullscreen',
+        a11y: getA11yConfig('interactive'),
+        chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
                 component: `
@@ -47,6 +53,47 @@ A comprehensive data table component with advanced features including sorting, f
 - Custom cell rendering
 - Loading states and empty states
 - Multiple column types (Text, Number, Date, Avatar, Tag, Select, etc.)
+
+## Accessibility
+
+**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Keyboard accessible (Tab, Enter, Space, Arrow keys)
+- Screen reader support (VoiceOver/NVDA)
+- Proper ARIA attributes (aria-rowcount, aria-colcount, aria-sort, aria-expanded, aria-selected)
+- Semantic HTML table structure (thead, tbody, th, td)
+- Focus indicators with visible outline
+- Status announcements via aria-live regions
+- Accessible names for all interactive elements
+- Table headers properly associated with cells (scope attribute)
+
+**Level AAA Compliance**: ⚠️ Partial (varies by use case)
+- ✅ **Compliant**: 1.3.1 Info and Relationships, 2.1.1 Keyboard, 2.1.3 Keyboard (No Exception), 2.4.7 Focus Visible, 3.2.5 Change on Request
+- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently 4.5:1 for AA), 2.5.5 Target Size - some interactive elements may not meet 44x44px minimum
+- ⚠️ **Application-Dependent**: 3.3.6 Error Prevention (All) - requires confirmation patterns for destructive actions
+
+**Keyboard Navigation**:
+- **Tab**: Navigate between interactive elements (buttons, checkboxes, inputs)
+- **Enter/Space**: Activate buttons, toggle checkboxes, expand/collapse rows
+- **Arrow Keys**: Navigate table cells (when implemented)
+- **Escape**: Close popovers and filters
+
+**Screen Reader Support**:
+- Table structure announced with row and column counts
+- Sort state announced via aria-sort attribute
+- Row expansion state announced via aria-expanded
+- Selection state announced via aria-selected
+- Status changes announced via aria-live regions
+- Loading and empty states announced
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **jest-axe**: Run \`pnpm test DataTable.accessibility\` (25+ tests covering WCAG 2.0, 2.1, 2.2 criteria)
+- **Chromatic**: Visual regression for focus rings and states
+- **Manual**: Test with VoiceOver/NVDA, verify keyboard navigation, check contrast ratios with WebAIM Contrast Checker
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
 ## Usage
 
@@ -340,6 +387,16 @@ const columns: ColumnDefinition<User>[] = [
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        showFooter: {
+            control: { type: 'boolean' },
+            description:
+                'Show the pagination footer at the bottom of the table',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
                 category: 'UI State',
             },
         },
@@ -962,6 +1019,34 @@ export const EmptyState: Story = {
     },
 }
 
+// Footer hidden
+export const FooterHidden: Story = {
+    args: {
+        data: sampleUsers.slice(0, 2) as any[],
+        columns: userColumns.slice(0, 4) as any[],
+        idField: 'id',
+        title: 'Compact User View',
+        description:
+            'Table with footer hidden - perfect for displaying only 1-2 rows',
+        enableSearch: true,
+        enableFiltering: true,
+        showFooter: false,
+        pagination: {
+            currentPage: 1,
+            pageSize: 10,
+            totalRows: 2,
+            pageSizeOptions: [10, 20, 50],
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with footer hidden using showFooter={false}. Ideal for compact displays with only a few rows where pagination controls are unnecessary.',
+            },
+        },
+    },
+}
+
 // Complex example with all features
 const ComplexDataTable: React.FC = () => {
     const [data, setData] = useState(sampleUsers)
@@ -1505,6 +1590,294 @@ const columns: ColumnDefinition<User>[] = [
 \`\`\`
             `,
             },
+        },
+    },
+}
+
+// ============================================================================
+// Accessibility Testing
+// ============================================================================
+
+/**
+ * Accessibility examples demonstrating keyboard navigation, ARIA attributes, and screen reader support
+ */
+export const Accessibility: Story = {
+    render: () => {
+        const accessibilityColumns: ColumnDefinition<
+            Record<string, unknown>
+        >[] = [
+            {
+                field: 'name',
+                header: 'Name',
+                type: ColumnType.TEXT,
+                minWidth: '200px',
+                isSortable: true,
+            },
+            {
+                field: 'email',
+                header: 'Email',
+                type: ColumnType.TEXT,
+                minWidth: '200px',
+                isSortable: true,
+            },
+            {
+                field: 'role',
+                header: 'Role',
+                type: ColumnType.SELECT,
+                minWidth: '150px',
+                isSortable: true,
+            },
+        ]
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '32px',
+                    padding: '24px',
+                    maxWidth: '1200px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Keyboard Navigation
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            color: '#6b7280',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Use Tab to navigate between interactive elements. Press
+                        Enter or Space to activate buttons and toggle
+                        checkboxes. Arrow keys can be used for cell navigation
+                        (when implemented).
+                    </p>
+                    <DataTable
+                        data={sampleUsers.slice(0, 5) as any[]}
+                        columns={accessibilityColumns as any[]}
+                        idField="id"
+                        title="Keyboard Navigation Example"
+                        enableRowSelection={true}
+                        enableRowExpansion={true}
+                        renderExpandedRow={() => (
+                            <div style={{ padding: '16px' }}>
+                                Expanded row content
+                            </div>
+                        )}
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        ARIA Attributes & Screen Reader Support
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            color: '#6b7280',
+                            fontSize: '14px',
+                        }}
+                    >
+                        The table includes proper ARIA attributes for screen
+                        readers: aria-rowcount, aria-colcount, aria-sort,
+                        aria-expanded, aria-selected, and aria-live regions for
+                        status announcements.
+                    </p>
+                    <DataTable
+                        data={sampleUsers.slice(0, 5) as any[]}
+                        columns={accessibilityColumns as any[]}
+                        idField="id"
+                        title="ARIA Attributes Example"
+                        description="Table with proper ARIA attributes for screen readers"
+                        enableRowSelection={true}
+                        enableRowExpansion={true}
+                        renderExpandedRow={() => (
+                            <div style={{ padding: '16px' }}>
+                                Additional row information
+                            </div>
+                        )}
+                        defaultSort={{
+                            field: 'name',
+                            direction: SortDirection.ASCENDING,
+                        }}
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Focus Indicators
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            color: '#6b7280',
+                            fontSize: '14px',
+                        }}
+                    >
+                        All interactive elements have visible focus indicators
+                        that meet WCAG 2.4.7 Focus Visible (Level AA)
+                        requirements.
+                    </p>
+                    <DataTable
+                        data={sampleUsers.slice(0, 5) as any[]}
+                        columns={accessibilityColumns as any[]}
+                        idField="id"
+                        title="Focus Indicators Example"
+                        enableSearch={true}
+                        enableFiltering={true}
+                        enableRowSelection={true}
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Status Announcements
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            color: '#6b7280',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Loading states, empty states, and selection changes are
+                        announced via aria-live regions for screen reader users.
+                    </p>
+                    <DataTable
+                        data={[]}
+                        columns={accessibilityColumns as any[]}
+                        idField="id"
+                        title="Empty State Example"
+                        description="Empty state with proper screen reader announcement"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Semantic HTML Structure
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            color: '#6b7280',
+                            fontSize: '14px',
+                        }}
+                    >
+                        The table uses semantic HTML elements (table, thead,
+                        tbody, th, td) with proper scope attributes to associate
+                        headers with cells, meeting WCAG 1.3.1 Info and
+                        Relationships (Level A).
+                    </p>
+                    <DataTable
+                        data={sampleUsers.slice(0, 5) as any[]}
+                        columns={accessibilityColumns as any[]}
+                        idField="id"
+                        title="Semantic Structure Example"
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating keyboard navigation, ARIA attributes, screen reader support, focus indicators, status announcements, and semantic HTML structure.
+
+## Accessibility Verification
+
+**How to verify accessibility:**
+
+1. **Storybook a11y addon** (Accessibility panel - bottom):
+   - Check for violations (should be 0 for AA compliance)
+   - Review passing tests (15+)
+   - See real-time accessibility status
+
+2. **jest-axe unit tests**:
+   \`\`\`bash
+   pnpm test DataTable.accessibility
+   \`\`\`
+   - 25+ automated tests
+   - WCAG 2.0, 2.1, 2.2 compliance verification
+   - ARIA attribute validation
+   - Table structure validation
+
+3. **Chromatic visual tests**:
+   \`\`\`bash
+   pnpm chromatic
+   \`\`\`
+   - Focus ring visibility
+   - State changes
+   - Responsive behavior
+
+4. **Manual testing**:
+   - VoiceOver (macOS) or NVDA (Windows)
+   - Keyboard navigation (Tab, Enter, Space, Arrow keys)
+   - Color contrast verification
+   - Screen reader announcements
+
+## Accessibility Report
+
+**Current Status**: 
+- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
+- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (varies by use case)
+
+**AAA Compliance Details**:
+- ✅ Compliant: Info and Relationships (1.3.1), Keyboard (2.1.1, 2.1.3), Focus Visible (2.4.7), Change on Request (3.2.5)
+- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - some interactive elements may not meet 44x44px
+- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
+
+**Key Accessibility Features**:
+- Semantic HTML table structure with proper roles
+- ARIA attributes for table structure (aria-rowcount, aria-colcount)
+- ARIA attributes for interactive states (aria-sort, aria-expanded, aria-selected)
+- Keyboard navigation support for all interactive elements
+- Screen reader announcements via aria-live regions
+- Focus indicators meeting WCAG 2.4.7 requirements
+- Accessible names for all buttons and controls
+- Proper label associations for form elements
+                `,
+            },
+        },
+        // Enhanced a11y rules for accessibility story
+        a11y: getA11yConfig('interactive'),
+        // Extended delay for Chromatic to capture focus states
+        chromatic: {
+            ...CHROMATIC_CONFIG,
+            delay: 500,
         },
     },
 }

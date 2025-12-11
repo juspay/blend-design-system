@@ -60,6 +60,19 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                                         onFileRemove(file.id)
                                     }}
                                     style={{ cursor: 'pointer' }}
+                                    aria-label={`Remove ${file.file.name}`}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            onFileRemove(file.id)
+                                        }
+                                    }}
                                 />
                             ) : undefined
                         }

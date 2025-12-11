@@ -516,7 +516,7 @@ export const MonacoEditorWrapper = ({
             position="relative"
             width="100%"
             backgroundColor={tokens.body.backgroundColor}
-            style={containerStyle}
+            style={{ ...containerStyle, overflow: 'auto' }}
             onKeyDown={handleKeyDown}
         >
             <style>
@@ -572,6 +572,11 @@ export const MonacoEditorWrapper = ({
                     renderLineHighlight: 'none',
                     renderWhitespace: 'none',
                     guides: { indentation: false },
+                    scrollbar: {
+                        vertical: 'auto',
+                        horizontal: 'auto',
+                        alwaysConsumeMouseWheel: false,
+                    },
                 }}
                 loading={
                     <Block

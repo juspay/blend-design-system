@@ -64,6 +64,7 @@ const BreadcrumbItem = ({
                 href={isActive ? undefined : item.href}
                 textDecoration="none"
                 onClick={!isActive && item.onClick ? handleClick : undefined}
+                tabIndex={isActive ? 0 : undefined}
                 aria-label={
                     isActive
                         ? `Current page: ${item.label}`

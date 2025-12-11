@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, useId } from 'react'
 import {
     BarChart,
     Bar,
@@ -74,6 +74,48 @@ const StatCard = ({
 
     const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
 
+    const baseId = useId()
+    const titleId = `${baseId}-title`
+    const valueId = `${baseId}-value`
+    const changeId = `${baseId}-change`
+    const subtitleId = `${baseId}-subtitle`
+    const chartId = `${baseId}-chart`
+
+    const getCardLabel = useCallback(
+        (formatMainValueFn: (val: string | number) => string) => {
+            const parts: string[] = []
+            if (title) parts.push(title)
+            if (value !== undefined && value !== null && value !== '') {
+                parts.push(formatMainValueFn(value))
+            }
+            if (subtitle) parts.push(subtitle)
+            if (change) {
+                const changeText =
+                    change.valueType === ChangeType.INCREASE
+                        ? `increased by ${change.value.toFixed(2)}%`
+                        : `decreased by ${change.value.toFixed(2)}%`
+                parts.push(changeText)
+            }
+            return parts.join(', ')
+        },
+        [title, value, subtitle, change]
+    )
+
+    // Construct accessible description for charts
+    const chartLabel = useMemo(() => {
+        if (!chartData || chartData.length === 0) return undefined
+        const dataPoints = chartData.length
+        const firstValue = chartData[0]?.value
+        const lastValue = chartData[chartData.length - 1]?.value
+        const trend =
+            firstValue && lastValue && lastValue > firstValue
+                ? 'increasing'
+                : firstValue && lastValue && lastValue < firstValue
+                  ? 'decreasing'
+                  : 'stable'
+        return `${title} chart showing ${dataPoints} data points with ${trend} trend`
+    }, [chartData, title])
+
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
         if (xAxis.tickFormatter) return xAxis.tickFormatter(label)
@@ -103,12 +145,20 @@ const StatCard = ({
         return typeof val === 'number' ? val.toLocaleString() : String(val)
     }
 
-    const formatMainValue = (val: string | number): string => {
-        if (valueFormatter) {
-            return getAxisFormatter({ type: valueFormatter })(val)
-        }
-        return String(val)
-    }
+    const formatMainValue = useCallback(
+        (val: string | number): string => {
+            if (valueFormatter) {
+                return getAxisFormatter({ type: valueFormatter })(val)
+            }
+            return String(val)
+        },
+        [valueFormatter]
+    )
+
+    const cardLabel = useMemo(
+        () => getCardLabel(formatMainValue),
+        [getCardLabel, formatMainValue]
+    )
 
     const { label, placeholder, items, selected, onSelect } =
         dropdownProps || {}
@@ -286,6 +336,9 @@ const StatCard = ({
                 data-statcard-variant={normalizedVariant}
                 maxWidth={maxWidth}
                 minWidth={minWidth}
+                role="region"
+                aria-label={cardLabel || title}
+                aria-labelledby={titleId}
                 {...props}
             >
                 <Block
@@ -323,6 +376,7 @@ const StatCard = ({
                             <Tooltip content={title}>
                                 <Text
                                     as="span"
+                                    id={titleId}
                                     fontSize={
                                         statCardToken.textContainer.header.title
                                             .fontSize
@@ -371,6 +425,12 @@ const StatCard = ({
                                                     .header.helpIcon.color
                                                     .default
                                             }
+                                            aria-label={
+                                                helpIconText ||
+                                                `Help for ${title}`
+                                            }
+                                            role="button"
+                                            tabIndex={0}
                                         />
                                     </Tooltip>
                                 </Block>
@@ -475,6 +535,9 @@ const StatCard = ({
             data-statcard={title || 'single-stat'}
             maxWidth={maxWidth}
             minWidth={minWidth}
+            role="region"
+            aria-label={cardLabel || title}
+            aria-labelledby={titleId}
             {...props}
         >
             {skeleton?.show ? (
@@ -546,6 +609,7 @@ const StatCard = ({
                                             <Tooltip content={title}>
                                                 <Text
                                                     as="span"
+                                                    id={titleId}
                                                     fontSize={
                                                         statCardToken
                                                             .textContainer
@@ -684,6 +748,7 @@ const StatCard = ({
                                                 <Tooltip content={title}>
                                                     <Text
                                                         as="span"
+                                                        id={titleId}
                                                         fontSize={
                                                             statCardToken
                                                                 .textContainer
@@ -776,6 +841,7 @@ const StatCard = ({
                                         <Tooltip content={valueTooltip || ''}>
                                             <Text
                                                 as="span"
+                                                id={valueId}
                                                 variant="heading.lg"
                                                 fontWeight={
                                                     statCardToken.textContainer
@@ -806,6 +872,7 @@ const StatCard = ({
                                                 content={change?.tooltip || ''}
                                             >
                                                 <Block
+                                                    id={changeId}
                                                     cursor="pointer"
                                                     data-id={`${change?.valueType === ChangeType.INCREASE ? '+' : ''}${change?.value.toFixed(
                                                         2
@@ -823,9 +890,10 @@ const StatCard = ({
                                             </Tooltip>
                                         )}
                                     </Block>
-                                    {!isSmallScreen && (
+                                    {!isSmallScreen && subtitle && (
                                         <Text
                                             as="span"
+                                            id={subtitleId}
                                             fontSize={
                                                 statCardToken.textContainer
                                                     .stats.subtitle.fontSize
@@ -937,6 +1005,7 @@ const StatCard = ({
                                         <Tooltip content={title}>
                                             <Text
                                                 as="span"
+                                                id={titleId}
                                                 fontSize={
                                                     statCardToken.textContainer
                                                         .header.title.fontSize
@@ -988,6 +1057,12 @@ const StatCard = ({
                                                                 .header.helpIcon
                                                                 .color.default
                                                         }
+                                                        aria-label={
+                                                            helpIconText ||
+                                                            `Help for ${title}`
+                                                        }
+                                                        role="button"
+                                                        tabIndex={0}
                                                     />
                                                 </Tooltip>
                                             </Block>
@@ -1024,6 +1099,7 @@ const StatCard = ({
                                             >
                                                 <Text
                                                     as="span"
+                                                    id={valueId}
                                                     fontSize={
                                                         statCardToken
                                                             .textContainer.stats
@@ -1063,7 +1139,10 @@ const StatCard = ({
                                             <Tooltip
                                                 content={change?.tooltip || ''}
                                             >
-                                                <Block cursor="pointer">
+                                                <Block
+                                                    id={changeId}
+                                                    cursor="pointer"
+                                                >
                                                     <Text
                                                         as="span"
                                                         color={
@@ -1097,9 +1176,10 @@ const StatCard = ({
                                             </Tooltip>
                                         )}
                                     </Block>
-                                    {!isSmallScreen && (
+                                    {!isSmallScreen && subtitle && (
                                         <Text
                                             as="span"
+                                            id={subtitleId}
                                             variant="body.sm"
                                             color={
                                                 statCardToken.textContainer
@@ -1142,8 +1222,11 @@ const StatCard = ({
 
                             {indexedChartData && (
                                 <Block
+                                    id={chartId}
                                     height={statCardToken.chart.height}
                                     width="100%"
+                                    role="img"
+                                    aria-label={chartLabel || `${title} chart`}
                                 >
                                     {indexedChartData &&
                                     indexedChartData.length > 0 ? (
@@ -1154,6 +1237,10 @@ const StatCard = ({
                                             <AreaChart
                                                 data-single-stat-graph={title}
                                                 data={indexedChartData}
+                                                aria-label={
+                                                    chartLabel ||
+                                                    `${title} chart`
+                                                }
                                                 margin={{
                                                     top: 5,
                                                     right: 0,
@@ -1278,7 +1365,12 @@ const StatCard = ({
                         </Block>
                     )}
                     {variant !== StatCardVariant.NUMBER && dataDisplay && (
-                        <Block height={statCardToken.chart.height}>
+                        <Block
+                            id={chartId}
+                            height={statCardToken.chart.height}
+                            role="img"
+                            aria-label={chartLabel || `${title} chart`}
+                        >
                             {variant === StatCardVariant.LINE &&
                                 (indexedChartData &&
                                 indexedChartData.length > 0 ? (
@@ -1289,6 +1381,9 @@ const StatCard = ({
                                         <AreaChart
                                             data-single-stat-graph={title}
                                             data={indexedChartData}
+                                            aria-label={
+                                                chartLabel || `${title} chart`
+                                            }
                                             margin={{
                                                 top: 5,
                                                 right: 0,
@@ -1405,6 +1500,9 @@ const StatCard = ({
                                         <BarChart
                                             data-single-stat-graph={title}
                                             data={indexedChartData}
+                                            aria-label={
+                                                chartLabel || `${title} chart`
+                                            }
                                             margin={{
                                                 top: 0,
                                                 right: 0,

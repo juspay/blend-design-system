@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId, useMemo } from 'react'
 import Block from '../Primitives/Block/Block'
 import { type CardProps } from './types'
 import type { CardTokenType } from './card.tokens'
@@ -20,6 +20,22 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
             'variant' in props ? props.variant : undefined
         )
 
+        // Generate unique IDs for ARIA relationships
+        const baseId = useId()
+        const cardId = `${baseId}-card`
+
+        // Generate accessible label for the card
+        const cardLabel = useMemo(() => {
+            const parts: string[] = []
+            if ('headerTitle' in props && props.headerTitle) {
+                parts.push(props.headerTitle)
+            }
+            if ('bodyTitle' in props && props.bodyTitle) {
+                parts.push(props.bodyTitle)
+            }
+            return parts.length > 0 ? parts.join(' - ') : undefined
+        }, [props])
+
         const renderCardContent = () => {
             if (isDefaultCard(variant)) {
                 return (
@@ -29,6 +45,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         }
                         cardToken={cardToken}
                         maxHeight={maxHeight}
+                        baseId={baseId}
                     />
                 )
             }
@@ -41,6 +58,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         }
                         cardToken={cardToken}
                         maxHeight={maxHeight}
+                        baseId={baseId}
                     />
                 )
             }
@@ -53,6 +71,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                         }
                         cardToken={cardToken}
                         maxHeight={maxHeight}
+                        baseId={baseId}
                     />
                 )
             }
@@ -75,6 +94,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         return (
             <Block
                 ref={ref}
+                id={cardId}
                 maxWidth={
                     maxWidth !== 'auto'
                         ? toPixels(maxWidth)
@@ -92,6 +112,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 data-card="true"
+                role="region"
+                aria-label={cardLabel}
+                aria-labelledby={
+                    'headerTitle' in props && props.headerTitle
+                        ? `${baseId}-header-title`
+                        : undefined
+                }
             >
                 {skeleton?.show ? (
                     <CardSkeleton

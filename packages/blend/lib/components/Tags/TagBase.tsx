@@ -117,6 +117,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             alignItems="center"
             justifyContent="center"
             width={width ?? 'fit-content'}
+            flexShrink={0}
             gap={tagTokens.gap}
             padding={tagTokens.padding[size]}
             backgroundColor={
@@ -155,7 +156,11 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                 data-id={text}
                 fontSize={tagTokens.text.fontSize[size]}
                 fontWeight={tagTokens.text.fontWeight[size]}
-                style={{ color: isSkeleton ? 'transparent' : undefined }}
+                style={{
+                    color: isSkeleton ? 'transparent' : undefined,
+                    whiteSpace: 'nowrap',
+                    width: 'fit-content',
+                }}
                 aria-hidden={isSkeleton ? true : undefined}
             >
                 {text}

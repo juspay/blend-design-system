@@ -18,6 +18,7 @@ export type ModalSkeletonProps = {
 
 export type ModalProps = {
     isOpen: boolean
+    isCustom?: boolean
     onClose: () => void
     title?: string
     subtitle?: string
@@ -35,4 +36,7 @@ export type ModalProps = {
     minWidth?: string
     useDrawerOnMobile?: boolean
     skeleton?: ModalSkeletonProps
+    maxWidth?: string
+    maxHeight?: string
+    minHeight?: string
 }

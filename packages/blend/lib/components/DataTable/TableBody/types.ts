@@ -44,4 +44,6 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     isRowLoading?: (row: T, index: number) => boolean
+    focusedCell?: { rowIndex: number; colIndex: number } | null
+    onCellFocus?: (rowIndex: number, colIndex: number) => void
 }

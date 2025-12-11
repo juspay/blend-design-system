@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useState, useCallback, useMemo, useId } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Tooltip, TooltipSize } from '../Tooltip'
@@ -9,6 +9,7 @@ import type {
     UploadedFileWithStatus,
     UploadFile,
     FileRejection,
+    UploadFormValue,
 } from './types'
 import type { UploadTokenType } from './upload.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -52,6 +53,8 @@ const Upload: React.FC<UploadProps> = ({
     uploadingFiles: externalUploadingFiles,
     uploadedFiles: externalUploadedFiles,
     failedFiles: externalFailedFiles,
+    value: controlledValue,
+    onChange,
     onDrop,
     onDropAccepted,
     onDropRejected,
@@ -65,6 +68,10 @@ const Upload: React.FC<UploadProps> = ({
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const uploadId = useId()
+    const labelId = label ? `${uploadId}-label` : undefined
+    const descriptionId = description ? `${uploadId}-description` : undefined
+    const hintId = helpIconHintText ? `${uploadId}-hint` : undefined
 
     // Internal state management
     const [internalState, setInternalState] = useState<UploadState>(
@@ -80,9 +87,28 @@ const Upload: React.FC<UploadProps> = ({
         UploadedFileWithStatus[]
     >([])
 
+    const getFilesFromValue = useCallback(
+        (value: UploadFormValue | undefined): File[] => {
+            if (!value) return []
+            if (Array.isArray(value)) return value
+            return [value]
+        },
+        []
+    )
+
+    const valueFiles = useMemo(() => {
+        return getFilesFromValue(controlledValue)
+    }, [controlledValue, getFilesFromValue])
+
     const state = externalState ?? internalState
     const uploadingFiles = externalUploadingFiles ?? internalUploadingFiles
-    const uploadedFiles = externalUploadedFiles ?? internalUploadedFiles
+    const uploadedFiles = controlledValue
+        ? valueFiles.map((file, index) => ({
+              file,
+              id: `value-${index}-${file.name}`,
+              status: 'success' as const,
+          }))
+        : (externalUploadedFiles ?? internalUploadedFiles)
     const failedFiles = externalFailedFiles ?? internalFailedFiles
 
     const { internalDragState, setInternalDragState, setDragCounter } =
@@ -147,6 +173,36 @@ const Upload: React.FC<UploadProps> = ({
         []
     )
 
+    const handleFileRemoveWithOnChange = useCallback(
+        (fileId: string) => {
+            if (controlledValue && onChange) {
+                const currentFiles = getFilesFromValue(controlledValue)
+                const fileToRemove = uploadedFiles.find((f) => f.id === fileId)
+                if (fileToRemove) {
+                    const remainingFiles = currentFiles.filter(
+                        (f) => f !== fileToRemove.file
+                    )
+                    const formValue: UploadFormValue = multiple
+                        ? remainingFiles
+                        : remainingFiles[0] || null
+                    onChange(formValue)
+                }
+            } else {
+                handleInternalFileRemove(fileId)
+            }
+            onFileRemove?.(fileId)
+        },
+        [
+            controlledValue,
+            onChange,
+            getFilesFromValue,
+            uploadedFiles,
+            multiple,
+            handleInternalFileRemove,
+            onFileRemove,
+        ]
+    )
+
     const handleInternalReplaceFile = useMemo(
         () =>
             createFileReplacementHandler(
@@ -158,7 +214,9 @@ const Upload: React.FC<UploadProps> = ({
     )
 
     const finalOnDrop = onDrop || handleInternalDrop
-    const finalOnFileRemove = onFileRemove || handleInternalFileRemove
+    const finalOnFileRemove = onChange
+        ? handleFileRemoveWithOnChange
+        : onFileRemove || handleInternalFileRemove
     const finalOnReplaceFile = onReplaceFile || handleInternalReplaceFile
 
     const processFilesFn = useCallback(
@@ -178,6 +236,16 @@ const Upload: React.FC<UploadProps> = ({
                 }
             })
 
+            if (onChange && acceptedFiles.length > 0) {
+                if (multiple) {
+                    const existingFiles = getFilesFromValue(controlledValue)
+                    const allFiles = [...existingFiles, ...acceptedFiles]
+                    onChange(allFiles)
+                } else {
+                    onChange(acceptedFiles[0] || null)
+                }
+            }
+
             if (finalOnDrop) {
                 finalOnDrop(acceptedFiles, rejectedFiles)
             } else {
@@ -189,7 +257,17 @@ const Upload: React.FC<UploadProps> = ({
                 }
             }
         },
-        [disabled, validateFile, finalOnDrop, onDropAccepted, onDropRejected]
+        [
+            disabled,
+            validateFile,
+            finalOnDrop,
+            onDropAccepted,
+            onDropRejected,
+            onChange,
+            multiple,
+            controlledValue,
+            getFilesFromValue,
+        ]
     )
 
     const updateDragStateFn = updateDragState(
@@ -217,6 +295,11 @@ const Upload: React.FC<UploadProps> = ({
         state,
         multiple
     )
+
+    const hasError =
+        !!errorText ||
+        (uploadContent.hasErrorFiles && uploadContent.errorFiles.length > 0)
+    const errorId = hasError ? `${uploadId}-error` : undefined
 
     const renderContent = () => {
         if (uploadContent.hasUploadingFiles && uploadContent.uploadingFile) {
@@ -300,6 +383,9 @@ const Upload: React.FC<UploadProps> = ({
                         gap={uploadTokens.header.label.gap}
                     >
                         <Text
+                            id={labelId}
+                            as="label"
+                            htmlFor={uploadId}
                             fontSize={uploadTokens.header.label.text.fontSize}
                             fontWeight={
                                 uploadTokens.header.label.text.fontWeight
@@ -352,6 +438,7 @@ const Upload: React.FC<UploadProps> = ({
                                         size={TooltipSize.SMALL}
                                     >
                                         <HelpCircle
+                                            id={hintId}
                                             size={
                                                 uploadTokens.header.helpIcon
                                                     .width
@@ -360,6 +447,7 @@ const Upload: React.FC<UploadProps> = ({
                                                 uploadTokens.header.helpIcon
                                                     .color
                                             }
+                                            aria-label={helpIconHintText}
                                         />
                                     </Tooltip>
                                 </Block>
@@ -388,6 +476,13 @@ const Upload: React.FC<UploadProps> = ({
                 padding={uploadTokens.container.padding}
                 cursor={disabled ? 'not-allowed' : 'pointer'}
                 style={{ transition: 'all 0.2s ease-in-out' }}
+                role="region"
+                aria-label={label || 'File upload area'}
+                aria-describedby={
+                    [descriptionId, errorId, hintId]
+                        .filter(Boolean)
+                        .join(' ') || undefined
+                }
                 onClick={handleClick}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -398,12 +493,80 @@ const Upload: React.FC<UploadProps> = ({
 
                 <input
                     ref={fileInputRef}
+                    id={uploadId}
                     type="file"
                     multiple={multiple}
                     accept={accept.join(',')}
                     onChange={handleFileInputChange}
+                    disabled={disabled}
+                    required={required}
+                    aria-required={required}
+                    aria-invalid={!!errorId}
+                    aria-describedby={
+                        [descriptionId, errorId, hintId]
+                            .filter(Boolean)
+                            .join(' ') || undefined
+                    }
+                    aria-label={label ? undefined : 'File upload'}
                     style={{ display: 'none' }}
                 />
+                {description && (
+                    <Text
+                        id={descriptionId}
+                        as="span"
+                        fontSize={
+                            uploadTokens.container.content.text.subtitle
+                                .fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.text.subtitle
+                                .fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.text.subtitle.color
+                        }
+                        style={{ display: 'none' }}
+                    >
+                        {description}
+                    </Text>
+                )}
+                {(errorText || uploadContent.hasErrorFiles) && (
+                    <Text
+                        id={errorId}
+                        role="alert"
+                        aria-live="polite"
+                        as="span"
+                        fontSize={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.actionable.errorText
+                                ?.color
+                        }
+                        style={{
+                            position: 'absolute',
+                            width: '1px',
+                            height: '1px',
+                            padding: 0,
+                            margin: '-1px',
+                            overflow: 'hidden',
+                            clip: 'rect(0, 0, 0, 0)',
+                            whiteSpace: 'nowrap',
+                            borderWidth: 0,
+                        }}
+                    >
+                        {errorText ||
+                            (uploadContent.hasErrorFiles &&
+                            uploadContent.errorFiles.length > 0
+                                ? `${uploadContent.errorFiles.length} file(s) failed to upload`
+                                : 'Upload failed')}
+                    </Text>
+                )}
             </Block>
         </Block>
     )

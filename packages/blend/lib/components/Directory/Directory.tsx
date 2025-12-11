@@ -10,7 +10,7 @@ import { ActiveItemProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 
-const Directory = ({ directoryData, className }: DirectoryProps) => {
+const Directory = ({ directoryData, className, idPrefix }: DirectoryProps) => {
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )
@@ -44,6 +44,7 @@ const Directory = ({ directoryData, className }: DirectoryProps) => {
                         key={sectionIndex}
                         section={section}
                         sectionIndex={sectionIndex}
+                        idPrefix={idPrefix}
                         onNavigateBetweenSections={(direction, currentIndex) =>
                             handleSectionNavigation(
                                 direction,
