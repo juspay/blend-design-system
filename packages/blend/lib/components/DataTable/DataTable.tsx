@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, forwardRef, useRef } from 'react'
+import { useState, useEffect, useMemo, forwardRef, useRef, useId } from 'react'
 import {
     DndContext,
     closestCenter,
@@ -104,6 +104,7 @@ const DataTable = forwardRef(
             showHeader = true,
             showToolbar = true,
             showSettings = false,
+            showFooter = true,
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
@@ -144,6 +145,12 @@ const DataTable = forwardRef(
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const tableId = useId()
+        const tableLabelId = title ? `${tableId}-label` : undefined
+        const tableDescriptionId = description
+            ? `${tableId}-description`
+            : undefined
+        const statusRegionId = `${tableId}-status`
 
         const [sortConfig, setSortConfig] = useState<SortConfig | null>(
             defaultSort || null
@@ -227,21 +234,27 @@ const DataTable = forwardRef(
             Record<string, boolean>
         >({})
 
-        // Formatting state
         const [isFormatEnabled, setIsFormatEnabled] = useState<boolean>(true)
 
-        // Mobile column overflow state
         const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
         const [selectedRowForDrawer, setSelectedRowForDrawer] =
             useState<T | null>(null)
         const [selectedRowIndexForDrawer, setSelectedRowIndexForDrawer] =
             useState<number>(-1)
 
-        // Internal loading state for animations
         const [internalLoading, setInternalLoading] = useState<boolean>(false)
 
-        // Drag and drop for column reordering
+        useEffect(() => {
+            if (serverSidePagination && !isLoading && internalLoading) {
+                setInternalLoading(false)
+            }
+        }, [serverSidePagination, isLoading, internalLoading])
+
         const [activeId, setActiveId] = useState<string | null>(null)
+        const [focusedCell, setFocusedCell] = useState<{
+            rowIndex: number
+            colIndex: number
+        } | null>(null)
 
         const sensors = useSensors(
             useSensor(PointerSensor),
@@ -299,7 +312,6 @@ const DataTable = forwardRef(
             .filter((_, index) => index >= columnFreeze)
             .map((col) => String(col.field))
 
-        // Apply mobile configurations
         const effectiveColumnFreeze = mobileConfig.disableColumnFreeze
             ? 0
             : columnFreeze
@@ -307,7 +319,6 @@ const DataTable = forwardRef(
             ? false
             : enableColumnManager
 
-        // Calculate visible and overflow columns for mobile
         const { mobileVisibleColumns, mobileOverflowColumns } = useMemo(() => {
             if (!mobileConfig.enableColumnOverflow) {
                 return {
@@ -341,7 +352,6 @@ const DataTable = forwardRef(
         // Calculate minimum height for empty state based on page size
         // This ensures consistent height whether data is present or not
         const emptyStateMinHeight = useMemo(() => {
-            // If custom tableBodyHeight is provided, use default 400px
             if (tableBodyHeight) {
                 return '400px'
             }
@@ -764,34 +774,30 @@ const DataTable = forwardRef(
 
         const handlePageChange = (page: number) => {
             if (page !== currentPage) {
-                setInternalLoading(true)
                 setCurrentPage(page)
+
+                if (serverSidePagination) {
+                    setInternalLoading(true)
+                }
 
                 if (onPageChange) {
                     onPageChange(page)
                 }
-
-                // Reset loading state after a short delay to show skeleton animation
-                setTimeout(() => {
-                    setInternalLoading(false)
-                }, 300)
             }
         }
 
         const handlePageSizeChange = (size: number) => {
             if (size !== pageSize) {
-                setInternalLoading(true)
                 setPageSize(size)
                 setCurrentPage(1)
+
+                if (serverSidePagination) {
+                    setInternalLoading(true)
+                }
 
                 if (onPageSizeChange) {
                     onPageSizeChange(size)
                 }
-
-                // Reset loading state after a short delay to show skeleton animation
-                setTimeout(() => {
-                    setInternalLoading(false)
-                }, 300)
             }
         }
 
@@ -966,6 +972,161 @@ const DataTable = forwardRef(
             setMobileDrawerOpen(true)
         }
 
+        const handleTableFocus = () => {
+            if (!focusedCell && currentData.length > 0) {
+                setFocusedCell({ rowIndex: 0, colIndex: 0 })
+                setTimeout(() => {
+                    const firstCell = document.querySelector(
+                        '[data-row-index="0"][data-col-index="0"]'
+                    ) as HTMLElement
+                    if (firstCell) {
+                        firstCell.focus()
+                    }
+                }, 0)
+            }
+        }
+
+        const handleTableKeyDown = (
+            event: React.KeyboardEvent<HTMLTableElement>
+        ) => {
+            if (event.key === 'Tab') {
+                return
+            }
+
+            const target = event.target as HTMLElement
+
+            if (
+                target.closest('thead') ||
+                target.closest('[role="columnheader"]') ||
+                target.tagName === 'TH'
+            ) {
+                return
+            }
+
+            if (
+                target.tagName === 'INPUT' ||
+                target.tagName === 'TEXTAREA' ||
+                target.tagName === 'SELECT' ||
+                target.isContentEditable ||
+                target.closest('button') ||
+                target.closest('[role="button"]') ||
+                target.closest('[role="menuitem"]')
+            ) {
+                return
+            }
+
+            const totalColumns =
+                effectiveVisibleColumns.length +
+                (enableRowSelection ? 1 : 0) +
+                (enableRowExpansion ? 1 : 0) +
+                ((enableInlineEdit || rowActions) &&
+                !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
+                    ? 1
+                    : 0) +
+                (mobileConfig.enableColumnOverflow &&
+                mobileOverflowColumns.length > 0
+                    ? 1
+                    : 0) +
+                (effectiveEnableColumnManager ? 1 : 0)
+
+            let newRowIndex = focusedCell?.rowIndex ?? 0
+            let newColIndex = focusedCell?.colIndex ?? 0
+
+            switch (event.key) {
+                case 'ArrowRight':
+                    event.preventDefault()
+                    if (newColIndex < totalColumns - 1) {
+                        newColIndex++
+                    }
+                    break
+                case 'ArrowLeft':
+                    event.preventDefault()
+                    if (newColIndex > 0) {
+                        newColIndex--
+                    }
+                    break
+                case 'ArrowDown':
+                    event.preventDefault()
+                    if (newRowIndex < currentData.length - 1) {
+                        newRowIndex++
+                    }
+                    break
+                case 'ArrowUp':
+                    event.preventDefault()
+                    if (newRowIndex > 0) {
+                        newRowIndex--
+                    }
+                    break
+                case 'Home':
+                    event.preventDefault()
+                    if (event.ctrlKey || event.metaKey) {
+                        newRowIndex = 0
+                        newColIndex = 0
+                    } else {
+                        newColIndex = 0
+                    }
+                    break
+                case 'End':
+                    event.preventDefault()
+                    if (event.ctrlKey || event.metaKey) {
+                        newRowIndex = currentData.length - 1
+                        newColIndex = totalColumns - 1
+                    } else {
+                        newColIndex = totalColumns - 1
+                    }
+                    break
+                case 'PageDown':
+                    event.preventDefault()
+                    if (newRowIndex < currentData.length - 1) {
+                        newRowIndex = Math.min(
+                            newRowIndex + pageSize,
+                            currentData.length - 1
+                        )
+                    }
+                    break
+                case 'PageUp':
+                    event.preventDefault()
+                    if (newRowIndex > 0) {
+                        newRowIndex = Math.max(newRowIndex - pageSize, 0)
+                    }
+                    break
+                case 'Enter':
+                case ' ':
+                    // Only trigger row click if focus is on a body cell, not header
+                    if (
+                        onRowClick &&
+                        focusedCell !== null &&
+                        !target.closest('thead') &&
+                        !target.closest('[role="columnheader"]')
+                    ) {
+                        const row = currentData[focusedCell.rowIndex]
+                        if (row) {
+                            onRowClick(row, focusedCell.rowIndex)
+                        }
+                    }
+                    return
+                default:
+                    return
+            }
+
+            setFocusedCell({ rowIndex: newRowIndex, colIndex: newColIndex })
+
+            setTimeout(() => {
+                const cellSelector = `[data-row-index="${newRowIndex}"][data-col-index="${newColIndex}"]`
+                const cellElement = document.querySelector(
+                    cellSelector
+                ) as HTMLElement
+                if (cellElement) {
+                    cellElement.focus()
+                    cellElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'nearest',
+                    })
+                }
+            }, 0)
+        }
+
         return (
             <Block
                 ref={ref}
@@ -977,7 +1138,32 @@ const DataTable = forwardRef(
                     flexDirection: tableToken.flexDirection,
                 }}
                 data-table={title}
+                role="region"
+                aria-label={title || 'Data table'}
+                aria-describedby={
+                    [tableLabelId, tableDescriptionId]
+                        .filter(Boolean)
+                        .join(' ') || undefined
+                }
             >
+                {title && (
+                    <h2
+                        id={tableLabelId}
+                        style={{ display: 'none' }}
+                        aria-hidden="true"
+                    >
+                        {title}
+                    </h2>
+                )}
+                {description && (
+                    <p
+                        id={tableDescriptionId}
+                        style={{ display: 'none' }}
+                        aria-hidden="true"
+                    >
+                        {description}
+                    </p>
+                )}
                 <DataTableHeader
                     title={title}
                     description={description}
@@ -1011,6 +1197,7 @@ const DataTable = forwardRef(
                                             buttonType={ButtonType.SECONDARY}
                                             leadingIcon={<Settings />}
                                             size={ButtonSize.SMALL}
+                                            aria-label="Table settings"
                                         >
                                             Settings
                                         </Button>
@@ -1041,6 +1228,29 @@ const DataTable = forwardRef(
                         onDeselectAll={handleDeselectAll}
                         customActions={renderBulkActions()}
                     />
+                    <Block
+                        id={statusRegionId}
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                        style={{
+                            position: 'absolute',
+                            width: '1px',
+                            height: '1px',
+                            padding: 0,
+                            margin: '-1px',
+                            overflow: 'hidden',
+                            clip: 'rect(0, 0, 0, 0)',
+                            whiteSpace: 'nowrap',
+                            borderWidth: 0,
+                        }}
+                    >
+                        {isLoading
+                            ? 'Loading table data'
+                            : currentData.length === 0
+                              ? 'No data available'
+                              : `Showing ${currentData.length} of ${totalRows} rows`}
+                    </Block>
 
                     <Block
                         style={{
@@ -1084,6 +1294,41 @@ const DataTable = forwardRef(
                                     }}
                                 >
                                     <table
+                                        id={tableId}
+                                        role="grid"
+                                        aria-label={title || 'Data table'}
+                                        aria-rowcount={
+                                            totalRows > 0
+                                                ? totalRows
+                                                : undefined
+                                        }
+                                        aria-colcount={
+                                            effectiveVisibleColumns.length +
+                                            (enableRowSelection ? 1 : 0) +
+                                            (enableRowExpansion ? 1 : 0) +
+                                            ((enableInlineEdit || rowActions) &&
+                                            !(
+                                                mobileConfig.isMobile &&
+                                                mobileConfig.enableColumnOverflow
+                                            )
+                                                ? 1
+                                                : 0) +
+                                            (mobileConfig.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                                ? 1
+                                                : 0) +
+                                            (effectiveEnableColumnManager
+                                                ? 1
+                                                : 0)
+                                        }
+                                        aria-describedby={
+                                            [tableDescriptionId, statusRegionId]
+                                                .filter(Boolean)
+                                                .join(' ') || undefined
+                                        }
+                                        onKeyDown={handleTableKeyDown}
+                                        onFocus={handleTableFocus}
+                                        tabIndex={-1}
                                         style={{
                                             width: tableToken.dataTable.table
                                                 .width,
@@ -1104,6 +1349,8 @@ const DataTable = forwardRef(
                                                 currentData.length === 0
                                                     ? '100%'
                                                     : 'auto',
+                                            backgroundColor: 'none',
+                                            outline: 'none',
                                         }}
                                     >
                                         <TableHeader
@@ -1198,6 +1445,7 @@ const DataTable = forwardRef(
                                                 )
                                             }
                                             onColumnFilter={handleColumnFilter}
+                                            columnFilters={columnFilters}
                                             getColumnWidth={
                                                 getColumnWidth as (
                                                     column: ColumnDefinition<
@@ -1247,6 +1495,16 @@ const DataTable = forwardRef(
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                focusedCell={focusedCell}
+                                                onCellFocus={(
+                                                    rowIndex,
+                                                    colIndex
+                                                ) =>
+                                                    setFocusedCell({
+                                                        rowIndex,
+                                                        colIndex,
+                                                    })
                                                 }
                                                 renderExpandedRow={
                                                     renderExpandedRow as
@@ -1335,7 +1593,9 @@ const DataTable = forwardRef(
                                                         | undefined
                                                 }
                                                 isLoading={
-                                                    isLoading || internalLoading
+                                                    isLoading ||
+                                                    (serverSidePagination &&
+                                                        internalLoading)
                                                 }
                                                 showSkeleton={showSkeleton}
                                                 skeletonVariant={
@@ -1372,6 +1632,9 @@ const DataTable = forwardRef(
                                                                 ? 1
                                                                 : 0)
                                                         }
+                                                        role="status"
+                                                        aria-live="polite"
+                                                        aria-atomic="true"
                                                         style={{
                                                             padding: '0',
                                                             height: '100%',
@@ -1489,17 +1752,19 @@ const DataTable = forwardRef(
                         </DndContext>
                     </Block>
 
-                    <TableFooter
-                        pagination={pagination}
-                        currentPage={currentPage}
-                        pageSize={pageSize}
-                        totalRows={totalRows}
-                        isLoading={isLoading}
-                        showSkeleton={showSkeleton}
-                        hasData={currentData.length > 0}
-                        onPageChange={handlePageChange}
-                        onPageSizeChange={handlePageSizeChange}
-                    />
+                    {showFooter && (
+                        <TableFooter
+                            pagination={pagination}
+                            currentPage={currentPage}
+                            pageSize={pageSize}
+                            totalRows={totalRows}
+                            isLoading={isLoading}
+                            showSkeleton={showSkeleton}
+                            hasData={currentData.length > 0}
+                            onPageChange={handlePageChange}
+                            onPageSizeChange={handlePageSizeChange}
+                        />
+                    )}
                 </Block>
 
                 {mobileConfig.enableColumnOverflow && selectedRowForDrawer && (

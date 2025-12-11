@@ -22,6 +22,8 @@ type TimeSelectorProps = {
     className?: string
     autoFocus?: boolean
     tabIndex?: number
+    id?: string
+    'aria-label'?: string
 }
 
 const formatTimeFor12Hour = (hour: number, minute: number): string => {
@@ -129,7 +131,7 @@ const generateTimeOptions = (
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange, autoFocus = true, tabIndex }, ref) => {
+    ({ value, onChange, tabIndex, id, 'aria-label': ariaLabel }, ref) => {
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
@@ -186,11 +188,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
             []
         )
 
-        const handleInputFocus = useCallback(() => {
-            if (!isProcessingSelection && autoFocus) {
-                setIsOpen(true)
-            }
-        }, [isProcessingSelection, autoFocus])
+        const handleInputFocus = useCallback(() => {}, [])
 
         const handleInputBlur = useCallback(() => {
             if (isProcessingSelection) {
@@ -229,36 +227,56 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
             (e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (e.key === 'Enter') {
                     e.preventDefault()
-                    setIsOpen(false)
-                    e.currentTarget.blur()
+                    if (!isOpen) {
+                        setIsOpen(true)
+                    } else {
+                        setIsOpen(false)
+                        e.currentTarget.blur()
+                    }
                 } else if (e.key === 'Escape') {
                     e.preventDefault()
                     setInputValue(formatTimeStringFor12Hour(value))
                     setIsValidTime(true)
                     setIsOpen(false)
                     e.currentTarget.blur()
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault()
+                    if (!isOpen) {
+                        setIsOpen(true)
+                    }
                 }
             },
-            [value]
+            [value, isOpen]
         )
+
+        const handleInputClick = useCallback(() => {
+            if (!isProcessingSelection && !isOpen) {
+                setIsOpen(true)
+            }
+        }, [isProcessingSelection, isOpen])
 
         const triggerElement = (
             <Block
                 data-element="time-selector"
+                role="button"
+                tabIndex={-1}
                 style={{ width: '118px', flexShrink: 0 }}
             >
                 <TextInput
+                    id={id}
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
                     onBlur={handleInputBlur}
                     onFocus={handleInputFocus}
+                    onClick={handleInputClick}
                     onKeyDown={handleInputKeyDown}
                     placeholder="12:00 PM"
                     size={TextInputSize.SMALL}
                     error={!isValidTime}
                     tabIndex={tabIndex}
                     label=""
+                    aria-label={ariaLabel}
                 />
             </Block>
         )

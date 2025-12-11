@@ -34,7 +34,8 @@ const TableRow = styled.tr<{
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
 }>`
-    border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
+    border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
 
     ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
         ${$customBackgroundColor &&
@@ -49,7 +50,8 @@ const TableRow = styled.tr<{
     
     ${!$hasCustomBackground &&
         css`
-            &:hover {
+            &:hover,
+            &[data-focused-row='true'] {
                 background-color: ${FOUNDATION_THEME.colors
                     .gray[100]} !important;
 
@@ -71,7 +73,7 @@ const StyledTableCell = styled.td<{
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: middle;
-    background-color: ${FOUNDATION_THEME.colors.gray[25]};
+    background-color: ${FOUNDATION_THEME.colors.gray[0]};
     ${({ $isFirstRow }) =>
         !$isFirstRow &&
         css`
@@ -100,7 +102,7 @@ const StyledTableCell = styled.td<{
 
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
-    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+    background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
 `
 
 const ExpandButton = styled.button`
@@ -113,15 +115,20 @@ const ExpandButton = styled.button`
     cursor: pointer;
     border-radius: ${FOUNDATION_THEME.border.radius[4]};
     color: ${FOUNDATION_THEME.colors.gray[600]};
+    visibility: visible;
+    opacity: 1;
 
     &:hover {
         background-color: ${FOUNDATION_THEME.colors.gray[100]};
         color: ${FOUNDATION_THEME.colors.gray[800]};
     }
+
+    &:focus-visible {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]};
+    }
 `
 
-// Actions Cell Component with Responsive Overflow
-interface ActionsCellProps {
+type ActionsCellProps = {
     row: Record<string, unknown>
     index: number
     isEditing: boolean
@@ -206,6 +213,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="save"
                             onClick={() => onSaveRow(row[idField])}
+                            aria-label="Save row"
                             title="Save"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Save size={16} />}
@@ -225,6 +233,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="cancel"
                             onClick={() => onCancelEdit(row[idField])}
+                            aria-label="Cancel editing row"
                             title="Cancel"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<X size={16} />}
@@ -245,6 +254,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="edit"
                             onClick={() => onEditRow(row[idField])}
+                            aria-label="Edit row"
                             title="Edit"
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Edit size={16} />}
@@ -470,6 +480,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                             size={ButtonSize.SMALL}
                             subType={ButtonSubType.ICON_ONLY}
                             leadingIcon={<MoreHorizontal size={16} />}
+                            aria-label="More actions"
                             title="More actions"
                         />
                     }
@@ -525,6 +536,8 @@ const TableBody = forwardRef<
             showSkeleton = false,
             skeletonVariant = 'pulse',
             isRowLoading,
+            focusedCell,
+            onCellFocus,
         },
         ref
     ) => {
@@ -593,6 +606,9 @@ const TableBody = forwardRef<
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
+                style={{
+                    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+                }}
             >
                 {currentData.length > 0
                     ? currentData.map((row, index) => {
@@ -615,6 +631,19 @@ const TableBody = forwardRef<
                           const rowShouldShowSkeleton =
                               rowIsLoading || globalShouldShowSkeleton
 
+                          const isSelected = selectedRows[rowId] || false
+                          const rowAriaLabel = `Row ${index + 1}${isSelected ? ', selected' : ''}${isExpanded ? ', expanded' : ''}`
+
+                          // Helper to calculate absolute column index
+                          const getAbsoluteColIndex = (
+                              relativeColIndex: number
+                          ) => {
+                              let colIndex = relativeColIndex
+                              if (enableRowExpansion) colIndex++
+                              if (enableRowSelection) colIndex++
+                              return colIndex
+                          }
+
                           return (
                               <React.Fragment key={rowId}>
                                   <TableRow
@@ -623,6 +652,24 @@ const TableBody = forwardRef<
                                           rowStyling.backgroundColor
                                       }
                                       $hasCustomBackground={hasCustomBackground}
+                                      role="row"
+                                      aria-rowindex={index + 1}
+                                      aria-selected={
+                                          enableRowSelection
+                                              ? isSelected
+                                              : undefined
+                                      }
+                                      aria-expanded={
+                                          enableRowExpansion && canExpand
+                                              ? isExpanded
+                                              : undefined
+                                      }
+                                      aria-label={rowAriaLabel}
+                                      data-focused-row={
+                                          focusedCell?.rowIndex === index
+                                              ? 'true'
+                                              : 'false'
+                                      }
                                       onClick={() =>
                                           onRowClick && onRowClick(row, index)
                                       }
@@ -645,6 +692,22 @@ const TableBody = forwardRef<
                                                   hasCustomBackground
                                               }
                                               $isFirstRow={index === 0}
+                                              data-row-index={index}
+                                              data-col-index={0}
+                                              tabIndex={
+                                                  focusedCell?.rowIndex ===
+                                                      index &&
+                                                  focusedCell?.colIndex === 0
+                                                      ? 0
+                                                      : -1
+                                              }
+                                              onFocus={() =>
+                                                  onCellFocus?.(index, 0)
+                                              }
+                                              onClick={() =>
+                                                  onCellFocus?.(index, 0)
+                                              }
+                                              role="gridcell"
                                               style={{
                                                   minWidth: `${FOUNDATION_THEME.unit[52]}`,
                                                   maxWidth: `${FOUNDATION_THEME.unit[52]}`,
@@ -655,12 +718,13 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[25],
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
                                                   }),
+                                                  outline: 'none',
                                               }}
                                           >
                                               {rowShouldShowSkeleton ? (
@@ -686,6 +750,17 @@ const TableBody = forwardRef<
                                                   >
                                                       {canExpand ? (
                                                           <ExpandButton
+                                                              type="button"
+                                                              aria-label={
+                                                                  isExpanded
+                                                                      ? 'Collapse row'
+                                                                      : 'Expand row'
+                                                              }
+                                                              aria-expanded={
+                                                                  isExpanded
+                                                                      ? 'true'
+                                                                      : 'false'
+                                                              }
                                                               onClick={() =>
                                                                   onRowExpand(
                                                                       row[
@@ -698,6 +773,10 @@ const TableBody = forwardRef<
                                                                       ? 'Collapse row'
                                                                       : 'Expand row'
                                                               }
+                                                              style={{
+                                                                  display:
+                                                                      'flex',
+                                                              }}
                                                           >
                                                               {isExpanded ? (
                                                                   <ChevronDown
@@ -727,6 +806,33 @@ const TableBody = forwardRef<
                                                   hasCustomBackground
                                               }
                                               $isFirstRow={index === 0}
+                                              data-row-index={index}
+                                              data-col-index={
+                                                  enableRowExpansion ? 1 : 0
+                                              }
+                                              tabIndex={
+                                                  focusedCell?.rowIndex ===
+                                                      index &&
+                                                  focusedCell?.colIndex ===
+                                                      (enableRowExpansion
+                                                          ? 1
+                                                          : 0)
+                                                      ? 0
+                                                      : -1
+                                              }
+                                              onFocus={() =>
+                                                  onCellFocus?.(
+                                                      index,
+                                                      enableRowExpansion ? 1 : 0
+                                                  )
+                                              }
+                                              onClick={() =>
+                                                  onCellFocus?.(
+                                                      index,
+                                                      enableRowExpansion ? 1 : 0
+                                                  )
+                                              }
+                                              role="gridcell"
                                               style={{
                                                   minWidth: `${FOUNDATION_THEME.unit[52]}`,
                                                   maxWidth: `${FOUNDATION_THEME.unit[52]}`,
@@ -739,12 +845,13 @@ const TableBody = forwardRef<
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
                                                           FOUNDATION_THEME
-                                                              .colors.gray[25],
+                                                              .colors.gray[0],
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
                                                               .fontSize,
                                                   }),
+                                                  outline: 'none',
                                               }}
                                           >
                                               <Block
@@ -772,6 +879,7 @@ const TableBody = forwardRef<
                                                           isEditing ||
                                                           rowShouldShowSkeleton
                                                       }
+                                                      aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
                                                   />
                                               </Block>
                                           </StyledTableCell>
@@ -885,9 +993,9 @@ const TableBody = forwardRef<
                                                               rowStyling.backgroundColor ||
                                                               FOUNDATION_THEME
                                                                   .colors
-                                                                  .gray[25],
+                                                                  .gray[0],
                                                           ...(isLastFrozenColumn && {
-                                                              borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                                              borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
                                                           }),
                                                       }
                                                   }
@@ -902,14 +1010,50 @@ const TableBody = forwardRef<
                                               if (
                                                   cellSkeleton.shouldShowSkeleton
                                               ) {
+                                                  const absoluteColIndex =
+                                                      getAbsoluteColIndex(
+                                                          colIndex
+                                                      )
                                                   return (
                                                       <StyledTableCell
                                                           key={`${rowId}-${String(column.field)}`}
+                                                          $customBackgroundColor={
+                                                              rowStyling.backgroundColor
+                                                          }
+                                                          $hasCustomBackground={
+                                                              hasCustomBackground
+                                                          }
+                                                          data-row-index={index}
+                                                          data-col-index={
+                                                              absoluteColIndex
+                                                          }
+                                                          tabIndex={
+                                                              focusedCell?.rowIndex ===
+                                                                  index &&
+                                                              focusedCell?.colIndex ===
+                                                                  absoluteColIndex
+                                                                  ? 0
+                                                                  : -1
+                                                          }
+                                                          onFocus={() =>
+                                                              onCellFocus?.(
+                                                                  index,
+                                                                  absoluteColIndex
+                                                              )
+                                                          }
+                                                          onClick={() =>
+                                                              onCellFocus?.(
+                                                                  index,
+                                                                  absoluteColIndex
+                                                              )
+                                                          }
+                                                          role="gridcell"
                                                           style={{
                                                               ...columnStyles,
                                                               ...(colIndex <
                                                                   columnFreeze &&
                                                                   getFrozenBodyStyles()),
+                                                              outline: 'none',
                                                           }}
                                                           $isFirstRow={
                                                               index === 0
@@ -932,6 +1076,23 @@ const TableBody = forwardRef<
                                                   )
                                               }
 
+                                              const frozenBodyStyles =
+                                                  getFrozenBodyStyles()
+                                              const frozenStylesWithoutBg =
+                                                  frozenBodyStyles &&
+                                                  'backgroundColor' in
+                                                      frozenBodyStyles
+                                                      ? (() => {
+                                                            const { ...rest } =
+                                                                frozenBodyStyles
+                                                            return rest
+                                                        })()
+                                                      : frozenBodyStyles
+
+                                              // Calculate absolute column index for keyboard navigation
+                                              const absoluteColIndex =
+                                                  getAbsoluteColIndex(colIndex)
+
                                               return (
                                                   <TableCell
                                                       key={`${rowId}-${String(column.field)}`}
@@ -951,8 +1112,41 @@ const TableBody = forwardRef<
                                                           currentValue
                                                       }
                                                       width={columnStyles}
-                                                      frozenStyles={getFrozenBodyStyles()}
+                                                      frozenStyles={
+                                                          frozenStylesWithoutBg
+                                                      }
                                                       isFirstRow={index === 0}
+                                                      customBackgroundColor={
+                                                          rowStyling.backgroundColor
+                                                      }
+                                                      hasCustomBackground={
+                                                          hasCustomBackground
+                                                      }
+                                                      data-row-index={index}
+                                                      data-col-index={
+                                                          absoluteColIndex
+                                                      }
+                                                      tabIndex={
+                                                          focusedCell?.rowIndex ===
+                                                              index &&
+                                                          focusedCell?.colIndex ===
+                                                              absoluteColIndex
+                                                              ? 0
+                                                              : -1
+                                                      }
+                                                      onFocus={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              absoluteColIndex
+                                                          )
+                                                      }
+                                                      onClick={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              absoluteColIndex
+                                                          )
+                                                      }
+                                                      role="gridcell"
                                                       onFieldChange={(value) =>
                                                           onFieldChange(
                                                               row[idField],
@@ -972,147 +1166,294 @@ const TableBody = forwardRef<
                                           !(
                                               mobileConfig?.isMobile &&
                                               mobileConfig?.enableColumnOverflow
-                                          ) && (
-                                              <StyledTableCell
-                                                  $customBackgroundColor={
-                                                      rowStyling.backgroundColor
-                                                  }
-                                                  $hasCustomBackground={
-                                                      hasCustomBackground
-                                                  }
-                                                  $width="200px"
-                                                  $isFirstRow={index === 0}
-                                                  style={{
-                                                      maxWidth: '200px',
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis',
-                                                      whiteSpace: 'nowrap',
-                                                      fontSize:
-                                                          tableToken.dataTable
-                                                              .table.body.cell
-                                                              .fontSize,
-                                                      fontWeight:
-                                                          tableToken.dataTable
-                                                              .table.body.cell
-                                                              .fontWeight,
-                                                  }}
-                                              >
-                                                  {rowShouldShowSkeleton ? (
-                                                      <Skeleton
-                                                          variant={
-                                                              skeletonVariant
-                                                          }
-                                                          loading
-                                                          width="80px"
-                                                          height="32px"
-                                                          borderRadius="4px"
-                                                          style={{
-                                                              display: 'block',
-                                                          }}
-                                                      />
-                                                  ) : (
-                                                      <ActionsCell
-                                                          row={row}
-                                                          index={index}
-                                                          isEditing={isEditing}
-                                                          enableInlineEdit={
-                                                              enableInlineEdit
-                                                          }
-                                                          rowActions={
-                                                              rowActions
-                                                          }
-                                                          onEditRow={onEditRow}
-                                                          onSaveRow={onSaveRow}
-                                                          onCancelEdit={
-                                                              onCancelEdit
-                                                          }
-                                                          idField={idField}
-                                                      />
-                                                  )}
-                                              </StyledTableCell>
-                                          )}
+                                          ) &&
+                                          (() => {
+                                              const actionsColIndex =
+                                                  getAbsoluteColIndex(
+                                                      visibleColumns.length
+                                                  )
+                                              return (
+                                                  <StyledTableCell
+                                                      $customBackgroundColor={
+                                                          hasCustomBackground
+                                                              ? rowStyling.backgroundColor
+                                                              : FOUNDATION_THEME
+                                                                    .colors
+                                                                    .gray[0]
+                                                      }
+                                                      $hasCustomBackground={
+                                                          true
+                                                      }
+                                                      $width="200px"
+                                                      $isFirstRow={index === 0}
+                                                      data-row-index={index}
+                                                      data-col-index={
+                                                          actionsColIndex
+                                                      }
+                                                      tabIndex={
+                                                          focusedCell?.rowIndex ===
+                                                              index &&
+                                                          focusedCell?.colIndex ===
+                                                              actionsColIndex
+                                                              ? 0
+                                                              : -1
+                                                      }
+                                                      onFocus={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              actionsColIndex
+                                                          )
+                                                      }
+                                                      onClick={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              actionsColIndex
+                                                          )
+                                                      }
+                                                      role="gridcell"
+                                                      style={{
+                                                          maxWidth: '200px',
+                                                          overflow: 'hidden',
+                                                          textOverflow:
+                                                              'ellipsis',
+                                                          whiteSpace: 'nowrap',
+                                                          fontSize:
+                                                              tableToken
+                                                                  .dataTable
+                                                                  .table.body
+                                                                  .cell
+                                                                  .fontSize,
+                                                          fontWeight:
+                                                              tableToken
+                                                                  .dataTable
+                                                                  .table.body
+                                                                  .cell
+                                                                  .fontWeight,
+                                                          outline: 'none',
+                                                      }}
+                                                  >
+                                                      {rowShouldShowSkeleton ? (
+                                                          <Skeleton
+                                                              variant={
+                                                                  skeletonVariant
+                                                              }
+                                                              loading
+                                                              width="80px"
+                                                              height="32px"
+                                                              borderRadius="4px"
+                                                              style={{
+                                                                  display:
+                                                                      'block',
+                                                              }}
+                                                          />
+                                                      ) : (
+                                                          <ActionsCell
+                                                              row={row}
+                                                              index={index}
+                                                              isEditing={
+                                                                  isEditing
+                                                              }
+                                                              enableInlineEdit={
+                                                                  enableInlineEdit
+                                                              }
+                                                              rowActions={
+                                                                  rowActions
+                                                              }
+                                                              onEditRow={
+                                                                  onEditRow
+                                                              }
+                                                              onSaveRow={
+                                                                  onSaveRow
+                                                              }
+                                                              onCancelEdit={
+                                                                  onCancelEdit
+                                                              }
+                                                              idField={idField}
+                                                          />
+                                                      )}
+                                                  </StyledTableCell>
+                                              )
+                                          })()}
 
                                       {mobileConfig?.enableColumnOverflow &&
                                           mobileOverflowColumns.length > 0 &&
-                                          onMobileOverflowClick && (
-                                              <StyledTableCell
-                                                  $width="40px"
-                                                  $customBackgroundColor={
-                                                      rowStyling.backgroundColor
-                                                  }
-                                                  $hasCustomBackground={
-                                                      hasCustomBackground
-                                                  }
-                                                  $isFirstRow={index === 0}
-                                                  style={{
-                                                      minWidth: '40px',
-                                                      maxWidth: '40px',
-                                                      fontSize:
-                                                          tableToken.dataTable
-                                                              .table.body.cell
-                                                              .fontSize,
-                                                  }}
-                                              >
-                                                  <Block
-                                                      display="flex"
-                                                      alignItems="center"
-                                                      justifyContent="center"
-                                                      onClick={(e) => {
-                                                          e.stopPropagation()
-                                                          onMobileOverflowClick(
-                                                              row
+                                          onMobileOverflowClick &&
+                                          (() => {
+                                              const overflowColIndex =
+                                                  getAbsoluteColIndex(
+                                                      visibleColumns.length +
+                                                          ((enableInlineEdit ||
+                                                              rowActions) &&
+                                                          !(
+                                                              mobileConfig?.isMobile &&
+                                                              mobileConfig?.enableColumnOverflow
                                                           )
+                                                              ? 1
+                                                              : 0)
+                                                  )
+                                              return (
+                                                  <StyledTableCell
+                                                      $width="40px"
+                                                      $customBackgroundColor={
+                                                          rowStyling.backgroundColor
+                                                      }
+                                                      $hasCustomBackground={
+                                                          hasCustomBackground
+                                                      }
+                                                      $isFirstRow={index === 0}
+                                                      data-row-index={index}
+                                                      data-col-index={
+                                                          overflowColIndex
+                                                      }
+                                                      tabIndex={
+                                                          focusedCell?.rowIndex ===
+                                                              index &&
+                                                          focusedCell?.colIndex ===
+                                                              overflowColIndex
+                                                              ? 0
+                                                              : -1
+                                                      }
+                                                      onFocus={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              overflowColIndex
+                                                          )
+                                                      }
+                                                      onClick={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              overflowColIndex
+                                                          )
+                                                      }
+                                                      role="gridcell"
+                                                      style={{
+                                                          minWidth: '40px',
+                                                          maxWidth: '40px',
+                                                          fontSize:
+                                                              tableToken
+                                                                  .dataTable
+                                                                  .table.body
+                                                                  .cell
+                                                                  .fontSize,
+                                                          outline: 'none',
                                                       }}
                                                   >
-                                                      <ExpandButton
-                                                          onClick={() =>
+                                                      <Block
+                                                          display="flex"
+                                                          alignItems="center"
+                                                          justifyContent="center"
+                                                          onClick={(e) => {
+                                                              e.stopPropagation()
                                                               onMobileOverflowClick(
                                                                   row
                                                               )
-                                                          }
-                                                          title="View more details"
-                                                          style={{
-                                                              color: FOUNDATION_THEME
-                                                                  .colors
-                                                                  .gray[800],
                                                           }}
                                                       >
-                                                          <ChevronRight
-                                                              size={16}
-                                                          />
-                                                      </ExpandButton>
-                                                  </Block>
-                                              </StyledTableCell>
-                                          )}
+                                                          <ExpandButton
+                                                              type="button"
+                                                              aria-label="View more details"
+                                                              title="View more details"
+                                                              onClick={() =>
+                                                                  onMobileOverflowClick(
+                                                                      row
+                                                                  )
+                                                              }
+                                                              style={{
+                                                                  color: FOUNDATION_THEME
+                                                                      .colors
+                                                                      .gray[800],
+                                                              }}
+                                                          >
+                                                              <ChevronRight
+                                                                  size={16}
+                                                              />
+                                                          </ExpandButton>
+                                                      </Block>
+                                                  </StyledTableCell>
+                                              )
+                                          })()}
 
                                       {/* Column Manager - Always rightmost (empty cell in body, actual manager in header) */}
-                                      {enableColumnManager && (
-                                          <StyledTableCell
-                                              $width="48px"
-                                              $customBackgroundColor={
-                                                  rowStyling.backgroundColor
-                                              }
-                                              $hasCustomBackground={
-                                                  hasCustomBackground
-                                              }
-                                              $isFirstRow={index === 0}
-                                              style={{
-                                                  minWidth:
-                                                      FOUNDATION_THEME.unit[48],
-                                                  maxWidth:
-                                                      FOUNDATION_THEME.unit[48],
-                                                  fontSize:
-                                                      tableToken.dataTable.table
-                                                          .body.cell.fontSize,
-                                                  position: 'sticky',
-                                                  right: 0,
-                                                  backgroundColor:
-                                                      rowStyling.backgroundColor ||
-                                                      FOUNDATION_THEME.colors
-                                                          .gray[25],
-                                              }}
-                                          />
-                                      )}
+                                      {enableColumnManager &&
+                                          (() => {
+                                              const columnManagerColIndex =
+                                                  getAbsoluteColIndex(
+                                                      visibleColumns.length +
+                                                          ((enableInlineEdit ||
+                                                              rowActions) &&
+                                                          !(
+                                                              mobileConfig?.isMobile &&
+                                                              mobileConfig?.enableColumnOverflow
+                                                          )
+                                                              ? 1
+                                                              : 0) +
+                                                          (mobileConfig?.enableColumnOverflow &&
+                                                          mobileOverflowColumns.length >
+                                                              0
+                                                              ? 1
+                                                              : 0)
+                                                  )
+                                              return (
+                                                  <StyledTableCell
+                                                      $width="48px"
+                                                      $customBackgroundColor={
+                                                          rowStyling.backgroundColor
+                                                      }
+                                                      $hasCustomBackground={
+                                                          hasCustomBackground
+                                                      }
+                                                      data-row-index={index}
+                                                      data-col-index={
+                                                          columnManagerColIndex
+                                                      }
+                                                      tabIndex={
+                                                          focusedCell?.rowIndex ===
+                                                              index &&
+                                                          focusedCell?.colIndex ===
+                                                              columnManagerColIndex
+                                                              ? 0
+                                                              : -1
+                                                      }
+                                                      onFocus={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              columnManagerColIndex
+                                                          )
+                                                      }
+                                                      onClick={() =>
+                                                          onCellFocus?.(
+                                                              index,
+                                                              columnManagerColIndex
+                                                          )
+                                                      }
+                                                      role="gridcell"
+                                                      $isFirstRow={index === 0}
+                                                      style={{
+                                                          minWidth:
+                                                              FOUNDATION_THEME
+                                                                  .unit[48],
+                                                          maxWidth:
+                                                              FOUNDATION_THEME
+                                                                  .unit[48],
+                                                          fontSize:
+                                                              tableToken
+                                                                  .dataTable
+                                                                  .table.body
+                                                                  .cell
+                                                                  .fontSize,
+                                                          position: 'sticky',
+                                                          right: 0,
+                                                          backgroundColor:
+                                                              hasCustomBackground
+                                                                  ? rowStyling.backgroundColor
+                                                                  : FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
+                                                          outline: 'none',
+                                                      }}
+                                                  />
+                                              )
+                                          })()}
                                   </TableRow>
 
                                   {enableRowExpansion &&

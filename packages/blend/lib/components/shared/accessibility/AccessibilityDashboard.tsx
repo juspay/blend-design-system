@@ -36,6 +36,7 @@ import SidebarAccessibility from '../../Sidebar/accessibility/SidebarAccessibili
 import DrawerAccessibility from '../../Drawer/accessibility/DrawerAccessibility'
 import StepperAccessibility from '../../Stepper/accessibility/StepperAccessibility'
 import CodeBlockAccessibility from '../../CodeBlock/accessibility/CodeBlockAccessibility'
+import ProgressBarAccessibility from '../../ProgressBar/accessibility/ProgressBarAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -219,6 +220,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'CodeBlock',
         displayName: 'Code Block',
         component: CodeBlockAccessibility,
+    },
+    {
+        name: 'ProgressBar',
+        displayName: 'ProgressBar',
+        component: ProgressBarAccessibility,
     },
     // Add more components here as they are added
 ]

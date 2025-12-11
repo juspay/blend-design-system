@@ -6,6 +6,7 @@ import type { useSortable } from '@dnd-kit/sortable'
 
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { Popover } from '../../Popover'
 import { Checkbox } from '../../Checkbox'
@@ -40,13 +41,37 @@ import {
 } from '../../Drawer'
 import { DraggableColumnHeader } from './DraggableColumnHeader'
 
-const FilterIcon = styled(ChevronsUpDown)`
+const FilterIcon = styled(ChevronsUpDown)<{ $isActive?: boolean }>`
     cursor: pointer;
-    color: ${FOUNDATION_THEME.colors.gray[400]};
+    color: ${({ $isActive }) =>
+        $isActive
+            ? FOUNDATION_THEME.colors.primary[600]
+            : FOUNDATION_THEME.colors.gray[400]};
     transition: color 0.2s ease;
 
     &:hover {
-        color: ${FOUNDATION_THEME.colors.gray[600]};
+        color: ${({ $isActive }) =>
+            $isActive
+                ? FOUNDATION_THEME.colors.primary[700]
+                : FOUNDATION_THEME.colors.gray[600]};
+    }
+`
+
+const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
+    outline: none !important;
+
+    &:focus {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline-offset: 2px !important;
+        border-radius: 4px;
+        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
+    }
+
+    &:focus-visible {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline-offset: 2px !important;
+        border-radius: 4px;
+        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
     }
 `
 
@@ -95,6 +120,7 @@ const TableHeader = forwardRef<
             onColumnChange,
             onHeaderChange,
             onColumnFilter,
+            columnFilters = [],
             getColumnWidth,
         },
         ref
@@ -117,6 +143,20 @@ const TableHeader = forwardRef<
         const [openPopovers, setOpenPopovers] = useState<
             Record<string, boolean>
         >({})
+        const filterButtonRefs = useRef<
+            Record<string, HTMLButtonElement | null>
+        >({})
+
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                Object.values(filterButtonRefs.current).forEach((button) => {
+                    if (button && button.tabIndex !== 0 && !button.disabled) {
+                        button.tabIndex = 0
+                    }
+                })
+            }, 100)
+            return () => clearTimeout(timer)
+        }, [visibleColumns])
 
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -288,12 +328,17 @@ const TableHeader = forwardRef<
                 }}
             >
                 <tr
+                    role="row"
                     style={{
                         ...tableToken.dataTable.table.header.row,
                     }}
                 >
                     {enableRowExpansion && (
                         <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Expand row"
+                            tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 width: '50px',
@@ -328,6 +373,19 @@ const TableHeader = forwardRef<
 
                     {enableRowSelection && (
                         <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Select all rows"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    onSelectAll(
+                                        selectAll === true ? false : true
+                                    )
+                                }
+                            }}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 width: '60px',
@@ -373,6 +431,7 @@ const TableHeader = forwardRef<
                                     onCheckedChange={onSelectAll}
                                     size={CheckboxSize.MEDIUM}
                                     disabled={isDisabled}
+                                    aria-label="Select all rows"
                                 />
                             </Block>
                         </th>
@@ -384,6 +443,39 @@ const TableHeader = forwardRef<
                         const columnConfig = getColumnTypeConfig(
                             column.type || ColumnType.TEXT
                         )
+                        const fieldKey = String(column.field)
+
+                        const hasActiveFilter = () => {
+                            const hasFilterFromProps = columnFilters.some(
+                                (filter) =>
+                                    filter.field === fieldKey &&
+                                    filter.value !== '' &&
+                                    filter.value !== null &&
+                                    !(
+                                        Array.isArray(filter.value) &&
+                                        filter.value.length === 0
+                                    )
+                            )
+
+                            if (hasFilterFromProps) return true
+
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            if (!selectedValues) return false
+
+                            if (Array.isArray(selectedValues)) {
+                                return selectedValues.length > 0
+                            }
+                            if (
+                                typeof selectedValues === 'object' &&
+                                selectedValues !== null &&
+                                'min' in selectedValues &&
+                                'max' in selectedValues
+                            ) {
+                                return true
+                            }
+                            return false
+                        }
 
                         const frozenStyles = getFrozenColumnStyles(
                             index,
@@ -681,51 +773,16 @@ const TableHeader = forwardRef<
                                             width="16px"
                                             height="16px"
                                             onClick={(e) => e.stopPropagation()}
-                                            _focus={{ outline: 'none' }}
-                                            _focusVisible={{ outline: 'none' }}
                                             position="relative"
                                         >
                                             {(() => {
-                                                const fieldKey = String(
-                                                    column.field
-                                                )
                                                 const hasSort =
                                                     sortState.currentSortField ===
                                                         fieldKey &&
                                                     sortState.currentSortDirection !==
                                                         SortDirection.NONE
-                                                const hasFilter = (() => {
-                                                    const selectedValues =
-                                                        filterState
-                                                            .columnSelectedValues[
-                                                            fieldKey
-                                                        ]
-                                                    if (!selectedValues)
-                                                        return false
-
-                                                    if (
-                                                        Array.isArray(
-                                                            selectedValues
-                                                        )
-                                                    ) {
-                                                        return (
-                                                            selectedValues.length >
-                                                            0
-                                                        )
-                                                    }
-                                                    if (
-                                                        typeof selectedValues ===
-                                                            'object' &&
-                                                        selectedValues !==
-                                                            null &&
-                                                        'min' in
-                                                            selectedValues &&
-                                                        'max' in selectedValues
-                                                    ) {
-                                                        return true // Range filter
-                                                    }
-                                                    return false
-                                                })()
+                                                const hasFilter =
+                                                    hasActiveFilter()
 
                                                 return (
                                                     (hasSort || hasFilter) && (
@@ -771,6 +828,18 @@ const TableHeader = forwardRef<
                                                                     )]: false,
                                                                 })
                                                             )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (buttonRef) {
+                                                                    buttonRef.focus()
+                                                                }
+                                                            }, 100)
                                                         }
                                                     }}
                                                     direction="bottom"
@@ -779,7 +848,58 @@ const TableHeader = forwardRef<
                                                     showHandle={true}
                                                 >
                                                     <DrawerTrigger>
-                                                        <FilterIcon size={16} />
+                                                        <FilterButton
+                                                            ref={(el) => {
+                                                                filterButtonRefs.current[
+                                                                    String(
+                                                                        column.field
+                                                                    )
+                                                                ] = el
+                                                            }}
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            tabIndex={0}
+                                                            $isActive={hasActiveFilter()}
+                                                            onKeyDown={(e) => {
+                                                                if (
+                                                                    e.key ===
+                                                                        'Enter' ||
+                                                                    e.key ===
+                                                                        ' '
+                                                                ) {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                    setOpenPopovers(
+                                                                        {
+                                                                            [String(
+                                                                                column.field
+                                                                            )]:
+                                                                                true,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: '4px',
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                                outline: 'none',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                                $isActive={hasActiveFilter()}
+                                                            />
+                                                        </FilterButton>
                                                     </DrawerTrigger>
                                                     <DrawerPortal>
                                                         <DrawerOverlay />
@@ -824,6 +944,53 @@ const TableHeader = forwardRef<
                                                                                     false,
                                                                             })
                                                                         )
+                                                                        setTimeout(
+                                                                            () => {
+                                                                                const buttonRef =
+                                                                                    filterButtonRefs
+                                                                                        .current[
+                                                                                        String(
+                                                                                            column.field
+                                                                                        )
+                                                                                    ]
+                                                                                if (
+                                                                                    buttonRef
+                                                                                ) {
+                                                                                    buttonRef.focus()
+                                                                                }
+                                                                            },
+                                                                            100
+                                                                        )
+                                                                    }}
+                                                                    onFilterApplied={() => {
+                                                                        setOpenPopovers(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [String(
+                                                                                    column.field
+                                                                                )]:
+                                                                                    false,
+                                                                            })
+                                                                        )
+                                                                        setTimeout(
+                                                                            () => {
+                                                                                const buttonRef =
+                                                                                    filterButtonRefs
+                                                                                        .current[
+                                                                                        String(
+                                                                                            column.field
+                                                                                        )
+                                                                                    ]
+                                                                                if (
+                                                                                    buttonRef
+                                                                                ) {
+                                                                                    buttonRef.focus()
+                                                                                }
+                                                                            },
+                                                                            100
+                                                                        )
                                                                     }}
                                                                 />
                                                             </DrawerBody>
@@ -833,7 +1000,58 @@ const TableHeader = forwardRef<
                                             ) : (
                                                 <Popover
                                                     trigger={
-                                                        <FilterIcon size={16} />
+                                                        <FilterButton
+                                                            ref={(el) => {
+                                                                filterButtonRefs.current[
+                                                                    String(
+                                                                        column.field
+                                                                    )
+                                                                ] = el
+                                                            }}
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            tabIndex={0}
+                                                            $isActive={hasActiveFilter()}
+                                                            onKeyDown={(e) => {
+                                                                if (
+                                                                    e.key ===
+                                                                        'Enter' ||
+                                                                    e.key ===
+                                                                        ' '
+                                                                ) {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                    setOpenPopovers(
+                                                                        {
+                                                                            [String(
+                                                                                column.field
+                                                                            )]:
+                                                                                true,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: '4px',
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                                outline: 'none',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                                $isActive={hasActiveFilter()}
+                                                            />
+                                                        </FilterButton>
                                                     }
                                                     maxWidth={220}
                                                     minWidth={220}
@@ -855,6 +1073,25 @@ const TableHeader = forwardRef<
                                                                     column.field
                                                                 )]: true,
                                                             })
+                                                            setTimeout(() => {
+                                                                const popoverContent =
+                                                                    document.querySelector(
+                                                                        `[data-popover="Filter ${column.header}"]`
+                                                                    )
+                                                                if (
+                                                                    popoverContent
+                                                                ) {
+                                                                    const firstMenuItem =
+                                                                        popoverContent.querySelector(
+                                                                            '[role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]'
+                                                                        ) as HTMLElement
+                                                                    if (
+                                                                        firstMenuItem
+                                                                    ) {
+                                                                        firstMenuItem.focus()
+                                                                    }
+                                                                }
+                                                            }, 150)
                                                         } else {
                                                             setOpenPopovers(
                                                                 (prev) => ({
@@ -893,6 +1130,40 @@ const TableHeader = forwardRef<
                                                                     )]: false,
                                                                 })
                                                             )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (buttonRef) {
+                                                                    buttonRef.focus()
+                                                                }
+                                                            }, 100)
+                                                        }}
+                                                        onFilterApplied={() => {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (buttonRef) {
+                                                                    buttonRef.focus()
+                                                                }
+                                                            }, 100)
                                                         }}
                                                     />
                                                 </Popover>
@@ -902,16 +1173,36 @@ const TableHeader = forwardRef<
                             </Block>
                         )
 
-                        // Conditionally wrap with DraggableColumnHeader
                         if (isDraggable && !isMobile) {
+                            const sortDirection =
+                                sortState.currentSortField ===
+                                String(column.field)
+                                    ? sortState.currentSortDirection
+                                    : SortDirection.NONE
+                            const ariaSortValue =
+                                sortDirection === SortDirection.ASCENDING
+                                    ? 'ascending'
+                                    : sortDirection === SortDirection.DESCENDING
+                                      ? 'descending'
+                                      : 'none'
+
                             return (
                                 <DraggableColumnHeader
                                     key={String(column.field)}
                                     id={String(column.field)}
+                                    role="columnheader"
+                                    scope="col"
+                                    aria-sort={
+                                        column.isSortable !== false
+                                            ? ariaSortValue
+                                            : undefined
+                                    }
+                                    aria-label={column.header}
                                     style={headerStyle}
                                     data-element="table-header"
                                     data-id={column.header}
                                     disabled={false}
+                                    tabIndex={-1}
                                 >
                                     {(dragHandleProps) =>
                                         headerContent(dragHandleProps)
@@ -920,12 +1211,32 @@ const TableHeader = forwardRef<
                             )
                         }
 
+                        const sortDirection =
+                            sortState.currentSortField === String(column.field)
+                                ? sortState.currentSortDirection
+                                : SortDirection.NONE
+                        const ariaSortValue =
+                            sortDirection === SortDirection.ASCENDING
+                                ? 'ascending'
+                                : sortDirection === SortDirection.DESCENDING
+                                  ? 'descending'
+                                  : 'none'
+
                         return (
                             <th
                                 key={String(column.field)}
+                                role="columnheader"
+                                scope="col"
+                                aria-sort={
+                                    column.isSortable !== false
+                                        ? ariaSortValue
+                                        : undefined
+                                }
+                                aria-label={column.header}
                                 style={headerStyle}
                                 data-element="table-header"
                                 data-id={column.header}
+                                tabIndex={-1}
                             >
                                 {headerContent()}
                             </th>
@@ -938,6 +1249,10 @@ const TableHeader = forwardRef<
                             mobileConfig?.enableColumnOverflow
                         ) && (
                             <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Actions"
+                                tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
                                     width: '200px',
@@ -969,8 +1284,11 @@ const TableHeader = forwardRef<
                                         as="span"
                                         style={{
                                             fontSize:
-                                                FOUNDATION_THEME.font.size.body
-                                                    .sm.fontSize,
+                                                tableToken.dataTable.table
+                                                    .header.cell.fontSize,
+                                            fontWeight:
+                                                tableToken.dataTable.table
+                                                    .header.cell.fontWeight,
                                         }}
                                     >
                                         Actions
@@ -983,6 +1301,10 @@ const TableHeader = forwardRef<
                         mobileOverflowColumns.length > 0 &&
                         onMobileOverflowClick && (
                             <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="View more columns"
+                                tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
                                     width: '40px',
@@ -1005,6 +1327,10 @@ const TableHeader = forwardRef<
 
                     {enableColumnManager && (
                         <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Column manager"
+                            tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
                                 overflow: 'hidden',

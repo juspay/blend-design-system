@@ -30,7 +30,23 @@ import {
 } from '../../../../packages/blend/lib/components/MultiSelect'
 import { Tooltip } from '../../../../packages/blend/lib/components/Tooltip'
 import { Popover } from '../../../../packages/blend/lib/components/Popover'
-
+import {
+    SelectMenuGroupType,
+    SingleSelect,
+} from '../../../../packages/blend/lib/components/SingleSelect'
+import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { User } from 'lucide-react'
+const simpleItems: SelectMenuGroupType[] = [
+    {
+        items: [
+            { label: 'Option 1', value: 'option1' },
+            { label: 'Option 2', value: 'option2' },
+            { label: 'Option 3', value: 'option3' },
+            { label: 'Option 4', value: 'option4' },
+            { label: 'Option 5', value: 'option5' },
+        ],
+    },
+]
 export const BasicDrawerExample = () => {
     return (
         <Drawer>
@@ -224,6 +240,7 @@ export const NestedDrawerExample = () => {
 }
 
 export const SideDrawerExample = () => {
+    const [basicIconSelected, setBasicIconSelected] = useState('')
     return (
         <Drawer direction="right">
             <DrawerTrigger>
@@ -265,6 +282,19 @@ export const SideDrawerExample = () => {
                                 gap: '16px',
                             }}
                         >
+                            <SingleSelect
+                                label="User Selection"
+                                items={simpleItems}
+                                selected={basicIconSelected}
+                                onSelect={(value) => {
+                                    setBasicIconSelected(value)
+                                    addSnackbar({
+                                        header: `Icon Selected: ${value}`,
+                                    })
+                                }}
+                                placeholder="Select user"
+                                slot={<User size={16} />}
+                            />
                             <div>
                                 <h4
                                     style={{

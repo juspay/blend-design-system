@@ -83,7 +83,7 @@ html {
 }
 
 :root {
-    --background: #fcfcfd;
+    /* --background: #fcfcfd; */
     --foreground: #171717;
     font-family: 'InterDisplay', sans-serif;
     line-height: 1.5;
