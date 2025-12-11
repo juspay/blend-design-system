@@ -51,4 +51,5 @@ export type StepProps = {
     onSubstepClick?: (stepIndex: number, substepIndex: number) => void
     clickable?: boolean
     currentSubsteps?: Record<string, number>
+    onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
 }

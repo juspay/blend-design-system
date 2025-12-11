@@ -34,6 +34,7 @@ import AccordionAccessibility from '../../Accordion/accessibility/AccordionAcces
 import TabsAccessibility from '../../Tabs/accessibility/TabsAccessibility'
 import SidebarAccessibility from '../../Sidebar/accessibility/SidebarAccessibility'
 import DrawerAccessibility from '../../Drawer/accessibility/DrawerAccessibility'
+import StepperAccessibility from '../../Stepper/accessibility/StepperAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -207,6 +208,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Drawer',
         displayName: 'Drawer',
         component: DrawerAccessibility,
+    },
+    {
+        name: 'Stepper',
+        displayName: 'Stepper',
+        component: StepperAccessibility,
     },
     // Add more components here as they are added
 ]
