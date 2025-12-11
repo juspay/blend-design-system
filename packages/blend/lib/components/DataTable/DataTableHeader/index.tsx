@@ -128,7 +128,7 @@ const DataTableHeader = forwardRef<
                     marginBottom={tableToken.header.marginBottom}
                     maxWidth={tableToken.header.maxWidth}
                     overflowX={tableToken.header.overflowX}
-                    overflowY="hidden"
+                    overflowY={tableToken.header.overflowY}
                     padding={`0 ${FOUNDATION_THEME.unit[16]}`}
                     style={{ minWidth: 0, height: 'auto' }}
                 >
@@ -421,13 +421,14 @@ const DataTableHeader = forwardRef<
                 gap={tableToken.header.gap}
                 maxWidth={tableToken.header.maxWidth}
                 overflowX={tableToken.header.overflowX}
-                overflowY="hidden"
+                overflowY={tableToken.header.overflowY}
                 style={{
                     minWidth: 0,
                     height: 'auto',
-                    minHeight: hasTitleOrDescription
-                        ? FOUNDATION_THEME.unit[48]
-                        : 'auto',
+                    minHeight:
+                        hasTitleOrDescription || hasToolbarContent
+                            ? FOUNDATION_THEME.unit[48]
+                            : 'auto',
                 }}
             >
                 {hasTitleOrDescription && (

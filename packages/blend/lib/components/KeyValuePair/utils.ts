@@ -9,10 +9,6 @@ export const getTextStyles = (
     textOverflow: TextOverflowMode,
     maxLines: number
 ): CSSObject => {
-    const baseStyles: CSSObject = {
-        width: '100%',
-    }
-
     const ellipsisStyles: CSSObject = {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
@@ -22,18 +18,15 @@ export const getTextStyles = (
     switch (textOverflow) {
         case 'truncate':
             return {
-                ...baseStyles,
                 ...ellipsisStyles,
             }
         case 'wrap':
             return {
-                ...baseStyles,
                 whiteSpace: 'normal',
                 wordBreak: 'break-word',
             }
         case 'wrap-clamp':
             return {
-                ...baseStyles,
                 display: '-webkit-box',
                 WebkitLineClamp: maxLines,
                 WebkitBoxOrient: 'vertical',
@@ -41,7 +34,7 @@ export const getTextStyles = (
                 wordBreak: 'break-word',
             }
         default:
-            return baseStyles
+            return {}
     }
 }
 
