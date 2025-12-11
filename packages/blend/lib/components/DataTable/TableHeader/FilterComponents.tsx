@@ -43,6 +43,7 @@ type FilterComponentsProps = {
     sortState: SortState
     onColumnFilter?: ColumnFilterHandler
     onPopoverClose?: () => void
+    onFilterApplied?: () => void
 }
 
 export const SortOptions: React.FC<{
@@ -50,7 +51,16 @@ export const SortOptions: React.FC<{
     tableToken: TableTokenType
     sortHandlers: SortHandlers
     sortState: SortState
-}> = ({ fieldKey, tableToken, sortHandlers, sortState }) => {
+    onFilterApplied?: () => void
+    onPopoverClose?: () => void
+}> = ({
+    fieldKey,
+    tableToken,
+    sortHandlers,
+    sortState,
+    onFilterApplied,
+    onPopoverClose,
+}) => {
     const isCurrentField = sortState.currentSortField === fieldKey
     const currentDirection = isCurrentField
         ? sortState.currentSortDirection
@@ -89,17 +99,27 @@ export const SortOptions: React.FC<{
                         tableToken.dataTable.table.header.filter.sortOption
                             .hoverBackground,
                 }}
-                onClick={() => sortHandlers.handleSortAscending(fieldKey)}
+                onClick={() => {
+                    sortHandlers.handleSortAscending(fieldKey)
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
+                        e.stopPropagation()
                         sortHandlers.handleSortAscending(fieldKey)
+                        onFilterApplied?.()
+                        onPopoverClose?.()
                     }
                 }}
                 tabIndex={0}
                 role="menuitem"
                 _focus={{ outline: 'none' }}
-                _focusVisible={{ outline: 'none' }}
+                _focusVisible={{
+                    outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    outlineOffset: '2px',
+                }}
             >
                 <ArrowUp
                     size={FOUNDATION_THEME.unit[16]}
@@ -153,17 +173,27 @@ export const SortOptions: React.FC<{
                         tableToken.dataTable.table.header.filter.sortOption
                             .hoverBackground,
                 }}
-                onClick={() => sortHandlers.handleSortDescending(fieldKey)}
+                onClick={() => {
+                    sortHandlers.handleSortDescending(fieldKey)
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
+                        e.stopPropagation()
                         sortHandlers.handleSortDescending(fieldKey)
+                        onFilterApplied?.()
+                        onPopoverClose?.()
                     }
                 }}
                 tabIndex={0}
                 role="menuitem"
                 _focus={{ outline: 'none' }}
-                _focusVisible={{ outline: 'none' }}
+                _focusVisible={{
+                    outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                    outlineOffset: '2px',
+                }}
             >
                 <ArrowDown
                     size={FOUNDATION_THEME.unit[16]}
@@ -320,6 +350,7 @@ export const SingleSelectItems: React.FC<{
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault()
+                                    e.stopPropagation()
                                     filterHandlers.handleSelectFilter(
                                         column,
                                         fieldKey,
@@ -333,7 +364,10 @@ export const SingleSelectItems: React.FC<{
                             role="menuitemradio"
                             aria-checked={isSelected}
                             _focus={{ outline: 'none' }}
-                            _focusVisible={{ outline: 'none' }}
+                            _focusVisible={{
+                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                outlineOffset: '2px',
+                            }}
                         >
                             <PrimitiveText
                                 style={{
@@ -441,6 +475,7 @@ export const MultiSelectItems: React.FC<{
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault()
+                                    e.stopPropagation()
                                     filterHandlers.handleMultiSelectFilter(
                                         column,
                                         fieldKey,
@@ -453,7 +488,10 @@ export const MultiSelectItems: React.FC<{
                             role="menuitemcheckbox"
                             aria-checked={isSelected}
                             _focus={{ outline: 'none' }}
-                            _focusVisible={{ outline: 'none' }}
+                            _focusVisible={{
+                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                outlineOffset: '2px',
+                            }}
                         >
                             <PrimitiveText
                                 style={{
@@ -742,6 +780,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     sortState,
     onColumnFilter,
     onPopoverClose,
+    onFilterApplied,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isMobile = breakPointLabel === 'sm'
@@ -749,9 +788,91 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     const fieldKey = String(column.field)
     const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
     const hasFiltering = columnConfig.supportsFiltering
+    const menuRef = useRef<HTMLDivElement>(null)
+    const [focusedIndex, setFocusedIndex] = useState<number>(-1)
 
     const isSortingEnabled =
         columnConfig.supportsSorting && column.isSortable !== false
+
+    // Get all focusable menu items
+    const getMenuItems = (): HTMLElement[] => {
+        if (!menuRef.current) return []
+        return Array.from(
+            menuRef.current.querySelectorAll(
+                '[role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]'
+            )
+        ) as HTMLElement[]
+    }
+
+    // Handle arrow key navigation
+    const handleMenuKeyDown = (e: React.KeyboardEvent) => {
+        const items = getMenuItems()
+        if (items.length === 0) return
+
+        // Find current focused item index
+        const currentFocused = document.activeElement as HTMLElement
+        const currentIndex = items.findIndex((item) => item === currentFocused)
+        let newIndex = currentIndex >= 0 ? currentIndex : focusedIndex
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault()
+                e.stopPropagation()
+                newIndex = newIndex < items.length - 1 ? newIndex + 1 : 0
+                setFocusedIndex(newIndex)
+                items[newIndex]?.focus()
+                break
+            case 'ArrowUp':
+                e.preventDefault()
+                e.stopPropagation()
+                newIndex = newIndex > 0 ? newIndex - 1 : items.length - 1
+                setFocusedIndex(newIndex)
+                items[newIndex]?.focus()
+                break
+            case 'Home':
+                e.preventDefault()
+                e.stopPropagation()
+                setFocusedIndex(0)
+                items[0]?.focus()
+                break
+            case 'End':
+                e.preventDefault()
+                e.stopPropagation()
+                setFocusedIndex(items.length - 1)
+                items[items.length - 1]?.focus()
+                break
+            case 'Escape':
+                e.preventDefault()
+                e.stopPropagation()
+                onPopoverClose?.()
+                break
+        }
+    }
+
+    // Reset focused index when nested filter opens/closes
+    useEffect(() => {
+        if (nestedFilterOpen) {
+            setFocusedIndex(-1)
+        }
+    }, [nestedFilterOpen])
+
+    // Focus first menu item when popover opens (triggered from parent)
+    const focusFirstMenuItem = () => {
+        setTimeout(() => {
+            const items = getMenuItems()
+            if (items.length > 0) {
+                setFocusedIndex(0)
+                items[0]?.focus()
+            }
+        }, 100)
+    }
+
+    // Expose focus function via ref (will be called from parent when popover opens)
+    useEffect(() => {
+        if (menuRef.current) {
+            ;(menuRef.current as any).focusFirstMenuItem = focusFirstMenuItem
+        }
+    }, [isSortingEnabled])
     // Use mobile component for small screens
     if (isMobile) {
         return (
@@ -771,15 +892,12 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
 
     return (
         <Block
+            ref={menuRef}
             display="flex"
             flexDirection="column"
             gap={FOUNDATION_THEME.unit[0]}
             padding={FOUNDATION_THEME.unit[4]}
-            onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                    onPopoverClose?.()
-                }
-            }}
+            onKeyDown={handleMenuKeyDown}
             role="menu"
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
@@ -790,6 +908,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     tableToken={tableToken}
                     sortHandlers={sortHandlers}
                     sortState={sortState}
+                    onFilterApplied={onFilterApplied}
+                    onPopoverClose={onPopoverClose}
                 />
             )}
 
@@ -825,13 +945,17 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault()
+                                    e.stopPropagation()
                                     setNestedFilterOpen(!nestedFilterOpen)
                                 }
                             }}
                             tabIndex={0}
                             role="menuitem"
                             _focus={{ outline: 'none' }}
-                            _focusVisible={{ outline: 'none' }}
+                            _focusVisible={{
+                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                outlineOffset: '2px',
+                            }}
                         >
                             <Block
                                 display="flex"

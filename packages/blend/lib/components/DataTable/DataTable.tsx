@@ -994,6 +994,15 @@ const DataTable = forwardRef(
             }
 
             const target = event.target as HTMLElement
+
+            if (
+                target.closest('thead') ||
+                target.closest('[role="columnheader"]') ||
+                target.tagName === 'TH'
+            ) {
+                return
+            }
+
             if (
                 target.tagName === 'INPUT' ||
                 target.tagName === 'TEXTAREA' ||
@@ -1083,7 +1092,13 @@ const DataTable = forwardRef(
                     break
                 case 'Enter':
                 case ' ':
-                    if (onRowClick && focusedCell !== null) {
+                    // Only trigger row click if focus is on a body cell, not header
+                    if (
+                        onRowClick &&
+                        focusedCell !== null &&
+                        !target.closest('thead') &&
+                        !target.closest('[role="columnheader"]')
+                    ) {
                         const row = currentData[focusedCell.rowIndex]
                         if (row) {
                             onRowClick(row, focusedCell.rowIndex)
@@ -1313,7 +1328,7 @@ const DataTable = forwardRef(
                                         }
                                         onKeyDown={handleTableKeyDown}
                                         onFocus={handleTableFocus}
-                                        tabIndex={0}
+                                        tabIndex={-1}
                                         style={{
                                             width: tableToken.dataTable.table
                                                 .width,
@@ -1430,6 +1445,7 @@ const DataTable = forwardRef(
                                                 )
                                             }
                                             onColumnFilter={handleColumnFilter}
+                                            columnFilters={columnFilters}
                                             getColumnWidth={
                                                 getColumnWidth as (
                                                     column: ColumnDefinition<

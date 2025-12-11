@@ -50,7 +50,8 @@ const TableRow = styled.tr<{
     
     ${!$hasCustomBackground &&
         css`
-            &:hover {
+            &:hover,
+            &[data-focused-row='true'] {
                 background-color: ${FOUNDATION_THEME.colors
                     .gray[100]} !important;
 
@@ -664,6 +665,11 @@ const TableBody = forwardRef<
                                               : undefined
                                       }
                                       aria-label={rowAriaLabel}
+                                      data-focused-row={
+                                          focusedCell?.rowIndex === index
+                                              ? 'true'
+                                              : 'false'
+                                      }
                                       onClick={() =>
                                           onRowClick && onRowClick(row, index)
                                       }

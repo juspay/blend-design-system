@@ -27,6 +27,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             leadingSlot,
             trailingSlot,
             skeleton,
+            onClick,
             ...props
         },
         ref
@@ -51,6 +52,17 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 
             return getInitialsFromText(alt)
         }
+
+        // Generate accessible label
+        const getAccessibleLabel = () => {
+            const name = alt || (typeof fallback === 'string' ? fallback : 'Avatar')
+            const statusText = online ? ', online' : ''
+            return `${name}${statusText}`
+        }
+
+        // Check if avatar is interactive (has onClick handler)
+        const isInteractive = props.onClick !== undefined
+        const accessibleLabel = getAccessibleLabel()
 
         const INDICATOR_POSITIONS = {
             sm: {
@@ -186,6 +198,10 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             <Block
                 ref={ref}
                 data-avatar={alt ?? 'avatar'}
+                role="img"
+                aria-label={accessibleLabel}
+                aria-live={online ? 'polite' : undefined}
+                tabIndex={isInteractive ? 0 : undefined}
                 position="relative"
                 display="inline-flex"
                 alignItems="center"
@@ -203,6 +219,18 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 borderRadius={tokens.container.borderRadius[shape]}
                 fontSize={tokens.text.fontSize[size]}
                 fontWeight={tokens.text.fontWeight[size]}
+                cursor={isInteractive ? 'pointer' : undefined}
+                onKeyDown={
+                    isInteractive && props.onClick
+                        ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  props.onClick?.(e as any)
+                              }
+                          }
+                        : undefined
+                }
                 {...props}
                 data-status={online ? 'online' : 'offline'}
             >
@@ -210,6 +238,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     <Block
                         aria-hidden="true"
                         data-avatar-indicator="true"
+                        role="presentation"
                         position="absolute"
                         {...(onlinePosition === AvatarOnlinePosition.TOP && {
                             top: dynamicTopPosition,
@@ -278,9 +307,9 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         borderWidth: 0,
                     }}
                     whiteSpace="nowrap"
-                    aria-hidden="false"
+                    aria-hidden="true"
                 >
-                    {alt || 'Avatar'}
+                    {accessibleLabel}
                 </Block>
             </Block>
         )
