@@ -21,4 +21,6 @@ export type ProgressBarProps = {
     variant?: ProgressBarVariant
     type?: ProgressBarType
     showLabel?: boolean
+    min?: number
+    max?: number
 }

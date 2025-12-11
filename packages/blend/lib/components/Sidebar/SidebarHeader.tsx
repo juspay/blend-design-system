@@ -5,11 +5,11 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { SingleSelect } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
 import { SelectMenuSize } from '../SingleSelect'
-import { Tooltip } from '../Tooltip'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
+import { Tooltip } from '../Tooltip'
 
 type SidebarHeaderProps = {
     sidebarTopSlot?: React.ReactNode
@@ -18,6 +18,7 @@ type SidebarHeaderProps = {
     isScrolled: boolean
     sidebarCollapseKey: string
     onToggle: () => void
+    sidebarNavId?: string
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -27,6 +28,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     isScrolled,
     sidebarCollapseKey,
     onToggle,
+    sidebarNavId,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
@@ -119,6 +121,12 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                     borderRadius="10px"
                     cursor="pointer"
                     padding="9px"
+                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                    aria-expanded={isExpanded}
+                    aria-controls={
+                        isExpanded && sidebarNavId ? sidebarNavId : undefined
+                    }
+                    title={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                     style={{ transition: 'background-color 0.15s ease' }}
                     _hover={{
                         backgroundColor:
@@ -128,7 +136,23 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                     <PanelsTopLeft
                         color={FOUNDATION_THEME.colors.gray[600]}
                         size={tokens.header.toggleButton.width}
+                        aria-hidden="true"
                     />
+                    <span
+                        style={{
+                            position: 'absolute',
+                            width: '1px',
+                            height: '1px',
+                            padding: 0,
+                            margin: '-1px',
+                            overflow: 'hidden',
+                            clip: 'rect(0, 0, 0, 0)',
+                            whiteSpace: 'nowrap',
+                            borderWidth: 0,
+                        }}
+                    >
+                        {isExpanded ? 'Collapse' : 'Expand'} sidebar
+                    </span>
                 </PrimitiveButton>
             </Tooltip>
         </Block>

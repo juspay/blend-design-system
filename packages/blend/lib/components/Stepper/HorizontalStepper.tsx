@@ -1,4 +1,11 @@
-import React, { forwardRef, useCallback } from 'react'
+import React, {
+    forwardRef,
+    useCallback,
+    useRef,
+    useState,
+    useEffect,
+    useId,
+} from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import StepperLine from './StepperLine'
@@ -8,7 +15,13 @@ import { StepperTokensType } from './stepper.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
 
-const StepComponent = forwardRef<HTMLDivElement, StepProps>(
+const StepComponent = forwardRef<
+    HTMLDivElement,
+    StepProps & {
+        onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
+        stepperInstanceId: string
+    }
+>(
     (
         {
             step,
@@ -19,6 +32,8 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             isLast,
             onClick,
             clickable,
+            onKeyDown,
+            stepperInstanceId,
         },
         ref
     ) => {
@@ -43,15 +58,26 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 
         const handleKeyDown = useCallback(
             (event: React.KeyboardEvent) => {
-                if (
-                    isClickable &&
-                    (event.key === 'Enter' || event.key === ' ')
-                ) {
-                    event.preventDefault()
-                    onClick!(stepIndex)
+                if (!isClickable) return
+
+                switch (event.key) {
+                    case 'Enter':
+                    case ' ':
+                        event.preventDefault()
+                        onClick!(stepIndex)
+                        break
+                    case 'ArrowRight':
+                    case 'ArrowLeft':
+                    case 'Home':
+                    case 'End':
+                        // Navigation handled by parent component
+                        if (onKeyDown) {
+                            onKeyDown(event, stepIndex)
+                        }
+                        break
                 }
             },
-            [isClickable, onClick, stepIndex]
+            [isClickable, onClick, stepIndex, onKeyDown]
         )
 
         const renderStepIcon = () => {
@@ -98,6 +124,14 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
             }
         }
 
+        // Generate unique IDs for ARIA relationships
+        // Use stepperInstanceId from parent to ensure uniqueness across multiple steppers
+        const stepId = `stepper-${stepperInstanceId}-step-${step.id}-${stepIndex}`
+        const stepTitleId = `${stepId}-title`
+        const stepDescriptionId = step.description
+            ? `${stepId}-description`
+            : undefined
+
         return (
             <Block
                 ref={ref}
@@ -105,22 +139,29 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                 display="flex"
                 flexDirection="column"
                 gap={stepperTokens.container.default.gap}
-                role="button"
+                role={isClickable ? 'button' : 'group'}
                 tabIndex={isClickable ? 0 : -1}
                 aria-current={isCurrent ? 'step' : undefined}
-                aria-pressed={isCurrent ? 'true' : 'false'}
-                aria-disabled={step.disabled}
-                aria-label={`Step ${stepIndex + 1} of ${step.title}${
-                    stepState === StepState.COMPLETED
-                        ? ', completed'
-                        : stepState === StepState.CURRENT
-                          ? ', current'
-                          : stepState === StepState.DISABLED
-                            ? ', disabled'
-                            : stepState === StepState.SKIPPED
-                              ? ', skipped'
-                              : ', pending'
-                }`}
+                aria-pressed={isClickable && isCurrent ? 'true' : undefined}
+                aria-disabled={step.disabled ? 'true' : undefined}
+                aria-label={
+                    isClickable
+                        ? `Step ${stepIndex + 1} of ${step.title}${
+                              stepState === StepState.COMPLETED
+                                  ? ', completed'
+                                  : stepState === StepState.CURRENT
+                                    ? ', current'
+                                    : stepState === StepState.DISABLED
+                                      ? ', disabled'
+                                      : stepState === StepState.SKIPPED
+                                        ? ', skipped'
+                                        : ', pending'
+                          }`
+                        : undefined
+                }
+                aria-labelledby={stepTitleId}
+                aria-describedby={stepDescriptionId}
+                id={stepId}
                 cursor={isClickable ? 'pointer' : 'default'}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
@@ -206,6 +247,7 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                     role="presentation"
                 >
                     <Text
+                        id={stepTitleId}
                         truncate={true}
                         fontSize={
                             stepperTokens.title.text[stepState].default.fontSize
@@ -217,7 +259,7 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                         color={
                             stepperTokens.title.text[stepState].default.color
                         }
-                        aria-hidden="true"
+                        as="span"
                         style={{
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
@@ -230,17 +272,37 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
                         {step.title}
                     </Text>
                     {step?.description && (
-                        <Tooltip content={step.description}>
-                            <InfoIcon
-                                style={{ flexShrink: 0, cursor: 'pointer' }}
-                                size={12}
-                                color={
-                                    stepperTokens.title.text[stepState].default
-                                        .color
-                                }
-                                aria-label="Additional information"
-                            />
-                        </Tooltip>
+                        <>
+                            <span
+                                id={stepDescriptionId}
+                                className="sr-only"
+                                style={{
+                                    position: 'absolute',
+                                    width: '1px',
+                                    height: '1px',
+                                    padding: 0,
+                                    margin: '-1px',
+                                    overflow: 'hidden',
+                                    clip: 'rect(0, 0, 0, 0)',
+                                    whiteSpace: 'nowrap',
+                                    borderWidth: 0,
+                                }}
+                            >
+                                {step.description}
+                            </span>
+                            <Tooltip content={step.description}>
+                                <InfoIcon
+                                    style={{ flexShrink: 0, cursor: 'pointer' }}
+                                    size={12}
+                                    color={
+                                        stepperTokens.title.text[stepState]
+                                            .default.color
+                                    }
+                                    aria-label={`Additional information: ${step.description}`}
+                                    aria-describedby={stepDescriptionId}
+                                />
+                            </Tooltip>
+                        </>
                     )}
                 </Block>
             </Block>
@@ -250,6 +312,9 @@ const StepComponent = forwardRef<HTMLDivElement, StepProps>(
 
 const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
     ({ steps, onStepClick, clickable, ...htmlProps }, ref) => {
+        // Generate unique ID for this stepper instance to avoid duplicate IDs across multiple steppers
+        const stepperInstanceId = useId().replace(/:/g, '-')
+
         const derivedIndex = (() => {
             const explicit = steps.findIndex(
                 (s) => s.status === StepState.CURRENT
@@ -257,6 +322,12 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
             if (explicit >= 0) return explicit
             return 0
         })()
+
+        const [focusedStepIndex, setFocusedStepIndex] = useState<number | null>(
+            null
+        )
+        const stepRefs = useRef<(HTMLDivElement | null)[]>([])
+
         const handleStepClick = useCallback(
             (stepIndex: number) => {
                 if (onStepClick) {
@@ -266,6 +337,83 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
             [onStepClick]
         )
 
+        // Handle arrow key navigation
+        const handleKeyDown = useCallback(
+            (event: React.KeyboardEvent, currentIndex: number) => {
+                if (!clickable) return
+
+                let targetIndex: number | null = null
+
+                switch (event.key) {
+                    case 'ArrowRight':
+                        event.preventDefault()
+                        targetIndex = Math.min(
+                            currentIndex + 1,
+                            steps.length - 1
+                        )
+                        break
+                    case 'ArrowLeft':
+                        event.preventDefault()
+                        targetIndex = Math.max(currentIndex - 1, 0)
+                        break
+                    case 'Home':
+                        event.preventDefault()
+                        targetIndex = 0
+                        break
+                    case 'End':
+                        event.preventDefault()
+                        targetIndex = steps.length - 1
+                        break
+                }
+
+                if (targetIndex !== null) {
+                    const targetStep = steps[targetIndex]
+                    if (!targetStep.disabled && stepRefs.current[targetIndex]) {
+                        setFocusedStepIndex(targetIndex)
+                        stepRefs.current[targetIndex]?.focus()
+                    }
+                }
+            },
+            [clickable, steps]
+        )
+
+        // Screen reader announcement for step changes
+        useEffect(() => {
+            if (focusedStepIndex !== null) {
+                const currentStep = steps[focusedStepIndex]
+                if (currentStep && !currentStep.disabled) {
+                    const announcement = document.createElement('div')
+                    announcement.setAttribute('role', 'status')
+                    announcement.setAttribute('aria-live', 'polite')
+                    announcement.setAttribute('aria-atomic', 'true')
+                    announcement.style.position = 'absolute'
+                    announcement.style.left = '-10000px'
+                    announcement.style.width = '1px'
+                    announcement.style.height = '1px'
+                    announcement.style.overflow = 'hidden'
+                    announcement.textContent = `Step ${focusedStepIndex + 1}: ${currentStep.title}`
+                    document.body.appendChild(announcement)
+
+                    const timer = setTimeout(() => {
+                        if (document.body.contains(announcement)) {
+                            document.body.removeChild(announcement)
+                        }
+                    }, 1000)
+
+                    return () => {
+                        clearTimeout(timer)
+                        if (document.body.contains(announcement)) {
+                            document.body.removeChild(announcement)
+                        }
+                    }
+                }
+            }
+        }, [focusedStepIndex, steps])
+
+        // Filter out aria-orientation as it's not valid for role="group"
+        const filteredHtmlProps = { ...htmlProps } as Record<string, unknown>
+        delete filteredHtmlProps['aria-orientation']
+
         return (
             <Block
                 ref={ref}
@@ -273,12 +421,15 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
                 width="100%"
                 role="group"
                 aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
-                aria-orientation="horizontal"
-                {...htmlProps}
+                aria-roledescription="stepper"
+                {...filteredHtmlProps}
             >
                 {steps.map((step, index) => (
                     <StepComponent
                         key={step.id}
+                        ref={(el) => {
+                            stepRefs.current[index] = el
+                        }}
                         step={step}
                         stepIndex={index}
                         isCompleted={index < derivedIndex}
@@ -287,6 +438,8 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         isLast={index === steps.length - 1}
                         onClick={handleStepClick}
                         clickable={clickable}
+                        onKeyDown={handleKeyDown}
+                        stepperInstanceId={stepperInstanceId}
                     />
                 ))}
             </Block>

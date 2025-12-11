@@ -115,7 +115,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         ? -1
                         : htmlProps.tabIndex !== undefined
                           ? Math.max(-1, Math.min(0, htmlProps.tabIndex))
-                          : undefined
+                          : 0
                 }
                 color={
                     isSkeleton

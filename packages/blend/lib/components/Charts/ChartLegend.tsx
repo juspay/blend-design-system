@@ -12,6 +12,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tag, TagColor, TagVariant } from '../Tags'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     keys,
@@ -162,19 +163,41 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 gap={legendTokens.gap}
             >
                 {keys.slice(0, cuttOffIndex).map((dataKey, index) => (
-                    <Block
-                        data-chart-legend={capitaliseCamelCase(dataKey)}
-                        height={FOUNDATION_THEME.unit[16]}
-                        display="flex"
-                        alignItems="center"
-                        gap={legendTokens.item.gap}
-                        cursor="pointer"
-                        transition="all 300ms"
+                    <PrimitiveButton
+                        type="button"
                         key={dataKey}
+                        data-chart-legend={capitaliseCamelCase(dataKey)}
+                        aria-label={`Toggle ${capitaliseCamelCase(dataKey)} series visibility`}
+                        aria-pressed={selectedKeys.includes(dataKey)}
                         onClick={() => handleLegendClick(dataKey)}
                         onMouseEnter={() => handleLegendEnter(dataKey)}
                         onMouseLeave={handleLegendLeave}
-                        opacity={getItemOpacity(dataKey)}
+                        onFocus={() => handleLegendEnter(dataKey)}
+                        onBlur={handleLegendLeave}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap:
+                                typeof legendTokens.item.gap === 'string'
+                                    ? legendTokens.item.gap
+                                    : `${legendTokens.item.gap}px`,
+                            height: FOUNDATION_THEME.unit[16],
+                            cursor: 'pointer',
+                            transition: 'all 300ms',
+                            opacity: getItemOpacity(dataKey),
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            fontFamily: 'inherit',
+                            fontSize: 'inherit',
+                            color: 'inherit',
+                        }}
+                        _focusVisible={{
+                            outline: '3px solid #BEDBFF',
+                            border: '1px solid #0561E2',
+                            cursor: 'pointer',
+                            outlineOffset: '2px',
+                        }}
                     >
                         <Block
                             width={FOUNDATION_THEME.unit[12]}
@@ -195,7 +218,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                         >
                             {capitaliseCamelCase(dataKey)}
                         </Text>
-                    </Block>
+                    </PrimitiveButton>
                 ))}
                 {cuttOffIndex < keys.length && (
                     <DropdownMenu.Root>
@@ -230,34 +253,58 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                 minWidth={180}
                             >
                                 {keys.slice(cuttOffIndex).map((dataKey) => (
-                                    <Block
-                                        padding={`${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`}
-                                        style={{
-                                            fontSize:
-                                                legendTokens.item.fontSize,
-                                        }}
+                                    <PrimitiveButton
+                                        type="button"
+                                        key={dataKey}
+                                        aria-label={`Toggle ${capitaliseCamelCase(dataKey)} series visibility`}
+                                        aria-pressed={selectedKeys.includes(
+                                            dataKey
+                                        )}
+                                        onClick={() =>
+                                            handleLegendClick(dataKey)
+                                        }
                                         _hover={{
                                             backgroundColor:
                                                 FOUNDATION_THEME.colors
                                                     .gray[50],
                                         }}
-                                        color={legendTokens.item.color.default}
-                                        cursor="pointer"
-                                        key={dataKey}
-                                        onClick={() =>
-                                            handleLegendClick(dataKey)
-                                        }
-                                        onMouseEnter={() =>
+                                        _focus={{
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[50],
+                                        }}
+                                        onFocus={() =>
                                             handleLegendEnter(dataKey)
                                         }
-                                        onMouseLeave={handleLegendLeave}
-                                        opacity={getItemOpacity(dataKey)}
+                                        onBlur={handleLegendLeave}
                                         data-chart-legend-text={capitaliseCamelCase(
                                             dataKey
                                         )}
+                                        style={{
+                                            padding: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
+                                            fontSize:
+                                                legendTokens.item.fontSize,
+                                            color: String(
+                                                legendTokens.item.color
+                                                    .default || 'inherit'
+                                            ),
+                                            cursor: 'pointer',
+                                            opacity: getItemOpacity(dataKey),
+                                            background: 'none',
+                                            border: 'none',
+                                            width: '100%',
+                                            textAlign: 'left',
+                                            fontFamily: 'inherit',
+                                        }}
+                                        _focusVisible={{
+                                            outline: '3px solid #BEDBFF',
+                                            border: '1px solid #0561E2',
+                                            cursor: 'pointer',
+                                            outlineOffset: '2px',
+                                        }}
                                     >
                                         {capitaliseCamelCase(dataKey)}
-                                    </Block>
+                                    </PrimitiveButton>
                                 ))}
                             </Block>
                         </DropdownMenu.Content>
@@ -267,30 +314,45 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             {selectedKeys &&
                 selectedKeys.length > 0 &&
                 selectedKeys.length !== keys.length && (
-                    <Block
-                        style={{ fontSize: legendTokens.item.fontSize }}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color={FOUNDATION_THEME.colors.primary[600]}
+                    <PrimitiveButton
+                        type="button"
+                        aria-label="Reset all legend filters"
+                        onClick={() => setSelectedKeys([])}
+                        style={{
+                            fontSize: legendTokens.item.fontSize,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: FOUNDATION_THEME.colors.primary[600],
+                            borderRadius: FOUNDATION_THEME.border.radius[4],
+                            height: FOUNDATION_THEME.unit[20],
+                            width: FOUNDATION_THEME.unit[20],
+                            flexShrink: 0,
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: 0,
+                        }}
                         _hover={{
-                            color: FOUNDATION_THEME.colors.primary[700],
                             backgroundColor:
                                 FOUNDATION_THEME.colors.primary[50],
+                            color: FOUNDATION_THEME.colors.primary[700],
                         }}
-                        borderRadius={FOUNDATION_THEME.border.radius[4]}
-                        height={FOUNDATION_THEME.unit[20]}
-                        width={FOUNDATION_THEME.unit[20]}
-                        flexShrink={0}
-                        onClick={() => setSelectedKeys([])}
+                        _focusVisible={{
+                            outline: '3px solid #BEDBFF',
+                            border: '1px solid #0561E2',
+                            cursor: 'pointer',
+                            outlineOffset: '2px',
+                        }}
                     >
                         <RotateCcw
                             style={{
                                 width: '12px',
                                 height: '12px',
                             }}
+                            aria-hidden="true"
                         />
-                    </Block>
+                    </PrimitiveButton>
                 )}
         </Block>
     )
@@ -361,19 +423,41 @@ const StackedLegends: React.FC<{
                         opacity: getItemOpacity(key),
                     })}
                 >
-                    <Block
-                        data-chart-legend={capitaliseCamelCase(key)}
-                        height={FOUNDATION_THEME.unit[16]}
-                        display="flex"
-                        alignItems="center"
-                        gap={legendTokens.item.gap}
-                        cursor="pointer"
-                        transition="all 300ms"
+                    <PrimitiveButton
+                        type="button"
                         key={key}
+                        data-chart-legend={capitaliseCamelCase(key)}
+                        aria-label={`Toggle ${capitaliseCamelCase(key)} series visibility`}
+                        aria-pressed={selectedKeys.includes(key)}
                         onClick={() => handleLegendClick(key)}
                         onMouseEnter={() => handleLegendEnter(key)}
                         onMouseLeave={handleLegendLeave}
-                        opacity={getItemOpacity(key)}
+                        onFocus={() => handleLegendEnter(key)}
+                        onBlur={handleLegendLeave}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap:
+                                typeof legendTokens.item.gap === 'string'
+                                    ? legendTokens.item.gap
+                                    : `${legendTokens.item.gap}px`,
+                            height: FOUNDATION_THEME.unit[16],
+                            cursor: 'pointer',
+                            transition: 'all 300ms',
+                            opacity: getItemOpacity(key),
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            fontFamily: 'inherit',
+                            fontSize: 'inherit',
+                            color: 'inherit',
+                        }}
+                        _focusVisible={{
+                            outline: '3px solid #BEDBFF',
+                            border: '1px solid #0561E2',
+                            cursor: 'pointer',
+                            outlineOffset: '2px',
+                        }}
                     >
                         <Block
                             backgroundColor={colors[index]}
@@ -395,7 +479,7 @@ const StackedLegends: React.FC<{
                         >
                             {capitaliseCamelCase(key)}
                         </Text>
-                    </Block>
+                    </PrimitiveButton>
                     {isSmallScreen && (
                         <Block display="flex" alignItems="center" gap={8}>
                             <Text fontSize={12} fontWeight={600}>

@@ -18,9 +18,15 @@ const StyledTableCell = styled.td<{
     $hasCustomContent?: boolean
     $tableToken?: TableTokenType
     $isFirstRow?: boolean
+    $customBackgroundColor?: string
+    $hasCustomBackground?: boolean
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
+    background-color: ${({ $customBackgroundColor, $hasCustomBackground }) =>
+        $hasCustomBackground && $customBackgroundColor
+            ? $customBackgroundColor
+            : FOUNDATION_THEME.colors.gray[0]} !important;
     box-sizing: border-box;
     max-width: 0;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
@@ -134,8 +140,16 @@ const TableCell = forwardRef<
             width,
             frozenStyles,
             isFirstRow,
+            customBackgroundColor,
+            hasCustomBackground,
             onFieldChange,
             getDisplayValue,
+            'data-row-index': dataRowIndex,
+            'data-col-index': dataColIndex,
+            tabIndex: cellTabIndex,
+            onFocus: cellOnFocus,
+            onClick: cellOnClick,
+            role: cellRole,
         },
         ref
     ) => {
@@ -483,11 +497,20 @@ const TableCell = forwardRef<
                     (isEditing && column.isEditable)
                 }
                 $isFirstRow={isFirstRow}
+                $customBackgroundColor={customBackgroundColor}
+                $hasCustomBackground={hasCustomBackground}
+                data-row-index={dataRowIndex}
+                data-col-index={dataColIndex}
+                tabIndex={cellTabIndex}
+                onFocus={cellOnFocus}
+                onClick={cellOnClick}
+                role={cellRole || 'gridcell'}
                 style={{
                     ...width,
                     ...frozenStyles,
                     verticalAlign: 'middle',
                     position: frozenStyles?.position || 'relative',
+                    outline: 'none',
                 }}
                 {...dataAttributes}
             >

@@ -41,6 +41,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
             return (
                 <Block
                     ref={ref}
+                    role="region"
+                    aria-label={`${selectedCount} row${selectedCount !== 1 ? 's' : ''} selected`}
                     position="absolute"
                     display="flex"
                     alignItems="center"
@@ -101,6 +103,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                 <Button
                                     buttonType={ButtonType.SECONDARY}
                                     size={ButtonSize.SMALL}
+                                    aria-label={`See actions for ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
                                     text="See Actions"
                                 />
                             </DrawerTrigger>
@@ -128,7 +131,10 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                                 buttonType={
                                                     ButtonType.SECONDARY
                                                 }
-                                                leadingIcon={<Download />}
+                                                leadingIcon={
+                                                    <Download aria-hidden="true" />
+                                                }
+                                                aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
                                                 size={ButtonSize.MEDIUM}
                                                 onClick={() => {
                                                     onExport()
@@ -142,6 +148,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                                 buttonType={
                                                     ButtonType.SECONDARY
                                                 }
+                                                aria-label="Deselect all rows"
                                                 size={ButtonSize.MEDIUM}
                                                 onClick={() => {
                                                     onDeselectAll()
@@ -176,6 +183,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
         return (
             <Block
                 ref={ref}
+                role="region"
+                aria-label={`${selectedCount} row${selectedCount !== 1 ? 's' : ''} selected`}
                 position="absolute"
                 display="flex"
                 alignItems="center"
@@ -226,7 +235,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                 <Block style={{ flexShrink: 0 }}>
                     <Button
                         buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Download />}
+                        leadingIcon={<Download aria-hidden="true" />}
+                        aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
                         size={ButtonSize.SMALL}
                         onClick={onExport}
                     >
@@ -243,6 +253,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
 
                 <PrimitiveButton
                     onClick={onDeselectAll}
+                    type="button"
+                    aria-label="Deselect all rows"
                     style={{
                         fontSize:
                             tableToken.dataTable.bulkActions.selectText

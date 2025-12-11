@@ -221,6 +221,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
     (
         {
             isOpen,
+            isCustom = false,
             onClose,
             title,
             subtitle,
@@ -231,7 +232,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             closeOnBackdropClick = true,
             headerRightSlot,
             showDivider = true,
-            minWidth = '500px',
+            minWidth = '',
+            minHeight = '',
+            maxWidth = '90vw',
+            maxHeight = '90vh',
             useDrawerOnMobile = true,
             skeleton,
             ...props
@@ -321,8 +325,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         position="relative"
                         backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                         minWidth={minWidth}
-                        maxWidth={'calc(100vw - 156px)'}
-                        maxHeight={'calc(100vh - 156px)'}
+                        minHeight={minHeight}
+                        maxWidth={maxWidth}
+                        maxHeight={maxHeight}
                         borderRadius={FOUNDATION_THEME.border.radius[12]}
                         boxShadow={FOUNDATION_THEME.shadows.xs}
                         role="dialog"
@@ -347,7 +352,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
                         <Block
                             data-element="body"
-                            padding={modalTokens.body.padding}
+                            padding={isCustom ? '0' : modalTokens.body.padding}
                             overflow="auto"
                             flexGrow={1}
                             borderRadius={

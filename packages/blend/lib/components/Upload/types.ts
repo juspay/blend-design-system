@@ -30,6 +30,16 @@ export type UploadedFileWithStatus = {
     error?: string
 }
 
+/**
+ * Form value type for Upload component
+ * - Single file: File | null
+ * - Multiple files: File[]
+ * Users can extract filenames and filemimes from File objects:
+ * - filenames: files.map(f => f.name)
+ * - filemimes: files.map(f => f.type)
+ */
+export type UploadFormValue = File | File[] | null
+
 export type UploadProps = {
     // Basic configuration
     multiple?: boolean
@@ -57,7 +67,8 @@ export type UploadProps = {
     // Upload configuration
     enforceFileTypeConsistency?: boolean // Enforce same file type for multiple uploads
 
-    // Callbacks - file selection and upload management
+    value?: UploadFormValue
+    onChange?: (value: UploadFormValue) => void
     onDrop?: (acceptedFiles: File[], fileRejections: FileRejection[]) => void
     onDropAccepted?: (files: File[]) => void
     onDropRejected?: (fileRejections: FileRejection[]) => void
@@ -73,5 +84,5 @@ export type UploadProps = {
     validator?: (file: File) => FileRejection['errors'][0] | null
 } & Omit<
     React.HTMLAttributes<HTMLDivElement>,
-    'onDrop' | 'onDragOver' | 'onDragLeave'
+    'onDrop' | 'onDragOver' | 'onDragLeave' | 'onChange'
 >

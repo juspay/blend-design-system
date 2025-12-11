@@ -179,6 +179,7 @@ export type FlattenedDataPoint = {
 }
 
 export type ChartHeaderProps = {
+    id?: string
     slot1: React.ReactNode
     slot2: React.ReactNode
     slot3: React.ReactNode

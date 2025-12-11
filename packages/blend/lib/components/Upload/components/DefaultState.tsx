@@ -65,6 +65,7 @@ const DefaultState: React.FC<DefaultStateProps> = ({
                     }
                     color={uploadTokens.container.content.text.subtitle.color}
                     textAlign="center"
+                    aria-hidden="true"
                 >
                     {description}
                 </Text>
@@ -77,6 +78,19 @@ const DefaultState: React.FC<DefaultStateProps> = ({
                 size={ButtonSize.MEDIUM}
                 text="Browse Files"
                 disabled={disabled}
+                onClick={(e) => {
+                    if (e) {
+                        e.stopPropagation()
+                        const uploadContainer =
+                            e.currentTarget.closest('[data-upload]')
+                        if (uploadContainer) {
+                            const fileInput = uploadContainer.querySelector(
+                                'input[type="file"]'
+                            ) as HTMLInputElement
+                            fileInput?.click()
+                        }
+                    }
+                }}
             />
         </Block>
     </Block>

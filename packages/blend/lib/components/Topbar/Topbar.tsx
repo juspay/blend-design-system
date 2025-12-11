@@ -39,6 +39,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             onBackClick,
             leftPanel,
             merchantInfo,
+            ariaControls,
         },
         ref
     ) => {
@@ -77,6 +78,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             padding={topBarToken.actionButton.padding}
                             minWidth={topBarToken.actionButton.minWidth}
                             height={topBarToken.actionButton.height}
+                            aria-label="Go back"
                             style={{
                                 transition: topBarToken.actionButton.transition,
                             }}
@@ -89,6 +91,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             <ArrowLeft
                                 color={topBarToken.actionButton.icon.color}
                                 size={topBarToken.actionButton.icon.size}
+                                aria-hidden="true"
                             />
                         </PrimitiveButton>
                     )
@@ -140,6 +143,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                 topBarToken.tenantIconButton
                                                     .minHeight
                                             }
+                                            aria-label={`Select tenant: ${leftPanel.selected || leftPanel.items[0]?.label || 'tenant'}`}
                                             style={{
                                                 transition:
                                                     topBarToken.tenantIconButton
@@ -151,12 +155,15 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                         .backgroundColor.hover,
                                             }}
                                         >
-                                            {leftPanel.items.find(
-                                                (item) =>
-                                                    (item.value ||
-                                                        item.label) ===
-                                                    leftPanel.selected
-                                            )?.icon || leftPanel.items[0]?.icon}
+                                            <span aria-hidden="true">
+                                                {leftPanel.items.find(
+                                                    (item) =>
+                                                        (item.value ||
+                                                            item.label) ===
+                                                        leftPanel.selected
+                                                )?.icon ||
+                                                    leftPanel.items[0]?.icon}
+                                            </span>
                                         </PrimitiveButton>
                                     }
                                 />
@@ -213,6 +220,13 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                         padding="0"
                                         width="100%"
                                         overflow="hidden"
+                                        aria-label={`Select merchant: ${
+                                            merchantInfo.items.find(
+                                                (merchant) =>
+                                                    merchant.value ===
+                                                    merchantInfo.selected
+                                            )?.label || 'Select Merchant'
+                                        }`}
                                     >
                                         <Block
                                             display="flex"
@@ -222,13 +236,21 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                     .merchantSelectTrigger.gap
                                             }
                                         >
-                                            {
-                                                merchantInfo.items.find(
-                                                    (merchant) =>
-                                                        merchant.value ===
-                                                        merchantInfo.selected
-                                                )?.icon
-                                            }
+                                            {merchantInfo.items.find(
+                                                (merchant) =>
+                                                    merchant.value ===
+                                                    merchantInfo.selected
+                                            )?.icon && (
+                                                <span aria-hidden="true">
+                                                    {
+                                                        merchantInfo.items.find(
+                                                            (merchant) =>
+                                                                merchant.value ===
+                                                                merchantInfo.selected
+                                                        )?.icon
+                                                    }
+                                                </span>
+                                            )}
                                             <Text
                                                 variant="body.md"
                                                 color={
@@ -352,6 +374,9 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 }
                                 cursor="pointer"
                                 padding={topBarToken.toggleButton.padding}
+                                aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar`}
+                                aria-expanded={isExpanded}
+                                aria-controls={ariaControls || undefined}
                                 style={{
                                     transition:
                                         topBarToken.toggleButton.transition,
@@ -365,6 +390,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                 <PanelsTopLeft
                                     color={topBarToken.toggleButton.icon.color}
                                     size={topBarToken.toggleButton.icon.size}
+                                    aria-hidden="true"
                                 />
                             </PrimitiveButton>
                         )}

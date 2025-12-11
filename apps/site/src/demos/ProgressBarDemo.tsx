@@ -515,7 +515,7 @@ const ProgressBarDemo = () => {
                 <h2 className="text-2xl font-bold">Progress Ranges</h2>
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold">
-                        Different Progress Values
+                        Different Progress Values (0-100)
                     </h3>
                     <div className="space-y-4">
                         <div className="space-y-2">
@@ -569,6 +569,215 @@ const ProgressBarDemo = () => {
                                 variant={ProgressBarVariant.SOLID}
                                 showLabel={true}
                             />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Custom Min/Max Ranges */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Custom Min/Max Ranges</h2>
+                <div className="space-y-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Why use min/max?
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Use custom{' '}
+                            <code className="px-1 py-0.5 bg-gray-100 rounded">
+                                min
+                            </code>{' '}
+                            and{' '}
+                            <code className="px-1 py-0.5 bg-gray-100 rounded">
+                                max
+                            </code>{' '}
+                            props when your progress value doesn't represent a
+                            percentage (0-100). For example: file sizes, item
+                            counts, or custom scales.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Example: File Upload (0-200 MB)
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    50 MB of 200 MB (25%)
+                                </p>
+                                <ProgressBar
+                                    value={50}
+                                    min={0}
+                                    max={200}
+                                    variant={ProgressBarVariant.SOLID}
+                                    showLabel={true}
+                                    aria-label="File upload: 50 of 200 MB"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    150 MB of 200 MB (75%)
+                                </p>
+                                <ProgressBar
+                                    value={150}
+                                    min={0}
+                                    max={200}
+                                    variant={ProgressBarVariant.SEGMENTED}
+                                    showLabel={true}
+                                    aria-label="File upload: 150 of 200 MB"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Example: Task Completion (0-10 tasks)
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    3 of 10 tasks completed (30%)
+                                </p>
+                                <ProgressBar
+                                    value={3}
+                                    min={0}
+                                    max={10}
+                                    variant={ProgressBarVariant.SOLID}
+                                    showLabel={true}
+                                    aria-label="Task progress: 3 of 10 completed"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    7 of 10 tasks completed (70%)
+                                </p>
+                                <ProgressBar
+                                    value={7}
+                                    min={0}
+                                    max={10}
+                                    variant={ProgressBarVariant.SEGMENTED}
+                                    showLabel={true}
+                                    aria-label="Task progress: 7 of 10 completed"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Example: Storage Usage (0-1000 GB)
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    250 GB of 1000 GB (25%)
+                                </p>
+                                <ProgressBar
+                                    value={250}
+                                    min={0}
+                                    max={1000}
+                                    variant={ProgressBarVariant.SOLID}
+                                    showLabel={true}
+                                    aria-label="Storage: 250 of 1000 GB used"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    750 GB of 1000 GB (75%)
+                                </p>
+                                <ProgressBar
+                                    value={750}
+                                    min={0}
+                                    max={1000}
+                                    variant={ProgressBarVariant.SEGMENTED}
+                                    showLabel={true}
+                                    aria-label="Storage: 750 of 1000 GB used"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Example: Custom Scale (20-80 range)
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    Value 30 in range 20-80 (16.7%)
+                                </p>
+                                <ProgressBar
+                                    value={30}
+                                    min={20}
+                                    max={80}
+                                    variant={ProgressBarVariant.SOLID}
+                                    showLabel={true}
+                                    aria-label="Progress: 30 of 80 (starting from 20)"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-600">
+                                    Value 65 in range 20-80 (75%)
+                                </p>
+                                <ProgressBar
+                                    value={65}
+                                    min={20}
+                                    max={80}
+                                    variant={ProgressBarVariant.SEGMENTED}
+                                    showLabel={true}
+                                    aria-label="Progress: 65 of 80 (starting from 20)"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Circular Progress with Custom Ranges
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <p className="text-sm text-gray-600">
+                                        15 of 50 items (30%)
+                                    </p>
+                                    <div className="flex justify-center">
+                                        <ProgressBar
+                                            value={15}
+                                            min={0}
+                                            max={50}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SOLID}
+                                            showLabel={true}
+                                            aria-label="Items: 15 of 50"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <p className="text-sm text-gray-600">
+                                        40 of 50 items (80%)
+                                    </p>
+                                    <div className="flex justify-center">
+                                        <ProgressBar
+                                            value={40}
+                                            min={0}
+                                            max={50}
+                                            variant={
+                                                ProgressBarVariant.CIRCULAR
+                                            }
+                                            type={ProgressBarType.SEGMENTED}
+                                            showLabel={true}
+                                            aria-label="Items: 40 of 50"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

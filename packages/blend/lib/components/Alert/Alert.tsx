@@ -118,135 +118,148 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             </AlertCloseButton>
                         )}
                 </Block>
-                <Block
-                    paddingLeft={icon ? FOUNDATION_THEME.unit[24] : 0}
-                    display="flex"
-                    flexDirection={
-                        finalActionPlacement === AlertActionPlacement.BOTTOM
-                            ? 'column'
-                            : 'row'
-                    }
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    gap={FOUNDATION_THEME.unit[18]}
-                >
-                    <Text
-                        data-element="description"
-                        data-id={description}
-                        id={descriptionId}
-                        as="p"
-                        fontWeight={alertTokens.text.description.fontWeight}
-                        fontSize={alertTokens.text.description.fontSize}
-                        lineHeight={alertTokens.text.description.lineHeight}
-                        color={alertTokens.text.description.color[variant]}
+
+                {description && (
+                    <Block
+                        paddingLeft={icon ? FOUNDATION_THEME.unit[24] : 0}
+                        display="flex"
+                        flexDirection={
+                            finalActionPlacement === AlertActionPlacement.BOTTOM
+                                ? 'column'
+                                : 'row'
+                        }
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                        gap={FOUNDATION_THEME.unit[18]}
                     >
-                        {description}
-                    </Text>
+                        <Text
+                            data-element="description"
+                            data-id={description}
+                            id={descriptionId}
+                            as="p"
+                            fontWeight={alertTokens.text.description.fontWeight}
+                            fontSize={alertTokens.text.description.fontSize}
+                            lineHeight={alertTokens.text.description.lineHeight}
+                            color={alertTokens.text.description.color[variant]}
+                        >
+                            {description}
+                        </Text>
 
-                    {(primaryAction || secondaryAction || onClose) && (
-                        <Block display="flex" gap={FOUNDATION_THEME.unit[16]}>
-                            {(primaryAction || secondaryAction) && (
-                                <Block
-                                    as="span"
-                                    display="flex"
-                                    gap={alertTokens.button.gap}
-                                >
-                                    {primaryAction && (
-                                        <PrimitiveButton
-                                            data-element="primary-action"
-                                            data-id={primaryAction.label}
-                                            onClick={primaryAction.onClick}
-                                            style={{
-                                                border: 'none',
-                                                background: 'none',
-                                                cursor: 'pointer',
-                                                color: alertTokens.button
-                                                    .primaryAction.color[
-                                                    variant
-                                                ],
-                                                fontWeight:
-                                                    alertTokens.button
-                                                        .primaryAction
-                                                        .fontWeight,
-                                                fontSize:
-                                                    alertTokens.button
-                                                        .primaryAction.fontSize,
-                                                width: 'fit-content',
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            {primaryAction.label}
-                                        </PrimitiveButton>
-                                    )}
+                        {(primaryAction || secondaryAction || onClose) && (
+                            <Block
+                                display="flex"
+                                gap={FOUNDATION_THEME.unit[16]}
+                            >
+                                {(primaryAction || secondaryAction) && (
+                                    <Block
+                                        as="span"
+                                        display="flex"
+                                        gap={alertTokens.button.gap}
+                                    >
+                                        {primaryAction && (
+                                            <PrimitiveButton
+                                                data-element="primary-action"
+                                                data-id={primaryAction.label}
+                                                onClick={primaryAction.onClick}
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'none',
+                                                    cursor: 'pointer',
+                                                    color: alertTokens.button
+                                                        .primaryAction.color[
+                                                        variant
+                                                    ],
+                                                    fontWeight:
+                                                        alertTokens.button
+                                                            .primaryAction
+                                                            .fontWeight,
+                                                    fontSize:
+                                                        alertTokens.button
+                                                            .primaryAction
+                                                            .fontSize,
+                                                    width: 'fit-content',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {primaryAction.label}
+                                            </PrimitiveButton>
+                                        )}
 
-                                    {secondaryAction && (
-                                        <PrimitiveButton
-                                            data-element="secondary-action"
-                                            data-id={secondaryAction.label}
-                                            onClick={secondaryAction.onClick}
-                                            style={{
-                                                border: 'none',
-                                                background: 'none',
-                                                cursor: 'pointer',
-                                                color: alertTokens.button
-                                                    .secondaryAction.color[
-                                                    variant
-                                                ],
-                                                fontWeight:
-                                                    alertTokens.button
-                                                        .secondaryAction
-                                                        .fontWeight,
-                                                fontSize:
-                                                    alertTokens.button
-                                                        .secondaryAction
-                                                        .fontSize,
-                                                width: 'fit-content',
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            {secondaryAction.label}
-                                        </PrimitiveButton>
-                                    )}
-                                </Block>
-                            )}
-
-                            {onClose &&
-                                finalActionPlacement ===
-                                    AlertActionPlacement.RIGHT && (
-                                    <>
-                                        <Block
-                                            as="span"
-                                            aria-hidden="true"
-                                            role="separator"
-                                            width={'1px'}
-                                            height={FOUNDATION_THEME.unit[20]}
-                                            backgroundColor={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[300]
-                                            }
-                                        />
-                                        <AlertCloseButton
-                                            onClick={onClose}
-                                            aria-label="Close"
-                                            $color={
-                                                alertTokens.button.closeButton
-                                                    .color[variant]
-                                            }
-                                        >
-                                            <X
-                                                size={16}
-                                                color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[800]
+                                        {secondaryAction && (
+                                            <PrimitiveButton
+                                                data-element="secondary-action"
+                                                data-id={secondaryAction.label}
+                                                onClick={
+                                                    secondaryAction.onClick
                                                 }
-                                                aria-hidden="true"
-                                            />
-                                        </AlertCloseButton>
-                                    </>
+                                                style={{
+                                                    border: 'none',
+                                                    background: 'none',
+                                                    cursor: 'pointer',
+                                                    color: alertTokens.button
+                                                        .secondaryAction.color[
+                                                        variant
+                                                    ],
+                                                    fontWeight:
+                                                        alertTokens.button
+                                                            .secondaryAction
+                                                            .fontWeight,
+                                                    fontSize:
+                                                        alertTokens.button
+                                                            .secondaryAction
+                                                            .fontSize,
+                                                    width: 'fit-content',
+                                                    whiteSpace: 'nowrap',
+                                                }}
+                                            >
+                                                {secondaryAction.label}
+                                            </PrimitiveButton>
+                                        )}
+                                    </Block>
                                 )}
-                        </Block>
-                    )}
-                </Block>
+
+                                {onClose &&
+                                    finalActionPlacement ===
+                                        AlertActionPlacement.RIGHT && (
+                                        <>
+                                            <Block
+                                                as="span"
+                                                aria-hidden="true"
+                                                role="separator"
+                                                width={'1px'}
+                                                height={
+                                                    FOUNDATION_THEME.unit[20]
+                                                }
+                                                backgroundColor={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[300]
+                                                }
+                                            />
+                                            <AlertCloseButton
+                                                onClick={onClose}
+                                                aria-label="Close"
+                                                $color={
+                                                    alertTokens.button
+                                                        .closeButton.color[
+                                                        variant
+                                                    ]
+                                                }
+                                            >
+                                                <X
+                                                    size={16}
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[800]
+                                                    }
+                                                    aria-hidden="true"
+                                                />
+                                            </AlertCloseButton>
+                                        </>
+                                    )}
+                            </Block>
+                        )}
+                    </Block>
+                )}
             </Block>
         )
     }
