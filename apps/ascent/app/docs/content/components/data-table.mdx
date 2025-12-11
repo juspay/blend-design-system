@@ -161,6 +161,53 @@ Skeleton loading follows this priority order:
 2. **Row-level** `isRowLoading` function
 3. **Global** `showSkeleton` or `isLoading` (lowest priority)
 
+## Hiding the Footer
+
+For compact tables with only a few rows, you can hide the pagination footer completely using the `showFooter` prop. This is useful when displaying 1-2 rows where pagination controls are unnecessary.
+
+```tsx
+import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+
+function CompactTable() {
+    const data = [
+        { id: 1, name: 'John Doe', email: 'john@example.com' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+    ]
+
+    const columns: ColumnDefinition<(typeof data)[0]>[] = [
+        {
+            field: 'name',
+            header: 'Name',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'email',
+            header: 'Email',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+    ]
+
+    return (
+        <DataTable
+            data={data}
+            columns={columns}
+            idField="id"
+            title="Compact User View"
+            description="Table with footer hidden for compact display"
+            enableSearch={true}
+            showFooter={false}
+            pagination={{
+                currentPage: 1,
+                pageSize: 10,
+                totalRows: data.length,
+            }}
+        />
+    )
+}
+```
+
 ## API Reference
 
 <DocsTypeTable
@@ -735,6 +782,19 @@ Skeleton loading follows this priority order:
                 content: 'boolean',
                 hintText:
                     'true shows settings button, false hides settings menu',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showFooter',
+                hintText:
+                    'When true, displays the pagination footer at the bottom of the table with page navigation and page size controls. When false, hides the footer completely. Useful for compact tables with only 1-2 rows where pagination controls are unnecessary. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows pagination footer, false hides footer completely',
             },
             { content: '' },
         ],

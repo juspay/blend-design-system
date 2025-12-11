@@ -28,6 +28,7 @@ const Section = ({
     sectionIndex,
     // totalSections,
     onNavigateBetweenSections,
+    idPrefix,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isOpen, setIsOpen] = React.useState(section.defaultOpen !== false)
@@ -130,10 +131,17 @@ const Section = ({
                     onKeyDown={isCollapsible ? handleKeyDown : undefined}
                     role={isCollapsible ? 'button' : undefined}
                     tabIndex={isCollapsible ? 0 : undefined}
-                    aria-expanded={isCollapsible ? isOpen : undefined}
+                    aria-expanded={
+                        isCollapsible ? (isOpen ? true : false) : undefined
+                    }
                     aria-controls={
-                        isCollapsible
-                            ? `section-content-${sectionIndex}`
+                        isCollapsible && isOpen
+                            ? `${idPrefix || ''}section-content-${sectionIndex}`
+                            : undefined
+                    }
+                    aria-label={
+                        isCollapsible && section.label
+                            ? `${section.label}, ${isOpen ? 'expanded' : 'collapsed'}`
                             : undefined
                     }
                 >
@@ -162,10 +170,17 @@ const Section = ({
                         display: 'flex',
                         flexDirection: 'column',
                         gap: tokens.section.itemList.gap,
+                        listStyle: 'none',
+                        margin: 0,
+                        padding: 0,
                     }}
-                    id={`section-content-${sectionIndex}`}
-                    role="menu"
-                    aria-label={`${section.label} menu`}
+                    id={`${idPrefix || ''}section-content-${sectionIndex}`}
+                    role="list"
+                    aria-label={
+                        section.label
+                            ? `${section.label} navigation`
+                            : undefined
+                    }
                 >
                     {section.items.map((item, itemIdx) => (
                         <NavItem

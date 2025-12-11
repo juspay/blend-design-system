@@ -27,24 +27,28 @@ type CardComponentProps = {
     props: Extract<CardProps, { variant?: CardVariant.DEFAULT }>
     cardToken: CardTokenType
     maxHeight?: string
+    baseId: string
 }
 
 type AlignedCardComponentProps = {
     props: Extract<CardProps, { variant: CardVariant.ALIGNED }>
     cardToken: CardTokenType
     maxHeight?: string
+    baseId: string
 }
 
 type CustomCardComponentProps = {
     props: Extract<CardProps, { variant: CardVariant.CUSTOM }>
     cardToken: CardTokenType
     maxHeight?: string
+    baseId?: string
 }
 
 export const DefaultCard: React.FC<CardComponentProps> = ({
     props,
     cardToken,
     maxHeight,
+    baseId,
 }) => {
     const {
         headerSlot1,
@@ -71,12 +75,20 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
     const hasActionButton = Boolean(actionButton)
     const isInlineButton = isInlineActionButton(actionButton, false)
 
+    // Generate unique IDs for ARIA relationships
+    const headerTitleId = `${baseId}-header-title`
+    const subHeaderId = `${baseId}-subheader`
+    const bodyTitleId = `${baseId}-body-title`
+    const contentId = `${baseId}-content`
+
     return (
         <>
             {hasHeader && (
                 <Block
                     style={getHeaderBoxStyles(cardToken)}
                     data-card-header="true"
+                    role="group"
+                    aria-labelledby={headerTitle ? headerTitleId : undefined}
                 >
                     <Block
                         display="flex"
@@ -89,7 +101,9 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                             alignItems="flex-start"
                             style={{ gap: getHeaderSpacing(cardToken) }}
                         >
-                            {headerSlot1 && <Block>{headerSlot1}</Block>}
+                            {headerSlot1 && (
+                                <Block aria-hidden="true">{headerSlot1}</Block>
+                            )}
 
                             <Block
                                 display="flex"
@@ -112,6 +126,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                 >
                                     {headerTitle && (
                                         <Text
+                                            as="h2"
+                                            id={headerTitleId}
                                             style={getHeaderTitleStyles(
                                                 cardToken
                                             )}
@@ -126,9 +142,12 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                 {hasSubHeader && (
                                     <Block>
                                         <Text
+                                            as="p"
+                                            id={subHeaderId}
                                             style={getSubHeaderStyles(
                                                 cardToken
                                             )}
+                                            aria-describedby={headerTitleId}
                                         >
                                             {subHeader}
                                         </Text>
@@ -152,6 +171,14 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                     }),
                 }}
                 data-card-body="true"
+                role="group"
+                aria-labelledby={
+                    bodyTitle
+                        ? bodyTitleId
+                        : headerTitle
+                          ? headerTitleId
+                          : undefined
+                }
             >
                 {hasBodySlot1 && (
                     <Block
@@ -176,7 +203,11 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                             ),
                         }}
                     >
-                        <Text style={getBodyTitleStyles(cardToken)}>
+                        <Text
+                            as="h3"
+                            id={bodyTitleId}
+                            style={getBodyTitleStyles(cardToken)}
+                        >
                             {bodyTitle}
                         </Text>
                     </Block>
@@ -193,7 +224,18 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         }}
                         data-card-content="true"
                     >
-                        <Text style={getBodyContentStyles(cardToken)}>
+                        <Text
+                            as="p"
+                            id={contentId}
+                            style={getBodyContentStyles(cardToken)}
+                            aria-describedby={
+                                bodyTitle
+                                    ? bodyTitleId
+                                    : headerTitle
+                                      ? headerTitleId
+                                      : undefined
+                            }
+                        >
                             {content}
                         </Text>
                     </Block>
@@ -240,7 +282,8 @@ const CardContent: React.FC<{
     cardToken: CardTokenType
     alignment: CardAlignment
     centerAlign: boolean
-}> = ({ props, cardToken, alignment, centerAlign }) => {
+    baseId: string
+}> = ({ props, cardToken, alignment, centerAlign, baseId }) => {
     const {
         headerTitle,
         headerTag,
@@ -260,6 +303,12 @@ const CardContent: React.FC<{
     const hasContent = Boolean(content)
     const hasActionButton = Boolean(actionButton)
     const isInlineButton = isInlineActionButton(actionButton, centerAlign)
+
+    // Generate unique IDs for ARIA relationships
+    const headerTitleId = `${baseId}-header-title`
+    const subHeaderId = `${baseId}-subheader`
+    const bodyTitleId = `${baseId}-body-title`
+    const contentId = `${baseId}-content`
 
     return (
         <Block
@@ -288,6 +337,8 @@ const CardContent: React.FC<{
                             ? getHeaderSpacing(cardToken)
                             : undefined,
                     }}
+                    role="group"
+                    aria-labelledby={headerTitle ? headerTitleId : undefined}
                 >
                     {!centerAlign ? (
                         <>
@@ -300,6 +351,8 @@ const CardContent: React.FC<{
                             >
                                 {headerTitle && (
                                     <Text
+                                        as="h2"
+                                        id={headerTitleId}
                                         style={getHeaderTitleStyles(cardToken)}
                                     >
                                         {headerTitle}
@@ -312,7 +365,11 @@ const CardContent: React.FC<{
                     ) : (
                         <>
                             {headerTitle && (
-                                <Text style={getHeaderTitleStyles(cardToken)}>
+                                <Text
+                                    as="h2"
+                                    id={headerTitleId}
+                                    style={getHeaderTitleStyles(cardToken)}
+                                >
                                     {headerTitle}
                                 </Text>
                             )}
@@ -332,7 +389,14 @@ const CardContent: React.FC<{
                         ),
                     }}
                 >
-                    <Text style={getSubHeaderStyles(cardToken)}>
+                    <Text
+                        as="p"
+                        id={subHeaderId}
+                        style={getSubHeaderStyles(cardToken)}
+                        aria-describedby={
+                            headerTitle ? headerTitleId : undefined
+                        }
+                    >
                         {subHeader}
                     </Text>
                 </Block>
@@ -361,7 +425,11 @@ const CardContent: React.FC<{
                         ),
                     }}
                 >
-                    <Text style={getBodyTitleStyles(cardToken)}>
+                    <Text
+                        as="h3"
+                        id={bodyTitleId}
+                        style={getBodyTitleStyles(cardToken)}
+                    >
                         {bodyTitle}
                     </Text>
                 </Block>
@@ -377,9 +445,28 @@ const CardContent: React.FC<{
                             : String(cardToken.body.actions.gap)
                         : '0',
                 }}
+                role="group"
+                aria-labelledby={
+                    bodyTitle
+                        ? bodyTitleId
+                        : headerTitle
+                          ? headerTitleId
+                          : undefined
+                }
             >
                 {hasContent && (
-                    <Text style={getBodyContentStyles(cardToken)}>
+                    <Text
+                        as="p"
+                        id={contentId}
+                        style={getBodyContentStyles(cardToken)}
+                        aria-describedby={
+                            bodyTitle
+                                ? bodyTitleId
+                                : headerTitle
+                                  ? headerTitleId
+                                  : undefined
+                        }
+                    >
                         {content}
                     </Text>
                 )}
@@ -408,6 +495,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
     props,
     cardToken,
     maxHeight,
+    baseId,
 }) => {
     const { alignment, centerAlign = false, cardSlot } = props
     const variant = CardVariant.ALIGNED
@@ -430,6 +518,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                             flexShrink: 0,
                             minWidth: '92px',
                         }}
+                        aria-label="Card visual content"
                     >
                         {cardSlot}
                     </Block>
@@ -439,6 +528,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                         cardToken={cardToken}
                         alignment={alignment}
                         centerAlign={centerAlign}
+                        baseId={baseId}
                     />
                 </Block>
             )
@@ -459,6 +549,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                                 padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
                             }),
                         }}
+                        aria-label="Card visual content"
                     >
                         {cardSlot}
                     </Block>
@@ -478,6 +569,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                             cardToken={cardToken}
                             alignment={alignment}
                             centerAlign={centerAlign}
+                            baseId={baseId}
                         />
                     </Block>
                 </>
@@ -499,6 +591,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                     cardToken={cardToken}
                     alignment={alignment}
                     centerAlign={centerAlign}
+                    baseId={baseId}
                 />
             </Block>
         )
@@ -507,7 +600,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 
 export const CustomCard: React.FC<CustomCardComponentProps> = ({
     props,
-
+    cardToken,
     maxHeight,
 }) => {
     const { children } = props
@@ -515,11 +608,14 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
     return (
         <Block
             style={{
+                padding: `${String(cardToken.padding[CardVariant.CUSTOM].y)} ${String(cardToken.padding[CardVariant.CUSTOM].x)}`,
                 ...(maxHeight && {
                     overflowY: 'auto',
                     overflowX: 'hidden',
                 }),
             }}
+            role="group"
+            aria-label="Custom card content"
         >
             {children}
         </Block>

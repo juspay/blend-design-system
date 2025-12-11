@@ -61,6 +61,12 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
             | 'lte'
             | 'range'
     ) => void
+    columnFilters?: Array<{
+        field: string
+        type: FilterType
+        value: string | string[] | { min: number; max: number }
+        operator?: string
+    }>
     onHeaderChange?: (field: keyof T, newHeader: string) => void
     getColumnWidth: (
         column: ColumnDefinition<T>,

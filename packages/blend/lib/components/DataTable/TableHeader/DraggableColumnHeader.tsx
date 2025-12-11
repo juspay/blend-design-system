@@ -16,7 +16,10 @@ const HeaderWrapper = styled.th<{ $isDragging: boolean; $isDisabled: boolean }>`
     }
 `
 
-interface DraggableColumnHeaderProps {
+type DraggableColumnHeaderProps = Omit<
+    React.ThHTMLAttributes<HTMLTableCellElement>,
+    'children'
+> & {
     id: string
     children: (dragHandleProps: {
         listeners?: ReturnType<typeof useSortable>['listeners']

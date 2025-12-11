@@ -948,6 +948,76 @@ const SimpleDataTableExample = () => {
                     style={{
                         marginBottom: '20px',
                         padding: '16px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '8px',
+                        border: '1px solid #bbf7d0',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            color: '#15803d',
+                        }}
+                    >
+                        🚫 Footer Hidden Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            color: '#166534',
+                        }}
+                    >
+                        🎯 <strong>NEW FEATURE:</strong> Hide the footer
+                        completely using <code>showFooter={'{false}'}</code>.
+                        Perfect for tables with only 1-2 rows where pagination
+                        controls don't make sense. This table shows only 2 rows
+                        with the footer hidden.
+                    </p>
+                </div>
+
+                <DataTable
+                    data={productTableData.slice(0, 2)}
+                    columns={
+                        productColumns.slice(
+                            0,
+                            4
+                        ) as unknown as ColumnDefinition<
+                            Record<string, unknown>
+                        >[]
+                    }
+                    idField="id"
+                    title="Compact Product View (Footer Hidden)"
+                    description="This table shows only 2 rows with footer hidden - perfect for compact displays"
+                    enableSearch={true}
+                    enableFiltering={true}
+                    enableAdvancedFilter={false}
+                    enableInlineEdit={false}
+                    enableRowExpansion={false}
+                    enableRowSelection={true}
+                    enableColumnManager={false}
+                    showSettings={false}
+                    showFooter={false}
+                    columnFreeze={0}
+                    pagination={{
+                        currentPage: 1,
+                        pageSize: 10,
+                        totalRows: 2,
+                        pageSizeOptions: [5, 10, 20],
+                    }}
+                    onRowSave={handleProductSave}
+                    onRowCancel={handleProductCancel}
+                    onFieldChange={handleFieldChange}
+                />
+            </div>
+
+            <div style={{ marginTop: '40px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
                         backgroundColor: '#fef3c7',
                         borderRadius: '8px',
                         border: '1px solid #f59e0b',

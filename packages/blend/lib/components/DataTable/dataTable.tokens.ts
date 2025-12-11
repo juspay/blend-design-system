@@ -127,6 +127,7 @@ export type TableTokenType = BasicCSSProps & {
                     color: CSSObject['color']
                     fontSize: CSSObject['fontSize']
                     width?: CSSObject['width']
+                    backgroundColor?: CSSObject['backgroundColor']
                 }
                 sortable: {
                     cursor: CSSObject['cursor']
@@ -374,6 +375,7 @@ export const getTableToken = (
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             width: foundationToken.unit[40],
+                            backgroundColor: foundationToken.colors.gray[25],
                         },
                         sortable: {
                             cursor: 'pointer',
@@ -477,7 +479,7 @@ export const getTableToken = (
                         height: foundationToken.unit[48],
                         position: 'sticky',
                         bottom: 0,
-                        backgroundColor: foundationToken.colors.gray[25],
+                        backgroundColor: foundationToken.colors.gray[0],
                         zIndex: 9,
                         flexShrink: 0,
                         pagination: {
@@ -627,6 +629,7 @@ export const getTableToken = (
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             width: foundationToken.unit[40],
+                            backgroundColor: foundationToken.colors.gray[25],
                         },
                         sortable: {
                             cursor: 'pointer',
@@ -730,7 +733,7 @@ export const getTableToken = (
                         height: foundationToken.unit[48],
                         position: 'sticky',
                         bottom: 0,
-                        backgroundColor: foundationToken.colors.gray[25],
+                        backgroundColor: foundationToken.colors.gray[0],
                         zIndex: 9,
                         flexShrink: 0,
                         pagination: {
@@ -743,8 +746,7 @@ export const getTableToken = (
                                 gap: foundationToken.unit[4],
                                 padding: `${foundationToken.unit[4]} ${foundationToken.unit[8]}`,
                                 borderRadius: foundationToken.border.radius[2],
-                                backgroundColor:
-                                    foundationToken.colors.gray[25],
+                                backgroundColor: foundationToken.colors.gray[0],
                                 display: 'flex',
                                 alignItems: 'center',
                                 border: 'none',

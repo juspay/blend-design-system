@@ -27,6 +27,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             leadingSlot,
             trailingSlot,
             skeleton,
+            onClick,
             ...props
         },
         ref
@@ -51,6 +52,16 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 
             return getInitialsFromText(alt)
         }
+
+        const getAccessibleLabel = () => {
+            const name =
+                alt || (typeof fallback === 'string' ? fallback : 'Avatar')
+            const statusText = online ? ', online' : ''
+            return `${name}${statusText}`
+        }
+
+        const isInteractive = onClick !== undefined
+        const accessibleLabel = getAccessibleLabel()
 
         const INDICATOR_POSITIONS = {
             sm: {
@@ -186,6 +197,10 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             <Block
                 ref={ref}
                 data-avatar={alt ?? 'avatar'}
+                role="img"
+                aria-label={accessibleLabel}
+                aria-live={online ? 'polite' : undefined}
+                tabIndex={isInteractive ? 0 : undefined}
                 position="relative"
                 display="inline-flex"
                 alignItems="center"
@@ -203,6 +218,44 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 borderRadius={tokens.container.borderRadius[shape]}
                 fontSize={tokens.text.fontSize[size]}
                 fontWeight={tokens.text.fontWeight[size]}
+                cursor={isInteractive ? 'pointer' : undefined}
+                onClick={onClick}
+                onKeyDown={
+                    isInteractive && onClick
+                        ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  // Create a synthetic mouse event for onClick handler
+                                  const syntheticEvent = {
+                                      ...e,
+                                      currentTarget: e.currentTarget,
+                                      target: e.target,
+                                      button: 0,
+                                      buttons: 0,
+                                      clientX: 0,
+                                      clientY: 0,
+                                      pageX: 0,
+                                      pageY: 0,
+                                      screenX: 0,
+                                      screenY: 0,
+                                      relatedTarget: null,
+                                      movementX: 0,
+                                      movementY: 0,
+                                      nativeEvent: e.nativeEvent,
+                                      bubbles: true,
+                                      cancelable: true,
+                                      defaultPrevented: false,
+                                      eventPhase: 0,
+                                      isTrusted: false,
+                                      timeStamp: Date.now(),
+                                      type: 'click',
+                                  } as unknown as React.MouseEvent<HTMLDivElement>
+                                  onClick(syntheticEvent)
+                              }
+                          }
+                        : undefined
+                }
                 {...props}
                 data-status={online ? 'online' : 'offline'}
             >
@@ -210,6 +263,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                     <Block
                         aria-hidden="true"
                         data-avatar-indicator="true"
+                        role="presentation"
                         position="absolute"
                         {...(onlinePosition === AvatarOnlinePosition.TOP && {
                             top: dynamicTopPosition,
@@ -278,9 +332,9 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                         borderWidth: 0,
                     }}
                     whiteSpace="nowrap"
-                    aria-hidden="false"
+                    aria-hidden="true"
                 >
-                    {alt || 'Avatar'}
+                    {accessibleLabel}
                 </Block>
             </Block>
         )

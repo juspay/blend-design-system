@@ -10,8 +10,14 @@ type SidebarFooterProps = {
 const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
+    // Don't render footer if no content provided
+    if (!footer) {
+        return null
+    }
+
     return (
         <Block
+            as="footer"
             width="100%"
             backgroundColor={tokens.footer.backgroundColor}
             height="64px"

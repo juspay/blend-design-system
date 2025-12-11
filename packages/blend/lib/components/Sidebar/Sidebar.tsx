@@ -1,4 +1,11 @@
-import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
+import {
+    forwardRef,
+    useState,
+    useEffect,
+    useCallback,
+    useMemo,
+    useId,
+} from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
@@ -111,17 +118,46 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             setIsHovering(false)
         }, [toggleSidebar, setIsHovering])
 
-        // Keyboard shortcut handler
+        // Keyboard shortcut handler with screen reader announcement
         useEffect(() => {
             const handleKeyPress = (event: KeyboardEvent) => {
-                if (event.key === sidebarCollapseKey && !isMobile) {
+                // Only trigger if not typing in an input/textarea
+                const target = event.target as HTMLElement
+                const isInputElement =
+                    target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.isContentEditable
+
+                if (
+                    event.key === sidebarCollapseKey &&
+                    !isMobile &&
+                    !isInputElement
+                ) {
                     event.preventDefault()
                     toggleSidebar()
+
+                    // Announce state change to screen readers
+                    const announcement = document.createElement('div')
+                    announcement.setAttribute('role', 'status')
+                    announcement.setAttribute('aria-live', 'polite')
+                    announcement.setAttribute('aria-atomic', 'true')
+                    announcement.style.position = 'absolute'
+                    announcement.style.left = '-10000px'
+                    announcement.style.width = '1px'
+                    announcement.style.height = '1px'
+                    announcement.style.overflow = 'hidden'
+                    announcement.textContent = `Sidebar ${!isExpanded ? 'expanded' : 'collapsed'}`
+                    document.body.appendChild(announcement)
+
+                    // Remove announcement after screen reader has time to read it
+                    setTimeout(() => {
+                        document.body.removeChild(announcement)
+                    }, 1000)
                 }
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isMobile, sidebarCollapseKey, toggleSidebar])
+        }, [isMobile, sidebarCollapseKey, toggleSidebar, isExpanded])
 
         // Mobile and toggle button logic
         useEffect(() => {
@@ -204,6 +240,19 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             []
         )
 
+        // Generate unique IDs for ARIA relationships
+        const baseId = useId()
+        const sidebarId = `${baseId}-sidebar`
+        const sidebarNavId = `${baseId}-sidebar-nav`
+        const skipToContentId = `${baseId}-skip-to-content`
+        const skipToNavId = `${baseId}-skip-to-nav`
+
+        // Generate accessible label for sidebar
+        const sidebarLabel = useMemo(() => {
+            const state = isExpanded ? 'expanded' : 'collapsed'
+            return `Sidebar navigation, ${state}`
+        }, [isExpanded])
+
         return (
             <Block
                 ref={ref}
@@ -213,7 +262,72 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 backgroundColor={tokens.backgroundColor}
                 position="relative"
                 zIndex={99}
+                id={sidebarId}
             >
+                {/* Skip Links for Keyboard Navigation */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '-40px',
+                        left: '0',
+                        zIndex: 10000,
+                    }}
+                >
+                    <a
+                        href={`#${skipToNavId}`}
+                        style={{
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            padding: '8px 16px',
+                            backgroundColor: '#000',
+                            color: '#fff',
+                            textDecoration: 'none',
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            zIndex: 10000,
+                            transform: 'translateY(-100%)',
+                            transition: 'transform 0.2s',
+                        }}
+                        onFocus={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)'
+                        }}
+                        onBlur={(e) => {
+                            e.currentTarget.style.transform =
+                                'translateY(-100%)'
+                        }}
+                    >
+                        Skip to navigation
+                    </a>
+                    <a
+                        href={`#${skipToContentId}`}
+                        style={{
+                            position: 'absolute',
+                            top: '0',
+                            left: '150px',
+                            padding: '8px 16px',
+                            backgroundColor: '#000',
+                            color: '#fff',
+                            textDecoration: 'none',
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            zIndex: 10000,
+                            transform: 'translateY(-100%)',
+                            transition: 'transform 0.2s',
+                        }}
+                        onFocus={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)'
+                        }}
+                        onBlur={(e) => {
+                            e.currentTarget.style.transform =
+                                'translateY(-100%)'
+                        }}
+                    >
+                        Skip to main content
+                    </a>
+                </div>
                 {/* Hover trigger area - only show when NOT in panel only mode */}
                 {!isExpanded && !isMobile && !isPanelOnlyMode && (
                     <Block
@@ -231,6 +345,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 )}
 
                 <Block
+                    as="nav"
                     backgroundColor={tokens.backgroundColor}
                     maxWidth={
                         isPanelOnlyMode
@@ -258,6 +373,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     }
                     zIndex={isPanelOnlyMode ? '48' : getSidebarZIndex()}
                     height="100%"
+                    id={skipToNavId}
+                    role="navigation"
+                    aria-label={sidebarLabel}
+                    aria-expanded={
+                        isPanelOnlyMode ? undefined : isExpanded ? true : false
+                    }
                     style={{
                         willChange: 'transform',
                         transitionDuration: '150ms',
@@ -332,13 +453,18 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                     sidebarCollapseKey
                                                 }
                                                 onToggle={handleToggle}
+                                                sidebarNavId={sidebarNavId}
                                             />
 
                                             <DirectoryContainer
                                                 data-directory-container
+                                                id={sidebarNavId}
+                                                role="region"
+                                                aria-label="Navigation menu"
                                             >
                                                 <Directory
                                                     directoryData={data}
+                                                    idPrefix={`${baseId}-`}
                                                 />
                                             </DirectoryContainer>
 
@@ -352,7 +478,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 </Block>
 
                 <MainContentContainer
+                    as="main"
+                    id={skipToContentId}
                     data-main-content
+                    role="main"
+                    aria-label="Main content"
                     paddingBottom={
                         isMobile && mobileNavigationItems.length > 0
                             ? (mobileNavigationHeight ??
@@ -380,6 +510,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             merchantInfo={merchantInfo || defaultMerchantInfo}
                             rightActions={rightActions}
                             isVisible={isTopbarVisible}
+                            ariaControls={sidebarNavId}
                             onVisibilityChange={onTopbarVisibilityChange}
                             defaultIsVisible={defaultIsTopbarVisible}
                         />

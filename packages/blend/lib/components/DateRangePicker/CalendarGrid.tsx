@@ -92,26 +92,25 @@ const StyledDayCell = styled(MotionBlock)<{
     ${(props) => props.$cellStyles}
     color: ${(props) => props.$textColor};
     cursor: ${(props) => (props.$isDisabled ? 'not-allowed' : 'pointer')};
-    transition: transform 0.15s ease-in-out;
+    position: relative;
 
     ${(props) =>
         !props.$isDisabled &&
         `
-    &:hover {
+    &:hover:not(:focus-visible) {
       outline: ${props.$calendarToken.calendar.calendarGrid.day.cell.border.hover};
       outline-offset: -1px;
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.cell.borderRadius};
-      z-index: 10;
-      position: relative;
-      transform: scale(1.05);
+      z-index: 1;
     }
   `}
 
     ${(props) =>
         !props.$isDisabled &&
         `
-    &:active {
-      transform: scale(0.95);
+    &:focus-visible {
+      outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]};
+      border-radius: ${props.$calendarToken.calendar.calendarGrid.day.cell.borderRadius};
     }
   `}
 `
@@ -230,6 +229,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         ref
     ) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const cellsRef = useRef<Map<string, HTMLDivElement>>(new Map())
+        const activeCellRef = useRef<HTMLDivElement | null>(null)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
 
         // Internal loading state for initial render
@@ -351,6 +352,111 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 customRangeConfig,
                 onDateSelect,
             ]
+        )
+
+        const getCellKey = (year: number, month: number, day: number) => {
+            return `${year}-${month}-${day}`
+        }
+
+        useEffect(() => {
+            if (selectedRange?.startDate) {
+                const activeDate = selectedRange.startDate
+                const key = getCellKey(
+                    activeDate.getFullYear(),
+                    activeDate.getMonth(),
+                    activeDate.getDate()
+                )
+                const cell = cellsRef.current.get(key)
+                if (cell) {
+                    activeCellRef.current = cell
+                    const isFocusOnCalendar = Array.from(
+                        cellsRef.current.values()
+                    ).some((c) => c === document.activeElement)
+                    if (!isFocusOnCalendar && document.activeElement) {
+                        cell.focus()
+                    }
+                }
+            }
+        }, [selectedRange])
+
+        const findNextCell = useCallback(
+            (
+                currentYear: number,
+                currentMonth: number,
+                currentDay: number,
+                direction: 'left' | 'right' | 'up' | 'down'
+            ): HTMLDivElement | null => {
+                const date = new Date(currentYear, currentMonth, currentDay)
+
+                switch (direction) {
+                    case 'left':
+                        date.setDate(date.getDate() - 1)
+                        break
+                    case 'right':
+                        date.setDate(date.getDate() + 1)
+                        break
+                    case 'up':
+                        date.setDate(date.getDate() - 7)
+                        break
+                    case 'down':
+                        date.setDate(date.getDate() + 7)
+                        break
+                }
+
+                const key = getCellKey(
+                    date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate()
+                )
+                const cell = cellsRef.current.get(key)
+
+                if (cell && cell.getAttribute('aria-disabled') !== 'true') {
+                    return cell
+                }
+
+                return null
+            },
+            []
+        )
+
+        const handleCellKeyDown = useCallback(
+            (
+                e: React.KeyboardEvent<HTMLElement>,
+                year: number,
+                month: number,
+                day: number
+            ) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleDateClick(year, month, day, false)
+                    return
+                }
+
+                const arrowKeys: Record<
+                    string,
+                    'left' | 'right' | 'up' | 'down'
+                > = {
+                    ArrowLeft: 'left',
+                    ArrowRight: 'right',
+                    ArrowUp: 'up',
+                    ArrowDown: 'down',
+                }
+
+                const direction = arrowKeys[e.key]
+                if (direction) {
+                    e.preventDefault()
+                    e.stopPropagation()
+
+                    const nextCell = findNextCell(year, month, day, direction)
+                    if (nextCell) {
+                        nextCell.setAttribute('tabindex', '0')
+                        nextCell.focus()
+                        const currentCell = e.currentTarget as HTMLDivElement
+                        currentCell.setAttribute('tabindex', '-1')
+                    }
+                }
+            },
+            [handleDateClick, findNextCell]
         )
 
         const renderMonth = useCallback(
@@ -521,9 +627,90 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                 const cellIndex =
                                                     weekIndex * 7 + dayIndex
 
+                                                const cellKey = getCellKey(
+                                                    year,
+                                                    month,
+                                                    day
+                                                )
+
                                                 return (
                                                     <StyledDayCell
-                                                        key={`${year}-${month}-${day}`}
+                                                        key={cellKey}
+                                                        ref={(
+                                                            el: HTMLDivElement | null
+                                                        ) => {
+                                                            if (el) {
+                                                                cellsRef.current.set(
+                                                                    cellKey,
+                                                                    el
+                                                                )
+                                                                if (
+                                                                    isSelected
+                                                                ) {
+                                                                    activeCellRef.current =
+                                                                        el
+                                                                    el.setAttribute(
+                                                                        'tabindex',
+                                                                        '0'
+                                                                    )
+                                                                }
+                                                            } else {
+                                                                cellsRef.current.delete(
+                                                                    cellKey
+                                                                )
+                                                                if (
+                                                                    activeCellRef.current ===
+                                                                    el
+                                                                ) {
+                                                                    activeCellRef.current =
+                                                                        null
+                                                                }
+                                                            }
+                                                        }}
+                                                        onFocus={(e) => {
+                                                            const cell =
+                                                                e.currentTarget
+                                                            cell.setAttribute(
+                                                                'tabindex',
+                                                                '0'
+                                                            )
+                                                            cellsRef.current.forEach(
+                                                                (otherCell) => {
+                                                                    if (
+                                                                        otherCell !==
+                                                                        cell
+                                                                    ) {
+                                                                        const isOtherSelected =
+                                                                            otherCell.getAttribute(
+                                                                                'aria-pressed'
+                                                                            ) ===
+                                                                            'true'
+                                                                        if (
+                                                                            !isOtherSelected
+                                                                        ) {
+                                                                            otherCell.setAttribute(
+                                                                                'tabindex',
+                                                                                '-1'
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                }
+                                                            )
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const cell =
+                                                                e.currentTarget
+                                                            const isSelected =
+                                                                cell.getAttribute(
+                                                                    'aria-pressed'
+                                                                ) === 'true'
+                                                            if (!isSelected) {
+                                                                cell.setAttribute(
+                                                                    'tabindex',
+                                                                    '-1'
+                                                                )
+                                                            }
+                                                        }}
                                                         $cellStyles={
                                                             cellProps.styles as CSSObject
                                                         }
@@ -542,27 +729,23 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         initial="hidden"
                                                         animate="visible"
                                                         custom={cellIndex}
-                                                        whileHover={
-                                                            !isDisabled
-                                                                ? {
-                                                                      scale: 1.05,
-                                                                      transition:
-                                                                          {
-                                                                              duration: 0.15,
-                                                                          },
-                                                                  }
-                                                                : undefined
+                                                        role="button"
+                                                        tabIndex={
+                                                            isDisabled
+                                                                ? -1
+                                                                : isSelected
+                                                                  ? 0
+                                                                  : -1
                                                         }
-                                                        whileTap={
-                                                            !isDisabled
-                                                                ? {
-                                                                      scale: 0.95,
-                                                                      transition:
-                                                                          {
-                                                                              duration: 0.1,
-                                                                          },
-                                                                  }
-                                                                : undefined
+                                                        aria-label={`${new Date(year, month, day).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}${isSelected ? ', selected' : ''}${isToday ? ', today' : ''}${isDisabled ? ', disabled' : ''}`}
+                                                        aria-selected={
+                                                            isSelected
+                                                        }
+                                                        aria-pressed={
+                                                            isSelected
+                                                        }
+                                                        aria-disabled={
+                                                            isDisabled
                                                         }
                                                         onClick={() =>
                                                             handleDateClick(
@@ -578,6 +761,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                 month,
                                                                 day,
                                                                 true
+                                                            )
+                                                        }
+                                                        onKeyDown={(e) =>
+                                                            handleCellKeyDown(
+                                                                e,
+                                                                year,
+                                                                month,
+                                                                day
                                                             )
                                                         }
                                                         data-element="days"
@@ -684,7 +875,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 initial="hidden"
                 animate="visible"
             >
-                {/* Day Names Header */}
+                {/* Day Names Header - Not keyboard accessible */}
                 <Block
                     style={{
                         display: 'grid',
@@ -706,6 +897,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                             : '0',
                         overflow: 'hidden',
                     }}
+                    role="presentation"
+                    aria-hidden="true"
                 >
                     {dayNames.map((day, index) => (
                         <Block
@@ -723,6 +916,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                             key={index}
                             data-element="weekday"
                             data-id={day}
+                            tabIndex={-1}
                         >
                             {day}
                         </Block>

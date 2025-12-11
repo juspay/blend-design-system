@@ -16,8 +16,10 @@ StorybookLink: components-upload--docs
 
 ## Usage
 
+### Basic Usage
+
 ```tsx
-import { Upload, UploadState } from 'blend-v1'
+import { Upload } from 'blend-v1'
 
 function MyComponent() {
     const handleDrop = (
@@ -32,13 +34,49 @@ function MyComponent() {
         <Upload
             label="Upload File"
             subLabel="Max size 5MB"
-            multiple={false}
             accept={['.pdf', '.doc', '.docx']}
             maxSize={5 * 1024 * 1024}
             onDrop={handleDrop}
         />
     )
 }
+```
+
+### Form Integration
+
+Use `value` and `onChange` props for form integration:
+
+**Single File:**
+
+```tsx
+const [file, setFile] = useState<File | null>(null)
+
+<Upload
+    label="Upload File"
+    value={file}
+    onChange={(value) => {
+        setFile(value) // File | null
+        // Extract metadata: value?.name, value?.type
+    }}
+/>
+```
+
+**Multiple Files:**
+
+```tsx
+const [files, setFiles] = useState<File[]>([])
+
+<Upload
+    label="Upload Files"
+    multiple={true}
+    value={files}
+    onChange={(value) => {
+        setFiles(value) // File[]
+        // Extract metadata:
+        const filenames = value.map(f => f.name)
+        const filemimes = value.map(f => f.type)
+    }}
+/>
 ```
 
 ## API Reference
@@ -284,6 +322,28 @@ function MyComponent() {
             },
             {
                 content: '(file: File) => FileRejection["errors"][0] | null',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText:
+                    'Controlled value for form integration (File | null for single, File[] for multiple)',
+            },
+            { content: 'File | File[] | null', hintText: 'File or array' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when files change (for form integration)',
+            },
+            {
+                content: '(value: File | File[] | null) => void',
                 hintText: 'function',
             },
             { content: '' },

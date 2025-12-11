@@ -1,7 +1,7 @@
 'use client'
 import './Drawer.css'
 
-import React, { forwardRef, useContext } from 'react'
+import React, { forwardRef, useContext, useId } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -21,6 +21,16 @@ import type {
 const DrawerConfigContext = React.createContext<{ disableDrag: boolean }>({
     disableDrag: false,
 })
+
+interface DrawerAccessibilityContextValue {
+    titleId?: string
+    descriptionId?: string
+    setTitleId: (id: string | undefined) => void
+    setDescriptionId: (id: string | undefined) => void
+}
+
+const DrawerAccessibilityContext =
+    React.createContext<DrawerAccessibilityContextValue | null>(null)
 
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
@@ -251,6 +261,42 @@ export const Drawer = ({
     children,
 }: DrawerProps) => {
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
+    const [titleId, setTitleId] = React.useState<string | undefined>(undefined)
+    const [descriptionId, setDescriptionId] = React.useState<
+        string | undefined
+    >(undefined)
+
+    // Screen reader announcement for drawer state changes
+    React.useEffect(() => {
+        if (open) {
+            // Announce drawer opening to screen readers
+            const announcement = document.createElement('div')
+            announcement.setAttribute('role', 'status')
+            announcement.setAttribute('aria-live', 'polite')
+            announcement.setAttribute('aria-atomic', 'true')
+            announcement.style.position = 'absolute'
+            announcement.style.left = '-10000px'
+            announcement.style.width = '1px'
+            announcement.style.height = '1px'
+            announcement.style.overflow = 'hidden'
+            announcement.textContent = 'Drawer opened'
+            document.body.appendChild(announcement)
+
+            // Remove announcement after screen reader has time to read it
+            const timer = setTimeout(() => {
+                if (document.body.contains(announcement)) {
+                    document.body.removeChild(announcement)
+                }
+            }, 1000)
+
+            return () => {
+                clearTimeout(timer)
+                if (document.body.contains(announcement)) {
+                    document.body.removeChild(announcement)
+                }
+            }
+        }
+    }, [open])
 
     const vaulProps: Record<string, unknown> = {
         open,
@@ -271,13 +317,39 @@ export const Drawer = ({
 
     return (
         <DrawerConfigContext.Provider value={{ disableDrag }}>
-            <RootComponent {...vaulProps}>{children}</RootComponent>
+            <DrawerAccessibilityContext.Provider
+                value={{
+                    titleId,
+                    descriptionId,
+                    setTitleId,
+                    setDescriptionId,
+                }}
+            >
+                <RootComponent {...vaulProps}>{children}</RootComponent>
+            </DrawerAccessibilityContext.Provider>
         </DrawerConfigContext.Provider>
     )
 }
 
-export const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerProps>(
-    ({ children, className, disabled, onClick, ...props }, ref) => {
+export const DrawerTrigger = forwardRef<
+    HTMLButtonElement,
+    DrawerTriggerProps & {
+        'aria-label'?: string
+    }
+>(
+    (
+        {
+            children,
+            className,
+            disabled,
+            onClick,
+            'aria-label': ariaLabel,
+            ...props
+        },
+        ref
+    ) => {
+        // Pass through aria-label if provided
+        // When asChild is used, the aria-label will be merged with the child element
         return (
             <VaulDrawer.Trigger
                 ref={ref}
@@ -285,6 +357,7 @@ export const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerProps>(
                 disabled={disabled}
                 onClick={onClick}
                 asChild
+                aria-label={ariaLabel}
                 {...props}
             >
                 {children}
@@ -354,6 +427,14 @@ export const DrawerContent = forwardRef<
         const tokens = useResponsiveTokens<DrawerTokensType>('DRAWER')
         const { disableDrag } = useContext(DrawerConfigContext)
         const resolvedShowHandle = disableDrag ? false : showHandle
+        const accessibilityContext = useContext(DrawerAccessibilityContext)
+
+        // Use provided aria-describedby or fall back to context descriptionId
+        const finalAriaDescribedBy =
+            ariaDescribedBy || accessibilityContext?.descriptionId || undefined
+
+        // Use provided aria-label or fall back to context titleId for aria-labelledby
+        const ariaLabelledBy = accessibilityContext?.titleId || undefined
 
         return (
             <StyledContent
@@ -367,8 +448,11 @@ export const DrawerContent = forwardRef<
                 customWidth={width}
                 customMaxWidth={maxWidth}
                 mobileOffset={mobileOffset}
+                role="dialog"
+                aria-modal="true"
                 aria-label={ariaLabel}
-                aria-describedby={ariaDescribedBy}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={finalAriaDescribedBy}
                 {...props}
             >
                 {resolvedShowHandle &&
@@ -391,6 +475,7 @@ export const DrawerContent = forwardRef<
                             style={
                                 direction === 'top' ? { order: 999 } : undefined
                             }
+                            aria-hidden="true"
                         />
                     ))}
                 {children}
@@ -425,7 +510,21 @@ export const DrawerHeader = forwardRef<HTMLDivElement, DrawerHeaderProps>(
 DrawerHeader.displayName = 'DrawerHeader'
 
 export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
-    ({ children, className, id, ...props }, ref) => {
+    ({ children, className, id: providedId, ...props }, ref) => {
+        const accessibilityContext = useContext(DrawerAccessibilityContext)
+        const generatedId = useId()
+        const id = providedId || generatedId
+
+        // Register the ID with the accessibility context
+        React.useEffect(() => {
+            if (accessibilityContext) {
+                accessibilityContext.setTitleId(id)
+                return () => {
+                    accessibilityContext.setTitleId(undefined)
+                }
+            }
+        }, [id, accessibilityContext])
+
         return (
             <StyledTitle ref={ref} className={className} id={id} {...props}>
                 {children}
@@ -439,7 +538,21 @@ DrawerTitle.displayName = 'DrawerTitle'
 export const DrawerDescription = forwardRef<
     HTMLParagraphElement,
     DrawerDescriptionProps
->(({ children, className, id, ...props }, ref) => {
+>(({ children, className, id: providedId, ...props }, ref) => {
+    const accessibilityContext = useContext(DrawerAccessibilityContext)
+    const generatedId = useId()
+    const id = providedId || generatedId
+
+    // Register the ID with the accessibility context
+    React.useEffect(() => {
+        if (accessibilityContext) {
+            accessibilityContext.setDescriptionId(id)
+            return () => {
+                accessibilityContext.setDescriptionId(undefined)
+            }
+        }
+    }, [id, accessibilityContext])
+
     return (
         <StyledDescription ref={ref} className={className} id={id} {...props}>
             {children}
@@ -532,13 +645,30 @@ export const DrawerFooter = forwardRef<
 
 DrawerFooter.displayName = 'DrawerFooter'
 
-export const DrawerClose = forwardRef<HTMLButtonElement, DrawerCloseProps>(
-    ({ children, className, disabled, ...props }, ref) => {
+export const DrawerClose = forwardRef<
+    HTMLButtonElement,
+    DrawerCloseProps & {
+        'aria-label'?: string
+    }
+>(
+    (
+        {
+            children,
+            className,
+            disabled,
+            asChild,
+            'aria-label': ariaLabel,
+            ...props
+        },
+        ref
+    ) => {
         return (
             <VaulDrawer.Close
                 ref={ref}
                 className={className}
                 disabled={disabled}
+                asChild={asChild}
+                aria-label={ariaLabel}
                 {...props}
             >
                 {children}
