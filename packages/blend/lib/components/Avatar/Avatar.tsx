@@ -53,15 +53,14 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
             return getInitialsFromText(alt)
         }
 
-        // Generate accessible label
         const getAccessibleLabel = () => {
-            const name = alt || (typeof fallback === 'string' ? fallback : 'Avatar')
+            const name =
+                alt || (typeof fallback === 'string' ? fallback : 'Avatar')
             const statusText = online ? ', online' : ''
             return `${name}${statusText}`
         }
 
-        // Check if avatar is interactive (has onClick handler)
-        const isInteractive = props.onClick !== undefined
+        const isInteractive = onClick !== undefined
         const accessibleLabel = getAccessibleLabel()
 
         const INDICATOR_POSITIONS = {
@@ -220,13 +219,39 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
                 fontSize={tokens.text.fontSize[size]}
                 fontWeight={tokens.text.fontWeight[size]}
                 cursor={isInteractive ? 'pointer' : undefined}
+                onClick={onClick}
                 onKeyDown={
-                    isInteractive && props.onClick
+                    isInteractive && onClick
                         ? (e: React.KeyboardEvent<HTMLDivElement>) => {
                               if (e.key === 'Enter' || e.key === ' ') {
                                   e.preventDefault()
                                   e.stopPropagation()
-                                  props.onClick?.(e as any)
+                                  // Create a synthetic mouse event for onClick handler
+                                  const syntheticEvent = {
+                                      ...e,
+                                      currentTarget: e.currentTarget,
+                                      target: e.target,
+                                      button: 0,
+                                      buttons: 0,
+                                      clientX: 0,
+                                      clientY: 0,
+                                      pageX: 0,
+                                      pageY: 0,
+                                      screenX: 0,
+                                      screenY: 0,
+                                      relatedTarget: null,
+                                      movementX: 0,
+                                      movementY: 0,
+                                      nativeEvent: e.nativeEvent,
+                                      bubbles: true,
+                                      cancelable: true,
+                                      defaultPrevented: false,
+                                      eventPhase: 0,
+                                      isTrusted: false,
+                                      timeStamp: Date.now(),
+                                      type: 'click',
+                                  } as unknown as React.MouseEvent<HTMLDivElement>
+                                  onClick(syntheticEvent)
                               }
                           }
                         : undefined

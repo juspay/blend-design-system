@@ -856,23 +856,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
         }
     }, [nestedFilterOpen])
 
-    // Focus first menu item when popover opens (triggered from parent)
-    const focusFirstMenuItem = () => {
-        setTimeout(() => {
-            const items = getMenuItems()
-            if (items.length > 0) {
-                setFocusedIndex(0)
-                items[0]?.focus()
-            }
-        }, 100)
-    }
-
-    // Expose focus function via ref (will be called from parent when popover opens)
-    useEffect(() => {
-        if (menuRef.current) {
-            ;(menuRef.current as any).focusFirstMenuItem = focusFirstMenuItem
-        }
-    }, [isSortingEnabled])
     // Use mobile component for small screens
     if (isMobile) {
         return (
