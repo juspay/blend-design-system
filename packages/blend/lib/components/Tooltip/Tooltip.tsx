@@ -13,6 +13,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { tooltipContentAnimations } from './tooltip.animations'
+import { formatTextWithLineBreaks } from '../../global-utils/GlobalUtils'
 
 const Arrow = styled(RadixTooltip.Arrow)<{
     $color: CSSObject['backgroundColor']
@@ -104,19 +105,7 @@ export const Tooltip = ({
                                             tooltipTokens.text.lineHeight[size]
                                         }
                                     >
-                                        {typeof content === 'string' &&
-                                        content.includes('\n')
-                                            ? content
-                                                  .split('\n')
-                                                  .map((line, index, array) => (
-                                                      <span key={index}>
-                                                          {line}
-                                                          {index <
-                                                              array.length -
-                                                                  1 && <br />}
-                                                      </span>
-                                                  ))
-                                            : content}
+                                        {formatTextWithLineBreaks(content)}
                                     </PrimitiveText>
                                 </Block>
 
