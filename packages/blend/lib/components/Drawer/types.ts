@@ -96,6 +96,10 @@ export type DrawerTriggerProps = {
      * Custom click handler
      */
     onClick?: () => void
+    /**
+     * Accessibility label for the trigger button
+     */
+    'aria-label'?: string
 }
 
 export type DrawerContentProps = {
@@ -190,6 +194,14 @@ export type DrawerCloseProps = {
      * Whether the close button is disabled
      */
     disabled?: boolean
+    /**
+     * Merge props with child element instead of rendering a button
+     */
+    asChild?: boolean
+    /**
+     * Accessibility label for the close button
+     */
+    'aria-label'?: string
 }
 
 export type StatusDrawerProps = {

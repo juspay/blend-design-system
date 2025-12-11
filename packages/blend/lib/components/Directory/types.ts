@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 export type DirectoryProps = {
     className?: string
     directoryData: DirectoryData[]
+    idPrefix?: string
 }
 
 export type DirectoryData = {
@@ -35,6 +36,7 @@ export type SectionProps = {
         direction: 'up' | 'down',
         currentIndex: number
     ) => void
+    idPrefix?: string
 }
 
 export type NavItemProps = {

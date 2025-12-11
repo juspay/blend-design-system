@@ -15,6 +15,10 @@ import RadioAccessibility from '../../Radio/accessibility/RadioAccessibility'
 import SwitchAccessibility from '../../Switch/accessibility/SwitchAccessibility'
 import SingleSelectAccessibility from '../../SingleSelect/accessibility/SingleSelectAccessibility'
 import MultiSelectAccessibility from '../../MultiSelect/accessibility/MultiSelectAccessibility'
+import StatCardAccessibility from '../../StatCard/accessibility/StatCardAccessibility'
+import CardAccessibility from '../../Card/accessibility/CardAccessibility'
+import ChartsAccessibility from '../../Charts/accessibility/ChartsAccessibility'
+import SplitTagAccessibility from '../../SplitTag/accessibility/SplitTagAccessibility'
 import AvatarAccessibility from '../../Avatar/accessibility/AvatarAccessibility'
 import AvatarGroupAccessibility from '../../AvatarGroup/accessibility/AvatarGroupAccessibility'
 import BreadcrumbAccessibility from '../../Breadcrumb/accessibility/BreadcrumbAccessibility'
@@ -28,6 +32,10 @@ import KeyValuePairAccessibility from '../../KeyValuePair/accessibility/KeyValue
 import SnackbarAccessibility from '../../Snackbar/accessibility/SnackbarAccessibility'
 import AccordionAccessibility from '../../Accordion/accessibility/AccordionAccessibility'
 import TabsAccessibility from '../../Tabs/accessibility/TabsAccessibility'
+import SidebarAccessibility from '../../Sidebar/accessibility/SidebarAccessibility'
+import DrawerAccessibility from '../../Drawer/accessibility/DrawerAccessibility'
+import StepperAccessibility from '../../Stepper/accessibility/StepperAccessibility'
+import CodeBlockAccessibility from '../../CodeBlock/accessibility/CodeBlockAccessibility'
 import ProgressBarAccessibility from '../../ProgressBar/accessibility/ProgressBarAccessibility'
 
 export type ComponentAccessibilitySection = {
@@ -109,6 +117,26 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         component: MultiSelectAccessibility,
     },
     {
+        name: 'StatCard',
+        displayName: 'StatCard',
+        component: StatCardAccessibility,
+    },
+    {
+        name: 'Card',
+        displayName: 'Card',
+        component: CardAccessibility,
+    },
+    {
+        name: 'Charts',
+        displayName: 'Charts',
+        component: ChartsAccessibility,
+    },
+    {
+        name: 'SplitTag',
+        displayName: 'SplitTag',
+        component: SplitTagAccessibility,
+    },
+    {
         name: 'Avatar',
         displayName: 'Avatar',
         component: AvatarAccessibility,
@@ -172,6 +200,26 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Tabs',
         displayName: 'Tabs',
         component: TabsAccessibility,
+    },
+    {
+        name: 'Sidebar',
+        displayName: 'Sidebar',
+        component: SidebarAccessibility,
+    },
+    {
+        name: 'Drawer',
+        displayName: 'Drawer',
+        component: DrawerAccessibility,
+    },
+    {
+        name: 'Stepper',
+        displayName: 'Stepper',
+        component: StepperAccessibility,
+    },
+    {
+        name: 'CodeBlock',
+        displayName: 'Code Block',
+        component: CodeBlockAccessibility,
     },
     {
         name: 'ProgressBar',
