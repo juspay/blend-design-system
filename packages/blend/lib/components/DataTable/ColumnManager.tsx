@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import { ColumnManagerProps } from './types'
@@ -31,19 +31,19 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
     const hasPrimaryAction = !!columnManagerPrimaryAction
+    const triggerButtonRef = useRef<HTMLButtonElement | null>(null)
 
     const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
         string[]
     >(() => visibleColumns.map((col) => String(col.field)))
-    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
-        if (hasPrimaryAction && !isOpen) {
+        if (hasPrimaryAction) {
             setPendingSelectedColumns(
                 visibleColumns.map((col) => String(col.field))
             )
         }
-    }, [visibleColumns, hasPrimaryAction, isOpen])
+    }, [visibleColumns, hasPrimaryAction])
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
     const selectedColumnValues = hasPrimaryAction
@@ -167,20 +167,22 @@ export const ColumnManager = <T extends Record<string, unknown>>({
 
         onColumnChange(newVisibleColumns)
         columnManagerPrimaryAction.onClick(pendingSelectedColumns)
-        setIsOpen(false)
+        handleMenuClose()
     }
 
-    const handleOpenChange = (open: boolean) => {
-        setIsOpen(open)
-        if (open && hasPrimaryAction) {
-            setPendingSelectedColumns(
-                visibleColumns.map((col) => String(col.field))
-            )
-        }
+    const handleMenuClose = () => {
+        setTimeout(() => {
+            if (triggerButtonRef.current) {
+                triggerButtonRef.current.focus()
+            }
+        }, 100)
     }
 
     const customTrigger = (
         <PrimitiveButton
+            ref={(el) => {
+                triggerButtonRef.current = el
+            }}
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -191,8 +193,32 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             disabled={disabled}
             aria-label="Manage columns"
             title="Manage columns"
+            tabIndex={disabled ? -1 : 0}
+            type="button"
+            onKeyDown={(e) => {
+                if (disabled) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.stopPropagation()
+                    if (triggerButtonRef.current) {
+                        setTimeout(() => {
+                            if (triggerButtonRef.current) {
+                                triggerButtonRef.current.click()
+                            }
+                        }, 0)
+                    }
+                }
+            }}
             style={{
                 opacity: disabled ? 0.4 : 1,
+            }}
+            _focus={{
+                outline: 'none',
+            }}
+            _focusVisible={{
+                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                outlineOffset: '1px',
+                borderRadius: '4px',
+                boxShadow: `0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]}`,
             }}
         >
             <Plus
@@ -224,8 +250,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         primaryAction,
         secondaryAction: columnManagerSecondaryAction,
         disabled,
-        open: isOpen,
-        onOpenChange: handleOpenChange,
+        onBlur: handleMenuClose,
     }
 
     return (

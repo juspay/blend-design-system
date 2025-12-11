@@ -62,14 +62,14 @@ const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
 
     &:focus {
         outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
-        outline-offset: 1px !important;
+        outline-offset: 2px !important;
         border-radius: 4px;
         box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
     }
 
     &:focus-visible {
         outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
-        outline-offset: 1px !important;
+        outline-offset: 2px !important;
         border-radius: 4px;
         box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
     }
@@ -146,6 +146,17 @@ const TableHeader = forwardRef<
         const filterButtonRefs = useRef<
             Record<string, HTMLButtonElement | null>
         >({})
+
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                Object.values(filterButtonRefs.current).forEach((button) => {
+                    if (button && button.tabIndex !== 0 && !button.disabled) {
+                        button.tabIndex = 0
+                    }
+                })
+            }, 100)
+            return () => clearTimeout(timer)
+        }, [visibleColumns])
 
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
