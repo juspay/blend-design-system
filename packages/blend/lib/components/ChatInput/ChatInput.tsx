@@ -28,6 +28,7 @@ import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import { addSnackbar, SnackbarVariant } from '../Snackbar'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -110,6 +111,18 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
+
+        // Check if a file is duplicate (by name and size)
+        const isDuplicateFile = useCallback(
+            (file: File): boolean => {
+                return attachedFiles.some(
+                    (attachedFile) =>
+                        attachedFile.name === file.name &&
+                        attachedFile.size === file.size
+                )
+            },
+            [attachedFiles]
+        )
 
         // Dynamic overflow calculation
         const handleResize = useCallback(() => {
@@ -236,12 +249,43 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const files = Array.from(e.target.files || [])
                 if (files.length > 0) {
-                    onAttachFiles?.(files)
+                    // Filter out duplicate files
+                    const newFiles: File[] = []
+                    const duplicateFiles: string[] = []
+
+                    files.forEach((file) => {
+                        if (isDuplicateFile(file)) {
+                            duplicateFiles.push(file.name)
+                        } else {
+                            newFiles.push(file)
+                        }
+                    })
+
+                    // Show snackbar if duplicates were found
+                    if (duplicateFiles.length > 0) {
+                        const duplicateCount = duplicateFiles.length
+                        const message =
+                            duplicateCount === 1
+                                ? `File "${duplicateFiles[0]}" is already attached`
+                                : `${duplicateCount} duplicate file(s) were not added`
+
+                        addSnackbar({
+                            header: 'Duplicate File',
+                            description: message,
+                            variant: SnackbarVariant.WARNING,
+                            duration: 3000,
+                        })
+                    }
+
+                    // Only call onAttachFiles with non-duplicate files
+                    if (newFiles.length > 0) {
+                        onAttachFiles?.(newFiles)
+                    }
                 }
                 // Reset the input value to allow selecting the same file again
                 e.target.value = ''
             },
-            [onAttachFiles]
+            [onAttachFiles, isDuplicateFile]
         )
 
         const handleTopQueryClick = useCallback(
