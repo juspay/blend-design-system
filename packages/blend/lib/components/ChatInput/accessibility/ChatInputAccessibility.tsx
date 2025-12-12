@@ -1,9 +1,8 @@
 import { forwardRef, useState } from 'react'
 import { Button } from '../../Button/index'
 import { ButtonType, ButtonSize } from '../../Button/types'
-import Slider from '../Slider'
-import { SliderVariant, SliderSize } from '../types'
-import { sliderAccessibilityReport } from './SliderAccessibilityReport'
+import ChatInput from '../ChatInput'
+import { chatInputAccessibilityReport } from './ChatInputAccessibilityReport'
 import {
     generateAccessibilityReport,
     downloadReport,
@@ -12,14 +11,15 @@ import {
     type ReportFormat,
 } from '../../shared/accessibility/reportGenerator'
 import { Download as DownloadIcon } from 'lucide-react'
+import type { AttachedFile, TopQuery } from '../types'
 
-export type SliderAccessibilityProps = {
+export type ChatInputAccessibilityProps = {
     className?: string
 }
 
-const SliderAccessibility = forwardRef<
+const ChatInputAccessibility = forwardRef<
     HTMLDivElement,
-    SliderAccessibilityProps
+    ChatInputAccessibilityProps
 >(({ className }, ref) => {
     const [selectedFormat, setSelectedFormat] =
         useState<ReportFormat>('markdown')
@@ -29,13 +29,19 @@ const SliderAccessibility = forwardRef<
         null
     )
     const [showFullReport, setShowFullReport] = useState(false)
-    const [sliderValue, setSliderValue] = useState([50])
-    const [rangeValue, setRangeValue] = useState([25, 75])
+    const [message, setMessage] = useState('')
+    const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
+    const [topQueries] = useState<TopQuery[]>([
+        { id: '1', text: 'What is the status of my order?' },
+        { id: '2', text: 'How do I return an item?' },
+        { id: '3', text: 'Where is my package?' },
+        { id: '4', text: 'How do I cancel my subscription?' },
+    ])
 
     const handleDownload = () => {
         try {
             const content = generateAccessibilityReport(
-                sliderAccessibilityReport,
+                chatInputAccessibilityReport,
                 {
                     format: selectedFormat,
                     includeTestResults,
@@ -43,7 +49,7 @@ const SliderAccessibility = forwardRef<
                 }
             )
 
-            const filename = `slider-accessibility-report-${sliderAccessibilityReport.reportDate}.${getFileExtension(selectedFormat)}`
+            const filename = `chatinput-accessibility-report-${chatInputAccessibilityReport.reportDate}.${getFileExtension(selectedFormat)}`
             const mimeType = getMimeType(selectedFormat)
 
             downloadReport(content, filename, mimeType)
@@ -56,7 +62,7 @@ const SliderAccessibility = forwardRef<
     const handleViewReport = () => {
         try {
             const htmlContent = generateAccessibilityReport(
-                sliderAccessibilityReport,
+                chatInputAccessibilityReport,
                 {
                     format: 'html',
                     includeTestResults,
@@ -71,7 +77,33 @@ const SliderAccessibility = forwardRef<
         }
     }
 
-    const report = sliderAccessibilityReport
+    const handleAttachFiles = (files: File[]) => {
+        const newFiles: AttachedFile[] = files.map((file, index) => ({
+            id: `file-${Date.now()}-${index}`,
+            name: file.name,
+            type: file.type.startsWith('image/')
+                ? 'image'
+                : file.type === 'application/pdf'
+                  ? 'pdf'
+                  : file.type === 'text/csv' || file.name.endsWith('.csv')
+                    ? 'csv'
+                    : file.type.startsWith('text/')
+                      ? 'text'
+                      : 'other',
+            size: file.size,
+        }))
+        setAttachedFiles([...attachedFiles, ...newFiles])
+    }
+
+    const handleFileRemove = (fileId: string) => {
+        setAttachedFiles(attachedFiles.filter((f) => f.id !== fileId))
+    }
+
+    const handleTopQuerySelect = (query: TopQuery) => {
+        setMessage(query.text)
+    }
+
+    const report = chatInputAccessibilityReport
     const compliantCount = report.criteria.filter(
         (c) => c.status === 'compliant'
     ).length
@@ -96,7 +128,7 @@ const SliderAccessibility = forwardRef<
                     <div className="flex items-start justify-between">
                         <div>
                             <h1 className="text-3xl font-bold mb-1 text-gray-900">
-                                Slider Component Accessibility
+                                ChatInput Component Accessibility
                             </h1>
                             <div className="flex items-center gap-3 text-sm text-gray-500 mb-2">
                                 <span>WCAG {report.wcagVersion}</span>
@@ -311,156 +343,90 @@ const SliderAccessibility = forwardRef<
                     </h2>
                     <p className="text-sm text-gray-600 mb-6">
                         Test keyboard navigation: Use Tab to navigate to the
-                        slider. Use Arrow keys (Left/Right) to adjust values.
-                        Press Home/End for min/max values. Press PageUp/PageDown
-                        for step navigation. All functionality is accessible via
-                        keyboard.
+                        textarea. Use Tab/Shift+Tab to move between elements.
+                        Press Enter/Space to activate buttons. Use Arrow keys to
+                        navigate top queries. Press Home/End for first/last
+                        query. Press Escape to close queries. All functionality
+                        is accessible via keyboard.
                     </p>
 
                     <div className="space-y-8 max-w-2xl">
-                        {/* Basic Slider */}
+                        {/* Basic ChatInput */}
                         <div>
-                            <label
-                                id="volume-label"
-                                className="block text-sm font-medium text-gray-700 mb-2"
-                            >
-                                Volume Control
-                            </label>
-                            <Slider
-                                value={sliderValue}
-                                onValueChange={(values) =>
-                                    setSliderValue(values)
-                                }
-                                aria-labelledby="volume-label"
-                                min={0}
-                                max={100}
-                                showValueLabels
+                            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                                Basic ChatInput
+                            </h3>
+                            <ChatInput
+                                value={message}
+                                onChange={setMessage}
+                                placeholder="Type a message..."
+                                aria-label="Message input"
                             />
                         </div>
 
-                        {/* Range Slider */}
+                        {/* With Max Length */}
                         <div>
-                            <label
-                                id="range-label"
-                                className="block text-sm font-medium text-gray-700 mb-2"
+                            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                                With Character Limit
+                            </h3>
+                            <ChatInput
+                                value={message}
+                                onChange={setMessage}
+                                placeholder="Type a message..."
+                                maxLength={100}
+                                aria-label="Message input with character limit"
+                                aria-describedby="char-limit-hint"
+                            />
+                            <p
+                                id="char-limit-hint"
+                                className="text-xs text-gray-500 mt-1"
                             >
-                                Price Range
-                            </label>
-                            <Slider
-                                value={rangeValue}
-                                onValueChange={(values) =>
-                                    setRangeValue(values)
-                                }
-                                aria-labelledby="range-label"
-                                min={0}
-                                max={100}
-                                showValueLabels
+                                Maximum 100 characters
+                            </p>
+                        </div>
+
+                        {/* With File Attachments */}
+                        <div>
+                            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                                With File Attachments
+                            </h3>
+                            <ChatInput
+                                value={message}
+                                onChange={setMessage}
+                                placeholder="Type a message..."
+                                attachedFiles={attachedFiles}
+                                onAttachFiles={handleAttachFiles}
+                                onFileRemove={handleFileRemove}
+                                aria-label="Message input with file attachments"
                             />
                         </div>
 
-                        {/* Different Sizes */}
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-medium text-gray-900">
-                                Size Variants
+                        {/* With Top Queries */}
+                        <div>
+                            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                                With Top Queries
                             </h3>
-                            <div>
-                                <label
-                                    id="small-label"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Small
-                                </label>
-                                <Slider
-                                    defaultValue={[50]}
-                                    aria-labelledby="small-label"
-                                    size={SliderSize.SMALL}
-                                    min={0}
-                                    max={100}
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    id="medium-label"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Medium
-                                </label>
-                                <Slider
-                                    defaultValue={[50]}
-                                    aria-labelledby="medium-label"
-                                    size={SliderSize.MEDIUM}
-                                    min={0}
-                                    max={100}
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    id="large-label"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Large
-                                </label>
-                                <Slider
-                                    defaultValue={[50]}
-                                    aria-labelledby="large-label"
-                                    size={SliderSize.LARGE}
-                                    min={0}
-                                    max={100}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Variants */}
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-medium text-gray-900">
-                                Variants
-                            </h3>
-                            <div>
-                                <label
-                                    id="primary-label"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Primary
-                                </label>
-                                <Slider
-                                    defaultValue={[50]}
-                                    aria-labelledby="primary-label"
-                                    variant={SliderVariant.PRIMARY}
-                                    min={0}
-                                    max={100}
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    id="secondary-label"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
-                                    Secondary
-                                </label>
-                                <Slider
-                                    defaultValue={[50]}
-                                    aria-labelledby="secondary-label"
-                                    variant={SliderVariant.SECONDARY}
-                                    min={0}
-                                    max={100}
-                                />
-                            </div>
+                            <ChatInput
+                                value={message}
+                                onChange={setMessage}
+                                placeholder="Type a message..."
+                                topQueries={topQueries}
+                                onTopQuerySelect={handleTopQuerySelect}
+                                aria-label="Message input with suggested queries"
+                            />
                         </div>
 
                         {/* Disabled State */}
                         <div>
-                            <label
-                                id="disabled-label"
-                                className="block text-sm font-medium text-gray-700 mb-2"
-                            >
-                                Disabled Slider
-                            </label>
-                            <Slider
-                                defaultValue={[50]}
-                                aria-labelledby="disabled-label"
+                            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                                Disabled State
+                            </h3>
+                            <ChatInput
+                                value=""
+                                onChange={() => {}}
+                                placeholder="Type a message..."
                                 disabled
-                                min={0}
-                                max={100}
+                                aria-label="Disabled message input"
                             />
                         </div>
                     </div>
@@ -626,6 +592,6 @@ const SliderAccessibility = forwardRef<
     )
 })
 
-SliderAccessibility.displayName = 'SliderAccessibility'
+ChatInputAccessibility.displayName = 'ChatInputAccessibility'
 
-export default SliderAccessibility
+export default ChatInputAccessibility

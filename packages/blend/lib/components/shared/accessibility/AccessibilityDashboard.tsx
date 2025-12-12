@@ -42,6 +42,7 @@ import UploadAccessibility from '../../Upload/accessibility/UploadAccessibility'
 import ButtonGroupAccessibility from '../../ButtonGroup/accessibility/ButtonGroupAccessibility'
 import DateRangePickerAccessibility from '../../DateRangePicker/accessibility/DateRangePickerAccessibility'
 import SliderAccessibility from '../../Slider/accessibility/SliderAccessibility'
+import ChatInputAccessibility from '../../ChatInput/accessibility/ChatInputAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -255,6 +256,11 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         name: 'Slider',
         displayName: 'Slider',
         component: SliderAccessibility,
+    },
+    {
+        name: 'ChatInput',
+        displayName: 'ChatInput',
+        component: ChatInputAccessibility,
     },
     // Add more components here as they are added
 ]
