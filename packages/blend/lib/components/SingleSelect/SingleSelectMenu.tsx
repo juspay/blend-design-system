@@ -122,7 +122,7 @@ const Content = styled(RadixMenu.Content)`
     background-color: white;
     border-radius: 8px;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
