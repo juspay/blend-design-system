@@ -98,13 +98,13 @@ export const getRadioTokens = (
                 active: {
                     backgroundColor: {
                         default: foundationToken.colors.primary[100],
-                        hover: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.primary[100],
                         disabled: foundationToken.colors.gray[50],
                         error: foundationToken.colors.red[600],
                     },
                     borderColor: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[300],
                         error: foundationToken.colors.red[600],
                     },
@@ -113,7 +113,7 @@ export const getRadioTokens = (
             activeIndicator: {
                 active: {
                     backgroundColor: {
-                        default: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[300],
                     },
                 },
@@ -202,13 +202,13 @@ export const getRadioTokens = (
                 active: {
                     backgroundColor: {
                         default: foundationToken.colors.primary[100],
-                        hover: foundationToken.colors.gray[0],
+                        hover: foundationToken.colors.primary[100],
                         disabled: foundationToken.colors.gray[50],
                         error: foundationToken.colors.red[600],
                     },
                     borderColor: {
-                        default: foundationToken.colors.primary[500],
-                        hover: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
+                        hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[300],
                         error: foundationToken.colors.red[600],
                     },
@@ -217,7 +217,7 @@ export const getRadioTokens = (
             activeIndicator: {
                 active: {
                     backgroundColor: {
-                        default: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[300],
                     },
                 },

@@ -106,7 +106,7 @@ export const getCheckboxTokens = (
                         error: foundationToken.colors.gray[0],
                     },
                     checked: {
-                        default: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
                         hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[200],
                         error: foundationToken.colors.primary[500],
@@ -241,7 +241,7 @@ export const getCheckboxTokens = (
                         error: foundationToken.colors.gray[0],
                     },
                     checked: {
-                        default: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
                         hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[200],
                         error: foundationToken.colors.primary[500],
