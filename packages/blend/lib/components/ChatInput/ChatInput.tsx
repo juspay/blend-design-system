@@ -23,6 +23,7 @@ import {
     createOverflowMenuItems,
     handleAutoResize,
     isValidMessageLength,
+    filterDuplicateFiles,
 } from './utils'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
@@ -112,18 +113,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
-
-        // Check if a file is duplicate (by name and size)
-        const isDuplicateFile = useCallback(
-            (file: File): boolean => {
-                return attachedFiles.some(
-                    (attachedFile) =>
-                        attachedFile.name === file.name &&
-                        attachedFile.size === file.size
-                )
-            },
-            [attachedFiles]
-        )
 
         // Dynamic overflow calculation
         const handleResize = useCallback(() => {
@@ -251,16 +240,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 const files = Array.from(e.target.files || [])
                 if (files.length > 0) {
                     // Filter out duplicate files
-                    const newFiles: File[] = []
-                    const duplicateFiles: string[] = []
-
-                    files.forEach((file) => {
-                        if (isDuplicateFile(file)) {
-                            duplicateFiles.push(file.name)
-                        } else {
-                            newFiles.push(file)
-                        }
-                    })
+                    const { newFiles, duplicateFiles } = filterDuplicateFiles(
+                        files,
+                        attachedFiles
+                    )
 
                     // Show snackbar if duplicates were found
                     if (duplicateFiles.length > 0) {
@@ -286,7 +269,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 // Reset the input value to allow selecting the same file again
                 e.target.value = ''
             },
-            [onAttachFiles, isDuplicateFile]
+            [onAttachFiles, attachedFiles]
         )
 
         const handleTopQueryClick = useCallback(
