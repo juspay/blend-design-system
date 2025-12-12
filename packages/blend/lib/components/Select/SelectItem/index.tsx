@@ -323,7 +323,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         if (hasTooltip) {
             return (
-                <Tooltip content={tooltipContent} {...item.tooltipProps}>
+                <Tooltip
+                    content={tooltipContent}
+                    fullWidth={true}
+                    {...item.tooltipProps}
+                >
                     {itemContent}
                 </Tooltip>
             )

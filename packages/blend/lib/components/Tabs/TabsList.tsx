@@ -20,7 +20,6 @@ import { SelectMenuVariant } from '../Select'
 import {
     processTabsWithConcatenation,
     prepareDropdownItems,
-    getDisplayTabs,
     getActualTabValue,
     isConcatenatedTab,
     extractOriginalValues,
@@ -44,7 +43,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showDropdown = false,
             showAddButton = false,
             addButtonTooltip = 'Add new tab',
-            maxDisplayTabs,
             onTabChange,
             activeTab = '',
             disable = false,
@@ -71,11 +69,22 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             () => processTabsWithConcatenation(items),
             [items]
         )
+        const defaultTabs = useMemo(() => {
+            const hasAnyDefault = processedItems.some(
+                (item) => item.isDefault === true
+            )
 
-        const displayTabs = useMemo(
-            () => getDisplayTabs(processedItems, maxDisplayTabs, activeTab),
-            [processedItems, maxDisplayTabs, activeTab]
-        )
+            if (hasAnyDefault) {
+                // If any items have isDefault, show only those + active tab
+                return processedItems.filter(
+                    (item) =>
+                        item.isDefault === true || item.value === activeTab
+                )
+            } else {
+                // If no items have isDefault, show all items
+                return processedItems
+            }
+        }, [processedItems, activeTab])
 
         const dropdownItems = useMemo(() => {
             return prepareDropdownItems(sourceItems, sourceItems)
@@ -352,7 +361,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     marginBottom: 0,
                                 }}
                             >
-                                {displayTabs.map((item) => {
+                                {defaultTabs.map((item) => {
                                     const tabValue = getActualTabValue(
                                         item.value,
                                         originalTabValues

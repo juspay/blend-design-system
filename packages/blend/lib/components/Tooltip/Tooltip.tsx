@@ -38,6 +38,7 @@ export const Tooltip = ({
     offset = 5,
     open,
     maxWidth,
+    fullWidth = false,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
 
@@ -46,7 +47,14 @@ export const Tooltip = ({
     const shouldWrapTrigger = !isNativeElement
 
     const wrappedTrigger = shouldWrapTrigger ? (
-        <span style={{ display: 'inline-flex' }}>{trigger}</span>
+        <span
+            style={{
+                display: fullWidth ? 'flex' : 'inline-flex',
+                width: fullWidth ? '100%' : 'auto',
+            }}
+        >
+            {trigger}
+        </span>
     ) : (
         trigger
     )

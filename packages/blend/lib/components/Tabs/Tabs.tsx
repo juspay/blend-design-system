@@ -20,7 +20,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             showAddButton = false,
             dropdownTooltip = 'Navigate to tab',
             addButtonTooltip = 'Add new tab',
-            maxDisplayTabs = 6,
             value,
             defaultValue,
             onValueChange,
@@ -114,7 +113,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         showAddButton={showAddButton}
                         dropdownTooltip={dropdownTooltip}
                         addButtonTooltip={addButtonTooltip}
-                        maxDisplayTabs={maxDisplayTabs}
                         onTabChange={handleTabChange}
                         activeTab={activeTab}
                     />

@@ -164,7 +164,6 @@ const TabsLightHouse = () => {
                 ]}
                 variant={TabsVariant.UNDERLINE}
                 showDropdown={true}
-                maxDisplayTabs={5}
             />
 
             {/* With Add Button */}

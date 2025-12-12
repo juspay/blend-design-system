@@ -23,11 +23,14 @@ import {
     createOverflowMenuItems,
     handleAutoResize,
     isValidMessageLength,
+    filterDuplicateFiles,
 } from './utils'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import { addSnackbar, SnackbarVariant } from '../Snackbar'
+import { Tooltip } from '../Tooltip/Tooltip'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -236,12 +239,37 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const files = Array.from(e.target.files || [])
                 if (files.length > 0) {
-                    onAttachFiles?.(files)
+                    // Filter out duplicate files
+                    const { newFiles, duplicateFiles } = filterDuplicateFiles(
+                        files,
+                        attachedFiles
+                    )
+
+                    // Show snackbar if duplicates were found
+                    if (duplicateFiles.length > 0) {
+                        const duplicateCount = duplicateFiles.length
+                        const message =
+                            duplicateCount === 1
+                                ? `File "${duplicateFiles[0]}" is already attached`
+                                : `${duplicateCount} duplicate file(s) were not added`
+
+                        addSnackbar({
+                            header: 'Duplicate File',
+                            description: message,
+                            variant: SnackbarVariant.WARNING,
+                            duration: 3000,
+                        })
+                    }
+
+                    // Only call onAttachFiles with non-duplicate files
+                    if (newFiles.length > 0) {
+                        onAttachFiles?.(newFiles)
+                    }
                 }
                 // Reset the input value to allow selecting the same file again
                 e.target.value = ''
             },
-            [onAttachFiles]
+            [onAttachFiles, attachedFiles]
         )
 
         const handleTopQueryClick = useCallback(
@@ -376,47 +404,50 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             const fileName =
                                 file.name || capitalizeFirstLetter(file.type)
                             return (
-                                <Tag
-                                    key={file.id}
-                                    text={capitalizeFirstLetter(file.type)}
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.NEUTRAL}
-                                    size={TagSize.XS}
-                                    leftSlot={getDocIcon(file.type)}
-                                    rightSlot={
-                                        <X
-                                            size={12}
-                                            aria-hidden="true"
-                                            onClick={(e) => {
+                                <Tooltip key={file.id} content={file.name}>
+                                    <Tag
+                                        key={file.id}
+                                        text={capitalizeFirstLetter(file.type)}
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.NEUTRAL}
+                                        size={TagSize.XS}
+                                        leftSlot={getDocIcon(file.type)}
+                                        rightSlot={
+                                            <X
+                                                size={12}
+                                                aria-hidden="true"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    onFileRemove?.(file.id)
+                                                }}
+                                                aria-label={`Remove ${fileName} file`}
+                                            />
+                                        }
+                                        onClick={(e) => {
+                                            const target =
+                                                e.target as HTMLElement
+                                            if (
+                                                target.closest(
+                                                    '[aria-label*="Remove"]'
+                                                )
+                                            ) {
+                                                return
+                                            }
+                                            onFileClick?.(file)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Delete' ||
+                                                e.key === 'Backspace'
+                                            ) {
+                                                e.preventDefault()
                                                 e.stopPropagation()
                                                 onFileRemove?.(file.id)
-                                            }}
-                                            aria-label={`Remove ${fileName} file`}
-                                        />
-                                    }
-                                    onClick={(e) => {
-                                        const target = e.target as HTMLElement
-                                        if (
-                                            target.closest(
-                                                '[aria-label*="Remove"]'
-                                            )
-                                        ) {
-                                            return
-                                        }
-                                        onFileClick?.(file)
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (
-                                            e.key === 'Delete' ||
-                                            e.key === 'Backspace'
-                                        ) {
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                            onFileRemove?.(file.id)
-                                        }
-                                    }}
-                                    aria-label={`${fileName} file, press Delete to remove, click to view`}
-                                />
+                                            }
+                                        }}
+                                        aria-label={`${fileName} file, press Delete to remove, click to view`}
+                                    />
+                                </Tooltip>
                             )
                         })}
 
