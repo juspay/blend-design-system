@@ -329,6 +329,28 @@ const MultiSelectMenu = ({
                                                 searchPlaceholder ||
                                                 'Search options'
                                             }
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    e.key === 'ArrowDown' ||
+                                                    e.key === 'ArrowUp'
+                                                ) {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    const menuContent =
+                                                        e.currentTarget.closest(
+                                                            '[data-dropdown="dropdown"]'
+                                                        )
+                                                    if (menuContent) {
+                                                        const firstMenuItem =
+                                                            menuContent.querySelector<HTMLElement>(
+                                                                '[role="option"]:not([data-disabled])'
+                                                            )
+                                                        if (firstMenuItem) {
+                                                            firstMenuItem.focus()
+                                                        }
+                                                    }
+                                                }
+                                            }}
                                         />
                                     </Block>
                                 )}

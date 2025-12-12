@@ -15,6 +15,10 @@ type SliderCSSProperties = React.CSSProperties & {
         outline?: string
         boxShadow?: string
     }
+    '&:focus-visible'?: {
+        outline?: string
+        boxShadow?: string
+    }
     '&:active'?: {
         cursor?: string
     }
@@ -24,7 +28,7 @@ type SliderCSSProperties = React.CSSProperties & {
     }
 }
 
-interface SliderTokenStyles {
+type SliderTokenStyles = {
     root: SliderCSSProperties
     track: SliderCSSProperties
     range: SliderCSSProperties
@@ -116,7 +120,11 @@ export const getSliderTokenStyles = (
             },
             '&:focus': {
                 outline: 'none',
-                boxShadow: `0 0 0 2px ${currentVariant.thumbFocusRing}20`,
+                boxShadow: `0 0 0 2px ${currentVariant.thumbFocusRing}20, 0 0 0 4px ${currentVariant.thumbFocusRing}10`,
+            },
+            '&:focus-visible': {
+                outline: 'none',
+                boxShadow: `0 0 0 2px ${currentVariant.thumbFocusRing}20, 0 0 0 4px ${currentVariant.thumbFocusRing}10`,
             },
             '&:active': {
                 cursor: 'grabbing',
@@ -148,7 +156,10 @@ export const formatSliderValue = (
 
     switch (type) {
         case SliderValueType.PERCENTAGE:
-            formattedValue = `${(value * 100).toFixed(decimalPlaces)}`
+            formattedValue =
+                value >= 1
+                    ? value.toFixed(decimalPlaces)
+                    : `${(value * 100).toFixed(decimalPlaces)}`
             break
 
         case SliderValueType.DECIMAL:
@@ -254,6 +265,66 @@ export const createSliderRange = (
             ...options,
         } as SliderValueFormatConfig,
     }
+}
+
+/**
+ * Get label styles for value display
+ */
+/**
+ * Builds ARIA attributes for slider thumb elements
+ */
+export const buildThumbAriaAttributes = (options: {
+    min: number
+    max: number
+    value: number
+    formattedValue: string
+    disabled?: boolean
+    ariaLabel?: string
+    ariaLabelledBy?: string
+    ariaDescribedBy?: string
+    thumbIndex: number
+    thumbCount: number
+}): Record<string, string | undefined> => {
+    const {
+        min,
+        max,
+        value,
+        formattedValue,
+        disabled,
+        ariaLabel,
+        ariaLabelledBy,
+        ariaDescribedBy,
+        thumbIndex,
+        thumbCount,
+    } = options
+
+    const ariaProps: Record<string, string | undefined> = {
+        'aria-valuemin': String(min),
+        'aria-valuemax': String(max),
+        'aria-valuenow': String(value),
+        'aria-valuetext': formattedValue,
+        'aria-disabled': disabled ? 'true' : undefined,
+    }
+
+    if (ariaLabelledBy) {
+        ariaProps['aria-labelledby'] = ariaLabelledBy
+    } else if (ariaLabel) {
+        ariaProps['aria-label'] =
+            thumbCount > 1
+                ? `${ariaLabel}, value ${thumbIndex + 1}: ${formattedValue}`
+                : ariaLabel
+    } else {
+        ariaProps['aria-label'] =
+            thumbCount > 1
+                ? `Slider value ${thumbIndex + 1}: ${formattedValue}`
+                : `Slider, current value: ${formattedValue}`
+    }
+
+    if (ariaDescribedBy) {
+        ariaProps['aria-describedby'] = ariaDescribedBy
+    }
+
+    return ariaProps
 }
 
 /**

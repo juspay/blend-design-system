@@ -1,434 +1,356 @@
-import SplitTag from '../../../SplitTag/SplitTag'
-import { TagColor, TagSize, TagShape, TagVariant } from '../../../Tags/types'
-import {
-    Check,
-    X,
-    AlertCircle,
-    Info,
-    Server,
-    Package,
-    GitBranch,
-    Activity,
-    TrendingUp,
-    Shield,
-    Award,
-    DollarSign,
-    Percent,
-    Calendar,
-    Clock,
-    User,
-} from 'lucide-react'
+import { SplitTag } from '../../../SplitTag'
+import { TagColor, TagSize, TagShape, TagVariant } from '../../../Tags'
+import { Check, X, AlertCircle } from 'lucide-react'
 
 const SplitTagLightHouse = () => {
     return (
-        <div className="flex flex-col gap-4">
-            {/* Basic Examples */}
+        <>
+            {/* Basic SplitTag */}
             <SplitTag
                 primaryTag={{
-                    text: 'Status',
-                    color: TagColor.NEUTRAL,
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
-                    text: 'Active',
+                    text: 'Secondary',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.SUCCESS,
                 }}
             />
 
+            {/* Small Size */}
             <SplitTag
                 primaryTag={{
-                    text: 'Version',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: '2.0.0',
+                    text: 'Small',
+                    variant: TagVariant.NO_FILL,
                     color: TagColor.PRIMARY,
                 }}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Priority',
-                    color: TagColor.NEUTRAL,
-                }}
                 secondaryTag={{
-                    text: 'High',
-                    color: TagColor.ERROR,
-                }}
-            />
-
-            {/* With Icons */}
-            <SplitTag
-                primaryTag={{
-                    text: 'Status',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Info size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'Online',
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.SUCCESS,
-                    leftSlot: <Check size={12} aria-hidden="true" />,
-                }}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Build',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Package size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'Failed',
-                    color: TagColor.ERROR,
-                    leftSlot: <X size={12} aria-hidden="true" />,
-                }}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Branch',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <GitBranch size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'main',
-                    color: TagColor.PRIMARY,
-                    rightSlot: <Shield size={12} aria-hidden="true" />,
-                }}
-            />
-
-            {/* All Sizes */}
-            <SplitTag
-                primaryTag={{
-                    text: 'Size',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'XS',
-                    color: TagColor.PRIMARY,
-                }}
-                size={TagSize.XS}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Size',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'SM',
-                    color: TagColor.PRIMARY,
                 }}
                 size={TagSize.SM}
             />
 
+            {/* Medium Size */}
             <SplitTag
                 primaryTag={{
-                    text: 'Size',
-                    color: TagColor.NEUTRAL,
+                    text: 'Medium',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
-                    text: 'MD',
-                    color: TagColor.PRIMARY,
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
                 }}
                 size={TagSize.MD}
             />
 
+            {/* Large Size */}
             <SplitTag
                 primaryTag={{
-                    text: 'Size',
-                    color: TagColor.NEUTRAL,
+                    text: 'Large',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
-                    text: 'LG',
-                    color: TagColor.PRIMARY,
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
                 }}
                 size={TagSize.LG}
             />
 
-            {/* All Shapes */}
+            {/* Rounded Shape */}
             <SplitTag
                 primaryTag={{
-                    text: 'Shape',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'Squarical',
-                    color: TagColor.PRIMARY,
-                }}
-                shape={TagShape.SQUARICAL}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Shape',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
                     text: 'Rounded',
+                    variant: TagVariant.NO_FILL,
                     color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Shape',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
                 }}
                 shape={TagShape.ROUNDED}
-                size={TagSize.SM}
             />
 
-            {/* All Colors */}
+            {/* Squarical Shape */}
             <SplitTag
                 primaryTag={{
-                    text: 'Type',
-                    color: TagColor.NEUTRAL,
+                    text: 'Squarical',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
-                    text: 'Primary',
+                    text: 'Shape',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                }}
+                shape={TagShape.SQUARICAL}
+            />
+
+            {/* With Primary Tag Only */}
+            <SplitTag
+                primaryTag={{
+                    text: 'Primary Only',
+                    variant: TagVariant.NO_FILL,
                     color: TagColor.PRIMARY,
                 }}
             />
 
+            {/* All Primary Colors */}
             <SplitTag
                 primaryTag={{
-                    text: 'Status',
+                    text: 'Neutral',
+                    variant: TagVariant.NO_FILL,
                     color: TagColor.NEUTRAL,
                 }}
                 secondaryTag={{
-                    text: 'Success',
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.SUCCESS,
                 }}
             />
-
             <SplitTag
                 primaryTag={{
-                    text: 'Alert',
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Success',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.SUCCESS,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.PRIMARY,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Error',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.ERROR,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.PRIMARY,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Warning',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.WARNING,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.PRIMARY,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Purple',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PURPLE,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.PRIMARY,
+                }}
+            />
+
+            {/* All Secondary Colors */}
+            <SplitTag
+                primaryTag={{
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Neutral',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.NEUTRAL,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Success',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
                     text: 'Error',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.ERROR,
                 }}
             />
-
             <SplitTag
                 primaryTag={{
-                    text: 'Level',
-                    color: TagColor.NEUTRAL,
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
                     text: 'Warning',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.WARNING,
                 }}
             />
-
             <SplitTag
                 primaryTag={{
-                    text: 'Tag',
-                    color: TagColor.NEUTRAL,
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
                     text: 'Purple',
+                    variant: TagVariant.ATTENTIVE,
                     color: TagColor.PURPLE,
                 }}
             />
 
-            {/* Interactive */}
+            {/* All Variants */}
             <SplitTag
                 primaryTag={{
-                    text: 'Environment',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Server size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'Production',
-                    color: TagColor.SUCCESS,
-                    leftSlot: <Check size={12} aria-hidden="true" />,
-                    onClick: () => {
-                        console.log('Environment clicked')
-                    },
-                }}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Build',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Package size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'v3.2.1',
-                    color: TagColor.PRIMARY,
-                    onClick: () => {
-                        console.log('Build clicked')
-                    },
-                }}
-            />
-
-            {/* Real-world Examples */}
-            <SplitTag
-                primaryTag={{
-                    text: 'API',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'Operational',
-                    color: TagColor.SUCCESS,
-                    leftSlot: <Check size={12} aria-hidden="true" />,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Database',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'Degraded',
-                    color: TagColor.WARNING,
-                    leftSlot: <AlertCircle size={12} aria-hidden="true" />,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'CDN',
-                    color: TagColor.NEUTRAL,
-                }}
-                secondaryTag={{
-                    text: 'Offline',
-                    color: TagColor.ERROR,
-                    leftSlot: <X size={12} aria-hidden="true" />,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Score',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Award size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'A+',
-                    color: TagColor.SUCCESS,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Speed',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Activity size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: '1.2s',
-                    color: TagColor.PRIMARY,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Uptime',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <TrendingUp size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: '99.9%',
-                    color: TagColor.SUCCESS,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Price',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <DollarSign size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: '$99/mo',
-                    color: TagColor.PRIMARY,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Discount',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Percent size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: '20% OFF',
-                    color: TagColor.ERROR,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Sprint',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Calendar size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'Week 3',
-                    color: TagColor.PRIMARY,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Due',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <Clock size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: '2 days',
-                    color: TagColor.ERROR,
-                }}
-                size={TagSize.SM}
-            />
-
-            <SplitTag
-                primaryTag={{
-                    text: 'Role',
-                    color: TagColor.NEUTRAL,
-                    leftSlot: <User size={12} aria-hidden="true" />,
-                }}
-                secondaryTag={{
-                    text: 'Admin',
-                    color: TagColor.ERROR,
-                    leftSlot: <Shield size={12} aria-hidden="true" />,
-                }}
-                size={TagSize.SM}
-            />
-
-            {/* Comprehensive Examples */}
-            <SplitTag
-                primaryTag={{
-                    text: 'Comprehensive',
-                    color: TagColor.NEUTRAL,
+                    text: 'No Fill',
                     variant: TagVariant.NO_FILL,
-                    leftSlot: <Server size={12} aria-hidden="true" />,
-                    onClick: () => {
-                        console.log('Primary clicked')
-                    },
+                    color: TagColor.PRIMARY,
                 }}
                 secondaryTag={{
-                    text: 'SplitTag',
-                    color: TagColor.SUCCESS,
+                    text: 'Attentive',
                     variant: TagVariant.ATTENTIVE,
-                    leftSlot: <Check size={12} aria-hidden="true" />,
-                    onClick: () => {
-                        console.log('Secondary clicked')
-                    },
+                    color: TagColor.SUCCESS,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'No Fill',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Subtle',
+                    variant: TagVariant.SUBTLE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Attentive',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Subtle',
+                    variant: TagVariant.SUBTLE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+
+            {/* With Slots */}
+            <SplitTag
+                primaryTag={{
+                    text: 'With Icon',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                    leftSlot: <Check size={14} />,
+                }}
+                secondaryTag={{
+                    text: 'Tag',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Primary',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'With Icon',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                    rightSlot: <X size={14} />,
+                }}
+            />
+            <SplitTag
+                primaryTag={{
+                    text: 'Both Icons',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                    leftSlot: <Check size={14} />,
+                }}
+                secondaryTag={{
+                    text: 'Icons',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                    rightSlot: <X size={14} />,
+                }}
+            />
+
+            {/* Complex Example */}
+            <SplitTag
+                primaryTag={{
+                    text: 'Complex',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                    leftSlot: <Check size={16} />,
+                }}
+                secondaryTag={{
+                    text: 'Example',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                    rightSlot: <AlertCircle size={16} />,
                 }}
                 size={TagSize.MD}
                 shape={TagShape.ROUNDED}
             />
-        </div>
+
+            {/* Long Text */}
+            <SplitTag
+                primaryTag={{
+                    text: 'Very Long Primary Text',
+                    variant: TagVariant.NO_FILL,
+                    color: TagColor.PRIMARY,
+                }}
+                secondaryTag={{
+                    text: 'Very Long Secondary Text',
+                    variant: TagVariant.ATTENTIVE,
+                    color: TagColor.SUCCESS,
+                }}
+            />
+        </>
     )
 }
 

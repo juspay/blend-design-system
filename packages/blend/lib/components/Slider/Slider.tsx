@@ -5,6 +5,7 @@ import {
     getSliderTokenStyles,
     formatSliderValue,
     getSliderLabelStyles,
+    buildThumbAriaAttributes,
 } from './utils'
 import {
     SliderProps as BaseSliderProps,
@@ -136,6 +137,17 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
         }}
     }
 
+    &:focus-visible {
+        ${({ $variant, $size }) => {
+            const styles = getSliderTokenStyles($variant, $size)
+            return css`
+                outline: none;
+                box-shadow: ${styles.thumb['&:focus-visible']?.boxShadow ||
+                styles.thumb['&:focus']?.boxShadow};
+            `
+        }}
+    }
+
     &:active {
         ${({ $variant, $size }) => {
             const styles = getSliderTokenStyles($variant, $size)
@@ -197,12 +209,26 @@ const Slider = forwardRef<
             valueFormat,
             showValueLabels = false,
             labelPosition = 'top',
+            min = 0,
+            max = 100,
+            step = 1,
+            disabled,
+            orientation,
             ...props
         },
         ref
     ) => {
-        const currentValues = value || defaultValue || [0]
+        const currentValues = value || defaultValue || [min]
         const thumbCount = currentValues.length
+
+        const propsRecord = props as Record<string, unknown>
+        const ariaLabel = propsRecord['aria-label'] as string | undefined
+        const ariaLabelledBy = propsRecord['aria-labelledby'] as
+            | string
+            | undefined
+        const ariaDescribedBy = propsRecord['aria-describedby'] as
+            | string
+            | undefined
 
         return (
             <StyledRoot
@@ -211,26 +237,55 @@ const Slider = forwardRef<
                 $size={size}
                 value={value}
                 defaultValue={defaultValue}
+                min={min}
+                max={max}
+                step={step}
+                disabled={disabled}
+                orientation={orientation}
                 {...props}
             >
                 <StyledTrack $variant={variant} $size={size}>
                     <StyledRange $variant={variant} $size={size} />
                 </StyledTrack>
-                {Array.from({ length: thumbCount }, (_, index) => (
-                    <StyledThumb key={index} $variant={variant} $size={size}>
-                        {showValueLabels && (
-                            <StyledValueLabel
-                                $size={size}
-                                $position={labelPosition}
-                            >
-                                {formatSliderValue(
-                                    currentValues[index],
-                                    valueFormat
-                                )}
-                            </StyledValueLabel>
-                        )}
-                    </StyledThumb>
-                ))}
+                {Array.from({ length: thumbCount }, (_, index) => {
+                    const currentValue = currentValues[index]
+                    const formattedValue = formatSliderValue(
+                        currentValue,
+                        valueFormat
+                    )
+
+                    const thumbAriaProps = buildThumbAriaAttributes({
+                        min,
+                        max,
+                        value: currentValue,
+                        formattedValue,
+                        disabled,
+                        ariaLabel,
+                        ariaLabelledBy,
+                        ariaDescribedBy,
+                        thumbIndex: index,
+                        thumbCount,
+                    })
+
+                    return (
+                        <StyledThumb
+                            key={index}
+                            $variant={variant}
+                            $size={size}
+                            {...thumbAriaProps}
+                        >
+                            {showValueLabels && (
+                                <StyledValueLabel
+                                    $size={size}
+                                    $position={labelPosition}
+                                    aria-hidden="true"
+                                >
+                                    {formattedValue}
+                                </StyledValueLabel>
+                            )}
+                        </StyledThumb>
+                    )
+                })}
             </StyledRoot>
         )
     }
