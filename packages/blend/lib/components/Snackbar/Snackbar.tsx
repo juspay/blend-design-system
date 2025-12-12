@@ -18,13 +18,11 @@ import {
     type CustomToastProps,
     SnackbarVariant,
     SnackbarPosition,
+    SnackbarProps,
+    SnackbarIconProps,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
-
-type SnackbarIconProps = {
-    variant: SnackbarVariant
-}
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
@@ -241,11 +239,6 @@ export const addSnackbar = ({
             },
         }
     )
-}
-
-type SnackbarProps = {
-    position?: SnackbarPosition
-    dismissOnClickAway?: boolean
 }
 
 const Snackbar: React.FC<SnackbarProps> = ({
