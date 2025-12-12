@@ -69,10 +69,22 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             () => processTabsWithConcatenation(items),
             [items]
         )
-        const defaultTabs = useMemo(
-            () => processedItems.filter((item) => item.isDefault === true),
-            [processedItems]
-        )
+        const defaultTabs = useMemo(() => {
+            const hasAnyDefault = processedItems.some(
+                (item) => item.isDefault === true
+            )
+
+            if (hasAnyDefault) {
+                // If any items have isDefault, show only those + active tab
+                return processedItems.filter(
+                    (item) =>
+                        item.isDefault === true || item.value === activeTab
+                )
+            } else {
+                // If no items have isDefault, show all items
+                return processedItems
+            }
+        }, [processedItems, activeTab])
 
         const dropdownItems = useMemo(() => {
             return prepareDropdownItems(sourceItems, sourceItems)
