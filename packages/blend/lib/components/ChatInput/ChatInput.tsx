@@ -29,6 +29,7 @@ import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import { addSnackbar, SnackbarVariant } from '../Snackbar'
+import { Tooltip } from '../Tooltip/Tooltip'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -417,9 +418,11 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         id={filesRegionId}
                     >
                         {visibleFiles.map((file) => {
+                            
                             const fileName =
                                 file.name || capitalizeFirstLetter(file.type)
                             return (
+                                <Tooltip key={file.id} content={file.name}>
                                 <Tag
                                     key={file.id}
                                     text={capitalizeFirstLetter(file.type)}
@@ -461,6 +464,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                     }}
                                     aria-label={`${fileName} file, press Delete to remove, click to view`}
                                 />
+                                </Tooltip>
                             )
                         })}
 
