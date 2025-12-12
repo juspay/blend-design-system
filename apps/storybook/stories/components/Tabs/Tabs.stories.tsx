@@ -139,7 +139,6 @@ const [tabs, setTabs] = useState<TabItem[]>([
   showAddButton={true}
   dropdownTooltip="Navigate to any tab"
   addButtonTooltip="Add new tabs"
-  maxDisplayTabs={4}
 />
 \`\`\`
         `,
@@ -188,10 +187,6 @@ const [tabs, setTabs] = useState<TabItem[]>([
         showAddButton: {
             control: 'boolean',
             description: 'Show add button for adding new tabs',
-        },
-        maxDisplayTabs: {
-            control: 'number',
-            description: 'Maximum tabs to display before scrolling',
         },
     },
     tags: ['autodocs'],
@@ -599,7 +594,6 @@ export const DynamicTabManagement: Story = {
                     showAddButton={true}
                     dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
                     addButtonTooltip="Add new tabs via MultiSelect"
-                    maxDisplayTabs={4}
                 />
 
                 {/* MultiSelect Modal */}
@@ -828,7 +822,6 @@ export const TabConcatenation: Story = {
                     showDropdown={true}
                     showAddButton={false}
                     dropdownTooltip="All tabs (including concatenated ones)"
-                    maxDisplayTabs={3}
                 />
             </div>
         )

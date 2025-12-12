@@ -668,7 +668,6 @@ const TabsDemo = () => {
                             showAddButton={showEnhancedAddButton}
                             dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
                             addButtonTooltip="Add new tabs via MultiSelect"
-                            maxDisplayTabs={4}
                         />
                     </div>
 
@@ -982,7 +981,6 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                             showAddButton={true}
                             dropdownTooltip={`View all ${ANALYTICS_TABS_DATA.length} tabs`}
                             addButtonTooltip={`Add remaining tabs from initial data (${ANALYTICS_TABS_DATA.length - analyticsTabsItems.length} remaining)`}
-                            maxDisplayTabs={4}
                         />
                     </div>
 

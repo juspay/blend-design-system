@@ -20,7 +20,6 @@ import { SelectMenuVariant } from '../Select'
 import {
     processTabsWithConcatenation,
     prepareDropdownItems,
-    getDisplayTabs,
     getActualTabValue,
     isConcatenatedTab,
     extractOriginalValues,
@@ -44,7 +43,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showDropdown = false,
             showAddButton = false,
             addButtonTooltip = 'Add new tab',
-            maxDisplayTabs,
             onTabChange,
             activeTab = '',
             disable = false,
@@ -71,10 +69,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             () => processTabsWithConcatenation(items),
             [items]
         )
-
-        const displayTabs = useMemo(
-            () => getDisplayTabs(processedItems, maxDisplayTabs, activeTab),
-            [processedItems, maxDisplayTabs, activeTab]
+        const defaultTabs = useMemo(
+            () => processedItems.filter((item) => item.isDefault === true),
+            [processedItems]
         )
 
         const dropdownItems = useMemo(() => {
@@ -352,7 +349,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     marginBottom: 0,
                                 }}
                             >
-                                {displayTabs.map((item) => {
+                                {defaultTabs.map((item) => {
                                     const tabValue = getActualTabValue(
                                         item.value,
                                         originalTabValues
