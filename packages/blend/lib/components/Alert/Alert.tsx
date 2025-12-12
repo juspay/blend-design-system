@@ -161,6 +161,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                 data-element="primary-action"
                                                 data-id={primaryAction.label}
                                                 onClick={primaryAction.onClick}
+                                                tabIndex={0}
+                                                aria-label={`${primaryAction.label} action`}
                                                 style={{
                                                     border: 'none',
                                                     background: 'none',
@@ -180,6 +182,11 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                     width: 'fit-content',
                                                     whiteSpace: 'nowrap',
                                                 }}
+                                                _focusVisible={{
+                                                    outline: `2px solid ${alertTokens.button.primaryAction.color[variant]}`,
+                                                    outlineOffset: '2px',
+                                                    borderRadius: '4px',
+                                                }}
                                             >
                                                 {primaryAction.label}
                                             </PrimitiveButton>
@@ -192,6 +199,8 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                 onClick={
                                                     secondaryAction.onClick
                                                 }
+                                                tabIndex={0}
+                                                aria-label={`${secondaryAction.label} action`}
                                                 style={{
                                                     border: 'none',
                                                     background: 'none',
@@ -210,6 +219,11 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                             .fontSize,
                                                     width: 'fit-content',
                                                     whiteSpace: 'nowrap',
+                                                }}
+                                                _focusVisible={{
+                                                    outline: `2px solid ${alertTokens.button.secondaryAction.color[variant]}`,
+                                                    outlineOffset: '2px',
+                                                    borderRadius: '4px',
                                                 }}
                                             >
                                                 {secondaryAction.label}

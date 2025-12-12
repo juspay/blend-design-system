@@ -1,151 +1,439 @@
-import Tag from '../../../Tags/Tag'
-import { TagColor, TagShape, TagSize, TagVariant } from '../../../Tags/types'
-import { X, Check, Star, Heart } from 'lucide-react'
+import { Tag, TagVariant, TagColor, TagSize, TagShape } from '../../../Tags'
+import { X, Check, AlertCircle } from 'lucide-react'
 
 const TagLightHouse = () => {
     return (
-        <div className="flex flex-col gap-4">
-            {/* Basic Tags */}
-            <Tag text="Basic Tag" />
-            <Tag text="Primary Tag" color={TagColor.PRIMARY} />
-            <Tag text="Success Tag" color={TagColor.SUCCESS} />
-            <Tag text="Error Tag" color={TagColor.ERROR} />
-            <Tag text="Warning Tag" color={TagColor.WARNING} />
-            <Tag text="Purple Tag" color={TagColor.PURPLE} />
-
-            {/* Interactive Tags */}
-            <Tag text="Interactive Tag" onClick={() => {}} />
+        <>
+            {/* Basic Tag - Subtle Primary */}
             <Tag
-                text="Removable Tag"
-                rightSlot={<X size={12} aria-hidden="true" />}
-                onClick={() => {}}
-            />
-            <Tag
-                text="Selectable Tag"
-                variant={TagVariant.ATTENTIVE}
-                color={TagColor.PRIMARY}
-                onClick={() => {}}
-            />
-
-            {/* Tags with Icons */}
-            <Tag
-                text="Tag with Left Icon"
-                leftSlot={<Star size={12} aria-hidden="true" />}
-            />
-            <Tag
-                text="Tag with Right Icon"
-                rightSlot={<Check size={12} aria-hidden="true" />}
-            />
-            <Tag
-                text="Tag with Both Icons"
-                leftSlot={<Heart size={12} aria-hidden="true" />}
-                rightSlot={<X size={12} aria-hidden="true" />}
-                onClick={() => {}}
-            />
-
-            {/* All Variants */}
-            <Tag
-                text="No Fill Variant"
-                variant={TagVariant.NO_FILL}
-                color={TagColor.PRIMARY}
-            />
-            <Tag
-                text="Attentive Variant"
-                variant={TagVariant.ATTENTIVE}
-                color={TagColor.PRIMARY}
-            />
-            <Tag
-                text="Subtle Variant"
+                text="Tag"
                 variant={TagVariant.SUBTLE}
                 color={TagColor.PRIMARY}
             />
 
+            {/* All Variants */}
+            <Tag
+                text="No Fill"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Attentive"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Subtle"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+            />
+
+            {/* All Colors */}
+            <Tag
+                text="Neutral"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.NEUTRAL}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PURPLE}
+            />
+
             {/* All Sizes */}
-            <Tag text="Extra Small" size={TagSize.XS} />
-            <Tag text="Small" size={TagSize.SM} />
-            <Tag text="Medium" size={TagSize.MD} />
-            <Tag text="Large" size={TagSize.LG} />
+            <Tag
+                text="XS"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.XS}
+            />
+            <Tag
+                text="SM"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="MD"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="LG"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.LG}
+            />
 
             {/* All Shapes */}
-            <Tag text="Squarical Shape" shape={TagShape.SQUARICAL} />
-            <Tag text="Rounded Shape" shape={TagShape.ROUNDED} />
-
-            {/* Interactive Tags - All Sizes */}
-            <Tag text="XS Interactive" size={TagSize.XS} onClick={() => {}} />
-            <Tag text="SM Interactive" size={TagSize.SM} onClick={() => {}} />
-            <Tag text="MD Interactive" size={TagSize.MD} onClick={() => {}} />
-            <Tag text="LG Interactive" size={TagSize.LG} onClick={() => {}} />
-
-            {/* All Colors - Interactive */}
             <Tag
-                text="Neutral Interactive"
-                color={TagColor.NEUTRAL}
-                onClick={() => {}}
-            />
-            <Tag
-                text="Primary Interactive"
+                text="Rounded"
+                variant={TagVariant.SUBTLE}
                 color={TagColor.PRIMARY}
-                onClick={() => {}}
+                shape={TagShape.ROUNDED}
             />
             <Tag
-                text="Success Interactive"
+                text="Squarical"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                shape={TagShape.SQUARICAL}
+            />
+
+            {/* With Left Slot */}
+            <Tag
+                text="With Icon"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                leftSlot={<Check size={14} />}
+            />
+
+            {/* With Right Slot */}
+            <Tag
+                text="Closable"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                rightSlot={<X size={14} />}
+            />
+
+            {/* With Both Slots */}
+            <Tag
+                text="Both Icons"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                leftSlot={<Check size={14} />}
+                rightSlot={<X size={14} />}
+            />
+
+            {/* All Variants with Primary Color */}
+            <Tag
+                text="No Fill Primary"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Attentive Primary"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Subtle Primary"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+            />
+
+            {/* All Variants with Success Color */}
+            <Tag
+                text="No Fill Success"
+                variant={TagVariant.NO_FILL}
                 color={TagColor.SUCCESS}
-                onClick={() => {}}
             />
             <Tag
-                text="Error Interactive"
+                text="Attentive Success"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.SUCCESS}
+            />
+            <Tag
+                text="Subtle Success"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+            />
+
+            {/* All Variants with Error Color */}
+            <Tag
+                text="No Fill Error"
+                variant={TagVariant.NO_FILL}
                 color={TagColor.ERROR}
-                onClick={() => {}}
             />
             <Tag
-                text="Warning Interactive"
+                text="Attentive Error"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.ERROR}
+            />
+            <Tag
+                text="Subtle Error"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+            />
+
+            {/* All Variants with Warning Color */}
+            <Tag
+                text="No Fill Warning"
+                variant={TagVariant.NO_FILL}
                 color={TagColor.WARNING}
-                onClick={() => {}}
             />
             <Tag
-                text="Purple Interactive"
+                text="Attentive Warning"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.WARNING}
+            />
+            <Tag
+                text="Subtle Warning"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+            />
+
+            {/* Split Tag - Left */}
+            <Tag
+                text="Split Left"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                splitTagPosition="left"
+            />
+
+            {/* Split Tag - Right */}
+            <Tag
+                text="Split Right"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                splitTagPosition="right"
+            />
+
+            {/* With Skeleton */}
+            <Tag
+                text="Loading Tag"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                showSkeleton={true}
+                skeletonVariant="pulse"
+            />
+
+            {/* Long Text */}
+            <Tag
+                text="This is a very long tag text that demonstrates how the component handles longer content"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+            />
+
+            {/* Complex Example */}
+            <Tag
+                text="Complex Tag"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.SUCCESS}
+                size={TagSize.MD}
+                shape={TagShape.ROUNDED}
+                leftSlot={<Check size={16} />}
+                rightSlot={<X size={16} />}
+            />
+
+            {/* All Color Combinations - Small */}
+            <Tag
+                text="Neutral"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.NEUTRAL}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+                size={TagSize.SM}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.SUBTLE}
                 color={TagColor.PURPLE}
-                onClick={() => {}}
+                size={TagSize.SM}
             />
 
-            {/* Split Tags */}
-            <div className="flex">
-                <Tag
-                    text="Version"
-                    splitTagPosition="left"
-                    color={TagColor.NEUTRAL}
-                />
-                <Tag
-                    text="2.0.0"
-                    splitTagPosition="right"
-                    color={TagColor.PRIMARY}
-                />
-            </div>
-
-            {/* Tags with Custom aria-label */}
+            {/* All Color Combinations - Medium */}
             <Tag
-                text="Tag Text"
-                aria-label="Custom accessible name for tag"
-                onClick={() => {}}
+                text="Neutral"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.NEUTRAL}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+                size={TagSize.MD}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PURPLE}
+                size={TagSize.MD}
             />
 
-            {/* Multiple Tags Group */}
-            <div className="flex gap-2 flex-wrap">
-                <Tag text="React" color={TagColor.PRIMARY} onClick={() => {}} />
-                <Tag
-                    text="TypeScript"
-                    color={TagColor.SUCCESS}
-                    onClick={() => {}}
-                />
-                <Tag
-                    text="JavaScript"
-                    color={TagColor.WARNING}
-                    onClick={() => {}}
-                />
-                <Tag text="CSS" color={TagColor.PURPLE} onClick={() => {}} />
-                <Tag text="HTML" color={TagColor.ERROR} onClick={() => {}} />
-            </div>
-        </div>
+            {/* All Color Combinations - Large */}
+            <Tag
+                text="Neutral"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.NEUTRAL}
+                size={TagSize.LG}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PRIMARY}
+                size={TagSize.LG}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+                size={TagSize.LG}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+                size={TagSize.LG}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+                size={TagSize.LG}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.PURPLE}
+                size={TagSize.LG}
+            />
+
+            {/* No Fill Variant - All Colors */}
+            <Tag
+                text="Neutral"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.NEUTRAL}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.SUCCESS}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.ERROR}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.WARNING}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.NO_FILL}
+                color={TagColor.PURPLE}
+            />
+
+            {/* Attentive Variant - All Colors */}
+            <Tag
+                text="Neutral"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.NEUTRAL}
+            />
+            <Tag
+                text="Primary"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.PRIMARY}
+            />
+            <Tag
+                text="Success"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.SUCCESS}
+            />
+            <Tag
+                text="Error"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.ERROR}
+            />
+            <Tag
+                text="Warning"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.WARNING}
+            />
+            <Tag
+                text="Purple"
+                variant={TagVariant.ATTENTIVE}
+                color={TagColor.PURPLE}
+            />
+
+            {/* With Icons - Different Colors */}
+            <Tag
+                text="Success Tag"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.SUCCESS}
+                leftSlot={<Check size={14} />}
+            />
+            <Tag
+                text="Error Tag"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.ERROR}
+                leftSlot={<AlertCircle size={14} />}
+            />
+            <Tag
+                text="Warning Tag"
+                variant={TagVariant.SUBTLE}
+                color={TagColor.WARNING}
+                leftSlot={<AlertCircle size={14} />}
+            />
+        </>
     )
 }
 

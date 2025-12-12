@@ -1,6 +1,7 @@
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import { useRef, useState, useEffect, useId } from 'react'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
+import { useRef, useState, useEffect, useId, useCallback } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
 import { TextInputSize, type TextInputProps } from './types'
@@ -17,6 +18,7 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
+import { Eye, EyeOff } from 'lucide-react'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -42,6 +44,8 @@ const TextInput = ({
     onFocus,
     cursor = 'text',
     id: providedId,
+    passwordToggle = false,
+    type: providedType,
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
@@ -51,11 +55,19 @@ const TextInput = ({
     const inputId = providedId || generatedId
     const errorId = `${inputId}-error`
     const hintId = `${inputId}-hint`
+    const toggleButtonId = `${inputId}-password-toggle`
 
     const [isFocused, setIsFocused] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
+
+    const inputType = passwordToggle
+        ? showPassword
+            ? 'text'
+            : 'password'
+        : providedType || 'text'
 
     const inputFocusedOrWithValue = isFocused || value.length > 0
     const isSmallScreenWithLargeSize =
@@ -80,11 +92,89 @@ const TextInput = ({
         toPixels(textInputTokens.inputContainer.padding.y[size]) +
         (isSmallScreenWithLargeSize ? 0.5 : 1)
     const GAP = toPixels(textInputTokens.gap)
+    const handleTogglePassword = useCallback(() => {
+        setShowPassword((prev) => !prev)
+    }, [])
+
+    const handleToggleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.stopPropagation()
+                handleTogglePassword()
+            }
+        },
+        [handleTogglePassword]
+    )
+
+    const getToggleButtonColor = () => {
+        if (disabled) return textInputTokens.inputContainer.color.disabled
+        if (error) return textInputTokens.inputContainer.color.error
+        return textInputTokens.inputContainer.color.default
+    }
+
+    const passwordToggleButton = passwordToggle ? (
+        <PrimitiveButton
+            id={toggleButtonId}
+            type="button"
+            role="button"
+            aria-label={
+                showPassword
+                    ? 'Hide password. Currently showing password as plain text.'
+                    : 'Show password. Currently hiding password.'
+            }
+            aria-pressed={showPassword}
+            aria-controls={inputId}
+            onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleTogglePassword()
+            }}
+            onKeyDown={handleToggleKeyDown}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            backgroundColor="transparent"
+            border="none"
+            cursor={disabled ? 'not-allowed' : 'pointer'}
+            padding={0}
+            color={getToggleButtonColor()}
+            transition="color 200ms ease-in-out"
+            _hover={{
+                color: disabled
+                    ? textInputTokens.inputContainer.color.disabled
+                    : textInputTokens.inputContainer.color.hover,
+            }}
+            _focusVisible={{
+                outline: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                outlineOffset: '2px',
+                borderRadius: textInputTokens.inputContainer.borderRadius[size],
+            }}
+            disabled={disabled}
+            tabIndex={disabled ? -1 : 0}
+        >
+            {showPassword ? (
+                <EyeOff size={18} aria-hidden="true" />
+            ) : (
+                <Eye size={18} aria-hidden="true" />
+            )}
+        </PrimitiveButton>
+    ) : null
+
+    const combinedRightSlot =
+        rightSlot && passwordToggleButton ? (
+            <Block display="flex" alignItems="center" gap={GAP}>
+                {rightSlot}
+                {passwordToggleButton}
+            </Block>
+        ) : (
+            passwordToggleButton || rightSlot
+        )
 
     const paddingInlineStart = leftSlot
         ? paddingX + leftSlotWidth + GAP
         : paddingX
-    const paddingInlineEnd = rightSlot
+    const paddingInlineEnd = combinedRightSlot
         ? paddingX + rightSlotWidth + GAP
         : paddingX
 
@@ -99,7 +189,7 @@ const TextInput = ({
         } else {
             setRightSlotWidth(0)
         }
-    }, [leftSlot, rightSlot])
+    }, [leftSlot, combinedRightSlot])
 
     return (
         <Block
@@ -125,6 +215,12 @@ const TextInput = ({
                 position="relative"
                 width={'100%'}
                 style={getErrorShakeStyle(shouldShake)}
+                role={passwordToggle ? 'group' : undefined}
+                aria-label={
+                    passwordToggle
+                        ? `${label || 'Password'} input with visibility toggle`
+                        : undefined
+                }
             >
                 {leftSlot && (
                     <Block
@@ -184,6 +280,11 @@ const TextInput = ({
                     aria-required={required ? 'true' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
                     aria-describedby={ariaDescribedBy}
+                    autoComplete={
+                        passwordToggle && providedType === 'password'
+                            ? 'current-password'
+                            : rest.autoComplete
+                    }
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={
@@ -246,8 +347,17 @@ const TextInput = ({
                         onBlur?.(e)
                     }}
                     {...rest}
+                    type={
+                        inputType as
+                            | 'text'
+                            | 'password'
+                            | 'email'
+                            | 'tel'
+                            | 'url'
+                            | 'search'
+                    }
                 />
-                {rightSlot && (
+                {combinedRightSlot && (
                     <Block
                         data-element="right-slot"
                         ref={rightSlotRef}
@@ -261,9 +371,16 @@ const TextInput = ({
                                 'transform 200ms ease-in-out, opacity 200ms ease-in-out',
                             transform: isFocused ? 'scale(1.05)' : 'scale(1)',
                             opacity: isFocused ? 1 : 0.7,
+                            pointerEvents: 'none',
                         }}
                     >
-                        {rightSlot}
+                        <Block
+                            style={{
+                                pointerEvents: 'auto',
+                            }}
+                        >
+                            {combinedRightSlot}
+                        </Block>
                     </Block>
                 )}
             </Wrapper>
