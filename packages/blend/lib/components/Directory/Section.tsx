@@ -170,9 +170,6 @@ const Section = ({
                         display: 'flex',
                         flexDirection: 'column',
                         gap: tokens.section.itemList.gap,
-                        listStyle: 'none',
-                        margin: 0,
-                        padding: 0,
                     }}
                     id={`${idPrefix || ''}section-content-${sectionIndex}`}
                     role="list"

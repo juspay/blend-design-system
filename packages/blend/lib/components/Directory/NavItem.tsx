@@ -226,11 +226,6 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     $tokens={tokens}
                     role="list"
                     aria-label={`${item.label} submenu`}
-                    style={{
-                        listStyle: 'none',
-                        margin: 0,
-                        padding: 0,
-                    }}
                 >
                     {item.items &&
                         item.items.map((childItem, childIdx) => (
