@@ -121,6 +121,35 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'Snackbar.position',
+                hintText:
+                    'Optional SnackbarPosition enum value that determines where snackbars appear on the screen. Options include TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, BOTTOM_CENTER. Controls the positioning of all snackbars rendered by this Snackbar component instance. Defaults to BOTTOM_RIGHT.',
+            },
+            {
+                content: 'SnackbarPosition',
+                hintText:
+                    'Enum that determines the position of snackbars on the screen',
+            },
+            {
+                content:
+                    'TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, BOTTOM_CENTER',
+            },
+        ],
+        [
+            {
+                content: 'Snackbar.dismissOnClickAway',
+                hintText:
+                    'Optional boolean that controls whether clicking outside snackbars will dismiss all snackbars. When true, clicking anywhere outside a snackbar element will dismiss all active snackbars. When false, snackbars will not dismiss on click away and must be closed manually via the close button or auto-dismiss. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables click-away dismiss, false disables click-away dismiss',
+            },
+            { content: 'false' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

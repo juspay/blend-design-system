@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { useId } from 'react'
+import { useId, useEffect } from 'react'
 import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
@@ -18,13 +18,11 @@ import {
     type CustomToastProps,
     SnackbarVariant,
     SnackbarPosition,
+    SnackbarProps,
+    SnackbarIconProps,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarTokens } from './snackbar.tokens'
-
-type SnackbarIconProps = {
-    variant: SnackbarVariant
-}
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
@@ -243,14 +241,38 @@ export const addSnackbar = ({
     )
 }
 
-type SnackbarProps = {
-    position?: SnackbarPosition
-}
-
 const Snackbar: React.FC<SnackbarProps> = ({
     position = SnackbarPosition.BOTTOM_RIGHT,
+    dismissOnClickAway = false,
 }) => {
     const isCenter = position?.includes('center')
+
+    // Handle click away to dismiss all snackbars
+    useEffect(() => {
+        if (!dismissOnClickAway) {
+            return
+        }
+
+        const handleClickAway = (event: MouseEvent) => {
+            const target = event.target as Node
+
+            // Check if click is on a snackbar element
+            const clickedSnackbar = (target as Element)?.closest(
+                '[data-snackbar]'
+            )
+
+            // If click is not on a snackbar, dismiss all snackbars
+            if (!clickedSnackbar) {
+                sonnerToast.dismiss()
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickAway)
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickAway)
+        }
+    }, [dismissOnClickAway])
 
     return (
         <Toaster

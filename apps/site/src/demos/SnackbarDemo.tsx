@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
     Button,
     ButtonSize,
@@ -5,12 +6,18 @@ import {
 } from '../../../../packages/blend/lib/components/Button'
 import {
     addSnackbar,
+    Snackbar,
     SnackbarPosition,
     SnackbarVariant,
 } from '../../../../packages/blend/lib/components/Snackbar'
 import { StyledToast } from '../../../../packages/blend/lib/components/Snackbar/Snackbar'
+import {
+    Switch,
+    SwitchSize,
+} from '../../../../packages/blend/lib/components/Switch'
 
 const SnackbarDemo = () => {
+    const [dismissOnClickAway, setDismissOnClickAway] = useState(false)
     const showInfoSnackbar = () => {
         addSnackbar({
             header: 'Information',
@@ -252,6 +259,27 @@ const SnackbarDemo = () => {
                         onClick={showSnackbarWithCustomClose}
                         text="Custom Close Handler"
                     />
+                </div>
+            </div>
+            {/* Dismiss on Click Away Control */}
+            <div className="flex flex-col gap-4">
+                <h2 className="text-lg font-semibold">Dismiss on Click Away</h2>
+                <p className="text-sm text-gray-600">
+                    Toggle whether snackbars should be dismissed when clicking
+                    outside of them.
+                </p>
+                <div className="flex items-center gap-3">
+                    <Switch
+                        checked={dismissOnClickAway}
+                        onChange={setDismissOnClickAway}
+                        label="Dismiss snackbars on click away"
+                        size={SwitchSize.MEDIUM}
+                    />
+                    <span className="text-sm text-gray-600">
+                        {dismissOnClickAway
+                            ? 'Enabled - Clicking outside will dismiss all snackbars'
+                            : 'Disabled - Snackbars will not dismiss on click away'}
+                    </span>
                 </div>
             </div>
 
@@ -532,7 +560,10 @@ const SnackbarDemo = () => {
             </div>
 
             {/* Snackbar Component (required for the toasts to appear) */}
-            {/* <Snackbar position="top-right" /> */}
+            <Snackbar
+                position={SnackbarPosition.BOTTOM_RIGHT}
+                dismissOnClickAway={dismissOnClickAway}
+            />
         </div>
     )
 }
