@@ -418,52 +418,52 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         id={filesRegionId}
                     >
                         {visibleFiles.map((file) => {
-                            
                             const fileName =
                                 file.name || capitalizeFirstLetter(file.type)
                             return (
                                 <Tooltip key={file.id} content={file.name}>
-                                <Tag
-                                    key={file.id}
-                                    text={capitalizeFirstLetter(file.type)}
-                                    variant={TagVariant.SUBTLE}
-                                    color={TagColor.NEUTRAL}
-                                    size={TagSize.XS}
-                                    leftSlot={getDocIcon(file.type)}
-                                    rightSlot={
-                                        <X
-                                            size={12}
-                                            aria-hidden="true"
-                                            onClick={(e) => {
+                                    <Tag
+                                        key={file.id}
+                                        text={capitalizeFirstLetter(file.type)}
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.NEUTRAL}
+                                        size={TagSize.XS}
+                                        leftSlot={getDocIcon(file.type)}
+                                        rightSlot={
+                                            <X
+                                                size={12}
+                                                aria-hidden="true"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    onFileRemove?.(file.id)
+                                                }}
+                                                aria-label={`Remove ${fileName} file`}
+                                            />
+                                        }
+                                        onClick={(e) => {
+                                            const target =
+                                                e.target as HTMLElement
+                                            if (
+                                                target.closest(
+                                                    '[aria-label*="Remove"]'
+                                                )
+                                            ) {
+                                                return
+                                            }
+                                            onFileClick?.(file)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Delete' ||
+                                                e.key === 'Backspace'
+                                            ) {
+                                                e.preventDefault()
                                                 e.stopPropagation()
                                                 onFileRemove?.(file.id)
-                                            }}
-                                            aria-label={`Remove ${fileName} file`}
-                                        />
-                                    }
-                                    onClick={(e) => {
-                                        const target = e.target as HTMLElement
-                                        if (
-                                            target.closest(
-                                                '[aria-label*="Remove"]'
-                                            )
-                                        ) {
-                                            return
-                                        }
-                                        onFileClick?.(file)
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (
-                                            e.key === 'Delete' ||
-                                            e.key === 'Backspace'
-                                        ) {
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                            onFileRemove?.(file.id)
-                                        }
-                                    }}
-                                    aria-label={`${fileName} file, press Delete to remove, click to view`}
-                                />
+                                            }
+                                        }}
+                                        aria-label={`${fileName} file, press Delete to remove, click to view`}
+                                    />
                                 </Tooltip>
                             )
                         })}
