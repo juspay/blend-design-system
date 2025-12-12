@@ -317,6 +317,7 @@ const AccessibilityDashboard = forwardRef<
                                             items: componentOptions,
                                         },
                                     ]}
+                                    enableSearch={true}
                                 />
                             </div>
                         </div>

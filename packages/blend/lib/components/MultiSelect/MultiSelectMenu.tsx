@@ -35,7 +35,7 @@ const Content = styled(RadixMenu.Content)`
     background-color: ${FOUNDATION_THEME.colors.gray[0]};
     border-radius: ${FOUNDATION_THEME.border.radius[8]};
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     border: ${FOUNDATION_THEME.border.width[1]} solid
         ${FOUNDATION_THEME.colors.gray[200]};
     display: flex;

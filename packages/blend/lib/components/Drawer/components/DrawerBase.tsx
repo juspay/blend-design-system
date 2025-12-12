@@ -36,7 +36,7 @@ const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
     background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
-    z-index: 1100;
+    z-index: 99;
 `
 
 const StyledContent = styled(VaulDrawer.Content)<{
@@ -53,7 +53,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
         right?: string
     }
 }>`
-    z-index: 1200;
+    z-index: 100;
     background-color: ${({ tokens }) => tokens.content.backgroundColor};
     outline: none;
     display: flex;
