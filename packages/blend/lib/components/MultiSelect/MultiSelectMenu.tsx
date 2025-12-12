@@ -293,7 +293,7 @@ const MultiSelectMenu = ({
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
                     side={side}
-                    avoidCollisions={false}
+                    avoidCollisions
                     onKeyDown={handleKeyDown}
                     role="listbox"
                     aria-multiselectable="true"

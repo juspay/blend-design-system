@@ -1,3 +1,5 @@
+import React, { type ReactNode } from 'react'
+
 export const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
         return value
@@ -33,4 +35,22 @@ export const getTruncatedText = (text: string, limit?: number) => {
         fullValue: text,
         isTruncated: true,
     }
+}
+
+export const formatTextWithLineBreaks = (
+    content: ReactNode | string
+): ReactNode => {
+    if (typeof content === 'string' && content.includes('\n')) {
+        return content
+            .split('\n')
+            .map((line, index, array) =>
+                React.createElement(
+                    'span',
+                    { key: index },
+                    line,
+                    index < array.length - 1 && React.createElement('br')
+                )
+            )
+    }
+    return content
 }
