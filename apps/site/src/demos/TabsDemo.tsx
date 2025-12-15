@@ -63,7 +63,7 @@ const ANALYTICS_TABS_DATA = [
         label: 'Payment Instrument Group',
         isDefault: true,
     },
-    { value: 'bank_name', label: 'Bank', isDefault: false },
+    { value: 'bank_name', label: 'Bank', isDefault: true },
     {
         value: 'actual_payment_status',
         label: 'Actual Payment Status',
