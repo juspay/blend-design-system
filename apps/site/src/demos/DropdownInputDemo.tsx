@@ -66,22 +66,23 @@ const DropdownInputDemo = () => {
                 {
                     label: 'tansaction success rate ',
                     value: 'US',
+                    isDisabled: false,
                 },
-                { label: 'United Kingdom', value: 'UK' },
-                { label: 'Canada', value: 'CA' },
-                { label: 'Germany', value: 'DE' },
-                { label: 'France', value: 'FR' },
+                { label: 'United Kingdom', value: 'UK', isDisabled: true },
+                { label: 'Canada', value: 'CA', isDisabled: false },
+                { label: 'Germany', value: 'DE', isDisabled: false },
+                { label: 'France', value: 'FR', isDisabled: false },
             ],
             showSeparator: true,
         },
         {
             groupLabel: 'Other Countries',
             items: [
-                { label: 'Australia', value: 'AU' },
-                { label: 'Japan', value: 'JP' },
-                { label: 'India', value: 'IN' },
-                { label: 'Brazil', value: 'BR' },
-                { label: 'South Africa', value: 'ZA' },
+                { label: 'Australia', value: 'AU', isDisabled: true },
+                { label: 'Japan', value: 'JP', isDisabled: false },
+                { label: 'India', value: 'IN', isDisabled: false },
+                { label: 'Brazil', value: 'BR', isDisabled: false },
+                { label: 'South Africa', value: 'ZA', isDisabled: false },
             ],
         },
     ]
@@ -165,6 +166,28 @@ const DropdownInputDemo = () => {
                 { label: 'Option 1', value: 'option1' },
                 { label: 'Option 2', value: 'option2' },
                 { label: 'Option 3', value: 'option3' },
+            ],
+        },
+    ]
+    // Basic options for states section with disabled items
+    const basicOptionsWithDisabledItems: SelectMenuGroupType[] = [
+        {
+            items: [
+                {
+                    label: 'Disabled option',
+                    value: 'option1',
+                    isDisabled: true,
+                },
+                {
+                    label: 'Enabled option',
+                    value: 'option2',
+                    isDisabled: false,
+                },
+                {
+                    label: 'Enabled option',
+                    value: 'option3',
+                    isDisabled: false,
+                },
             ],
         },
     ]
@@ -471,6 +494,21 @@ const DropdownInputDemo = () => {
                             dropDownValue="option1"
                             onDropDownChange={() => {}}
                             dropDownItems={basicOptions}
+                            placeholder="Disabled"
+                        />
+                    </div>
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-medium">
+                            Disabled with disabled items
+                        </h3>
+                        <DropdownInput
+                            label="Disabled items state"
+                            disabled={false}
+                            value="Disabled input"
+                            onChange={() => {}}
+                            dropDownValue="option1"
+                            onDropDownChange={() => {}}
+                            dropDownItems={basicOptionsWithDisabledItems}
                             placeholder="Disabled"
                         />
                     </div>

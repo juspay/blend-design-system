@@ -70,6 +70,7 @@ export type SelectMenuItemType = {
         offset?: number
     }
     disableTruncation?: boolean
+    isDisabled?: boolean
 }
 
 export const dummyMenuItemsLong: SelectMenuGroupType[] = Array.from(

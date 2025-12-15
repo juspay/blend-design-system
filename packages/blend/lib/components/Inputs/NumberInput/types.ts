@@ -4,7 +4,7 @@ export enum NumberInputSize {
 }
 
 export type NumberInputProps = {
-    value: number | undefined
+    value: number | null
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     step?: number
     error?: boolean

@@ -10,7 +10,13 @@ import { ActiveItemProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 
-const Directory = ({ directoryData, className, idPrefix }: DirectoryProps) => {
+const Directory = ({
+    directoryData,
+    idPrefix,
+    activeItem,
+    onActiveItemChange,
+    defaultActiveItem,
+}: DirectoryProps) => {
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )
@@ -23,7 +29,11 @@ const Directory = ({ directoryData, className, idPrefix }: DirectoryProps) => {
     }, [directoryData])
 
     return (
-        <ActiveItemProvider>
+        <ActiveItemProvider
+            activeItem={activeItem}
+            onActiveItemChange={onActiveItemChange}
+            defaultActiveItem={defaultActiveItem}
+        >
             <Block
                 as="nav"
                 width="100%"
@@ -33,7 +43,6 @@ const Directory = ({ directoryData, className, idPrefix }: DirectoryProps) => {
                 flexDirection="column"
                 alignItems="center"
                 overflow="auto"
-                className={className}
                 aria-label="Directory navigation"
                 gap={tokens.gap}
                 paddingX={tokens.paddingX}

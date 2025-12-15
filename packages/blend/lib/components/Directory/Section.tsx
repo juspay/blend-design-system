@@ -184,6 +184,7 @@ const Section = ({
                             key={itemIdx}
                             item={item}
                             index={itemIdx}
+                            itemPath={item.label}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

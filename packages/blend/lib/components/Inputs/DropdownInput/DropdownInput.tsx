@@ -108,6 +108,39 @@ const DropdownInput = ({
             ? paddingX + (dropdownWidth ? dropdownWidth + 2 * GAP : 0)
             : paddingX
 
+    // Helper function to check if a specific dropdown item is disabled
+    // This accesses the `isDisabled` property from items in dropDownItems
+    const isItemDisabled = (itemValue: string): boolean => {
+        for (const group of dropDownItems) {
+            for (const item of group.items) {
+                if (item.value === itemValue) {
+                    // Check both `disabled` and `isDisabled` properties
+                    return item.disabled === true || item.isDisabled === true
+                }
+                // Check subMenu items if they exist
+                if (item.subMenu) {
+                    for (const subItem of item.subMenu) {
+                        if (subItem.value === itemValue) {
+                            return (
+                                subItem.disabled === true ||
+                                subItem.isDisabled === true
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    // Check if the currently selected dropdown item is disabled
+    const isSelectedItemDisabled = dropDownValue
+        ? isItemDisabled(dropDownValue)
+        : false
+
+    // Combine component-level disabled with selected item disabled state
+    const isInputDisabled = disabled || isSelectedItemDisabled
+
     useEffect(() => {
         if (slotRef.current) {
             setSlotWidth(slotRef.current.offsetWidth)
@@ -237,7 +270,11 @@ const DropdownInput = ({
                     value={value}
                     type="text"
                     name={name}
-                    onChange={onChange}
+                    onChange={(e) => {
+                        if (!isInputDisabled) {
+                            onChange?.(e)
+                        }
+                    }}
                     paddingInlineStart={paddingInlineStart}
                     paddingInlineEnd={paddingInlineEnd}
                     paddingTop={
@@ -279,7 +316,7 @@ const DropdownInput = ({
                         ],
                     }}
                     color={
-                        disabled
+                        isInputDisabled
                             ? dropdownInputTokens.inputContainer.color.disabled
                             : dropdownInputTokens.inputContainer.color.default
                     }
@@ -291,7 +328,7 @@ const DropdownInput = ({
                         boxShadow: '0 0 0 3px #EFF6FF',
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
-                    disabled={disabled}
+                    disabled={isInputDisabled}
                     _disabled={{
                         backgroundColor:
                             dropdownInputTokens.inputContainer.backgroundColor
