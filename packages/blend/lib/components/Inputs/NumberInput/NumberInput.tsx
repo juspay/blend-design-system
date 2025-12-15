@@ -135,7 +135,7 @@ const NumberInput = ({
                     name={name}
                     type="number"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
-                    value={value}
+                    value={value ?? ''}
                     onChange={onChange}
                     step={step}
                     min={min}
@@ -277,6 +277,7 @@ const NumberInput = ({
                             disabled ||
                             (typeof max === 'number' &&
                                 value !== undefined &&
+                                value !== null &&
                                 value >= max)
                         }
                         _focus={{
@@ -365,6 +366,7 @@ const NumberInput = ({
                             disabled ||
                             (typeof min === 'number' &&
                                 value !== undefined &&
+                                value !== null &&
                                 value <= min)
                         }
                     >

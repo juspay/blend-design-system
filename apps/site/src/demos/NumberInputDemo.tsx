@@ -6,9 +6,7 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 
 const NumberInputDemo = () => {
-    const [playgroundValue, setPlaygroundValue] = useState<number | undefined>(
-        undefined
-    )
+    const [playgroundValue, setPlaygroundValue] = useState<number | null>(null)
     const [playgroundSize, setPlaygroundSize] = useState<NumberInputSize>(
         NumberInputSize.MEDIUM
     )
@@ -66,7 +64,11 @@ const NumberInputDemo = () => {
                             label="Value"
                             value={playgroundValue}
                             onChange={(e) =>
-                                setPlaygroundValue(Number(e.target.value))
+                                setPlaygroundValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
                             }
                             placeholder="Enter value"
                         />
@@ -136,7 +138,11 @@ const NumberInputDemo = () => {
                                 sublabel="This is a sublabel"
                                 value={playgroundValue}
                                 onChange={(e) =>
-                                    setPlaygroundValue(Number(e.target.value))
+                                    setPlaygroundValue(
+                                        e.target.value === ''
+                                            ? null
+                                            : Number(e.target.value)
+                                    )
                                 }
                                 placeholder="Enter number..."
                                 size={playgroundSize}
@@ -487,7 +493,11 @@ const NumberInputDemo = () => {
                             label="Controlled"
                             value={playgroundValue}
                             onChange={(e) =>
-                                setPlaygroundValue(Number(e.target.value))
+                                setPlaygroundValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
                             }
                             placeholder="Type here..."
                         />
