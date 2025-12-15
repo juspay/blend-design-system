@@ -116,6 +116,9 @@ export type SidebarProps = {
         React.ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >
+    activeItem?: string | null
+    onActiveItemChange?: (item: string | null) => void
+    defaultActiveItem?: string | null
 }
 
 export type MobileNavigationItem = NavbarItem & {
