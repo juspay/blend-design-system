@@ -126,8 +126,10 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             )
         }
 
-        const renderChildren = () => {
-            return React.Children.map(children, (child) => {
+        const renderChildren = (
+            childrenToRender: React.ReactNode
+        ): React.ReactNode => {
+            return React.Children.map(childrenToRender, (child) => {
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
@@ -146,29 +148,45 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     (child.type as { displayName?: string }).displayName ===
                         'TabsTrigger'
 
-                const childProps = {
-                    ...existingProps,
-                    disable: childDisable || disable,
-                    ...(isTabsList && {
-                        activeTab,
-                        showSkeleton,
-                        skeletonVariant,
-                        variant,
-                        size,
-                    }),
-                    ...(isTabsTrigger && {
-                        showSkeleton:
-                            'showSkeleton' in existingProps
-                                ? existingProps.showSkeleton
-                                : showSkeleton,
-                        skeletonVariant:
-                            'skeletonVariant' in existingProps
-                                ? existingProps.skeletonVariant
-                                : skeletonVariant,
-                    }),
+                // If it's a TabsList or TabsTrigger, apply props directly
+                if (isTabsList || isTabsTrigger) {
+                    const childProps = {
+                        ...existingProps,
+                        disable: childDisable || disable,
+                        ...(isTabsList && {
+                            activeTab,
+                            showSkeleton,
+                            skeletonVariant,
+                            variant,
+                            size,
+                        }),
+                        ...(isTabsTrigger && {
+                            showSkeleton:
+                                'showSkeleton' in existingProps
+                                    ? existingProps.showSkeleton
+                                    : showSkeleton,
+                            skeletonVariant:
+                                'skeletonVariant' in existingProps
+                                    ? existingProps.skeletonVariant
+                                    : skeletonVariant,
+                        }),
+                    }
+                    return React.cloneElement(child, childProps)
                 }
 
-                return React.cloneElement(child, childProps)
+                // If it's a regular element with children, recursively process its children
+                const childChildren =
+                    (existingProps.children as React.ReactNode) || null
+                if (childChildren) {
+                    const childProps = {
+                        ...existingProps,
+                        children: renderChildren(childChildren),
+                    }
+                    return React.cloneElement(child, childProps)
+                }
+
+                // Otherwise, return as-is
+                return child
             })
         }
 
@@ -182,7 +200,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 onValueChange={handleValueChange}
                 {...props}
             >
-                {renderChildren()}
+                {renderChildren(children)}
             </StyledTabs>
         )
     }
