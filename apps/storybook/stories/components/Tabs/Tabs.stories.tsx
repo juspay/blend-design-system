@@ -188,6 +188,32 @@ const [tabs, setTabs] = useState<TabItem[]>([
             control: 'boolean',
             description: 'Show add button for adding new tabs',
         },
+        expanded: {
+            control: 'boolean',
+            description:
+                'When true, tabs expand to fill the full available width of their container. This is useful for creating evenly distributed tabs across the entire width, ensuring consistent spacing and a balanced visual appearance. When false, tabs only take up the space needed for their content.',
+        },
+        fitContent: {
+            control: 'boolean',
+            description:
+                'When true, tabs automatically size to fit their content width rather than expanding or using default sizing. This is ideal when you want tabs to be compact and only take up the minimum space required. Useful for scenarios with varying tab label lengths where you want each tab to be sized individually based on its content.',
+        },
+        disable: {
+            control: 'boolean',
+            description:
+                'When true, disables all tabs in the tab list, preventing user interaction. All tabs will be visually disabled and non-interactive. This is useful for temporarily disabling the entire tab component during loading states or when certain conditions prevent tab navigation. Individual tabs can still override this with their own disable prop.',
+        },
+        showSkeleton: {
+            control: 'boolean',
+            description:
+                'When true, displays skeleton loading placeholders instead of the actual tab content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tabs, creating a smooth transition when content loads.',
+        },
+        skeletonVariant: {
+            control: 'select',
+            options: ['pulse', 'wave', 'shimmer'],
+            description:
+                'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
+        },
     },
     tags: ['autodocs'],
 }
