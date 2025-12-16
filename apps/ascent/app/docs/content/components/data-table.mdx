@@ -975,13 +975,13 @@ function CompactTable() {
             {
                 content: 'onRowSelectionChange',
                 hintText:
-                    'Optional callback function invoked when row selection state changes (row selected or deselected). Receives selectedRowIds (array of all currently selected row IDs), isSelected (whether the triggering row was selected or deselected), rowId (the ID of the row that triggered the change), and rowData (the complete row object). Use this to track selection state or trigger side effects.',
+                    'Optional callback function invoked when row selection state changes (row selected or deselected). Receives selectedRowIds (array of all currently selected row IDs), isSelected (whether the triggering row was selected or deselected), rowId (the ID of the row that triggered the change), and rowData (the RAW data from the original data array, not processed/filtered/formatted data displayed in the table). The rowData parameter contains the exact data structure from your API response, ensuring you have access to all original fields for API operations, even if they are not displayed in the table columns. This is essential for operations like updates, deletes, or exports where you need the complete original data.',
             },
             {
                 content:
                     '(selectedRowIds: string[], isSelected: boolean, rowId: string, rowData: T) => void',
                 hintText:
-                    'Function called with selection state when row selection changes',
+                    'Function called with selection state and raw row data when row selection changes',
             },
             { content: '' },
         ],
@@ -989,11 +989,88 @@ function CompactTable() {
             {
                 content: 'bulkActions',
                 hintText:
-                    'Optional BulkActionsConfig object that configures the bulk actions bar displayed when rows are selected. Contains showSelectAll, showDeselectAll, onSelectAll, onDeselectAll callbacks, and customActions (React element for custom action buttons). The bulk actions bar appears above the table when one or more rows are selected.',
+                    'Optional BulkActionsConfig object that configures the bulk actions bar displayed when rows are selected. Contains showSelectAll, showDeselectAll, onSelectAll, onDeselectAll callbacks, customActions (React element for custom action buttons), and showExport (boolean to control visibility of the default Export button). When showExport is false, the Export button is hidden and only customActions are shown. Defaults to true (Export button visible). The bulk actions bar appears above the table when one or more rows are selected.',
             },
             {
                 content: 'BulkActionsConfig',
                 hintText: 'Object with bulk action configuration properties',
+            },
+            {
+                content: 'BulkActionsConfig: see BulkActionsConfig props below',
+            },
+        ],
+        [
+            {
+                content: 'bulkActions.showSelectAll',
+                hintText:
+                    'Optional boolean that controls whether to show the "Select All" button in the bulk actions bar. When true, displays a button that allows users to select all rows on the current page. When false, the select all functionality is hidden. Defaults to undefined (not shown).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows select all button, false/undefined hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bulkActions.showDeselectAll',
+                hintText:
+                    'Optional boolean that controls whether to show the "Deselect All" button in the bulk actions bar. When true, displays a button that allows users to deselect all currently selected rows. When false, the deselect all functionality is hidden. Defaults to undefined (not shown).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows deselect all button, false/undefined hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bulkActions.showExport',
+                hintText:
+                    'Optional boolean that controls whether to show the default Export button in the BulkActionBar. When true (default), the Export button appears in the bulk actions bar and triggers CSV export of selected rows. When false, the Export button is hidden and only customActions are shown. Useful when you want to provide your own export functionality or hide export entirely. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows export button (default), false hides it',
+            },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'bulkActions.customActions',
+                hintText:
+                    'Optional React element (typically buttons or action components) displayed in the bulk actions bar alongside the default Export button (if shown). Use this to add custom bulk actions like "Delete", "Archive", "Send Email", etc. The custom actions appear after the default Export button and Deselect All button.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React elements (typically buttons) for custom bulk actions',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bulkActions.onSelectAll',
+                hintText:
+                    'Optional callback function invoked when the "Select All" button is clicked. Use this to handle custom select all logic if needed. Note that the DataTable component handles selection internally, so this callback is primarily for side effects or custom behavior.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when select all button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'bulkActions.onDeselectAll',
+                hintText:
+                    'Optional callback function invoked when the "Deselect All" button is clicked. Use this to handle custom deselect all logic if needed. Note that the DataTable component handles deselection internally, so this callback is primarily for side effects or custom behavior.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when deselect all button is clicked',
             },
             { content: '' },
         ],

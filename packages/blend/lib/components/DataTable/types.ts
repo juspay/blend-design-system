@@ -260,6 +260,7 @@ export type BulkActionsConfig = {
     onSelectAll?: () => void
     onDeselectAll?: () => void
     customActions?: ReactNode
+    showExport?: boolean
 }
 
 export type RowActionConfig<T extends Record<string, unknown>> = {

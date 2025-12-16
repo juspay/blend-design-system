@@ -496,6 +496,27 @@ const columns: ColumnDefinition<User>[] = [
                 category: 'Selection',
             },
         },
+        onRowSelectionChange: {
+            action: 'row-selection-changed',
+            description:
+                'Callback function invoked when row selection state changes. Receives selectedRowIds (array of all currently selected row IDs), isSelected (whether the triggering row was selected or deselected), rowId (the ID of the row that triggered the change), and rowData (the RAW data from the original data array, not processed/filtered/formatted data). The rowData parameter contains the exact data structure from your API, ensuring you have access to all original fields for API operations, even if they are not displayed in the table columns.',
+            table: {
+                type: {
+                    summary:
+                        '(selectedRowIds: string[], isSelected: boolean, rowId: string, rowData: T) => void',
+                },
+                category: 'Selection',
+            },
+        },
+        bulkActions: {
+            control: false,
+            description:
+                'Optional BulkActionsConfig object that configures the bulk actions bar displayed when rows are selected. Contains showSelectAll, showDeselectAll, onSelectAll, onDeselectAll callbacks, customActions (React element for custom action buttons), and showExport (boolean to control visibility of the default Export button). The bulk actions bar appears above the table when one or more rows are selected.',
+            table: {
+                type: { summary: 'BulkActionsConfig' },
+                category: 'Selection',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -1111,8 +1132,21 @@ const ComplexDataTable: React.FC = () => {
         console.log('Row expansion changed:', rowId, isExpanded)
     }
 
-    const handleRowSelectionChange = (selectedRowIds: string[]) => {
+    const handleRowSelectionChange = (
+        selectedRowIds: string[],
+        isSelected: boolean,
+        rowId: string,
+        rowData: Record<string, unknown>
+    ) => {
         setSelectedRows(selectedRowIds)
+        // rowData contains RAW data from the original data array
+        // Access all original fields, not just displayed columns
+        console.log('Row selection changed:', {
+            selectedRowIds,
+            isSelected,
+            rowId,
+            rawData: rowData,
+        })
     }
 
     const complexColumns: ColumnDefinition<Record<string, unknown>>[] = [
@@ -1390,6 +1424,140 @@ export const ComplexExample: Story = {
         docs: {
             description: {
                 story: 'Comprehensive DataTable example with all features enabled: search, filtering, sorting, pagination, inline editing, row expansion, column management, and custom actions.',
+            },
+        },
+    },
+}
+
+// Row Selection with Raw Data and Custom Export
+export const RowSelectionWithRawData: Story = {
+    render: () => {
+        const RowSelectionExample = () => {
+            // Raw data from API - includes fields not displayed in table
+            const rawApiData: User[] = generateUsers(20).map((user, index) => ({
+                ...user,
+                // Additional fields from API that aren't displayed
+                internalId: `INT-${index + 1000}`,
+                createdAt: new Date(2023, 0, index + 1).toISOString(),
+                lastLogin: new Date(2024, 5, index + 1).toISOString(),
+                apiVersion: 'v2.1',
+                metadata: {
+                    source: 'ldap',
+                    syncStatus: 'synced',
+                },
+            }))
+
+            const handleRowSelectionChange = (
+                selectedRowIds: string[],
+                isSelected: boolean,
+                rowId: string,
+                rowData: Record<string, unknown>
+            ) => {
+                // Type assertion to access raw API fields
+                const rawData = rowData as User & {
+                    internalId?: string
+                    createdAt?: string
+                    lastLogin?: string
+                    apiVersion?: string
+                    metadata?: { source?: string; syncStatus?: string }
+                }
+
+                console.log('🔄 Row selection changed:', {
+                    action: isSelected ? 'SELECTED' : 'DESELECTED',
+                    rowId,
+                    // Access raw data fields not shown in table
+                    internalId: rawData.internalId,
+                    createdAt: rawData.createdAt,
+                    lastLogin: rawData.lastLogin,
+                    apiVersion: rawData.apiVersion,
+                    metadata: rawData.metadata,
+                    // Display fields
+                    name: rawData.name,
+                    email: rawData.email,
+                    totalSelectedCount: selectedRowIds.length,
+                })
+
+                // Example: Use raw data for API operations
+                if (isSelected) {
+                    console.log(`📦 Raw API data for selected row:`, rawData)
+                    // You can now use rawData.internalId, rawData.metadata, etc.
+                    // for API calls even though they're not displayed in the table
+                }
+            }
+
+            const handleCustomExport = () => {
+                console.log('📥 Custom export clicked')
+                alert(
+                    'Custom export functionality - Export button is hidden, using custom action instead'
+                )
+            }
+
+            return (
+                <div style={{ padding: '24px' }}>
+                    <div
+                        style={{
+                            marginBottom: '16px',
+                            padding: '12px',
+                            backgroundColor: '#e0f2fe',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <strong>✨ New Features:</strong>
+                        <ul style={{ margin: '8px 0 0 20px', padding: 0 }}>
+                            <li>
+                                <strong>showExport: false</strong> - Export
+                                button is hidden, only custom actions shown
+                            </li>
+                            <li>
+                                <strong>Raw Data in Callback</strong> -{' '}
+                                onRowSelectionChange receives raw API data with
+                                all fields (internalId, createdAt, metadata,
+                                etc.), not just displayed columns
+                            </li>
+                        </ul>
+                    </div>
+                    <DataTable
+                        data={rawApiData as any[]}
+                        columns={userColumns.slice(0, 4) as any[]}
+                        idField="id"
+                        title="User Management - Raw Data Example"
+                        description="Demonstrates raw data access and custom export button"
+                        enableSearch={true}
+                        enableFiltering={true}
+                        enableRowSelection={true}
+                        pagination={{
+                            currentPage: 1,
+                            pageSize: 10,
+                            totalRows: rawApiData.length,
+                        }}
+                        onRowSelectionChange={handleRowSelectionChange}
+                        bulkActions={{
+                            showSelectAll: true,
+                            showDeselectAll: true,
+                            // Hide default Export button
+                            showExport: false,
+                            customActions: (
+                                <Button
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.SMALL}
+                                    leadingIcon={<Download size={16} />}
+                                    onClick={handleCustomExport}
+                                >
+                                    Custom Export
+                                </Button>
+                            ),
+                        }}
+                    />
+                </div>
+            )
+        }
+        return <RowSelectionExample />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable demonstrating row selection with raw data access and custom export button. The onRowSelectionChange callback receives RAW data from the original API response (including fields like internalId, createdAt, metadata that are not displayed in table columns). The showExport prop is set to false to hide the default Export button, and a custom export action is provided instead. This is useful when you need access to all original API fields for operations like updates, deletes, or custom exports.',
             },
         },
     },
