@@ -268,12 +268,26 @@ function CompactTable() {
             {
                 content: 'description',
                 hintText:
-                    'Optional descriptive text displayed below the title in the table header. Provides additional context, instructions, or summary information about the table content. Useful for explaining data sources or usage guidelines.',
+                    'Optional descriptive text displayed below the title in the table header. Provides additional context, instructions, or summary information about the table content. Useful for explaining data sources or usage guidelines. When the text is truncated due to space constraints, a tooltip will automatically appear on hover showing the full text.',
             },
             {
                 content: 'string',
                 hintText:
                     'Descriptive text shown below the title in the header',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'descriptionTooltipProps',
+                hintText:
+                    'Optional tooltip configuration object for customizing the tooltip that appears when the description text is truncated. Allows control over tooltip direction (side: top, right, bottom, left), alignment (align: start, center, end), size (sm, lg), arrow visibility, delay duration, and offset distance. When the description overflows its container, hovering over it will show a tooltip with the full text. Use this prop to position the tooltip optimally based on your layout and prevent it from being cut off by viewport edges.',
+            },
+            {
+                content:
+                    '{\n  side?: "top" | "right" | "bottom" | "left"\n  align?: "start" | "center" | "end"\n  size?: "sm" | "lg"\n  showArrow?: boolean\n  delayDuration?: number\n  offset?: number\n}',
+                hintText:
+                    'Object with optional tooltip configuration properties',
             },
             { content: '' },
         ],

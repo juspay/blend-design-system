@@ -13,6 +13,9 @@ import {
     Button,
     ButtonType,
     ButtonSize,
+    TooltipSide,
+    TooltipAlign,
+    TooltipSize,
 } from '@juspay/blend-design-system'
 import {
     Download,
@@ -168,6 +171,18 @@ const columns: ColumnDefinition<User>[] = [
             description: 'Description text displayed below the title',
             table: {
                 type: { summary: 'string' },
+                category: 'Basic',
+            },
+        },
+        descriptionTooltipProps: {
+            control: false,
+            description:
+                'Optional tooltip configuration for the description when it is truncated. Allows control over tooltip direction (side), alignment (align), size, arrow visibility, delay duration, and offset. When the description text overflows its container, a tooltip will appear on hover showing the full text. Use this prop to customize the tooltip positioning and appearance.',
+            table: {
+                type: {
+                    summary:
+                        '{\n  side?: TooltipSide\n  align?: TooltipAlign\n  size?: TooltipSize\n  showArrow?: boolean\n  delayDuration?: number\n  offset?: number\n}',
+                },
                 category: 'Basic',
             },
         },
@@ -1042,6 +1057,34 @@ export const FooterHidden: Story = {
         docs: {
             description: {
                 story: 'DataTable with footer hidden using showFooter={false}. Ideal for compact displays with only a few rows where pagination controls are unnecessary.',
+            },
+        },
+    },
+}
+
+// Description with custom tooltip
+export const DescriptionWithCustomTooltip: Story = {
+    args: {
+        data: sampleUsers.slice(0, 10) as any[],
+        columns: userColumns as any[],
+        idField: 'id',
+        title: 'User Management',
+        description:
+            'This is a very long description that demonstrates how the tooltip works when text is truncated. The description will be cut off when it exceeds the available space, and hovering over it will show a tooltip with the full text. You can customize the tooltip position, alignment, size, and other properties.',
+        descriptionTooltipProps: {
+            side: TooltipSide.BOTTOM,
+            align: TooltipAlign.START,
+            size: TooltipSize.LARGE,
+            showArrow: true,
+            offset: 8,
+            delayDuration: 300,
+        },
+        isHoverable: true,
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "DataTable with a long description that will be truncated. The descriptionTooltipProps allows you to customize the tooltip that appears on hover, including its position (side), alignment (align), size, arrow visibility, offset distance, and delay duration. This is useful for ensuring tooltips are positioned optimally and don't get cut off by viewport edges.",
             },
         },
     },

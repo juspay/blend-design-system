@@ -20,7 +20,7 @@ import {
 } from '../../Drawer'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import Tooltip from '../../Tooltip/Tooltip'
-import { TooltipSize } from '../../Tooltip/types'
+import { TooltipSize, TooltipSide, TooltipAlign } from '../../Tooltip/types'
 
 const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
     <PrimitiveButton
@@ -81,9 +81,18 @@ const MobileSearchInput = ({
 
 const TruncatedTextWithTooltip = ({
     children,
+    tooltipProps,
     ...textProps
 }: {
     children: React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
     [key: string]: unknown
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null)
@@ -163,7 +172,15 @@ const TruncatedTextWithTooltip = ({
 
     if (isTruncated && children) {
         return (
-            <Tooltip content={children} size={TooltipSize.LARGE}>
+            <Tooltip
+                content={children}
+                size={tooltipProps?.size || TooltipSize.LARGE}
+                side={tooltipProps?.side}
+                align={tooltipProps?.align}
+                showArrow={tooltipProps?.showArrow}
+                delayDuration={tooltipProps?.delayDuration}
+                offset={tooltipProps?.offset}
+            >
                 {content}
             </Tooltip>
         )
@@ -194,6 +211,7 @@ const DataTableHeader = forwardRef<
             headerSlot1,
             headerSlot2,
             headerSlot3,
+            descriptionTooltipProps,
         },
         ref
     ) => {
@@ -575,6 +593,7 @@ const DataTableHeader = forwardRef<
                                     maxWidth: '100%',
                                 }}
                                 truncate
+                                tooltipProps={descriptionTooltipProps}
                             >
                                 {description}
                             </TruncatedTextWithTooltip>

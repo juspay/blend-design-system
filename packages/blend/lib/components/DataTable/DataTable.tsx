@@ -81,6 +81,7 @@ const DataTable = forwardRef(
             idField,
             title,
             description,
+            descriptionTooltipProps,
             defaultSort,
             enableSearch = false,
             searchPlaceholder = 'Search...',
@@ -1167,6 +1168,7 @@ const DataTable = forwardRef(
                 <DataTableHeader
                     title={title}
                     description={description}
+                    descriptionTooltipProps={descriptionTooltipProps}
                     showHeader={showHeader}
                     showToolbar={showToolbar}
                     enableSearch={enableSearch}
