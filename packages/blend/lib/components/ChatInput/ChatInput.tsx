@@ -383,6 +383,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         onFileRemove={onFileRemove}
                         onFileClick={onFileClick}
                         overflowMenuProps={overflowMenuProps}
+                        placeholder={placeholder}
                     />
                 </>
             )

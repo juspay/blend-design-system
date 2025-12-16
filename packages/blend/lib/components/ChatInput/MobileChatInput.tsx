@@ -36,6 +36,7 @@ type MobileChatInputProps = {
     onFileRemove?: (fileId: string) => void
     onFileClick?: (file: AttachedFile) => void
     overflowMenuProps?: Partial<MenuProps>
+    placeholder?: string
 }
 
 const MobileChatInput = ({
@@ -49,6 +50,7 @@ const MobileChatInput = ({
     onFileRemove,
     onFileClick,
     overflowMenuProps,
+    placeholder,
 }: MobileChatInputProps) => {
     const tokens = getChatInputTokens(FOUNDATION_THEME).sm
     const textareaMobileTokens = tokens.textareaMobile
@@ -56,9 +58,11 @@ const MobileChatInput = ({
     const containerRef = useRef<HTMLDivElement>(null!)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const textareaContainerRef = useRef<HTMLDivElement>(null)
+    const inputWrapperRef = useRef<HTMLDivElement>(null)
     const initialBottomRef = useRef<number | null>(null)
     const lastWidth = useRef<number>(0)
     const isExpanding = useRef<boolean>(false)
+    const [truncatedPlaceholder, setTruncatedPlaceholder] = useState<string>('')
     const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
     const [cutOffIndex, setCutOffIndex] = useState<number>(attachedFiles.length)
     const [isCalculating, setIsCalculating] = useState(true)
@@ -191,122 +195,202 @@ const MobileChatInput = ({
     //     onChange?.(e.target.value)
     // }
 
+    // Optimized function to update textarea and files container positioning
+    const updateTextareaAndFilesPosition = useCallback(() => {
+        if (!textareaRef.current || !textareaContainerRef.current) return
+
+        const textarea = textareaRef.current
+        const container = textareaContainerRef.current
+        const MIN_HEIGHT = 44
+        const MAX_HEIGHT = 100
+        const hasContent = value && value.trim() !== ''
+
+        // Calculate initial bottom position if not set (only once on mount)
+        if (initialBottomRef.current === null) {
+            // Get position while textarea is still in static/default state
+            const textareaRect = textarea.getBoundingClientRect()
+            const containerRect = container.getBoundingClientRect()
+            initialBottomRef.current =
+                containerRect.bottom - textareaRect.bottom
+        }
+
+        // Always position textarea absolutely to prevent position jumps
+        textarea.style.position = 'absolute'
+        textarea.style.bottom =
+            initialBottomRef.current !== null
+                ? `${initialBottomRef.current}px`
+                : '0px'
+        textarea.style.left = '0'
+        textarea.style.right = '0'
+        textarea.style.width = '100%'
+        textarea.style.zIndex = '0'
+
+        // Calculate new height
+        // First, set height to minimum to check if content overflows
+        textarea.style.height = `${MIN_HEIGHT}px`
+        textarea.style.overflowY = 'hidden'
+
+        // Force a reflow to get accurate scrollHeight
+        void textarea.offsetHeight
+
+        // Check if content overflows at minimum height
+        const scrollHeightAtMin = textarea.scrollHeight
+        const isOverflowing = scrollHeightAtMin > MIN_HEIGHT
+
+        let newHeight = MIN_HEIGHT
+
+        // Only grow if content actually overflows
+        if (hasContent && isOverflowing) {
+            // Now set to auto to get the full content height
+            textarea.style.height = 'auto'
+            const fullScrollHeight = textarea.scrollHeight
+            newHeight = Math.min(fullScrollHeight, MAX_HEIGHT)
+            textarea.style.height = `${newHeight}px`
+            textarea.style.overflowY =
+                fullScrollHeight > MAX_HEIGHT ? 'auto' : 'hidden'
+        } else {
+            // Keep at minimum height
+            textarea.style.height = `${MIN_HEIGHT}px`
+            textarea.style.overflowY = 'hidden'
+        }
+
+        // Position files container absolutely above textarea (only if files exist)
+        if (filesContainerRef.current && attachedFiles.length > 0) {
+            const filesContainer = filesContainerRef.current
+            const GAP = 4 // Gap between files and textarea
+            filesContainer.style.position = 'absolute'
+            filesContainer.style.bottom =
+                initialBottomRef.current !== null
+                    ? `${initialBottomRef.current + newHeight + GAP}px`
+                    : `${newHeight + GAP}px`
+            filesContainer.style.left = '0'
+            filesContainer.style.right = '0'
+            filesContainer.style.zIndex = '999'
+        }
+    }, [value, attachedFiles.length])
+
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>
     ) => {
         onChange?.(e.target.value)
-        // Auto-resize textarea based on content with upward growth
-        if (textareaRef.current && textareaContainerRef.current) {
-            const textarea = textareaRef.current
-            const container = textareaContainerRef.current
-            const MIN_HEIGHT = 44
-            const MAX_HEIGHT = 100
-            const value = e.target.value
-
-            // Calculate initial bottom position if not set
-            if (initialBottomRef.current === null) {
-                const textareaRect = textarea.getBoundingClientRect()
-                const containerRect = container.getBoundingClientRect()
-                initialBottomRef.current =
-                    containerRect.bottom - textareaRect.bottom
-            }
-
-            // If empty, set to minimum height and reset position
-            if (!value || value.trim() === '') {
-                textarea.style.height = `${MIN_HEIGHT}px`
-                textarea.style.overflowY = 'hidden'
-                textarea.style.position = 'static'
-                textarea.style.bottom = 'auto'
-                return
-            }
-
-            // Position absolutely for upward growth
-            textarea.style.position = 'absolute'
-            textarea.style.bottom =
-                initialBottomRef.current !== null
-                    ? `${initialBottomRef.current}px`
-                    : '0px'
-            textarea.style.left = '0'
-            textarea.style.right = '0'
-            textarea.style.width = '100%'
-            textarea.style.zIndex = '1000'
-
-            textarea.style.height = 'auto'
-            const scrollHeight = textarea.scrollHeight
-            const newHeight = Math.max(
-                MIN_HEIGHT,
-                Math.min(scrollHeight, MAX_HEIGHT)
-            )
-            textarea.style.height = `${newHeight}px`
-            textarea.style.overflowY =
-                scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden'
-        }
     }
 
     const textareaId = `mobile-chat-input-textarea-${generatedId}`
+    const placeholderText = placeholder || 'Type your message'
 
-    // Calculate initial bottom position for upward growth
+    // Function to truncate placeholder based on available width
+    const truncatePlaceholder = useCallback(() => {
+        if (!textareaRef.current) return
+
+        const textarea = textareaRef.current
+        const style = window.getComputedStyle(textarea)
+        const paddingLeft = parseFloat(style.paddingLeft) || 0
+        const paddingRight = parseFloat(style.paddingRight) || 0
+        const EXTRA_OFFSET = slot1 ? 36 : 0 // Extra space to subtract only if slot1 is present
+        const availableWidth =
+            textarea.offsetWidth - paddingLeft - paddingRight - EXTRA_OFFSET
+
+        // Create a temporary span to measure text width
+        const measureElement = document.createElement('span')
+        measureElement.style.visibility = 'hidden'
+        measureElement.style.position = 'absolute'
+        measureElement.style.whiteSpace = 'nowrap'
+        measureElement.style.fontSize = style.fontSize
+        measureElement.style.fontFamily = style.fontFamily
+        measureElement.style.fontWeight = style.fontWeight
+        measureElement.style.letterSpacing = style.letterSpacing
+        document.body.appendChild(measureElement)
+
+        // Measure full placeholder
+        measureElement.textContent = placeholderText || ''
+        const fullWidth = measureElement.offsetWidth
+
+        if (fullWidth <= availableWidth) {
+            setTruncatedPlaceholder(placeholderText)
+            document.body.removeChild(measureElement)
+            return
+        }
+
+        // Binary search for the right truncation point
+        let left = 0
+        let right = placeholderText.length
+        let truncated = placeholderText
+
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2)
+            const testText = placeholderText.substring(0, mid) + '...'
+            measureElement.textContent = testText
+            const testWidth = measureElement.offsetWidth
+
+            if (testWidth <= availableWidth) {
+                truncated = testText
+                left = mid + 1
+            } else {
+                right = mid - 1
+            }
+        }
+
+        setTruncatedPlaceholder(truncated)
+        document.body.removeChild(measureElement)
+    }, [placeholderText, slot1])
+
+    // Calculate initial bottom position on mount and set absolute positioning immediately
     useEffect(() => {
         if (
             textareaRef.current &&
             textareaContainerRef.current &&
             initialBottomRef.current === null
         ) {
-            const textareaRect = textareaRef.current.getBoundingClientRect()
-            const containerRect =
-                textareaContainerRef.current.getBoundingClientRect()
-            initialBottomRef.current =
-                containerRect.bottom - textareaRect.bottom
-        }
-    }, [])
-
-    // Auto-resize textarea on mount and when value changes
-    useEffect(() => {
-        if (textareaRef.current && textareaContainerRef.current) {
             const textarea = textareaRef.current
             const container = textareaContainerRef.current
-            const MIN_HEIGHT = 44
-            const MAX_HEIGHT = 100
 
-            // Calculate initial bottom position if not set
-            if (initialBottomRef.current === null) {
-                const textareaRect = textarea.getBoundingClientRect()
-                const containerRect = container.getBoundingClientRect()
-                initialBottomRef.current =
-                    containerRect.bottom - textareaRect.bottom
-            }
+            // Calculate bottom position while in default state
+            const textareaRect = textarea.getBoundingClientRect()
+            const containerRect = container.getBoundingClientRect()
+            initialBottomRef.current =
+                containerRect.bottom - textareaRect.bottom
 
-            // If empty, set to minimum height and reset position
-            if (!value || value.trim() === '') {
-                textarea.style.height = `${MIN_HEIGHT}px`
-                textarea.style.overflowY = 'hidden'
-                textarea.style.position = 'static'
-                textarea.style.bottom = 'auto'
-                return
-            }
-
-            // Position absolutely for upward growth
+            // Immediately set absolute positioning to prevent jumps when typing starts
             textarea.style.position = 'absolute'
-            textarea.style.bottom =
-                initialBottomRef.current !== null
-                    ? `${initialBottomRef.current}px`
-                    : '0px'
+            textarea.style.bottom = `${initialBottomRef.current}px`
             textarea.style.left = '0'
             textarea.style.right = '0'
             textarea.style.width = '100%'
-            textarea.style.zIndex = '1000'
-
-            textarea.style.height = 'auto'
-            const scrollHeight = textarea.scrollHeight
-            const newHeight = Math.max(
-                MIN_HEIGHT,
-                Math.min(scrollHeight, MAX_HEIGHT)
-            )
-            textarea.style.height = `${newHeight}px`
-            textarea.style.overflowY =
-                scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden'
+            textarea.style.zIndex = '0'
         }
-    }, [value])
+    }, [])
+
+    // Truncate placeholder on mount and when textarea width changes
+    useEffect(() => {
+        // Use setTimeout to ensure textarea is rendered and has dimensions
+        const timeoutId = setTimeout(() => {
+            truncatePlaceholder()
+        }, 0)
+
+        const handleResize = () => {
+            truncatePlaceholder()
+        }
+
+        window.addEventListener('resize', handleResize)
+        const resizeObserver = new ResizeObserver(() => {
+            truncatePlaceholder()
+        })
+
+        if (textareaRef.current) {
+            resizeObserver.observe(textareaRef.current)
+        }
+
+        return () => {
+            clearTimeout(timeoutId)
+            window.removeEventListener('resize', handleResize)
+            resizeObserver.disconnect()
+        }
+    }, [truncatePlaceholder])
+
+    // Update textarea and files container positioning when value changes
+    useEffect(() => {
+        updateTextareaAndFilesPosition()
+    }, [value, updateTextareaAndFilesPosition])
 
     return (
         <Block>
@@ -315,15 +399,156 @@ const MobileChatInput = ({
                     #${textareaId}::placeholder {
                         color: ${textareaMobileTokens.placeholder.color};
                     }
+                    /* Hide scrollbar for textarea */
+                    #${textareaId} {
+                        scrollbar-width: none; /* Firefox */
+                        -ms-overflow-style: none; /* IE and Edge */
+                    }
+                    #${textareaId}::-webkit-scrollbar {
+                        display: none; /* Chrome, Safari, Opera */
+                    }
                 `}
             </style>
             <Block
-                ref={containerRef}
-                display="flex"
-                alignItems="center"
-                gap={8}
+                ref={inputWrapperRef}
+                position="relative"
+                style={{ minHeight: '44px' }}
             >
-                <Block style={{ visibility: 'hidden' }}>
+                {attachedFiles.length > 0 && (
+                    <Block
+                        ref={filesContainerRef}
+                        display="flex"
+                        alignItems="center"
+                        gap={8}
+                        style={{
+                            width: '100%',
+                            // Prevent scrollbar flash during calculation
+                            overflowX: isCalculating ? 'hidden' : 'visible',
+                            overflowY: isCalculating ? 'hidden' : undefined,
+                            transition: 'bottom 0.3s ease',
+                        }}
+                    >
+                        <Block style={{ visibility: 'hidden' }}>
+                            <PrimitiveButton
+                                disabled={disabled}
+                                borderRadius={100}
+                                border={`1px solid #E1E4EA`}
+                                padding={12}
+                                onClick={onAttachFileClick}
+                            >
+                                {attachButtonIcon || <Paperclip size={16} />}
+                            </PrimitiveButton>
+                        </Block>
+                        <Block
+                            display="flex"
+                            gap={tokens.filesContainer.gap}
+                            maxHeight={tokens.filesContainer.maxHeight}
+                            role="region"
+                            aria-label={`${attachedFiles.length} file${
+                                attachedFiles.length !== 1 ? 's' : ''
+                            } attached`}
+                            id={filesRegionId}
+                            style={{
+                                flex: 1,
+                                minWidth: 0,
+                            }}
+                            overflowY={
+                                !isCalculating
+                                    ? tokens.filesContainer.overflowY
+                                    : undefined
+                            }
+                        >
+                            {visibleFiles.map((file) => {
+                                const fileName =
+                                    file.name ||
+                                    capitalizeFirstLetter(file.type)
+                                return (
+                                    <Tooltip key={file.id} content={file.name}>
+                                        <Tag
+                                            key={file.id}
+                                            text={capitalizeFirstLetter(
+                                                file.type
+                                            )}
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.NEUTRAL}
+                                            size={TagSize.XS}
+                                            leftSlot={getDocIcon(file.type)}
+                                            rightSlot={
+                                                <X
+                                                    size={12}
+                                                    aria-hidden="true"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        onFileRemove?.(file.id)
+                                                    }}
+                                                    aria-label={`Remove ${fileName} file`}
+                                                />
+                                            }
+                                            onClick={(e) => {
+                                                const target =
+                                                    e.target as HTMLElement
+                                                if (
+                                                    target.closest(
+                                                        '[aria-label*="Remove"]'
+                                                    )
+                                                ) {
+                                                    return
+                                                }
+                                                onFileClick?.(file)
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    e.key === 'Delete' ||
+                                                    e.key === 'Backspace'
+                                                ) {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    onFileRemove?.(file.id)
+                                                }
+                                            }}
+                                            aria-label={`${fileName} file, press Delete to remove, click to view`}
+                                        />
+                                    </Tooltip>
+                                )
+                            })}
+
+                            {hasOverflow && (
+                                <Block className="overflow-menu-trigger">
+                                    <Menu
+                                        trigger={
+                                            <Button
+                                                buttonType={
+                                                    ButtonType.SECONDARY
+                                                }
+                                                size={ButtonSize.SMALL}
+                                                subType={ButtonSubType.INLINE}
+                                                leadingIcon={<Plus size={14} />}
+                                                text={`${hiddenFiles.length} more`}
+                                                aria-label={`Show ${hiddenFiles.length} more attached file${
+                                                    hiddenFiles.length !== 1
+                                                        ? 's'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <Plus size={14} />
+                                                {hiddenFiles.length} more
+                                            </Button>
+                                        }
+                                        items={[
+                                            {
+                                                items: overflowMenuItems,
+                                            },
+                                        ]}
+                                        open={overflowMenuOpen}
+                                        onOpenChange={setOverflowMenuOpen}
+                                        {...overflowMenuProps}
+                                    />
+                                </Block>
+                            )}
+                        </Block>
+                    </Block>
+                )}
+                <Block display="flex" alignItems="center" gap={8}>
                     <PrimitiveButton
                         disabled={disabled}
                         borderRadius={100}
@@ -333,233 +558,122 @@ const MobileChatInput = ({
                     >
                         {attachButtonIcon || <Paperclip size={16} />}
                     </PrimitiveButton>
-                </Block>
-                {attachedFiles.length > 0 && (
-                    <Block
-                        ref={filesContainerRef}
-                        display="flex"
-                        gap={tokens.filesContainer.gap}
-                        maxHeight={tokens.filesContainer.maxHeight}
-                        role="region"
-                        aria-label={`${attachedFiles.length} file${
-                            attachedFiles.length !== 1 ? 's' : ''
-                        } attached`}
-                        id={filesRegionId}
-                        style={{
-                            flex: 1,
-                            minWidth: 0,
-                            // Prevent scrollbar flash during calculation
-                            overflowX: isCalculating ? 'hidden' : 'visible',
-                            overflowY: isCalculating ? 'hidden' : undefined,
-                        }}
-                        overflowY={
-                            !isCalculating
-                                ? tokens.filesContainer.overflowY
-                                : undefined
-                        }
-                    >
-                        {visibleFiles.map((file) => {
-                            const fileName =
-                                file.name || capitalizeFirstLetter(file.type)
-                            return (
-                                <Tooltip key={file.id} content={file.name}>
-                                    <Tag
-                                        key={file.id}
-                                        text={capitalizeFirstLetter(file.type)}
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.NEUTRAL}
-                                        size={TagSize.XS}
-                                        leftSlot={getDocIcon(file.type)}
-                                        rightSlot={
-                                            <X
-                                                size={12}
-                                                aria-hidden="true"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    onFileRemove?.(file.id)
-                                                }}
-                                                aria-label={`Remove ${fileName} file`}
-                                            />
-                                        }
-                                        onClick={(e) => {
-                                            const target =
-                                                e.target as HTMLElement
-                                            if (
-                                                target.closest(
-                                                    '[aria-label*="Remove"]'
-                                                )
-                                            ) {
-                                                return
-                                            }
-                                            onFileClick?.(file)
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (
-                                                e.key === 'Delete' ||
-                                                e.key === 'Backspace'
-                                            ) {
-                                                e.preventDefault()
-                                                e.stopPropagation()
-                                                onFileRemove?.(file.id)
-                                            }
-                                        }}
-                                        aria-label={`${fileName} file, press Delete to remove, click to view`}
-                                    />
-                                </Tooltip>
-                            )
-                        })}
-
-                        {hasOverflow && (
-                            <Block className="overflow-menu-trigger">
-                                <Menu
-                                    trigger={
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            subType={ButtonSubType.INLINE}
-                                            leadingIcon={<Plus size={14} />}
-                                            text={`${hiddenFiles.length} more`}
-                                            aria-label={`Show ${hiddenFiles.length} more attached file${
-                                                hiddenFiles.length !== 1
-                                                    ? 's'
-                                                    : ''
-                                            }`}
-                                        >
-                                            <Plus size={14} />
-                                            {hiddenFiles.length} more
-                                        </Button>
-                                    }
-                                    items={[
-                                        {
-                                            items: overflowMenuItems,
-                                        },
-                                    ]}
-                                    open={overflowMenuOpen}
-                                    onOpenChange={setOverflowMenuOpen}
-                                    {...overflowMenuProps}
-                                />
-                            </Block>
-                        )}
-                    </Block>
-                )}
-            </Block>
-            <Block display="flex" alignItems="center" gap={8}>
-                <PrimitiveButton
-                    disabled={disabled}
-                    borderRadius={100}
-                    border={`1px solid #E1E4EA`}
-                    padding={12}
-                    onClick={onAttachFileClick}
-                >
-                    {attachButtonIcon || <Paperclip size={16} />}
-                </PrimitiveButton>
-                <Block style={{ flex: 1 }}>
-                    <Block
-                        ref={textareaContainerRef}
-                        position="relative"
-                        width="100%"
-                        style={{ minHeight: '44px' }}
-                    >
-                        <textarea
-                            ref={textareaRef}
-                            id={textareaId}
-                            value={value}
-                            onChange={handleTextareaChange}
-                            placeholder="Type your message"
-                            disabled={disabled}
-                            style={{
-                                width: '100%',
-                                paddingRight: slot1 ? '40px' : '0',
-                                backgroundColor:
-                                    textareaMobileTokens.backgroundColor as string,
-                                color: textareaMobileTokens.color as string,
-                                fontSize:
-                                    textareaMobileTokens.fontSize as string,
-                                lineHeight:
-                                    textareaMobileTokens.lineHeight as string,
-                                padding: textareaMobileTokens.padding as string,
-                                border: textareaMobileTokens.border
-                                    .default as string,
-                                borderRadius: textareaMobileTokens.borderRadius
-                                    .default as string,
-                                height: '44px',
-                                minHeight: '44px',
-                                maxHeight: '100px',
-                                overflowY: 'hidden',
-                                verticalAlign:
-                                    textareaMobileTokens.verticalAlign as string,
-                                outline: 'none',
-                                resize: 'none',
-                                transition:
-                                    'border-radius 0.3s ease, border 0.3s ease',
-                            }}
-                            onFocus={(e) => {
-                                // Calculate bottom position if not already set
-                                if (
-                                    initialBottomRef.current === null &&
-                                    textareaContainerRef.current
-                                ) {
-                                    const textareaRect =
-                                        e.currentTarget.getBoundingClientRect()
-                                    const containerRect =
-                                        textareaContainerRef.current.getBoundingClientRect()
-                                    initialBottomRef.current =
-                                        containerRect.bottom -
-                                        textareaRect.bottom
+                    <Block style={{ flex: 1 }}>
+                        <Block
+                            ref={textareaContainerRef}
+                            position="relative"
+                            width="100%"
+                            style={{ minHeight: '44px' }}
+                        >
+                            <textarea
+                                ref={textareaRef}
+                                id={textareaId}
+                                value={value}
+                                onChange={handleTextareaChange}
+                                placeholder={
+                                    truncatedPlaceholder || placeholderText
                                 }
-
-                                e.currentTarget.style.outline = 'none'
-                                e.currentTarget.style.borderRadius =
-                                    textareaMobileTokens.borderRadius
-                                        .focus as string
-                                e.currentTarget.style.border =
-                                    textareaMobileTokens.border.focus as string
-
-                                // If there's content, position absolutely for upward growth
-                                if (value && value.trim() !== '') {
-                                    e.currentTarget.style.position = 'absolute'
-                                    e.currentTarget.style.bottom =
-                                        initialBottomRef.current !== null
-                                            ? `${initialBottomRef.current}px`
-                                            : '0px'
-                                    e.currentTarget.style.left = '0'
-                                    e.currentTarget.style.right = '0'
-                                    e.currentTarget.style.width = '100%'
-                                    e.currentTarget.style.zIndex = '1000'
-                                }
-                            }}
-                            onBlur={(e) => {
-                                e.currentTarget.style.outline = 'none'
-                                // If empty, reset to static positioning
-                                if (!value || value.trim() === '') {
-                                    e.currentTarget.style.position = 'static'
-                                    e.currentTarget.style.bottom = 'auto'
-                                    e.currentTarget.style.left = 'auto'
-                                    e.currentTarget.style.right = 'auto'
-                                    e.currentTarget.style.width = '100%'
-                                    e.currentTarget.style.zIndex = 'auto'
-                                }
-                                // e.currentTarget.style.borderRadius = textareaMobileTokens.borderRadius.default as string
-                                e.currentTarget.style.border =
-                                    textareaMobileTokens.border
-                                        .default as string
-                            }}
-                        />
-                        {slot1 && (
-                            <Block
-                                position="absolute"
-                                bottom="-12px"
-                                right="6px"
+                                disabled={disabled}
                                 style={{
-                                    transform: 'translateY(-50%)',
-                                    pointerEvents: 'none',
+                                    width: '100%',
+                                    paddingRight: slot1 ? '40px' : '0',
+                                    backgroundColor:
+                                        textareaMobileTokens.backgroundColor as string,
+                                    color: textareaMobileTokens.color as string,
+                                    fontSize:
+                                        textareaMobileTokens.fontSize as string,
+                                    lineHeight:
+                                        textareaMobileTokens.lineHeight as string,
+                                    padding:
+                                        textareaMobileTokens.padding as string,
+                                    border: textareaMobileTokens.border
+                                        .default as string,
+                                    borderRadius: textareaMobileTokens
+                                        .borderRadius.default as string,
+                                    height: '44px',
+                                    minHeight: '44px',
+                                    maxHeight: '100px',
+                                    overflowY: 'hidden',
+                                    verticalAlign:
+                                        textareaMobileTokens.verticalAlign as string,
+                                    outline: 'none',
+                                    resize: 'none',
+                                    transition:
+                                        'border-radius 0.3s ease, border 0.3s ease',
+                                    zIndex: 0,
                                 }}
-                            >
-                                <Block style={{ pointerEvents: 'auto' }}>
-                                    {slot1}
+                                onFocus={(e) => {
+                                    // Calculate bottom position if not already set
+                                    if (
+                                        initialBottomRef.current === null &&
+                                        textareaContainerRef.current
+                                    ) {
+                                        const textareaRect =
+                                            e.currentTarget.getBoundingClientRect()
+                                        const containerRect =
+                                            textareaContainerRef.current.getBoundingClientRect()
+                                        initialBottomRef.current =
+                                            containerRect.bottom -
+                                            textareaRect.bottom
+                                    }
+
+                                    e.currentTarget.style.outline = 'none'
+                                    e.currentTarget.style.borderRadius =
+                                        textareaMobileTokens.borderRadius
+                                            .focus as string
+                                    e.currentTarget.style.border =
+                                        textareaMobileTokens.border
+                                            .focus as string
+                                    e.currentTarget.style.boxShadow = '#EFF6FF'
+
+                                    // If there's content, position absolutely for upward growth
+                                    if (value && value.trim() !== '') {
+                                        e.currentTarget.style.position =
+                                            'absolute'
+                                        e.currentTarget.style.bottom =
+                                            initialBottomRef.current !== null
+                                                ? `${initialBottomRef.current}px`
+                                                : '0px'
+                                        e.currentTarget.style.left = '0'
+                                        e.currentTarget.style.right = '0'
+                                        e.currentTarget.style.width = '100%'
+                                        e.currentTarget.style.zIndex = '0'
+                                    }
+                                }}
+                                onBlur={(e) => {
+                                    e.currentTarget.style.outline = 'none'
+                                    // If empty, reset to static positioning
+                                    if (!value || value.trim() === '') {
+                                        e.currentTarget.style.position =
+                                            'static'
+                                        e.currentTarget.style.bottom = 'auto'
+                                        e.currentTarget.style.left = 'auto'
+                                        e.currentTarget.style.right = 'auto'
+                                        e.currentTarget.style.width = '100%'
+                                        e.currentTarget.style.zIndex = '0'
+                                    }
+                                    // e.currentTarget.style.borderRadius = textareaMobileTokens.borderRadius.default as string
+                                    e.currentTarget.style.border =
+                                        textareaMobileTokens.border
+                                            .default as string
+                                }}
+                            />
+                            {slot1 && (
+                                <Block
+                                    position="absolute"
+                                    bottom="-12px"
+                                    right="6px"
+                                    style={{
+                                        transform: 'translateY(-50%)',
+                                        pointerEvents: 'none',
+                                    }}
+                                >
+                                    <Block style={{ pointerEvents: 'auto' }}>
+                                        {slot1}
+                                    </Block>
                                 </Block>
-                            </Block>
-                        )}
+                            )}
+                        </Block>
                     </Block>
                 </Block>
             </Block>
