@@ -31,6 +31,9 @@ import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import { addSnackbar, SnackbarVariant } from '../Snackbar'
 import { Tooltip } from '../Tooltip/Tooltip'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import MobileChatInput from './MobileChatInput'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -110,6 +113,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const topQueriesId = `chat-input-queries-${generatedId}`
         const characterCountId = `chat-input-count-${generatedId}`
         const fileInputLabelId = `chat-input-file-label-${generatedId}`
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
 
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
@@ -349,6 +354,40 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             )
         }, [hiddenFiles, onFileRemove, onFileClick])
 
+        // Always render the hidden file input so it's available in both mobile and desktop views
+        const hiddenFileInput = (
+            <PrimitiveInput
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+                accept="image/*,.pdf,.csv,.txt,.doc,.docx"
+                aria-label="Attach files"
+                id={fileInputLabelId}
+            />
+        )
+
+        if (isMobile) {
+            return (
+                <>
+                    {hiddenFileInput}
+                    <MobileChatInput
+                        slot1={slot1}
+                        value={value}
+                        onChange={onChange}
+                        onAttachFileClick={handleAttachClick}
+                        attachButtonIcon={attachButtonIcon}
+                        disabled={disabled}
+                        attachedFiles={attachedFiles}
+                        onFileRemove={onFileRemove}
+                        onFileClick={onFileClick}
+                        overflowMenuProps={overflowMenuProps}
+                    />
+                </>
+            )
+        }
+
         return (
             <Block
                 ref={containerRef}
@@ -376,16 +415,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 boxShadow={tokens.container.boxShadow.default}
             >
                 {/* Hidden file input */}
-                <PrimitiveInput
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    onChange={handleFileInputChange}
-                    style={{ display: 'none' }}
-                    accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                    aria-label="Attach files"
-                    id={fileInputLabelId}
-                />
+                {hiddenFileInput}
                 {/* Files container */}
                 {attachedFiles.length > 0 && (
                     <Block
