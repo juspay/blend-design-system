@@ -82,6 +82,7 @@ export type UploadProps = {
 
     // Validation
     validator?: (file: File) => FileRejection['errors'][0] | null
+    actionSlot?: React.ReactNode
 } & Omit<
     React.HTMLAttributes<HTMLDivElement>,
     'onDrop' | 'onDragOver' | 'onDragLeave' | 'onChange'
