@@ -167,10 +167,10 @@ describe('Checkbox Accessibility', () => {
             // Initially unchecked since we don't pass checked/defaultChecked to Radix UI
             expect(checkbox).not.toBeChecked()
             expect(checkbox).toHaveAttribute('aria-checked', 'false')
-            
+
             // Click to check the checkbox
             await user.click(checkbox)
-            
+
             // After interaction, checkbox should be checked
             expect(checkbox).toBeChecked()
             expect(checkbox).toHaveAttribute('aria-checked', 'true')
@@ -190,7 +190,11 @@ describe('Checkbox Accessibility', () => {
             // The checked="indeterminate" prop is used for styling ($checked) but doesn't affect Radix UI state.
             // To test indeterminate state, we would need to interact with the checkbox or use defaultChecked.
             // For this test, we verify the component accepts the indeterminate prop and renders correctly.
-            render(<Checkbox checked="indeterminate">Indeterminate Checkbox</Checkbox>)
+            render(
+                <Checkbox checked="indeterminate">
+                    Indeterminate Checkbox
+                </Checkbox>
+            )
 
             const checkbox = screen.getByRole('checkbox')
             // Verify the component renders
@@ -557,10 +561,10 @@ describe('Checkbox Accessibility', () => {
             const checkbox = screen.getByRole('checkbox')
             // Initially unchecked
             expect(checkbox).not.toBeChecked()
-            
+
             // Click to check the checkbox
             await user.click(checkbox)
-            
+
             // After interaction, checkbox should be checked
             expect(checkbox).toBeChecked()
             // In high contrast mode, checkmarks and other visual indicators
