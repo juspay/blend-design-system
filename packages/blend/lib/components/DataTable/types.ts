@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SortDirection {
     NONE = 'none',
@@ -259,6 +260,7 @@ export type BulkActionsConfig = {
     onSelectAll?: () => void
     onDeselectAll?: () => void
     customActions?: ReactNode
+    showExport?: boolean
 }
 
 export type RowActionConfig<T extends Record<string, unknown>> = {
@@ -286,6 +288,14 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     idField: keyof T
     title?: string
     description?: string
+    descriptionTooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        showArrow?: boolean
+        delayDuration?: number
+        offset?: number
+    }
     className?: string
     isHoverable?: boolean
     defaultSort?: SortConfig

@@ -520,7 +520,12 @@ export const renderChart = ({
             )
 
         case ChartType.PIE: {
-            const pieData = lineKeys.map((key) => ({
+            const keysToInclude =
+                selectedKeys.length > 0
+                    ? lineKeys.filter((key) => selectedKeys.includes(key))
+                    : lineKeys
+
+            const pieData = keysToInclude.map((key) => ({
                 name: key,
                 value: originalData[0].data[key]?.primary.val || 0,
             }))
