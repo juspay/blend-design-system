@@ -40,6 +40,11 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
 import { AxisType } from '../Charts/types'
 import StatCardSkeleton from './StatCardSkeleton'
+import {
+    calculateTrend,
+    getEffectiveChange,
+    shouldShowDecreaseColor,
+} from './utils'
 
 const StatCard = ({
     title,
@@ -171,18 +176,21 @@ const StatCard = ({
     const normalizedVariant =
         variant === StatCardVariant.PROGRESS_BAR ? 'progress' : variant
 
+    const isTrendingDown = calculateTrend(chartData)
+    const effectiveChange = getEffectiveChange(change, chartData)
+
     const arrowDirection =
-        change?.arrowDirection ??
-        (change?.valueType === ChangeType.INCREASE
+        (change && change.arrowDirection) ??
+        (effectiveChange?.valueType === ChangeType.INCREASE
             ? StatCardArrowDirection.UP
             : StatCardArrowDirection.DOWN)
 
-    const formattedChange = change ? (
+    const formattedChange = effectiveChange ? (
         <Block
             display="flex"
             alignItems="center"
             color={
-                change?.valueType === ChangeType.INCREASE
+                effectiveChange.valueType === ChangeType.INCREASE
                     ? statCardToken.textContainer.stats.title.change.text.color
                           .increase
                     : statCardToken.textContainer.stats.title.change.text.color
@@ -213,32 +221,29 @@ const StatCard = ({
                     statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
-                data-numeric={`${change.value >= 0 ? '+' : ''}${change.value.toFixed(2)}%`}
+                data-numeric={`${effectiveChange.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange.value.toFixed(2)}%`}
                 data-element="statcard-delta"
                 data-status={
-                    change?.valueType === ChangeType.INCREASE
+                    effectiveChange.valueType === ChangeType.INCREASE
                         ? 'increase'
                         : 'decrease'
                 }
             >
-                {change.value >= 0 ? '+' : ''}
-                {change.value.toFixed(2)}%
+                {effectiveChange.valueType === ChangeType.DECREASE ? '-' : '+'}
+                {effectiveChange.value.toFixed(2)}%
             </Text>
         </Block>
     ) : null
 
-    const isTrendingDown = useMemo(() => {
-        if (!chartData || chartData.length < 2) return false
-        const firstItem = chartData[0]
-        const lastItem = chartData[chartData.length - 1]
-        return firstItem && lastItem && firstItem.value > lastItem.value
-    }, [chartData])
-
-    const lineColor = isTrendingDown
+    const shouldShowDecrease = shouldShowDecreaseColor(
+        effectiveChange,
+        isTrendingDown
+    )
+    const lineColor = shouldShowDecrease
         ? statCardToken.chart.colors.line.decrease
         : statCardToken.chart.colors.line.increase
 
-    const baseAreaColor = isTrendingDown
+    const baseAreaColor = shouldShowDecrease
         ? statCardToken.chart.colors.area.decrease
         : statCardToken.chart.colors.area.increase
 
@@ -874,12 +879,12 @@ const StatCard = ({
                                                 <Block
                                                     id={changeId}
                                                     cursor="pointer"
-                                                    data-id={`${change?.valueType === ChangeType.INCREASE ? '+' : ''}${change?.value.toFixed(
+                                                    data-id={`${effectiveChange?.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange?.value.toFixed(
                                                         2
                                                     )}%`}
                                                     data-element="statcard-delta"
                                                     data-status={
-                                                        change?.valueType ===
+                                                        effectiveChange?.valueType ===
                                                         ChangeType.INCREASE
                                                             ? 'increase'
                                                             : 'decrease'
@@ -1151,7 +1156,7 @@ const StatCard = ({
                                                                 .stats.title
                                                                 .change.text
                                                                 .color[
-                                                                change?.valueType ??
+                                                                effectiveChange?.valueType ??
                                                                     ChangeType.INCREASE
                                                             ]
                                                         }
