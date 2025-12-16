@@ -76,21 +76,19 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     id={uniqueId}
                     name={name}
                     ref={ref}
-                    checked={checked}
-                    defaultChecked={defaultChecked}
                     onCheckedChange={onCheckedChange}
                     disabled={disabled}
                     required={required}
                     size={size}
                     $isDisabled={disabled}
-                    $checked={checked || false}
+                    $checked={checked ?? defaultChecked ?? false}
                     $error={error}
                     style={getErrorShakeStyle(shouldShake)}
                     {...ariaAttributes}
                     {...restProps}
                 >
                     <CheckboxIndicator
-                        checked={checked || false}
+                        checked={checked ?? defaultChecked ?? false}
                         size={size}
                         tokens={tokens}
                         disabled={disabled}

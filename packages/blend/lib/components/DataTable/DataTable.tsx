@@ -630,11 +630,9 @@ const DataTable = forwardRef(
                     .filter(([, selected]) => selected)
                     .map(([id]) => id)
 
-                // Find the raw data from the original data array, not processed data
                 const rawRowData = data.find(
-                    (row) => String(row[idField]) === rowIdStr
+                    (d) => String(d[idField]) === rowIdStr
                 )
-                // Fallback to processed row if raw data not found (shouldn't happen)
                 const rowDataFromCurrent = currentData.find(
                     (row) => String(row[idField]) === rowIdStr
                 )
