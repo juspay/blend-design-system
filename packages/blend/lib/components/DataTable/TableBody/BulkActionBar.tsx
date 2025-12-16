@@ -26,10 +26,20 @@ export type BulkActionBarProps = {
     onExport: () => void
     onDeselectAll: () => void
     customActions?: React.ReactNode
+    showExport?: boolean
 }
 
 const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
-    ({ selectedCount, onExport, onDeselectAll, customActions }, ref) => {
+    (
+        {
+            selectedCount,
+            onExport,
+            onDeselectAll,
+            customActions,
+            showExport = true,
+        },
+        ref
+    ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
@@ -127,22 +137,24 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                             flexDirection="column"
                                             gap={FOUNDATION_THEME.unit[16]}
                                         >
-                                            <Button
-                                                buttonType={
-                                                    ButtonType.SECONDARY
-                                                }
-                                                leadingIcon={
-                                                    <Download aria-hidden="true" />
-                                                }
-                                                aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
-                                                size={ButtonSize.MEDIUM}
-                                                onClick={() => {
-                                                    onExport()
-                                                    setDrawerOpen(false)
-                                                }}
-                                                fullWidth
-                                                text="Export"
-                                            />
+                                            {showExport && (
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.SECONDARY
+                                                    }
+                                                    leadingIcon={
+                                                        <Download aria-hidden="true" />
+                                                    }
+                                                    aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() => {
+                                                        onExport()
+                                                        setDrawerOpen(false)
+                                                    }}
+                                                    fullWidth
+                                                    text="Export"
+                                                />
+                                            )}
 
                                             <Button
                                                 buttonType={
@@ -225,24 +237,28 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                     {selectedCount} selected
                 </PrimitiveText>
 
-                <Block
-                    height="24px"
-                    width="1px"
-                    backgroundColor={FOUNDATION_THEME.colors.gray[300]}
-                    style={{ flexShrink: 0 }}
-                />
+                {showExport && (
+                    <>
+                        <Block
+                            height="24px"
+                            width="1px"
+                            backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                            style={{ flexShrink: 0 }}
+                        />
 
-                <Block style={{ flexShrink: 0 }}>
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Download aria-hidden="true" />}
-                        aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
-                        size={ButtonSize.SMALL}
-                        onClick={onExport}
-                    >
-                        Export
-                    </Button>
-                </Block>
+                        <Block style={{ flexShrink: 0 }}>
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                leadingIcon={<Download aria-hidden="true" />}
+                                aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
+                                size={ButtonSize.SMALL}
+                                onClick={onExport}
+                            >
+                                Export
+                            </Button>
+                        </Block>
+                    </>
+                )}
 
                 <Block
                     height="24px"

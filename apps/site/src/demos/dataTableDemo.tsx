@@ -42,6 +42,10 @@ import {
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
+import {
+    TooltipAlign,
+    TooltipSide,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 
 const SimpleDataTableExample = () => {
     // Modal state for table demo
@@ -899,6 +903,10 @@ const SimpleDataTableExample = () => {
                     idField="id"
                     title="Product Inventory (Mobile: All Columns)"
                     description="Same table but on mobile shows all columns with horizontal scrolling instead of using the overflow drawer."
+                    descriptionTooltipProps={{
+                        side: TooltipSide.LEFT,
+                        align: TooltipAlign.START,
+                    }}
                     enableSearch={true}
                     enableFiltering={true}
                     enableAdvancedFilter={false}
@@ -2806,6 +2814,14 @@ const DataTableDemo = () => {
     }
 
     // Handle row selection change
+    // IMPORTANT: rowData now contains the RAW data from the original data array (API response)
+    // NOT the processed/filtered/formatted data displayed in the table
+    //
+    // This means:
+    // - You get the exact data structure from your API
+    // - All original fields are available, even if not displayed in columns
+    // - Data hasn't been transformed by filters, sorting, or formatting
+    // - Perfect for API operations like updates, deletes, or exports
     const handleRowSelectionChange = (
         selectedRowIds: string[],
         isSelected: boolean,
@@ -2825,10 +2841,21 @@ const DataTableDemo = () => {
             allSelectedRowIds: selectedRowIds,
         })
 
+        // rowData is the RAW data from the API (original data prop)
+        // This ensures you have access to all original fields, not just what's displayed
+        // Example: If your API returns additional fields like 'internalId', 'createdAt', etc.
+        // they will be available here even if not shown in the table columns
+        console.log('📦 Raw data from API:', rowData)
         console.log(
             `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
         )
         console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+
+        // Example: Use raw data for API operations
+        // if (isSelected) {
+        //     // Send to API with raw data
+        //     api.selectUser(rowData.id, rowData)
+        // }
     }
 
     return (
@@ -3092,6 +3119,16 @@ const DataTableDemo = () => {
                 )}
             </div>
 
+            {/* 
+                User Management Table - Demonstrating New Features:
+                
+                1. showExport: Set to false to hide the default Export button in BulkActionBar.
+                   When false, only customActions will be shown. Defaults to true.
+                
+                2. onRowSelectionChange: Now receives RAW data from the original data array (API response),
+                   not the processed/filtered/formatted data displayed in the table.
+                   This ensures you have access to all original fields for API operations.
+            */}
             <DataTable
                 data={data}
                 columns={
@@ -3172,6 +3209,9 @@ const DataTableDemo = () => {
                 bulkActions={{
                     showSelectAll: true,
                     showDeselectAll: true,
+                    // Set to false to hide the default Export button in BulkActionBar
+                    // When false, only customActions will be shown
+                    showExport: false,
                     onSelectAll: () => {
                         console.log('🔄 Select All clicked')
                         // Select all rows on current page
@@ -3385,6 +3425,11 @@ const DataTableDemo = () => {
                         pageSizeOptions: [20, 50, 100],
                     }}
                     onRowSelectionChange={handleRowSelectionChange}
+                    bulkActions={{
+                        // showExport defaults to true - Export button will be shown
+                        // Set to false to hide it and only show customActions
+                        showExport: true,
+                    }}
                     headerSlot1={
                         <Button
                             text="Settings"
