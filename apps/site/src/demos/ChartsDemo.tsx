@@ -6351,6 +6351,116 @@ const [selectedKeys, setSelectedKeys] = useState([])
                         }
                     />
 
+                    {/* Pie Chart with Many Items - Demonstrating Color Indicators in Dropdown */}
+                    <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 className="text-lg font-semibold mb-2 text-blue-900">
+                            ✨ Enhanced Legend Dropdown
+                        </h4>
+                        <p className="text-sm text-blue-800 mb-4">
+                            On smaller screens, when legend items overflow, they
+                            are collapsed into a "+X more" dropdown. Now each
+                            item in the dropdown shows its respective color
+                            indicator, making it easier to identify which color
+                            corresponds to which label. Resize your browser
+                            window to see the dropdown in action!
+                        </p>
+                        <Charts
+                            height={300}
+                            data={[
+                                {
+                                    name: 'Sales Distribution',
+                                    data: {
+                                        'Product A': {
+                                            primary: {
+                                                label: 'Product A',
+                                                val: 25,
+                                            },
+                                        },
+                                        'Product B': {
+                                            primary: {
+                                                label: 'Product B',
+                                                val: 18,
+                                            },
+                                        },
+                                        'Product C': {
+                                            primary: {
+                                                label: 'Product C',
+                                                val: 15,
+                                            },
+                                        },
+                                        'Product D': {
+                                            primary: {
+                                                label: 'Product D',
+                                                val: 12,
+                                            },
+                                        },
+                                        'Product E': {
+                                            primary: {
+                                                label: 'Product E',
+                                                val: 10,
+                                            },
+                                        },
+                                        'Product F': {
+                                            primary: {
+                                                label: 'Product F',
+                                                val: 8,
+                                            },
+                                        },
+                                        'Product G': {
+                                            primary: {
+                                                label: 'Product G',
+                                                val: 6,
+                                            },
+                                        },
+                                        'Product H': {
+                                            primary: {
+                                                label: 'Product H',
+                                                val: 4,
+                                            },
+                                        },
+                                        'Product I': {
+                                            primary: {
+                                                label: 'Product I',
+                                                val: 3,
+                                            },
+                                        },
+                                        'Product J': {
+                                            primary: {
+                                                label: 'Product J',
+                                                val: 2,
+                                            },
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.PIE}
+                            legendPosition={ChartLegendPosition.TOP}
+                            colors={[
+                                '#3b82f6',
+                                '#10b981',
+                                '#f59e0b',
+                                '#ef4444',
+                                '#8b5cf6',
+                                '#06b6d4',
+                                '#f97316',
+                                '#84cc16',
+                                '#ec4899',
+                                '#6366f1',
+                            ]}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <ChartBar
+                                        size={16}
+                                        className="text-blue-600"
+                                    />
+                                    <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                        Product Sales Distribution (10 Products)
+                                    </h4>
+                                </div>
+                            }
+                        />
+                    </div>
+
                     {/* Scatter Chart Example */}
 
                     <Charts
