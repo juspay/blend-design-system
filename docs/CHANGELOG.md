@@ -1,9 +1,19 @@
-# Changelog for v0.0.29
+# Changelog for v0.0.30-beta (Beta)
 
-> **Stable Release** - This version is production-ready and recommended for general use.
+> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
+
+## 🚀 Features
+
+- Enhance accessibility (#766) ([99819f6](../../commit/99819f6))
 
 ## 🐛 Bug Fixes
 
+- tab component's dropdown issues for large number of tab lists (#778) ([64820dd](../../commit/64820dd))
+- Separate disable options for dropdownInput (#783) ([186cf21](../../commit/186cf21))
+- avoidCollision in multiselect and spacing fixes in keyValuePair/… (#761) ([4a2ec5a](../../commit/4a2ec5a))
+- added newLine functionality to tooltip (#760) ([ed0d7b7](../../commit/ed0d7b7))
+- Added maxWidth, maxHeight, minWidth, minHeight, isCustom prop to modal (#756) ([3cddbd4](../../commit/3cddbd4))
+- password prop added to text input (#751) ([0f5470b](../../commit/0f5470b))
 - workflow canvas component removed (#736) ([c7ac288](../../commit/c7ac288))
 - data ids for Breadcrumb, Accordion, Single Select, Multi Select (#720) ([7afb595](../../commit/7afb595))
 - File Upload, Snackbar, SearchInput, OTPInput, Alert, Modal, Tabs… (#706) ([aa2002f](../../commit/aa2002f))
@@ -13,6 +23,13 @@
 
 ## 🔧 Chores
 
+- bug-fix/sidebar-numberInput-otp (#780) ([8d13e6f](../../commit/8d13e6f))
+- Fix/tab issues v1 (#776) ([374ffc9](../../commit/374ffc9))
+- changed the tokens of selectors (#777) ([dba449f](../../commit/dba449f))
+- Fix z index to resolve dropdown in drawer and fix accordion chevron (#775) ([25c726a](../../commit/25c726a))
+- 734 accessibility for cards statcards charts sidebar (#759) ([88157cb](../../commit/88157cb))
+- Improve accessibility for table calendar, progressbar and upload (#752) ([eb7df85](../../commit/eb7df85))
+- **release**: v0.0.29 [STABLE] ([55690a1](../../commit/55690a1))
 - Fix/tooltip data ids (#742) ([bbe13a0](../../commit/bbe13a0))
 - 735 improve accessibility for key value pair snackbar tabs and accordion (#738) ([3675ca8](../../commit/3675ca8))
 - Add data attribute for table and calendar (#729) ([059d227](../../commit/059d227))
@@ -28,7 +45,6 @@
 - Add data attributes for button (#688) ([1d8304e](../../commit/1d8304e))
 - Bug fix/issues list (#683) ([be6f74a](../../commit/be6f74a))
 - Fix table dropdowns overlap issue (#682) ([90b38d9](../../commit/90b38d9))
-- **release**: v0.0.28 [STABLE] ([1c4d4e9](../../commit/1c4d4e9))
 
 ## 🔧 Chores
 
@@ -36,14 +52,16 @@
 
 ---
 
-**Release Date**: 2025-12-08
-**Commit Range**: v0.0.28..HEAD
-**Total Changes**: 23 commits
+**Release Date**: 2025-12-16
+**Commit Range**: v0.0.29-beta..HEAD
+**Total Changes**: 36 commits
 
-## Installation
+## Beta Installation
 
 ```bash
-npm install @juspay/blend-design-system@latest
-# or specific version
-npm install @juspay/blend-design-system@0.0.29
+npm install @juspay/blend-design-system@beta
+# or specific beta version
+npm install @juspay/blend-design-system@0.0.30-beta
 ```
+
+> **Note**: Beta versions are for testing only. Use stable versions in production.
