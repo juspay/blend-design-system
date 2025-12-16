@@ -2806,6 +2806,9 @@ const DataTableDemo = () => {
     }
 
     // Handle row selection change
+    // IMPORTANT: rowData contains RAW data from the original data prop (API response)
+    // NOT the processed/filtered/formatted data displayed in the table
+    // This means you get ALL fields from your API, even if they're not displayed in table columns
     const handleRowSelectionChange = (
         selectedRowIds: string[],
         isSelected: boolean,
@@ -2825,10 +2828,22 @@ const DataTableDemo = () => {
             allSelectedRowIds: selectedRowIds,
         })
 
+        // rowData contains ALL fields from API response, not just displayed columns
+        // Example: If your API returns 10 fields but table shows only 5 columns,
+        // rowData will have all 10 fields here
+        console.log('📦 Raw API data (all fields):', rowData)
+        console.log('📋 Available fields:', Object.keys(rowData))
+
         console.log(
             `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
         )
         console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+
+        // Example: Use raw data for API operations
+        // if (isSelected) {
+        //     // You have access to ALL API fields here, even if not displayed
+        //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
+        // }
     }
 
     return (

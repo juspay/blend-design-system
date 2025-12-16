@@ -596,11 +596,16 @@ const DataTable = forwardRef(
                     const isSelected = newSelectedRows[rowId] || false
 
                     if (wasSelected !== isSelected) {
+                        const rawRowData = data.find(
+                            (d) => String(d[idField]) === rowId
+                        )
+                        const rowDataToPass = (rawRowData || row) as T
+
                         onRowSelectionChange(
                             selectedRowIds,
                             isSelected,
                             rowId,
-                            row as T
+                            rowDataToPass
                         )
                     }
                 })
@@ -624,15 +629,20 @@ const DataTable = forwardRef(
                     .filter(([, selected]) => selected)
                     .map(([id]) => id)
 
-                const rowData = currentData.find(
+                const rawRowData = data.find(
+                    (d) => String(d[idField]) === rowIdStr
+                )
+                const rowDataFromCurrent = currentData.find(
                     (row) => String(row[idField]) === rowIdStr
                 )
-                if (rowData) {
+                const rowDataToPass = (rawRowData || rowDataFromCurrent) as T
+
+                if (rowDataToPass) {
                     onRowSelectionChange(
                         selectedRowIds,
                         isSelected,
                         rowIdStr,
-                        rowData as T
+                        rowDataToPass
                     )
                 }
             }
