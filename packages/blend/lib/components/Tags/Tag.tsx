@@ -54,13 +54,15 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
                 borderRadius={skeletonRadius}
                 width={skeletonWidth}
                 display="inline-flex"
-                alignItems="stretch"
+                alignItems="center"
                 justifyContent="center"
+                height="auto"
                 pointerEvents="none"
                 className={className}
                 style={{
                     ...inlineStyle,
                     width: skeletonWidth,
+                    height: 'auto',
                     pointerEvents: 'none',
                 }}
                 {...layoutBlockProps}
