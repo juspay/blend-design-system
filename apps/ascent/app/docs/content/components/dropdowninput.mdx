@@ -34,7 +34,7 @@ function MyComponent() {
             items: [
                 { id: 'USD', label: 'USD', value: 'USD' },
                 { id: 'EUR', label: 'EUR', value: 'EUR' },
-                { id: 'GBP', label: 'GBP', value: 'GBP' },
+                { id: 'GBP', label: 'GBP', value: 'GBP', isDisabled: true },
             ],
         },
     ]
@@ -113,7 +113,7 @@ function MyComponent() {
             {
                 content: 'dropDownItems',
                 hintText:
-                    'Required array of SelectMenuGroupType objects that define the dropdown menu options. Each group can contain multiple items organized under a label. Items can be grouped for better organization (e.g., "Popular Currencies", "All Currencies"). Each item must have id, label, and value properties.',
+                    'Required array of SelectMenuGroupType objects that define the dropdown menu options. Each group can contain multiple items organized under a label. Items can be grouped for better organization (e.g., "Popular Currencies", "All Currencies"). Each item must have id, label, and value properties. Items can optionally include isDisabled (boolean) to disable specific options.',
             },
             {
                 content: 'SelectMenuGroupType[]',

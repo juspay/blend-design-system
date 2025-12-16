@@ -61,7 +61,7 @@ export const getKeyValuePairTokens = (
                 // Pattern: key.fontSize (size-independent)
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px
                 fontWeight: foundationToken.font.weight[400], // 400
-                gap: foundationToken.unit[4], // 4px
+                gap: foundationToken.unit[8], // 8px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -75,7 +75,7 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairSize.LARGE]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
-                gap: foundationToken.unit[4], // 4px
+                gap: foundationToken.unit[8], // 8px
             },
         },
         lg: {
@@ -89,7 +89,7 @@ export const getKeyValuePairTokens = (
                 // Pattern: key.fontSize (size-independent) - Fixed to 14px instead of 16px
                 fontSize: foundationToken.font.size.body.md.fontSize, // 14px (was lg.fontSize which is 16px)
                 fontWeight: foundationToken.font.weight[400], // 400
-                gap: foundationToken.unit[4], // 4px
+                gap: foundationToken.unit[8], // 8px
             },
             // Pattern: value.color (size-independent)
             // Pattern: value.fontSize.[size].[state] (size-dependent)
@@ -104,7 +104,7 @@ export const getKeyValuePairTokens = (
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
-                gap: foundationToken.unit[4], // 4px
+                gap: foundationToken.unit[8], // 8px
             },
         },
     }

@@ -45,6 +45,7 @@ type HeaderType = {
     gap: CSSObject['gap']
     maxWidth: CSSObject['maxWidth']
     overflowX: CSSObject['overflowX']
+    overflowY: CSSObject['overflowY']
     title: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -270,6 +271,7 @@ export const getTableToken = (
                 gap: foundationToken.unit[20],
                 maxWidth: '100%',
                 overflowX: 'hidden',
+                overflowY: 'hidden',
                 title: {
                     fontSize: foundationToken.font.size.heading.sm.fontSize,
                     fontWeight: 600,
@@ -525,6 +527,7 @@ export const getTableToken = (
                 gap: foundationToken.unit[20],
                 maxWidth: '100%',
                 overflowX: 'hidden',
+                overflowY: 'hidden',
                 title: {
                     fontSize: foundationToken.font.size.heading.md.fontSize,
                     fontWeight: 600,

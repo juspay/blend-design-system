@@ -36,4 +36,5 @@ export type TooltipProps = {
     delayDuration?: number
     offset?: number
     maxWidth?: string
+    fullWidth?: boolean
 }

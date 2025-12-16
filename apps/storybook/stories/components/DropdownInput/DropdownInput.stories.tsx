@@ -18,7 +18,7 @@ const countryData = [
         items: [
             { label: 'United States', value: 'US' },
             { label: 'United Kingdom', value: 'UK' },
-            { label: 'Canada', value: 'CA' },
+            { label: 'Canada', value: 'CA', isDisabled: true },
         ],
     },
     {
@@ -26,7 +26,7 @@ const countryData = [
         items: [
             { label: 'Australia', value: 'AU' },
             { label: 'France', value: 'FR' },
-            { label: 'Germany', value: 'DE' },
+            { label: 'Germany', value: 'DE', isDisabled: true },
             { label: 'India', value: 'IN' },
             { label: 'Japan', value: 'JP' },
         ],
@@ -39,7 +39,7 @@ const currencyData = [
         items: [
             { label: 'USD', value: 'USD' },
             { label: 'EUR', value: 'EUR' },
-            { label: 'GBP', value: 'GBP' },
+            { label: 'GBP', value: 'GBP', isDisabled: true },
         ],
     },
 ]
@@ -50,7 +50,7 @@ const phoneCodeData = [
         items: [
             { label: '+1', value: '+1' },
             { label: '+44', value: '+44' },
-            { label: '+91', value: '+91' },
+            { label: '+91', value: '+91', isDisabled: true },
         ],
     },
 ]

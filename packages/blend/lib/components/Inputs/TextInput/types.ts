@@ -27,6 +27,7 @@ export type TextInputProps = {
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     cursor?: 'text' | 'pointer' | 'default' | 'not-allowed'
+    passwordToggle?: boolean
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onBlur' | 'onFocus'

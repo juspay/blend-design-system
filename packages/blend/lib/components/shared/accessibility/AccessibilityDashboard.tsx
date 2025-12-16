@@ -37,6 +37,12 @@ import DrawerAccessibility from '../../Drawer/accessibility/DrawerAccessibility'
 import StepperAccessibility from '../../Stepper/accessibility/StepperAccessibility'
 import CodeBlockAccessibility from '../../CodeBlock/accessibility/CodeBlockAccessibility'
 import ProgressBarAccessibility from '../../ProgressBar/accessibility/ProgressBarAccessibility'
+import DataTableAccessibility from '../../DataTable/accessibility/DataTableAccessibility'
+import UploadAccessibility from '../../Upload/accessibility/UploadAccessibility'
+import ButtonGroupAccessibility from '../../ButtonGroup/accessibility/ButtonGroupAccessibility'
+import DateRangePickerAccessibility from '../../DateRangePicker/accessibility/DateRangePickerAccessibility'
+import SliderAccessibility from '../../Slider/accessibility/SliderAccessibility'
+import ChatInputAccessibility from '../../ChatInput/accessibility/ChatInputAccessibility'
 
 export type ComponentAccessibilitySection = {
     name: string
@@ -226,6 +232,36 @@ const componentRegistry: ComponentAccessibilitySection[] = [
         displayName: 'ProgressBar',
         component: ProgressBarAccessibility,
     },
+    {
+        name: 'DataTable',
+        displayName: 'DataTable',
+        component: DataTableAccessibility,
+    },
+    {
+        name: 'Upload',
+        displayName: 'Upload',
+        component: UploadAccessibility,
+    },
+    {
+        name: 'ButtonGroup',
+        displayName: 'ButtonGroup',
+        component: ButtonGroupAccessibility,
+    },
+    {
+        name: 'DateRangePicker',
+        displayName: 'DateRangePicker',
+        component: DateRangePickerAccessibility,
+    },
+    {
+        name: 'Slider',
+        displayName: 'Slider',
+        component: SliderAccessibility,
+    },
+    {
+        name: 'ChatInput',
+        displayName: 'ChatInput',
+        component: ChatInputAccessibility,
+    },
     // Add more components here as they are added
 ]
 
@@ -281,6 +317,7 @@ const AccessibilityDashboard = forwardRef<
                                             items: componentOptions,
                                         },
                                     ]}
+                                    enableSearch={true}
                                 />
                             </div>
                         </div>

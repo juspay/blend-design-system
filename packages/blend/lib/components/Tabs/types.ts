@@ -25,6 +25,7 @@ export type TabItem = {
     skeletonVariant?: SkeletonVariant
     leftSlot?: ReactNode
     rightSlot?: ReactNode
+    newItem?: boolean
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
@@ -39,7 +40,6 @@ export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     showAddButton?: boolean
     dropdownTooltip?: string
     addButtonTooltip?: string
-    maxDisplayTabs?: number
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -60,7 +60,6 @@ export type TabsListProps = ComponentPropsWithoutRef<
     showAddButton?: boolean
     dropdownTooltip?: string
     addButtonTooltip?: string
-    maxDisplayTabs?: number
     onTabChange?: (value: string) => void
     activeTab?: string
     disable?: boolean

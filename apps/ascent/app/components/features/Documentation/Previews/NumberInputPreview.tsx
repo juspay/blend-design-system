@@ -7,11 +7,11 @@ const NumberInputPreview = () => {
     const tsCode = `import { NumberInput } from "@juspay/blend-design-system";
 
 function MyComponent() {
-  const [quantity, setQuantity] = useState<number | undefined>(1);
+  const [quantity, setQuantity] = useState<number | null>(1);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setQuantity(value === '' ? undefined : Number(value));
+    setQuantity(value === '' ? null : Number(value));
   };
   
   return (
@@ -28,11 +28,11 @@ function MyComponent() {
   );
 }`
 
-    const [quantity, setQuantity] = useState<number | undefined>(5)
+    const [quantity, setQuantity] = useState<number | null>(5)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-        setQuantity(value === '' ? undefined : Number(value))
+        setQuantity(value === '' ? null : Number(value))
     }
 
     return (

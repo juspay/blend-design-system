@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useMemo,
+    useCallback,
+} from 'react'
 import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
@@ -88,36 +94,101 @@ const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
     }
 `
 
-const ActiveItemContext = createContext<{
+type ActiveItemContextValue = {
     activeItem: string | null
     setActiveItem: (item: string | null) => void
-}>({
-    activeItem: null,
-    setActiveItem: () => {},
-})
+    isControlled: boolean
+}
 
-export const ActiveItemProvider: React.FC<{ children: React.ReactNode }> = ({
+// Create context without default value to force usage within provider
+const ActiveItemContext = createContext<ActiveItemContextValue | null>(null)
+
+// Hook to safely use the context with error handling
+const useActiveItemContext = () => {
+    const context = useContext(ActiveItemContext)
+    if (!context) {
+        throw new Error(
+            'useActiveItemContext must be used within ActiveItemProvider'
+        )
+    }
+    return context
+}
+
+// Improved Provider Props
+type ActiveItemProviderProps = {
+    children: React.ReactNode
+    /**
+     * Controlled mode: Parent controls the active item
+     * If provided, internal state is ignored
+     */
+    activeItem?: string | null
+    /**
+     * Callback when active item changes (for controlled mode)
+     */
+    onActiveItemChange?: (item: string | null) => void
+    /**
+     * Initial active item (for uncontrolled mode)
+     */
+    defaultActiveItem?: string | null
+}
+
+export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
     children,
+    activeItem: controlledActiveItem,
+    onActiveItemChange,
+    defaultActiveItem = null,
 }) => {
-    const [activeItem, setActiveItem] = useState<string | null>(null)
+    const [internalActiveItem, setInternalActiveItem] = useState<string | null>(
+        defaultActiveItem
+    )
+
+    const isControlled = controlledActiveItem !== undefined
+
+    const activeItem = isControlled ? controlledActiveItem! : internalActiveItem
+
+    const setActiveItem = useCallback(
+        (item: string | null) => {
+            if (isControlled) {
+                onActiveItemChange?.(item)
+            } else {
+                setInternalActiveItem(item)
+            }
+        },
+        [isControlled, onActiveItemChange]
+    )
+
+    const contextValue = useMemo<ActiveItemContextValue>(
+        () => ({
+            activeItem,
+            setActiveItem,
+            isControlled,
+        }),
+        [activeItem, setActiveItem, isControlled]
+    )
 
     return (
-        <ActiveItemContext.Provider value={{ activeItem, setActiveItem }}>
+        <ActiveItemContext.Provider value={contextValue}>
             {children}
         </ActiveItemContext.Provider>
     )
 }
 
-const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
+const NavItem = ({
+    item,
+    index,
+    onNavigate,
+    itemPath = item.label,
+}: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isExpanded, setIsExpanded] = React.useState(false)
-    const { activeItem, setActiveItem } = useContext(ActiveItemContext)
+    const { activeItem, setActiveItem } = useActiveItemContext()
+    const hasChildren = item.items && item.items.length > 0
     const isActive =
         item.isSelected !== undefined
-            ? item.isSelected
-            : activeItem === item.label
+            ? item.isSelected && !hasChildren
+            : !hasChildren &&
+              (activeItem === itemPath || activeItem === item.label)
 
-    const hasChildren = item.items && item.items.length > 0
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
 
     const refCallback = React.useCallback(
@@ -130,11 +201,9 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
     const handleClick = () => {
         if (hasChildren) {
             setIsExpanded(!isExpanded)
-        } else if (item.onClick) {
-            if (item.isSelected === undefined) {
-                setActiveItem(item.label)
-            }
-            item.onClick()
+        } else {
+            setActiveItem(itemPath)
+            item.onClick?.()
         }
     }
 
@@ -226,11 +295,6 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                     $tokens={tokens}
                     role="list"
                     aria-label={`${item.label} submenu`}
-                    style={{
-                        listStyle: 'none',
-                        margin: 0,
-                        padding: 0,
-                    }}
                 >
                     {item.items &&
                         item.items.map((childItem, childIdx) => (
@@ -238,6 +302,7 @@ const NavItem = ({ item, index, onNavigate }: NavItemProps) => {
                                 key={childIdx}
                                 item={childItem}
                                 index={childIdx}
+                                itemPath={`${itemPath}/${childItem.label}`}
                                 onNavigate={(direction, currentIndex) => {
                                     if (
                                         direction === 'up' &&

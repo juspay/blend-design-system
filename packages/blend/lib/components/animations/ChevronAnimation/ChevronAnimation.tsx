@@ -27,17 +27,21 @@ const StyledChevronContainer = styled.div<{
     width: ${(props) => getChevronSize(props.$size)};
     height: ${(props) => getChevronSize(props.$size)};
 
-    /* Initial state - closed */
+    /* Initial state based on isOpen prop */
     transform: ${(props) =>
-        getChevronTransform(props.$direction, props.$variant, false)};
+        getChevronTransform(props.$direction, props.$variant, props.$isOpen)};
 
-    /* Radix UI data-state support with smooth transitions */
-    [data-state='open'] & {
+    /* Radix UI data-state support - check parent trigger's data-state */
+    /* When parent trigger has data-state="open" */
+    button[data-state='open'] &,
+    [role='button'][data-state='open'] & {
         transform: ${(props) =>
             getChevronTransform(props.$direction, props.$variant, true)};
     }
 
-    [data-state='closed'] & {
+    /* When parent trigger has data-state="closed" */
+    button[data-state='closed'] &,
+    [role='button'][data-state='closed'] & {
         transform: ${(props) =>
             getChevronTransform(props.$direction, props.$variant, false)};
     }
@@ -50,17 +54,21 @@ const StyledChevronContainer = styled.div<{
         cursor: not-allowed;
     `}
 
-    /* Subtle hover effect */
-    &:hover:not([data-disabled="true"]) {
+    /* Hover effect - only scale, maintain rotation from parent trigger's data-state */
+    /* When chevron is hovered AND parent trigger has data-state="open" - keep open rotation, add scale */
+    button[data-state='open'] &:hover:not([data-disabled="true"]),
+    [role='button'][data-state='open'] &:hover:not([data-disabled="true"]) {
         transform: ${(props) =>
-                getChevronTransform(
-                    props.$direction,
-                    props.$variant,
-                    props.$isOpen
-                )}
+                getChevronTransform(props.$direction, props.$variant, true)}
             scale(1.05);
-        transition: transform ${(props) => props.$animationDuration}ms
-            cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* When chevron is hovered AND parent trigger has data-state="closed" - keep closed rotation, add scale */
+    button[data-state='closed'] &:hover:not([data-disabled='true']),
+    [role='button'][data-state='closed'] &:hover:not([data-disabled='true']) {
+        transform: ${(props) =>
+                getChevronTransform(props.$direction, props.$variant, false)}
+            scale(1.05);
     }
 
     /* Focus styles for accessibility */
@@ -74,12 +82,7 @@ const StyledChevronContainer = styled.div<{
     @media (prefers-reduced-motion: reduce) {
         transition: none;
         &:hover:not([data-disabled='true']) {
-            transform: ${(props) =>
-                getChevronTransform(
-                    props.$direction,
-                    props.$variant,
-                    props.$isOpen
-                )};
+            transform: inherit;
         }
     }
 `
@@ -110,7 +113,6 @@ const ChevronAnimation = forwardRef<HTMLDivElement, ChevronAnimationProps>(
                 $animationDuration={animationDuration}
                 $color={color}
                 className={className}
-                data-state={isOpen ? 'open' : 'closed'}
                 data-disabled={disabled || undefined}
                 role="img"
                 aria-hidden="true"

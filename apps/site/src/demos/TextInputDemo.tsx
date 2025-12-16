@@ -19,7 +19,6 @@ const InputDemo = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [hasError, setHasError] = useState(false)
     const [isPasswordType, setIsPasswordType] = useState(false)
-    const [showPlaygroundPassword, setShowPlaygroundPassword] = useState(false)
     const [playgroundValue, setPlaygroundValue] = useState('')
     const [value, setValue] = useState('')
     const [error, setError] = useState(false)
@@ -37,12 +36,6 @@ const InputDemo = () => {
             setErrorMessage('')
         }
     }, [value, isFocused])
-
-    useEffect(() => {
-        if (!isPasswordType) {
-            setShowPlaygroundPassword(false)
-        }
-    }, [isPasswordType])
 
     // Options for selects
     const sizeOptions = [
@@ -170,13 +163,7 @@ const InputDemo = () => {
                                         ? 'Enter password here...'
                                         : 'Enter text here...'
                                 }
-                                type={
-                                    isPasswordType
-                                        ? showPlaygroundPassword
-                                            ? 'text'
-                                            : 'password'
-                                        : 'text'
-                                }
+                                type={isPasswordType ? 'password' : 'text'}
                                 size={playgroundSize}
                                 leftSlot={
                                     isPasswordType ? (
@@ -186,29 +173,13 @@ const InputDemo = () => {
                                     ) : undefined
                                 }
                                 rightSlot={
-                                    isPasswordType ? (
-                                        <div
-                                            onClick={() =>
-                                                setShowPlaygroundPassword(
-                                                    !showPlaygroundPassword
-                                                )
-                                            }
-                                            style={{
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            {showPlaygroundPassword ? (
-                                                <Eye size={16} />
-                                            ) : (
-                                                <EyeOff size={16} />
-                                            )}
-                                        </div>
-                                    ) : showRightSlot ? (
-                                        getRightSlotIcon()
-                                    ) : undefined
+                                    isPasswordType
+                                        ? undefined
+                                        : showRightSlot
+                                          ? getRightSlotIcon()
+                                          : undefined
                                 }
+                                passwordToggle={isPasswordType}
                                 disabled={isDisabled}
                                 error={hasError}
                                 errorMessage={
@@ -285,6 +256,22 @@ const InputDemo = () => {
                             leftSlot={<Lock size={16} />}
                             rightSlot={<Eye size={16} />}
                             hintText="Must be at least 8 characters"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Password with Toggle
+                        </h3>
+                        <TextInput
+                            type="password"
+                            label="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter password"
+                            // leftSlot={<Lock size={16} />}
+                            passwordToggle={true}
+                            hintText="Click the eye icon to show/hide password"
                         />
                     </div>
                 </div>
@@ -456,31 +443,59 @@ const InputDemo = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Lock Input</h3>
+                        <h3 className="text-lg font-semibold">
+                            Password with Toggle (Built-in)
+                        </h3>
                         <TextInput
-                            type={showPassword ? 'password' : 'text'}
+                            type="password"
                             label="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter password"
                             leftSlot={<Lock size={16} />}
+                            passwordToggle={true}
+                            hintText="Use the toggle button to show/hide password"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Password with Custom Toggle
+                        </h3>
+                        <TextInput
+                            type={showPassword ? 'text' : 'password'}
+                            label="Password (Custom)"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter password"
+                            leftSlot={<Lock size={16} />}
                             rightSlot={
-                                showPassword ? (
-                                    <EyeOff
-                                        size={16}
-                                        onClick={() =>
-                                            setShowPassword(!showPassword)
-                                        }
-                                    />
-                                ) : (
-                                    <Eye
-                                        size={16}
-                                        onClick={() =>
-                                            setShowPassword(!showPassword)
-                                        }
-                                    />
-                                )
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                    style={{
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        background: 'transparent',
+                                        border: 'none',
+                                    }}
+                                    aria-label={
+                                        showPassword
+                                            ? 'Hide password'
+                                            : 'Show password'
+                                    }
+                                >
+                                    {showPassword ? (
+                                        <EyeOff size={16} />
+                                    ) : (
+                                        <Eye size={16} />
+                                    )}
+                                </button>
                             }
+                            hintText="Custom toggle implementation"
                         />
                     </div>
                 </div>

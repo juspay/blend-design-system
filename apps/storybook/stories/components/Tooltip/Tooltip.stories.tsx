@@ -145,6 +145,11 @@ import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '@juspay/blend-d
             description:
                 'Distance in pixels between the tooltip and trigger element',
         },
+        fullWidth: {
+            control: 'boolean',
+            description:
+                'Whether the trigger wrapper should take full width (useful for menu items)',
+        },
         children: {
             description:
                 'The trigger element that will show the tooltip on hover/focus',
@@ -688,6 +693,206 @@ export const OffsetVariations: Story = {
         docs: {
             description: {
                 story: 'Different offset distances between tooltip and trigger element: close (5px), normal (15px), and far (30px).',
+            },
+        },
+    },
+}
+
+// Full width examples
+export const FullWidthExamples: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                padding: '20px',
+                maxWidth: '400px',
+            }}
+        >
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Without fullWidth (default)
+                </h3>
+                <p
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#666',
+                    }}
+                >
+                    Tooltip wrapper uses inline-flex, causing the trigger to
+                    shrink to fit-content.
+                </p>
+                <div
+                    style={{
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        width: '100%',
+                    }}
+                >
+                    <Tooltip
+                        content="This tooltip is on a menu item"
+                        showArrow={true}
+                        side={TooltipSide.RIGHT}
+                    >
+                        <div
+                            style={{
+                                padding: '12px',
+                                backgroundColor: '#f3f4f6',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Menu Item (fit-content width)
+                        </div>
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    With fullWidth={true}
+                </h3>
+                <p
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#666',
+                    }}
+                >
+                    Tooltip wrapper uses flex with full width, allowing the
+                    trigger to span the full container width.
+                </p>
+                <div
+                    style={{
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        width: '100%',
+                    }}
+                >
+                    <Tooltip
+                        content="This tooltip is on a full-width menu item"
+                        showArrow={true}
+                        side={TooltipSide.RIGHT}
+                        fullWidth={true}
+                    >
+                        <div
+                            style={{
+                                padding: '12px',
+                                backgroundColor: '#f3f4f6',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Menu Item (full width)
+                        </div>
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    Comparison in Menu Context
+                </h3>
+                <p
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#666',
+                    }}
+                >
+                    Side-by-side comparison showing the difference in menu item
+                    widths.
+                </p>
+                <div
+                    style={{
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        padding: '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                    }}
+                >
+                    <Tooltip
+                        content="Short tooltip"
+                        showArrow={true}
+                        side={TooltipSide.RIGHT}
+                    >
+                        <div
+                            style={{
+                                padding: '12px',
+                                backgroundColor: '#f3f4f6',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Item 1 (default)
+                        </div>
+                    </Tooltip>
+                    <Tooltip
+                        content="This is a longer tooltip that shows the full width behavior"
+                        showArrow={true}
+                        side={TooltipSide.RIGHT}
+                        fullWidth={true}
+                    >
+                        <div
+                            style={{
+                                padding: '12px',
+                                backgroundColor: '#dbeafe',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Item 2 (fullWidth)
+                        </div>
+                    </Tooltip>
+                    <Tooltip
+                        content="Another item with full width"
+                        showArrow={true}
+                        side={TooltipSide.RIGHT}
+                        fullWidth={true}
+                    >
+                        <div
+                            style={{
+                                padding: '12px',
+                                backgroundColor: '#dbeafe',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Item 3 (fullWidth)
+                        </div>
+                    </Tooltip>
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates the fullWidth prop which makes the tooltip trigger wrapper span full width. This is particularly useful for menu items where you want the entire item to be clickable and show a tooltip.',
             },
         },
     },

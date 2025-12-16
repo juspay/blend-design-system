@@ -5,6 +5,7 @@ import React, {
     useMemo,
     forwardRef,
     useEffect,
+    useId,
 } from 'react'
 import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
@@ -22,11 +23,14 @@ import {
     createOverflowMenuItems,
     handleAutoResize,
     isValidMessageLength,
+    filterDuplicateFiles,
 } from './utils'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
+import { addSnackbar, SnackbarVariant } from '../Snackbar'
+import { Tooltip } from '../Tooltip/Tooltip'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -98,8 +102,15 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const [cutOffIndex, setCutOffIndex] = useState<number>(
             attachedFiles.length
         )
+        const [focusedQueryIndex, setFocusedQueryIndex] = useState<number>(-1)
 
-        // Use the passed ref or our internal ref
+        const generatedId = useId()
+        const chatInputId = `chat-input-${generatedId}`
+        const filesRegionId = `chat-input-files-${generatedId}`
+        const topQueriesId = `chat-input-queries-${generatedId}`
+        const characterCountId = `chat-input-count-${generatedId}`
+        const fileInputLabelId = `chat-input-file-label-${generatedId}`
+
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
 
@@ -228,42 +239,115 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             (e: React.ChangeEvent<HTMLInputElement>) => {
                 const files = Array.from(e.target.files || [])
                 if (files.length > 0) {
-                    onAttachFiles?.(files)
+                    // Filter out duplicate files
+                    const { newFiles, duplicateFiles } = filterDuplicateFiles(
+                        files,
+                        attachedFiles
+                    )
+
+                    // Show snackbar if duplicates were found
+                    if (duplicateFiles.length > 0) {
+                        const duplicateCount = duplicateFiles.length
+                        const message =
+                            duplicateCount === 1
+                                ? `File "${duplicateFiles[0]}" is already attached`
+                                : `${duplicateCount} duplicate file(s) were not added`
+
+                        addSnackbar({
+                            header: 'Duplicate File',
+                            description: message,
+                            variant: SnackbarVariant.WARNING,
+                            duration: 3000,
+                        })
+                    }
+
+                    // Only call onAttachFiles with non-duplicate files
+                    if (newFiles.length > 0) {
+                        onAttachFiles?.(newFiles)
+                    }
                 }
                 // Reset the input value to allow selecting the same file again
                 e.target.value = ''
             },
-            [onAttachFiles]
-        )
-
-        const handleFileRemove = useCallback(
-            (fileId: string) => {
-                onFileRemove?.(fileId)
-            },
-            [onFileRemove]
-        )
-
-        const handleFileClick = useCallback(
-            (file: AttachedFile) => {
-                onFileClick?.(file)
-            },
-            [onFileClick]
+            [onAttachFiles, attachedFiles]
         )
 
         const handleTopQueryClick = useCallback(
             (query: TopQuery) => {
                 onTopQuerySelect?.(query)
+                setIsTextareaFocused(false)
+                setFocusedQueryIndex(-1)
             },
             [onTopQuerySelect]
         )
 
+        const handleTopQueryKeyDown = useCallback(
+            (e: React.KeyboardEvent, query: TopQuery) => {
+                if (disabled) return
+
+                switch (e.key) {
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault()
+                        handleTopQueryClick(query)
+                        break
+                    case 'ArrowDown':
+                        e.preventDefault()
+                        setFocusedQueryIndex((prev) =>
+                            prev < topQueries.length - 1 ? prev + 1 : prev
+                        )
+                        break
+                    case 'ArrowUp':
+                        e.preventDefault()
+                        setFocusedQueryIndex((prev) =>
+                            prev > 0 ? prev - 1 : -1
+                        )
+                        break
+                    case 'Escape':
+                        e.preventDefault()
+                        setIsTextareaFocused(false)
+                        setFocusedQueryIndex(-1)
+                        textareaElement.current?.focus()
+                        break
+                    case 'Home':
+                        e.preventDefault()
+                        setFocusedQueryIndex(0)
+                        break
+                    case 'End':
+                        e.preventDefault()
+                        setFocusedQueryIndex(topQueries.length - 1)
+                        break
+                }
+            },
+            [disabled, topQueries.length, handleTopQueryClick, textareaElement]
+        )
+
+        useEffect(() => {
+            if (focusedQueryIndex >= 0 && topQueries.length > 0) {
+                const queryElement = document.querySelector(
+                    `[data-query-index="${focusedQueryIndex}"]`
+                ) as HTMLElement
+                queryElement?.focus()
+            } else if (topQueries.length === 0) {
+                setFocusedQueryIndex(-1)
+            }
+        }, [focusedQueryIndex, topQueries.length])
+
+        const textareaAriaDescribedBy = useMemo(() => {
+            const parts = [
+                ariaDescribedBy,
+                maxLength && characterCountId,
+            ].filter(Boolean)
+            return parts.length > 0 ? parts.join(' ') : undefined
+        }, [ariaDescribedBy, maxLength, characterCountId])
+
         const overflowMenuItems = useMemo(() => {
             return createOverflowMenuItems(
                 hiddenFiles,
-                handleFileRemove,
-                handleFileClick
+                onFileRemove || (() => {}),
+                onFileClick || (() => {})
             )
-        }, [hiddenFiles, handleFileRemove, handleFileClick])
+        }, [hiddenFiles, onFileRemove, onFileClick])
 
         return (
             <Block
@@ -299,6 +383,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     onChange={handleFileInputChange}
                     style={{ display: 'none' }}
                     accept="image/*,.pdf,.csv,.txt,.doc,.docx"
+                    aria-label="Attach files"
+                    id={fileInputLabelId}
                 />
                 {/* Files container */}
                 {attachedFiles.length > 0 && (
@@ -308,28 +394,62 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         gap={tokens.filesContainer.gap}
                         maxHeight={tokens.filesContainer.maxHeight}
                         overflowY={tokens.filesContainer.overflowY}
+                        role="region"
+                        aria-label={`${attachedFiles.length} file${
+                            attachedFiles.length !== 1 ? 's' : ''
+                        } attached`}
+                        id={filesRegionId}
                     >
-                        {visibleFiles.map((file) => (
-                            <Tag
-                                key={file.id}
-                                text={capitalizeFirstLetter(file.type)}
-                                variant={TagVariant.SUBTLE}
-                                color={TagColor.NEUTRAL}
-                                size={TagSize.XS}
-                                leftSlot={getDocIcon(file.type)}
-                                rightSlot={
-                                    <X
-                                        size={12}
+                        {visibleFiles.map((file) => {
+                            const fileName =
+                                file.name || capitalizeFirstLetter(file.type)
+                            return (
+                                <Tooltip key={file.id} content={file.name}>
+                                    <Tag
+                                        key={file.id}
+                                        text={capitalizeFirstLetter(file.type)}
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.NEUTRAL}
+                                        size={TagSize.XS}
+                                        leftSlot={getDocIcon(file.type)}
+                                        rightSlot={
+                                            <X
+                                                size={12}
+                                                aria-hidden="true"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    onFileRemove?.(file.id)
+                                                }}
+                                                aria-label={`Remove ${fileName} file`}
+                                            />
+                                        }
                                         onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleFileRemove(file.id)
+                                            const target =
+                                                e.target as HTMLElement
+                                            if (
+                                                target.closest(
+                                                    '[aria-label*="Remove"]'
+                                                )
+                                            ) {
+                                                return
+                                            }
+                                            onFileClick?.(file)
                                         }}
-                                        style={{ cursor: 'pointer' }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Delete' ||
+                                                e.key === 'Backspace'
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                onFileRemove?.(file.id)
+                                            }
+                                        }}
+                                        aria-label={`${fileName} file, press Delete to remove, click to view`}
                                     />
-                                }
-                                onClick={() => handleFileClick(file)}
-                            />
-                        ))}
+                                </Tooltip>
+                            )
+                        })}
 
                         {hasOverflow && (
                             <Block className="overflow-menu-trigger">
@@ -341,6 +461,11 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                             subType={ButtonSubType.INLINE}
                                             leadingIcon={<Plus size={14} />}
                                             text={`${hiddenFiles.length} more`}
+                                            aria-label={`Show ${hiddenFiles.length} more attached file${
+                                                hiddenFiles.length !== 1
+                                                    ? 's'
+                                                    : ''
+                                            }`}
                                         >
                                             <Plus size={14} />
                                             {hiddenFiles.length} more
@@ -384,8 +509,14 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         placeholder={placeholder}
                         disabled={disabled}
                         maxLength={maxLength}
-                        aria-label={ariaLabel}
-                        aria-describedby={ariaDescribedBy}
+                        aria-label={ariaLabel || 'Message input'}
+                        aria-describedby={textareaAriaDescribedBy}
+                        aria-invalid={
+                            maxLength && value.length > maxLength
+                                ? true
+                                : undefined
+                        }
+                        id={chatInputId}
                         rows={1}
                         style={{
                             backgroundColor: tokens.textarea.backgroundColor,
@@ -432,6 +563,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         paddingY={tokens.bottomActions.paddingY}
                         gap={tokens.bottomActions.gap}
                         marginTop={tokens.bottomActions.gap}
+                        role="toolbar"
+                        aria-label="Chat input actions"
                     >
                         <Button
                             buttonType={ButtonType.SECONDARY}
@@ -443,6 +576,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             onClick={handleAttachClick}
                             disabled={disabled}
                             aria-label="Attach files"
+                            aria-describedby={fileInputLabelId}
                         />
 
                         {slot1}
@@ -460,6 +594,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 ? `${topQueriesMaxHeight}px`
                                 : undefined
                         }
+                        role="region"
+                        aria-label="Suggested queries"
+                        id={topQueriesId}
                     >
                         <Block
                             backgroundColor={
@@ -476,6 +613,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 textTransform={
                                     tokens.topQueries.header.textTransform
                                 }
+                                id={`${topQueriesId}-label`}
                             >
                                 Top Queries
                             </Text>
@@ -489,72 +627,77 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                     ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
                                     : undefined
                             }
+                            role="listbox"
+                            aria-labelledby={`${topQueriesId}-label`}
                         >
-                            {topQueries.map((query) => (
-                                <PrimitiveButton
-                                    key={query.id}
-                                    onMouseDown={(e) => {
-                                        e.preventDefault()
-                                        handleTopQueryClick(query)
-                                    }}
-                                    disabled={disabled}
-                                    style={{
-                                        display: 'block',
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        background: disabled
-                                            ? (tokens.topQueries.item
-                                                  .backgroundColor
-                                                  .disabled as string)
-                                            : (tokens.topQueries.item
-                                                  .backgroundColor
-                                                  .default as string),
-                                        border: tokens.topQueries.item.border,
-                                        color: disabled
-                                            ? (tokens.topQueries.item.color
-                                                  .disabled as string)
-                                            : (tokens.topQueries.item.color
-                                                  .default as string),
-                                        fontSize:
-                                            tokens.topQueries.item.fontSize,
-                                        fontWeight:
-                                            tokens.topQueries.item.fontWeight,
-                                        padding: `${tokens.topQueries.item.paddingY} ${tokens.topQueries.item.paddingX}`,
-                                        cursor: disabled
-                                            ? 'not-allowed'
-                                            : tokens.topQueries.item.cursor,
-                                        transition:
-                                            tokens.topQueries.item.transition,
-                                        opacity: disabled
-                                            ? tokens.topQueries.item.opacity
-                                                  .disabled
-                                            : tokens.topQueries.item.opacity
-                                                  .default,
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        if (!disabled) {
-                                            e.currentTarget.style.backgroundColor =
-                                                tokens.topQueries.item
-                                                    .backgroundColor
-                                                    .hover as string
-                                            e.currentTarget.style.color = tokens
-                                                .topQueries.item.color
-                                                .hover as string
+                            {topQueries.map((query, index) => {
+                                const isFocused = focusedQueryIndex === index
+                                const itemTokens = tokens.topQueries.item
+                                return (
+                                    <PrimitiveButton
+                                        key={query.id}
+                                        data-query-index={index}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            handleTopQueryClick(query)
+                                        }}
+                                        onKeyDown={(e) =>
+                                            handleTopQueryKeyDown(e, query)
                                         }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.backgroundColor =
-                                            tokens.topQueries.item
-                                                .backgroundColor
-                                                .default as string
-                                        e.currentTarget.style.color = tokens
-                                            .topQueries.item.color
-                                            .default as string
-                                    }}
-                                >
-                                    {query.text}
-                                </PrimitiveButton>
-                            ))}
+                                        disabled={disabled}
+                                        tabIndex={isFocused ? 0 : -1}
+                                        role="option"
+                                        aria-selected={isFocused}
+                                        aria-label={`Query: ${query.text}`}
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            textAlign: 'left',
+                                            background: disabled
+                                                ? (itemTokens.backgroundColor
+                                                      .disabled as string)
+                                                : (itemTokens.backgroundColor
+                                                      .default as string),
+                                            border: itemTokens.border,
+                                            color: disabled
+                                                ? (itemTokens.color
+                                                      .disabled as string)
+                                                : (itemTokens.color
+                                                      .default as string),
+                                            fontSize: itemTokens.fontSize,
+                                            fontWeight: itemTokens.fontWeight,
+                                            padding: `${itemTokens.paddingY} ${itemTokens.paddingX}`,
+                                            cursor: disabled
+                                                ? 'not-allowed'
+                                                : itemTokens.cursor,
+                                            transition: itemTokens.transition,
+                                            opacity: disabled
+                                                ? itemTokens.opacity.disabled
+                                                : itemTokens.opacity.default,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (!disabled) {
+                                                e.currentTarget.style.backgroundColor =
+                                                    itemTokens.backgroundColor
+                                                        .hover as string
+                                                e.currentTarget.style.color =
+                                                    itemTokens.color
+                                                        .hover as string
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor =
+                                                itemTokens.backgroundColor
+                                                    .default as string
+                                            e.currentTarget.style.color =
+                                                itemTokens.color
+                                                    .default as string
+                                        }}
+                                    >
+                                        {query.text}
+                                    </PrimitiveButton>
+                                )
+                            })}
                         </Block>
                     </Block>
                 )}

@@ -40,3 +40,12 @@ export type CustomToastProps = {
     }
     toastId?: string | number
 }
+
+export type SnackbarProps = {
+    position?: SnackbarPosition
+    dismissOnClickAway?: boolean
+}
+
+export type SnackbarIconProps = {
+    variant: SnackbarVariant
+}

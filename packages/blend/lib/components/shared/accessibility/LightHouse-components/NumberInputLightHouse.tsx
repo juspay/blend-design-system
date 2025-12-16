@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { NumberInput, NumberInputSize } from '../../../Inputs'
 
 const NumberInputLightHouse = () => {
-    const [age, setAge] = useState<number | undefined>(undefined)
-    const [income, setIncome] = useState<number | undefined>(5000)
-    const [percentage, setPercentage] = useState<number | undefined>(50)
+    const [age, setAge] = useState<number | null>(null)
+    const [income, setIncome] = useState<number | null>(5000)
+    const [percentage, setPercentage] = useState<number | null>(50)
 
     return (
         <div className="flex flex-col gap-4">
@@ -14,11 +14,7 @@ const NumberInputLightHouse = () => {
                 placeholder="Enter your age"
                 value={age}
                 onChange={(e) =>
-                    setAge(
-                        e.target.value
-                            ? parseInt(e.target.value, 10)
-                            : undefined
-                    )
+                    setAge(e.target.value ? parseInt(e.target.value, 10) : null)
                 }
                 min={0}
                 max={120}
@@ -33,7 +29,7 @@ const NumberInputLightHouse = () => {
                 value={income}
                 onChange={(e) =>
                     setIncome(
-                        e.target.value ? parseFloat(e.target.value) : undefined
+                        e.target.value ? parseFloat(e.target.value) : null
                     )
                 }
                 min={0}
@@ -49,7 +45,7 @@ const NumberInputLightHouse = () => {
                 value={percentage}
                 onChange={(e) =>
                     setPercentage(
-                        e.target.value ? parseFloat(e.target.value) : undefined
+                        e.target.value ? parseFloat(e.target.value) : null
                     )
                 }
                 min={0}
@@ -83,7 +79,7 @@ const NumberInputLightHouse = () => {
             <NumberInput
                 label="Required Amount"
                 placeholder="Enter amount"
-                value={undefined}
+                value={null}
                 onChange={() => {}}
                 required
                 hintText="This field is required"
@@ -93,13 +89,13 @@ const NumberInputLightHouse = () => {
             <NumberInput
                 label="Medium Size"
                 placeholder="Medium number input"
-                value={undefined}
+                value={null}
                 onChange={() => {}}
             />
             <NumberInput
                 label="Large Size"
                 placeholder="Large number input"
-                value={undefined}
+                value={null}
                 onChange={() => {}}
                 size={NumberInputSize.LARGE}
             />

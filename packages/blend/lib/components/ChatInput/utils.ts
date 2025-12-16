@@ -74,3 +74,36 @@ export const convertFilesToAttachedFiles = (files: File[]): AttachedFile[] => {
         size: file.size,
     }))
 }
+
+/**
+ * Filter out duplicate files by comparing name and size with existing attached files
+ * @param files - Array of File objects to check
+ * @param attachedFiles - Array of already attached files
+ * @returns Object containing newFiles (non-duplicates) and duplicateFiles (array of duplicate file names)
+ */
+export const filterDuplicateFiles = (
+    files: File[],
+    attachedFiles: AttachedFile[]
+): {
+    newFiles: File[]
+    duplicateFiles: string[]
+} => {
+    const newFiles: File[] = []
+    const duplicateFiles: string[] = []
+
+    files.forEach((file) => {
+        const isDuplicate = attachedFiles.some(
+            (attachedFile) =>
+                attachedFile.name === file.name &&
+                attachedFile.size === file.size
+        )
+
+        if (isDuplicate) {
+            duplicateFiles.push(file.name)
+        } else {
+            newFiles.push(file)
+        }
+    })
+
+    return { newFiles, duplicateFiles }
+}

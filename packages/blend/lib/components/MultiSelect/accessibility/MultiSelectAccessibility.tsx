@@ -1,5 +1,7 @@
 import { forwardRef, useState } from 'react'
 import MultiSelect from '../MultiSelect'
+import { Button } from '../../Button'
+import { ButtonType, ButtonSize } from '../../Button/types'
 import { multiSelectAccessibilityReport } from './MultiSelectAccessibilityReport'
 import {
     generateAccessibilityReport,
@@ -35,6 +37,12 @@ const MultiSelectAccessibility = forwardRef<
 
     const handleDownload = () => {
         try {
+            if (!multiSelectAccessibilityReport) {
+                console.error('Report data is missing')
+                alert('Report data is not available. Please refresh the page.')
+                return
+            }
+
             const content = generateAccessibilityReport(
                 multiSelectAccessibilityReport,
                 {
@@ -44,13 +52,21 @@ const MultiSelectAccessibility = forwardRef<
                 }
             )
 
+            if (!content) {
+                console.error('Generated report content is empty')
+                alert('Failed to generate report content. Please try again.')
+                return
+            }
+
             const filename = `multiselect-accessibility-report-${multiSelectAccessibilityReport.reportDate}.${getFileExtension(selectedFormat)}`
             const mimeType = getMimeType(selectedFormat)
 
             downloadReport(content, filename, mimeType)
         } catch (error) {
             console.error('Error generating report:', error)
-            alert('Failed to generate report. Please try again.')
+            alert(
+                `Failed to generate report: ${error instanceof Error ? error.message : 'Unknown error'}. Please check the console for details.`
+            )
         }
     }
 
@@ -274,19 +290,25 @@ const MultiSelectAccessibility = forwardRef<
                                     </label>
                                 </div>
                                 <div className="space-y-2">
-                                    <button
+                                    <Button
+                                        text="Download"
+                                        leadingIcon={<DownloadIcon size={14} />}
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.SMALL}
                                         onClick={handleDownload}
-                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm font-medium"
-                                    >
-                                        <DownloadIcon size={16} />
-                                        Download Report
-                                    </button>
-                                    <button
+                                        fullWidth
+                                    />
+                                    <Button
+                                        text={
+                                            showFullReport
+                                                ? 'Hide Full Report'
+                                                : 'View Full Report'
+                                        }
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.SMALL}
                                         onClick={handleViewReport}
-                                        className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium"
-                                    >
-                                        View Full Report
-                                    </button>
+                                        fullWidth
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -294,37 +316,115 @@ const MultiSelectAccessibility = forwardRef<
 
                     {/* Full Report Viewer */}
                     {showFullReport && reportHtmlContent && (
-                        <div className="bg-white border border-gray-200 rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-lg font-semibold">
-                                    Full Accessibility Report
-                                </h2>
+                        <section className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-lg">
+                            <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+                                <div>
+                                    <h2 className="text-xl font-bold text-gray-900">
+                                        Full Accessibility Report
+                                    </h2>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        Interactive HTML report (same as
+                                        downloaded version)
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setShowFullReport(false)
+                                        setReportHtmlContent(null)
+                                    }}
+                                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                            <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+                                <iframe
+                                    srcDoc={reportHtmlContent}
+                                    className="w-full"
+                                    style={{
+                                        height: '700px',
+                                        border: 'none',
+                                    }}
+                                    title="Accessibility Report"
+                                    sandbox="allow-same-origin"
+                                />
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                <p className="text-xs text-gray-500">
+                                    Report generated on{' '}
+                                    {new Date().toLocaleString()}
+                                </p>
                                 <div className="flex gap-2">
-                                    <button
-                                        onClick={handleDownload}
-                                        className="px-3 py-1.5 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-xs font-medium flex items-center gap-1"
-                                    >
-                                        <DownloadIcon size={14} />
-                                        Download This Report
-                                    </button>
-                                    <button
+                                    <Button
+                                        text="Download HTML"
+                                        leadingIcon={<DownloadIcon size={14} />}
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.SMALL}
                                         onClick={() => {
-                                            setShowFullReport(false)
-                                            setReportHtmlContent(null)
+                                            const content =
+                                                generateAccessibilityReport(
+                                                    multiSelectAccessibilityReport,
+                                                    {
+                                                        format: 'html',
+                                                        includeTestResults,
+                                                        includeRecommendations,
+                                                    }
+                                                )
+                                            const filename = `multiselect-accessibility-report-${multiSelectAccessibilityReport.reportDate}.html`
+                                            downloadReport(
+                                                content,
+                                                filename,
+                                                'text/html'
+                                            )
                                         }}
-                                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-xs font-medium"
-                                    >
-                                        Close
-                                    </button>
+                                    />
+                                    <Button
+                                        text="Download Markdown"
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.SMALL}
+                                        onClick={() => {
+                                            const content =
+                                                generateAccessibilityReport(
+                                                    multiSelectAccessibilityReport,
+                                                    {
+                                                        format: 'markdown',
+                                                        includeTestResults,
+                                                        includeRecommendations,
+                                                    }
+                                                )
+                                            const filename = `multiselect-accessibility-report-${multiSelectAccessibilityReport.reportDate}.md`
+                                            downloadReport(
+                                                content,
+                                                filename,
+                                                'text/markdown'
+                                            )
+                                        }}
+                                    />
+                                    <Button
+                                        text="Download JSON"
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.SMALL}
+                                        onClick={() => {
+                                            const content =
+                                                generateAccessibilityReport(
+                                                    multiSelectAccessibilityReport,
+                                                    {
+                                                        format: 'json',
+                                                        includeTestResults,
+                                                        includeRecommendations,
+                                                    }
+                                                )
+                                            const filename = `multiselect-accessibility-report-${multiSelectAccessibilityReport.reportDate}.json`
+                                            downloadReport(
+                                                content,
+                                                filename,
+                                                'application/json'
+                                            )
+                                        }}
+                                    />
                                 </div>
                             </div>
-                            <iframe
-                                srcDoc={reportHtmlContent}
-                                className="w-full border border-gray-200 rounded"
-                                style={{ height: '800px' }}
-                                title="Accessibility Report"
-                            />
-                        </div>
+                        </section>
                     )}
 
                     {/* WCAG Criteria Evaluation */}

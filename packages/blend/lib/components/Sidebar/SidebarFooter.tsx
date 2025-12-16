@@ -20,7 +20,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
             as="footer"
             width="100%"
             backgroundColor={tokens.footer.backgroundColor}
-            height="64px"
+            height="auto"
             position="sticky"
             bottom="0"
             zIndex="10"

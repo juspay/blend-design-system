@@ -63,7 +63,7 @@ const ANALYTICS_TABS_DATA = [
         label: 'Payment Instrument Group',
         isDefault: true,
     },
-    { value: 'bank_name', label: 'Bank', isDefault: false },
+    { value: 'bank_name', label: 'Bank', isDefault: true },
     {
         value: 'actual_payment_status',
         label: 'Actual Payment Status',
@@ -668,7 +668,6 @@ const TabsDemo = () => {
                             showAddButton={showEnhancedAddButton}
                             dropdownTooltip="Navigate to any tab (includes scrolled-out tabs)"
                             addButtonTooltip="Add new tabs via MultiSelect"
-                            maxDisplayTabs={4}
                         />
                     </div>
 
@@ -982,7 +981,6 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                             showAddButton={true}
                             dropdownTooltip={`View all ${ANALYTICS_TABS_DATA.length} tabs`}
                             addButtonTooltip={`Add remaining tabs from initial data (${ANALYTICS_TABS_DATA.length - analyticsTabsItems.length} remaining)`}
-                            maxDisplayTabs={4}
                         />
                     </div>
 
@@ -1137,20 +1135,22 @@ const apiTabs = [
                             defaultValue="payment_gateway"
                             variant={TabsVariant.UNDERLINE}
                         >
-                            <TabsList>
-                                <TabsTrigger value="payment_gateway">
-                                    Payment Gateway
-                                </TabsTrigger>
-                                <TabsTrigger value="payment_method">
-                                    Payment Method
-                                </TabsTrigger>
-                                <TabsTrigger value="payment_method_type">
-                                    Payment Method Type
-                                </TabsTrigger>
-                                <TabsTrigger value="payment_status">
-                                    Payment Status
-                                </TabsTrigger>
-                            </TabsList>
+                            <div className="sticky top-0 bg-white pt-2 z-50">
+                                <TabsList>
+                                    <TabsTrigger value="payment_gateway">
+                                        Payment Gateway
+                                    </TabsTrigger>
+                                    <TabsTrigger value="payment_method">
+                                        Payment Method
+                                    </TabsTrigger>
+                                    <TabsTrigger value="payment_method_type">
+                                        Payment Method Type
+                                    </TabsTrigger>
+                                    <TabsTrigger value="payment_status">
+                                        Payment Status
+                                    </TabsTrigger>
+                                </TabsList>
+                            </div>
 
                             <TabsContent
                                 value="payment_gateway"
@@ -1537,28 +1537,30 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                                         disable={globalDisable}
                                         defaultValue="tab1"
                                     >
-                                        <TabsList variant={variant}>
-                                            <TabsTrigger
-                                                disable={true}
-                                                value="tab1"
-                                                variant={variant}
-                                            >
-                                                Active
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="tab2"
-                                                variant={variant}
-                                                disable={true}
-                                            >
-                                                Disabled
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="tab3"
-                                                variant={variant}
-                                            >
-                                                Active
-                                            </TabsTrigger>
-                                        </TabsList>
+                                        <div className="sticky top-0 bg-white pt-2 pb-4 mb-4">
+                                            <TabsList variant={variant}>
+                                                <TabsTrigger
+                                                    disable={true}
+                                                    value="tab1"
+                                                    variant={variant}
+                                                >
+                                                    Active
+                                                </TabsTrigger>
+                                                <TabsTrigger
+                                                    value="tab2"
+                                                    variant={variant}
+                                                    disable={true}
+                                                >
+                                                    Disabled
+                                                </TabsTrigger>
+                                                <TabsTrigger
+                                                    value="tab3"
+                                                    variant={variant}
+                                                >
+                                                    Active
+                                                </TabsTrigger>
+                                            </TabsList>
+                                        </div>
 
                                         <TabsContent
                                             value="tab1"

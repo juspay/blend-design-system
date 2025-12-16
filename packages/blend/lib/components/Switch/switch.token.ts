@@ -235,7 +235,7 @@ export const getSwitchTokens = (
 
                 backgroundColor: {
                     active: {
-                        default: foundationToken.colors.primary[500],
+                        default: foundationToken.colors.primary[600],
                         hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[200],
                         error: foundationToken.colors.red[500],

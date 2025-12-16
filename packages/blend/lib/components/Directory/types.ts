@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 
 export type DirectoryProps = {
-    className?: string
     directoryData: DirectoryData[]
     idPrefix?: string
+    activeItem?: string | null
+    onActiveItemChange?: (item: string | null) => void
+    defaultActiveItem?: string | null
 }
 
 export type DirectoryData = {
@@ -42,6 +44,6 @@ export type SectionProps = {
 export type NavItemProps = {
     item: NavbarItem
     index: number
-    // totalItems: number;
     onNavigate: (direction: 'up' | 'down', currentIndex: number) => void
+    itemPath?: string
 }

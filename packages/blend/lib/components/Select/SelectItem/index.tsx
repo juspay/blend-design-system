@@ -75,13 +75,17 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             }
         }, [item.label, item.subLabel, item.disableTruncation])
 
-        const handleClick = (e: React.MouseEvent) => {
-            if (item.disabled) return
-
-            e.preventDefault()
-            e.stopPropagation()
+        const handleSelect = (e: Event) => {
+            if (item.disabled) {
+                e.preventDefault()
+                return
+            }
+            if (type === SelectItemType.MULTI) {
+                e.preventDefault()
+            }
             onSelect(item.value)
         }
+
         const shouldShowAutoTooltip =
             (showTooltip && item.label) ||
             (showSubLabelTooltip && item.subLabel)
@@ -143,9 +147,9 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const itemContent = (
             <RadixMenu.Item
                 asChild
-                // onSelect={handleSelect}
-                onClick={handleClick}
+                onSelect={handleSelect}
                 data-disabled={item.disabled}
+                disabled={item.disabled}
             >
                 <Block
                     data-numeric={index + 1}
@@ -157,6 +161,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     aria-selected={
                         type === SelectItemType.MULTI ? isSelected : undefined
                     }
+                    tabIndex={item.disabled ? -1 : 0}
                     padding={tokens?.menu?.item?.padding}
                     display="flex"
                     flexDirection="column"
@@ -318,7 +323,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 
         if (hasTooltip) {
             return (
-                <Tooltip content={tooltipContent} {...item.tooltipProps}>
+                <Tooltip
+                    content={tooltipContent}
+                    fullWidth={true}
+                    {...item.tooltipProps}
+                >
                     {itemContent}
                 </Tooltip>
             )

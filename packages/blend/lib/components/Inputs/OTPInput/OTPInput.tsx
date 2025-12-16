@@ -45,7 +45,13 @@ const OTPInput = ({
     ...rest
 }: OTPProps) => {
     const otpInputTokens = useResponsiveTokens<OTPInputTokensType>('OTP_INPUT')
-    const [otp, setOtp] = useState<string[]>(new Array(length).fill(''))
+    const [otp, setOtp] = useState<string[]>(() => {
+        const initial = (value || '').split('').slice(0, length)
+        return [
+            ...initial,
+            ...new Array(Math.max(length - initial.length, 0)).fill(''),
+        ]
+    })
     const [, setActiveIndex] = useState<number>(-1)
     const shouldShake = useErrorShake(error || false)
     const inputRefs = useRef<HTMLInputElement[]>([])
@@ -68,17 +74,16 @@ const OTPInput = ({
             .join(' ') || undefined
 
     useEffect(() => {
-        if (value) {
-            const otpArray = value.split('').slice(0, length)
-            const paddedOtp = [
-                ...otpArray,
-                ...new Array(length - otpArray.length).fill(''),
-            ]
-            setOtp(paddedOtp)
-        } else {
-            setOtp(new Array(length).fill(''))
-        }
-    }, [value, length])
+        if (!disabled) return
+
+        const val = value || ''
+        const otpArray = val.split('').slice(0, length)
+        const paddedOtp = [
+            ...otpArray,
+            ...new Array(Math.max(length - otpArray.length, 0)).fill(''),
+        ]
+        setOtp(paddedOtp)
+    }, [disabled, value, length])
 
     useEffect(() => {
         if (autoFocus && inputRefs.current[0] && !disabled) {
@@ -94,12 +99,6 @@ const OTPInput = ({
             newOtp[index] = ''
             setOtp(newOtp)
             onChange?.(newOtp.join(''))
-
-            if (index > 0) {
-                setTimeout(() => {
-                    inputRefs.current[index - 1]?.focus()
-                }, 50)
-            }
             return
         }
 
@@ -138,14 +137,19 @@ const OTPInput = ({
     ) => {
         if (disabled) return
 
-        if (e.key === 'Backspace') {
+        const key = e.key
+
+        if (key === 'Backspace') {
             if (!otp[index] && index > 0) {
                 inputRefs.current[index - 1]?.focus()
             }
-        } else if (e.key === 'ArrowLeft' && index > 0) {
+        } else if ((key === 'ArrowLeft' || key === 'Left') && index > 0) {
             e.preventDefault()
             inputRefs.current[index - 1]?.focus()
-        } else if (e.key === 'ArrowRight' && index < length - 1) {
+        } else if (
+            (key === 'ArrowRight' || key === 'Right') &&
+            index < length - 1
+        ) {
             e.preventDefault()
             inputRefs.current[index + 1]?.focus()
         }
@@ -291,8 +295,7 @@ const OTPInput = ({
                                 onKeyDown={(
                                     e: KeyboardEvent<HTMLInputElement>
                                 ) => handleKeyDown(index, e)}
-                                onFocus={(e) => {
-                                    e.target.select()
+                                onFocus={() => {
                                     setActiveIndex(index)
                                 }}
                                 onBlur={() => setActiveIndex(-1)}

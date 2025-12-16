@@ -122,7 +122,7 @@ const Content = styled(RadixMenu.Content)`
     background-color: white;
     border-radius: 8px;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -537,19 +537,6 @@ const SingleSelectMenu = ({
                             'var(--radix-dropdown-menu-trigger-width)',
                         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                     }}
-                    onFocusCapture={(e) => {
-                        if (enableSearch && searchInputRef.current) {
-                            if (
-                                e.target !== searchInputRef.current &&
-                                !searchInputRef.current.contains(
-                                    e.target as Node
-                                )
-                            ) {
-                                e.preventDefault()
-                                searchInputRef.current.focus()
-                            }
-                        }
-                    }}
                     onKeyDown={(e) => {
                         if (enableSearch && searchInputRef.current) {
                             if (
@@ -557,7 +544,10 @@ const SingleSelectMenu = ({
                                 !searchInputRef.current.contains(
                                     e.target as Node
                                 ) &&
-                                e.key.length === 1
+                                e.key.length === 1 &&
+                                !e.ctrlKey &&
+                                !e.metaKey &&
+                                !e.altKey
                             ) {
                                 searchInputRef.current.focus()
                             }
@@ -595,6 +585,31 @@ const SingleSelectMenu = ({
                                                 e.preventDefault()
                                                 e.stopPropagation()
                                                 setSearchText(e.target.value)
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    e.key === 'ArrowDown' ||
+                                                    e.key === 'ArrowUp'
+                                                ) {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    const menuContent =
+                                                        e.currentTarget.closest(
+                                                            '[data-dropdown="dropdown"]'
+                                                        )
+                                                    if (menuContent) {
+                                                        const firstMenuItem =
+                                                            menuContent.querySelector<HTMLElement>(
+                                                                '[role="menuitem"]:not([data-disabled])'
+                                                            )
+                                                        if (firstMenuItem) {
+                                                            firstMenuItem.focus()
+                                                        }
+                                                    }
+                                                }
+                                                if (e.key === 'Tab') {
+                                                    return
+                                                }
                                             }}
                                             autoFocus
                                             aria-label={
