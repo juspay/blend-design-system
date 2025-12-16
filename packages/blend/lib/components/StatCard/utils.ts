@@ -5,9 +5,7 @@ import { ChangeType, StatCardChange, ChartDataPoint } from './types'
  * @param chartData - Array of chart data points
  * @returns true if trending down, false otherwise
  */
-export const calculateTrend = (
-    chartData?: ChartDataPoint[]
-): boolean => {
+export const calculateTrend = (chartData?: ChartDataPoint[]): boolean => {
     if (!chartData || chartData.length < 2) return false
     const firstItem = chartData[0]
     const lastItem = chartData[chartData.length - 1]
@@ -23,20 +21,21 @@ export const calculateChangeFromChartData = (
     chartData?: ChartDataPoint[]
 ): Pick<StatCardChange, 'value' | 'valueType'> | null => {
     if (!chartData || chartData.length < 2) return null
-    
+
     const firstItem = chartData[0]
     const lastItem = chartData[chartData.length - 1]
-    
+
     if (!firstItem || !lastItem) return null
-    
+
     const firstValue = firstItem.value
     const lastValue = lastItem.value
-    
+
     if (firstValue === 0) return null // Avoid division by zero
-    
+
     const deltaPercent = ((lastValue - firstValue) / Math.abs(firstValue)) * 100
-    const valueType = deltaPercent < 0 ? ChangeType.DECREASE : ChangeType.INCREASE
-    
+    const valueType =
+        deltaPercent < 0 ? ChangeType.DECREASE : ChangeType.INCREASE
+
     return {
         value: Math.abs(deltaPercent),
         valueType,
@@ -66,7 +65,10 @@ export const getEffectiveChange = (
  * @returns true if decrease color should be shown, false for increase
  */
 export const shouldShowDecreaseColor = (
-    effectiveChange: StatCardChange | Pick<StatCardChange, 'value' | 'valueType'> | null,
+    effectiveChange:
+        | StatCardChange
+        | Pick<StatCardChange, 'value' | 'valueType'>
+        | null,
     isTrendingDown: boolean
 ): boolean => {
     if (effectiveChange) {

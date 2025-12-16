@@ -235,7 +235,10 @@ const StatCard = ({
         </Block>
     ) : null
 
-    const shouldShowDecrease = shouldShowDecreaseColor(effectiveChange, isTrendingDown)
+    const shouldShowDecrease = shouldShowDecreaseColor(
+        effectiveChange,
+        isTrendingDown
+    )
     const lineColor = shouldShowDecrease
         ? statCardToken.chart.colors.line.decrease
         : statCardToken.chart.colors.line.increase

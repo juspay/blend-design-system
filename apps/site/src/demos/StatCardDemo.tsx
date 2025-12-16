@@ -1182,10 +1182,13 @@ const StatCardDemo = () => {
                 </h2>
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <p className="text-sm text-blue-800 mb-4">
-                        This example demonstrates delta calculation from chartData when the change prop is provided.
-                        The delta shows +10.03% (increase) but the chart data shows a decrease trend (6148 → 2205).
-                        With the change prop provided, the delta uses the prop value, but the graph color should match
-                        the delta color. When change prop is removed, delta will be calculated from chartData.
+                        This example demonstrates delta calculation from
+                        chartData when the change prop is provided. The delta
+                        shows +10.03% (increase) but the chart data shows a
+                        decrease trend (6148 → 2205). With the change prop
+                        provided, the delta uses the prop value, but the graph
+                        color should match the delta color. When change prop is
+                        removed, delta will be calculated from chartData.
                     </p>
                     <StatCard
                         title="Orders saved via Health Based Routing"
@@ -1217,9 +1220,11 @@ const StatCardDemo = () => {
                 {/* Example without change prop - Delta calculated from chartData */}
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                     <p className="text-sm text-green-800 mb-4">
-                        This example shows delta calculation from chartData when change prop is NOT provided.
-                        The delta is calculated from first (6148) vs last (2205) value, showing a decrease.
-                        Both delta and graph will show red (decrease) color for consistency.
+                        This example shows delta calculation from chartData when
+                        change prop is NOT provided. The delta is calculated
+                        from first (6148) vs last (2205) value, showing a
+                        decrease. Both delta and graph will show red (decrease)
+                        color for consistency.
                     </p>
                     <StatCard
                         title="Orders saved via Health Based Routing (Auto-calculated Delta)"
