@@ -175,7 +175,7 @@ const TruncatedTextWithTooltip = ({
             <Tooltip
                 content={children}
                 size={tooltipProps?.size || TooltipSize.LARGE}
-                side={tooltipProps?.side}
+                side={tooltipProps?.side || TooltipSide.RIGHT}
                 align={tooltipProps?.align}
                 showArrow={tooltipProps?.showArrow}
                 delayDuration={tooltipProps?.delayDuration}

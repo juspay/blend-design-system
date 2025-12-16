@@ -42,6 +42,10 @@ import {
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
+import {
+    TooltipAlign,
+    TooltipSide,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 
 const SimpleDataTableExample = () => {
     // Modal state for table demo
@@ -899,6 +903,10 @@ const SimpleDataTableExample = () => {
                     idField="id"
                     title="Product Inventory (Mobile: All Columns)"
                     description="Same table but on mobile shows all columns with horizontal scrolling instead of using the overflow drawer."
+                    descriptionTooltipProps={{
+                        side: TooltipSide.LEFT,
+                        align: TooltipAlign.START,
+                    }}
                     enableSearch={true}
                     enableFiltering={true}
                     enableAdvancedFilter={false}
