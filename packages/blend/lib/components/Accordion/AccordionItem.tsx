@@ -263,7 +263,7 @@ const AccordionItem = forwardRef<
             return (
                 <ChevronAnimation
                     data-element="accordion-item-chevron"
-                    isOpen={false} // This will be controlled by Radix UI's data-state
+                    isOpen={isExpanded}
                     direction={
                         chevronPosition === AccordionChevronPosition.RIGHT
                             ? ChevronAnimationDirection.DOWN
@@ -283,9 +283,6 @@ const AccordionItem = forwardRef<
                             style={{
                                 width: iconSize,
                                 height: iconSize,
-                                transform: isExpanded
-                                    ? 'rotate(180deg)'
-                                    : 'rotate(0deg)',
                             }}
                         />
                     ) : (
@@ -293,9 +290,6 @@ const AccordionItem = forwardRef<
                             style={{
                                 width: iconSize,
                                 height: iconSize,
-                                transform: isExpanded
-                                    ? 'rotate(90deg)'
-                                    : 'rotate(0deg)',
                             }}
                         />
                     )}

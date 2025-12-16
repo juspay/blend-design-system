@@ -96,7 +96,8 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.items',
-                hintText: 'Array of tab items for programmatic rendering',
+                hintText:
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like closable tabs, default tabs, disabled states, and skeleton loading per tab.',
             },
             { content: 'TabItem[]', hintText: 'array' },
             { content: '' },
@@ -104,7 +105,8 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.onTabClose',
-                hintText: 'Callback when a tab is closed',
+                hintText:
+                    'Callback function invoked when a user closes a tab by clicking its close button. Receives the value of the closed tab as a parameter. Use this to update your tab state, remove the tab from your data structure, save user preferences, or perform cleanup operations. The component automatically handles switching to an appropriate tab when the active tab is closed.',
             },
             { content: '(value: string) => void', hintText: 'function' },
             { content: '' },
@@ -112,7 +114,8 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.onTabAdd',
-                hintText: 'Callback when add button is clicked',
+                hintText:
+                    'Callback function invoked when the user clicks the add button to create a new tab. Use this to open a modal, show a form, or trigger any logic needed to create a new tab. After creating the tab, update your items array to include the new tab, and the component will automatically render it. This enables dynamic tab management workflows.',
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
@@ -120,7 +123,8 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.showDropdown',
-                hintText: 'Whether to show dropdown for overflow tabs',
+                hintText:
+                    'When true, displays a dropdown menu button that provides access to all tabs, including those that are scrolled out of view or overflow the visible area. This is essential for managing large numbers of tabs where horizontal scrolling would otherwise hide some tabs. The dropdown allows users to navigate to any tab regardless of scroll position, improving accessibility and usability for complex tab interfaces.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -128,7 +132,8 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.showAddButton',
-                hintText: 'Whether to show add button',
+                hintText:
+                    'When true, displays an add button that allows users to create new tabs dynamically. This is useful for interfaces where users need to add tabs on demand, such as multi-document editors, browser-like interfaces, or dynamic content management systems. The button triggers the onTabAdd callback when clicked, allowing you to handle the tab creation logic.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -136,18 +141,20 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.dropdownTooltip',
-                hintText: 'Tooltip text for dropdown button',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the dropdown button. This provides context and guidance to users about what the dropdown does. Useful for accessibility and user education, especially when the dropdown icon alone might not be immediately clear. Defaults to "Navigate to tab" if not provided.',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Navigate to tab' },
         ],
         [
             {
                 content: 'Tabs.addButtonTooltip',
-                hintText: 'Tooltip text for add button',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the add button. This provides context and guidance to users about what the add button does. Useful for accessibility and user education, especially when the add icon alone might not be immediately clear. Defaults to "Add new tab" if not provided.',
             },
             { content: 'string', hintText: 'string' },
-            { content: '' },
+            { content: 'Add new tab' },
         ],
         [
             {
@@ -161,10 +168,50 @@ function MyComponent() {
         [
             {
                 content: 'Tabs.disable',
-                hintText: 'Whether to disable all tabs',
+                hintText:
+                    'When true, disables all tabs in the tab list, preventing user interaction. All tabs will be visually disabled and non-interactive. This is useful for temporarily disabling the entire tab component during loading states or when certain conditions prevent tab navigation. Individual tabs can still override this with their own disable prop.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.expanded',
+                hintText:
+                    'When true, tabs expand to fill the full available width of their container. This is useful for creating evenly distributed tabs across the entire width, ensuring consistent spacing and a balanced visual appearance. When false, tabs only take up the space needed for their content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.fitContent',
+                hintText:
+                    'When true, tabs automatically size to fit their content width rather than expanding or using default sizing. This is ideal when you want tabs to be compact and only take up the minimum space required. Useful for scenarios with varying tab label lengths where you want each tab to be sized individually based on its content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.showSkeleton',
+                hintText:
+                    'When true, displays skeleton loading placeholders instead of the actual tab content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tabs, creating a smooth transition when content loads.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
         ],
         [
             {
@@ -187,7 +234,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.expanded',
-                hintText: 'Whether tabs should expand to fill available width',
+                hintText:
+                    'When true, tabs expand to fill the full available width of their container. This is useful for creating evenly distributed tabs across the entire width, ensuring consistent spacing and a balanced visual appearance. When false, tabs only take up the space needed for their content.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -195,7 +243,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.fitContent',
-                hintText: 'Whether tabs should fit their content width',
+                hintText:
+                    'When true, tabs automatically size to fit their content width rather than expanding or using default sizing. This is ideal when you want tabs to be compact and only take up the minimum space required. Useful for scenarios with varying tab label lengths where you want each tab to be sized individually based on its content.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -203,7 +252,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.items',
-                hintText: 'Array of tab items for programmatic rendering',
+                hintText:
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like closable tabs, default tabs, disabled states, and skeleton loading per tab.',
             },
             { content: 'TabItem[]', hintText: 'array' },
             { content: '' },
@@ -211,7 +261,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.onTabClose',
-                hintText: 'Callback when a tab is closed',
+                hintText:
+                    'Callback function invoked when a user closes a tab by clicking its close button. Receives the value of the closed tab as a parameter. Use this to update your tab state, remove the tab from your data structure, save user preferences, or perform cleanup operations. The component automatically handles switching to an appropriate tab when the active tab is closed.',
             },
             { content: '(value: string) => void', hintText: 'function' },
             { content: '' },
@@ -219,7 +270,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.onTabAdd',
-                hintText: 'Callback when add button is clicked',
+                hintText:
+                    'Callback function invoked when the user clicks the add button to create a new tab. Use this to open a modal, show a form, or trigger any logic needed to create a new tab. After creating the tab, update your items array to include the new tab, and the component will automatically render it. This enables dynamic tab management workflows.',
             },
             { content: '() => void', hintText: 'function' },
             { content: '' },
@@ -227,7 +279,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.showDropdown',
-                hintText: 'Whether to show dropdown for overflow tabs',
+                hintText:
+                    'When true, displays a dropdown menu button that provides access to all tabs, including those that are scrolled out of view or overflow the visible area. This is essential for managing large numbers of tabs where horizontal scrolling would otherwise hide some tabs. The dropdown allows users to navigate to any tab regardless of scroll position, improving accessibility and usability for complex tab interfaces.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -235,7 +288,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.showAddButton',
-                hintText: 'Whether to show add button',
+                hintText:
+                    'When true, displays an add button that allows users to create new tabs dynamically. This is useful for interfaces where users need to add tabs on demand, such as multi-document editors, browser-like interfaces, or dynamic content management systems. The button triggers the onTabAdd callback when clicked, allowing you to handle the tab creation logic.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
@@ -243,7 +297,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.addButtonTooltip',
-                hintText: 'Tooltip text for add button',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the add button. This provides context and guidance to users about what the add button does. Useful for accessibility and user education, especially when the add icon alone might not be immediately clear.',
             },
             { content: 'string', hintText: 'string' },
             { content: '' },
@@ -267,10 +322,32 @@ function MyComponent() {
         [
             {
                 content: 'TabsList.disable',
-                hintText: 'Whether to disable all tabs',
+                hintText:
+                    'When true, disables all tabs in the tab list, preventing user interaction. All tabs will be visually disabled and non-interactive. This is useful for temporarily disabling the entire tab component during loading states or when certain conditions prevent tab navigation. Individual tabs can still override this with their own disable prop.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.showSkeleton',
+                hintText:
+                    'When true, displays skeleton loading placeholders instead of the actual tab content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tabs, creating a smooth transition when content loads.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
         ],
         [
             {
@@ -341,10 +418,32 @@ function MyComponent() {
         [
             {
                 content: 'TabsTrigger.disable',
-                hintText: 'Whether the tab trigger is disabled',
+                hintText:
+                    'When true, disables this specific tab trigger, preventing user interaction. The tab will be visually disabled and non-interactive, and keyboard navigation will skip over it. This is useful for conditionally disabling specific tabs based on user permissions, data availability, or application state.',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.showSkeleton',
+                hintText:
+                    'When true, displays a skeleton loading placeholder for this specific tab trigger instead of the actual content. This provides visual feedback during data loading for individual tabs, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tab.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading state of this specific tab trigger. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states for individual tabs.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
         ],
         [
             {

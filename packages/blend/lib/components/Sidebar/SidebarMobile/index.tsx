@@ -6,12 +6,6 @@ import {
     forwardRef,
     type ReactNode,
 } from 'react'
-import Drawer, {
-    DrawerBody,
-    DrawerContent,
-    DrawerPortal,
-    DrawerTitle,
-} from '../../Drawer/Drawer'
 import Block from '../../Primitives/Block/Block'
 import type { SidebarMobileNavigationProps } from '../types'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -22,15 +16,66 @@ import {
     getMobileNavigationFillerCount,
     splitPrimaryItems,
 } from './utils'
-import { parseCssValue } from '../utils'
+import { parseUnitValue } from '../utils'
 import { useOrderedItems, useItemSelection } from './hooks'
 import MobileNavigationItem from './MobileNavigationItem'
 import PrimaryActionButton from './PrimaryActionButton'
 import MoreButton from './MoreButton'
+import styled from 'styled-components'
 
 const PRIMARY_VISIBLE_LIMIT = 5
 const SAFE_AREA_OFFSET = Number.parseFloat(String(FOUNDATION_THEME.unit[8]))
 const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
+const FLOATING_PADDING = FOUNDATION_THEME.unit[16]
+
+// Styled container for Apple Glass UI effect
+const FloatingNavContainer = styled(Block)`
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    transition:
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+        max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    will-change: transform, max-height;
+    display: flex;
+    flex-direction: column;
+
+    @supports (backdrop-filter: blur(20px)) {
+        background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        background-color: rgba(0, 0, 0, 0.72);
+        border-top-color: rgba(255, 255, 255, 0.1);
+
+        @supports (backdrop-filter: blur(20px)) {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    }
+`
+
+const ScrollableContent = styled(Block)`
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+`
 
 const SidebarMobileNavigation = forwardRef<
     HTMLDivElement,
@@ -84,51 +129,74 @@ const SidebarMobileNavigation = forwardRef<
             [orderedItems, showPrimaryActionButton, viewportHeight, tokens]
         )
 
-        // Drawer expansion state
-        const [activeSnapPoint, setActiveSnapPoint] = useState<
-            number | string | null
-        >(layout.snapPoints[0])
-
-        useEffect(() => {
-            setActiveSnapPoint(layout.snapPoints[0])
-        }, [layout.snapPoints])
-
-        const isExpanded = activeSnapPoint !== layout.snapPoints[0]
-
-        // Drawer event handlers
-        const handleOpenChange = useCallback(
-            (open: boolean) => {
-                if (!open) setActiveSnapPoint(layout.snapPoints[0])
-            },
-            [layout.snapPoints]
-        )
-
-        const handleSnapChange = useCallback(
-            (snap: number | string | null) => {
-                setActiveSnapPoint(snap ?? layout.snapPoints[0])
-            },
-            [layout.snapPoints]
-        )
+        // Expansion state for floating nav
+        const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
         const toggleExpansion = useCallback(() => {
-            setActiveSnapPoint((current) =>
-                current === layout.snapPoints[0]
-                    ? (layout.snapPoints[1] ?? layout.snapPoints[0])
-                    : layout.snapPoints[0]
-            )
-        }, [layout.snapPoints])
+            setIsExpanded((current) => !current)
+        }, [])
 
         const collapse = useCallback(() => {
-            setActiveSnapPoint(layout.snapPoints[0])
-        }, [layout.snapPoints])
+            setIsExpanded(false)
+        }, [])
+
+        // Calculate heights (including floating margin)
+        const floatingMarginValue = parseUnitValue(FLOATING_PADDING)
+
+        const collapsedHeight = useMemo(() => {
+            const rowPaddingY = parseUnitValue(tokens.row.padding.y)
+            const itemHeight = parseUnitValue(tokens.row.item.height)
+            const rowHeight = rowPaddingY * 2 + itemHeight
+            const containerPaddingY = parseUnitValue(tokens.padding.y)
+            // Content height + container padding + floating margin bottom + safe area
+            return (
+                rowHeight +
+                containerPaddingY * 2 +
+                floatingMarginValue +
+                SAFE_AREA_OFFSET
+            )
+        }, [tokens, floatingMarginValue])
+
+        const expandedHeight = useMemo(() => {
+            if (!layout.hasSecondaryItems || !viewportHeight) {
+                return collapsedHeight
+            }
+
+            const containerGap = parseUnitValue(tokens.gap)
+            const containerPaddingY = parseUnitValue(tokens.padding.y)
+            const rowPaddingY = parseUnitValue(tokens.row.padding.y)
+            const itemHeight = parseUnitValue(tokens.row.item.height)
+            const rowHeight = rowPaddingY * 2 + itemHeight
+            const secondaryRowCount = Math.ceil(
+                layout.secondaryItems.length / PRIMARY_VISIBLE_LIMIT
+            )
+            const totalRows = 1 + secondaryRowCount
+            const totalRowHeights = totalRows * rowHeight
+            const totalRowGaps = secondaryRowCount * containerGap
+            const totalContentHeight = totalRowHeights + totalRowGaps
+
+            // Content height + container padding + floating margin bottom + safe area
+            const totalExpandedHeight =
+                totalContentHeight +
+                containerPaddingY * 2 +
+                floatingMarginValue +
+                SAFE_AREA_OFFSET
+            const viewportLimit = viewportHeight * VIEWPORT_HEIGHT_MULTIPLIER
+
+            return Math.min(totalExpandedHeight, viewportLimit)
+        }, [
+            layout.hasSecondaryItems,
+            layout.secondaryItems.length,
+            viewportHeight,
+            tokens,
+            collapsedHeight,
+            floatingMarginValue,
+        ])
 
         const navigationHeight = useMemo(() => {
-            const fallbackHeight = parseCssValue(layout.snapPoints[0]) ?? 0
-            const currentHeight = parseCssValue(activeSnapPoint)
-            const computedHeight =
-                currentHeight == null ? fallbackHeight : currentHeight
-            return `${computedHeight + SAFE_AREA_OFFSET}px`
-        }, [activeSnapPoint, layout.snapPoints])
+            const height = isExpanded ? expandedHeight : collapsedHeight
+            return `${height}px`
+        }, [isExpanded, expandedHeight, collapsedHeight])
 
         useEffect(() => {
             onHeightChange?.(navigationHeight)
@@ -231,61 +299,75 @@ const SidebarMobileNavigation = forwardRef<
         ])
 
         return (
-            <Drawer
-                open
-                onOpenChange={handleOpenChange}
-                modal={false}
-                dismissible={false}
-                snapPoints={layout.snapPoints}
-                activeSnapPoint={activeSnapPoint}
-                onSnapPointChange={handleSnapChange}
-                fadeFromIndex={layout.hasSecondaryItems ? 1 : 0}
-                snapToSequentialPoint
+            <FloatingNavContainer
+                ref={ref}
+                maxHeight={navigationHeight}
+                style={{
+                    marginBottom: `calc(${SAFE_AREA_OFFSET}px + ${FLOATING_PADDING})`,
+                    marginLeft: FLOATING_PADDING,
+                    marginRight: FLOATING_PADDING,
+                    marginTop: FLOATING_PADDING,
+                    paddingTop: tokens.padding.y,
+                    paddingRight: tokens.padding.x,
+                    paddingBottom: tokens.padding.y,
+                    paddingLeft: tokens.padding.x,
+                }}
             >
-                <DrawerPortal>
-                    <DrawerContent
-                        direction="bottom"
-                        style={{
-                            left: '0px',
-                            right: '0px',
-                            bottom: '0px',
-                            margin: '0 auto',
-                            borderTop: tokens.drawer.borderTop,
-                            borderTopLeftRadius: tokens.drawer.borderRadius,
-                            borderTopRightRadius: tokens.drawer.borderRadius,
-                            overflow: 'hidden',
-                            zIndex: 1050,
-                        }}
-                        mobileOffset={{
-                            top: '0px',
-                            left: '0px',
-                            right: '0px',
-                        }}
-                        showHandle={false}
+                <ScrollableContent
+                    display="flex"
+                    flexDirection="column"
+                    width="100%"
+                    gap={tokens.gap}
+                >
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                        paddingTop={tokens.row.padding.y}
+                        paddingRight={tokens.row.padding.x}
+                        paddingBottom={tokens.row.padding.y}
+                        paddingLeft={tokens.row.padding.x}
+                        flexShrink={0}
                     >
-                        <DrawerTitle>
-                            <span style={{ display: 'none' }}>
-                                Mobile Navigation
-                            </span>
-                        </DrawerTitle>
-                        <DrawerBody
-                            noPadding
-                            overflowY={isExpanded ? 'auto' : 'hidden'}
-                            direction="bottom"
-                        >
-                            <Block
-                                ref={ref}
-                                display="flex"
-                                flexDirection="column"
-                                width="100%"
-                                backgroundColor={String(tokens.backgroundColor)}
-                                gap={tokens.gap}
-                                paddingTop={tokens.padding.y}
-                                paddingRight={tokens.padding.x}
-                                paddingBottom={tokens.padding.y}
-                                paddingLeft={tokens.padding.x}
-                            >
+                        {primaryRowElements}
+                    </Block>
+
+                    {isExpanded &&
+                        secondaryRows.map((row, rowIndex) => {
+                            const fillerCount = getMobileNavigationFillerCount(
+                                row.length,
+                                PRIMARY_VISIBLE_LIMIT
+                            )
+
+                            const rowElements: ReactNode[] = [
+                                ...row.map((item, index) => (
+                                    <MobileNavigationItem
+                                        key={`${item.label}-secondary-${rowIndex}-${index}`}
+                                        item={item}
+                                        index={index + rowIndex * row.length}
+                                        tokens={tokens}
+                                        onSelect={(selectedItem) =>
+                                            handleItemSelect(selectedItem, true)
+                                        }
+                                    />
+                                )),
+                                ...Array.from({
+                                    length: fillerCount,
+                                }).map((_, fillerIndex) => (
+                                    <Block
+                                        key={`secondary-row-${rowIndex}-filler-${fillerIndex}`}
+                                        width={tokens.row.item.width}
+                                        height={tokens.row.item.height}
+                                        flexShrink={0}
+                                        aria-hidden="true"
+                                    />
+                                )),
+                            ]
+
+                            return (
                                 <Block
+                                    key={`secondary-row-${rowIndex}`}
                                     display="flex"
                                     alignItems="center"
                                     justifyContent="space-between"
@@ -294,82 +376,14 @@ const SidebarMobileNavigation = forwardRef<
                                     paddingRight={tokens.row.padding.x}
                                     paddingBottom={tokens.row.padding.y}
                                     paddingLeft={tokens.row.padding.x}
+                                    flexShrink={0}
                                 >
-                                    {primaryRowElements}
+                                    {rowElements}
                                 </Block>
-
-                                {isExpanded &&
-                                    secondaryRows.map((row, rowIndex) => {
-                                        const fillerCount =
-                                            getMobileNavigationFillerCount(
-                                                row.length,
-                                                PRIMARY_VISIBLE_LIMIT
-                                            )
-
-                                        const rowElements: ReactNode[] = [
-                                            ...row.map((item, index) => (
-                                                <MobileNavigationItem
-                                                    key={`${item.label}-secondary-${rowIndex}-${index}`}
-                                                    item={item}
-                                                    index={
-                                                        index +
-                                                        rowIndex * row.length
-                                                    }
-                                                    tokens={tokens}
-                                                    onSelect={(selectedItem) =>
-                                                        handleItemSelect(
-                                                            selectedItem,
-                                                            true
-                                                        )
-                                                    }
-                                                />
-                                            )),
-                                            ...Array.from({
-                                                length: fillerCount,
-                                            }).map((_, fillerIndex) => (
-                                                <Block
-                                                    key={`secondary-row-${rowIndex}-filler-${fillerIndex}`}
-                                                    width={
-                                                        tokens.row.item.width
-                                                    }
-                                                    height={
-                                                        tokens.row.item.height
-                                                    }
-                                                    flexShrink={0}
-                                                    aria-hidden="true"
-                                                />
-                                            )),
-                                        ]
-
-                                        return (
-                                            <Block
-                                                key={`secondary-row-${rowIndex}`}
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                width="100%"
-                                                paddingTop={
-                                                    tokens.row.padding.y
-                                                }
-                                                paddingRight={
-                                                    tokens.row.padding.x
-                                                }
-                                                paddingBottom={
-                                                    tokens.row.padding.y
-                                                }
-                                                paddingLeft={
-                                                    tokens.row.padding.x
-                                                }
-                                            >
-                                                {rowElements}
-                                            </Block>
-                                        )
-                                    })}
-                            </Block>
-                        </DrawerBody>
-                    </DrawerContent>
-                </DrawerPortal>
-            </Drawer>
+                            )
+                        })}
+                </ScrollableContent>
+            </FloatingNavContainer>
         )
     }
 )

@@ -7,11 +7,14 @@ import { KeyValuePairTokensType } from './KeyValuePair.tokens'
  */
 export const getTextStyles = (
     textOverflow: TextOverflowMode,
-    maxLines: number
+    maxLines: number,
+    slotPresent: boolean
 ): CSSObject => {
-    const baseStyles: CSSObject = {
-        width: '100%',
-    }
+    const baseStyles: CSSObject = !slotPresent
+        ? {
+              width: '100%',
+          }
+        : {}
 
     const ellipsisStyles: CSSObject = {
         overflow: 'hidden',

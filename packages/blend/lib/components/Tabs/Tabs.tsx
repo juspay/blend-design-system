@@ -20,7 +20,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             showAddButton = false,
             dropdownTooltip = 'Navigate to tab',
             addButtonTooltip = 'Add new tab',
-            maxDisplayTabs = 6,
             value,
             defaultValue,
             onValueChange,
@@ -36,15 +35,82 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             value || defaultValue || items[0]?.value || ''
         )
 
+        // Track which tabs should have isDefault: true (persists across tab changes)
+        const [defaultTabs, setDefaultTabs] = useState<Set<string>>(() => {
+            // Initialize with tabs that already have isDefault: true
+            const initialDefaults = new Set<string>()
+            items.forEach((item) => {
+                if (item.isDefault === true) {
+                    initialDefaults.add(item.value)
+                }
+            })
+            return initialDefaults
+        })
+
+        // Track which tabs were newly added from dropdown (not originally default)
+        const [newlyAddedTabs, setNewlyAddedTabs] = useState<Set<string>>(
+            new Set()
+        )
+
+        // useEffect(() => {
+        //     if (value !== undefined) {
+        //         setActiveTab(value)
+        //     }
+        // }, [value])
+
+        // Update defaultTabs when items change (to include new items with isDefault: true)
         useEffect(() => {
-            if (value !== undefined) {
-                setActiveTab(value)
-            }
-        }, [value])
+            items.forEach((item) => {
+                if (item.isDefault === true && !defaultTabs.has(item.value)) {
+                    setDefaultTabs((prev) => new Set(prev).add(item.value))
+                }
+            })
+        }, [items, defaultTabs])
+
+        const itemsWithDefaultsAtEnd = useMemo(() => {
+            // Map items and update isDefault property
+            const updatedItems = items.map((item) => {
+                // Preserve isDefault: true for tabs that are in defaultTabs Set
+                if (defaultTabs.has(item.value)) {
+                    // Only set newItem: true for tabs that were newly added from dropdown
+                    const isNewItem = newlyAddedTabs.has(item.value)
+                    return {
+                        ...item,
+                        isDefault: true,
+                        closable: true,
+                        ...(isNewItem && { newItem: true }),
+                    }
+                }
+                // Explicitly set isDefault: false for tabs not in defaultTabs Set
+                return { ...item, isDefault: false }
+            })
+
+            // Separate items into two groups: non-default and default
+            const nonDefaultItems = updatedItems.filter(
+                (item) => !defaultTabs.has(item.value)
+            )
+            const defaultItems = updatedItems.filter((item) =>
+                defaultTabs.has(item.value)
+            )
+            // Return non-default items first, then default items at the end
+            return [...nonDefaultItems, ...defaultItems]
+        }, [items, defaultTabs, newlyAddedTabs])
 
         const handleValueChange = useCallback(
             (newValue: string) => {
                 setActiveTab(newValue)
+                // Add the selected tab to defaultTabs Set to persist isDefault: true
+                setDefaultTabs((prev) => {
+                    const updated = new Set(prev)
+                    // Only mark as newly added if it wasn't already in defaultTabs
+                    if (!prev.has(newValue)) {
+                        setNewlyAddedTabs((prevNew) =>
+                            new Set(prevNew).add(newValue)
+                        )
+                    }
+                    updated.add(newValue)
+                    return updated
+                })
                 onValueChange?.(newValue)
             },
             [onValueChange]
@@ -52,20 +118,65 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 
         const handleTabClose = useCallback(
             (tabValue: string) => {
-                onTabClose?.(tabValue)
+                // Find the most recent previous tab with isDefault: true BEFORE removing from defaultTabs
+                let previousDefaultTab: (typeof items)[0] | null = null
+                const DefaultTabs = itemsWithDefaultsAtEnd.filter(
+                    (item) => item.isDefault === true
+                )
 
                 if (tabValue === activeTab && items.length > 1) {
-                    const currentIndex = items.findIndex(
+                    // Search in itemsWithDefaultsAtEnd (display order) for the most recent previous default tab
+                    const currentIndexInDisplay = DefaultTabs.findIndex(
+                        (item) => item.value === tabValue
+                    )
+                    // Search backwards from current position to find the most recent previous default tab
+                    if (currentIndexInDisplay > 0) {
+                        for (let i = currentIndexInDisplay - 1; i >= 0; i--) {
+                            const item = DefaultTabs[i]
+                            if (defaultTabs.has(item.value)) {
+                                previousDefaultTab = item
+                                break // Found the most recent previous default tab
+                            }
+                        }
+                    }
+                    // Fallback: if not found in display order, use next/previous tab
+                    const currentIndex = DefaultTabs.findIndex(
                         (item) => item.value === tabValue
                     )
                     const nextTab =
-                        items[currentIndex + 1] || items[currentIndex - 1]
+                        previousDefaultTab ||
+                        DefaultTabs[currentIndex + 1] ||
+                        DefaultTabs[currentIndex - 1]
+
                     if (nextTab) {
                         handleValueChange(nextTab.value)
                     }
                 }
+
+                // Remove from defaultTabs Set - this will cause itemsWithDefaultsAtEnd to recalculate
+                setDefaultTabs((prev) => {
+                    const updated = new Set(prev)
+                    updated.delete(tabValue)
+                    return updated
+                })
+
+                // Remove from newlyAddedTabs Set
+                setNewlyAddedTabs((prev) => {
+                    const updated = new Set(prev)
+                    updated.delete(tabValue)
+                    return updated
+                })
+
+                onTabClose?.(tabValue)
             },
-            [activeTab, items, onTabClose, handleValueChange]
+            [
+                activeTab,
+                items,
+                onTabClose,
+                defaultTabs,
+                itemsWithDefaultsAtEnd,
+                handleValueChange,
+            ]
         )
 
         const handleTabChange = useCallback(
@@ -76,7 +187,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         )
 
         const processedItems = useMemo(() => {
-            return items.map((item) => ({
+            return itemsWithDefaultsAtEnd.map((item) => ({
                 ...item,
                 disable: item.disable || disable,
                 showSkeleton:
@@ -88,7 +199,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         ? item.skeletonVariant
                         : skeletonVariant,
             }))
-        }, [items, disable, showSkeleton, skeletonVariant])
+        }, [itemsWithDefaultsAtEnd, disable, showSkeleton, skeletonVariant])
 
         if (items.length > 0) {
             return (
@@ -114,7 +225,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         showAddButton={showAddButton}
                         dropdownTooltip={dropdownTooltip}
                         addButtonTooltip={addButtonTooltip}
-                        maxDisplayTabs={maxDisplayTabs}
                         onTabChange={handleTabChange}
                         activeTab={activeTab}
                     />
@@ -128,8 +238,10 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             )
         }
 
-        const renderChildren = () => {
-            return React.Children.map(children, (child) => {
+        const renderChildren = (
+            childrenToRender: React.ReactNode
+        ): React.ReactNode => {
+            return React.Children.map(childrenToRender, (child) => {
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
@@ -148,29 +260,45 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     (child.type as { displayName?: string }).displayName ===
                         'TabsTrigger'
 
-                const childProps = {
-                    ...existingProps,
-                    disable: childDisable || disable,
-                    ...(isTabsList && {
-                        activeTab,
-                        showSkeleton,
-                        skeletonVariant,
-                        variant,
-                        size,
-                    }),
-                    ...(isTabsTrigger && {
-                        showSkeleton:
-                            'showSkeleton' in existingProps
-                                ? existingProps.showSkeleton
-                                : showSkeleton,
-                        skeletonVariant:
-                            'skeletonVariant' in existingProps
-                                ? existingProps.skeletonVariant
-                                : skeletonVariant,
-                    }),
+                // If it's a TabsList or TabsTrigger, apply props directly
+                if (isTabsList || isTabsTrigger) {
+                    const childProps = {
+                        ...existingProps,
+                        disable: childDisable || disable,
+                        ...(isTabsList && {
+                            activeTab,
+                            showSkeleton,
+                            skeletonVariant,
+                            variant,
+                            size,
+                        }),
+                        ...(isTabsTrigger && {
+                            showSkeleton:
+                                'showSkeleton' in existingProps
+                                    ? existingProps.showSkeleton
+                                    : showSkeleton,
+                            skeletonVariant:
+                                'skeletonVariant' in existingProps
+                                    ? existingProps.skeletonVariant
+                                    : skeletonVariant,
+                        }),
+                    }
+                    return React.cloneElement(child, childProps)
                 }
 
-                return React.cloneElement(child, childProps)
+                // If it's a regular element with children, recursively process its children
+                const childChildren =
+                    (existingProps.children as React.ReactNode) || null
+                if (childChildren) {
+                    const childProps = {
+                        ...existingProps,
+                        children: renderChildren(childChildren),
+                    }
+                    return React.cloneElement(child, childProps)
+                }
+
+                // Otherwise, return as-is
+                return child
             })
         }
 
@@ -184,7 +312,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 onValueChange={handleValueChange}
                 {...props}
             >
-                {renderChildren()}
+                {renderChildren(children)}
             </StyledTabs>
         )
     }

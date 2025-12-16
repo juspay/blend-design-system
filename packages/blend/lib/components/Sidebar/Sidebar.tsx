@@ -82,6 +82,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             panelOnlyMode = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
+            activeItem,
+            onActiveItemChange,
+            defaultActiveItem,
         },
         ref
     ) => {
@@ -465,6 +468,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 <Directory
                                                     directoryData={data}
                                                     idPrefix={`${baseId}-`}
+                                                    activeItem={activeItem}
+                                                    onActiveItemChange={
+                                                        onActiveItemChange
+                                                    }
+                                                    defaultActiveItem={
+                                                        defaultActiveItem
+                                                    }
                                                 />
                                             </DirectoryContainer>
 

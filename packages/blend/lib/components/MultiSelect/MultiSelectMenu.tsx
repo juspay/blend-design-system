@@ -35,7 +35,7 @@ const Content = styled(RadixMenu.Content)`
     background-color: ${FOUNDATION_THEME.colors.gray[0]};
     border-radius: ${FOUNDATION_THEME.border.radius[8]};
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     border: ${FOUNDATION_THEME.border.width[1]} solid
         ${FOUNDATION_THEME.colors.gray[200]};
     display: flex;
@@ -293,7 +293,7 @@ const MultiSelectMenu = ({
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
                     side={side}
-                    avoidCollisions={false}
+                    avoidCollisions
                     onKeyDown={handleKeyDown}
                     role="listbox"
                     aria-multiselectable="true"
@@ -329,6 +329,28 @@ const MultiSelectMenu = ({
                                                 searchPlaceholder ||
                                                 'Search options'
                                             }
+                                            onKeyDown={(e) => {
+                                                if (
+                                                    e.key === 'ArrowDown' ||
+                                                    e.key === 'ArrowUp'
+                                                ) {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    const menuContent =
+                                                        e.currentTarget.closest(
+                                                            '[data-dropdown="dropdown"]'
+                                                        )
+                                                    if (menuContent) {
+                                                        const firstMenuItem =
+                                                            menuContent.querySelector<HTMLElement>(
+                                                                '[role="option"]:not([data-disabled])'
+                                                            )
+                                                        if (firstMenuItem) {
+                                                            firstMenuItem.focus()
+                                                        }
+                                                    }
+                                                }
+                                            }}
                                         />
                                     </Block>
                                 )}

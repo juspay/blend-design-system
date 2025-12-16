@@ -268,6 +268,7 @@ const MultiSelect = ({
                                     .join(', ')) ||
                             ''
                         }
+                        fullWidth={fullWidth}
                     >
                         <MultiSelectMenu
                             skeleton={skeleton}

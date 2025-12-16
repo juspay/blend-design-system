@@ -29,6 +29,8 @@
         "publish:blend": "cd packages/blend && npm publish --access public",
         "publish:blend:dry": "cd packages/blend && npm publish --dry-run --access public",
         "version:blend": "cd packages/blend && npm version",
+        "yalc:publish": "cd packages/blend && yalc publish",
+        "yalc:push": "cd packages/blend && pnpm build && yalc push",
         "figma:validate": "figma connect validate",
         "figma:publish": "figma connect publish",
         "figma:unpublish": "figma connect unpublish",

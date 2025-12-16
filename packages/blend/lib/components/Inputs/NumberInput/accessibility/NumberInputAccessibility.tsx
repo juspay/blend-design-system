@@ -31,12 +31,12 @@ const NumberInputAccessibility = forwardRef<
     const [showFullReport, setShowFullReport] = useState(false)
 
     // Demo state
-    const [age, setAge] = useState<number | undefined>(undefined)
-    const [income, setIncome] = useState<number | undefined>(undefined)
-    const [percentage, setPercentage] = useState<number | undefined>(undefined)
+    const [age, setAge] = useState<number | null>(null)
+    const [income, setIncome] = useState<number | null>(null)
+    const [percentage, setPercentage] = useState<number | null>(null)
 
     const ageError =
-        age !== undefined && (age < 0 || age > 120)
+        age !== null && (age < 0 || age > 120)
             ? 'Age must be between 0 and 120'
             : ''
 
@@ -339,7 +339,7 @@ const NumberInputAccessibility = forwardRef<
                                 setIncome(
                                     e.target.value
                                         ? parseFloat(e.target.value)
-                                        : undefined
+                                        : null
                                 )
                             }
                             required
@@ -358,7 +358,7 @@ const NumberInputAccessibility = forwardRef<
                                 setAge(
                                     e.target.value
                                         ? parseInt(e.target.value, 10)
-                                        : undefined
+                                        : null
                                 )
                             }
                             error={!!ageError}
@@ -379,7 +379,7 @@ const NumberInputAccessibility = forwardRef<
                                 setPercentage(
                                     e.target.value
                                         ? parseFloat(e.target.value)
-                                        : undefined
+                                        : null
                                 )
                             }
                         />
@@ -402,14 +402,14 @@ const NumberInputAccessibility = forwardRef<
                                 label="Medium Size"
                                 placeholder="Medium number input"
                                 size={NumberInputSize.MEDIUM}
-                                value={undefined}
+                                value={null}
                                 onChange={() => {}}
                             />
                             <NumberInput
                                 label="Large Size"
                                 placeholder="Large number input"
                                 size={NumberInputSize.LARGE}
-                                value={undefined}
+                                value={null}
                                 onChange={() => {}}
                             />
                         </div>

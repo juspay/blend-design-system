@@ -15,6 +15,11 @@ import { Checkbox } from '../../../../packages/blend/lib/components/Checkbox'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { User, Mail, Lock } from 'lucide-react'
+import {
+    MultiSelect,
+    MultiSelectMenuGroupType,
+    MultiSelectSelectionTagType,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 
 const FormElementsDemo = () => {
     const [formData, setFormData] = useState({
@@ -29,6 +34,34 @@ const FormElementsDemo = () => {
         terms: false,
         notifications: true,
     })
+    const simpleItems: MultiSelectMenuGroupType[] = [
+        {
+            items: [
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
+                { label: 'Option 4', value: 'option4' },
+                { label: 'Option 5', value: 'option5' },
+            ],
+        },
+    ]
+    const handleMultiSelectChange =
+        (
+            _: string[],
+            setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>
+        ) =>
+        (value: string) => {
+            if (value === '') {
+                setSelectedValues([])
+            } else {
+                setSelectedValues((prev) =>
+                    prev.includes(value)
+                        ? prev.filter((v) => v !== value)
+                        : [...prev, value]
+                )
+            }
+        }
+    const [basicSimpleSelected, setBasicSimpleSelected] = useState<string[]>([])
 
     const handleSubmit = () => {
         addSnackbar({
@@ -102,6 +135,7 @@ const FormElementsDemo = () => {
                         hintText="Must be at least 8 characters"
                         required
                     />
+
                     <NumberInput
                         label="Budget"
                         value={formData.budget}
@@ -114,6 +148,11 @@ const FormElementsDemo = () => {
                         placeholder="Enter budget"
                         min={0}
                         max={100000}
+                    />
+                    <Button
+                        text="Reset"
+                        buttonType={ButtonType.SECONDARY}
+                        onClick={handleReset}
                     />
                     <SingleSelect
                         label="Country"
@@ -132,6 +171,19 @@ const FormElementsDemo = () => {
                                 ],
                             },
                         ]}
+                    />
+                    <MultiSelect
+                        enableSearch={true}
+                        enableSelectAll={true}
+                        label="Basic Options"
+                        items={simpleItems}
+                        selectedValues={basicSimpleSelected}
+                        onChange={handleMultiSelectChange(
+                            basicSimpleSelected,
+                            setBasicSimpleSelected
+                        )}
+                        placeholder="Choose multiple options"
+                        selectionTagType={MultiSelectSelectionTagType.COUNT}
                     />
                     <TextArea
                         label="Bio"

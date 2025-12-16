@@ -153,9 +153,6 @@ const OTPInputDemo = () => {
                                 hintText={playgroundHintText}
                                 helpIconHintText={playgroundHelpText}
                                 required={isRequired}
-                                onKeyDown={(e) => {
-                                    console.log('onKeyDown', e)
-                                }}
                             />
                         </div>
                     </div>
