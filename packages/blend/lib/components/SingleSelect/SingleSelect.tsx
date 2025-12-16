@@ -87,7 +87,7 @@ const SingleSelect = ({
     onFocus,
     inline = false,
     fullWidth = false,
-    enableVirtualization,
+    enableVirtualization = items.length > 20 ? true : false,
     virtualListItemHeight,
     virtualListOverscan,
     onEndReached,
