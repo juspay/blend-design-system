@@ -600,7 +600,6 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
 
 export const CustomCard: React.FC<CustomCardComponentProps> = ({
     props,
-    cardToken,
     maxHeight,
 }) => {
     const { children } = props
@@ -608,7 +607,6 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
     return (
         <Block
             style={{
-                padding: `${String(cardToken.padding[CardVariant.CUSTOM].y)} ${String(cardToken.padding[CardVariant.CUSTOM].x)}`,
                 ...(maxHeight && {
                     overflowY: 'auto',
                     overflowX: 'hidden',
