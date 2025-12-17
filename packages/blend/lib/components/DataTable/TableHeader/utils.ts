@@ -117,33 +117,50 @@ export const getFrozenColumnStyles = (
 ) => {
     if (index >= columnFreeze) return { padding: '0 16px' }
 
-    // Calculate left offset based on system columns
+    const currentColumn = visibleColumns[index]
+    const currentColumnStyles = getColumnWidth(currentColumn, index)
+
+    let fixedWidth = 140
+
+    if (currentColumn.minWidth) {
+        fixedWidth =
+            parseInt(currentColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
+    } else if (currentColumn.maxWidth) {
+        fixedWidth =
+            parseInt(currentColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 140
+    } else if (currentColumnStyles.minWidth) {
+        fixedWidth =
+            parseInt(
+                String(currentColumnStyles.minWidth).replace(/px|%|em|rem/g, '')
+            ) || 140
+    }
+
     let leftOffset = 0
     if (enableRowExpansion) leftOffset += 50
     if (enableRowSelection) leftOffset += 60
 
     for (let i = 0; i < index; i++) {
         const prevColumn = visibleColumns[i]
-        let columnWidth = 120
+        let columnWidth = 140
 
         if (prevColumn.minWidth) {
             columnWidth =
-                parseInt(prevColumn.minWidth.replace(/px|%|em|rem/g, '')) || 120
+                parseInt(prevColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
         } else if (prevColumn.maxWidth) {
             columnWidth =
-                parseInt(prevColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 120
+                parseInt(prevColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 140
         } else {
             const prevStyles = getColumnWidth(prevColumn, i)
-            if (prevStyles.width) {
-                columnWidth =
-                    parseInt(
-                        String(prevStyles.width).replace(/px|%|em|rem/g, '')
-                    ) || 120
-            } else if (prevStyles.minWidth) {
+            if (prevStyles.minWidth) {
                 columnWidth =
                     parseInt(
                         String(prevStyles.minWidth).replace(/px|%|em|rem/g, '')
                     ) || 120
+            } else if (prevStyles.maxWidth) {
+                columnWidth =
+                    parseInt(
+                        String(prevStyles.maxWidth).replace(/px|%|em|rem/g, '')
+                    ) || 140
             }
         }
 
@@ -158,6 +175,10 @@ export const getFrozenColumnStyles = (
         zIndex: 9,
         backgroundColor,
         padding: `0 ${FOUNDATION_THEME.unit[16]}`,
+        width: `${fixedWidth}px`,
+        minWidth: `${fixedWidth}px`,
+        maxWidth: `${fixedWidth}px`,
+        boxSizing: 'border-box' as const,
         ...(isLastFrozenColumn && {
             borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         }),
