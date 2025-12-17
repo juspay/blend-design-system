@@ -19,6 +19,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             header = 'Editor',
             headerLeftSlot,
             headerRightSlot,
+            showLeftIcon = true,
             showCopyButton = true,
             language = 'javascript',
             placeholder,
@@ -65,6 +66,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                         header={header}
                         headerLeftSlot={headerLeftSlot}
                         headerRightSlot={headerRightSlot}
+                        showLeftIcon={showLeftIcon}
                         showCopyButton={showCopyButton}
                         isCopied={isCopied}
                         onCopy={copyToClipboard}
