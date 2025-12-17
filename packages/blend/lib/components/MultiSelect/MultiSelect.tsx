@@ -546,7 +546,7 @@ const MultiSelect = ({
                                                         color={
                                                             multiSelectTokens
                                                                 .trigger
-                                                                .placeholder
+                                                                .selectedValue
                                                                 .color
                                                         }
                                                         fontWeight={
