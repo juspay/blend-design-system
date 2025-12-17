@@ -232,7 +232,6 @@ const MultiSelect = ({
                     <InputLabels
                         label={label}
                         sublabel={sublabel}
-                        disabled={disabled}
                         helpIconHintText={helpIconHintText}
                         name={uniqueName}
                         required={required}
