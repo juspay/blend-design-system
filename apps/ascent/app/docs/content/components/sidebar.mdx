@@ -294,6 +294,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Sidebar.disableIntermediateState',
+                hintText:
+                    'When true, disables the intermediate state that appears on hover. When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state. The intermediate state allows users to see the sidebar content without fully expanding it. When disabled, the sidebar can only be expanded by clicking the toggle button or using the keyboard shortcut. Useful for preventing accidental expansion on hover or when you want more explicit user control over sidebar visibility. Defaults to false (intermediate state enabled).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables intermediate state on hover, false enables it',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
                 content: 'Sidebar.showPrimaryActionButton',
                 hintText:
                     'Optional boolean that controls whether to show a primary action button in the mobile navigation. When true, displays a primary action button (typically for CTA actions like "Create", "Add", etc.) in the mobile navigation drawer. The button appearance and behavior are controlled by primaryActionButtonProps. Useful for providing quick access to primary actions on mobile devices.',

@@ -199,6 +199,16 @@ const navigationData = [
             description:
                 'Custom content for the sidebar top slot (replaces default merchant selector)',
         },
+        disableIntermediateState: {
+            control: 'boolean',
+            description:
+                'When true, disables the intermediate state that appears on hover. When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state. The intermediate state allows users to see the sidebar content without fully expanding it. Defaults to false (intermediate state enabled).',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Behavior',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -1112,6 +1122,142 @@ Interactive examples demonstrating the Sidebar component's accessibility feature
         chromatic: {
             ...CHROMATIC_CONFIG,
             delay: 500,
+        },
+    },
+}
+
+// Sidebar without intermediate state
+export const WithoutIntermediateState: Story = {
+    render: () => {
+        const WithoutIntermediateStateComponent = () => {
+            const [activeTenant, setActiveTenant] = useState('Retail Corp')
+
+            const navigationData: DirectoryData[] = [
+                {
+                    label: 'Main',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            leftSlot: <Home size={16} aria-hidden="true" />,
+                            onClick: () => console.log('Dashboard clicked'),
+                        },
+                        {
+                            label: 'Analytics',
+                            leftSlot: (
+                                <BarChart3 size={16} aria-hidden="true" />
+                            ),
+                            onClick: () => console.log('Analytics clicked'),
+                        },
+                        {
+                            label: 'Reports',
+                            leftSlot: <FileText size={16} aria-hidden="true" />,
+                            onClick: () => console.log('Reports clicked'),
+                        },
+                    ],
+                },
+                {
+                    label: 'Commerce',
+                    items: [
+                        {
+                            label: 'Products',
+                            leftSlot: <Package size={16} aria-hidden="true" />,
+                            onClick: () => console.log('Products clicked'),
+                        },
+                        {
+                            label: 'Orders',
+                            leftSlot: (
+                                <ShoppingCart size={16} aria-hidden="true" />
+                            ),
+                            onClick: () => console.log('Orders clicked'),
+                        },
+                    ],
+                },
+            ]
+
+            return (
+                <div style={{ height: '100vh', display: 'flex' }}>
+                    <Sidebar
+                        disableIntermediateState={true}
+                        defaultIsExpanded={false}
+                        leftPanel={{
+                            items: [
+                                {
+                                    label: 'Retail Corp',
+                                    icon: (
+                                        <Building
+                                            size={16}
+                                            color="#3b82f6"
+                                            aria-hidden="true"
+                                        />
+                                    ),
+                                },
+                                {
+                                    label: 'Tech Inc',
+                                    icon: (
+                                        <Cpu
+                                            size={16}
+                                            color="#8b5cf6"
+                                            aria-hidden="true"
+                                        />
+                                    ),
+                                },
+                            ],
+                            selected: activeTenant,
+                            onSelect: setActiveTenant,
+                        }}
+                        data={navigationData}
+                        topbar={
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '16px',
+                                    width: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        flex: 1,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '8px 16px',
+                                        backgroundColor: '#f3f4f6',
+                                        borderRadius: '8px',
+                                    }}
+                                >
+                                    <Search
+                                        size={16}
+                                        color="#6b7280"
+                                        aria-hidden="true"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Search..."
+                                        aria-label="Search input"
+                                        style={{
+                                            border: 'none',
+                                            outline: 'none',
+                                            backgroundColor: 'transparent',
+                                            width: '100%',
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        }
+                    >
+                        <SampleContent title="Sidebar Without Intermediate State" />
+                    </Sidebar>
+                </div>
+            )
+        }
+        return <WithoutIntermediateStateComponent />
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Sidebar with intermediate state disabled. When collapsed, hovering over the sidebar will not trigger the intermediate/expanded state. The sidebar can only be expanded by clicking the toggle button or using the keyboard shortcut. This is useful when you want to prevent accidental expansion on hover.',
+            },
         },
     },
 }

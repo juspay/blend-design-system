@@ -81,6 +81,7 @@ const DataTable = forwardRef(
             idField,
             title,
             description,
+            descriptionTooltipProps,
             defaultSort,
             enableSearch = false,
             searchPlaceholder = 'Search...',
@@ -596,11 +597,16 @@ const DataTable = forwardRef(
                     const isSelected = newSelectedRows[rowId] || false
 
                     if (wasSelected !== isSelected) {
+                        const rawRowData = data.find(
+                            (d) => String(d[idField]) === rowId
+                        )
+                        const rowDataToPass = (rawRowData || row) as T
+
                         onRowSelectionChange(
                             selectedRowIds,
                             isSelected,
                             rowId,
-                            row as T
+                            rowDataToPass
                         )
                     }
                 })
@@ -624,15 +630,20 @@ const DataTable = forwardRef(
                     .filter(([, selected]) => selected)
                     .map(([id]) => id)
 
-                const rowData = currentData.find(
+                const rawRowData = data.find(
+                    (d) => String(d[idField]) === rowIdStr
+                )
+                const rowDataFromCurrent = currentData.find(
                     (row) => String(row[idField]) === rowIdStr
                 )
-                if (rowData) {
+                const rowDataToPass = (rawRowData || rowDataFromCurrent) as T
+
+                if (rowDataToPass) {
                     onRowSelectionChange(
                         selectedRowIds,
                         isSelected,
                         rowIdStr,
-                        rowData as T
+                        rowDataToPass
                     )
                 }
             }
@@ -1167,6 +1178,7 @@ const DataTable = forwardRef(
                 <DataTableHeader
                     title={title}
                     description={description}
+                    descriptionTooltipProps={descriptionTooltipProps}
                     showHeader={showHeader}
                     showToolbar={showToolbar}
                     enableSearch={enableSearch}
@@ -1227,6 +1239,7 @@ const DataTable = forwardRef(
                         onExport={exportToCSV}
                         onDeselectAll={handleDeselectAll}
                         customActions={renderBulkActions()}
+                        showExport={bulkActions?.showExport}
                     />
                     <Block
                         id={statusRegionId}

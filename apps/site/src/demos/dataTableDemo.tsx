@@ -42,6 +42,10 @@ import {
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
+import {
+    TooltipAlign,
+    TooltipSide,
+} from '../../../../packages/blend/lib/components/Tooltip/types'
 
 const SimpleDataTableExample = () => {
     // Modal state for table demo
@@ -899,6 +903,10 @@ const SimpleDataTableExample = () => {
                     idField="id"
                     title="Product Inventory (Mobile: All Columns)"
                     description="Same table but on mobile shows all columns with horizontal scrolling instead of using the overflow drawer."
+                    descriptionTooltipProps={{
+                        side: TooltipSide.LEFT,
+                        align: TooltipAlign.START,
+                    }}
                     enableSearch={true}
                     enableFiltering={true}
                     enableAdvancedFilter={false}
@@ -2806,6 +2814,9 @@ const DataTableDemo = () => {
     }
 
     // Handle row selection change
+    // IMPORTANT: rowData contains RAW data from the original data prop (API response)
+    // NOT the processed/filtered/formatted data displayed in the table
+    // This means you get ALL fields from your API, even if they're not displayed in table columns
     const handleRowSelectionChange = (
         selectedRowIds: string[],
         isSelected: boolean,
@@ -2825,10 +2836,22 @@ const DataTableDemo = () => {
             allSelectedRowIds: selectedRowIds,
         })
 
+        // rowData contains ALL fields from API response, not just displayed columns
+        // Example: If your API returns 10 fields but table shows only 5 columns,
+        // rowData will have all 10 fields here
+        console.log('📦 Raw API data (all fields):', rowData)
+        console.log('📋 Available fields:', Object.keys(rowData))
+
         console.log(
             `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
         )
         console.log(`📊 Total selected rows: ${selectedRowIds.length}`)
+
+        // Example: Use raw data for API operations
+        // if (isSelected) {
+        //     // You have access to ALL API fields here, even if not displayed
+        //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
+        // }
     }
 
     return (
@@ -3092,6 +3115,16 @@ const DataTableDemo = () => {
                 )}
             </div>
 
+            {/* 
+                User Management Table - Demonstrating New Features:
+                
+                1. showExport: Set to false to hide the default Export button in BulkActionBar.
+                   When false, only customActions will be shown. Defaults to true.
+                
+                2. onRowSelectionChange: Now receives RAW data from the original data array (API response),
+                   not the processed/filtered/formatted data displayed in the table.
+                   This ensures you have access to all original fields for API operations.
+            */}
             <DataTable
                 data={data}
                 columns={
@@ -3172,6 +3205,9 @@ const DataTableDemo = () => {
                 bulkActions={{
                     showSelectAll: true,
                     showDeselectAll: true,
+                    // Set to false to hide the default Export button in BulkActionBar
+                    // When false, only customActions will be shown
+                    showExport: false,
                     onSelectAll: () => {
                         console.log('🔄 Select All clicked')
                         // Select all rows on current page
@@ -3385,6 +3421,11 @@ const DataTableDemo = () => {
                         pageSizeOptions: [20, 50, 100],
                     }}
                     onRowSelectionChange={handleRowSelectionChange}
+                    bulkActions={{
+                        // showExport defaults to true - Export button will be shown
+                        // Set to false to hide it and only show customActions
+                        showExport: true,
+                    }}
                     headerSlot1={
                         <Button
                             text="Settings"

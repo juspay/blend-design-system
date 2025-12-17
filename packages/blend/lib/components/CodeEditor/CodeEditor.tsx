@@ -30,6 +30,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             className,
             onBlur,
             onFocus,
+            autoFocus = false,
         },
         ref
     ) => {
@@ -85,6 +86,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                     tokens={tokens}
                     onFocus={onFocus}
                     onBlur={onBlur}
+                    autoFocus={autoFocus}
                 />
             </Block>
         )
