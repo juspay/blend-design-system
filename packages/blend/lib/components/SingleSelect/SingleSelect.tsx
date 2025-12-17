@@ -11,7 +11,6 @@ import {
 } from '../Select'
 import Text from '../Text/Text'
 import SingleSelectMenu from './SingleSelectMenu'
-import { FOUNDATION_THEME } from '../../tokens'
 import { ChevronDown } from 'lucide-react'
 import type { SingleSelectProps } from './types'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
@@ -512,8 +511,11 @@ const SingleSelect = ({
                                         <ChevronDown
                                             size={16}
                                             color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[500]
+                                                selected
+                                                    ? singleSelectTokens.trigger
+                                                          .selectedValue.color
+                                                    : singleSelectTokens.trigger
+                                                          .placeholder.color
                                             }
                                         />
                                     </Block>
