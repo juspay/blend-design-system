@@ -275,15 +275,38 @@ const MultiSelectMenu = ({
         []
     )
 
+    // RCA: When customTrigger is a Tooltip wrapping a Button, nested asChild props conflict
+    // Solution: Detect Tooltip wrapper and restructure to: Tooltip > MenuTrigger > Button
+    // This ensures tooltip shows on hover AND dropdown opens on click
+    const isTooltipWrapper =
+        React.isValidElement(trigger) &&
+        trigger.props !== null &&
+        typeof trigger.props === 'object' &&
+        'content' in trigger.props &&
+        'children' in trigger.props
+
     return (
         <RadixMenu.Root
             modal={false}
             open={open && !disabled}
             onOpenChange={handleOpenChange}
         >
-            <RadixMenu.Trigger asChild disabled={disabled}>
-                {trigger}
-            </RadixMenu.Trigger>
+            {isTooltipWrapper ? (
+                React.cloneElement(trigger as React.ReactElement<any>, {
+                    children: (
+                        <RadixMenu.Trigger asChild disabled={disabled}>
+                            {
+                                (trigger as React.ReactElement<any>).props
+                                    .children
+                            }
+                        </RadixMenu.Trigger>
+                    ),
+                })
+            ) : (
+                <RadixMenu.Trigger asChild disabled={disabled}>
+                    {trigger}
+                </RadixMenu.Trigger>
+            )}
             <RadixMenu.Portal>
                 <Content
                     id={menuId}
