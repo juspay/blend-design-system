@@ -529,16 +529,24 @@ const SingleSelectMenu = ({
             onOpenChange={handleOpenChange}
         >
             {isTooltipWrapper ? (
-                React.cloneElement(trigger as React.ReactElement<any>, {
-                    children: (
-                        <RadixMenu.Trigger asChild disabled={disabled}>
-                            {
-                                (trigger as React.ReactElement<any>).props
-                                    .children
-                            }
-                        </RadixMenu.Trigger>
-                    ),
-                })
+                React.cloneElement(
+                    trigger as React.ReactElement<Record<string, unknown>>,
+                    {
+                        children: (
+                            <RadixMenu.Trigger asChild disabled={disabled}>
+                                {
+                                    (
+                                        trigger as React.ReactElement<
+                                            Record<string, unknown> & {
+                                                children: React.ReactNode
+                                            }
+                                        >
+                                    ).props.children
+                                }
+                            </RadixMenu.Trigger>
+                        ),
+                    }
+                )
             ) : (
                 <RadixMenu.Trigger asChild disabled={disabled}>
                     {trigger}
