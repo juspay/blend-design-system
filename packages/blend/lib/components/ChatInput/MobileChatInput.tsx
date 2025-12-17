@@ -674,13 +674,19 @@ const MobileChatInput = ({
                                 <Block
                                     position="absolute"
                                     bottom="-12px"
-                                    right="6px"
+                                    right="5px"
                                     style={{
                                         transform: 'translateY(-50%)',
                                         pointerEvents: 'none',
                                     }}
                                 >
-                                    <Block style={{ pointerEvents: 'auto' }}>
+                                    <Block
+                                        style={{
+                                            pointerEvents: 'auto',
+                                            borderRadius: '100px',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
                                         {slot1}
                                     </Block>
                                 </Block>
