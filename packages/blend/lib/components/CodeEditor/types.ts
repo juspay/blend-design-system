@@ -26,4 +26,10 @@ export type CodeEditorProps = {
     className?: string
     onBlur?: () => void
     onFocus?: () => void
+    /**
+     * When true, automatically focuses the editor when it mounts.
+     * When false or undefined, the editor will not auto-focus.
+     * Defaults to false.
+     */
+    autoFocus?: boolean
 }

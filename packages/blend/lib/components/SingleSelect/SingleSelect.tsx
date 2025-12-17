@@ -87,7 +87,7 @@ const SingleSelect = ({
     onFocus,
     inline = false,
     fullWidth = false,
-    enableVirtualization,
+    enableVirtualization = items.length > 20 ? true : false,
     virtualListItemHeight,
     virtualListOverscan,
     onEndReached,
@@ -209,7 +209,6 @@ const SingleSelect = ({
                     <InputLabels
                         label={label}
                         sublabel={subLabel}
-                        disabled={disabled}
                         helpIconHintText={helpIconText}
                         name={uniqueName}
                         required={required}
