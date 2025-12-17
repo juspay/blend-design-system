@@ -1,4 +1,10 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react'
+import React, {
+    forwardRef,
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+} from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
 import type { DraggableAttributes } from '@dnd-kit/core'
@@ -77,12 +83,109 @@ const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
 
 const EditIcon = styled(Edit2)`
     cursor: pointer;
-    color: ${FOUNDATION_THEME.colors.gray[400]};
-
-    &:hover {
-        color: ${FOUNDATION_THEME.colors.gray[600]};
-    }
 `
+
+const TruncatedTextWithTooltip: React.FC<{
+    content: string
+    children: React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        delayDuration?: number
+    }
+}> = ({ content, children, tooltipProps }) => {
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [isTruncated, setIsTruncated] = useState(false)
+    const checkTruncation = useCallback(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const textElement =
+            (wrapper.querySelector('p') as HTMLElement) ||
+            (wrapper.firstElementChild as HTMLElement)
+
+        if (!textElement) {
+            setIsTruncated(false)
+            return
+        }
+
+        if (textElement.offsetWidth === 0 || textElement.offsetHeight === 0) {
+            setIsTruncated(false)
+            return
+        }
+
+        const truncated = textElement.scrollWidth > textElement.clientWidth
+        setIsTruncated(truncated)
+    }, [])
+
+    useEffect(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const timeoutId = setTimeout(checkTruncation, 0)
+
+        const resizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(checkTruncation)
+        })
+        resizeObserver.observe(wrapper)
+
+        const observeTextElement = () => {
+            const textElement = wrapper.querySelector('p') as HTMLElement
+            if (textElement) {
+                resizeObserver.observe(textElement)
+            }
+        }
+
+        const observeTimeoutId = setTimeout(observeTextElement, 100)
+
+        window.addEventListener('resize', checkTruncation, { passive: true })
+
+        return () => {
+            clearTimeout(timeoutId)
+            clearTimeout(observeTimeoutId)
+            resizeObserver.disconnect()
+            window.removeEventListener('resize', checkTruncation)
+        }
+    }, [content, checkTruncation])
+
+    const handleMouseEnter = useCallback(() => {
+        if (!isTruncated) {
+            checkTruncation()
+        }
+    }, [isTruncated, checkTruncation])
+
+    const textContent = (
+        <Block
+            ref={wrapperRef}
+            onMouseEnter={handleMouseEnter}
+            style={{
+                minWidth: 0,
+                width: '100%',
+                overflow: 'hidden',
+            }}
+        >
+            {children}
+        </Block>
+    )
+
+    if (isTruncated && content) {
+        return (
+            <Tooltip
+                content={content}
+                side={tooltipProps?.side || TooltipSide.TOP}
+                align={tooltipProps?.align || TooltipAlign.START}
+                size={tooltipProps?.size || TooltipSize.SMALL}
+                delayDuration={tooltipProps?.delayDuration || 500}
+                fullWidth={true}
+            >
+                {textContent}
+            </Tooltip>
+        )
+    }
+
+    return textContent
+}
 
 const TableHeader = forwardRef<
     HTMLTableSectionElement,
@@ -615,30 +718,83 @@ const TableHeader = forwardRef<
                                                         borderRadius="4px"
                                                     />
                                                 ) : (
-                                                    <Block
-                                                        style={{
-                                                            minWidth: 0,
-                                                            width: '100%',
-                                                            overflow: 'hidden',
+                                                    <TruncatedTextWithTooltip
+                                                        content={column.header}
+                                                        tooltipProps={{
+                                                            side: TooltipSide.TOP,
+                                                            align: TooltipAlign.START,
+                                                            size: TooltipSize.SMALL,
+                                                            delayDuration: 500,
                                                         }}
                                                     >
-                                                        <Tooltip
+                                                        <PrimitiveText
+                                                            style={{
+                                                                overflow:
+                                                                    'hidden',
+                                                                textOverflow:
+                                                                    'ellipsis',
+                                                                whiteSpace:
+                                                                    'nowrap',
+                                                                minWidth: 0,
+                                                                width: '100%',
+                                                                maxWidth:
+                                                                    '100%',
+                                                                display:
+                                                                    'block',
+                                                                cursor: isDraggable
+                                                                    ? 'grab'
+                                                                    : 'default',
+                                                                fontSize:
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .cell
+                                                                        .fontSize,
+                                                                fontWeight:
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .cell
+                                                                        .fontWeight,
+                                                                lineHeight: 1.2,
+                                                            }}
+                                                        >
+                                                            {column.header}
+                                                        </PrimitiveText>
+                                                    </TruncatedTextWithTooltip>
+                                                )}
+                                                {column.headerSubtext &&
+                                                    (isDisabled ? (
+                                                        <Skeleton
+                                                            variant="pulse"
+                                                            loading
+                                                            width="60%"
+                                                            height="12px"
+                                                            borderRadius="4px"
+                                                            style={{
+                                                                marginTop:
+                                                                    '2px',
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <TruncatedTextWithTooltip
                                                             content={
-                                                                column.header
+                                                                column.headerSubtext
                                                             }
-                                                            side={
-                                                                TooltipSide.TOP
-                                                            }
-                                                            align={
-                                                                TooltipAlign.START
-                                                            }
-                                                            size={
-                                                                TooltipSize.SMALL
-                                                            }
-                                                            delayDuration={500}
-                                                            fullWidth={true}
+                                                            tooltipProps={{
+                                                                side: TooltipSide.TOP,
+                                                                align: TooltipAlign.START,
+                                                                size: TooltipSize.SMALL,
+                                                                delayDuration: 500,
+                                                            }}
                                                         >
                                                             <PrimitiveText
+                                                                data-element="table-header-sub-title"
+                                                                data-id={
+                                                                    column.headerSubtext
+                                                                }
                                                                 style={{
                                                                     overflow:
                                                                         'hidden',
@@ -660,108 +816,24 @@ const TableHeader = forwardRef<
                                                                             .dataTable
                                                                             .table
                                                                             .header
-                                                                            .cell
-                                                                            .fontSize,
-                                                                    fontWeight:
-                                                                        tableToken
-                                                                            .dataTable
-                                                                            .table
-                                                                            .header
-                                                                            .cell
-                                                                            .fontWeight,
+                                                                            .filter
+                                                                            .groupLabelFontSize,
+                                                                    color: tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .groupLabelColor,
                                                                     lineHeight: 1.2,
+                                                                    marginTop:
+                                                                        '2px',
                                                                 }}
                                                             >
-                                                                {column.header}
-                                                            </PrimitiveText>
-                                                        </Tooltip>
-                                                    </Block>
-                                                )}
-                                                {column.headerSubtext &&
-                                                    (isDisabled ? (
-                                                        <Skeleton
-                                                            variant="pulse"
-                                                            loading
-                                                            width="60%"
-                                                            height="12px"
-                                                            borderRadius="4px"
-                                                            style={{
-                                                                marginTop:
-                                                                    '2px',
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <Block
-                                                            style={{
-                                                                minWidth: 0,
-                                                                width: '100%',
-                                                                overflow:
-                                                                    'hidden',
-                                                            }}
-                                                        >
-                                                            <Tooltip
-                                                                content={
+                                                                {
                                                                     column.headerSubtext
                                                                 }
-                                                                side={
-                                                                    TooltipSide.TOP
-                                                                }
-                                                                align={
-                                                                    TooltipAlign.START
-                                                                }
-                                                                size={
-                                                                    TooltipSize.SMALL
-                                                                }
-                                                                delayDuration={
-                                                                    500
-                                                                }
-                                                                fullWidth={true}
-                                                            >
-                                                                <PrimitiveText
-                                                                    data-element="table-header-sub-title"
-                                                                    data-id={
-                                                                        column.headerSubtext
-                                                                    }
-                                                                    style={{
-                                                                        overflow:
-                                                                            'hidden',
-                                                                        textOverflow:
-                                                                            'ellipsis',
-                                                                        whiteSpace:
-                                                                            'nowrap',
-                                                                        minWidth: 0,
-                                                                        width: '100%',
-                                                                        maxWidth:
-                                                                            '100%',
-                                                                        display:
-                                                                            'block',
-                                                                        cursor: isDraggable
-                                                                            ? 'grab'
-                                                                            : 'default',
-                                                                        fontSize:
-                                                                            tableToken
-                                                                                .dataTable
-                                                                                .table
-                                                                                .header
-                                                                                .filter
-                                                                                .groupLabelFontSize,
-                                                                        color: tableToken
-                                                                            .dataTable
-                                                                            .table
-                                                                            .header
-                                                                            .filter
-                                                                            .groupLabelColor,
-                                                                        lineHeight: 1.2,
-                                                                        marginTop:
-                                                                            '2px',
-                                                                    }}
-                                                                >
-                                                                    {
-                                                                        column.headerSubtext
-                                                                    }
-                                                                </PrimitiveText>
-                                                            </Tooltip>
-                                                        </Block>
+                                                            </PrimitiveText>
+                                                        </TruncatedTextWithTooltip>
                                                     ))}
                                             </Block>
                                             {enableInlineEdit && (
