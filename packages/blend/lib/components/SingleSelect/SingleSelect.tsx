@@ -209,7 +209,6 @@ const SingleSelect = ({
                     <InputLabels
                         label={label}
                         sublabel={subLabel}
-                        disabled={disabled}
                         helpIconHintText={helpIconText}
                         name={uniqueName}
                         required={required}
