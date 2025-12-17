@@ -513,7 +513,7 @@ const SingleSelect = ({
                                             size={16}
                                             color={
                                                 FOUNDATION_THEME.colors
-                                                    .gray[500]
+                                                    .gray[400]
                                             }
                                         />
                                     </Block>

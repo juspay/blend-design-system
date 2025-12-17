@@ -267,7 +267,7 @@ const TextInput = ({
 
                 <PrimitiveInput
                     id={inputId}
-                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                    placeholderColor={textInputTokens.placeholder.color}
                     required={required}
                     value={value}
                     name={name}

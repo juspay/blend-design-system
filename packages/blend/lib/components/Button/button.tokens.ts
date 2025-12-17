@@ -1755,7 +1755,7 @@ export const getButtonTokens = (
                     },
                     secondary: {
                         default: {
-                            default: foundationToken.colors.gray[600],
+                            default: foundationToken.colors.gray[700],
                             hover: foundationToken.colors.gray[600],
                             active: foundationToken.colors.gray[600],
                             disabled: foundationToken.colors.gray[300],
@@ -1822,9 +1822,9 @@ export const getButtonTokens = (
                 },
                 // Pattern: text.fontWeight.[size] (size-dependent)
                 fontWeight: {
-                    sm: foundationToken.font.weight[600],
-                    md: foundationToken.font.weight[600],
-                    lg: foundationToken.font.weight[600],
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
                 },
             },
         },
