@@ -223,6 +223,7 @@ const MobileChatInput = ({
         textarea.style.left = '0'
         textarea.style.right = '0'
         textarea.style.width = '100%'
+        textarea.style.paddingRight = slot1 ? '40px' : '0'
         textarea.style.zIndex = '0'
 
         // Calculate new height
@@ -267,7 +268,7 @@ const MobileChatInput = ({
             filesContainer.style.right = '0'
             filesContainer.style.zIndex = '999'
         }
-    }, [value, attachedFiles.length])
+    }, [value, attachedFiles.length, slot1])
 
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>
@@ -356,9 +357,10 @@ const MobileChatInput = ({
             textarea.style.left = '0'
             textarea.style.right = '0'
             textarea.style.width = '100%'
+            textarea.style.paddingRight = slot1 ? '40px' : '0'
             textarea.style.zIndex = '0'
         }
-    }, [])
+    }, [slot1])
 
     // Truncate placeholder on mount and when textarea width changes
     useEffect(() => {
@@ -625,6 +627,9 @@ const MobileChatInput = ({
                                         textareaMobileTokens.border
                                             .focus as string
                                     e.currentTarget.style.boxShadow = '#EFF6FF'
+                                    e.currentTarget.style.paddingRight = slot1
+                                        ? '40px'
+                                        : '0'
 
                                     // If there's content, position absolutely for upward growth
                                     if (value && value.trim() !== '') {
@@ -637,11 +642,16 @@ const MobileChatInput = ({
                                         e.currentTarget.style.left = '0'
                                         e.currentTarget.style.right = '0'
                                         e.currentTarget.style.width = '100%'
+                                        e.currentTarget.style.paddingRight =
+                                            slot1 ? '40px' : '0'
                                         e.currentTarget.style.zIndex = '0'
                                     }
                                 }}
                                 onBlur={(e) => {
                                     e.currentTarget.style.outline = 'none'
+                                    e.currentTarget.style.paddingRight = slot1
+                                        ? '40px'
+                                        : '0'
                                     // If empty, reset to static positioning
                                     if (!value || value.trim() === '') {
                                         e.currentTarget.style.position =
@@ -650,6 +660,8 @@ const MobileChatInput = ({
                                         e.currentTarget.style.left = 'auto'
                                         e.currentTarget.style.right = 'auto'
                                         e.currentTarget.style.width = '100%'
+                                        e.currentTarget.style.paddingRight =
+                                            slot1 ? '40px' : '0'
                                         e.currentTarget.style.zIndex = '0'
                                     }
                                     // e.currentTarget.style.borderRadius = textareaMobileTokens.borderRadius.default as string
