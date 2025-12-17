@@ -75,7 +75,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
             >
                 {multiple
                     ? `${errorFiles.length} files failed`
-                    : errorFiles[0]?.error ||
+                    : errorFiles[0]?.file?.name ||
                       'Upload failed. Please try again.'}
             </Text>
         </Block>
