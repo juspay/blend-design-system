@@ -19,7 +19,15 @@ import {
     Edit,
     Trash2,
     Eye,
+    ChevronDown,
+    Filter,
 } from 'lucide-react'
+import {
+    Tag,
+    TagSize,
+    TagColor,
+    TagVariant,
+} from '../../../../packages/blend/lib/components/Tags'
 import { useState } from 'react'
 
 const ButtonGroupDemo = () => {
@@ -532,6 +540,263 @@ const ButtonGroupDemo = () => {
                                 onClick={() => {
                                     addSnackbar({
                                         header: 'Delete clicked!',
+                                    })
+                                }}
+                            />
+                        </ButtonGroup>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mixed Content Alignment */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Mixed Content Alignment (Bug Fix Demo)
+                </h2>
+                <p className="text-gray-600">
+                    These examples demonstrate proper alignment when mixing
+                    buttons with different content types: text with trailing
+                    icons, icon-only buttons, and regular text buttons. All
+                    buttons maintain consistent heights regardless of content.
+                </p>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Button with Tag + Icon-Only Button (Small Size)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Common pattern: A button with a trailing tag/badge
+                            next to an icon-only dropdown button
+                        </p>
+                        <div className="flex gap-4 flex-wrap">
+                            <ButtonGroup>
+                                <Button
+                                    text="Status"
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    trailingIcon={
+                                        <Tag
+                                            text="Active"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.SUCCESS}
+                                            size={TagSize.XS}
+                                        />
+                                    }
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Status button clicked!',
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    text=""
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    leadingIcon={<ChevronDown size={16} />}
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Dropdown clicked!',
+                                        })
+                                    }}
+                                />
+                            </ButtonGroup>
+
+                            <ButtonGroup>
+                                <Button
+                                    text="Priority"
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.SMALL}
+                                    trailingIcon={
+                                        <Tag
+                                            text="High"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.ERROR}
+                                            size={TagSize.XS}
+                                        />
+                                    }
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Priority button clicked!',
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    text=""
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.SMALL}
+                                    leadingIcon={<Filter size={16} />}
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Filter clicked!',
+                                        })
+                                    }}
+                                />
+                            </ButtonGroup>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Button with Tag + Icon-Only Button (Medium Size)
+                        </h3>
+                        <div className="flex gap-4 flex-wrap">
+                            <ButtonGroup>
+                                <Button
+                                    text="Category"
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.MEDIUM}
+                                    trailingIcon={
+                                        <Tag
+                                            text="12"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.NEUTRAL}
+                                            size={TagSize.SM}
+                                        />
+                                    }
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Category button clicked!',
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    text=""
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.MEDIUM}
+                                    leadingIcon={<Settings size={16} />}
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Settings clicked!',
+                                        })
+                                    }}
+                                />
+                            </ButtonGroup>
+
+                            <ButtonGroup>
+                                <Button
+                                    text="Notifications"
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.MEDIUM}
+                                    trailingIcon={
+                                        <Tag
+                                            text="New"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.WARNING}
+                                            size={TagSize.SM}
+                                        />
+                                    }
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Notifications clicked!',
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    text=""
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.MEDIUM}
+                                    leadingIcon={<ChevronDown size={16} />}
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'More options!',
+                                        })
+                                    }}
+                                />
+                            </ButtonGroup>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Button with Tag + Icon-Only Button (Large Size)
+                        </h3>
+                        <div className="flex gap-4 flex-wrap">
+                            <ButtonGroup>
+                                <Button
+                                    text="Team"
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.LARGE}
+                                    trailingIcon={
+                                        <Tag
+                                            text="8 members"
+                                            variant={TagVariant.SUBTLE}
+                                            color={TagColor.PRIMARY}
+                                            size={TagSize.MD}
+                                        />
+                                    }
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Team button clicked!',
+                                        })
+                                    }}
+                                />
+                                <Button
+                                    text=""
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.LARGE}
+                                    leadingIcon={<Plus size={20} />}
+                                    onClick={() => {
+                                        addSnackbar({
+                                            header: 'Add member clicked!',
+                                        })
+                                    }}
+                                />
+                            </ButtonGroup>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Stacked: Mixed Content
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Stacked buttons also maintain consistent heights
+                        </p>
+                        <ButtonGroup stacked>
+                            <Button
+                                text="Active Items"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.MEDIUM}
+                                trailingIcon={
+                                    <Tag
+                                        text="24"
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.SUCCESS}
+                                        size={TagSize.SM}
+                                    />
+                                }
+                                onClick={() => {
+                                    addSnackbar({
+                                        header: 'Active items clicked!',
+                                    })
+                                }}
+                            />
+                            <Button
+                                text=""
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.MEDIUM}
+                                leadingIcon={<Filter size={16} />}
+                                onClick={() => {
+                                    addSnackbar({
+                                        header: 'Filter clicked!',
+                                    })
+                                }}
+                            />
+                            <Button
+                                text="Archived"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.MEDIUM}
+                                trailingIcon={
+                                    <Tag
+                                        text="8"
+                                        variant={TagVariant.SUBTLE}
+                                        color={TagColor.NEUTRAL}
+                                        size={TagSize.SM}
+                                    />
+                                }
+                                onClick={() => {
+                                    addSnackbar({
+                                        header: 'Archived clicked!',
                                     })
                                 }}
                             />
