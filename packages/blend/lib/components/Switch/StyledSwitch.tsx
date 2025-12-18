@@ -24,8 +24,6 @@ export const StyledSwitchRoot = styled.button<{
             border: none;
             outline: none;
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};
-
-            margin-top: ${tokens.switchContainer.thumb.marginTop};
             padding: 0;
             display: inline-flex;
             align-items: center;

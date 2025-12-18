@@ -1,4 +1,11 @@
-import React, { forwardRef, useId, useState } from 'react'
+import React, {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useId,
+    useRef,
+    useState,
+} from 'react'
 import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
@@ -48,6 +55,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         const generatedId = useId()
         const uniqueId = id || generatedId
         const shouldShake = useErrorShake(error)
+        const switchRootElRef = useRef<HTMLButtonElement | null>(null)
+        const [switchRootWidth, setSwitchRootWidth] = useState<number>(0)
         const labelMaxLength = maxLength?.label
         const subtextMaxLength = maxLength?.subtext
         const subtextId = getSubtextId(uniqueId, !!subtext)
@@ -79,45 +88,85 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                 customAriaDescribedBy
             ),
         }
+
+        const setSwitchRootRef = useCallback(
+            (node: HTMLButtonElement | null) => {
+                switchRootElRef.current = node
+
+                if (!ref) return
+                if (typeof ref === 'function') {
+                    ref(node)
+                } else {
+                    ;(
+                        ref as React.MutableRefObject<HTMLButtonElement | null>
+                    ).current = node
+                }
+            },
+            [ref]
+        )
+
+        useEffect(() => {
+            const el = switchRootElRef.current
+            if (!el) return
+
+            const update = () => {
+                setSwitchRootWidth(el.getBoundingClientRect().width)
+            }
+
+            update()
+
+            // Prefer ResizeObserver, but guard for environments where it doesn't exist (e.g. some test runners)
+            if (typeof ResizeObserver === 'undefined') {
+                window.addEventListener('resize', update)
+                return () => window.removeEventListener('resize', update)
+            }
+
+            const ro = new ResizeObserver(() => update())
+            ro.observe(el)
+            return () => ro.disconnect()
+        }, [size, tokens.gap])
+
+        const subtextIndent =
+            switchRootWidth > 0
+                ? `calc(${switchRootWidth}px + ${tokens.gap})`
+                : tokens.gap
         return (
-            <Block
-                data-switch={label ?? 'switch'}
-                data-status={disabled ? 'disabled' : 'enabled'}
-                display="flex"
-                gap={tokens.gap}
-            >
-                <StyledSwitchRoot
-                    ref={ref}
-                    type="button"
-                    role="switch"
-                    id={uniqueId}
-                    disabled={disabled}
-                    defaultChecked={defaultChecked}
-                    onClick={handleToggle}
-                    aria-checked={currentChecked}
-                    data-state={getSwitchDataState(currentChecked)}
-                    size={size}
-                    $isDisabled={disabled}
-                    $isChecked={currentChecked}
-                    $error={error}
-                    $tokens={tokens}
-                    value={value}
-                    name={name}
-                    style={getErrorShakeStyle(shouldShake)}
-                    {...restProps}
-                    {...ariaAttributes}
-                >
-                    <StyledSwitchThumb
-                        size={size}
-                        $isChecked={currentChecked}
-                        $tokens={tokens}
-                    />
-                </StyledSwitchRoot>
+            <Block>
                 <Block
+                    data-switch={label ?? 'switch'}
+                    data-status={disabled ? 'disabled' : 'enabled'}
                     display="flex"
-                    flexDirection="column"
-                    gap={tokens.content.gap}
+                    gap={tokens.gap}
+                    alignItems="center"
                 >
+                    <StyledSwitchRoot
+                        ref={setSwitchRootRef}
+                        type="button"
+                        role="switch"
+                        id={uniqueId}
+                        disabled={disabled}
+                        defaultChecked={defaultChecked}
+                        onClick={handleToggle}
+                        aria-checked={currentChecked}
+                        data-state={getSwitchDataState(currentChecked)}
+                        size={size}
+                        $isDisabled={disabled}
+                        $isChecked={currentChecked}
+                        $error={error}
+                        $tokens={tokens}
+                        value={value}
+                        name={name}
+                        style={getErrorShakeStyle(shouldShake)}
+                        {...restProps}
+                        {...ariaAttributes}
+                    >
+                        <StyledSwitchThumb
+                            size={size}
+                            $isChecked={currentChecked}
+                            $tokens={tokens}
+                        />
+                    </StyledSwitchRoot>
+
                     <Block display="flex" alignItems="center">
                         <SwitchContent
                             uniqueId={uniqueId}
@@ -138,6 +187,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                             </StyledSwitchSlot>
                         )}
                     </Block>
+                </Block>
+                <Block paddingLeft={subtextIndent}>
                     {subtext && (
                         <SwitchSubtext
                             id={subtextId}
