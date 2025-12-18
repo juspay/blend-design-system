@@ -64,31 +64,6 @@ export type ChatInputTokensType = Readonly<{
         overflowY: CSSObject['overflowY']
     }
 
-    textareaMobile: {
-        backgroundColor: CSSObject['backgroundColor']
-        color: CSSObject['color']
-        fontSize: CSSObject['fontSize']
-        lineHeight: CSSObject['lineHeight']
-        padding: CSSObject['padding']
-        border: {
-            default: CSSObject['border']
-            focus: CSSObject['border']
-        }
-        borderRadius: {
-            default: CSSObject['borderRadius']
-            focus: CSSObject['borderRadius']
-        }
-        height: {
-            default: CSSObject['height']
-            focus: CSSObject['height']
-        }
-        overflow: CSSObject['overflow']
-        verticalAlign: CSSObject['verticalAlign']
-        placeholder: {
-            color: CSSObject['color']
-        }
-    }
-
     filesContainer: {
         gap: CSSObject['gap']
         paddingX: CSSObject['padding']
@@ -232,31 +207,6 @@ export const getChatInputTokens = (
                 overflowY: 'auto',
             },
 
-            textareaMobile: {
-                backgroundColor: 'transparent',
-                color: foundationToken.colors.gray[600],
-                fontSize: '16px',
-                lineHeight: '20px',
-                padding: '12px',
-                border: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
-                },
-                borderRadius: {
-                    default: '100px',
-                    focus: '20px',
-                },
-                height: {
-                    default: '44px',
-                    focus: '100px',
-                },
-                overflow: 'hidden',
-                verticalAlign: 'middle',
-                placeholder: {
-                    color: foundationToken.colors.gray[400],
-                },
-            },
-
             filesContainer: {
                 gap: foundationToken.unit[8],
                 paddingX: foundationToken.unit[0],
@@ -390,31 +340,6 @@ export const getChatInputTokens = (
                 minHeight: '24px',
                 maxHeight: '120px',
                 overflowY: 'auto',
-            },
-
-            textareaMobile: {
-                backgroundColor: 'transparent',
-                color: foundationToken.colors.gray[600],
-                fontSize: '16px',
-                lineHeight: '20px',
-                padding: '12px',
-                border: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
-                },
-                borderRadius: {
-                    default: '100px',
-                    focus: '20px',
-                },
-                height: {
-                    default: '44px',
-                    focus: '100px',
-                },
-                overflow: 'hidden',
-                verticalAlign: 'middle',
-                placeholder: {
-                    color: foundationToken.colors.gray[400],
-                },
             },
 
             filesContainer: {

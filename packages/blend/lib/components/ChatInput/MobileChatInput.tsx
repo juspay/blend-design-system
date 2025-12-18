@@ -18,8 +18,13 @@ import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import { Tooltip } from '../Tooltip/Tooltip'
 import { getDocIcon } from './ChatInput'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
-import { createOverflowMenuItems } from './utils'
+import {
+    computeChatInputFileOverflowCutoff,
+    createOverflowMenuItems,
+    truncateTextareaPlaceholder,
+} from './utils'
 import { getChatInputTokens } from './chatInput.tokens'
+import { getMobileChatInputTokens } from './mobileChatInput.token'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { MenuProps } from '../Menu/types'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
@@ -53,7 +58,8 @@ const MobileChatInput = ({
     placeholder,
 }: MobileChatInputProps) => {
     const tokens = getChatInputTokens(FOUNDATION_THEME).sm
-    const textareaMobileTokens = tokens.textareaMobile
+    const mobileTokens = getMobileChatInputTokens(FOUNDATION_THEME).sm
+    const textareaMobileTokens = mobileTokens.textareaMobile
     const filesContainerRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null!)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -73,19 +79,21 @@ const MobileChatInput = ({
     const handleResize = useCallback(() => {
         if (!filesContainerRef.current || attachedFiles.length === 0) return
 
-        const container = filesContainerRef.current
-        const containerRect = container.getBoundingClientRect()
-        const containerWidth = containerRect.width
-
         const BUFFER = 30
         const MORE_BUTTON_ESTIMATED_WIDTH = 100
         const GAP_SIZE = 8 // from tokens.filesContainer.gap
 
-        const fileItems = Array.from(container.children).filter(
-            (child) => !child.classList.contains('overflow-menu-trigger')
-        )
+        const { cutoff: newCutoff, itemCount } =
+            computeChatInputFileOverflowCutoff({
+                container: filesContainerRef.current,
+                attachedFilesLength: attachedFiles.length,
+                gapSize: GAP_SIZE,
+                buffer: BUFFER,
+                moreButtonEstimatedWidth: MORE_BUTTON_ESTIMATED_WIDTH,
+                overflowTriggerClassName: 'overflow-menu-trigger',
+            })
 
-        if (isExpanding.current && fileItems.length < attachedFiles.length) {
+        if (isExpanding.current && itemCount < attachedFiles.length) {
             setCutOffIndex(attachedFiles.length)
             isExpanding.current = false
 
@@ -95,41 +103,6 @@ const MobileChatInput = ({
             return
         }
 
-        let totalWidth = 0
-        let optimalCutoff = 0
-
-        for (
-            let i = 0;
-            i < Math.min(fileItems.length, attachedFiles.length);
-            i++
-        ) {
-            const itemWidth = (
-                fileItems[i] as HTMLElement
-            ).getBoundingClientRect().width
-
-            const totalGaps = i > 0 ? i * GAP_SIZE : 0
-
-            const remainingItems = attachedFiles.length - (i + 1)
-            const needsMoreButton = remainingItems > 0
-            const requiredSpace =
-                totalWidth +
-                itemWidth +
-                totalGaps +
-                (needsMoreButton ? MORE_BUTTON_ESTIMATED_WIDTH + GAP_SIZE : 0) +
-                BUFFER
-
-            if (requiredSpace <= containerWidth) {
-                totalWidth += itemWidth
-                optimalCutoff = i + 1
-            } else {
-                break
-            }
-        }
-
-        const newCutoff = Math.max(
-            1,
-            Math.min(optimalCutoff, attachedFiles.length)
-        )
         setCutOffIndex(newCutoff)
         setIsCalculating(false)
     }, [attachedFiles.length])
@@ -283,56 +256,13 @@ const MobileChatInput = ({
     const truncatePlaceholder = useCallback(() => {
         if (!textareaRef.current) return
 
-        const textarea = textareaRef.current
-        const style = window.getComputedStyle(textarea)
-        const paddingLeft = parseFloat(style.paddingLeft) || 0
-        const paddingRight = parseFloat(style.paddingRight) || 0
         const EXTRA_OFFSET = slot1 ? 36 : 0 // Extra space to subtract only if slot1 is present
-        const availableWidth =
-            textarea.offsetWidth - paddingLeft - paddingRight - EXTRA_OFFSET
-
-        // Create a temporary span to measure text width
-        const measureElement = document.createElement('span')
-        measureElement.style.visibility = 'hidden'
-        measureElement.style.position = 'absolute'
-        measureElement.style.whiteSpace = 'nowrap'
-        measureElement.style.fontSize = style.fontSize
-        measureElement.style.fontFamily = style.fontFamily
-        measureElement.style.fontWeight = style.fontWeight
-        measureElement.style.letterSpacing = style.letterSpacing
-        document.body.appendChild(measureElement)
-
-        // Measure full placeholder
-        measureElement.textContent = placeholderText || ''
-        const fullWidth = measureElement.offsetWidth
-
-        if (fullWidth <= availableWidth) {
-            setTruncatedPlaceholder(placeholderText)
-            document.body.removeChild(measureElement)
-            return
-        }
-
-        // Binary search for the right truncation point
-        let left = 0
-        let right = placeholderText.length
-        let truncated = placeholderText
-
-        while (left <= right) {
-            const mid = Math.floor((left + right) / 2)
-            const testText = placeholderText.substring(0, mid) + '...'
-            measureElement.textContent = testText
-            const testWidth = measureElement.offsetWidth
-
-            if (testWidth <= availableWidth) {
-                truncated = testText
-                left = mid + 1
-            } else {
-                right = mid - 1
-            }
-        }
-
+        const truncated = truncateTextareaPlaceholder({
+            textarea: textareaRef.current,
+            placeholderText,
+            extraOffset: EXTRA_OFFSET,
+        })
         setTruncatedPlaceholder(truncated)
-        document.body.removeChild(measureElement)
     }, [placeholderText, slot1])
 
     // Calculate initial bottom position on mount and set absolute positioning immediately
