@@ -629,11 +629,9 @@ const DataTable = forwardRef(
                     .filter(([, selected]) => selected)
                     .map(([id]) => id)
 
-                // Find the raw data from the original data array, not processed data
                 const rawRowData = data.find(
-                    (row) => String(row[idField]) === rowIdStr
+                    (d) => String(d[idField]) === rowIdStr
                 )
-                // Fallback to processed row if raw data not found (shouldn't happen)
                 const rowDataFromCurrent = currentData.find(
                     (row) => String(row[idField]) === rowIdStr
                 )
@@ -998,6 +996,24 @@ const DataTable = forwardRef(
             }
         }
 
+        const totalColumnsT =
+            effectiveVisibleColumns.length +
+            (enableRowSelection ? 1 : 0) +
+            (enableRowExpansion ? 1 : 0) +
+            ((enableInlineEdit || rowActions) &&
+            !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
+                ? 1
+                : 0) +
+            (mobileConfig.enableColumnOverflow &&
+            mobileOverflowColumns.length > 0
+                ? 1
+                : 0)
+
+        const totalColumns =
+            totalColumnsT > 0 && effectiveEnableColumnManager
+                ? totalColumnsT + 1
+                : 0
+
         const handleTableKeyDown = (
             event: React.KeyboardEvent<HTMLTableElement>
         ) => {
@@ -1026,20 +1042,6 @@ const DataTable = forwardRef(
             ) {
                 return
             }
-
-            const totalColumns =
-                effectiveVisibleColumns.length +
-                (enableRowSelection ? 1 : 0) +
-                (enableRowExpansion ? 1 : 0) +
-                ((enableInlineEdit || rowActions) &&
-                !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
-                    ? 1
-                    : 0) +
-                (mobileConfig.enableColumnOverflow &&
-                mobileOverflowColumns.length > 0
-                    ? 1
-                    : 0) +
-                (effectiveEnableColumnManager ? 1 : 0)
 
             let newRowIndex = focusedCell?.rowIndex ?? 0
             let newColIndex = focusedCell?.colIndex ?? 0
@@ -1305,25 +1307,7 @@ const DataTable = forwardRef(
                                                 ? totalRows
                                                 : undefined
                                         }
-                                        aria-colcount={
-                                            effectiveVisibleColumns.length +
-                                            (enableRowSelection ? 1 : 0) +
-                                            (enableRowExpansion ? 1 : 0) +
-                                            ((enableInlineEdit || rowActions) &&
-                                            !(
-                                                mobileConfig.isMobile &&
-                                                mobileConfig.enableColumnOverflow
-                                            )
-                                                ? 1
-                                                : 0) +
-                                            (mobileConfig.enableColumnOverflow &&
-                                            mobileOverflowColumns.length > 0
-                                                ? 1
-                                                : 0) +
-                                            (effectiveEnableColumnManager
-                                                ? 1
-                                                : 0)
-                                        }
+                                        aria-colcount={totalColumns}
                                         aria-describedby={
                                             [tableDescriptionId, statusRegionId]
                                                 .filter(Boolean)

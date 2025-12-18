@@ -917,6 +917,46 @@ const TableBody = forwardRef<
                                                               padding: '0 16px',
                                                           }
 
+                                                      const currentColumnStyles =
+                                                          getColumnWidth(
+                                                              column,
+                                                              colIndex
+                                                          )
+
+                                                      let fixedWidth = 140
+
+                                                      if (column.minWidth) {
+                                                          fixedWidth =
+                                                              parseInt(
+                                                                  column.minWidth.replace(
+                                                                      /px|%|em|rem/g,
+                                                                      ''
+                                                                  )
+                                                              ) || 140
+                                                      } else if (
+                                                          column.maxWidth
+                                                      ) {
+                                                          fixedWidth =
+                                                              parseInt(
+                                                                  column.maxWidth.replace(
+                                                                      /px|%|em|rem/g,
+                                                                      ''
+                                                                  )
+                                                              ) || 140
+                                                      } else if (
+                                                          currentColumnStyles.minWidth
+                                                      ) {
+                                                          fixedWidth =
+                                                              parseInt(
+                                                                  String(
+                                                                      currentColumnStyles.minWidth
+                                                                  ).replace(
+                                                                      /px|%|em|rem/g,
+                                                                      ''
+                                                                  )
+                                                              ) || 140
+                                                      }
+
                                                       let leftOffset = 0
                                                       if (enableRowExpansion)
                                                           leftOffset += 50
@@ -930,7 +970,7 @@ const TableBody = forwardRef<
                                                       ) {
                                                           const prevColumn =
                                                               visibleColumns[i]
-                                                          let columnWidth = 120
+                                                          let columnWidth = 140
 
                                                           if (
                                                               prevColumn.minWidth
@@ -941,7 +981,7 @@ const TableBody = forwardRef<
                                                                           /px|%|em|rem/g,
                                                                           ''
                                                                       )
-                                                                  ) || 120
+                                                                  ) || 140
                                                           } else if (
                                                               prevColumn.maxWidth
                                                           ) {
@@ -951,7 +991,7 @@ const TableBody = forwardRef<
                                                                           /px|%|em|rem/g,
                                                                           ''
                                                                       )
-                                                                  ) || 120
+                                                                  ) || 140
                                                           } else {
                                                               const prevStyles =
                                                                   getColumnWidth(
@@ -959,18 +999,6 @@ const TableBody = forwardRef<
                                                                       i
                                                                   )
                                                               if (
-                                                                  prevStyles.width
-                                                              ) {
-                                                                  columnWidth =
-                                                                      parseInt(
-                                                                          String(
-                                                                              prevStyles.width
-                                                                          ).replace(
-                                                                              /px|%|em|rem/g,
-                                                                              ''
-                                                                          )
-                                                                      ) || 120
-                                                              } else if (
                                                                   prevStyles.minWidth
                                                               ) {
                                                                   columnWidth =
@@ -981,7 +1009,19 @@ const TableBody = forwardRef<
                                                                               /px|%|em|rem/g,
                                                                               ''
                                                                           )
-                                                                      ) || 120
+                                                                      ) || 140
+                                                              } else if (
+                                                                  prevStyles.maxWidth
+                                                              ) {
+                                                                  columnWidth =
+                                                                      parseInt(
+                                                                          String(
+                                                                              prevStyles.maxWidth
+                                                                          ).replace(
+                                                                              /px|%|em|rem/g,
+                                                                              ''
+                                                                          )
+                                                                      ) || 140
                                                               }
                                                           }
 
@@ -1003,6 +1043,11 @@ const TableBody = forwardRef<
                                                               FOUNDATION_THEME
                                                                   .colors
                                                                   .gray[0],
+                                                          width: `${fixedWidth}px`,
+                                                          minWidth: `${fixedWidth}px`,
+                                                          maxWidth: `${fixedWidth}px`,
+                                                          boxSizing:
+                                                              'border-box' as const,
                                                           ...(isLastFrozenColumn && {
                                                               borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
                                                           }),

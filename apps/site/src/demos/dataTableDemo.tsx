@@ -2814,14 +2814,9 @@ const DataTableDemo = () => {
     }
 
     // Handle row selection change
-    // IMPORTANT: rowData now contains the RAW data from the original data array (API response)
+    // IMPORTANT: rowData contains RAW data from the original data prop (API response)
     // NOT the processed/filtered/formatted data displayed in the table
-    //
-    // This means:
-    // - You get the exact data structure from your API
-    // - All original fields are available, even if not displayed in columns
-    // - Data hasn't been transformed by filters, sorting, or formatting
-    // - Perfect for API operations like updates, deletes, or exports
+    // This means you get ALL fields from your API, even if they're not displayed in table columns
     const handleRowSelectionChange = (
         selectedRowIds: string[],
         isSelected: boolean,
@@ -2841,11 +2836,12 @@ const DataTableDemo = () => {
             allSelectedRowIds: selectedRowIds,
         })
 
-        // rowData is the RAW data from the API (original data prop)
-        // This ensures you have access to all original fields, not just what's displayed
-        // Example: If your API returns additional fields like 'internalId', 'createdAt', etc.
-        // they will be available here even if not shown in the table columns
-        console.log('📦 Raw data from API:', rowData)
+        // rowData contains ALL fields from API response, not just displayed columns
+        // Example: If your API returns 10 fields but table shows only 5 columns,
+        // rowData will have all 10 fields here
+        console.log('📦 Raw API data (all fields):', rowData)
+        console.log('📋 Available fields:', Object.keys(rowData))
+
         console.log(
             `📋 ${isSelected ? 'Selected' : 'Deselected'} user: ${userName} (ID: ${rowId})`
         )
@@ -2853,8 +2849,8 @@ const DataTableDemo = () => {
 
         // Example: Use raw data for API operations
         // if (isSelected) {
-        //     // Send to API with raw data
-        //     api.selectUser(rowData.id, rowData)
+        //     // You have access to ALL API fields here, even if not displayed
+        //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
         // }
     }
 
