@@ -1,7 +1,14 @@
-import { useEffect, forwardRef, cloneElement, isValidElement } from 'react'
+import {
+    useEffect,
+    forwardRef,
+    cloneElement,
+    isValidElement,
+    useMemo,
+} from 'react'
 import { useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
+import { X } from 'lucide-react'
 
 import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
@@ -62,6 +69,9 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             value,
             onChange,
             name,
+            allowClear = true,
+            onClear,
+            clearIcon,
             ...rest
         },
         ref
@@ -78,6 +88,32 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
         const isRequired = rest.required ?? false
 
+        const showClearButton = allowClear && value && value.length > 0
+
+        const handleClear = () => {
+            if (onClear) {
+                onClear()
+            } else if (onChange) {
+                const syntheticEvent = {
+                    target: { value: '' },
+                    currentTarget: { value: '' },
+                } as React.ChangeEvent<HTMLInputElement>
+                onChange(syntheticEvent)
+            }
+        }
+
+        const effectiveRightSlot = useMemo(
+            () =>
+                rightSlot
+                    ? rightSlot
+                    : showClearButton
+                      ? clearIcon || (
+                            <X size={16} style={{ cursor: 'pointer' }} />
+                        )
+                      : undefined,
+            [rightSlot, showClearButton, clearIcon]
+        )
+
         useEffect(() => {
             if (leftSlotRef.current) {
                 setLeftSlotWidth(leftSlotRef.current.offsetWidth)
@@ -89,7 +125,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             } else {
                 setRightSlotWidth(0)
             }
-        }, [leftSlot, rightSlot])
+        }, [leftSlot, effectiveRightSlot])
 
         const paddingX = toPixels(searchInputTokens.inputContainer.padding.x)
         const paddingY = toPixels(searchInputTokens.inputContainer.padding.y)
@@ -98,7 +134,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         const paddingInlineStart = leftSlot
             ? paddingX + leftSlotWidth + GAP
             : paddingX
-        const paddingInlineEnd = rightSlot
+        const paddingInlineEnd = effectiveRightSlot
             ? paddingX + rightSlotWidth + GAP
             : paddingX
 
@@ -111,9 +147,9 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
               )
             : null
 
-        const styledRightSlot = rightSlot
+        const styledRightSlot = effectiveRightSlot
             ? applyIconStyles(
-                  rightSlot,
+                  effectiveRightSlot,
                   searchInputTokens,
                   rest.disabled || false,
                   error
@@ -156,11 +192,20 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                         right={paddingX}
                         bottom={paddingY}
                         contentCentered
+                        onClick={
+                            showClearButton && !rightSlot
+                                ? handleClear
+                                : undefined
+                        }
                         style={{
                             transition:
                                 'transform 200ms ease-in-out, opacity 200ms ease-in-out',
                             transform: isFocused ? 'scale(1.05)' : 'scale(1)',
                             opacity: isFocused ? 1 : 0.7,
+                            cursor:
+                                showClearButton && !rightSlot
+                                    ? 'pointer'
+                                    : undefined,
                         }}
                     >
                         {styledRightSlot}
@@ -168,7 +213,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                 )}
 
                 <PrimitiveInput
-                    type={rest.type || 'search'}
+                    type={'input'}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     ref={ref}
                     name={name}
