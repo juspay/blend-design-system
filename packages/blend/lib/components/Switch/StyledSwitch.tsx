@@ -96,3 +96,36 @@ export const StyledSwitchThumb = styled.div<{
         `
     }}
 `
+
+/**
+ * Slot wrapper (right-side icon next to label)
+ * Ensures any oversized slot content (e.g. <img />) fits inside 14x14.
+ */
+export const StyledSwitchSlot = styled.span`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    overflow: hidden;
+    line-height: 0;
+
+    & > img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    & > svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    & > * {
+        max-width: 100%;
+        max-height: 100%;
+    }
+`

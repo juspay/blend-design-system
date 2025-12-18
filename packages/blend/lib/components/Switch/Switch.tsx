@@ -10,7 +10,11 @@ import {
     isControlledSwitch,
     createSwitchToggleHandler,
 } from './utils'
-import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
+import {
+    StyledSwitchRoot,
+    StyledSwitchThumb,
+    StyledSwitchSlot,
+} from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../Tooltip/Tooltip'
@@ -126,13 +130,12 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                             maxLength={labelMaxLength}
                         />
                         {slot && (
-                            <Block
+                            <StyledSwitchSlot
                                 data-element="icon"
-                                as="span"
-                                marginLeft={tokens.content.label.gap}
+                                style={{ marginLeft: tokens.content.label.gap }}
                             >
                                 {slot}
-                            </Block>
+                            </StyledSwitchSlot>
                         )}
                     </Block>
                     {subtext && (
