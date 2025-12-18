@@ -371,7 +371,7 @@ const TableHeader = forwardRef<
                         </th>
                     )}
 
-                    {enableRowSelection && (
+                    {enableRowSelection && data && data.length > 0 && (
                         <th
                             role="columnheader"
                             scope="col"
@@ -1325,7 +1325,7 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableColumnManager && (
+                    {enableColumnManager && data && data.length > 0 && (
                         <th
                             role="columnheader"
                             scope="col"

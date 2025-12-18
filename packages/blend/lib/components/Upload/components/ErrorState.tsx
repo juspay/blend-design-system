@@ -14,7 +14,6 @@ type ErrorStateProps = {
     onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
     maxFiles?: number
-    actionSlot?: React.ReactNode
 }
 
 const ErrorState: React.FC<ErrorStateProps> = ({
@@ -25,7 +24,6 @@ const ErrorState: React.FC<ErrorStateProps> = ({
     onFileRemove,
     uploadTokens,
     maxFiles,
-    actionSlot,
 }) => (
     <Block
         display="flex"
@@ -88,45 +86,34 @@ const ErrorState: React.FC<ErrorStateProps> = ({
             </Text>
         </Block>
 
-        <Block
-            gap={FOUNDATION_THEME.unit[10]}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-        >
+        <Block gap={FOUNDATION_THEME.unit[10]}>
             {multiple ? (
-                <>
-                    <FileListDisplay
-                        files={errorFiles}
-                        onFileRemove={onFileRemove}
-                        uploadTokens={uploadTokens}
-                        maxFiles={maxFiles}
-                    />
-                    {actionSlot}
-                </>
+                <FileListDisplay
+                    files={errorFiles}
+                    onFileRemove={onFileRemove}
+                    uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
+                />
             ) : (
-                <>
-                    {(errorText || errorFiles[0]?.error) && (
-                        <Text
-                            fontSize={
-                                uploadTokens.container.content.actionable
-                                    .errorText.fontSize
-                            }
-                            fontWeight={
-                                uploadTokens.container.content.actionable
-                                    .errorText.fontWeight
-                            }
-                            color={
-                                uploadTokens.container.content.actionable
-                                    .errorText.color
-                            }
-                            textAlign="center"
-                        >
-                            {errorText || errorFiles[0]?.error}
-                        </Text>
-                    )}
-                    {actionSlot}
-                </>
+                (errorText || errorFiles[0]?.error) && (
+                    <Text
+                        fontSize={
+                            uploadTokens.container.content.actionable.errorText
+                                .fontSize
+                        }
+                        fontWeight={
+                            uploadTokens.container.content.actionable.errorText
+                                .fontWeight
+                        }
+                        color={
+                            uploadTokens.container.content.actionable.errorText
+                                .color
+                        }
+                        textAlign="center"
+                    >
+                        {errorText || errorFiles[0]?.error}
+                    </Text>
+                )
             )}
         </Block>
     </Block>

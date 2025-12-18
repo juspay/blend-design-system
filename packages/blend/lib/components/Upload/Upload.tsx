@@ -64,7 +64,6 @@ const Upload: React.FC<UploadProps> = ({
     isDragAccept: controlledIsDragAccept,
     isDragReject: controlledIsDragReject,
     validator,
-    actionSlot,
     ...rest
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
@@ -355,7 +354,6 @@ const Upload: React.FC<UploadProps> = ({
                     onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
                     maxFiles={maxFiles}
-                    actionSlot={actionSlot}
                 />
             )
         }

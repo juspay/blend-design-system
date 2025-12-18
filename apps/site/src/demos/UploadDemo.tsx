@@ -3,8 +3,6 @@ import {
     Upload,
     UploadState,
 } from '../../../../packages/blend/lib/components/Upload'
-import { Button } from '../../../../packages/blend/lib/components/Button'
-import { ButtonType } from '../../../../packages/blend/lib/components/Button/types'
 import type { UploadFormValue } from '../../../../packages/blend/lib/components/Upload/types'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
@@ -313,12 +311,6 @@ const UploadDemo = () => {
                                 },
                             ]}
                             errorText="File type not supported"
-                            actionSlot={
-                                <Button
-                                    buttonType={ButtonType.DANGER}
-                                    text="Download Error File"
-                                />
-                            }
                         >
                             <AlertCircle size={32} color="#ef4444" />
                         </Upload>
