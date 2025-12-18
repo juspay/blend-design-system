@@ -19,6 +19,10 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
  */
 export type ButtonTokensType = {
     gap: CSSObject['gap']
+    // Pattern: slotMaxHeight.[size] (size-dependent)
+    slotMaxHeight: {
+        [key in ButtonSize]: CSSObject['maxHeight']
+    }
     // Pattern: backgroundColor.[variant].[subType].[state]
     backgroundColor: {
         [key in ButtonType]: {
@@ -102,6 +106,11 @@ export const getButtonTokens = (
     return {
         sm: {
             gap: foundationToken.unit[6],
+            slotMaxHeight: {
+                sm: foundationToken.unit[16],
+                md: foundationToken.unit[18],
+                lg: foundationToken.unit[20],
+            },
             // Pattern: backgroundColor.[variant].[subType].[state]
             // Example: backgroundColor.primary.default.hover
             backgroundColor: {
@@ -967,6 +976,11 @@ export const getButtonTokens = (
         },
         lg: {
             gap: foundationToken.unit[6],
+            slotMaxHeight: {
+                sm: foundationToken.unit[16],
+                md: foundationToken.unit[18],
+                lg: foundationToken.unit[20],
+            },
             backgroundColor: {
                 primary: {
                     default: {
