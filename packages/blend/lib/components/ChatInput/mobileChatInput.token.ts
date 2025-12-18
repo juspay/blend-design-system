@@ -47,20 +47,20 @@ export const getMobileChatInputTokens = (
         textareaMobile: {
             backgroundColor: 'transparent',
             color: foundationToken.colors.gray[600],
-            fontSize: '16px',
-            lineHeight: '20px',
-            padding: '12px',
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
+            padding: foundationToken.unit[12],
             border: {
                 default: `1px solid ${foundationToken.colors.gray[200]}`,
                 focus: `1px solid ${foundationToken.colors.primary[500]}`,
             },
             borderRadius: {
-                default: '100px',
-                focus: '20px',
+                default: foundationToken.unit[100],
+                focus: foundationToken.unit[20],
             },
             height: {
-                default: '44px',
-                focus: '100px',
+                default: foundationToken.unit[44],
+                focus: foundationToken.unit[100],
             },
             overflow: 'hidden',
             verticalAlign: 'middle',

@@ -60,6 +60,12 @@ const MobileChatInput = ({
     const tokens = getChatInputTokens(FOUNDATION_THEME).sm
     const mobileTokens = getMobileChatInputTokens(FOUNDATION_THEME).sm
     const textareaMobileTokens = mobileTokens.textareaMobile
+    const textareaCollapsedBorderRadius = textareaMobileTokens.borderRadius
+        .default as string
+    const textareaExpandedBorderRadius = textareaMobileTokens.borderRadius
+        .focus as string
+    const textareaCollapsedHeight =
+        parseFloat(textareaMobileTokens.height.default as string) || 44
     const filesContainerRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null!)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -228,6 +234,12 @@ const MobileChatInput = ({
             textarea.style.overflowY = 'hidden'
         }
 
+        // Border radius should reflect the current (collapsed vs expanded) height
+        textarea.style.borderRadius =
+            newHeight > MIN_HEIGHT
+                ? textareaExpandedBorderRadius
+                : textareaCollapsedBorderRadius
+
         // Position files container absolutely above textarea (only if files exist)
         if (filesContainerRef.current && attachedFiles.length > 0) {
             const filesContainer = filesContainerRef.current
@@ -241,7 +253,13 @@ const MobileChatInput = ({
             filesContainer.style.right = '0'
             filesContainer.style.zIndex = '999'
         }
-    }, [value, attachedFiles.length, slot1])
+    }, [
+        value,
+        attachedFiles.length,
+        slot1,
+        textareaCollapsedBorderRadius,
+        textareaExpandedBorderRadius,
+    ])
 
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>
@@ -483,9 +501,9 @@ const MobileChatInput = ({
                 <Block display="flex" alignItems="center" gap={8}>
                     <PrimitiveButton
                         disabled={disabled}
-                        borderRadius={100}
+                        borderRadius={FOUNDATION_THEME.unit[100]}
                         border={`1px solid #E1E4EA`}
-                        padding={12}
+                        padding={FOUNDATION_THEME.unit[12]}
                         onClick={onAttachFileClick}
                     >
                         {attachButtonIcon || <Paperclip size={16} />}
@@ -522,9 +540,12 @@ const MobileChatInput = ({
                                         .default as string,
                                     borderRadius: textareaMobileTokens
                                         .borderRadius.default as string,
-                                    height: '44px',
-                                    minHeight: '44px',
-                                    maxHeight: '100px',
+                                    height: textareaMobileTokens.height
+                                        .default as string,
+                                    minHeight: textareaMobileTokens.height
+                                        .default as string,
+                                    maxHeight: textareaMobileTokens.height
+                                        .focus as string,
                                     overflowY: 'hidden',
                                     verticalAlign:
                                         textareaMobileTokens.verticalAlign as string,
@@ -550,9 +571,13 @@ const MobileChatInput = ({
                                     }
 
                                     e.currentTarget.style.outline = 'none'
+                                    const isExpanded =
+                                        e.currentTarget.scrollHeight >
+                                        textareaCollapsedHeight
                                     e.currentTarget.style.borderRadius =
-                                        textareaMobileTokens.borderRadius
-                                            .focus as string
+                                        isExpanded
+                                            ? textareaExpandedBorderRadius
+                                            : textareaCollapsedBorderRadius
                                     e.currentTarget.style.border =
                                         textareaMobileTokens.border
                                             .focus as string
@@ -604,7 +629,7 @@ const MobileChatInput = ({
                                 <Block
                                     position="absolute"
                                     bottom="-12px"
-                                    right="5px"
+                                    right="4px"
                                     style={{
                                         transform: 'translateY(-50%)',
                                         pointerEvents: 'none',
