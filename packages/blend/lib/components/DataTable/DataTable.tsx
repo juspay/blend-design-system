@@ -59,11 +59,10 @@ import { FOUNDATION_THEME } from '../../tokens'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
-    overflow-y: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
+    /* Hide scrollbars for Chrome, Safari and Opera */
     &::-webkit-scrollbar {
         display: none;
     }
@@ -1234,8 +1233,7 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
-                        maxHeight: tableToken.dataTable.maxHeight,
-                        overflow: 'hidden',
+                        overflow: 'visible',
                     }}
                 >
                     <BulkActionBar
@@ -1271,12 +1269,7 @@ const DataTable = forwardRef(
 
                     <Block
                         style={{
-                            flex: 1,
                             position: 'relative',
-                            minHeight: 0,
-                            overflow: 'hidden',
-                            display: 'flex',
-                            flexDirection: 'column',
                         }}
                     >
                         <DndContext
@@ -1294,20 +1287,15 @@ const DataTable = forwardRef(
                                 <ScrollableContainer
                                     ref={scrollContainerRef}
                                     style={{
-                                        ...(tableBodyHeight
-                                            ? {
-                                                  height:
-                                                      typeof tableBodyHeight ===
-                                                      'number'
-                                                          ? `${tableBodyHeight}px`
-                                                          : tableBodyHeight,
-                                                  overflowY: 'auto',
-                                              }
-                                            : {
-                                                  flex: 1,
-                                                  overflowY: 'auto',
-                                              }),
                                         position: 'relative',
+                                        // Default: fit ~10 rows (668px approx)
+                                        maxHeight: tableBodyHeight
+                                            ? typeof tableBodyHeight ===
+                                              'number'
+                                                ? `${tableBodyHeight}px`
+                                                : tableBodyHeight
+                                            : '668px',
+                                        overflowY: 'auto',
                                     }}
                                 >
                                     <table

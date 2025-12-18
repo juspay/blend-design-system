@@ -599,9 +599,14 @@ const TableBody = forwardRef<
                 skeletonVariant: variant,
             }
         }
+        const tbodyKey =
+            currentData.length > 0
+                ? `tbody-${currentData.length}-${String(currentData[0][idField])}-${String(currentData[currentData.length - 1][idField])}`
+                : 'tbody-empty'
 
         return (
             <motion.tbody
+                key={tbodyKey}
                 ref={ref}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -644,8 +649,10 @@ const TableBody = forwardRef<
                               return colIndex
                           }
 
+                          const rowKey = `${rowId}-${index}`
+
                           return (
-                              <React.Fragment key={rowId}>
+                              <React.Fragment key={rowKey}>
                                   <TableRow
                                       $isClickable={!!onRowClick}
                                       $customBackgroundColor={
@@ -670,6 +677,8 @@ const TableBody = forwardRef<
                                               ? 'true'
                                               : 'false'
                                       }
+                                      data-row-id={rowId}
+                                      data-row-index={index}
                                       onClick={() =>
                                           onRowClick && onRowClick(row, index)
                                       }
@@ -1061,7 +1070,7 @@ const TableBody = forwardRef<
                                                       )
                                                   return (
                                                       <StyledTableCell
-                                                          key={`${rowId}-${String(column.field)}`}
+                                                          key={`${rowKey}-${String(column.field)}`}
                                                           $customBackgroundColor={
                                                               rowStyling.backgroundColor
                                                           }
@@ -1140,7 +1149,7 @@ const TableBody = forwardRef<
 
                                               return (
                                                   <TableCell
-                                                      key={`${rowId}-${String(column.field)}`}
+                                                      key={`${rowKey}-${String(column.field)}`}
                                                       column={column}
                                                       row={
                                                           isEditing
@@ -1506,7 +1515,7 @@ const TableBody = forwardRef<
                                       renderExpandedRow &&
                                       canExpand && (
                                           <TableRow
-                                              key={`${rowId}-expanded`}
+                                              key={`${rowKey}-expanded`}
                                               $isClickable={false}
                                           >
                                               <ExpandedCell colSpan={colSpan}>
