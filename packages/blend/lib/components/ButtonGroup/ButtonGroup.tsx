@@ -13,6 +13,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
         return (
             <Block
                 display="flex"
+                alignItems="stretch"
                 gap={10}
                 data-button-group="true"
                 data-button-group-stacked="false"
@@ -25,6 +26,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
     return (
         <Block
             display="flex"
+            alignItems="stretch"
             gap={0}
             data-button-group="true"
             data-button-group-stacked="true"
