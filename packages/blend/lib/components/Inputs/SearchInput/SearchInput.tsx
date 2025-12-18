@@ -214,6 +214,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
                 <PrimitiveInput
                     type={'input'}
+                    role="search"
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     ref={ref}
                     name={name}
