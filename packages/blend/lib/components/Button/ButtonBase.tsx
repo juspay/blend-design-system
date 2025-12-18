@@ -101,6 +101,11 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                   ? undefined
                   : 'auto'
 
+        const iconMaxHeight =
+            subType === ButtonSubType.INLINE
+                ? '100%'
+                : buttonTokens.slotMaxHeight[size]
+
         const buttonProps: Partial<
             Pick<
                 PrimitiveButtonProps,
@@ -262,7 +267,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 contentCentered
                                 data-element="leading-icon"
                                 aria-hidden={text ? 'true' : undefined}
-                                style={{ opacity: isSkeleton ? 0 : 1 }}
+                                style={{
+                                    opacity: isSkeleton ? 0 : 1,
+                                    maxHeight: iconMaxHeight,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}
                             >
                                 {leadingIcon}
                             </Block>
@@ -293,7 +305,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 contentCentered
                                 data-element="trailing-icon"
                                 aria-hidden={text ? 'true' : undefined}
-                                style={{ opacity: isSkeleton ? 0 : 1 }}
+                                style={{
+                                    opacity: isSkeleton ? 0 : 1,
+                                    maxHeight: iconMaxHeight,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}
                             >
                                 {trailingIcon}
                             </Block>
