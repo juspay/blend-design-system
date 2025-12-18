@@ -13,17 +13,19 @@ import { MockIcon } from '../../test-utils'
 describe('Switch Accessibility', () => {
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
         it('meets WCAG standards for default switch (axe-core validation)', async () => {
-            const { container } = render(<Switch label="Accessible Switch" />)
+            const { container } = render(
+                <Switch label="Accessible Switch" checked={false} />
+            )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards for all switch states (checked, unchecked, disabled, error)', async () => {
             const states = [
-                SwitchTestFactory.default(),
+                { ...SwitchTestFactory.default(), checked: false },
                 SwitchTestFactory.checked(),
-                SwitchTestFactory.disabled(),
-                SwitchTestFactory.withError(),
+                { ...SwitchTestFactory.disabled(), checked: false },
+                { ...SwitchTestFactory.withError(), checked: false },
             ]
 
             for (const props of states) {
@@ -35,7 +37,7 @@ describe('Switch Accessibility', () => {
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
-            const props = SwitchTestFactory.disabled()
+            const props = { ...SwitchTestFactory.disabled(), checked: false }
             const { container } = render(<Switch {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -45,6 +47,7 @@ describe('Switch Accessibility', () => {
             const { container } = render(
                 <Switch
                     label="Complex Switch"
+                    checked={false}
                     subtext="Additional information"
                     slot={<MockIcon />}
                     required
@@ -55,7 +58,10 @@ describe('Switch Accessibility', () => {
         })
 
         it('meets WCAG standards for all sizes', async () => {
-            const sizes = SwitchTestFactory.allSizes()
+            const sizes = SwitchTestFactory.allSizes().map((props) => ({
+                ...props,
+                checked: false,
+            }))
 
             for (const props of sizes) {
                 const { container, unmount } = render(<Switch {...props} />)
@@ -68,7 +74,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {
         it('is focusable with keyboard - all functionality operable via keyboard', () => {
-            render(<Switch label="Focusable Switch" />)
+            render(<Switch label="Focusable Switch" checked={false} />)
             const switchElement = screen.getByRole('switch')
 
             switchElement.focus()
@@ -78,7 +84,11 @@ describe('Switch Accessibility', () => {
         it('can be activated with Space key - keyboard activation support (WCAG 2.1.1)', async () => {
             const handleChange = vi.fn()
             const { user } = render(
-                <Switch label="Space Toggle Switch" onChange={handleChange} />
+                <Switch
+                    label="Space Toggle Switch"
+                    checked={false}
+                    onChange={handleChange}
+                />
             )
 
             const switchElement = screen.getByRole('switch')
@@ -91,7 +101,11 @@ describe('Switch Accessibility', () => {
         it('can be activated with Enter key - keyboard activation support (WCAG 2.1.1)', async () => {
             const handleChange = vi.fn()
             const { user } = render(
-                <Switch label="Enter Toggle Switch" onChange={handleChange} />
+                <Switch
+                    label="Enter Toggle Switch"
+                    checked={false}
+                    onChange={handleChange}
+                />
             )
 
             const switchElement = screen.getByRole('switch')
@@ -102,7 +116,9 @@ describe('Switch Accessibility', () => {
         })
 
         it('disabled switches are not focusable - keyboard navigation (WCAG 2.1.1)', async () => {
-            const { user } = render(<Switch label="Disabled Switch" disabled />)
+            const { user } = render(
+                <Switch label="Disabled Switch" checked={false} disabled />
+            )
 
             const switchElement = screen.getByRole('switch')
 
@@ -127,7 +143,9 @@ describe('Switch Accessibility', () => {
         })
 
         it('maintains focus after toggle (WCAG 2.1.1)', async () => {
-            const { user } = render(<Switch label="Focus Maintained Switch" />)
+            const { user } = render(
+                <Switch label="Focus Maintained Switch" checked={false} />
+            )
 
             const switchElement = screen.getByRole('switch')
             switchElement.focus()
@@ -139,7 +157,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 4.1.2 Name, Role, Value (Level A)', () => {
         it('has correct switch role - programmatically determinable role', () => {
-            render(<Switch label="Role Switch" />)
+            render(<Switch label="Role Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -159,9 +177,18 @@ describe('Switch Accessibility', () => {
         })
 
         it('updates aria-checked when state changes - state changes are announced', async () => {
-            const { user } = render(
-                <Switch label="State Change Switch" defaultChecked={false} />
-            )
+            const TestComponent = () => {
+                const [checked, setChecked] = React.useState(false)
+                return (
+                    <Switch
+                        label="State Change Switch"
+                        checked={checked}
+                        onChange={setChecked}
+                    />
+                )
+            }
+
+            const { user } = render(<TestComponent />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-checked', 'false')
@@ -171,7 +198,7 @@ describe('Switch Accessibility', () => {
         })
 
         it('provides accessible name via label - name is programmatically determinable', () => {
-            render(<Switch label="Accessible Name Switch" />)
+            render(<Switch label="Accessible Name Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch', {
                 name: 'Accessible Name Switch',
@@ -180,7 +207,9 @@ describe('Switch Accessibility', () => {
         })
 
         it('supports aria-label for accessible name override (WCAG 4.1.2)', () => {
-            render(<Switch aria-label="Custom Accessible Name" />)
+            render(
+                <Switch aria-label="Custom Accessible Name" checked={false} />
+            )
 
             const switchElement = screen.getByRole('switch', {
                 name: 'Custom Accessible Name',
@@ -192,7 +221,7 @@ describe('Switch Accessibility', () => {
             render(
                 <>
                     <h3 id="switch-heading">Notification Settings</h3>
-                    <Switch aria-labelledby="switch-heading" />
+                    <Switch aria-labelledby="switch-heading" checked={false} />
                 </>
             )
 
@@ -206,7 +235,13 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.3.1 Info and Relationships (Level A)', () => {
         it('associates label with switch correctly - relationships are programmatically determinable', () => {
-            render(<Switch id="test-switch" label="Associated Switch" />)
+            render(
+                <Switch
+                    id="test-switch"
+                    label="Associated Switch"
+                    checked={false}
+                />
+            )
 
             const switchElement = screen.getByRole('switch')
             const label = screen.getByText('Associated Switch')
@@ -218,8 +253,8 @@ describe('Switch Accessibility', () => {
         it('generates unique IDs for label association', () => {
             render(
                 <>
-                    <Switch label="Switch 1" />
-                    <Switch label="Switch 2" />
+                    <Switch label="Switch 1" checked={false} />
+                    <Switch label="Switch 2" checked={false} />
                 </>
             )
 
@@ -256,7 +291,14 @@ describe('Switch Accessibility', () => {
         })
 
         it('communicates state relationships via ARIA attributes (WCAG 1.3.1)', () => {
-            render(<Switch label="State Relationships Switch" required error />)
+            render(
+                <Switch
+                    label="State Relationships Switch"
+                    checked={false}
+                    required
+                    error
+                />
+            )
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-required', 'true')
@@ -268,7 +310,11 @@ describe('Switch Accessibility', () => {
     describe('WCAG 1.3.2 Meaningful Sequence (Level A)', () => {
         it('maintains logical reading order - DOM order matches visual order', () => {
             render(
-                <Switch label="Sequence Switch" subtext="Additional context" />
+                <Switch
+                    label="Sequence Switch"
+                    checked={false}
+                    subtext="Additional context"
+                />
             )
 
             const switchElement = screen.getByRole('switch')
@@ -289,7 +335,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.3.3 Sensory Characteristics (Level A)', () => {
         it('does not rely solely on visual characteristics - label provides context', () => {
-            render(<Switch label="Enable dark mode" required />)
+            render(<Switch label="Enable dark mode" checked={false} required />)
 
             const label = screen.getByText('Enable dark mode')
 
@@ -305,6 +351,7 @@ describe('Switch Accessibility', () => {
             render(
                 <Switch
                     label="Resizable Text Switch"
+                    checked={false}
                     subtext="Subtext that scales"
                 />
             )
@@ -321,6 +368,7 @@ describe('Switch Accessibility', () => {
             render(
                 <Switch
                     label="Text Spacing Switch"
+                    checked={false}
                     subtext="Subtext with spacing"
                 />
             )
@@ -334,7 +382,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.4.1 Bypass Blocks (Level A)', () => {
         it('does not create bypass blocks - proper semantic structure', () => {
-            render(<Switch label="Bypass Blocks Switch" />)
+            render(<Switch label="Bypass Blocks Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -347,9 +395,9 @@ describe('Switch Accessibility', () => {
         it('maintains logical focus order', async () => {
             const { user } = render(
                 <>
-                    <Switch label="First Switch" />
-                    <Switch label="Second Switch" />
-                    <Switch label="Third Switch" />
+                    <Switch label="First Switch" checked={false} />
+                    <Switch label="Second Switch" checked={false} />
+                    <Switch label="Third Switch" checked={false} />
                 </>
             )
 
@@ -369,9 +417,9 @@ describe('Switch Accessibility', () => {
         it('excludes disabled switches from tab order (WCAG 2.4.3)', async () => {
             const { user } = render(
                 <>
-                    <Switch label="First Switch" />
-                    <Switch label="Disabled Switch" disabled />
-                    <Switch label="Third Switch" />
+                    <Switch label="First Switch" checked={false} />
+                    <Switch label="Disabled Switch" checked={false} disabled />
+                    <Switch label="Third Switch" checked={false} />
                 </>
             )
 
@@ -388,7 +436,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.4.4 Link Purpose (In Context) (Level A)', () => {
         it('provides clear purpose from label text', () => {
-            render(<Switch label="Enable notifications" />)
+            render(<Switch label="Enable notifications" checked={false} />)
 
             const switchElement = screen.getByRole('switch', {
                 name: 'Enable notifications',
@@ -400,6 +448,7 @@ describe('Switch Accessibility', () => {
             render(
                 <Switch
                     label="Notifications"
+                    checked={false}
                     aria-label="Enable push notifications for this app"
                 />
             )
@@ -413,7 +462,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.5.3 Label in Name (Level A)', () => {
         it('accessible name contains visible label text', () => {
-            render(<Switch label="Enable dark mode" />)
+            render(<Switch label="Enable dark mode" checked={false} />)
 
             const switchElement = screen.getByRole('switch', {
                 name: 'Enable dark mode',
@@ -425,6 +474,7 @@ describe('Switch Accessibility', () => {
             render(
                 <Switch
                     label="Notifications"
+                    checked={false}
                     aria-label="Enable push notifications"
                 />
             )
@@ -439,7 +489,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 3.2.1 On Focus (Level A)', () => {
         it('does not cause context changes on focus', () => {
-            render(<Switch label="On Focus Switch" />)
+            render(<Switch label="On Focus Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             switchElement.focus()
@@ -454,7 +504,11 @@ describe('Switch Accessibility', () => {
         it('does not cause unexpected context changes on activation', async () => {
             const handleChange = vi.fn()
             const { user } = render(
-                <Switch label="On Input Switch" onChange={handleChange} />
+                <Switch
+                    label="On Input Switch"
+                    checked={false}
+                    onChange={handleChange}
+                />
             )
 
             const switchElement = screen.getByRole('switch')
@@ -469,8 +523,8 @@ describe('Switch Accessibility', () => {
         it('maintains consistent accessible names for same functionality', () => {
             render(
                 <>
-                    <Switch label="Enable notifications" />
-                    <Switch label="Enable notifications" />
+                    <Switch label="Enable notifications" checked={false} />
+                    <Switch label="Enable notifications" checked={false} />
                 </>
             )
 
@@ -487,6 +541,7 @@ describe('Switch Accessibility', () => {
             render(
                 <Switch
                     label="Accept terms"
+                    checked={false}
                     required
                     error
                     subtext="You must accept the terms to continue"
@@ -502,7 +557,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
         it('provides clear label for switch purpose', () => {
-            render(<Switch label="Enable notifications" />)
+            render(<Switch label="Enable notifications" checked={false} />)
 
             const switchElement = screen.getByRole('switch', {
                 name: 'Enable notifications',
@@ -511,7 +566,7 @@ describe('Switch Accessibility', () => {
         })
 
         it('indicates required state with asterisk and aria-required (WCAG 3.3.2)', () => {
-            render(<Switch label="Required Switch" required />)
+            render(<Switch label="Required Switch" checked={false} required />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-required', 'true')
@@ -561,7 +616,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 4.1.3 Status Messages (Level AA)', () => {
         it('communicates error state via aria-invalid="true" (WCAG 4.1.3)', () => {
-            render(<Switch label="Error Switch" error />)
+            render(<Switch label="Error Switch" checked={false} error />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-invalid', 'true')
@@ -609,7 +664,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.4.7 Focus Visible (Level AA)', () => {
         it('has visible focus indicator - focus is clearly visible', () => {
-            render(<Switch label="Focus Visible Switch" />)
+            render(<Switch label="Focus Visible Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             switchElement.focus()
@@ -636,7 +691,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
         it('maintains sufficient contrast for labels - requires manual verification', () => {
-            render(<Switch label="Contrast Switch" />)
+            render(<Switch label="Contrast Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -646,7 +701,9 @@ describe('Switch Accessibility', () => {
         })
 
         it('maintains contrast in error state - requires manual verification', () => {
-            render(<Switch label="Error Contrast Switch" error />)
+            render(
+                <Switch label="Error Contrast Switch" checked={false} error />
+            )
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toHaveAttribute('aria-invalid', 'true')
@@ -655,7 +712,13 @@ describe('Switch Accessibility', () => {
         })
 
         it('maintains contrast in disabled state - requires manual verification', () => {
-            render(<Switch label="Disabled Contrast Switch" disabled />)
+            render(
+                <Switch
+                    label="Disabled Contrast Switch"
+                    checked={false}
+                    disabled
+                />
+            )
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeDisabled()
@@ -666,7 +729,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 2.5.5 Target Size (Level AAA)', () => {
         it('has adequate touch target size - requires manual verification', () => {
-            render(<Switch label="Touch Target Switch" />)
+            render(<Switch label="Touch Target Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -680,7 +743,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.4.6 Contrast (Enhanced) (Level AAA)', () => {
         it('meets enhanced contrast requirements - requires manual verification', () => {
-            render(<Switch label="Enhanced Contrast Switch" />)
+            render(<Switch label="Enhanced Contrast Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -692,7 +755,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.4.11 Non-text Contrast (Level AA)', () => {
         it('maintains focus indicator contrast - requires manual verification', () => {
-            render(<Switch label="Focus Contrast Switch" />)
+            render(<Switch label="Focus Contrast Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             switchElement.focus()
@@ -720,7 +783,7 @@ describe('Switch Accessibility', () => {
                 })),
             })
 
-            render(<Switch label="Reduced Motion Switch" />)
+            render(<Switch label="Reduced Motion Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -730,7 +793,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.4.8 Visual Presentation (Level AAA)', () => {
         it('respects browser text size settings - text scales up to 200%', () => {
-            render(<Switch label="Text Scaling Switch" />)
+            render(<Switch label="Text Scaling Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -742,7 +805,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 1.4.9 Images of Text (Level AAA)', () => {
         it('does not use images of text - uses actual text', () => {
-            render(<Switch label="No Images of Text Switch" />)
+            render(<Switch label="No Images of Text Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
@@ -757,6 +820,7 @@ describe('Switch Accessibility', () => {
             const { user } = render(
                 <Switch
                     label="Keyboard No Exception Switch"
+                    checked={false}
                     onChange={handleChange}
                 />
             )
@@ -773,7 +837,7 @@ describe('Switch Accessibility', () => {
 
     describe('WCAG 3.2.5 Change on Request (Level AAA)', () => {
         it('does not cause context changes on focus - changes only on user request', () => {
-            render(<Switch label="Change on Request Switch" />)
+            render(<Switch label="Change on Request Switch" checked={false} />)
 
             const switchElement = screen.getByRole('switch')
             switchElement.focus()
@@ -786,7 +850,10 @@ describe('Switch Accessibility', () => {
 
     describe('Size Variants Accessibility', () => {
         it('maintains accessibility across all sizes', async () => {
-            const sizes = SwitchTestFactory.allSizes()
+            const sizes = SwitchTestFactory.allSizes().map((props) => ({
+                ...props,
+                checked: false,
+            }))
 
             for (const props of sizes) {
                 const { container, unmount } = render(<Switch {...props} />)
@@ -807,11 +874,13 @@ describe('Switch Accessibility', () => {
                 <>
                     <Switch
                         label="Small Switch"
+                        checked={false}
                         size={SwitchSize.SMALL}
                         onChange={handleChange1}
                     />
                     <Switch
                         label="Medium Switch"
+                        checked={false}
                         size={SwitchSize.MEDIUM}
                         onChange={handleChange2}
                     />
@@ -839,6 +908,7 @@ describe('Switch Accessibility', () => {
                         <Switch
                             name="notifications"
                             label="Enable Notifications"
+                            checked={false}
                         />
                     </fieldset>
                 </form>
@@ -853,6 +923,7 @@ describe('Switch Accessibility', () => {
                 <form>
                     <Switch
                         label="Required Switch"
+                        checked={false}
                         required
                         aria-describedby="validation-message"
                     />
@@ -874,6 +945,7 @@ describe('Switch Accessibility', () => {
             const { container } = render(
                 <Switch
                     label="Enable advanced notifications"
+                    checked={false}
                     subtext="Configure notification settings with enhanced options"
                 />
             )
@@ -886,7 +958,7 @@ describe('Switch Accessibility', () => {
         })
 
         it('maintains accessibility with subtext', async () => {
-            const props = SwitchTestFactory.withSubtext()
+            const props = { ...SwitchTestFactory.withSubtext(), checked: false }
             const { container } = render(<Switch {...props} />)
 
             const results = await axe(container)
@@ -896,6 +968,7 @@ describe('Switch Accessibility', () => {
         it('handles slot content accessibly', async () => {
             const props = new SwitchPropsBuilder()
                 .withLabel('Switch with icon')
+                .withChecked(false)
                 .withSlot(
                     <span role="img" aria-label="notification icon">
                         🔔
