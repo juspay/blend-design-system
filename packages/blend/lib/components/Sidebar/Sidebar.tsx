@@ -340,7 +340,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         Skip to main content
                     </a>
                 </div>
-                ={' '}
                 {!isExpanded &&
                     !isMobile &&
                     !isPanelOnlyMode &&

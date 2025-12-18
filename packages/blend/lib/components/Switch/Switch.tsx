@@ -1,4 +1,4 @@
-import React, { forwardRef, useId, useState } from 'react'
+import React, { forwardRef, useId } from 'react'
 import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
@@ -7,8 +7,6 @@ import {
     getSwitchLabelStyles,
     getSubtextId,
     mergeAriaDescribedBy,
-    isControlledSwitch,
-    createSwitchToggleHandler,
 } from './utils'
 import { StyledSwitchRoot, StyledSwitchThumb } from './StyledSwitch'
 import Block from '../Primitives/Block/Block'
@@ -50,22 +48,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
             rest as { 'aria-describedby'?: string; [key: string]: unknown }
 
-        // Handle controlled vs uncontrolled state
-        const isControlled = isControlledSwitch(checked)
-        const [internalChecked, setInternalChecked] =
-            useState<boolean>(defaultChecked)
-        const currentChecked = isControlled
-            ? (checked ?? false)
-            : internalChecked
-
-        const handleToggle = createSwitchToggleHandler(
-            currentChecked,
-            disabled,
-            isControlled,
-            setInternalChecked,
-            onChange
-        )
-
         const ariaAttributes = {
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
@@ -89,12 +71,12 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                     id={uniqueId}
                     disabled={disabled}
                     defaultChecked={defaultChecked}
-                    onClick={handleToggle}
-                    aria-checked={currentChecked}
-                    data-state={getSwitchDataState(currentChecked)}
+                    onClick={() => onChange?.(!checked)}
+                    aria-checked={checked}
+                    data-state={getSwitchDataState(checked || false)}
                     size={size}
                     $isDisabled={disabled}
-                    $isChecked={currentChecked}
+                    $isChecked={checked || false}
                     $error={error}
                     $tokens={tokens}
                     value={value}
@@ -105,7 +87,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                 >
                     <StyledSwitchThumb
                         size={size}
-                        $isChecked={currentChecked}
+                        $isChecked={checked || false}
                         $tokens={tokens}
                     />
                 </StyledSwitchRoot>
