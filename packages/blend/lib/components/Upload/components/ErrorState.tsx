@@ -73,10 +73,16 @@ const ErrorState: React.FC<ErrorStateProps> = ({
                 color={uploadTokens.container.content.text.subtitle.color}
                 textAlign="center"
             >
-                {multiple
-                    ? `${errorFiles.length} files failed`
-                    : errorFiles[0]?.file?.name ||
-                      'Upload failed. Please try again.'}
+                {multiple ? (
+                    `${errorFiles.length} files failed`
+                ) : (
+                    <FileListDisplay
+                        files={errorFiles}
+                        onFileRemove={onFileRemove}
+                        uploadTokens={uploadTokens}
+                        maxFiles={maxFiles}
+                    />
+                )}
             </Text>
         </Block>
 

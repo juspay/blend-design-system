@@ -157,7 +157,7 @@ export const getUploadTokens = (
                     idle: `1px dashed ${foundationToken.colors.gray[200]}`,
                     uploading: `1px dashed ${foundationToken.colors.gray[200]}`,
                     success: `1px dashed ${foundationToken.colors.gray[200]}`,
-                    error: `1px dashed ${foundationToken.colors.gray[200]}`,
+                    error: `1px dashed ${foundationToken.colors.red[200]}`,
                     dragActive: `1px dashed ${foundationToken.colors.primary[500]}`,
                 },
                 backgroundColor: {
@@ -240,7 +240,7 @@ export const getUploadTokens = (
                     idle: `1px dashed ${foundationToken.colors.gray[200]}`,
                     uploading: `1px dashed ${foundationToken.colors.gray[200]}`,
                     success: `1px dashed ${foundationToken.colors.gray[200]}`,
-                    error: `1px dashed ${foundationToken.colors.gray[200]}`,
+                    error: `1px dashed ${foundationToken.colors.red[200]}`,
                     dragActive: `1px dashed ${foundationToken.colors.primary[500]}`,
                 },
                 backgroundColor: {
