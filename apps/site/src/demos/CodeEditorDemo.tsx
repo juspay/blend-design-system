@@ -13,6 +13,7 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import type { SupportedLanguage } from '../../../../packages/blend/lib/components/CodeBlock/types'
+import { Save, Play, Download } from 'lucide-react'
 
 const CodeEditorDemo = () => {
     // State for controls
@@ -505,6 +506,135 @@ def process_transactions(transactions):
                             onChange={() => {}}
                             header="process.py"
                             language="python"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Header Customization */}
+            <div className="space-y-6" id="header-customization">
+                <h2 className="text-2xl font-bold">Header Customization</h2>
+                <p className="text-gray-600">
+                    Customize the header with slots and control icon visibility
+                </p>
+
+                <div className="space-y-8">
+                    {/* Header Right Slot */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Header Right Slot
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Add custom content to the right of the header text
+                            using <code>headerRightSlot</code> prop. The gap
+                            matches the left icon gap.
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.payment}
+                            onChange={() => {}}
+                            header="payment.js"
+                            language="javascript"
+                            headerRightSlot={
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        buttonType={ButtonType.SECONDARY}
+                                        size={ButtonSize.SMALL}
+                                        leadingIcon={<Save size={14} />}
+                                        onClick={() =>
+                                            console.log('Save clicked')
+                                        }
+                                    />
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.SMALL}
+                                        leadingIcon={<Play size={14} />}
+                                        onClick={() =>
+                                            console.log('Run clicked')
+                                        }
+                                    />
+                                </div>
+                            }
+                        />
+                    </div>
+
+                    {/* Hide Left Icon */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Hide Left Icon
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Remove the default FileCode icon by setting{' '}
+                            <code>showLeftIcon=false</code>
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.typescript}
+                            onChange={() => {}}
+                            header="types.ts"
+                            language="typescript"
+                            showLeftIcon={false}
+                        />
+                    </div>
+
+                    {/* Custom Left Slot */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Custom Left Slot
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Replace the default icon with custom content using{' '}
+                            <code>headerLeftSlot</code>
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.python}
+                            onChange={() => {}}
+                            header="download.py"
+                            language="python"
+                            headerLeftSlot={
+                                <Download
+                                    size={16}
+                                    style={{
+                                        flexShrink: 0,
+                                        color: '#10b981',
+                                        opacity: 0.8,
+                                    }}
+                                />
+                            }
+                        />
+                    </div>
+
+                    {/* Combined: Both Slots + No Copy Button */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Fully Customized Header
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Combine left slot, right slot, and hide copy button
+                            for complete customization
+                        </p>
+                        <CodeEditor
+                            value={codeExamples.react}
+                            onChange={() => {}}
+                            header="app.jsx"
+                            language="jsx"
+                            showCopyButton={false}
+                            headerLeftSlot={
+                                <Play
+                                    size={16}
+                                    style={{
+                                        flexShrink: 0,
+                                        color: '#3b82f6',
+                                        opacity: 0.8,
+                                    }}
+                                />
+                            }
+                            headerRightSlot={
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500">
+                                        Modified • Autosave on
+                                    </span>
+                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                </div>
+                            }
                         />
                     </div>
                 </div>

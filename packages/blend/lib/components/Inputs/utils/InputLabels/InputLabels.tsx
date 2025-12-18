@@ -27,7 +27,6 @@ type InputLabelTokens = {
 type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     label?: string
     sublabel?: string
-    disabled?: boolean
     helpIconHintText?: string
     name?: string
     inputId?: string // Unique ID for input association
@@ -48,7 +47,6 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
 const InputLabels = <TTokens extends InputLabelTokens>({
     label,
     sublabel,
-    disabled,
     helpIconHintText,
     name,
     inputId,
@@ -72,11 +70,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                         FOUNDATION_THEME.font.size.body.md.fontSize
                     }
                     color={
-                        disabled
-                            ? tokens?.label?.color?.disabled ||
-                              FOUNDATION_THEME.colors.gray[400]
-                            : tokens?.label?.color?.default ||
-                              FOUNDATION_THEME.colors.gray[700]
+                        tokens?.label?.color?.default ||
+                        FOUNDATION_THEME.colors.gray[700]
                     }
                     style={{ margin: 0, padding: 0 }}
                 >
@@ -111,11 +106,8 @@ const InputLabels = <TTokens extends InputLabelTokens>({
                             FOUNDATION_THEME.font.size.body.md.fontSize
                         }
                         color={
-                            disabled
-                                ? tokens?.subLabel?.color?.disabled ||
-                                  FOUNDATION_THEME.colors.gray[300]
-                                : tokens?.subLabel?.color?.default ||
-                                  FOUNDATION_THEME.colors.gray[400]
+                            tokens?.subLabel?.color?.default ||
+                            FOUNDATION_THEME.colors.gray[400]
                         }
                         margin={0}
                     >

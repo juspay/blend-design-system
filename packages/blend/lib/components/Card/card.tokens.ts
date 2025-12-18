@@ -30,10 +30,15 @@ export type CardTokenType = {
     boxShadow: CSSObject['boxShadow']
     backgroundColor: CSSObject['backgroundColor']
     padding: {
-        [key in CardVariant]: {
+        [CardVariant.DEFAULT]: {
             x: CSSObject['padding']
             y: CSSObject['padding']
         }
+        [CardVariant.ALIGNED]: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        [CardVariant.CUSTOM]: undefined
     }
 
     // Header section
@@ -151,10 +156,7 @@ export const getCardTokens = (
                     x: foundationToken.unit[16],
                     y: foundationToken.unit[16],
                 },
-                [CardVariant.CUSTOM]: {
-                    x: foundationToken.unit[16],
-                    y: foundationToken.unit[16],
-                },
+                [CardVariant.CUSTOM]: undefined,
             },
 
             // Header section
@@ -263,10 +265,7 @@ export const getCardTokens = (
                     x: foundationToken.unit[16],
                     y: foundationToken.unit[16],
                 },
-                [CardVariant.CUSTOM]: {
-                    x: foundationToken.unit[16],
-                    y: foundationToken.unit[16],
-                },
+                [CardVariant.CUSTOM]: undefined,
             },
 
             // Header section

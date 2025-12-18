@@ -206,7 +206,6 @@ const TextInput = ({
                     label={label}
                     sublabel={sublabel}
                     helpIconHintText={helpIconHintText}
-                    disabled={disabled}
                     inputId={inputId}
                     required={required}
                 />
@@ -268,7 +267,7 @@ const TextInput = ({
 
                 <PrimitiveInput
                     id={inputId}
-                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                    placeholderColor={textInputTokens.placeholder.color}
                     required={required}
                     value={value}
                     name={name}
@@ -388,7 +387,6 @@ const TextInput = ({
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
             />

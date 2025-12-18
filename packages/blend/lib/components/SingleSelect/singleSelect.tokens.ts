@@ -310,7 +310,7 @@ export const getSingleSelectTokens = (
                     fontWeight: foundationToken.font.weight[500],
                 },
                 selectedValue: {
-                    color: foundationToken.colors.gray[800],
+                    color: foundationToken.colors.gray[700],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },
@@ -568,12 +568,12 @@ export const getSingleSelectTokens = (
                     },
                 },
                 placeholder: {
-                    color: foundationToken.colors.gray[400],
+                    color: foundationToken.colors.gray[500],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },
                 selectedValue: {
-                    color: foundationToken.colors.gray[800],
+                    color: foundationToken.colors.gray[700],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },
