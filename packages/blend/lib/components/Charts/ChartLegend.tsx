@@ -251,6 +251,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                 boxShadow={FOUNDATION_THEME.shadows.lg}
                                 border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
                                 minWidth={180}
+                                style={{
+                                    maxHeight: legendTokens.dropdown.maxHeight,
+                                    overflowY: 'auto',
+                                }}
                             >
                                 {keys
                                     .slice(cuttOffIndex)
