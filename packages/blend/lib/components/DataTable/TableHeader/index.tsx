@@ -371,71 +371,77 @@ const TableHeader = forwardRef<
                         </th>
                     )}
 
-                    {enableRowSelection && data && data.length > 0 && (
-                        <th
-                            role="columnheader"
-                            scope="col"
-                            aria-label="Select all rows"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    onSelectAll(
-                                        selectAll === true ? false : true
-                                    )
-                                }
-                            }}
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                width: '60px',
-                                minWidth: '60px',
-                                maxWidth: '60px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                                borderBottom:
-                                    tableToken.dataTable.table.header
-                                        .borderBottom,
-                                ...(!enableRowExpansion && {
-                                    borderTopLeftRadius:
-                                        tableToken.dataTable.borderRadius,
-                                }),
-                                ...(columnFreeze > 0 && {
-                                    position: 'sticky',
-                                    left: enableRowExpansion ? '50px' : '0px',
-                                    zIndex: 9,
-                                    backgroundColor:
-                                        tableToken.dataTable.table.header
-                                            .backgroundColor,
-                                }),
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                width={FOUNDATION_THEME.unit[40]}
+                    {enableRowSelection &&
+                        data &&
+                        data.length > 0 &&
+                        initialColumns.length > 0 && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Select all rows"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        onSelectAll(
+                                            selectAll === true ? false : true
+                                        )
+                                    }
+                                }}
                                 style={{
-                                    height: '100%',
+                                    ...tableToken.dataTable.table.header.cell,
+                                    width: '60px',
+                                    minWidth: '60px',
+                                    maxWidth: '60px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
                                     ...(!enableRowExpansion && {
                                         borderTopLeftRadius:
                                             tableToken.dataTable.borderRadius,
                                     }),
-                                    overflow: 'hidden',
+                                    ...(columnFreeze > 0 && {
+                                        position: 'sticky',
+                                        left: enableRowExpansion
+                                            ? '50px'
+                                            : '0px',
+                                        zIndex: 9,
+                                        backgroundColor:
+                                            tableToken.dataTable.table.header
+                                                .backgroundColor,
+                                    }),
                                 }}
                             >
-                                <Checkbox
-                                    checked={selectAll}
-                                    onCheckedChange={onSelectAll}
-                                    size={CheckboxSize.MEDIUM}
-                                    disabled={isDisabled}
-                                    aria-label="Select all rows"
-                                />
-                            </Block>
-                        </th>
-                    )}
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    width={FOUNDATION_THEME.unit[40]}
+                                    style={{
+                                        height: '100%',
+                                        ...(!enableRowExpansion && {
+                                            borderTopLeftRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Checkbox
+                                        checked={selectAll}
+                                        onCheckedChange={onSelectAll}
+                                        size={CheckboxSize.MEDIUM}
+                                        disabled={isDisabled}
+                                        aria-label="Select all rows"
+                                    />
+                                </Block>
+                            </th>
+                        )}
 
                     {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
@@ -1325,56 +1331,61 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableColumnManager && data && data.length > 0 && (
-                        <th
-                            role="columnheader"
-                            scope="col"
-                            aria-label="Column manager"
-                            tabIndex={-1}
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                                position: 'sticky',
-                                right: 0,
-                                backgroundColor:
-                                    tableToken.dataTable.table.header
-                                        .backgroundColor,
-                                width: FOUNDATION_THEME.unit[48],
-                                minWidth: FOUNDATION_THEME.unit[48],
-                                maxWidth: FOUNDATION_THEME.unit[48],
-                                borderBottom:
-                                    tableToken.dataTable.table.header
-                                        .borderBottom,
-                                borderTopRightRadius:
-                                    tableToken.dataTable.borderRadius,
-                            }}
-                        >
-                            <Block position="relative">
-                                <ColumnManager
-                                    columns={initialColumns}
-                                    visibleColumns={
-                                        allVisibleColumns || visibleColumns
-                                    }
-                                    onColumnChange={onColumnChange}
-                                    maxSelections={columnManagerMaxSelections}
-                                    alwaysSelectedColumns={
-                                        columnManagerAlwaysSelected
-                                    }
-                                    columnManagerPrimaryAction={
-                                        columnManagerPrimaryAction
-                                    }
-                                    columnManagerSecondaryAction={
-                                        columnManagerSecondaryAction
-                                    }
-                                    multiSelectWidth={columnManagerWidth}
-                                    disabled={isDisabled}
-                                />
-                            </Block>
-                        </th>
-                    )}
+                    {enableColumnManager &&
+                        data &&
+                        data.length > 0 &&
+                        visibleColumns.length > 0 && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Column manager"
+                                tabIndex={-1}
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    position: 'sticky',
+                                    right: 0,
+                                    backgroundColor:
+                                        tableToken.dataTable.table.header
+                                            .backgroundColor,
+                                    width: FOUNDATION_THEME.unit[48],
+                                    minWidth: FOUNDATION_THEME.unit[48],
+                                    maxWidth: FOUNDATION_THEME.unit[48],
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    borderTopRightRadius:
+                                        tableToken.dataTable.borderRadius,
+                                }}
+                            >
+                                <Block position="relative">
+                                    <ColumnManager
+                                        columns={initialColumns}
+                                        visibleColumns={
+                                            allVisibleColumns || visibleColumns
+                                        }
+                                        onColumnChange={onColumnChange}
+                                        maxSelections={
+                                            columnManagerMaxSelections
+                                        }
+                                        alwaysSelectedColumns={
+                                            columnManagerAlwaysSelected
+                                        }
+                                        columnManagerPrimaryAction={
+                                            columnManagerPrimaryAction
+                                        }
+                                        columnManagerSecondaryAction={
+                                            columnManagerSecondaryAction
+                                        }
+                                        multiSelectWidth={columnManagerWidth}
+                                        disabled={isDisabled}
+                                    />
+                                </Block>
+                            </th>
+                        )}
                 </tr>
             </thead>
         )
