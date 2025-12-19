@@ -244,7 +244,9 @@ const SingleSelect = ({
                         selected={selected}
                         onSelect={(value) => {
                             handleOnSelect(value)
-                            setOpen(false)
+                            requestAnimationFrame(() => {
+                                setOpen(false)
+                            })
                         }}
                         disabled={disabled}
                         minMenuWidth={minMenuWidth}
