@@ -24,6 +24,7 @@ import {
     validateCustomRangeConfig,
     getPresetLabelWithCustom,
     getPresetLabel,
+    getDatePartsInTimezone,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -350,6 +351,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             triggerConfig,
             maxMenuHeight = 250,
             showPreset = false,
+            timezone,
         },
         ref
     ) => {
@@ -362,7 +364,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const isMobile = innerWidth < 1024
 
         const [selectedRange, setSelectedRange] = useState<DateRange>(
-            value || getPresetDateRange(DateRangePreset.TODAY)
+            value || getPresetDateRange(DateRangePreset.TODAY, timezone)
         )
         const lastExternalValueRef = React.useRef<{
             start: number | null
@@ -375,17 +377,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         const [startTime, setStartTime] = useState(
-            formatDate(selectedRange.startDate, 'HH:mm')
+            formatDate(selectedRange.startDate, 'HH:mm', timezone)
         )
         const [endTime, setEndTime] = useState(
-            formatDate(selectedRange.endDate, 'HH:mm')
+            formatDate(selectedRange.endDate, 'HH:mm', timezone)
         )
 
         const [startDate, setStartDate] = useState(
-            formatDate(selectedRange.startDate, dateFormat)
+            formatDate(selectedRange.startDate, dateFormat, timezone)
         )
         const [endDate, setEndDate] = useState(
-            formatDate(selectedRange.endDate, dateFormat)
+            formatDate(selectedRange.endDate, dateFormat, timezone)
         )
 
         const [startDateValidation, setStartDateValidation] =
@@ -393,7 +395,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [endDateValidation, setEndDateValidation] =
             useState<DateValidationResult>({ isValid: true, error: 'none' })
 
-        const today = new Date()
+        const today = React.useMemo(() => {
+            if (!timezone) {
+                return new Date()
+            }
+            const now = new Date()
+            const parts = getDatePartsInTimezone(now, timezone)
+            return new Date(parts.year, parts.month, parts.day)
+        }, [timezone])
 
         const presetConfigs = React.useMemo(() => {
             return processCustomPresets(customPresets)
@@ -476,10 +485,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             lastExternalValueRef.current = nextSignature
 
             setSelectedRange(value)
-            setStartDate(formatDate(value.startDate, dateFormat))
-            setEndDate(formatDate(value.endDate, dateFormat))
-            setStartTime(formatDate(value.startDate, 'HH:mm'))
-            setEndTime(formatDate(value.endDate, 'HH:mm'))
+            setStartDate(formatDate(value.startDate, dateFormat, timezone))
+            setEndDate(formatDate(value.endDate, dateFormat, timezone))
+            setStartTime(formatDate(value.startDate, 'HH:mm', timezone))
+            setEndTime(formatDate(value.endDate, 'HH:mm', timezone))
 
             const detectedPreset = detectPresetFromRange(value)
             setActivePreset(detectedPreset)
@@ -491,10 +500,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 const detectedPreset = detectPresetFromRange(range)
                 setActivePreset(detectedPreset)
 
-                setStartDate(formatDate(range.startDate, dateFormat))
-                setEndDate(formatDate(range.endDate, dateFormat))
+                setStartDate(formatDate(range.startDate, dateFormat, timezone))
+                setEndDate(formatDate(range.endDate, dateFormat, timezone))
             },
-            [dateFormat]
+            [dateFormat, timezone]
         )
 
         useEffect(() => {
@@ -511,7 +520,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const handlePresetSelect = useCallback(
             (preset: DateRangePreset) => {
-                const result = handlePresetSelection(preset, dateFormat)
+                const result = handlePresetSelection(
+                    preset,
+                    dateFormat,
+                    timezone
+                )
                 setSelectedRange(result.updatedRange)
                 setActivePreset(preset)
                 setStartDate(result.formattedStartDate)
@@ -545,7 +558,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     }
                 }
             },
-            [dateFormat, onChange, showPreset, onPresetSelection, presetConfigs]
+            [
+                dateFormat,
+                onChange,
+                showPreset,
+                onPresetSelection,
+                presetConfigs,
+                timezone,
+            ]
         )
 
         const handleStartDateChange = useCallback(
@@ -647,7 +667,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 selectedRange,
                 startTime,
                 endTime,
-                dateFormat
+                dateFormat,
+                timezone
             )
 
             // Update the input fields to match the applied range
@@ -659,19 +680,19 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [selectedRange, startTime, endTime, dateFormat, onChange])
+        }, [selectedRange, startTime, endTime, dateFormat, onChange, timezone])
 
         const handleCancel = useCallback(() => {
             const resetRange =
-                value || getPresetDateRange(DateRangePreset.TODAY)
+                value || getPresetDateRange(DateRangePreset.TODAY, timezone)
             setSelectedRange(resetRange)
             setActivePreset(
                 value ? DateRangePreset.CUSTOM : DateRangePreset.TODAY
             )
-            setStartDate(formatDate(resetRange.startDate, dateFormat))
-            setEndDate(formatDate(resetRange.endDate, dateFormat))
-            setStartTime(formatDate(resetRange.startDate, 'HH:mm'))
-            setEndTime(formatDate(resetRange.endDate, 'HH:mm'))
+            setStartDate(formatDate(resetRange.startDate, dateFormat, timezone))
+            setEndDate(formatDate(resetRange.endDate, dateFormat, timezone))
+            setStartTime(formatDate(resetRange.startDate, 'HH:mm', timezone))
+            setEndTime(formatDate(resetRange.endDate, 'HH:mm', timezone))
 
             setStartDateValidation({ isValid: true, error: 'none' })
             setEndDateValidation({ isValid: true, error: 'none' })
@@ -679,7 +700,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [dateFormat, value])
+        }, [dateFormat, value, timezone])
 
         useEffect(() => {
             if (isDisabled) {
@@ -714,16 +735,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const renderTrigger = () => {
             // Use the committed value (value prop) for trigger display, not the selectedRange
             const displayRange =
-                value || getPresetDateRange(DateRangePreset.TODAY)
+                value || getPresetDateRange(DateRangePreset.TODAY, timezone)
 
             if (triggerConfig?.renderTrigger) {
                 const formattedValue = formatConfig
                     ? formatTriggerDisplay(
                           displayRange,
                           formatConfig,
-                          triggerConfig.placeholder
+                          triggerConfig.placeholder,
+                          timezone
                       )
-                    : formatDateDisplay(displayRange, allowSingleDateSelection)
+                    : formatDateDisplay(
+                          displayRange,
+                          allowSingleDateSelection,
+                          timezone
+                      )
 
                 return triggerConfig.renderTrigger({
                     selectedRange: displayRange,
@@ -753,7 +779,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     return formatTriggerDisplay(
                         range,
                         formatConfig,
-                        'Select dates'
+                        'Select dates',
+                        timezone
                     )
                 }
 
@@ -761,6 +788,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     month: 'short',
                     day: 'numeric',
                     year: '2-digit',
+                    ...(timezone && { timeZone: timezone }),
                 }
 
                 const startStr = range.startDate.toLocaleDateString(
@@ -795,9 +823,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 ? formatTriggerDisplay(
                       displayRange,
                       formatConfig,
-                      triggerConfig?.placeholder || 'Select date range'
+                      triggerConfig?.placeholder || 'Select date range',
+                      timezone
                   )
-                : formatDateDisplay(displayRange, allowSingleDateSelection)
+                : formatDateDisplay(
+                      displayRange,
+                      allowSingleDateSelection,
+                      timezone
+                  )
 
             const iconElement =
                 triggerConfig?.showIcon === false
