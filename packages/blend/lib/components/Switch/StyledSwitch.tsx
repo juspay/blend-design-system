@@ -1,6 +1,8 @@
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { SwitchSize } from './types'
 import type { SwitchTokensType } from './switch.token'
+import Block from '../Primitives/Block/Block'
 
 import {
     switchRootAnimations,
@@ -97,33 +99,59 @@ export const StyledSwitchThumb = styled.div<{
 
 /**
  * Slot wrapper (right-side icon next to label)
- * Ensures any oversized slot content (e.g. <img />) fits inside 14x14.
+ * Ensures any oversized slot content (e.g. <img />) fits inside the token-defined size.
  */
-export const StyledSwitchSlot = styled.span`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
-    overflow: hidden;
-    line-height: 0;
+export const StyledSwitchSlot: React.FC<{
+    size: SwitchSize
+    tokens: SwitchTokensType
+    children: React.ReactNode
+    'data-element'?: string
+    style?: React.CSSProperties
+}> = ({ size, tokens, children, 'data-element': dataElement, style }) => {
+    const slotWidth = tokens.slot.width[size]
+    const slotHeight = tokens.slot.height[size]
 
-    & > img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        display: block;
-    }
+    return (
+        <>
+            <style>
+                {`
+                    [data-switch-slot] > img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        display: block;
+                    }
 
-    & > svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
+                    [data-switch-slot] > svg {
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+                    }
 
-    & > * {
-        max-width: 100%;
-        max-height: 100%;
-    }
-`
+                    [data-switch-slot] > * {
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
+                `}
+            </style>
+            <Block
+                as="span"
+                data-element={dataElement}
+                display="inline-flex"
+                alignItems="center"
+                justifyContent="center"
+                width={slotWidth}
+                height={slotHeight}
+                flexShrink={0}
+                flexBasis={slotWidth}
+                overflow="hidden"
+                style={{
+                    lineHeight: 0,
+                    ...style,
+                }}
+            >
+                {children}
+            </Block>
+        </>
+    )
+}

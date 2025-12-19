@@ -181,6 +181,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                         {slot && (
                             <StyledSwitchSlot
                                 data-element="icon"
+                                size={size}
+                                tokens={tokens}
                                 style={{ marginLeft: tokens.content.label.gap }}
                             >
                                 {slot}
