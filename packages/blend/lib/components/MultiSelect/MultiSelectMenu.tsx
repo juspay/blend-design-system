@@ -785,7 +785,11 @@ const MultiSelectMenu = ({
                                                 text={secondaryAction.text}
                                                 onClick={() => {
                                                     secondaryAction.onClick()
-                                                    onOpenChange(false)
+                                                    requestAnimationFrame(
+                                                        () => {
+                                                            onOpenChange(false)
+                                                        }
+                                                    )
                                                 }}
                                                 disabled={
                                                     secondaryAction.disabled
@@ -813,7 +817,11 @@ const MultiSelectMenu = ({
                                                     primaryAction.onClick(
                                                         selected
                                                     )
-                                                    onOpenChange(false)
+                                                    requestAnimationFrame(
+                                                        () => {
+                                                            onOpenChange(false)
+                                                        }
+                                                    )
                                                 }}
                                                 disabled={
                                                     primaryAction.disabled
