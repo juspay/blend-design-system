@@ -641,6 +641,7 @@ const FormModalExample = () => {
                         maxMenuHeight={100}
                     />
                     <MultiSelect
+                        fullWidth={true}
                         label="Category"
                         items={[
                             {
