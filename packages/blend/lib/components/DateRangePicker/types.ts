@@ -326,6 +326,16 @@ export type DateRangePickerProps = {
     triggerConfig?: TriggerConfig
     maxMenuHeight?: number
     showPreset?: boolean
+    /**
+     * IANA timezone string (e.g., "America/New_York", "Europe/London", "Asia/Tokyo")
+     * When provided, all date/time operations use this timezone.
+     * Presets like "yesterday" or "today" are calculated in this timezone.
+     * Defaults to system timezone if not provided.
+     * @example timezone="America/New_York"
+     * @example timezone="Asia/Tokyo"
+     * @see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+     */
+    timezone?: string
 }
 
 export type PresetItemProps = {

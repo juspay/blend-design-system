@@ -40,6 +40,7 @@ function MyComponent() {
             showPresets={true}
             allowSingleDateSelection={false}
             dateFormat="dd/MM/yyyy"
+            timezone="America/New_York" // Optional: specify timezone
         />
     )
 }
@@ -392,6 +393,19 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true shows only preset selector, false shows full calendar picker',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'timezone',
+                hintText:
+                    'Optional IANA timezone string (e.g., "America/New_York", "Asia/Tokyo", "Europe/London") that specifies the timezone for all date/time operations. When provided, presets like "Yesterday" or "Today" are calculated in this timezone rather than the user\'s system timezone. This ensures users from different parts of the world see dates relevant to the specified timezone. Uses native JavaScript Intl API for timezone conversion. Defaults to system timezone if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'IANA timezone string like "America/New_York" or "Asia/Tokyo"',
             },
             { content: '' },
         ],
