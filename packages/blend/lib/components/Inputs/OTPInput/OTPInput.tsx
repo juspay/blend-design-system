@@ -294,8 +294,16 @@ const OTPInput = ({
                                 onKeyDown={(
                                     e: KeyboardEvent<HTMLInputElement>
                                 ) => handleKeyDown(index, e)}
-                                onFocus={() => {
+                                onFocus={(e) => {
+                                    const input = e.target
+                                    const len = input.value.length
+                                    input.setSelectionRange(len, len)
                                     setActiveIndex(index)
+                                }}
+                                onClick={(e) => {
+                                    const input = e.currentTarget
+                                    const len = input.value.length
+                                    input.setSelectionRange(len, len)
                                 }}
                                 onBlur={() => setActiveIndex(-1)}
                                 onPaste={index === 0 ? handlePaste : undefined}
