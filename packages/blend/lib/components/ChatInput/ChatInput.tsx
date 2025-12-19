@@ -31,6 +31,9 @@ import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import { addSnackbar, SnackbarVariant } from '../Snackbar'
 import { Tooltip } from '../Tooltip/Tooltip'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import MobileChatInput from './MobileChatInput'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -113,6 +116,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
+
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
+        console.log('isMobile', isMobile)
 
         // Dynamic overflow calculation
         const handleResize = useCallback(() => {
@@ -348,6 +355,15 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 onFileClick || (() => {})
             )
         }, [hiddenFiles, onFileRemove, onFileClick])
+
+        if (isMobile) {
+            return (
+                <MobileChatInput
+                    value={value}
+                    onChange={onChange || (() => {})}
+                />
+            )
+        }
 
         return (
             <Block

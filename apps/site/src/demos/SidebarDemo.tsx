@@ -752,6 +752,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'chatInput',
                     onClick: () => setActiveComponent('chatInput'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Multi Value Input',
