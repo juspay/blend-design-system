@@ -66,6 +66,28 @@ const MobileChatInput = ({
         .focus as string
     const textareaCollapsedHeight =
         parseFloat(textareaMobileTokens.height.default as string) || 44
+
+    // Calculate attachment button width and gap from tokens
+    const attachmentButtonDimensions = useMemo(() => {
+        // Button uses FOUNDATION_THEME.unit[12] for padding
+        const buttonPadding = FOUNDATION_THEME.unit[12]
+        const paddingValue =
+            parseFloat(String(buttonPadding).replace('px', '')) || 12
+        // Icon size is 16px (Paperclip size={16})
+        const iconSize = 16
+        // Button width = icon size + padding left + padding right
+        const buttonWidth = `${iconSize + paddingValue * 2}px`
+        // Gap between button and textarea (currently hardcoded as 8, using unit[8] from tokens)
+        const gap = FOUNDATION_THEME.unit[8]
+        const total = `calc(${buttonWidth} + ${gap})`
+
+        return {
+            buttonWidth,
+            gap,
+            total,
+        }
+    }, [])
+
     const filesContainerRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null!)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -372,18 +394,9 @@ const MobileChatInput = ({
                             transition: 'bottom 0.3s ease',
                         }}
                     >
-                        <Block style={{ visibility: 'hidden' }}>
-                            <PrimitiveButton
-                                disabled={disabled}
-                                borderRadius={100}
-                                border={`1px solid #E1E4EA`}
-                                padding={12}
-                                onClick={onAttachFileClick}
-                            >
-                                {attachButtonIcon || <Paperclip size={16} />}
-                            </PrimitiveButton>
-                        </Block>
                         <Block
+                            paddingLeft={attachmentButtonDimensions.total}
+                            marginBottom={attachmentButtonDimensions.gap}
                             display="flex"
                             gap={tokens.filesContainer.gap}
                             maxHeight={tokens.filesContainer.maxHeight}
