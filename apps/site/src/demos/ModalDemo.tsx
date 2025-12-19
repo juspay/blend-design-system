@@ -5,12 +5,7 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
-import {
-    MultiSelect,
-    SingleSelect,
-    TextInput,
-} from '../../../../packages/blend/lib/main'
-import { Select } from '../../../../packages/blend/lib/components/Select'
+import { MultiSelect, SingleSelect } from '../../../../packages/blend/lib/main'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -565,7 +560,6 @@ const ConfirmationModalExample = () => {
 
 const FormModalExample = () => {
     const [isOpen, setIsOpen] = useState(false)
-    const [projectName, setProjectName] = useState('')
 
     return (
         <>
