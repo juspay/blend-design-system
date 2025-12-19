@@ -27,7 +27,6 @@ import {
 } from '../common/error.animations'
 import styled from 'styled-components'
 import { setupAccessibility } from './utils'
-import { useScrollLock } from '../../hooks'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -153,7 +152,6 @@ const SingleSelect = ({
     )
     const shouldShake = useErrorShake(error)
 
-    useScrollLock(open)
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobileSingleSelect
