@@ -1,4 +1,4 @@
-import React, { forwardRef, useId } from 'react'
+import React, { forwardRef, useId, useMemo } from 'react'
 import { type SwitchProps, SwitchSize } from './types'
 import {
     getSwitchDataState,
@@ -48,6 +48,16 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
             rest as { 'aria-describedby'?: string; [key: string]: unknown }
 
+        // Calculate switch width and gap from tokens
+        const switchDimensions = useMemo(
+            () => ({
+                switchWidth: String(tokens.switchContainer.width[size]),
+                gap: String(tokens.gap),
+                total: `calc(${tokens.switchContainer.width[size]} + ${tokens.gap})`,
+            }),
+            [tokens, size]
+        )
+
         const ariaAttributes = {
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
@@ -58,44 +68,42 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
             ),
         }
         return (
-            <Block
-                data-switch={label ?? 'switch'}
-                data-status={disabled ? 'disabled' : 'enabled'}
-                display="flex"
-                gap={tokens.gap}
-            >
-                <StyledSwitchRoot
-                    ref={ref}
-                    type="button"
-                    role="switch"
-                    id={uniqueId}
-                    disabled={disabled}
-                    defaultChecked={defaultChecked}
-                    onClick={() => onChange?.(!checked)}
-                    aria-checked={checked}
-                    data-state={getSwitchDataState(checked || false)}
-                    size={size}
-                    $isDisabled={disabled}
-                    $isChecked={checked || false}
-                    $error={error}
-                    $tokens={tokens}
-                    value={value}
-                    name={name}
-                    style={getErrorShakeStyle(shouldShake)}
-                    {...restProps}
-                    {...ariaAttributes}
-                >
-                    <StyledSwitchThumb
-                        size={size}
-                        $isChecked={checked || false}
-                        $tokens={tokens}
-                    />
-                </StyledSwitchRoot>
+            <Block>
                 <Block
+                    data-switch={label ?? 'switch'}
+                    data-status={disabled ? 'disabled' : 'enabled'}
                     display="flex"
-                    flexDirection="column"
-                    gap={tokens.content.gap}
+                    gap={tokens.gap}
+                    alignItems="center"
                 >
+                    <StyledSwitchRoot
+                        ref={ref}
+                        type="button"
+                        role="switch"
+                        id={uniqueId}
+                        disabled={disabled}
+                        defaultChecked={defaultChecked}
+                        onClick={() => onChange?.(!checked)}
+                        aria-checked={checked}
+                        data-state={getSwitchDataState(checked || false)}
+                        size={size}
+                        $isDisabled={disabled}
+                        $isChecked={checked || false}
+                        $error={error}
+                        $tokens={tokens}
+                        value={value}
+                        name={name}
+                        style={getErrorShakeStyle(shouldShake)}
+                        {...restProps}
+                        {...ariaAttributes}
+                    >
+                        <StyledSwitchThumb
+                            size={size}
+                            $isChecked={checked || false}
+                            $tokens={tokens}
+                        />
+                    </StyledSwitchRoot>
+
                     <Block display="flex" alignItems="center">
                         <SwitchContent
                             uniqueId={uniqueId}
@@ -108,15 +116,26 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                             maxLength={labelMaxLength}
                         />
                         {slot && (
-                            <Block
-                                data-element="icon"
-                                as="span"
-                                marginLeft={tokens.content.label.gap}
-                            >
-                                {slot}
-                            </Block>
+                            <>
+                                <Block
+                                    data-element="slot-icon"
+                                    as="span"
+                                    marginLeft={tokens.content.label.gap}
+                                    width={tokens.slot.width[size]}
+                                    height={tokens.slot.height[size]}
+                                    overflow="hidden"
+                                    display="inline-flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    style={{ lineHeight: 0 }}
+                                >
+                                    {slot}
+                                </Block>
+                            </>
                         )}
                     </Block>
+                </Block>
+                <Block paddingLeft={switchDimensions.total}>
                     {subtext && (
                         <SwitchSubtext
                             id={subtextId}
