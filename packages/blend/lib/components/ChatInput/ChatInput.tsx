@@ -113,8 +113,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const topQueriesId = `chat-input-queries-${generatedId}`
         const characterCountId = `chat-input-count-${generatedId}`
         const fileInputLabelId = `chat-input-file-label-${generatedId}`
-        const { innerWidth } = useBreakpoints()
-        const isMobile = innerWidth < BREAKPOINTS.lg
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isMobile = breakPointLabel === 'sm'
 
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef

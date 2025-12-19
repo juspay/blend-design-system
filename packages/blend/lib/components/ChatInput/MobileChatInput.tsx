@@ -168,12 +168,6 @@ const MobileChatInput = ({
         )
     }, [hiddenFiles, onFileRemove, onFileClick])
 
-    // const handleTextInputChange = (
-    //     e: React.ChangeEvent<HTMLInputElement>
-    // ) => {
-    //     onChange?.(e.target.value)
-    // }
-
     // Optimized function to update textarea and files container positioning
     const updateTextareaAndFilesPosition = useCallback(() => {
         if (!textareaRef.current || !textareaContainerRef.current) return
@@ -243,7 +237,7 @@ const MobileChatInput = ({
         // Position files container absolutely above textarea (only if files exist)
         if (filesContainerRef.current && attachedFiles.length > 0) {
             const filesContainer = filesContainerRef.current
-            const GAP = 4 // Gap between files and textarea
+            const GAP = 1 // Gap between files and textarea
             filesContainer.style.position = 'absolute'
             filesContainer.style.bottom =
                 initialBottomRef.current !== null
