@@ -294,13 +294,17 @@ const OTPInput = ({
                                 onKeyDown={(
                                     e: KeyboardEvent<HTMLInputElement>
                                 ) => handleKeyDown(index, e)}
-                                onFocus={(e) => {
+                                onFocus={(
+                                    e: React.FocusEvent<HTMLInputElement>
+                                ) => {
                                     const input = e.target
                                     const len = input.value.length
                                     input.setSelectionRange(len, len)
                                     setActiveIndex(index)
                                 }}
-                                onClick={(e) => {
+                                onClick={(
+                                    e: React.MouseEvent<HTMLInputElement>
+                                ) => {
                                     const input = e.currentTarget
                                     const len = input.value.length
                                     input.setSelectionRange(len, len)
