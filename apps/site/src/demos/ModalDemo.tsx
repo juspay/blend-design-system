@@ -5,7 +5,12 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
-import { TextInput } from '../../../../packages/blend/lib/main'
+import {
+    MultiSelect,
+    SingleSelect,
+    TextInput,
+} from '../../../../packages/blend/lib/main'
+import { Select } from '../../../../packages/blend/lib/components/Select'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -594,20 +599,71 @@ const FormModalExample = () => {
                         e.stopPropagation()
                         console.log('submitted')
                     }}
-                    className="space-y-4"
+                    className="space-y-4 h-30 overflow-y-auto position-relative z-0 w-[500px]"
                 >
-                    <div>
-                        <TextInput
-                            label="Project Name"
-                            value={projectName}
-                            onChange={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                setProjectName(e.target.value)
-                            }}
-                            placeholder="Enter project name"
-                        />
-                    </div>
+                    <SingleSelect
+                        fullWidth={true}
+                        label="Category"
+                        items={[
+                            {
+                                groupLabel: undefined,
+                                items: [
+                                    {
+                                        label: 'Web Development',
+                                        value: 'web-development',
+                                    },
+                                    {
+                                        label: 'Mobile App',
+                                        value: 'mobile-app',
+                                    },
+                                    { label: 'Design', value: 'design' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                ],
+                            },
+                        ]}
+                        selected="web-development"
+                        onSelect={(value) => console.log(value)}
+                        placeholder="Select category"
+                        maxMenuHeight={100}
+                    />
+                    <MultiSelect
+                        label="Category"
+                        items={[
+                            {
+                                groupLabel: undefined,
+                                items: [
+                                    {
+                                        label: 'Web Development',
+                                        value: 'web-development',
+                                    },
+                                    {
+                                        label: 'Mobile App',
+                                        value: 'mobile-app',
+                                    },
+                                    { label: 'Design', value: 'design' },
+                                    { label: 'Other', value: 'other' },
+                                ],
+                            },
+                        ]}
+                        selectedValues={['web-development']}
+                        onChange={(value) => console.log(value)}
+                        placeholder="Select category"
+                        maxMenuHeight={100}
+                    />
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Description
