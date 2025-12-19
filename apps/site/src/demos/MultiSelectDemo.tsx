@@ -94,6 +94,7 @@ const MultiSelectDemo = () => {
         'nodejs',
         'postgresql',
     ])
+    const [apiCallLoadingSkeleton, setApiCallLoadingSkeleton] = useState(false)
 
     // Action Buttons Examples state
     const [actionButtonsSelected, setActionButtonsSelected] = useState<
@@ -2210,6 +2211,39 @@ const MultiSelectDemo = () => {
                             </p>
                         </div>
                     </div>
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">API Call Example</h3>
+                        <MultiSelect
+                            label="Current Tech Stack"
+                            sublabel="Modify your current setup"
+                            items={skillItems}
+                            selectedValues={preSelectedValues}
+                            onChange={handleMultiSelectChange(
+                                preSelectedValues,
+                                setPreSelectedValues
+                            )}
+                            placeholder="Update tech stack"
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            onFocus={() => {
+                                setApiCallLoadingSkeleton(true)
+                                setTimeout(() => {
+                                    setApiCallLoadingSkeleton(false)
+                                }, 2000)
+                            }}
+                            skeleton={{
+                                count: 4,
+                                show: apiCallLoadingSkeleton,
+                                variant: 'pulse',
+                            }}
+                        />
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                            <p className="text-sm text-blue-700">
+                                <strong>Current Stack:</strong>{' '}
+                                {preSelectedValues.join(', ') ||
+                                    'None selected'}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2247,6 +2281,17 @@ const MultiSelectDemo = () => {
                                     leadingIcon={<Code size={16} />}
                                 />
                             }
+                            onFocus={() => {
+                                setApiCallLoadingSkeleton(true)
+                                setTimeout(() => {
+                                    setApiCallLoadingSkeleton(false)
+                                }, 2000)
+                            }}
+                            skeleton={{
+                                count: 4,
+                                show: apiCallLoadingSkeleton,
+                                variant: 'pulse',
+                            }}
                         />
                     </div>
 

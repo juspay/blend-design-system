@@ -79,6 +79,7 @@ const SingleSelectDemo = () => {
     // Advanced Examples state
     const [groupedItemsSelected, setGroupedItemsSelected] = useState('')
     const [nestedMenuSelected, setNestedMenuSelected] = useState('')
+    const [apiCallLoadingSkeleton, setApiCallLoadingSkeleton] = useState(false)
 
     // Position & Alignment state
     const [topSideSelected, setTopSideSelected] = useState('')
@@ -972,6 +973,45 @@ const SingleSelectDemo = () => {
                                 </div>
                             )}
                         </div>
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">API Call Example</h3>
+                            <SingleSelect
+                                label="Location"
+                                subLabel="Select your region and country"
+                                hintText="Choose the closest location"
+                                items={nestedItems}
+                                selected={nestedMenuSelected}
+                                onSelect={(value) => {
+                                    setNestedMenuSelected(value)
+                                    addSnackbar({
+                                        header: 'Location Selected',
+                                        description: `Selected location: ${value}`,
+                                    })
+                                }}
+                                placeholder="Choose location"
+                                slot={<MapPin size={16} />}
+                                enableSearch
+                                onFocus={() => {
+                                    setApiCallLoadingSkeleton(true)
+                                    setTimeout(() => {
+                                        setApiCallLoadingSkeleton(false)
+                                    }, 2000)
+                                }}
+                                skeleton={{
+                                    count: 4,
+                                    show: apiCallLoadingSkeleton,
+                                    variant: 'pulse',
+                                }}
+                            />
+                            {nestedMenuSelected && (
+                                <div className="p-3 bg-blue-50 rounded-lg">
+                                    <p className="text-sm text-blue-700">
+                                        <strong>Location:</strong>{' '}
+                                        {nestedMenuSelected}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -1013,6 +1053,17 @@ const SingleSelectDemo = () => {
                                         leadingIcon={<Star size={16} />}
                                     />
                                 }
+                                onFocus={() => {
+                                    setApiCallLoadingSkeleton(true)
+                                    setTimeout(() => {
+                                        setApiCallLoadingSkeleton(false)
+                                    }, 2000)
+                                }}
+                                skeleton={{
+                                    count: 4,
+                                    show: apiCallLoadingSkeleton,
+                                    variant: 'pulse',
+                                }}
                             />
                             {groupedItemsSelected && (
                                 <div className="p-3 bg-blue-50 rounded-lg">
