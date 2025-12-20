@@ -21,6 +21,7 @@ const NumberInputDemo = () => {
     const [hasError, setHasError] = useState(false)
     const [showMin, setShowMin] = useState(false)
     const [showMax, setShowMax] = useState(false)
+    const [preventNegative, setPreventNegative] = useState(false)
 
     // Options for selects
     const sizeOptions = [
@@ -120,6 +121,13 @@ const NumberInputDemo = () => {
                             onChange={() => setShowMax(!showMax)}
                         />
                         <Switch
+                            label="Prevent Negative"
+                            checked={preventNegative}
+                            onChange={() =>
+                                setPreventNegative(!preventNegative)
+                            }
+                        />
+                        <Switch
                             label="Disabled"
                             checked={isDisabled}
                             onChange={() => setIsDisabled(!isDisabled)}
@@ -153,6 +161,7 @@ const NumberInputDemo = () => {
                                 max={
                                     showMax ? Number(playgroundMax) : undefined
                                 }
+                                preventNegative={preventNegative}
                                 disabled={isDisabled}
                                 error={hasError}
                                 errorMessage={
@@ -407,13 +416,30 @@ const NumberInputDemo = () => {
                 <h2 className="text-2xl font-bold">Min/Max Examples</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Min Only</h3>
+                        <h3 className="text-lg font-semibold">
+                            Prevent Negative (preventNegative)
+                        </h3>
                         <NumberInput
-                            label="Min 0"
+                            label="Positive Numbers Only"
+                            value={0}
+                            onChange={() => {}}
+                            placeholder="Cannot type negative"
+                            preventNegative
+                            hintText="Try typing a negative number"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Min 0 (min prop)
+                        </h3>
+                        <NumberInput
+                            label="Min 0 with validation"
                             value={0}
                             onChange={() => {}}
                             placeholder="Min 0"
                             min={0}
+                            hintText="Button disabled at 0, can type negative"
                         />
                     </div>
 
