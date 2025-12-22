@@ -1856,6 +1856,51 @@ const MultiSelectDemo = () => {
                                             value: 'product',
                                             slot1: <Target size={16} />,
                                         },
+                                        {
+                                            label: 'Mobile Development11',
+                                            value: 'mobile',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'Game Development1',
+                                            value: 'gamedev1',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'UI/UX Design1',
+                                            value: 'design1',
+                                            slot1: <Star size={16} />,
+                                        },
+                                        {
+                                            label: 'Product Management1',
+                                            value: 'product1',
+                                            slot1: <Target size={16} />,
+                                        },
+                                        {
+                                            label: 'Machine Learning1',
+                                            value: 'ml1',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Artificial Intelligence1',
+                                            value: 'ai1',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Blockchain1',
+                                            value: 'blockchain1',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                        {
+                                            label: 'Cloud Computing1',
+                                            value: 'cloud1',
+                                            slot1: <Server size={16} />,
+                                        },
+                                        {
+                                            label: 'Cybersecurity1',
+                                            value: 'cybersecurity1',
+                                            slot1: <Shield size={16} />,
+                                        },
                                     ],
                                 },
                             ]}
