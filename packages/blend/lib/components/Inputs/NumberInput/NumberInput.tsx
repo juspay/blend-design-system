@@ -178,6 +178,16 @@ const NumberInput = ({
                     min={numericMin}
                     max={numericMax}
                     required={required}
+                    role="spinbutton"
+                    aria-valuenow={
+                        value !== null &&
+                        value !== undefined &&
+                        !isNaN(Number(value))
+                            ? Number(value)
+                            : undefined
+                    }
+                    aria-valuemin={numericMin}
+                    aria-valuemax={numericMax}
                     aria-required={required ? 'true' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
                     aria-describedby={ariaDescribedBy}
