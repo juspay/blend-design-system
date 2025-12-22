@@ -46,6 +46,8 @@ const DirectoryContainer = styled(Block)`
 `
 
 const MainContentContainer = styled(Block)`
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     position: relative;
@@ -537,7 +539,17 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         />
                     </Block>
 
-                    <Block>{children}</Block>
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        flexGrow={1}
+                        flexShrink={1}
+                        flexBasis="0"
+                        minHeight="0"
+                        overflow="auto"
+                    >
+                        {children}
+                    </Block>
                 </MainContentContainer>
                 {isMobile && mobileNavigationItems.length > 0 && (
                     <SidebarMobileNavigation
