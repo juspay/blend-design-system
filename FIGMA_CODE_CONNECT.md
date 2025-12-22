@@ -63,7 +63,7 @@
 
 ```typescript
 import { figma } from '@figma/code-connect'
-import { YourComponent } from 'blend-v1'
+import { YourComponent } from '@juspay/blend-design-system'
 
 figma.connect(
   YourComponent,
@@ -90,7 +90,7 @@ figma.connect(
         icon={icon}
       />
     ),
-    imports: ["import { YourComponent } from 'blend-v1'"],
+    imports: ["import { YourComponent } from '@juspay/blend-design-system'"],
     links: [
       {
         name: "GitHub",
@@ -280,7 +280,7 @@ subType: figma.enum('subType', {
 
 ```typescript
 import { figma } from '@figma/code-connect'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from '@juspay/blend-design-system'
 
 figma.connect(
   Button,
@@ -332,7 +332,7 @@ figma.connect(
       />
     ),
 
-    imports: ["import { Button } from 'blend-v1'"],
+    imports: ["import { Button } from '@juspay/blend-design-system'"],
 
     links: [
       {
@@ -390,7 +390,7 @@ figma.connect(
       />
     ),
 
-    imports: ["import { Tag } from 'blend-v1'"],
+    imports: ["import { Tag } from '@juspay/blend-design-system'"],
 
     links: [
       {

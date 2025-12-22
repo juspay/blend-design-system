@@ -18,7 +18,11 @@ StorybookLink: components-datatable--docs
 ## Usage
 
 ```tsx
-import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+import {
+    DataTable,
+    ColumnDefinition,
+    ColumnType,
+} from '@juspay/blend-design-system'
 
 function MyComponent() {
     const data = [
@@ -72,7 +76,11 @@ The DataTable supports granular skeleton loading for better UX during data fetch
 ### Global Skeleton Loading
 
 ```tsx
-import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+import {
+    DataTable,
+    ColumnDefinition,
+    ColumnType,
+} from '@juspay/blend-design-system'
 import { useState } from 'react'
 
 function MyComponent() {
@@ -166,7 +174,11 @@ Skeleton loading follows this priority order:
 For compact tables with only a few rows, you can hide the pagination footer completely using the `showFooter` prop. This is useful when displaying 1-2 rows where pagination controls are unnecessary.
 
 ```tsx
-import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+import {
+    DataTable,
+    ColumnDefinition,
+    ColumnType,
+} from '@juspay/blend-design-system'
 
 function CompactTable() {
     const data = [

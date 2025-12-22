@@ -9,7 +9,7 @@ import {
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
-const tsCode = `import { ButtonGroup, Button, ButtonType, ButtonSize } from 'blend-v1'
+const tsCode = `import { ButtonGroup, Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
 
 function MyComponent() {
     return (

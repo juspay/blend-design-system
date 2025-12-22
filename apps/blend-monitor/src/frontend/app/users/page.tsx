@@ -13,7 +13,7 @@ import {
     TextInput,
     TextInputSize,
     SingleSelect,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import { UserPlus, Activity } from 'lucide-react'
 import { useUserManagement } from '../../hooks/usePostgreSQLData'
 

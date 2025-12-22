@@ -21,7 +21,7 @@ import {
     StatCardVariant,
     ChangeType,
     SingleSelect,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     Package,
     Download,
@@ -256,7 +256,8 @@ export default function NPMPage() {
                             NPM Package Stats
                         </h1>
                         <p className="text-sm text-gray-600 mt-1">
-                            Monitor blend-v1 package performance and releases
+                            Monitor @juspay/blend-design-system package
+                            performance and releases
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -266,7 +267,7 @@ export default function NPMPage() {
                             trailingIcon={<ExternalLink className="w-4 h-4" />}
                             onClick={() =>
                                 window.open(
-                                    'https://www.npmjs.com/package/blend-v1',
+                                    'https://www.npmjs.com/package/@juspay/blend-design-system',
                                     '_blank'
                                 )
                             }
