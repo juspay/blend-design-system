@@ -57,8 +57,10 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             }
 
             rafRef.current = requestAnimationFrame(() => {
-                setShowTooltip(checkIfTruncated(textRef.current))
-                if (item.subLabel) {
+                if (textRef.current) {
+                    setShowTooltip(checkIfTruncated(textRef.current))
+                }
+                if (item.subLabel && subLabelRef.current) {
                     setShowSubLabelTooltip(
                         checkIfTruncated(subLabelRef.current)
                     )

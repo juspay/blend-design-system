@@ -83,18 +83,22 @@ function VirtualListInner<T extends VirtualListItem>(
     /* ---------------------------------------------
      * Measure container height
      * ------------------------------------------- */
+    const rafRef = useRef<number | null>(null)
+
     useEffect(() => {
         const container = containerRef.current
         if (!container) return
 
-        let rafId: number | null = null
-
         const updateHeight = () => {
-            if (rafId !== null) cancelAnimationFrame(rafId)
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current)
+            }
 
-            rafId = requestAnimationFrame(() => {
-                setContainerHeight(container.clientHeight)
-                rafId = null
+            rafRef.current = requestAnimationFrame(() => {
+                if (containerRef.current) {
+                    setContainerHeight(containerRef.current.clientHeight)
+                }
+                rafRef.current = null
             })
         }
 
@@ -104,7 +108,9 @@ function VirtualListInner<T extends VirtualListItem>(
 
         return () => {
             observer.disconnect()
-            if (rafId !== null) cancelAnimationFrame(rafId)
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current)
+            }
         }
     }, [containerRef])
 
