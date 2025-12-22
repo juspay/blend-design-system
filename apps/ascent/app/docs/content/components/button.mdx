@@ -211,6 +211,9 @@ You can style the Button component using the following tokens:
 ```tsx
 export type ButtonTokensType = {
     gap: CSSObject['gap']
+    slotMaxHeight: {
+        [key in ButtonSize]: CSSObject['maxHeight']
+    }
     backgroundColor: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {

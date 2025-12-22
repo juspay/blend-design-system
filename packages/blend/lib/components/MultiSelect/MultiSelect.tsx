@@ -232,7 +232,6 @@ const MultiSelect = ({
                     <InputLabels
                         label={label}
                         sublabel={sublabel}
-                        disabled={disabled}
                         helpIconHintText={helpIconHintText}
                         name={uniqueName}
                         required={required}
@@ -545,10 +544,16 @@ const MultiSelect = ({
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
-                                                            multiSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .color
+                                                            selectedValues.length >
+                                                            0
+                                                                ? multiSelectTokens
+                                                                      .trigger
+                                                                      .selectedValue
+                                                                      .color
+                                                                : multiSelectTokens
+                                                                      .trigger
+                                                                      .placeholder
+                                                                      .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
@@ -617,6 +622,16 @@ const MultiSelect = ({
                                             <ChevronDown
                                                 size={16}
                                                 aria-hidden="true"
+                                                color={
+                                                    selectedValues.length > 0
+                                                        ? multiSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .color
+                                                        : multiSelectTokens
+                                                              .trigger
+                                                              .placeholder.color
+                                                }
                                             />
                                         </Block>
                                     </PrimitiveButton>

@@ -32,9 +32,10 @@ import {
     MultiSelectSelectionTagType,
 } from '../../../../packages/blend/lib/components/MultiSelect'
 import {
+    Tooltip,
     TooltipSide,
     TooltipSize,
-} from '../../../../packages/blend/lib/components/Tooltip/types'
+} from '../../../../packages/blend/lib/components/Tooltip'
 
 const MultiSelectDemo = () => {
     // Playground state
@@ -93,6 +94,7 @@ const MultiSelectDemo = () => {
         'nodejs',
         'postgresql',
     ])
+    const [apiCallLoadingSkeleton, setApiCallLoadingSkeleton] = useState(false)
 
     // Action Buttons Examples state
     const [actionButtonsSelected, setActionButtonsSelected] = useState<
@@ -2209,6 +2211,39 @@ const MultiSelectDemo = () => {
                             </p>
                         </div>
                     </div>
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">API Call Example</h3>
+                        <MultiSelect
+                            label="Current Tech Stack"
+                            sublabel="Modify your current setup"
+                            items={skillItems}
+                            selectedValues={preSelectedValues}
+                            onChange={handleMultiSelectChange(
+                                preSelectedValues,
+                                setPreSelectedValues
+                            )}
+                            placeholder="Update tech stack"
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            onFocus={() => {
+                                setApiCallLoadingSkeleton(true)
+                                setTimeout(() => {
+                                    setApiCallLoadingSkeleton(false)
+                                }, 2000)
+                            }}
+                            skeleton={{
+                                count: 4,
+                                show: apiCallLoadingSkeleton,
+                                variant: 'pulse',
+                            }}
+                        />
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                            <p className="text-sm text-blue-700">
+                                <strong>Current Stack:</strong>{' '}
+                                {preSelectedValues.join(', ') ||
+                                    'None selected'}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2246,6 +2281,17 @@ const MultiSelectDemo = () => {
                                     leadingIcon={<Code size={16} />}
                                 />
                             }
+                            onFocus={() => {
+                                setApiCallLoadingSkeleton(true)
+                                setTimeout(() => {
+                                    setApiCallLoadingSkeleton(false)
+                                }, 2000)
+                            }}
+                            skeleton={{
+                                count: 4,
+                                show: apiCallLoadingSkeleton,
+                                variant: 'pulse',
+                            }}
                         />
                     </div>
 
@@ -2320,6 +2366,51 @@ const MultiSelectDemo = () => {
                                         {preSelectedValues.length}):
                                     </strong>{' '}
                                     {preSelectedValues.join(', ')}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Button with Tooltip Trigger
+                        </h3>
+                        <MultiSelect
+                            label="Skills Selection"
+                            items={skillItems}
+                            selectedValues={skillsSelected}
+                            onChange={handleMultiSelectChange(
+                                skillsSelected,
+                                setSkillsSelected
+                            )}
+                            placeholder="Select your skills"
+                            customTrigger={
+                                <Tooltip
+                                    content="Click this button to select skills from the dropdown menu. Hover over the button to see this tooltip."
+                                    side={TooltipSide.TOP}
+                                    size={TooltipSize.LARGE}
+                                    delayDuration={300}
+                                >
+                                    <Button
+                                        buttonType={ButtonType.PRIMARY}
+                                        size={ButtonSize.MEDIUM}
+                                        text="Select Skills"
+                                        leadingIcon={<Code size={16} />}
+                                    />
+                                </Tooltip>
+                            }
+                        />
+                        {skillsSelected.length > 0 && (
+                            <div className="p-3 bg-purple-50 rounded-lg">
+                                <p className="text-sm text-purple-700">
+                                    <strong>
+                                        Selected via Tooltip Button (
+                                        {skillsSelected.length}):
+                                    </strong>{' '}
+                                    {skillsSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-purple-600 mt-1">
+                                    💡 Hover over the button to see the tooltip
                                 </p>
                             </div>
                         )}

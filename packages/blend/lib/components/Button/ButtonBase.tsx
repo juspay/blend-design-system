@@ -1,6 +1,8 @@
 import { forwardRef, type MouseEvent } from 'react'
 import styled from 'styled-components'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import PrimitiveButton, {
+    type ButtonProps as PrimitiveButtonProps,
+} from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { ButtonProps } from './types'
@@ -91,18 +93,49 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             onClick?.(event)
         }
 
+        const isInButtonGroup = buttonGroupPosition !== undefined
+        const buttonHeight =
+            subType === ButtonSubType.INLINE
+                ? 'fit-content'
+                : isInButtonGroup
+                  ? undefined
+                  : 'auto'
+
+        const iconMaxHeight =
+            subType === ButtonSubType.INLINE
+                ? '100%'
+                : buttonTokens.slotMaxHeight[size]
+
+        const buttonProps: Partial<
+            Pick<
+                PrimitiveButtonProps,
+                | 'display'
+                | 'alignItems'
+                | 'justifyContent'
+                | 'width'
+                | 'height'
+                | 'gap'
+            >
+        > & {
+            ref?: React.Ref<HTMLButtonElement>
+            onClick?: (event: MouseEvent<HTMLButtonElement>) => void
+        } = {
+            ref,
+            onClick: handleClick,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent,
+            width: fullWidth ? '100%' : (width ?? 'fit-content'),
+            gap: buttonTokens.gap,
+        }
+
+        if (buttonHeight !== undefined) {
+            buttonProps.height = buttonHeight
+        }
+
         return (
             <PrimitiveButton
-                ref={ref}
-                onClick={handleClick}
-                display="flex"
-                alignItems="center"
-                justifyContent={justifyContent}
-                width={fullWidth ? '100%' : (width ?? 'fit-content')}
-                height={
-                    subType === ButtonSubType.INLINE ? 'fit-content' : 'auto'
-                }
-                gap={buttonTokens.gap}
+                {...buttonProps}
                 background={
                     isSkeleton
                         ? 'transparent'
@@ -234,7 +267,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 contentCentered
                                 data-element="leading-icon"
                                 aria-hidden={text ? 'true' : undefined}
-                                style={{ opacity: isSkeleton ? 0 : 1 }}
+                                style={{
+                                    opacity: isSkeleton ? 0 : 1,
+                                    maxHeight: iconMaxHeight,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}
                             >
                                 {leadingIcon}
                             </Block>
@@ -265,7 +305,14 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 contentCentered
                                 data-element="trailing-icon"
                                 aria-hidden={text ? 'true' : undefined}
-                                style={{ opacity: isSkeleton ? 0 : 1 }}
+                                style={{
+                                    opacity: isSkeleton ? 0 : 1,
+                                    maxHeight: iconMaxHeight,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}
                             >
                                 {trailingIcon}
                             </Block>

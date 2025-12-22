@@ -59,11 +59,10 @@ import { FOUNDATION_THEME } from '../../tokens'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
-    overflow-y: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
+    /* Hide scrollbars for Chrome, Safari and Opera */
     &::-webkit-scrollbar {
         display: none;
     }
@@ -81,6 +80,7 @@ const DataTable = forwardRef(
             idField,
             title,
             description,
+            descriptionTooltipProps,
             defaultSort,
             enableSearch = false,
             searchPlaceholder = 'Search...',
@@ -596,11 +596,16 @@ const DataTable = forwardRef(
                     const isSelected = newSelectedRows[rowId] || false
 
                     if (wasSelected !== isSelected) {
+                        const rawRowData = data.find(
+                            (d) => String(d[idField]) === rowId
+                        )
+                        const rowDataToPass = (rawRowData || row) as T
+
                         onRowSelectionChange(
                             selectedRowIds,
                             isSelected,
                             rowId,
-                            row as T
+                            rowDataToPass
                         )
                     }
                 })
@@ -624,15 +629,20 @@ const DataTable = forwardRef(
                     .filter(([, selected]) => selected)
                     .map(([id]) => id)
 
-                const rowData = currentData.find(
+                const rawRowData = data.find(
+                    (d) => String(d[idField]) === rowIdStr
+                )
+                const rowDataFromCurrent = currentData.find(
                     (row) => String(row[idField]) === rowIdStr
                 )
-                if (rowData) {
+                const rowDataToPass = (rawRowData || rowDataFromCurrent) as T
+
+                if (rowDataToPass) {
                     onRowSelectionChange(
                         selectedRowIds,
                         isSelected,
                         rowIdStr,
-                        rowData as T
+                        rowDataToPass
                     )
                 }
             }
@@ -986,6 +996,24 @@ const DataTable = forwardRef(
             }
         }
 
+        const totalColumnsT =
+            effectiveVisibleColumns.length +
+            (enableRowSelection ? 1 : 0) +
+            (enableRowExpansion ? 1 : 0) +
+            ((enableInlineEdit || rowActions) &&
+            !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
+                ? 1
+                : 0) +
+            (mobileConfig.enableColumnOverflow &&
+            mobileOverflowColumns.length > 0
+                ? 1
+                : 0)
+
+        const totalColumns =
+            totalColumnsT > 0 && effectiveEnableColumnManager
+                ? totalColumnsT + 1
+                : 0
+
         const handleTableKeyDown = (
             event: React.KeyboardEvent<HTMLTableElement>
         ) => {
@@ -1014,20 +1042,6 @@ const DataTable = forwardRef(
             ) {
                 return
             }
-
-            const totalColumns =
-                effectiveVisibleColumns.length +
-                (enableRowSelection ? 1 : 0) +
-                (enableRowExpansion ? 1 : 0) +
-                ((enableInlineEdit || rowActions) &&
-                !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
-                    ? 1
-                    : 0) +
-                (mobileConfig.enableColumnOverflow &&
-                mobileOverflowColumns.length > 0
-                    ? 1
-                    : 0) +
-                (effectiveEnableColumnManager ? 1 : 0)
 
             let newRowIndex = focusedCell?.rowIndex ?? 0
             let newColIndex = focusedCell?.colIndex ?? 0
@@ -1167,6 +1181,7 @@ const DataTable = forwardRef(
                 <DataTableHeader
                     title={title}
                     description={description}
+                    descriptionTooltipProps={descriptionTooltipProps}
                     showHeader={showHeader}
                     showToolbar={showToolbar}
                     enableSearch={enableSearch}
@@ -1218,8 +1233,7 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
-                        maxHeight: tableToken.dataTable.maxHeight,
-                        overflow: 'hidden',
+                        overflow: 'visible',
                     }}
                 >
                     <BulkActionBar
@@ -1227,6 +1241,7 @@ const DataTable = forwardRef(
                         onExport={exportToCSV}
                         onDeselectAll={handleDeselectAll}
                         customActions={renderBulkActions()}
+                        showExport={bulkActions?.showExport}
                     />
                     <Block
                         id={statusRegionId}
@@ -1254,12 +1269,7 @@ const DataTable = forwardRef(
 
                     <Block
                         style={{
-                            flex: 1,
                             position: 'relative',
-                            minHeight: 0,
-                            overflow: 'hidden',
-                            display: 'flex',
-                            flexDirection: 'column',
                         }}
                     >
                         <DndContext
@@ -1277,20 +1287,15 @@ const DataTable = forwardRef(
                                 <ScrollableContainer
                                     ref={scrollContainerRef}
                                     style={{
-                                        ...(tableBodyHeight
-                                            ? {
-                                                  height:
-                                                      typeof tableBodyHeight ===
-                                                      'number'
-                                                          ? `${tableBodyHeight}px`
-                                                          : tableBodyHeight,
-                                                  overflowY: 'auto',
-                                              }
-                                            : {
-                                                  flex: 1,
-                                                  overflowY: 'auto',
-                                              }),
                                         position: 'relative',
+                                        // Default: fit ~10 rows (668px approx)
+                                        maxHeight: tableBodyHeight
+                                            ? typeof tableBodyHeight ===
+                                              'number'
+                                                ? `${tableBodyHeight}px`
+                                                : tableBodyHeight
+                                            : '668px',
+                                        overflowY: 'auto',
                                     }}
                                 >
                                     <table
@@ -1302,25 +1307,7 @@ const DataTable = forwardRef(
                                                 ? totalRows
                                                 : undefined
                                         }
-                                        aria-colcount={
-                                            effectiveVisibleColumns.length +
-                                            (enableRowSelection ? 1 : 0) +
-                                            (enableRowExpansion ? 1 : 0) +
-                                            ((enableInlineEdit || rowActions) &&
-                                            !(
-                                                mobileConfig.isMobile &&
-                                                mobileConfig.enableColumnOverflow
-                                            )
-                                                ? 1
-                                                : 0) +
-                                            (mobileConfig.enableColumnOverflow &&
-                                            mobileOverflowColumns.length > 0
-                                                ? 1
-                                                : 0) +
-                                            (effectiveEnableColumnManager
-                                                ? 1
-                                                : 0)
-                                        }
+                                        aria-colcount={totalColumns}
                                         aria-describedby={
                                             [tableDescriptionId, statusRegionId]
                                                 .filter(Boolean)

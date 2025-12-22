@@ -113,10 +113,11 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             role={isInteractive ? 'button' : undefined}
             tabIndex={isInteractive ? 0 : undefined}
             aria-label={isInteractive ? accessibleName : ariaLabel}
-            display="flex"
+            display="inline-flex"
             alignItems="center"
             justifyContent="center"
             width={width ?? 'fit-content'}
+            height="fit-content"
             flexShrink={0}
             gap={tagTokens.gap}
             padding={tagTokens.padding[size]}

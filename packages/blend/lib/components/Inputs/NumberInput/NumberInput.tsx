@@ -42,6 +42,7 @@ const NumberInput = ({
     label,
     hintText,
     name,
+    preventNegative = false,
     onBlur,
     onFocus,
     ...rest
@@ -90,7 +91,6 @@ const NumberInput = ({
                     tokens={numberInputTokens}
                     label={label}
                     sublabel={sublabel}
-                    disabled={disabled}
                     helpIconHintText={helpIconHintText}
                     inputId={inputId}
                     name={name}
@@ -136,7 +136,29 @@ const NumberInput = ({
                     type="number"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value ?? ''}
-                    onChange={onChange}
+                    onChange={(e) => {
+                        if (preventNegative) {
+                            const inputValue = e.target.value
+                            if (inputValue === '') {
+                                onChange(e)
+                                return
+                            }
+                            const numValue = Number(inputValue)
+                            if (numValue < 0) {
+                                onChange({
+                                    ...e,
+                                    target: {
+                                        ...e.target,
+                                        value: '0',
+                                    },
+                                } as React.ChangeEvent<HTMLInputElement>)
+                            } else {
+                                onChange(e)
+                            }
+                        } else {
+                            onChange(e)
+                        }
+                    }}
                     step={step}
                     min={min}
                     max={max}
@@ -248,17 +270,16 @@ const NumberInput = ({
                         aria-label={
                             label ? `Increase ${label}` : 'Increase value'
                         }
-                        onClick={() =>
+                        onClick={() => {
+                            const newValue = value
+                                ? Number(value) + (step ?? 1)
+                                : 0 + (step ?? 1)
                             onChange({
                                 target: {
-                                    value: String(
-                                        value
-                                            ? Number(value) + (step ?? 1)
-                                            : 0 + (step ?? 1)
-                                    ),
+                                    value: String(newValue),
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)
-                        }
+                        }}
                         backgroundColor={
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
@@ -324,15 +345,18 @@ const NumberInput = ({
                         aria-label={
                             label ? `Decrease ${label}` : 'Decrease value'
                         }
-                        onClick={() =>
+                        onClick={() => {
+                            const newValue = value
+                                ? Number(value) - (step ?? 1)
+                                : 0
+                            const finalValue =
+                                preventNegative && newValue < 0 ? 0 : newValue
                             onChange({
                                 target: {
-                                    value: String(
-                                        value ? Number(value) - (step ?? 1) : 0
-                                    ),
+                                    value: String(finalValue),
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)
-                        }
+                        }}
                         backgroundColor={
                             numberInputTokens.inputContainer.stepperButton
                                 .backgroundColor.default
@@ -400,7 +424,6 @@ const NumberInput = ({
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
                 tokens={numberInputTokens}

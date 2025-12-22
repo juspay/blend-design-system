@@ -80,6 +80,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             onExpandedChange,
             defaultIsExpanded = true,
             panelOnlyMode = false,
+            disableIntermediateState = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
             activeItem,
@@ -204,8 +205,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 directoryContainer.removeEventListener('scroll', handleScroll)
         }, [])
 
-        const handleMouseEnter = useCallback(() => setIsHovering(true), [])
-        const handleMouseLeave = useCallback(() => setIsHovering(false), [])
+        const handleMouseEnter = useCallback(() => {
+            if (!disableIntermediateState) {
+                setIsHovering(true)
+            }
+        }, [disableIntermediateState])
+        const handleMouseLeave = useCallback(() => {
+            if (!disableIntermediateState) {
+                setIsHovering(false)
+            }
+        }, [disableIntermediateState])
         const hasLeftPanel = Boolean(leftPanel?.items?.length)
         const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
@@ -331,22 +340,23 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         Skip to main content
                     </a>
                 </div>
-                {/* Hover trigger area - only show when NOT in panel only mode */}
-                {!isExpanded && !isMobile && !isPanelOnlyMode && (
-                    <Block
-                        position="absolute"
-                        left="0"
-                        top="0"
-                        width={FOUNDATION_THEME.unit[24]}
-                        height="100%"
-                        zIndex="98"
-                        onMouseEnter={handleMouseEnter}
-                        style={{
-                            backgroundColor: 'transparent',
-                        }}
-                    />
-                )}
-
+                {!isExpanded &&
+                    !isMobile &&
+                    !isPanelOnlyMode &&
+                    !disableIntermediateState && (
+                        <Block
+                            position="absolute"
+                            left="0"
+                            top="0"
+                            width={FOUNDATION_THEME.unit[24]}
+                            height="100%"
+                            zIndex="98"
+                            onMouseEnter={handleMouseEnter}
+                            style={{
+                                backgroundColor: 'transparent',
+                            }}
+                        />
+                    )}
                 <Block
                     as="nav"
                     backgroundColor={tokens.backgroundColor}
@@ -389,7 +399,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isPanelOnlyMode ? undefined : handleMouseLeave
+                        isPanelOnlyMode || disableIntermediateState
+                            ? undefined
+                            : handleMouseLeave
                     }
                     data-is-sidebar-expanded={
                         isPanelOnlyMode ? 'false' : isExpanded
@@ -486,7 +498,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         </>
                     )}
                 </Block>
-
                 <MainContentContainer
                     as="main"
                     id={skipToContentId}
@@ -528,7 +539,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                     <Block>{children}</Block>
                 </MainContentContainer>
-
                 {isMobile && mobileNavigationItems.length > 0 && (
                     <SidebarMobileNavigation
                         items={mobileNavigationItems}

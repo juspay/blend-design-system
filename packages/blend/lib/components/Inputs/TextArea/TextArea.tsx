@@ -85,7 +85,6 @@ const TextArea = ({
                     tokens={textAreaTokens}
                     label={label}
                     sublabel={sublabel}
-                    disabled={disabled}
                     helpIconHintText={helpIconHintText}
                     inputId={textareaId}
                     name={name}
@@ -199,7 +198,6 @@ const TextArea = ({
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
             />

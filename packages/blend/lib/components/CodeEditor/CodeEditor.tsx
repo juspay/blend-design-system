@@ -19,6 +19,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             header = 'Editor',
             headerLeftSlot,
             headerRightSlot,
+            showLeftIcon = true,
             showCopyButton = true,
             language = 'javascript',
             placeholder,
@@ -30,6 +31,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             className,
             onBlur,
             onFocus,
+            autoFocus = false,
         },
         ref
     ) => {
@@ -64,6 +66,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                         header={header}
                         headerLeftSlot={headerLeftSlot}
                         headerRightSlot={headerRightSlot}
+                        showLeftIcon={showLeftIcon}
                         showCopyButton={showCopyButton}
                         isCopied={isCopied}
                         onCopy={copyToClipboard}
@@ -85,6 +88,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                     tokens={tokens}
                     onFocus={onFocus}
                     onBlur={onBlur}
+                    autoFocus={autoFocus}
                 />
             </Block>
         )

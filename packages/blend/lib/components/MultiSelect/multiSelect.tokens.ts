@@ -96,6 +96,11 @@ export type MultiSelectTokensType = {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
         }
+        selectedValue: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
     }
     menu: {
         backgroundColor: CSSObject['backgroundColor']
@@ -222,16 +227,16 @@ export const getMultiSelectTokens = (
             trigger: {
                 height: {
                     sm: {
+                        container: foundationToken.unit[32],
+                        'no-container': foundationToken.unit[32],
+                    },
+                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
                     },
-                    md: {
+                    lg: {
                         container: foundationToken.unit[40],
                         'no-container': foundationToken.unit[40],
-                    },
-                    lg: {
-                        container: foundationToken.unit[52],
-                        'no-container': foundationToken.unit[52],
                     },
                 },
                 padding: {
@@ -347,6 +352,11 @@ export const getMultiSelectTokens = (
                 },
                 placeholder: {
                     color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[800],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },
@@ -517,16 +527,16 @@ export const getMultiSelectTokens = (
             trigger: {
                 height: {
                     sm: {
+                        container: foundationToken.unit[32],
+                        'no-container': foundationToken.unit[32],
+                    },
+                    md: {
                         container: foundationToken.unit[36],
                         'no-container': foundationToken.unit[36],
                     },
-                    md: {
+                    lg: {
                         container: foundationToken.unit[40],
                         'no-container': foundationToken.unit[40],
-                    },
-                    lg: {
-                        container: foundationToken.unit[44],
-                        'no-container': foundationToken.unit[44],
                     },
                 },
                 padding: {
@@ -641,6 +651,11 @@ export const getMultiSelectTokens = (
                 },
                 placeholder: {
                     color: foundationToken.colors.gray[400],
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                },
+                selectedValue: {
+                    color: foundationToken.colors.gray[800],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },

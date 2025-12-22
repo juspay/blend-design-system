@@ -43,6 +43,7 @@ A comprehensive date range picker component with calendar interface, time select
 - Interactive calendar grid for date selection
 - Optional time picker for precise time selection
 - Quick preset ranges (today, yesterday, last 7 days, etc.)
+- **Timezone support** - IANA timezone strings for global applications
 - Custom date range selection
 - Min/max date constraints
 - Future/past date restrictions
@@ -183,6 +184,15 @@ const [dateRange, setDateRange] = useState({
         dateFormat: {
             control: { type: 'text' },
             description: 'Format string for date display (e.g., DD/MM/YYYY)',
+            table: {
+                type: { summary: 'string' },
+                category: 'Date Configuration',
+            },
+        },
+        timezone: {
+            control: { type: 'text' },
+            description:
+                'IANA timezone string (e.g., "America/New_York", "Asia/Tokyo") for timezone-aware date operations. When provided, presets like "Yesterday" are calculated in this timezone.',
             table: {
                 type: { summary: 'string' },
                 category: 'Date Configuration',
@@ -1313,6 +1323,380 @@ Accessibility examples demonstrating ARIA attributes, keyboard navigation, error
         chromatic: {
             ...CHROMATIC_CONFIG,
             delay: 500,
+        },
+    },
+}
+
+// Timezone support
+export const TimezoneSupport: Story = {
+    render: () => {
+        const [nyRange, setNyRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        const [tokyoRange, setTokyoRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        const [londonRange, setLondonRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        const [sydneyRange, setSydneyRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '32px',
+                    width: '100%',
+                    maxWidth: '900px',
+                }}
+            >
+                <div>
+                    <h3
+                        style={{
+                            marginBottom: '16px',
+                            fontSize: '18px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        🌍 Timezone Support
+                    </h3>
+                    <p
+                        style={{
+                            marginBottom: '24px',
+                            fontSize: '14px',
+                            color: '#666',
+                            lineHeight: '1.6',
+                        }}
+                    >
+                        The DateRangePicker supports timezone-aware date/time
+                        operations. When a timezone is specified, presets like
+                        "Yesterday" or "Today" are calculated in that timezone,
+                        ensuring global users see correct dates.
+                    </p>
+                </div>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(400px, 1fr))',
+                        gap: '24px',
+                    }}
+                >
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            🗽 New York (America/New_York)
+                        </h4>
+                        <DateRangePicker
+                            value={nyRange}
+                            onChange={setNyRange}
+                            timezone="America/New_York"
+                            showDateTimePicker={true}
+                            showPresets={true}
+                            placeholder="Select date range (EST)"
+                        />
+                        {nyRange && (
+                            <div
+                                style={{
+                                    marginTop: '8px',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    padding: '8px',
+                                    backgroundColor: '#f5f5f5',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                <div>
+                                    <strong>Start:</strong>{' '}
+                                    {nyRange.startDate.toLocaleString('en-US', {
+                                        timeZone: 'America/New_York',
+                                    })}
+                                </div>
+                                <div>
+                                    <strong>End:</strong>{' '}
+                                    {nyRange.endDate.toLocaleString('en-US', {
+                                        timeZone: 'America/New_York',
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            🗼 Tokyo (Asia/Tokyo)
+                        </h4>
+                        <DateRangePicker
+                            value={tokyoRange}
+                            onChange={setTokyoRange}
+                            timezone="Asia/Tokyo"
+                            showDateTimePicker={true}
+                            showPresets={true}
+                            placeholder="Select date range (JST)"
+                        />
+                        {tokyoRange && (
+                            <div
+                                style={{
+                                    marginTop: '8px',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    padding: '8px',
+                                    backgroundColor: '#f5f5f5',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                <div>
+                                    <strong>Start:</strong>{' '}
+                                    {tokyoRange.startDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Asia/Tokyo',
+                                        }
+                                    )}
+                                </div>
+                                <div>
+                                    <strong>End:</strong>{' '}
+                                    {tokyoRange.endDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Asia/Tokyo',
+                                        }
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            🇬🇧 London (Europe/London)
+                        </h4>
+                        <DateRangePicker
+                            value={londonRange}
+                            onChange={setLondonRange}
+                            timezone="Europe/London"
+                            showDateTimePicker={true}
+                            showPresets={true}
+                            placeholder="Select date range (GMT/BST)"
+                        />
+                        {londonRange && (
+                            <div
+                                style={{
+                                    marginTop: '8px',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    padding: '8px',
+                                    backgroundColor: '#f5f5f5',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                <div>
+                                    <strong>Start:</strong>{' '}
+                                    {londonRange.startDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Europe/London',
+                                        }
+                                    )}
+                                </div>
+                                <div>
+                                    <strong>End:</strong>{' '}
+                                    {londonRange.endDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Europe/London',
+                                        }
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <h4
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            🦘 Sydney (Australia/Sydney)
+                        </h4>
+                        <DateRangePicker
+                            value={sydneyRange}
+                            onChange={setSydneyRange}
+                            timezone="Australia/Sydney"
+                            showDateTimePicker={true}
+                            showPresets={true}
+                            placeholder="Select date range (AEDT/AEST)"
+                        />
+                        {sydneyRange && (
+                            <div
+                                style={{
+                                    marginTop: '8px',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    padding: '8px',
+                                    backgroundColor: '#f5f5f5',
+                                    borderRadius: '4px',
+                                }}
+                            >
+                                <div>
+                                    <strong>Start:</strong>{' '}
+                                    {sydneyRange.startDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Australia/Sydney',
+                                        }
+                                    )}
+                                </div>
+                                <div>
+                                    <strong>End:</strong>{' '}
+                                    {sydneyRange.endDate.toLocaleString(
+                                        'en-US',
+                                        {
+                                            timeZone: 'Australia/Sydney',
+                                        }
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        marginTop: '16px',
+                        padding: '16px',
+                        backgroundColor: '#e8f4f8',
+                        borderRadius: '8px',
+                        border: '1px solid #b3d9e6',
+                    }}
+                >
+                    <h4
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            color: '#0066cc',
+                        }}
+                    >
+                        💡 How Timezone Support Works
+                    </h4>
+                    <ul
+                        style={{
+                            margin: 0,
+                            paddingLeft: '20px',
+                            fontSize: '13px',
+                            color: '#333',
+                            lineHeight: '1.8',
+                        }}
+                    >
+                        <li>
+                            <strong>Presets respect timezone:</strong>{' '}
+                            "Yesterday" in Tokyo is different from "Yesterday"
+                            in New York
+                        </li>
+                        <li>
+                            <strong>Automatic conversion:</strong> Dates are
+                            calculated and displayed in the specified timezone
+                        </li>
+                        <li>
+                            <strong>Global-ready:</strong> Perfect for apps used
+                            across different time zones
+                        </li>
+                        <li>
+                            <strong>No dependencies:</strong> Uses native
+                            JavaScript Intl API for timezone support
+                        </li>
+                    </ul>
+                </div>
+
+                <div
+                    style={{
+                        marginTop: '8px',
+                        padding: '12px',
+                        backgroundColor: '#f9f9f9',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        color: '#666',
+                    }}
+                >
+                    <strong>Usage Example:</strong>
+                    <pre
+                        style={{
+                            marginTop: '8px',
+                            padding: '8px',
+                            backgroundColor: '#fff',
+                            borderRadius: '4px',
+                            overflow: 'auto',
+                            fontSize: '11px',
+                        }}
+                    >
+                        {`<DateRangePicker
+  timezone="Asia/Tokyo"
+  value={dateRange}
+  onChange={setDateRange}
+  showDateTimePicker={true}
+/>`}
+                    </pre>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Demonstrates timezone-aware date range selection. When a timezone is specified, all date operations (presets, formatting, calculations) respect that timezone. This ensures users from different parts of the world see dates relevant to their timezone.
+
+**Key Features:**
+- Presets like "Yesterday" are calculated in the specified timezone
+- Date formatting displays dates in the target timezone
+- Calendar operations respect timezone boundaries
+- Uses native JavaScript Intl API (no external dependencies)
+
+**Example:** If it's December 19, 2025 4:22 AM in New York (EST), selecting "Yesterday" will show December 18, 2025 00:00:00 EST to 23:59:59 EST, not the system timezone's yesterday.`,
+            },
         },
     },
 }

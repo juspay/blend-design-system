@@ -9,6 +9,7 @@ type CodeEditorHeaderProps = {
     header: string
     headerLeftSlot?: ReactNode
     headerRightSlot?: ReactNode
+    showLeftIcon: boolean
     showCopyButton: boolean
     isCopied: boolean
     onCopy: () => void
@@ -19,6 +20,7 @@ export const CodeEditorHeader = ({
     header,
     headerLeftSlot,
     headerRightSlot,
+    showLeftIcon,
     showCopyButton,
     isCopied,
     onCopy,
@@ -58,7 +60,9 @@ export const CodeEditorHeader = ({
                 gap={headerGap}
                 style={{ flex: 1 }}
             >
-                {headerLeftSlot || (
+                {headerLeftSlot ? (
+                    headerLeftSlot
+                ) : showLeftIcon ? (
                     <FileCode
                         size={iconSize}
                         style={{
@@ -67,7 +71,7 @@ export const CodeEditorHeader = ({
                             opacity: 0.7,
                         }}
                     />
-                )}
+                ) : null}
                 <Block
                     as="span"
                     fontSize={tokens.header.text.fontSize}

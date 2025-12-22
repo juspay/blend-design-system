@@ -175,7 +175,6 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 left: ${hasOffset ? offset.left : '0'};
                 border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `0 ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} 0`};
                 width: ${maxWidthValue};
-                overflow: hidden;
 
                 @media (min-width: 1024px) {
                     width: ${widthValue};
@@ -206,7 +205,6 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `${tokens.borderRadius.topLeft} 0 0 ${tokens.borderRadius.bottomLeft}`};
                 width: ${widthValue};
                 max-width: ${maxWidthValue};
-                overflow: hidden;
                 user-select: text;
                 -webkit-user-select: text;
                 -moz-user-select: text;

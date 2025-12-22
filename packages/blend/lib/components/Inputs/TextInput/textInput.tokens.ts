@@ -4,6 +4,10 @@ import { TextInputSize, TextInputState } from './types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 
 export type TextInputTokensType = {
+    placeholder: {
+        color: CSSObject['color']
+        fontWeight: CSSObject['fontWeight']
+    }
     gap: CSSObject['gap']
     label: {
         fontSize: CSSObject['fontSize']
@@ -80,6 +84,10 @@ export const getTextInputTokens = (
 ): ResponsiveTextInputTokens => {
     return {
         sm: {
+            placeholder: {
+                color: foundationTokens.colors.gray[400],
+                fontWeight: foundationTokens.font.weight[500],
+            },
             gap: foundationTokens.unit[8],
             label: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,
@@ -185,6 +193,10 @@ export const getTextInputTokens = (
             },
         },
         lg: {
+            placeholder: {
+                color: foundationTokens.colors.gray[400],
+                fontWeight: foundationTokens.font.weight[500],
+            },
             gap: foundationTokens.unit[8],
             label: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,

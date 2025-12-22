@@ -105,6 +105,14 @@ export type SidebarProps = {
     panelOnlyMode?: boolean
 
     /**
+     * When true, disables the intermediate state that appears on hover
+     * When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state
+     * The intermediate state allows users to see the sidebar content without fully expanding it
+     * Defaults to false (intermediate state enabled)
+     */
+    disableIntermediateState?: boolean
+
+    /**
      * Show primary action button in mobile navigation
      */
     showPrimaryActionButton?: boolean

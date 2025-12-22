@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getPortalContainer, cleanupPortalContainer } from './modal.utils'
 
-const ANIMATION_DELAY = 16 // ~1 frame delay to ensure initial render
-const ANIMATION_DURATION = 500
+const ANIMATION_DURATION = 300
 
 export const useModal = (isOpen: boolean, onClose: () => void) => {
     const [shouldRender, setShouldRender] = useState(false)
@@ -23,14 +22,12 @@ export const useModal = (isOpen: boolean, onClose: () => void) => {
             const container = getPortalContainer()
             setPortalContainer(container)
 
-            // Start animation after small delay
-            const animationTimer = setTimeout(() => {
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        setIsAnimatingIn(true)
-                    })
+            let animationFrame2: number | null = null
+            const animationFrame1 = requestAnimationFrame(() => {
+                animationFrame2 = requestAnimationFrame(() => {
+                    setIsAnimatingIn(true)
                 })
-            }, ANIMATION_DELAY)
+            })
 
             // Escape key handling
             const handleEscapeKey = (event: KeyboardEvent) => {
@@ -42,7 +39,10 @@ export const useModal = (isOpen: boolean, onClose: () => void) => {
             document.addEventListener('keydown', handleEscapeKey)
 
             return () => {
-                clearTimeout(animationTimer)
+                cancelAnimationFrame(animationFrame1)
+                if (animationFrame2 !== null) {
+                    cancelAnimationFrame(animationFrame2)
+                }
                 document.removeEventListener('keydown', handleEscapeKey)
             }
         } else {

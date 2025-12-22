@@ -25,40 +25,9 @@ export const getSpacingBySize = (
 }
 
 /**
- * Determines if the switch component is controlled based on the checked prop
- */
-export const isControlledSwitch = (checked: boolean | undefined): boolean => {
-    return checked !== undefined
-}
-
-/**
- * Creates a toggle handler for switch components
- */
-export const createSwitchToggleHandler = (
-    currentChecked: boolean,
-    disabled: boolean,
-    isControlled: boolean,
-    setInternalChecked?: React.Dispatch<React.SetStateAction<boolean>>,
-    onChange?: (checked: boolean) => void
-) => {
-    return () => {
-        if (disabled) return
-
-        const newChecked = !currentChecked
-
-        // Update internal state if uncontrolled
-        if (!isControlled && setInternalChecked) {
-            setInternalChecked(newChecked)
-        }
-
-        // Call onChange callback
-        onChange?.(newChecked)
-    }
-}
-
-/**
  * Gets the text color based on switch state
  */
+
 export const getSwitchTextColor = (
     tokens: SwitchTokensType,
     disabled: boolean,

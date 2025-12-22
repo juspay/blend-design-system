@@ -93,6 +93,14 @@ export type SwitchTokensType = {
     required: {
         color: CSSObject['color']
     }
+    slot: {
+        width: {
+            [key in SwitchSize]: CSSObject['width']
+        }
+        height: {
+            [key in SwitchSize]: CSSObject['height']
+        }
+    }
 }
 
 export type ResponsiveSwitchTokens = {
@@ -215,6 +223,16 @@ export const getSwitchTokens = (
             required: {
                 color: foundationToken.colors.red[600],
             },
+            slot: {
+                width: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[14],
+                },
+                height: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[14],
+                },
+            },
         },
         lg: {
             gap: foundationToken.unit[8],
@@ -328,6 +346,16 @@ export const getSwitchTokens = (
 
             required: {
                 color: foundationToken.colors.red[600],
+            },
+            slot: {
+                width: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[14],
+                },
+                height: {
+                    sm: foundationToken.unit[14],
+                    md: foundationToken.unit[14],
+                },
             },
         },
     }
