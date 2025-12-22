@@ -98,7 +98,9 @@ const ResponsiveText = ({
                 fontSize={fontSize}
                 color={color}
                 fontWeight={fontWeight}
-                style={getPrimitiveTextStyles(textOverflow)}
+                style={
+                    getPrimitiveTextStyles(textOverflow) as React.CSSProperties
+                }
             >
                 {children}
             </PrimitiveText>
@@ -163,7 +165,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
             <Block
                 data-keyvaluepair={keyString || 'keyvaluepair'}
                 ref={ref}
-                style={containerStyles}
+                style={containerStyles as React.CSSProperties}
                 role="group"
                 aria-label={`${keyString}: ${value || ''}`}
             >
@@ -189,7 +191,10 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                         {keyString}
                     </ResponsiveText>
                     {keySlot && (
-                        <Block data-element="key-slot" style={getSlotStyles()}>
+                        <Block
+                            data-element="key-slot"
+                            style={getSlotStyles() as React.CSSProperties}
+                        >
                             {keySlot}
                         </Block>
                     )}
@@ -203,7 +208,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                     {valueLeftSlot && (
                         <Block
                             data-element="value-left-slot"
-                            style={getSlotStyles()}
+                            style={getSlotStyles() as React.CSSProperties}
                         >
                             {valueLeftSlot}
                         </Block>
@@ -227,7 +232,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                     {valueRightSlot && (
                         <Block
                             data-element="value-right-slot"
-                            style={getSlotStyles()}
+                            style={getSlotStyles() as React.CSSProperties}
                         >
                             {valueRightSlot}
                         </Block>
