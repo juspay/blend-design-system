@@ -65,8 +65,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             data-snackbar={header ?? 'snackbar'}
             data-status={variant}
             display="flex"
-            justifyContent="space-between"
-            gap={snackbarTokens.gap}
+            flexDirection="column"
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
@@ -74,68 +73,140 @@ export const StyledToast: React.FC<CustomToastProps> = ({
             boxShadow={snackbarTokens.boxShadow}
             {...props}
         >
-            <Block marginTop={4} data-element="icon" aria-hidden="true">
-                <SnackbarIcon variant={variant} />
-            </Block>
             <Block
                 display="flex"
+                alignItems="center"
+                justifyContent="space-between"
                 gap={snackbarTokens.gap}
-                data-element="content"
             >
                 <Block
                     display="flex"
-                    flexDirection="column"
-                    gap={snackbarTokens.content.gap}
+                    alignItems="flex-start"
+                    flexShrink={0}
+                    data-element="icon"
+                    aria-hidden="true"
+                >
+                    <SnackbarIcon variant={variant} />
+                </Block>
+
+                <Block flexGrow={1} minWidth={0}>
+                    <Text
+                        id={headerId}
+                        as="p"
+                        color={
+                            snackbarTokens.content.textContainer.header.color[
+                                variant
+                            ]
+                        }
+                        fontSize={
+                            snackbarTokens.content.textContainer.header.fontSize
+                        }
+                        fontWeight={
+                            snackbarTokens.content.textContainer.header
+                                .fontWeight
+                        }
+                        data-element="header"
+                        data-id={header}
+                        style={{
+                            minWidth: 0,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {header}
+                    </Text>
+                </Block>
+
+                <Block flexShrink={0}>
+                    <PrimitiveButton
+                        backgroundColor="transparent"
+                        contentCentered
+                        onClick={onClose}
+                        aria-label="Close notification"
+                        data-element="close-button"
+                    >
+                        <X
+                            size={snackbarTokens.actions.closeButton.height}
+                            color={
+                                snackbarTokens.actions.closeButton.color[
+                                    variant
+                                ]
+                            }
+                            aria-hidden="true"
+                        />
+                    </PrimitiveButton>
+                </Block>
+            </Block>
+
+            {description && (
+                <Block
+                    display="flex"
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                    gap={snackbarTokens.gap}
+                    marginTop={snackbarTokens.content.textContainer.gap}
                 >
                     <Block
                         display="flex"
-                        gap={snackbarTokens.content.textContainer.gap}
-                        flexDirection="column"
-                    >
+                        alignItems="flex-start"
+                        flexShrink={0}
+                        width={snackbarTokens.infoIcon.height}
+                        aria-hidden="true"
+                    />
+
+                    <Block flexGrow={1} minWidth={0}>
                         <Text
-                            id={headerId}
+                            id={descriptionId}
                             as="p"
                             color={
-                                snackbarTokens.content.textContainer.header
+                                snackbarTokens.content.textContainer.description
                                     .color[variant]
                             }
                             fontSize={
-                                snackbarTokens.content.textContainer.header
+                                snackbarTokens.content.textContainer.description
                                     .fontSize
                             }
                             fontWeight={
-                                snackbarTokens.content.textContainer.header
+                                snackbarTokens.content.textContainer.description
                                     .fontWeight
                             }
-                            data-element="header"
-                            data-id={header}
+                            data-element="description"
+                            data-id={description}
                         >
-                            {header}
+                            {description}
                         </Text>
-                        {description && (
-                            <Text
-                                id={descriptionId}
-                                as="p"
-                                color={
-                                    snackbarTokens.content.textContainer
-                                        .description.color[variant]
-                                }
-                                fontSize={
-                                    snackbarTokens.content.textContainer
-                                        .description.fontSize
-                                }
-                                fontWeight={
-                                    snackbarTokens.content.textContainer
-                                        .description.fontWeight
-                                }
-                                data-element="description"
-                                data-id={description}
-                            >
-                                {description}
-                            </Text>
-                        )}
                     </Block>
-                    {actionButton && (
+
+                    <Block
+                        flexShrink={0}
+                        width={snackbarTokens.actions.closeButton.height}
+                        aria-hidden="true"
+                    />
+                </Block>
+            )}
+
+            {actionButton && (
+                <Block
+                    display="flex"
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                    gap={snackbarTokens.gap}
+                    marginTop={
+                        description
+                            ? snackbarTokens.content.gap
+                            : snackbarTokens.content.gap
+                    }
+                >
+                    <Block
+                        display="flex"
+                        alignItems="flex-start"
+                        flexShrink={0}
+                        width={snackbarTokens.infoIcon.height}
+                        aria-hidden="true"
+                    />
+
+                    <Block flexGrow={1} minWidth={0}>
                         <PrimitiveButton
                             backgroundColor="transparent"
                             color={
@@ -172,26 +243,15 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                                 {actionButton.label}
                             </Text>
                         </PrimitiveButton>
-                    )}
-                </Block>
-            </Block>
-            <Block>
-                <PrimitiveButton
-                    backgroundColor="transparent"
-                    contentCentered
-                    onClick={onClose}
-                    aria-label="Close notification"
-                    data-element="close-button"
-                >
-                    <X
-                        size={snackbarTokens.actions.closeButton.height}
-                        color={
-                            snackbarTokens.actions.closeButton.color[variant]
-                        }
+                    </Block>
+
+                    <Block
+                        flexShrink={0}
+                        width={snackbarTokens.actions.closeButton.height}
                         aria-hidden="true"
                     />
-                </PrimitiveButton>
-            </Block>
+                </Block>
+            )}
         </Block>
     )
 }
