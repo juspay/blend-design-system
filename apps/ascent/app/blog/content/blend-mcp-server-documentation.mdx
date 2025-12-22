@@ -65,7 +65,7 @@ npx blend-mcp-server
             "command": "npx",
             "args": ["blend-mcp-server"],
             "env": {
-                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+                "BLEND_LIBRARY_PACKAGE_NAME": "@juspay/blend-design-system"
             }
         }
     }
@@ -83,7 +83,7 @@ Ask your AI assistant:
 Expected output:
 
 ```tsx
-import { Button } from 'blend-v1'
+import { Button } from '@juspay/blend-design-system'
 ;<Button text="Get Started" variant="primary" size="medium" />
 ```
 
@@ -133,7 +133,9 @@ export DEBUG=true
         "blend": {
             "command": "npx",
             "args": ["blend-mcp-server"],
-            "env": { "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1" }
+            "env": {
+                "BLEND_LIBRARY_PACKAGE_NAME": "@juspay/blend-design-system"
+            }
         }
     }
 }
@@ -289,7 +291,7 @@ search filter, and export button"
 
 ```bash
 # Check Blend installation
-npm list blend-v1
+npm list @juspay/blend-design-system
 
 # Set explicit path
 export BLEND_LIBRARY_PATH="/path/to/blend/lib/components"

@@ -41,7 +41,7 @@ function findBlendLibraryPath() {
         path.join(
             process.cwd(),
             'node_modules',
-            'blend-v1',
+            '@juspay/blend-design-system',
             'lib',
             'components'
         ),
@@ -59,7 +59,7 @@ function findBlendLibraryPath() {
 
 const BLEND_LIBRARY_PATH = findBlendLibraryPath()
 const BLEND_LIBRARY_PACKAGE_NAME =
-    process.env.BLEND_LIBRARY_PACKAGE_NAME || 'blend-v1'
+    process.env.BLEND_LIBRARY_PACKAGE_NAME || '@juspay/blend-design-system'
 
 if (!BLEND_LIBRARY_PATH) {
     console.error(`[ERROR] Could not find Blend library components directory.`)
@@ -656,19 +656,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: 'list_blend_components',
                 description:
-                    'Lists all available components in blend-v1 that can be used.',
+                    'Lists all available components in @juspay/blend-design-system that can be used.',
                 inputSchema: { type: 'object', properties: {}, required: [] },
             },
             {
                 name: 'get_blend_component_props',
                 description:
-                    'Retrieves the props and their descriptions for a specified blend-v1 component.',
+                    'Retrieves the props and their descriptions for a specified @juspay/blend-design-system component.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         componentName: {
                             type: 'string',
-                            description: 'The name of the blend-v1 component.',
+                            description:
+                                'The name of the @juspay/blend-design-system component.',
                         },
                     },
                     required: ['componentName'],
@@ -677,14 +678,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: 'generate_blend_component',
                 description:
-                    'Generates React code for a specified blend-v1 component with given props.',
+                    'Generates React code for a specified @juspay/blend-design-system component with given props.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         componentName: {
                             type: 'string',
                             description:
-                                'The name of the blend-v1 component (e.g., Button, Alert).',
+                                'The name of the @juspay/blend-design-system component (e.g., Button, Alert).',
                         },
                         props: {
                             type: 'object',
@@ -713,7 +714,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: 'scaffold_dashboard_section',
                 description:
-                    'Generates React code for common FinTech dashboard section patterns using blend-v1 components.',
+                    'Generates React code for common FinTech dashboard section patterns using @juspay/blend-design-system components.',
                 inputSchema: {
                     type: 'object',
                     properties: {
@@ -745,14 +746,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             {
                 name: 'generate_component_documentation',
                 description:
-                    'Generates documentation for a specified blend-v1 component.',
+                    'Generates documentation for a specified @juspay/blend-design-system component.',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         componentName: {
                             type: 'string',
                             description:
-                                'The name of the blend-v1 component (e.g., Button, Alert).',
+                                'The name of the @juspay/blend-design-system component (e.g., Button, Alert).',
                         },
                     },
                     required: ['componentName'],

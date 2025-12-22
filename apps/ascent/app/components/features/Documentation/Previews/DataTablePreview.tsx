@@ -7,7 +7,7 @@ import {
 } from '@juspay/blend-design-system'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
-const tsCode = `import { DataTable, ColumnDefinition, ColumnType } from 'blend-v1'
+const tsCode = `import { DataTable, ColumnDefinition, ColumnType } from '@juspay/blend-design-system'
 
 function MyComponent() {
     const data = [

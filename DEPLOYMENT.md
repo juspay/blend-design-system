@@ -191,7 +191,7 @@ npm run deploy:prod
     ## Usage
 
     ```jsx
-    import { Component } from 'blend-v1'
+    import { Component } from '@juspay/blend-design-system'
     ;<Component prop="value" />
     ```
 

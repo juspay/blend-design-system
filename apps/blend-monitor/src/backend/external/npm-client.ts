@@ -28,7 +28,7 @@ export class NPMClient {
     private registryUrl: string
     private packageName: string
 
-    constructor(packageName: string = 'blend-v1') {
+    constructor(packageName: string = '@juspay/blend-design-system') {
         this.registryUrl =
             process.env.NPM_REGISTRY_API_URL || 'https://registry.npmjs.org'
         this.packageName = packageName

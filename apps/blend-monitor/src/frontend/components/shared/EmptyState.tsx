@@ -1,6 +1,6 @@
 import React from 'react'
 import { LucideIcon } from 'lucide-react'
-import { Button, ButtonSize, ButtonType } from 'blend-v1'
+import { Button, ButtonSize, ButtonType } from '@juspay/blend-design-system'
 
 interface EmptyStateProps {
     icon: LucideIcon

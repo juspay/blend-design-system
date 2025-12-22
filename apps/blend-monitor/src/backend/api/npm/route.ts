@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
             return permissionCheck
         }
 
-        const npmClient = new NPMClient('blend-v1')
+        const npmClient = new NPMClient('@juspay/blend-design-system')
 
         let successfulOperations = 0
         const errors: string[] = []
