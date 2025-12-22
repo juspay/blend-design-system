@@ -141,115 +141,75 @@ export const StyledToast: React.FC<CustomToastProps> = ({
 
             {description && (
                 <Block
-                    display="flex"
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    gap={snackbarTokens.gap}
                     marginTop={snackbarTokens.content.textContainer.gap}
+                    marginLeft={`calc(${snackbarTokens.infoIcon.height} + ${snackbarTokens.gap})`}
+                    marginRight={snackbarTokens.actions.closeButton.height}
                 >
-                    <Block
-                        display="flex"
-                        alignItems="flex-start"
-                        flexShrink={0}
-                        width={snackbarTokens.infoIcon.height}
-                        aria-hidden="true"
-                    />
-
-                    <Block flexGrow={1} minWidth={0}>
-                        <Text
-                            id={descriptionId}
-                            as="p"
-                            color={
-                                snackbarTokens.content.textContainer.description
-                                    .color[variant]
-                            }
-                            fontSize={
-                                snackbarTokens.content.textContainer.description
-                                    .fontSize
-                            }
-                            fontWeight={
-                                snackbarTokens.content.textContainer.description
-                                    .fontWeight
-                            }
-                            data-element="description"
-                            data-id={description}
-                        >
-                            {description}
-                        </Text>
-                    </Block>
-
-                    <Block
-                        flexShrink={0}
-                        width={snackbarTokens.actions.closeButton.height}
-                        aria-hidden="true"
-                    />
+                    <Text
+                        id={descriptionId}
+                        as="p"
+                        color={
+                            snackbarTokens.content.textContainer.description
+                                .color[variant]
+                        }
+                        fontSize={
+                            snackbarTokens.content.textContainer.description
+                                .fontSize
+                        }
+                        fontWeight={
+                            snackbarTokens.content.textContainer.description
+                                .fontWeight
+                        }
+                        data-element="description"
+                        data-id={description}
+                    >
+                        {description}
+                    </Text>
                 </Block>
             )}
 
             {actionButton && (
                 <Block
-                    display="flex"
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    gap={snackbarTokens.gap}
                     marginTop={
                         description
                             ? snackbarTokens.content.gap
                             : snackbarTokens.content.gap
                     }
+                    marginLeft={`calc(${snackbarTokens.infoIcon.height} + ${snackbarTokens.gap})`}
+                    marginRight={snackbarTokens.actions.closeButton.height}
                 >
-                    <Block
-                        display="flex"
-                        alignItems="flex-start"
-                        flexShrink={0}
-                        width={snackbarTokens.infoIcon.height}
-                        aria-hidden="true"
-                    />
-
-                    <Block flexGrow={1} minWidth={0}>
-                        <PrimitiveButton
-                            backgroundColor="transparent"
+                    <PrimitiveButton
+                        backgroundColor="transparent"
+                        color={
+                            snackbarTokens.actions.primaryAction.color[variant]
+                        }
+                        aria-label={actionButton.label}
+                        onClick={() => {
+                            actionButton.onClick()
+                            if (
+                                actionButton.autoDismiss !== false &&
+                                toastId
+                            ) {
+                                sonnerToast.dismiss(toastId)
+                            }
+                        }}
+                    >
+                        <Text
                             color={
                                 snackbarTokens.actions.primaryAction.color[
                                     variant
                                 ]
                             }
-                            aria-label={actionButton.label}
-                            onClick={() => {
-                                actionButton.onClick()
-                                if (
-                                    actionButton.autoDismiss !== false &&
-                                    toastId
-                                ) {
-                                    sonnerToast.dismiss(toastId)
-                                }
-                            }}
+                            fontSize={
+                                snackbarTokens.actions.primaryAction.fontSize
+                            }
+                            fontWeight={
+                                snackbarTokens.actions.primaryAction.fontWeight
+                            }
                         >
-                            <Text
-                                color={
-                                    snackbarTokens.actions.primaryAction.color[
-                                        variant
-                                    ]
-                                }
-                                fontSize={
-                                    snackbarTokens.actions.primaryAction
-                                        .fontSize
-                                }
-                                fontWeight={
-                                    snackbarTokens.actions.primaryAction
-                                        .fontWeight
-                                }
-                            >
-                                {actionButton.label}
-                            </Text>
-                        </PrimitiveButton>
-                    </Block>
-
-                    <Block
-                        flexShrink={0}
-                        width={snackbarTokens.actions.closeButton.height}
-                        aria-hidden="true"
-                    />
+                            {actionButton.label}
+                        </Text>
+                    </PrimitiveButton>
                 </Block>
             )}
         </Block>
