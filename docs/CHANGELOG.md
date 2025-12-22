@@ -1,6 +1,6 @@
-# Changelog for v0.0.31-beta (Beta)
+# Changelog for v0.0.31
 
-> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
+> **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
@@ -36,6 +36,7 @@
 
 ## 🔧 Chores
 
+- **release**: v0.0.31-beta [BETA] ([7206071](../../commit/7206071))
 - Migrate from blend-v1 to @juspay/blend-design-system (#858) ([c455dd2](../../commit/c455dd2))
 - Add scroll lock for dropdowns inside modals (#849) ([5990640](../../commit/5990640))
 - Bug fix/otp input (#845) ([ffdd2dd](../../commit/ffdd2dd))
@@ -45,20 +46,17 @@
 - Enhance TableHeader component layout and tooltip handling (#816) ([09548ae](../../commit/09548ae))
 - fix stat card mismatch between delta colorsign and graph color (#800) ([fddc85d](../../commit/fddc85d))
 - **release**: v0.0.30 [STABLE] ([21129a5](../../commit/21129a5))
-- **release**: v0.0.30-beta [BETA] ([af7acf6](../../commit/af7acf6))
 
 ---
 
 **Release Date**: 2025-12-22
-**Commit Range**: v0.0.30-beta..HEAD
+**Commit Range**: v0.0.30..HEAD
 **Total Changes**: 33 commits
 
-## Beta Installation
+## Installation
 
 ```bash
-npm install @juspay/blend-design-system@beta
-# or specific beta version
-npm install @juspay/blend-design-system@0.0.31-beta
+npm install @juspay/blend-design-system@latest
+# or specific version
+npm install @juspay/blend-design-system@0.0.31
 ```
-
-> **Note**: Beta versions are for testing only. Use stable versions in production.
