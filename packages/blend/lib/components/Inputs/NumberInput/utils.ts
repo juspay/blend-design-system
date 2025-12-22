@@ -85,7 +85,7 @@ export const clampValueOnBlur = (
     }
 
     // Sanitize first
-    let sanitized = sanitizeNumberInput(inputValue, allowNegative)
+    const sanitized = sanitizeNumberInput(inputValue, allowNegative)
 
     // If still empty or just minus, return empty
     if (sanitized === '' || sanitized === '-') {
@@ -100,7 +100,7 @@ export const clampValueOnBlur = (
     }
 
     // Prevent -0
-    if (Object.is(numValue, -0) || numValue === -0) {
+    if (Object.is(numValue, -0)) {
         return '0'
     }
 
