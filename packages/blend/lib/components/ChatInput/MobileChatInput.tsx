@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { Tag, TagColor, TagVariant } from '../Tags'
+import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
 
 type MobileChatInputProps = {
     value: string
@@ -15,8 +16,6 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-    const LINE_HEIGHT = 20
-
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>
     ) => {
@@ -27,16 +26,21 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
 
     useEffect(() => {
         const el = textareaRef.current
+
         if (!el) return
 
         el.style.height = 'auto'
         el.style.height = `${Math.min(el.scrollHeight, 100)}px`
+        el.style.borderRadius = '44px'
+        el.style.paddingTop = '12px'
+        el.style.paddingBottom = '12px'
+
         if (el.scrollHeight > 44) {
             el.style.borderRadius = '20px'
-            el.style.paddingTop = '16px'
-            el.style.paddingBottom = '16px'
         }
     }, [value])
+
+    console.log(textareaRef.current?.scrollHeight)
 
     return (
         <Block padding={10} display="flex" flexDirection="column" gap={10}>
@@ -77,28 +81,28 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                     width="100%"
                     gap={2}
                 >
-                    <textarea
+                    <PrimitiveTextarea
                         ref={textareaRef}
                         rows={1}
                         value={value}
                         onChange={handleTextareaChange}
                         placeholder="Type your message here..."
+                        width="100%"
+                        // height="44px"
+                        borderRadius="44px"
+                        border="1px solid #e0e0e0"
+                        resize="none"
+                        paddingRight="54px"
+                        paddingLeft="16px"
+                        paddingTop="12px"
+                        paddingBottom="12px"
                         style={{
-                            width: '100%',
-                            height: `${44}px`,
-                            borderRadius: '100px',
-                            border: '1px solid #e0e0e0',
-                            resize: 'none',
-                            paddingRight: '44px',
-                            paddingLeft: '16px',
-                            paddingTop: '12px',
-                            paddingBottom: '12px',
-                            lineHeight: `${LINE_HEIGHT}px`,
-                            overflow: 'hidden',
+                            lineHeight: `20px`,
                             transition:
-                                'height 0.15s ease-out, padding 0.15s ease-out',
+                                'height 0.15s ease-out, padding 0.15s ease-out, border-radius 0.15s ease-out',
                             boxSizing: 'border-box',
                         }}
+                        overflow="hidden"
                     />
 
                     <Block

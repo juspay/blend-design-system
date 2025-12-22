@@ -17,7 +17,7 @@ import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
 import { Paperclip, X, Plus, FileMinus, Image, FileText } from 'lucide-react'
-import { getChatInputTokens } from './chatInput.tokens'
+import { ChatInputTokensType } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     createOverflowMenuItems,
@@ -34,6 +34,8 @@ import { Tooltip } from '../Tooltip/Tooltip'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileChatInput from './MobileChatInput'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -93,7 +95,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         },
         ref
     ) => {
-        const tokens = getChatInputTokens(FOUNDATION_THEME).sm
+        const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
         const filesContainerRef = useRef<HTMLDivElement>(null)
@@ -518,7 +520,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             : 0
                     }
                 >
-                    <textarea
+                    <PrimitiveTextarea
                         ref={textareaElement}
                         value={value}
                         onChange={handleTextareaChange}
@@ -534,23 +536,22 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         }
                         id={chatInputId}
                         rows={1}
-                        style={{
-                            backgroundColor: tokens.textarea.backgroundColor,
-                            color: tokens.textarea.color,
-                            fontSize: tokens.textarea.fontSize,
-                            lineHeight: tokens.textarea.lineHeight,
-                            padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
-                            border: tokens.textarea.border,
-                            borderRadius: tokens.textarea.borderRadius,
-                            outline: 'none',
-                            resize: tokens.textarea.resize,
-                            fontFamily: tokens.textarea.fontFamily,
-                            width: '100%',
-                            minHeight: tokens.textarea.minHeight,
-                            maxHeight: tokens.textarea.maxHeight,
-                            overflowY: tokens.textarea.overflowY,
-                            cursor: disabled ? 'not-allowed' : 'text',
-                        }}
+                        backgroundColor={tokens.textarea.backgroundColor}
+                        color={tokens.textarea.color}
+                        fontSize={tokens.textarea.fontSize}
+                        paddingX={tokens.textarea.paddingX}
+                        paddingY={tokens.textarea.paddingY}
+                        border={tokens.textarea.border}
+                        borderRadius={tokens.textarea.borderRadius}
+                        outline="none"
+                        resize={tokens.textarea.resize}
+                        fontFamily={tokens.textarea.fontFamily}
+                        width="100%"
+                        minHeight={tokens.textarea.minHeight}
+                        maxHeight={tokens.textarea.maxHeight}
+                        overflowY={tokens.textarea.overflowY}
+                        cursor={disabled ? 'not-allowed' : 'text'}
+                        style={{ lineHeight: tokens.textarea.lineHeight }}
                         onFocus={(e) => {
                             setIsTextareaFocused(true)
                             const container =

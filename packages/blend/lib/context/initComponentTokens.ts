@@ -43,6 +43,7 @@ import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -128,6 +129,8 @@ const initTokens = (
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
+        CHAT_INPUT:
+            componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
     }
 }
 
