@@ -17,6 +17,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const { logout, user } = useAuth()
     const navigationData = getNavigationData(router, pathname)
+    const [activeTenant, setActiveTenant] = React.useState('blend-monitor')
 
     // User account footer content
     const userFooter = user ? (
@@ -44,11 +45,50 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
     ) : null
 
+    // Convert tenants to leftPanel format
+    const leftPanel =
+        tenants.length > 0
+            ? {
+                  items: tenants.map((tenant) => ({
+                      label: tenant.label,
+                      icon: tenant.icon,
+                      value: tenant.id,
+                      showInPanel: true,
+                  })),
+                  selected: activeTenant,
+                  onSelect: (value: string) => {
+                      setActiveTenant(value)
+                  },
+              }
+            : undefined
+
+    // Convert merchants to merchantInfo format
+    const merchantInfo =
+        merchants.length > 0
+            ? {
+                  items: merchants.map(
+                      (merchant: {
+                          label: string
+                          id?: string
+                          value?: string
+                          icon?: React.ReactNode
+                      }) => ({
+                          label: merchant.label,
+                          value:
+                              merchant.id || merchant.value || merchant.label,
+                          icon: merchant.icon,
+                      })
+                  ),
+                  selected: '',
+                  onSelect: () => {},
+              }
+            : undefined
+
     return (
         <div className="h-screen w-screen overflow-hidden flex">
             <Sidebar
-                tenants={tenants}
-                merchants={merchants}
+                leftPanel={leftPanel}
+                merchantInfo={merchantInfo}
                 data={navigationData}
                 topbar={
                     <div className="sticky top-0 z-50 bg-white">
@@ -67,10 +107,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     </div>
                 }
                 footer={userFooter}
-                activeTenant="blend-monitor"
-                setActiveTenant={() => {}}
-                activeMerchant=""
-                setActiveMerchant={() => {}}
             >
                 <div className="h-full overflow-hidden flex-1">{children}</div>
             </Sidebar>

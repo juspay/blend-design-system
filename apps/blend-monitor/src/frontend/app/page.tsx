@@ -139,7 +139,7 @@ export default function DashboardHome() {
                                 subtitle={`${coverage?.integrated || 0} of ${coverage?.total || 0} integrated`}
                                 change={{
                                     value: 3,
-                                    type: ChangeType.INCREASE,
+                                    valueType: ChangeType.INCREASE,
                                 }}
                                 titleIcon={
                                     <Link className="w-5 h-5 text-green-600" />
@@ -154,7 +154,7 @@ export default function DashboardHome() {
                                 }
                                 change={{
                                     value: 12,
-                                    type: ChangeType.INCREASE,
+                                    valueType: ChangeType.INCREASE,
                                 }}
                                 titleIcon={
                                     <Download className="w-5 h-5 text-purple-600" />
