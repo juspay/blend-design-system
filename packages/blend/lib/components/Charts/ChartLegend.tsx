@@ -1,5 +1,4 @@
 import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
-import { capitaliseCamelCase } from './ChartUtils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { DropdownMenu } from 'radix-ui'
@@ -166,8 +165,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     <PrimitiveButton
                         type="button"
                         key={dataKey}
-                        data-chart-legend={capitaliseCamelCase(dataKey)}
-                        aria-label={`Toggle ${capitaliseCamelCase(dataKey)} series visibility`}
+                        data-chart-legend={dataKey}
+                        aria-label={`Toggle ${dataKey} series visibility`}
                         aria-pressed={selectedKeys.includes(dataKey)}
                         onClick={() => handleLegendClick(dataKey)}
                         onMouseEnter={() => handleLegendEnter(dataKey)}
@@ -212,11 +211,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                             fontWeight={legendTokens.item.fontWeight}
                             truncate={true}
                             color={legendTokens.item.color.default}
-                            data-chart-legend-text={capitaliseCamelCase(
-                                dataKey
-                            )}
+                            data-chart-legend-text={dataKey}
                         >
-                            {capitaliseCamelCase(dataKey)}
+                            {dataKey}
                         </Text>
                     </PrimitiveButton>
                 ))}
@@ -280,7 +277,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                             >
                                                 <PrimitiveButton
                                                     type="button"
-                                                    aria-label={`Toggle ${capitaliseCamelCase(dataKey)} series visibility`}
+                                                    aria-label={`Toggle ${dataKey} series visibility`}
                                                     aria-pressed={isSelected}
                                                     onClick={(e) => {
                                                         e.stopPropagation()
@@ -324,9 +321,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         )
                                                     }
                                                     onBlur={handleLegendLeave}
-                                                    data-chart-legend-text={capitaliseCamelCase(
+                                                    data-chart-legend-text={
                                                         dataKey
-                                                    )}
+                                                    }
                                                     style={{
                                                         padding: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
                                                         fontSize:
@@ -385,9 +382,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         }
                                                         data-color={itemColor}
                                                     />
-                                                    {capitaliseCamelCase(
-                                                        dataKey
-                                                    )}
+                                                    {dataKey}
                                                 </PrimitiveButton>
                                             </DropdownMenu.Item>
                                         )
@@ -512,8 +507,8 @@ const StackedLegends: React.FC<{
                     <PrimitiveButton
                         type="button"
                         key={key}
-                        data-chart-legend={capitaliseCamelCase(key)}
-                        aria-label={`Toggle ${capitaliseCamelCase(key)} series visibility`}
+                        data-chart-legend={key}
+                        aria-label={`Toggle ${key} series visibility`}
                         aria-pressed={selectedKeys.includes(key)}
                         onClick={() => handleLegendClick(key)}
                         onMouseEnter={() => handleLegendEnter(key)}
@@ -554,7 +549,7 @@ const StackedLegends: React.FC<{
                             data-color={colors[index]}
                         />
                         <Text
-                            data-chart-legend-text={capitaliseCamelCase(key)}
+                            data-chart-legend-text={key}
                             fontSize={legendTokens.item.fontSize}
                             fontWeight={legendTokens.item.fontWeight}
                             color={
@@ -563,7 +558,7 @@ const StackedLegends: React.FC<{
                                     : legendTokens.item.color.default
                             }
                         >
-                            {capitaliseCamelCase(key)}
+                            {key}
                         </Text>
                     </PrimitiveButton>
                     {isSmallScreen && (
