@@ -8,7 +8,7 @@ import { NumberInputSize } from './types'
 import type { NumberInputTokensType } from './numberInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { useState, useId } from 'react'
+import React, { useState, useId } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -20,6 +20,8 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
+import { sanitizeNumberInput } from './utils'
+import { clampValueOnBlur } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -56,6 +58,7 @@ const NumberInput = ({
     const hintId = `${inputId}-hint`
 
     const [isFocused, setIsFocused] = useState(false)
+    const [internalValue, setInternalValue] = useState('')
     const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -76,6 +79,15 @@ const NumberInput = ({
         ]
             .filter(Boolean)
             .join(' ') || undefined
+
+    const numericMin = min !== undefined ? Number(min) : undefined
+    const numericMax = max !== undefined ? Number(max) : undefined
+
+    const displayValue = isFocused
+        ? internalValue
+        : value !== null && value !== undefined
+          ? String(value)
+          : ''
 
     return (
         <Block
@@ -133,35 +145,38 @@ const NumberInput = ({
                     lineHeight={FOUNDATION_THEME.unit[20]}
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     name={name}
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
-                    value={value ?? ''}
+                    value={displayValue}
                     onChange={(e) => {
-                        if (preventNegative) {
-                            const inputValue = e.target.value
-                            if (inputValue === '') {
-                                onChange(e)
-                                return
-                            }
-                            const numValue = Number(inputValue)
-                            if (numValue < 0) {
-                                onChange({
-                                    ...e,
-                                    target: {
-                                        ...e.target,
-                                        value: '0',
-                                    },
-                                } as React.ChangeEvent<HTMLInputElement>)
-                            } else {
-                                onChange(e)
-                            }
-                        } else {
-                            onChange(e)
-                        }
+                        const inputValue = e.target.value
+                        const sanitized = sanitizeNumberInput(
+                            inputValue,
+                            !preventNegative
+                        )
+
+                        setInternalValue(sanitized)
+
+                        const numValue =
+                            sanitized === '' || sanitized === '-'
+                                ? null
+                                : Number(sanitized)
+
+                        onChange({
+                            ...e,
+                            target: {
+                                ...e.target,
+                                value:
+                                    numValue !== null && !isNaN(numValue)
+                                        ? String(numValue)
+                                        : '',
+                            },
+                        } as React.ChangeEvent<HTMLInputElement>)
                     }}
                     step={step}
-                    min={min}
-                    max={max}
+                    min={numericMin}
+                    max={numericMax}
                     required={required}
                     aria-required={required ? 'true' : undefined}
                     aria-invalid={error ? 'true' : 'false'}
@@ -228,9 +243,33 @@ const NumberInput = ({
                     }}
                     onFocus={(e) => {
                         setIsFocused(true)
+                        setInternalValue(
+                            value !== null && value !== undefined
+                                ? String(value)
+                                : ''
+                        )
                         onFocus?.(e)
                     }}
                     onBlur={(e) => {
+                        const clamped = clampValueOnBlur(
+                            internalValue,
+                            !preventNegative,
+                            numericMin,
+                            numericMax
+                        )
+
+                        setInternalValue(clamped)
+
+                        if (clamped !== e.target.value) {
+                            onChange({
+                                ...e,
+                                target: {
+                                    ...e.target,
+                                    value: clamped,
+                                },
+                            } as React.ChangeEvent<HTMLInputElement>)
+                        }
+
                         setIsFocused(false)
                         onBlur?.(e)
                     }}
@@ -271,12 +310,21 @@ const NumberInput = ({
                             label ? `Increase ${label}` : 'Increase value'
                         }
                         onClick={() => {
-                            const newValue = value
-                                ? Number(value) + (step ?? 1)
-                                : 0 + (step ?? 1)
+                            const currentValue =
+                                value !== null && value !== undefined
+                                    ? Number(value)
+                                    : 0
+                            const newValue = currentValue + (step ?? 1)
+                            const clampedValue =
+                                numericMax !== undefined &&
+                                newValue > numericMax
+                                    ? numericMax
+                                    : newValue
+
+                            setInternalValue(String(clampedValue))
                             onChange({
                                 target: {
-                                    value: String(newValue),
+                                    value: String(clampedValue),
                                 },
                             } as React.ChangeEvent<HTMLInputElement>)
                         }}
@@ -296,10 +344,10 @@ const NumberInput = ({
                         borderRadius={`0 ${numberInputTokens.inputContainer.borderRadius[size]} 0 0`}
                         disabled={
                             disabled ||
-                            (typeof max === 'number' &&
+                            (numericMax !== undefined &&
                                 value !== undefined &&
                                 value !== null &&
-                                value >= max)
+                                value >= numericMax)
                         }
                         _focus={{
                             backgroundColor:
@@ -346,11 +394,24 @@ const NumberInput = ({
                             label ? `Decrease ${label}` : 'Decrease value'
                         }
                         onClick={() => {
-                            const newValue = value
-                                ? Number(value) - (step ?? 1)
-                                : 0
-                            const finalValue =
-                                preventNegative && newValue < 0 ? 0 : newValue
+                            const currentValue =
+                                value !== null && value !== undefined
+                                    ? Number(value)
+                                    : 0
+                            const newValue = currentValue - (step ?? 1)
+                            let finalValue = newValue
+
+                            if (preventNegative && finalValue < 0) {
+                                finalValue = 0
+                            }
+                            if (
+                                numericMin !== undefined &&
+                                finalValue < numericMin
+                            ) {
+                                finalValue = numericMin
+                            }
+
+                            setInternalValue(String(finalValue))
                             onChange({
                                 target: {
                                     value: String(finalValue),
@@ -388,10 +449,10 @@ const NumberInput = ({
                         }}
                         disabled={
                             disabled ||
-                            (typeof min === 'number' &&
+                            (numericMin !== undefined &&
                                 value !== undefined &&
                                 value !== null &&
-                                value <= min)
+                                value <= numericMin)
                         }
                     >
                         <Triangle
