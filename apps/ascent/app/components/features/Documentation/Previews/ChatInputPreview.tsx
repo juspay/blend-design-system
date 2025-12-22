@@ -6,7 +6,7 @@ import ComponentPreview from '@/components/features/Documentation/Previews/Compo
 const ChatInputPreview = () => {
     const [message, setMessage] = useState('')
 
-    const tsCode = `import { ChatInput } from 'blend-v1'
+    const tsCode = `import { ChatInput } from '@juspay/blend-design-system'
 import { useState } from 'react'
 
 function MyComponent() {

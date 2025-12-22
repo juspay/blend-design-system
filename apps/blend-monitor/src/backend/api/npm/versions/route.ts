@@ -28,7 +28,7 @@ export async function GET() {
     // Try NPM API as fallback
     try {
         console.log('Trying NPM API for version history...')
-        const npmClient = new NPMClient('blend-v1')
+        const npmClient = new NPMClient('@juspay/blend-design-system')
         const versionHistory = await npmClient.getVersionHistory()
 
         if (versionHistory && versionHistory.length > 0) {

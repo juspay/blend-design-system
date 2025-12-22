@@ -40,10 +40,13 @@ export async function GET() {
 
     // Test NPM API
     try {
-        const npmResponse = await fetch('https://registry.npmjs.org/blend-v1', {
-            method: 'HEAD',
-            signal: AbortSignal.timeout(5000), // 5 second timeout
-        })
+        const npmResponse = await fetch(
+            'https://registry.npmjs.org/@juspay/blend-design-system',
+            {
+                method: 'HEAD',
+                signal: AbortSignal.timeout(5000), // 5 second timeout
+            }
+        )
         if (npmResponse.ok) {
             health.services.npm.status = 'healthy'
         } else {

@@ -1,7 +1,11 @@
 'use client'
 
 import React from 'react'
-import { StatCard, StatCardVariant, ChangeType } from 'blend-v1'
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+} from '@juspay/blend-design-system'
 
 interface MetricCardProps {
     title: string
@@ -23,7 +27,8 @@ export function MetricCard({
         trend !== undefined
             ? {
                   value: Math.abs(trend),
-                  type: trend > 0 ? ChangeType.INCREASE : ChangeType.DECREASE,
+                  valueType:
+                      trend > 0 ? ChangeType.INCREASE : ChangeType.DECREASE,
               }
             : undefined
 

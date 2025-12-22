@@ -104,7 +104,7 @@ CREATE TABLE download_trends (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     date DATE NOT NULL,
     downloads INTEGER NOT NULL,
-    package_name VARCHAR(255) NOT NULL DEFAULT 'blend-v1',
+    package_name VARCHAR(255) NOT NULL DEFAULT '@juspay/blend-design-system',
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     UNIQUE(date, package_name)
 );

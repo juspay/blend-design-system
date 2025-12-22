@@ -1315,7 +1315,7 @@ const TableHeader = forwardRef<
                                             : undefined
                                     }
                                     aria-label={column.header}
-                                    style={headerStyle}
+                                    style={headerStyle as React.CSSProperties}
                                     data-element="table-header"
                                     data-id={column.header}
                                     disabled={false}
@@ -1350,7 +1350,7 @@ const TableHeader = forwardRef<
                                         : undefined
                                 }
                                 aria-label={column.header}
-                                style={headerStyle}
+                                style={headerStyle as React.CSSProperties}
                                 data-element="table-header"
                                 data-id={column.header}
                                 tabIndex={-1}
