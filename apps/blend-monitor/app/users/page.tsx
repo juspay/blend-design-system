@@ -16,7 +16,7 @@ import {
     DataTable,
     ColumnDefinition,
     ColumnType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import { UserPlus, Activity } from 'lucide-react'
 import { useUserManagement } from '@/frontend/hooks/usePostgreSQLData'
 

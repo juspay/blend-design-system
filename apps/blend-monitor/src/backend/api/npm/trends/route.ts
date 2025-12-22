@@ -29,7 +29,7 @@ export async function GET() {
     // Try NPM API as fallback
     try {
         console.log('Trying NPM API for download trends...')
-        const npmClient = new NPMClient('blend-v1')
+        const npmClient = new NPMClient('@juspay/blend-design-system')
         const downloadTrends = await npmClient.getDownloadTrends(30)
 
         if (downloadTrends && downloadTrends.length > 0) {

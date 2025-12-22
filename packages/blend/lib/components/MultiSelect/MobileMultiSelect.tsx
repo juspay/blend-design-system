@@ -401,7 +401,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                     <InputLabels
                         label={label}
                         sublabel={sublabel}
-                        disabled={disabled}
                         helpIconHintText={helpIconHintText}
                         name={uniqueName}
                         required={required}

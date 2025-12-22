@@ -53,7 +53,7 @@ node index.js
 ### Environment Variables
 
 - `BLEND_LIBRARY_PATH`: Path to the Blend components directory (auto-detected by default)
-- `BLEND_LIBRARY_PACKAGE_NAME`: Package name for imports (default: "blend-v1")
+- `BLEND_LIBRARY_PACKAGE_NAME`: Package name for imports (default: "@juspay/blend-design-system")
 - `META_PATH`: Path to component metadata files (auto-detected by default)
 
 ### MCP Client Configuration
@@ -72,14 +72,14 @@ Add to your Claude Desktop configuration file:
             "command": "node",
             "args": ["/path/to/cloved/packages/mcp/index.js"],
             "env": {
-                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+                "BLEND_LIBRARY_PACKAGE_NAME": "@juspay/blend-design-system"
             }
         }
     }
 }
 ```
 
-Or if you have blend-v1 installed as a dependency:
+Or if you have @juspay/blend-design-system installed as a dependency:
 
 ```json
 {
@@ -101,8 +101,8 @@ Or if you have blend-v1 installed as a dependency:
                 "index.js"
             ],
             "env": {
-                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1",
-                "BLEND_LIBRARY_PATH": "./node_modules/blend-v1/lib/components"
+                "BLEND_LIBRARY_PACKAGE_NAME": "@juspay/blend-design-system",
+                "BLEND_LIBRARY_PATH": "./node_modules/@juspay/blend-design-system/lib/components"
             }
         }
     }
@@ -120,7 +120,7 @@ Add to your MCP settings:
             "command": "node",
             "args": ["/path/to/cloved/packages/mcp/index.js"],
             "env": {
-                "BLEND_LIBRARY_PACKAGE_NAME": "blend-v1"
+                "BLEND_LIBRARY_PACKAGE_NAME": "@juspay/blend-design-system"
             }
         }
     }
@@ -240,7 +240,7 @@ Arguments: {
 }
 
 // Response
-import { Button } from "blend-v1";
+import { Button } from "@juspay/blend-design-system";
 
 <Button text="Submit" variant="primary" size="medium" />
 ```

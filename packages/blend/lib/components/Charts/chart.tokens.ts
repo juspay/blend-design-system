@@ -22,6 +22,9 @@ export type ChartTokensType = {
     content: {
         legend: {
             gap: CSSObject['gap']
+            dropdown: {
+                maxHeight: CSSObject['maxHeight']
+            }
             item: {
                 gap: CSSObject['gap']
                 color: {
@@ -68,6 +71,9 @@ export const getChartTokens = (
             content: {
                 legend: {
                     gap: foundationToken.unit[16],
+                    dropdown: {
+                        maxHeight: foundationToken.unit[200],
+                    },
                     item: {
                         gap: foundationToken.unit[8],
                         color: {
@@ -108,6 +114,9 @@ export const getChartTokens = (
             content: {
                 legend: {
                     gap: foundationToken.unit[16],
+                    dropdown: {
+                        maxHeight: foundationToken.unit[200],
+                    },
                     item: {
                         gap: foundationToken.unit[8],
                         color: {

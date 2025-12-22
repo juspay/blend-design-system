@@ -17,7 +17,12 @@ StorybookLink: components-button-buttonv2--docs
 ## Usage
 
 ```tsx
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-v1'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 
 function MyComponent() {
     return (
@@ -211,6 +216,9 @@ You can style the Button component using the following tokens:
 ```tsx
 export type ButtonTokensType = {
     gap: CSSObject['gap']
+    slotMaxHeight: {
+        [key in ButtonSize]: CSSObject['maxHeight']
+    }
     backgroundColor: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {

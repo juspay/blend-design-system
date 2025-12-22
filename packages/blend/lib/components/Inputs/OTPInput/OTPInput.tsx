@@ -190,7 +190,6 @@ const OTPInput = ({
                 label={label}
                 sublabel={sublabel}
                 helpIconHintText={helpIconHintText}
-                disabled={disabled}
                 name={name}
                 inputId={firstInputId}
                 required={required}
@@ -295,8 +294,20 @@ const OTPInput = ({
                                 onKeyDown={(
                                     e: KeyboardEvent<HTMLInputElement>
                                 ) => handleKeyDown(index, e)}
-                                onFocus={() => {
+                                onFocus={(
+                                    e: React.FocusEvent<HTMLInputElement>
+                                ) => {
+                                    const input = e.target
+                                    const len = input.value.length
+                                    input.setSelectionRange(len, len)
                                     setActiveIndex(index)
+                                }}
+                                onClick={(
+                                    e: React.MouseEvent<HTMLInputElement>
+                                ) => {
+                                    const input = e.currentTarget
+                                    const len = input.value.length
+                                    input.setSelectionRange(len, len)
                                 }}
                                 onBlur={() => setActiveIndex(-1)}
                                 onPaste={index === 0 ? handlePaste : undefined}
@@ -314,7 +325,6 @@ const OTPInput = ({
                 hintText={hintText}
                 error={error}
                 errorMessage={errorMessage}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
                 tokens={otpInputTokens}

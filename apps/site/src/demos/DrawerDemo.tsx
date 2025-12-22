@@ -35,7 +35,8 @@ import {
     SingleSelect,
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
-import { User } from 'lucide-react'
+import { Search, User } from 'lucide-react'
+import { SearchInput } from '../../../../packages/blend/lib/main'
 const simpleItems: SelectMenuGroupType[] = [
     {
         items: [
@@ -48,6 +49,7 @@ const simpleItems: SelectMenuGroupType[] = [
     },
 ]
 export const BasicDrawerExample = () => {
+    const [searchValue, setSearchValue] = useState('')
     return (
         <Drawer>
             <DrawerTrigger>
@@ -83,6 +85,12 @@ export const BasicDrawerExample = () => {
                         </DrawerDescription>
                     </DrawerHeader>
                     <DrawerBody>
+                        <SearchInput
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            placeholder="Search..."
+                            leftSlot={<Search size={16} />}
+                        />
                         <p>
                             This component can be used as a Dialog replacement
                             on mobile and tablet devices. You can read about why

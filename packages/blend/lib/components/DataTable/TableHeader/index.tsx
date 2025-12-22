@@ -1,4 +1,10 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react'
+import React, {
+    forwardRef,
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+} from 'react'
 import { ChevronsUpDown, Edit2 } from 'lucide-react'
 import { styled } from 'styled-components'
 import type { DraggableAttributes } from '@dnd-kit/core'
@@ -77,12 +83,109 @@ const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
 
 const EditIcon = styled(Edit2)`
     cursor: pointer;
-    color: ${FOUNDATION_THEME.colors.gray[400]};
-
-    &:hover {
-        color: ${FOUNDATION_THEME.colors.gray[600]};
-    }
 `
+
+const TruncatedTextWithTooltip: React.FC<{
+    content: string
+    children: React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        delayDuration?: number
+    }
+}> = ({ content, children, tooltipProps }) => {
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [isTruncated, setIsTruncated] = useState(false)
+    const checkTruncation = useCallback(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const textElement =
+            (wrapper.querySelector('p') as HTMLElement) ||
+            (wrapper.firstElementChild as HTMLElement)
+
+        if (!textElement) {
+            setIsTruncated(false)
+            return
+        }
+
+        if (textElement.offsetWidth === 0 || textElement.offsetHeight === 0) {
+            setIsTruncated(false)
+            return
+        }
+
+        const truncated = textElement.scrollWidth > textElement.clientWidth
+        setIsTruncated(truncated)
+    }, [])
+
+    useEffect(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const timeoutId = setTimeout(checkTruncation, 0)
+
+        const resizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(checkTruncation)
+        })
+        resizeObserver.observe(wrapper)
+
+        const observeTextElement = () => {
+            const textElement = wrapper.querySelector('p') as HTMLElement
+            if (textElement) {
+                resizeObserver.observe(textElement)
+            }
+        }
+
+        const observeTimeoutId = setTimeout(observeTextElement, 100)
+
+        window.addEventListener('resize', checkTruncation, { passive: true })
+
+        return () => {
+            clearTimeout(timeoutId)
+            clearTimeout(observeTimeoutId)
+            resizeObserver.disconnect()
+            window.removeEventListener('resize', checkTruncation)
+        }
+    }, [content, checkTruncation])
+
+    const handleMouseEnter = useCallback(() => {
+        if (!isTruncated) {
+            checkTruncation()
+        }
+    }, [isTruncated, checkTruncation])
+
+    const textContent = (
+        <Block
+            ref={wrapperRef}
+            onMouseEnter={handleMouseEnter}
+            style={{
+                minWidth: 0,
+                width: '100%',
+                overflow: 'hidden',
+            }}
+        >
+            {children}
+        </Block>
+    )
+
+    if (isTruncated && content) {
+        return (
+            <Tooltip
+                content={content}
+                side={tooltipProps?.side || TooltipSide.TOP}
+                align={tooltipProps?.align || TooltipAlign.START}
+                size={tooltipProps?.size || TooltipSize.SMALL}
+                delayDuration={tooltipProps?.delayDuration || 500}
+                fullWidth={true}
+            >
+                {textContent}
+            </Tooltip>
+        )
+    }
+
+    return textContent
+}
 
 const TableHeader = forwardRef<
     HTMLTableSectionElement,
@@ -371,71 +474,77 @@ const TableHeader = forwardRef<
                         </th>
                     )}
 
-                    {enableRowSelection && (
-                        <th
-                            role="columnheader"
-                            scope="col"
-                            aria-label="Select all rows"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    onSelectAll(
-                                        selectAll === true ? false : true
-                                    )
-                                }
-                            }}
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                width: '60px',
-                                minWidth: '60px',
-                                maxWidth: '60px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                                borderBottom:
-                                    tableToken.dataTable.table.header
-                                        .borderBottom,
-                                ...(!enableRowExpansion && {
-                                    borderTopLeftRadius:
-                                        tableToken.dataTable.borderRadius,
-                                }),
-                                ...(columnFreeze > 0 && {
-                                    position: 'sticky',
-                                    left: enableRowExpansion ? '50px' : '0px',
-                                    zIndex: 9,
-                                    backgroundColor:
-                                        tableToken.dataTable.table.header
-                                            .backgroundColor,
-                                }),
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                width={FOUNDATION_THEME.unit[40]}
+                    {enableRowSelection &&
+                        data &&
+                        data.length > 0 &&
+                        initialColumns.length > 0 && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Select all rows"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        onSelectAll(
+                                            selectAll === true ? false : true
+                                        )
+                                    }
+                                }}
                                 style={{
-                                    height: '100%',
+                                    ...tableToken.dataTable.table.header.cell,
+                                    width: '60px',
+                                    minWidth: '60px',
+                                    maxWidth: '60px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
                                     ...(!enableRowExpansion && {
                                         borderTopLeftRadius:
                                             tableToken.dataTable.borderRadius,
                                     }),
-                                    overflow: 'hidden',
+                                    ...(columnFreeze > 0 && {
+                                        position: 'sticky',
+                                        left: enableRowExpansion
+                                            ? '50px'
+                                            : '0px',
+                                        zIndex: 9,
+                                        backgroundColor:
+                                            tableToken.dataTable.table.header
+                                                .backgroundColor,
+                                    }),
                                 }}
                             >
-                                <Checkbox
-                                    checked={selectAll}
-                                    onCheckedChange={onSelectAll}
-                                    size={CheckboxSize.MEDIUM}
-                                    disabled={isDisabled}
-                                    aria-label="Select all rows"
-                                />
-                            </Block>
-                        </th>
-                    )}
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    width={FOUNDATION_THEME.unit[40]}
+                                    style={{
+                                        height: '100%',
+                                        ...(!enableRowExpansion && {
+                                            borderTopLeftRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Checkbox
+                                        checked={selectAll}
+                                        onCheckedChange={onSelectAll}
+                                        size={CheckboxSize.MEDIUM}
+                                        disabled={isDisabled}
+                                        aria-label="Select all rows"
+                                    />
+                                </Block>
+                            </th>
+                        )}
 
                     {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
@@ -532,7 +641,7 @@ const TableHeader = forwardRef<
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="space-between"
-                                gap="8px"
+                                gap="4px"
                                 width="100%"
                                 minWidth={0}
                                 onMouseEnter={() =>
@@ -579,24 +688,27 @@ const TableHeader = forwardRef<
                                     ) : (
                                         <Block
                                             display="flex"
+                                            alignItems="center"
                                             minWidth={0}
                                             flexGrow={1}
-                                            position="relative"
-                                            gap={
-                                                tableToken.dataTable.table
-                                                    .header.filter.gap
-                                            }
+                                            gap="8px"
+                                            style={{
+                                                overflow: 'hidden',
+                                            }}
                                         >
                                             <Block
                                                 display="flex"
                                                 flexDirection="column"
                                                 alignItems="flex-start"
+                                                justifyContent="center"
                                                 minWidth={0}
                                                 flexGrow={1}
+                                                flexShrink={1}
                                                 style={{
                                                     cursor: isDraggable
                                                         ? 'grab'
                                                         : 'default',
+                                                    overflow: 'hidden',
                                                 }}
                                                 {...(isDraggable &&
                                                 dragHandleProps
@@ -612,14 +724,14 @@ const TableHeader = forwardRef<
                                                         borderRadius="4px"
                                                     />
                                                 ) : (
-                                                    <Tooltip
+                                                    <TruncatedTextWithTooltip
                                                         content={column.header}
-                                                        side={TooltipSide.TOP}
-                                                        align={
-                                                            TooltipAlign.START
-                                                        }
-                                                        size={TooltipSize.SMALL}
-                                                        delayDuration={500}
+                                                        tooltipProps={{
+                                                            side: TooltipSide.TOP,
+                                                            align: TooltipAlign.START,
+                                                            size: TooltipSize.SMALL,
+                                                            delayDuration: 500,
+                                                        }}
                                                     >
                                                         <PrimitiveText
                                                             style={{
@@ -631,6 +743,8 @@ const TableHeader = forwardRef<
                                                                     'nowrap',
                                                                 minWidth: 0,
                                                                 width: '100%',
+                                                                maxWidth:
+                                                                    '100%',
                                                                 display:
                                                                     'block',
                                                                 cursor: isDraggable
@@ -655,7 +769,7 @@ const TableHeader = forwardRef<
                                                         >
                                                             {column.header}
                                                         </PrimitiveText>
-                                                    </Tooltip>
+                                                    </TruncatedTextWithTooltip>
                                                 )}
                                                 {column.headerSubtext &&
                                                     (isDisabled ? (
@@ -667,24 +781,20 @@ const TableHeader = forwardRef<
                                                             borderRadius="4px"
                                                             style={{
                                                                 marginTop:
-                                                                    '4px',
+                                                                    '2px',
                                                             }}
                                                         />
                                                     ) : (
-                                                        <Tooltip
+                                                        <TruncatedTextWithTooltip
                                                             content={
                                                                 column.headerSubtext
                                                             }
-                                                            side={
-                                                                TooltipSide.TOP
-                                                            }
-                                                            align={
-                                                                TooltipAlign.START
-                                                            }
-                                                            size={
-                                                                TooltipSize.SMALL
-                                                            }
-                                                            delayDuration={500}
+                                                            tooltipProps={{
+                                                                side: TooltipSide.TOP,
+                                                                align: TooltipAlign.START,
+                                                                size: TooltipSize.SMALL,
+                                                                delayDuration: 500,
+                                                            }}
                                                         >
                                                             <PrimitiveText
                                                                 data-element="table-header-sub-title"
@@ -700,6 +810,8 @@ const TableHeader = forwardRef<
                                                                         'nowrap',
                                                                     minWidth: 0,
                                                                     width: '100%',
+                                                                    maxWidth:
+                                                                        '100%',
                                                                     display:
                                                                         'block',
                                                                     cursor: isDraggable
@@ -727,7 +839,7 @@ const TableHeader = forwardRef<
                                                                     column.headerSubtext
                                                                 }
                                                             </PrimitiveText>
-                                                        </Tooltip>
+                                                        </TruncatedTextWithTooltip>
                                                     ))}
                                             </Block>
                                             {enableInlineEdit && (
@@ -737,6 +849,10 @@ const TableHeader = forwardRef<
                                                     className="edit-icon-wrapper"
                                                     display="flex"
                                                     alignItems="center"
+                                                    justifyContent="center"
+                                                    flexShrink={0}
+                                                    width="16px"
+                                                    height="16px"
                                                     opacity={
                                                         hoveredField ===
                                                         String(column.field)
@@ -744,8 +860,9 @@ const TableHeader = forwardRef<
                                                             : 0
                                                     }
                                                     transition="opacity 0.2s"
-                                                    zIndex={2}
-                                                    flexShrink={0}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                    }}
                                                     onClick={(e) => {
                                                         e.stopPropagation()
                                                         handleHeaderEdit(
@@ -1198,7 +1315,7 @@ const TableHeader = forwardRef<
                                             : undefined
                                     }
                                     aria-label={column.header}
-                                    style={headerStyle}
+                                    style={headerStyle as React.CSSProperties}
                                     data-element="table-header"
                                     data-id={column.header}
                                     disabled={false}
@@ -1233,7 +1350,7 @@ const TableHeader = forwardRef<
                                         : undefined
                                 }
                                 aria-label={column.header}
-                                style={headerStyle}
+                                style={headerStyle as React.CSSProperties}
                                 data-element="table-header"
                                 data-id={column.header}
                                 tabIndex={-1}
@@ -1325,56 +1442,61 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableColumnManager && (
-                        <th
-                            role="columnheader"
-                            scope="col"
-                            aria-label="Column manager"
-                            tabIndex={-1}
-                            style={{
-                                ...tableToken.dataTable.table.header.cell,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                boxSizing: 'border-box',
-                                position: 'sticky',
-                                right: 0,
-                                backgroundColor:
-                                    tableToken.dataTable.table.header
-                                        .backgroundColor,
-                                width: FOUNDATION_THEME.unit[48],
-                                minWidth: FOUNDATION_THEME.unit[48],
-                                maxWidth: FOUNDATION_THEME.unit[48],
-                                borderBottom:
-                                    tableToken.dataTable.table.header
-                                        .borderBottom,
-                                borderTopRightRadius:
-                                    tableToken.dataTable.borderRadius,
-                            }}
-                        >
-                            <Block position="relative">
-                                <ColumnManager
-                                    columns={initialColumns}
-                                    visibleColumns={
-                                        allVisibleColumns || visibleColumns
-                                    }
-                                    onColumnChange={onColumnChange}
-                                    maxSelections={columnManagerMaxSelections}
-                                    alwaysSelectedColumns={
-                                        columnManagerAlwaysSelected
-                                    }
-                                    columnManagerPrimaryAction={
-                                        columnManagerPrimaryAction
-                                    }
-                                    columnManagerSecondaryAction={
-                                        columnManagerSecondaryAction
-                                    }
-                                    multiSelectWidth={columnManagerWidth}
-                                    disabled={isDisabled}
-                                />
-                            </Block>
-                        </th>
-                    )}
+                    {enableColumnManager &&
+                        data &&
+                        data.length > 0 &&
+                        visibleColumns.length > 0 && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Column manager"
+                                tabIndex={-1}
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    position: 'sticky',
+                                    right: 0,
+                                    backgroundColor:
+                                        tableToken.dataTable.table.header
+                                            .backgroundColor,
+                                    width: FOUNDATION_THEME.unit[48],
+                                    minWidth: FOUNDATION_THEME.unit[48],
+                                    maxWidth: FOUNDATION_THEME.unit[48],
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    borderTopRightRadius:
+                                        tableToken.dataTable.borderRadius,
+                                }}
+                            >
+                                <Block position="relative">
+                                    <ColumnManager
+                                        columns={initialColumns}
+                                        visibleColumns={
+                                            allVisibleColumns || visibleColumns
+                                        }
+                                        onColumnChange={onColumnChange}
+                                        maxSelections={
+                                            columnManagerMaxSelections
+                                        }
+                                        alwaysSelectedColumns={
+                                            columnManagerAlwaysSelected
+                                        }
+                                        columnManagerPrimaryAction={
+                                            columnManagerPrimaryAction
+                                        }
+                                        columnManagerSecondaryAction={
+                                            columnManagerSecondaryAction
+                                        }
+                                        multiSelectWidth={columnManagerWidth}
+                                        disabled={isDisabled}
+                                    />
+                                </Block>
+                            </th>
+                        )}
                 </tr>
             </thead>
         )

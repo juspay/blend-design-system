@@ -14,7 +14,7 @@ import {
     DataTable,
     ColumnDefinition,
     ColumnType,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import {
     AlertCircle,
     CheckCircle,

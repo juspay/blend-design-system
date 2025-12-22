@@ -537,7 +537,6 @@ const Charts: React.FC<ChartsProps> = ({
     )
 
     const handleLegendClick = (key: string) => {
-        if (chartType === ChartType.PIE) return
         setSelectedKeys((prevActiveKeys) => {
             if (prevActiveKeys.includes(key)) {
                 return prevActiveKeys.filter((k) => k !== key)

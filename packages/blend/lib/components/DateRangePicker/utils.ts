@@ -14,26 +14,189 @@ import { CalendarTokenType } from './dateRangePicker.tokens'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 /**
+ * Gets the date components (year, month, day, etc.) for a given Date in a specific timezone
+ * @param date The date to get components for
+ * @param timezone IANA timezone string (e.g., "America/New_York")
+ * @returns Object with date components in the target timezone
+ */
+export const getDatePartsInTimezone = (
+    date: Date,
+    timezone: string
+): {
+    year: number
+    month: number
+    day: number
+    hours: number
+    minutes: number
+    seconds: number
+} => {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    })
+
+    const parts = formatter.formatToParts(date)
+
+    return {
+        year: parseInt(parts.find((p) => p.type === 'year')?.value || '2024'),
+        month:
+            parseInt(parts.find((p) => p.type === 'month')?.value || '1') - 1,
+        day: parseInt(parts.find((p) => p.type === 'day')?.value || '1'),
+        hours: parseInt(parts.find((p) => p.type === 'hour')?.value || '0'),
+        minutes: parseInt(parts.find((p) => p.type === 'minute')?.value || '0'),
+        seconds: parseInt(parts.find((p) => p.type === 'second')?.value || '0'),
+    }
+}
+
+/**
+ * Creates a Date object representing a specific moment in a timezone
+ * This interprets the given date/time as being in the target timezone and returns
+ * the equivalent JavaScript Date object (which is always in UTC internally)
+ *
+ * @param timezone IANA timezone string (e.g., "America/New_York")
+ * @param year Year
+ * @param month Month (0-11)
+ * @param day Day of month (1-31)
+ * @param hours Hours (0-23)
+ * @param minutes Minutes (0-59)
+ * @param seconds Seconds (0-59)
+ * @returns Date object
+ */
+export const createDateInTimezone = (
+    timezone: string | undefined,
+    year: number,
+    month: number,
+    day: number,
+    hours: number = 0,
+    minutes: number = 0,
+    seconds: number = 0
+): Date => {
+    if (!timezone) {
+        return new Date(year, month, day, hours, minutes, seconds)
+    }
+
+    // Create an ISO string representing this moment in the target timezone
+    // Format: YYYY-MM-DDTHH:mm:ss
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+
+    // Try to parse this as a local time in the target timezone
+    // We'll create a date and then adjust it based on the timezone offset
+    const testDate = new Date(dateStr)
+    const testParts = getDatePartsInTimezone(testDate, timezone)
+
+    // Calculate the difference between what we want and what we got
+    const wantedTime = Date.UTC(year, month, day, hours, minutes, seconds)
+    const gotTime = Date.UTC(
+        testParts.year,
+        testParts.month,
+        testParts.day,
+        testParts.hours,
+        testParts.minutes,
+        testParts.seconds
+    )
+    const offset = wantedTime - gotTime
+
+    return new Date(testDate.getTime() + offset)
+}
+
+/**
+ * Gets the current date/time
+ * @param _timezone Timezone parameter (not used - now is the same moment everywhere)
+ * @returns Current Date object
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getNowInTimezone = (_timezone: string | undefined): Date => {
+    return new Date()
+}
+
+/**
+ * Gets today's date (at midnight) in the specified timezone
+ * @param timezone IANA timezone string
+ * @returns Date object representing today at 00:00:00 in the specified timezone
+ */
+export const getTodayInTimezone = (timezone: string | undefined): Date => {
+    const now = new Date()
+
+    if (!timezone) {
+        return new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            0,
+            0,
+            0,
+            0
+        )
+    }
+
+    // Get today's date in the target timezone
+    const parts = getDatePartsInTimezone(now, timezone)
+
+    // Create midnight for that date in that timezone
+    return createDateInTimezone(
+        timezone,
+        parts.year,
+        parts.month,
+        parts.day,
+        0,
+        0,
+        0
+    )
+}
+
+/**
  * Formats a date according to the specified format
  * @param date The date to format
  * @param format The format string (e.g., "dd/MM/yyyy")
+ * @param timezone Optional IANA timezone string
  * @returns The formatted date string or empty string if date is invalid
  */
-export const formatDate = (date: Date, format: string): string => {
+export const formatDate = (
+    date: Date,
+    format: string,
+    timezone?: string
+): string => {
     if (!date || !isValidDate(date)) return ''
 
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const year = date.getFullYear()
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
+    let day: number, month: number, year: number, hours: number, minutes: number
+
+    if (timezone) {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+
+        const parts = formatter.formatToParts(date)
+        year = parseInt(parts.find((p) => p.type === 'year')?.value || '2024')
+        month = parseInt(parts.find((p) => p.type === 'month')?.value || '1')
+        day = parseInt(parts.find((p) => p.type === 'day')?.value || '1')
+        hours = parseInt(parts.find((p) => p.type === 'hour')?.value || '0')
+        minutes = parseInt(parts.find((p) => p.type === 'minute')?.value || '0')
+    } else {
+        day = date.getDate()
+        month = date.getMonth() + 1
+        year = date.getFullYear()
+        hours = date.getHours()
+        minutes = date.getMinutes()
+    }
 
     return format
-        .replace('dd', day)
-        .replace('MM', month)
+        .replace('dd', day.toString().padStart(2, '0'))
+        .replace('MM', month.toString().padStart(2, '0'))
         .replace('yyyy', year.toString())
-        .replace('HH', hours)
-        .replace('mm', minutes)
+        .replace('HH', hours.toString().padStart(2, '0'))
+        .replace('mm', minutes.toString().padStart(2, '0'))
 }
 
 /**
@@ -136,39 +299,77 @@ export const formatDateRange = (
 /**
  * Gets a date range based on a preset
  * @param preset The preset to get the range for
+ * @param timezone Optional IANA timezone string for timezone-aware calculations
  * @returns The date range for the preset
  */
-export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
-    // Check if this is a custom preset
+export const getPresetDateRange = (
+    preset: DateRangePreset,
+    timezone?: string
+): DateRange => {
     const customDefinition = getCustomPresetDefinition(preset as string)
     if (customDefinition) {
         return customDefinition.getDateRange()
     }
 
-    const now = new Date()
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const now = getNowInTimezone(timezone)
+    const today = getTodayInTimezone(timezone)
 
     switch (preset) {
         case DateRangePreset.TODAY: {
             // Today should be from 12:00 AM to current time
-            const startDate = new Date(
+            const startDate = createDateInTimezone(
+                timezone,
                 today.getFullYear(),
                 today.getMonth(),
                 today.getDate(),
                 0,
                 0,
-                0,
                 0
             )
-            const endDate = new Date(now) // Current time
+            const endDate = now // Current time
             return { startDate, endDate }
         }
 
         case DateRangePreset.YESTERDAY: {
-            // Yesterday should be from 12:00 AM to 11:59 PM of yesterday
-            const yesterday = new Date(today)
-            yesterday.setDate(yesterday.getDate() - 1)
-            return createSingleDateRange(yesterday)
+            // Yesterday: full day from 00:00:00 to 23:59:59 of the previous day
+            if (!timezone) {
+                const yesterday = new Date(today)
+                yesterday.setDate(yesterday.getDate() - 1)
+                return createSingleDateRange(yesterday, timezone)
+            }
+
+            // Get current date in target timezone and subtract 1 day
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Subtract 1 day
+            const yesterdayDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day - 1
+            )
+
+            // Create the full day range for yesterday in the target timezone
+            const startDate = createDateInTimezone(
+                timezone,
+                yesterdayDate.getFullYear(),
+                yesterdayDate.getMonth(),
+                yesterdayDate.getDate(),
+                0,
+                0,
+                0
+            )
+            const endDate = createDateInTimezone(
+                timezone,
+                yesterdayDate.getFullYear(),
+                yesterdayDate.getMonth(),
+                yesterdayDate.getDate(),
+                23,
+                59,
+                59
+            )
+
+            return { startDate, endDate }
         }
 
         case DateRangePreset.LAST_30_MINUTES: {
@@ -177,9 +378,45 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.TOMORROW: {
-            const tomorrow = new Date(today)
-            tomorrow.setDate(tomorrow.getDate() + 1)
-            return createSingleDateRange(tomorrow)
+            // Tomorrow: full day from 00:00:00 to 23:59:59 of the next day
+            if (!timezone) {
+                const tomorrow = new Date(today)
+                tomorrow.setDate(tomorrow.getDate() + 1)
+                return createSingleDateRange(tomorrow, timezone)
+            }
+
+            // Get current date in target timezone and add 1 day
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Add 1 day
+            const tomorrowDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day + 1
+            )
+
+            // Create the full day range for tomorrow in the target timezone
+            const startDate = createDateInTimezone(
+                timezone,
+                tomorrowDate.getFullYear(),
+                tomorrowDate.getMonth(),
+                tomorrowDate.getDate(),
+                0,
+                0,
+                0
+            )
+            const endDate = createDateInTimezone(
+                timezone,
+                tomorrowDate.getFullYear(),
+                tomorrowDate.getMonth(),
+                tomorrowDate.getDate(),
+                23,
+                59,
+                59
+            )
+
+            return { startDate, endDate }
         }
 
         case DateRangePreset.LAST_1_HOUR: {
@@ -200,31 +437,78 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
         }
 
         case DateRangePreset.LAST_7_DAYS: {
-            // Last 7 days: 7 complete days ago to current time today
-            // Day 1-6: 12:00 AM to 11:59 PM, Day 7 (today): 12:00 AM to current time
-            const sevenDaysAgo = new Date(today)
-            sevenDaysAgo.setDate(today.getDate() - 6) // 6 days ago + today = 7 days
-            sevenDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+            // Last 7 days: from midnight 6 days ago to now
+            if (!timezone) {
+                const sevenDaysAgo = new Date(today)
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+                sevenDaysAgo.setHours(0, 0, 0, 0)
+                return { startDate: sevenDaysAgo, endDate: now }
+            }
 
-            return { startDate: sevenDaysAgo, endDate: now }
+            // Get current date in target timezone
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Go back 6 days (6 days ago + today = 7 days)
+            const sevenDaysAgoDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day - 6
+            )
+
+            const startDate = createDateInTimezone(
+                timezone,
+                sevenDaysAgoDate.getFullYear(),
+                sevenDaysAgoDate.getMonth(),
+                sevenDaysAgoDate.getDate(),
+                0,
+                0,
+                0
+            )
+
+            return { startDate, endDate: now }
         }
 
         case DateRangePreset.LAST_30_DAYS: {
-            // Last 30 days: 30 complete days ago to current time today
-            const thirtyDaysAgo = new Date(today)
-            thirtyDaysAgo.setDate(today.getDate() - 29) // 29 days ago + today = 30 days
-            thirtyDaysAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+            // Last 30 days: from midnight 29 days ago to now
+            if (!timezone) {
+                const thirtyDaysAgo = new Date(today)
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29)
+                thirtyDaysAgo.setHours(0, 0, 0, 0)
+                return { startDate: thirtyDaysAgo, endDate: now }
+            }
 
-            return { startDate: thirtyDaysAgo, endDate: now }
+            // Get current date in target timezone
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Go back 29 days (29 days ago + today = 30 days)
+            const thirtyDaysAgoDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day - 29
+            )
+
+            const startDate = createDateInTimezone(
+                timezone,
+                thirtyDaysAgoDate.getFullYear(),
+                thirtyDaysAgoDate.getMonth(),
+                thirtyDaysAgoDate.getDate(),
+                0,
+                0,
+                0
+            )
+
+            return { startDate, endDate: now }
         }
 
         case DateRangePreset.THIS_MONTH: {
             // This month: Start of current month (1st day at 12:00 AM) to current time
-            const startOfMonth = new Date(
+            const startOfMonth = createDateInTimezone(
+                timezone,
                 today.getFullYear(),
                 today.getMonth(),
                 1,
-                0,
                 0,
                 0,
                 0
@@ -234,77 +518,170 @@ export const getPresetDateRange = (preset: DateRangePreset): DateRange => {
 
         case DateRangePreset.LAST_MONTH: {
             // Last month: Full previous month (1st day 12:00 AM to last day 11:59 PM)
-            const lastMonth = new Date(
+            const lastMonthDate = createDateInTimezone(
+                timezone,
                 today.getFullYear(),
                 today.getMonth() - 1,
                 1
             )
-            const startOfLastMonth = new Date(
-                lastMonth.getFullYear(),
-                lastMonth.getMonth(),
+            const startOfLastMonth = createDateInTimezone(
+                timezone,
+                lastMonthDate.getFullYear(),
+                lastMonthDate.getMonth(),
                 1,
-                0,
                 0,
                 0,
                 0
             )
-            const endOfLastMonth = new Date(
-                lastMonth.getFullYear(),
-                lastMonth.getMonth() + 1,
-                0,
+            // Get last day of last month (day 0 of current month)
+            const lastDayOfLastMonth = new Date(
+                lastMonthDate.getFullYear(),
+                lastMonthDate.getMonth() + 1,
+                0
+            ).getDate()
+            const endOfLastMonth = createDateInTimezone(
+                timezone,
+                lastMonthDate.getFullYear(),
+                lastMonthDate.getMonth(),
+                lastDayOfLastMonth,
                 23,
                 59,
-                59,
-                999
+                59
             )
             return { startDate: startOfLastMonth, endDate: endOfLastMonth }
         }
 
         case DateRangePreset.LAST_3_MONTHS: {
             // Last 3 months: Start from 12:00 AM of 3 months ago to current time
-            const threeMonthsAgo = new Date(now)
-            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
-            threeMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+            const threeMonthsAgoDate = new Date(now)
+            threeMonthsAgoDate.setMonth(threeMonthsAgoDate.getMonth() - 3)
+            const threeMonthsAgo = createDateInTimezone(
+                timezone,
+                threeMonthsAgoDate.getFullYear(),
+                threeMonthsAgoDate.getMonth(),
+                threeMonthsAgoDate.getDate(),
+                0,
+                0,
+                0
+            )
             return { startDate: threeMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.LAST_12_MONTHS: {
             // Last 12 months: Start from 12:00 AM of 12 months ago to current time
-            const twelveMonthsAgo = new Date(now)
-            twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
-            twelveMonthsAgo.setHours(0, 0, 0, 0) // Start at 12:00 AM
+            const twelveMonthsAgoDate = new Date(now)
+            twelveMonthsAgoDate.setFullYear(
+                twelveMonthsAgoDate.getFullYear() - 1
+            )
+            const twelveMonthsAgo = createDateInTimezone(
+                timezone,
+                twelveMonthsAgoDate.getFullYear(),
+                twelveMonthsAgoDate.getMonth(),
+                twelveMonthsAgoDate.getDate(),
+                0,
+                0,
+                0
+            )
             return { startDate: twelveMonthsAgo, endDate: now }
         }
 
         case DateRangePreset.NEXT_7_DAYS: {
-            // Next 7 days: From current time to 11:59 PM of 7 days later
-            const sevenDaysLater = new Date(today)
-            sevenDaysLater.setDate(sevenDaysLater.getDate() + 6)
-            sevenDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
-            return { startDate: now, endDate: sevenDaysLater }
+            // Next 7 days: from now to 23:59:59 of 6 days from today
+            if (!timezone) {
+                const sevenDaysLater = new Date(today)
+                sevenDaysLater.setDate(sevenDaysLater.getDate() + 6)
+                sevenDaysLater.setHours(23, 59, 59, 999)
+                return { startDate: now, endDate: sevenDaysLater }
+            }
+
+            // Get current date in target timezone
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Go forward 6 days (today + 6 days = 7 days)
+            const sevenDaysLaterDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day + 6
+            )
+
+            const endDate = createDateInTimezone(
+                timezone,
+                sevenDaysLaterDate.getFullYear(),
+                sevenDaysLaterDate.getMonth(),
+                sevenDaysLaterDate.getDate(),
+                23,
+                59,
+                59
+            )
+
+            return { startDate: now, endDate }
         }
 
         case DateRangePreset.NEXT_30_DAYS: {
-            // Next 30 days: From current time to 11:59 PM of 30 days later
-            const thirtyDaysLater = new Date(today)
-            thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 29)
-            thirtyDaysLater.setHours(23, 59, 59, 999) // End at 11:59 PM
-            return { startDate: now, endDate: thirtyDaysLater }
+            // Next 30 days: from now to 23:59:59 of 29 days from today
+            if (!timezone) {
+                const thirtyDaysLater = new Date(today)
+                thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 29)
+                thirtyDaysLater.setHours(23, 59, 59, 999)
+                return { startDate: now, endDate: thirtyDaysLater }
+            }
+
+            // Get current date in target timezone
+            const nowInTz = new Date()
+            const parts = getDatePartsInTimezone(nowInTz, timezone)
+
+            // Go forward 29 days (today + 29 days = 30 days)
+            const thirtyDaysLaterDate = new Date(
+                parts.year,
+                parts.month,
+                parts.day + 29
+            )
+
+            const endDate = createDateInTimezone(
+                timezone,
+                thirtyDaysLaterDate.getFullYear(),
+                thirtyDaysLaterDate.getMonth(),
+                thirtyDaysLaterDate.getDate(),
+                23,
+                59,
+                59
+            )
+
+            return { startDate: now, endDate }
         }
 
         case DateRangePreset.NEXT_3_MONTHS: {
             // Next 3 months: From current time to 11:59 PM of 3 months later
-            const threeMonthsLater = new Date(today)
-            threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
-            threeMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            const threeMonthsLaterDate = new Date(now)
+            threeMonthsLaterDate.setMonth(threeMonthsLaterDate.getMonth() + 3)
+            const threeMonthsLater = createDateInTimezone(
+                timezone,
+                threeMonthsLaterDate.getFullYear(),
+                threeMonthsLaterDate.getMonth(),
+                threeMonthsLaterDate.getDate(),
+                23,
+                59,
+                59
+            )
             return { startDate: now, endDate: threeMonthsLater }
         }
 
         case DateRangePreset.NEXT_12_MONTHS: {
             // Next 12 months: From current time to 11:59 PM of 12 months later
-            const twelveMonthsLater = new Date(today)
-            twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
-            twelveMonthsLater.setHours(23, 59, 59, 999) // End at 11:59 PM
+            const twelveMonthsLaterDate = new Date(now)
+            twelveMonthsLaterDate.setFullYear(
+                twelveMonthsLaterDate.getFullYear() + 1
+            )
+            const twelveMonthsLater = createDateInTimezone(
+                timezone,
+                twelveMonthsLaterDate.getFullYear(),
+                twelveMonthsLaterDate.getMonth(),
+                twelveMonthsLaterDate.getDate(),
+                23,
+                59,
+                59
+            )
             return { startDate: now, endDate: twelveMonthsLater }
         }
 
@@ -575,27 +952,30 @@ export const isDateToday = (date: Date, today: Date): boolean => {
  * @param date The date to create a range for
  * @returns DateRange spanning the entire day (same date, different times)
  */
-export const createSingleDateRange = (date: Date): DateRange => {
+export const createSingleDateRange = (
+    date: Date,
+    timezone?: string
+): DateRange => {
     // Start of day (00:00:00)
-    const startDate = new Date(
+    const startDate = createDateInTimezone(
+        timezone,
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
-        0,
         0,
         0,
         0
     )
 
     // End of day (23:59:59.999) - same date but end of day
-    const endDate = new Date(
+    const endDate = createDateInTimezone(
+        timezone,
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
         23,
         59,
-        59,
-        999
+        59
     )
 
     return { startDate, endDate }
@@ -1066,8 +1446,8 @@ export const getDateCellStates = (
 
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
-            (disablePastDates && date < today) ||
-            (customDisableDates && customDisableDates(date))
+        (disablePastDates && date < today) ||
+        (customDisableDates && customDisableDates(date))
     )
 
     return {
@@ -1294,7 +1674,8 @@ export const isDateInputComplete = (value: string, format: string): boolean => {
  */
 export const formatDateDisplay = (
     selectedRange: DateRange,
-    allowSingleDateSelection: boolean = false
+    allowSingleDateSelection: boolean = false,
+    timezone?: string
 ): string => {
     if (!selectedRange.startDate) {
         return 'Select date range'
@@ -1304,12 +1685,14 @@ export const formatDateDisplay = (
         month: 'short',
         day: 'numeric',
         year: 'numeric',
+        ...(timezone && { timeZone: timezone }),
     }
 
     const timeFormatOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
+        ...(timezone && { timeZone: timezone }),
     }
 
     const startDateStr = selectedRange.startDate.toLocaleDateString(
@@ -1436,7 +1819,8 @@ export const handleCalendarDateSelect = (
     range: DateRange,
     startTime: string,
     endTime: string,
-    dateFormat: string
+    dateFormat: string,
+    timezone?: string
 ): {
     updatedRange: DateRange
     formattedStartDate: string
@@ -1488,8 +1872,8 @@ export const handleCalendarDateSelect = (
 
     return {
         updatedRange: range,
-        formattedStartDate: formatDate(range.startDate, dateFormat),
-        formattedEndDate: formatDate(range.endDate, dateFormat),
+        formattedStartDate: formatDate(range.startDate, dateFormat, timezone),
+        formattedEndDate: formatDate(range.endDate, dateFormat, timezone),
     }
 }
 
@@ -1501,7 +1885,8 @@ export const handleCalendarDateSelect = (
  */
 export const handlePresetSelection = (
     preset: DateRangePreset,
-    dateFormat: string
+    dateFormat: string,
+    timezone?: string
 ): {
     updatedRange: DateRange
     formattedStartDate: string
@@ -1509,14 +1894,14 @@ export const handlePresetSelection = (
     formattedStartTime: string
     formattedEndTime: string
 } => {
-    const range = getPresetDateRange(preset)
+    const range = getPresetDateRange(preset, timezone)
 
     return {
         updatedRange: range,
-        formattedStartDate: formatDate(range.startDate, dateFormat),
-        formattedEndDate: formatDate(range.endDate, dateFormat),
-        formattedStartTime: formatDate(range.startDate, 'HH:mm'),
-        formattedEndTime: formatDate(range.endDate, 'HH:mm'),
+        formattedStartDate: formatDate(range.startDate, dateFormat, timezone),
+        formattedEndDate: formatDate(range.endDate, dateFormat, timezone),
+        formattedStartTime: formatDate(range.startDate, 'HH:mm', timezone),
+        formattedEndTime: formatDate(range.endDate, 'HH:mm', timezone),
     }
 }
 
@@ -2022,7 +2407,8 @@ export const getPresetDisplayLabel = (preset: DateRangePreset): string => {
  */
 export const formatDateRangeWithConfig = (
     range: DateRange,
-    config: DateFormatConfig = {}
+    config: DateFormatConfig = {},
+    timezone?: string
 ): string => {
     if (!range.startDate) {
         return ''
@@ -2058,18 +2444,26 @@ export const formatDateRangeWithConfig = (
         if (timeFormat === '12h') {
             return formatTimeIn12Hour(date)
         } else {
-            return formatDate(date, 'HH:mm')
+            return formatDate(date, 'HH:mm', timezone)
         }
     }
 
     // Helper function to get month abbreviation
     const getMonthAbbr = (date: Date): string => {
-        return date.toLocaleDateString(locale, { month: 'short' })
+        const options: Intl.DateTimeFormatOptions = {
+            month: 'short',
+            ...(timezone && { timeZone: timezone }),
+        }
+        return date.toLocaleDateString(locale, options)
     }
 
     // Helper function to get full month name
     const getMonthFull = (date: Date): string => {
-        return date.toLocaleDateString(locale, { month: 'long' })
+        const options: Intl.DateTimeFormatOptions = {
+            month: 'long',
+            ...(timezone && { timeZone: timezone }),
+        }
+        return date.toLocaleDateString(locale, options)
     }
 
     // Helper function to get ordinal suffix
@@ -2282,13 +2676,14 @@ export const formatDateRangeWithConfig = (
 export const formatTriggerDisplay = (
     range: DateRange | undefined,
     config: DateFormatConfig = {},
-    placeholder: string = 'Select date range'
+    placeholder: string = 'Select date range',
+    timezone?: string
 ): string => {
     if (!range || !range.startDate) {
         return placeholder
     }
 
-    return formatDateRangeWithConfig(range, config)
+    return formatDateRangeWithConfig(range, config, timezone)
 }
 
 /**

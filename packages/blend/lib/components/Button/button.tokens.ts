@@ -19,6 +19,10 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
  */
 export type ButtonTokensType = {
     gap: CSSObject['gap']
+    // Pattern: slotMaxHeight.[size] (size-dependent)
+    slotMaxHeight: {
+        [key in ButtonSize]: CSSObject['maxHeight']
+    }
     // Pattern: backgroundColor.[variant].[subType].[state]
     backgroundColor: {
         [key in ButtonType]: {
@@ -102,6 +106,11 @@ export const getButtonTokens = (
     return {
         sm: {
             gap: foundationToken.unit[6],
+            slotMaxHeight: {
+                sm: foundationToken.unit[16],
+                md: foundationToken.unit[18],
+                lg: foundationToken.unit[20],
+            },
             // Pattern: backgroundColor.[variant].[subType].[state]
             // Example: backgroundColor.primary.default.hover
             backgroundColor: {
@@ -967,6 +976,11 @@ export const getButtonTokens = (
         },
         lg: {
             gap: foundationToken.unit[6],
+            slotMaxHeight: {
+                sm: foundationToken.unit[16],
+                md: foundationToken.unit[18],
+                lg: foundationToken.unit[20],
+            },
             backgroundColor: {
                 primary: {
                     default: {
@@ -1755,7 +1769,7 @@ export const getButtonTokens = (
                     },
                     secondary: {
                         default: {
-                            default: foundationToken.colors.gray[600],
+                            default: foundationToken.colors.gray[700],
                             hover: foundationToken.colors.gray[600],
                             active: foundationToken.colors.gray[600],
                             disabled: foundationToken.colors.gray[300],
@@ -1822,9 +1836,9 @@ export const getButtonTokens = (
                 },
                 // Pattern: text.fontWeight.[size] (size-dependent)
                 fontWeight: {
-                    sm: foundationToken.font.weight[600],
-                    md: foundationToken.font.weight[600],
-                    lg: foundationToken.font.weight[600],
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
                 },
             },
         },

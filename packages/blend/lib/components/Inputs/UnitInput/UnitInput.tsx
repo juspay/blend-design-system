@@ -197,7 +197,6 @@ const UnitInput = ({
                     label={label}
                     sublabel={sublabel}
                     helpIconHintText={helpIconHintText}
-                    disabled={disabled}
                     name={name}
                     inputId={inputId}
                     required={required}
@@ -362,7 +361,6 @@ const UnitInput = ({
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
             />

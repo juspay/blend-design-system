@@ -14,6 +14,7 @@ export type NumberInputProps = {
     sublabel?: string
     helpIconHintText?: string
     hintText?: string
+    preventNegative?: boolean
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<

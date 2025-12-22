@@ -166,7 +166,6 @@ const DropdownInput = ({
                 <InputLabels
                     label={label}
                     sublabel={sublabel}
-                    disabled={disabled}
                     helpIconHintText={helpIconHintText}
                     name={name}
                     inputId={inputId}
@@ -399,7 +398,6 @@ const DropdownInput = ({
                 error={error}
                 errorMessage={errorMessage}
                 hintText={hintText}
-                disabled={disabled}
                 errorId={errorId}
                 hintId={hintId}
                 tokens={dropdownInputTokens}

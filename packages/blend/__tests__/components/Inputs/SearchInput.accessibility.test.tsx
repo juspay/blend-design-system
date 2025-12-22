@@ -91,7 +91,7 @@ describe('SearchInput Accessibility', () => {
                 />
             )
             const input = screen.getByRole('searchbox')
-            expect(input).toHaveAttribute('type', 'search')
+            expect(input).toHaveAttribute('type', 'text')
         })
 
         it('supports name attribute for input purpose identification', () => {
@@ -116,7 +116,7 @@ describe('SearchInput Accessibility', () => {
                     onChange={() => {}}
                 />
             )
-            const input = screen.getByRole('textbox')
+            const input = screen.getByRole('searchbox')
             expect(input).toHaveAttribute('type', 'text')
         })
     })

@@ -315,6 +315,12 @@ type MonacoEditorWrapperProps = {
     tokens: CodeBlockTokenType
     onFocus?: () => void
     onBlur?: () => void
+    /**
+     * When true, automatically focuses the editor when it mounts.
+     * When false or undefined, the editor will not auto-focus.
+     * Defaults to false.
+     */
+    autoFocus?: boolean
 }
 
 export const MonacoEditorWrapper = ({
@@ -331,6 +337,7 @@ export const MonacoEditorWrapper = ({
     tokens,
     onFocus,
     onBlur,
+    autoFocus = false,
 }: MonacoEditorWrapperProps) => {
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
@@ -494,7 +501,7 @@ export const MonacoEditorWrapper = ({
         editor.onDidFocusEditorText(() => onFocus?.())
         editor.onDidBlurEditorText(() => onBlur?.())
 
-        if (!disabled && !readOnly) {
+        if (autoFocus && !disabled && !readOnly) {
             setTimeout(() => editor.focus(), EDITOR_FOCUS_DELAY_MS)
         }
     }

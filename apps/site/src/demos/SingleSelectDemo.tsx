@@ -27,6 +27,7 @@ import {
     SelectMenuSide,
 } from '../../../../packages/blend/lib/components/Select'
 import {
+    Tooltip,
     TooltipSide,
     TooltipSize,
 } from '../../../../packages/blend/lib/components/Tooltip'
@@ -78,6 +79,7 @@ const SingleSelectDemo = () => {
     // Advanced Examples state
     const [groupedItemsSelected, setGroupedItemsSelected] = useState('')
     const [nestedMenuSelected, setNestedMenuSelected] = useState('')
+    const [apiCallLoadingSkeleton, setApiCallLoadingSkeleton] = useState(false)
 
     // Position & Alignment state
     const [topSideSelected, setTopSideSelected] = useState('')
@@ -128,7 +130,7 @@ const SingleSelectDemo = () => {
             showSeparator: true,
             items: [
                 {
-                    label: 'Most Popular',
+                    label: 'Most Popular Option with a very long label that will be truncated',
                     value: 'popular1',
                     slot1: <Star size={16} />,
                 },
@@ -971,6 +973,45 @@ const SingleSelectDemo = () => {
                                 </div>
                             )}
                         </div>
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">API Call Example</h3>
+                            <SingleSelect
+                                label="Location"
+                                subLabel="Select your region and country"
+                                hintText="Choose the closest location"
+                                items={nestedItems}
+                                selected={nestedMenuSelected}
+                                onSelect={(value) => {
+                                    setNestedMenuSelected(value)
+                                    addSnackbar({
+                                        header: 'Location Selected',
+                                        description: `Selected location: ${value}`,
+                                    })
+                                }}
+                                placeholder="Choose location"
+                                slot={<MapPin size={16} />}
+                                enableSearch
+                                onFocus={() => {
+                                    setApiCallLoadingSkeleton(true)
+                                    setTimeout(() => {
+                                        setApiCallLoadingSkeleton(false)
+                                    }, 2000)
+                                }}
+                                skeleton={{
+                                    count: 4,
+                                    show: apiCallLoadingSkeleton,
+                                    variant: 'pulse',
+                                }}
+                            />
+                            {nestedMenuSelected && (
+                                <div className="p-3 bg-blue-50 rounded-lg">
+                                    <p className="text-sm text-blue-700">
+                                        <strong>Location:</strong>{' '}
+                                        {nestedMenuSelected}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -1012,6 +1053,17 @@ const SingleSelectDemo = () => {
                                         leadingIcon={<Star size={16} />}
                                     />
                                 }
+                                onFocus={() => {
+                                    setApiCallLoadingSkeleton(true)
+                                    setTimeout(() => {
+                                        setApiCallLoadingSkeleton(false)
+                                    }, 2000)
+                                }}
+                                skeleton={{
+                                    count: 4,
+                                    show: apiCallLoadingSkeleton,
+                                    variant: 'pulse',
+                                }}
                             />
                             {groupedItemsSelected && (
                                 <div className="p-3 bg-blue-50 rounded-lg">
@@ -1137,6 +1189,54 @@ const SingleSelectDemo = () => {
                                     <p className="text-sm text-gray-700">
                                         <strong>Active Filter:</strong>{' '}
                                         {basicIconSelected}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <h3 className="font-semibold">
+                                Button with Tooltip Trigger
+                            </h3>
+                            <SingleSelect
+                                label="Product Selection"
+                                items={groupedItems}
+                                selected={groupedItemsSelected}
+                                onSelect={(value) => {
+                                    setGroupedItemsSelected(value)
+                                    addSnackbar({
+                                        header: 'Product Selected via Tooltip Button',
+                                        description: `Selected: ${value}`,
+                                    })
+                                }}
+                                placeholder="Select product"
+                                customTrigger={
+                                    <Tooltip
+                                        content="Click this button to select a product from the dropdown menu. Hover over the button to see this tooltip."
+                                        side={TooltipSide.TOP}
+                                        size={TooltipSize.LARGE}
+                                        delayDuration={300}
+                                    >
+                                        <Button
+                                            buttonType={ButtonType.PRIMARY}
+                                            size={ButtonSize.MEDIUM}
+                                            text="Select Product"
+                                            leadingIcon={<Star size={16} />}
+                                        />
+                                    </Tooltip>
+                                }
+                            />
+                            {groupedItemsSelected && (
+                                <div className="p-3 bg-purple-50 rounded-lg">
+                                    <p className="text-sm text-purple-700">
+                                        <strong>
+                                            Selected via Tooltip Button:
+                                        </strong>{' '}
+                                        {groupedItemsSelected}
+                                    </p>
+                                    <p className="text-xs text-purple-600 mt-1">
+                                        💡 Hover over the button to see the
+                                        tooltip
                                     </p>
                                 </div>
                             )}
