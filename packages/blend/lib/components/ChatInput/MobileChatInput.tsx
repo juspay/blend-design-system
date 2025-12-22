@@ -1,20 +1,59 @@
-import { Paperclip, Send } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Paperclip } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
-import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { FOUNDATION_THEME } from '../../tokens'
+import { getMobileChatInputTokens } from './MobileChatInput.tokens'
+import { AttachedFile, MenuProps } from '../../main'
+import AttachmentFile from './AttachmentFile'
+import { truncatePlaceholder } from './utils'
+
+const HiddenScrollbarTextarea = styled(PrimitiveTextarea)`
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;
+
+    /* Hide scrollbar for Chrome, Safari, and Edge */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE and Edge */
+    -ms-overflow-style: none;
+`
 
 type MobileChatInputProps = {
     value: string
     onChange?: (value: string) => void
+    slot1?: React.ReactNode
+    placeholder?: string
+    attachedFiles?: AttachedFile[]
+    handleAttachClick?: () => void
+    onFileRemove?: (fileId: string) => void
+    onFileClick?: (file: AttachedFile) => void
+    overflowMenuProps?: Partial<MenuProps>
 }
 
 const MobileChatInput: React.FC<MobileChatInputProps> = ({
     value,
     onChange,
+    slot1,
+    placeholder,
+    attachedFiles,
+    handleAttachClick,
+    onFileRemove,
+    onFileClick,
+    overflowMenuProps,
 }) => {
+    const containerRef = useRef<HTMLDivElement>(null!)
+    const tokens = getMobileChatInputTokens(FOUNDATION_THEME).sm
+    const textareaMobileTokens = tokens.textareaMobile
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const [isFocused, setIsFocused] = useState(false)
+    const [truncatedPlaceholder, setTruncatedPlaceholder] = useState<
+        string | undefined
+    >(placeholder)
 
     const handleTextareaChange = (
         e: React.ChangeEvent<HTMLTextAreaElement>
@@ -22,7 +61,21 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
         onChange?.(e.target.value)
     }
 
-    const [showFiles, setShowFiles] = useState(false)
+    // Update truncated placeholder when textarea resizes
+    useEffect(() => {
+        const el = textareaRef.current
+        if (!el) return
+
+        const updatePlaceholder = () => {
+            setTruncatedPlaceholder(truncatePlaceholder(el, placeholder))
+        }
+
+        updatePlaceholder()
+        const resizeObserver = new ResizeObserver(updatePlaceholder)
+        resizeObserver.observe(el)
+
+        return () => resizeObserver.disconnect()
+    }, [placeholder])
 
     useEffect(() => {
         const el = textareaRef.current
@@ -30,49 +83,85 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
         if (!el) return
 
         el.style.height = 'auto'
-        el.style.height = `${Math.min(el.scrollHeight, 100)}px`
-        el.style.borderRadius = '44px'
-        el.style.paddingTop = '12px'
-        el.style.paddingBottom = '12px'
+        const maxHeight = parseFloat(
+            String(textareaMobileTokens.height.focus).replace('px', '')
+        )
+        el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
 
-        if (el.scrollHeight > 44) {
-            el.style.borderRadius = '20px'
+        const defaultHeight = parseFloat(
+            String(textareaMobileTokens.height.default).replace('px', '')
+        )
+        if (el.scrollHeight > defaultHeight) {
+            el.style.borderRadius = textareaMobileTokens.borderRadius
+                .focus as string
+        } else {
+            el.style.borderRadius = textareaMobileTokens.borderRadius
+                .default as string
         }
-    }, [value])
+    }, [value, textareaMobileTokens])
 
-    console.log(textareaRef.current?.scrollHeight)
+    const attachmentButtonDimensions = useMemo(() => {
+        // Button is fixed at 44px (FOUNDATION_THEME.unit[44]) as defined in PrimitiveButton
+        const buttonWidth = FOUNDATION_THEME.unit[44]
+        // Gap between button and textarea (using unit[8] from tokens)
+        const gap = FOUNDATION_THEME.unit[8]
+        const total = `calc(${buttonWidth} + ${gap})`
+
+        return {
+            buttonWidth,
+            gap,
+            total,
+        }
+    }, [])
 
     return (
-        <Block padding={10} display="flex" flexDirection="column" gap={10}>
-            {showFiles && (
-                <Block display="flex" gap={2}>
-                    <Tag
-                        text="File 1"
-                        variant={TagVariant.SUBTLE}
-                        color={TagColor.NEUTRAL}
-                    />
-                    <Tag
-                        text="File 2"
-                        variant={TagVariant.SUBTLE}
-                        color={TagColor.NEUTRAL}
-                    />
-                    <Tag
-                        text="File 3"
-                        variant={TagVariant.SUBTLE}
-                        color={TagColor.NEUTRAL}
+        <Block
+            padding={10}
+            display="flex"
+            flexDirection="column"
+            gap={10}
+            ref={containerRef}
+        >
+            {attachedFiles && attachedFiles.length > 0 && (
+                <Block
+                    display="flex"
+                    gap={attachmentButtonDimensions.gap}
+                    marginLeft={attachmentButtonDimensions.total}
+                >
+                    <AttachmentFile
+                        attachedFiles={attachedFiles}
+                        onFileRemove={onFileRemove}
+                        onFileClick={onFileClick}
+                        overflowMenuProps={overflowMenuProps}
+                        containerRef={containerRef}
                     />
                 </Block>
             )}
-            <Block display="flex" width="100%" gap={8} position="relative">
-                <Block>
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.SMALL}
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Paperclip size={14} />}
-                        onClick={() => setShowFiles(!showFiles)}
+            <Block
+                display="flex"
+                width="100%"
+                gap={FOUNDATION_THEME.unit[8]}
+                position="relative"
+                alignItems="stretch"
+            >
+                <Block alignSelf="stretch" display="flex" alignItems="end">
+                    <PrimitiveButton
+                        width={FOUNDATION_THEME.unit[44]}
+                        height={FOUNDATION_THEME.unit[44]}
+                        onClick={handleAttachClick}
                         aria-label="Attach files"
-                    />
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        borderRadius="50%"
+                        background="transparent"
+                        border="1px solid #E1E4EA"
+                        color="#000"
+                        cursor="pointer"
+                        transition="all 0.3s ease"
+                    >
+                        <Paperclip size={14} />
+                    </PrimitiveButton>
                 </Block>
                 <Block
                     display="flex"
@@ -81,44 +170,72 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                     width="100%"
                     gap={2}
                 >
-                    <PrimitiveTextarea
+                    <HiddenScrollbarTextarea
                         ref={textareaRef}
                         rows={1}
                         value={value}
                         onChange={handleTextareaChange}
-                        placeholder="Type your message here..."
+                        placeholder={truncatedPlaceholder}
                         width="100%"
-                        // height="44px"
-                        borderRadius="44px"
-                        border="1px solid #e0e0e0"
+                        backgroundColor={textareaMobileTokens.backgroundColor}
+                        color={textareaMobileTokens.color}
+                        fontSize={textareaMobileTokens.fontSize}
+                        borderRadius={
+                            isFocused
+                                ? textareaMobileTokens.borderRadius.focus
+                                : textareaMobileTokens.borderRadius.default
+                        }
+                        border={
+                            isFocused
+                                ? textareaMobileTokens.border.focus
+                                : textareaMobileTokens.border.default
+                        }
                         resize="none"
-                        paddingRight="54px"
-                        paddingLeft="16px"
-                        paddingTop="12px"
-                        paddingBottom="12px"
-                        style={{
-                            lineHeight: `20px`,
-                            transition:
-                                'height 0.15s ease-out, padding 0.15s ease-out, border-radius 0.15s ease-out',
-                            boxSizing: 'border-box',
+                        paddingRight={
+                            slot1 ? attachmentButtonDimensions.total : 0
+                        }
+                        paddingLeft={textareaMobileTokens.padding}
+                        paddingTop={textareaMobileTokens.padding}
+                        paddingBottom={textareaMobileTokens.padding}
+                        overflow={'auto'}
+                        placeholderStyles={{
+                            color: textareaMobileTokens.placeholder.color,
                         }}
-                        overflow="hidden"
+                        style={{
+                            lineHeight: textareaMobileTokens.lineHeight,
+                            verticalAlign: textareaMobileTokens.verticalAlign,
+                        }}
+                        onFocus={(e) => {
+                            setIsFocused(true)
+                            e.currentTarget.style.borderRadius =
+                                textareaMobileTokens.borderRadius
+                                    .focus as string
+                            e.currentTarget.style.border = textareaMobileTokens
+                                .border.focus as string
+                        }}
+                        onBlur={(e) => {
+                            setIsFocused(false)
+                            e.currentTarget.style.borderRadius =
+                                textareaMobileTokens.borderRadius
+                                    .default as string
+                            e.currentTarget.style.border = textareaMobileTokens
+                                .border.default as string
+                        }}
                     />
 
                     <Block
                         position="absolute"
-                        top="50%"
-                        bottom={0}
-                        right={0}
-                        style={{ transform: 'translate(-50%, -50%)' }}
+                        bottom={'4px'}
+                        right={'4px'}
+                        width={36}
+                        height={36}
+                        borderRadius="100px"
+                        overflow="hidden"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
                     >
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            subType={ButtonSubType.ICON_ONLY}
-                            leadingIcon={<Send size={14} />}
-                            aria-label="Attach files"
-                        />
+                        {slot1}
                     </Block>
                 </Block>
             </Block>
