@@ -186,10 +186,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         aria-label={actionButton.label}
                         onClick={() => {
                             actionButton.onClick()
-                            if (
-                                actionButton.autoDismiss !== false &&
-                                toastId
-                            ) {
+                            if (actionButton.autoDismiss !== false && toastId) {
                                 sonnerToast.dismiss(toastId)
                             }
                         }}
