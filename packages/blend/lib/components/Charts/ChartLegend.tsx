@@ -14,6 +14,7 @@ import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
+    legends,
     keys,
     handleLegendClick,
     handleLegendEnter,
@@ -29,6 +30,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const legendTokens = chartTokens.content.legend
+
+    const displayLegends: Array<{ title: string; total?: number }> =
+        legends || keys.map((key) => ({ title: key }))
 
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
@@ -50,9 +54,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 : (legendTokens.gap as number) || 16
 
         const legendItems = Array.from(container.children)
+        const totalLegends = displayLegends.length
 
-        if (isExpanding.current && legendItems.length < keys.length) {
-            setCuttOffIndex(keys.length)
+        if (isExpanding.current && legendItems.length < totalLegends) {
+            setCuttOffIndex(totalLegends)
             isExpanding.current = false
 
             setTimeout(() => {
@@ -64,14 +69,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         let totalWidth = 0
         let optimalCutoff = 0
 
-        for (let i = 0; i < Math.min(legendItems.length, keys.length); i++) {
+        for (let i = 0; i < Math.min(legendItems.length, totalLegends); i++) {
             const itemWidth = (
                 legendItems[i] as HTMLElement
             ).getBoundingClientRect().width
 
             const totalGaps = i > 0 ? i * GAP_SIZE : 0
 
-            const remainingItems = keys.length - (i + 1)
+            const remainingItems = totalLegends - (i + 1)
             const needsMoreButton = remainingItems > 0
             const requiredSpace =
                 totalWidth +
@@ -88,9 +93,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             }
         }
 
-        const newCutoff = Math.max(1, Math.min(optimalCutoff, keys.length))
+        const newCutoff = Math.max(1, Math.min(optimalCutoff, totalLegends))
         setCuttOffIndex(newCutoff)
-    }, [keys.length, legendTokens.gap])
+    }, [displayLegends.length, legendTokens.gap])
 
     const debouncedResize = useDebounce(handleResize, 150)
 
@@ -106,7 +111,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     })
 
     useEffect(() => {
-        setCuttOffIndex(keys.length)
+        setCuttOffIndex(displayLegends.length)
         isExpanding.current = false
 
         const timeoutId = setTimeout(() => {
@@ -114,7 +119,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         }, 150)
 
         return () => clearTimeout(timeoutId)
-    }, [keys.length, handleResize])
+    }, [displayLegends.length, handleResize])
 
     const getItemOpacity = (dataKey: string) => {
         if (hoveredKey) {
@@ -161,63 +166,104 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 justifyContent={isSmallScreen ? 'center' : 'start'}
                 gap={legendTokens.gap}
             >
-                {keys.slice(0, cuttOffIndex).map((dataKey, index) => (
-                    <PrimitiveButton
-                        type="button"
-                        key={dataKey}
-                        data-chart-legend={dataKey}
-                        aria-label={`Toggle ${dataKey} series visibility`}
-                        aria-pressed={selectedKeys.includes(dataKey)}
-                        onClick={() => handleLegendClick(dataKey)}
-                        onMouseEnter={() => handleLegendEnter(dataKey)}
-                        onMouseLeave={handleLegendLeave}
-                        onFocus={() => handleLegendEnter(dataKey)}
-                        onBlur={handleLegendLeave}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap:
-                                typeof legendTokens.item.gap === 'string'
-                                    ? legendTokens.item.gap
-                                    : `${legendTokens.item.gap}px`,
-                            height: FOUNDATION_THEME.unit[16],
-                            cursor: 'pointer',
-                            transition: 'all 300ms',
-                            opacity: getItemOpacity(dataKey),
-                            background: 'none',
-                            border: 'none',
-                            padding: 0,
-                            fontFamily: 'inherit',
-                            fontSize: 'inherit',
-                            color: 'inherit',
-                        }}
-                        _focusVisible={{
-                            outline: '3px solid #BEDBFF',
-                            border: '1px solid #0561E2',
-                            cursor: 'pointer',
-                            outlineOffset: '2px',
-                        }}
-                    >
-                        <Block
-                            width={FOUNDATION_THEME.unit[12]}
-                            height={FOUNDATION_THEME.unit[12]}
-                            borderRadius={FOUNDATION_THEME.border.radius[4]}
-                            flexShrink={0}
-                            backgroundColor={colors[index]}
-                            data-color={colors[index]}
-                        />
-                        <Text
-                            fontSize={legendTokens.item.fontSize}
-                            fontWeight={legendTokens.item.fontWeight}
-                            truncate={true}
-                            color={legendTokens.item.color.default}
-                            data-chart-legend-text={dataKey}
+                {displayLegends.slice(0, cuttOffIndex).map((legend, index) => {
+                    const dataKey = legend.title
+                    return (
+                        <PrimitiveButton
+                            type="button"
+                            key={dataKey}
+                            data-chart-legend={dataKey}
+                            aria-label={`Toggle ${dataKey} series visibility`}
+                            aria-pressed={selectedKeys.includes(dataKey)}
+                            onClick={() => handleLegendClick(dataKey)}
+                            onMouseEnter={() => handleLegendEnter(dataKey)}
+                            onMouseLeave={handleLegendLeave}
+                            onFocus={() => handleLegendEnter(dataKey)}
+                            onBlur={handleLegendLeave}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap:
+                                    typeof legendTokens.item.gap === 'string'
+                                        ? legendTokens.item.gap
+                                        : `${legendTokens.item.gap}px`,
+                                height: FOUNDATION_THEME.unit[16],
+                                cursor: 'pointer',
+                                transition: 'all 300ms',
+                                opacity: getItemOpacity(dataKey),
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                                fontFamily: 'inherit',
+                                fontSize: 'inherit',
+                                color: 'inherit',
+                            }}
+                            _focusVisible={{
+                                outline: '3px solid #BEDBFF',
+                                border: '1px solid #0561E2',
+                                cursor: 'pointer',
+                                outlineOffset: '2px',
+                            }}
                         >
-                            {dataKey}
-                        </Text>
-                    </PrimitiveButton>
-                ))}
-                {cuttOffIndex < keys.length && (
+                            <Block
+                                width={FOUNDATION_THEME.unit[12]}
+                                height={FOUNDATION_THEME.unit[12]}
+                                borderRadius={FOUNDATION_THEME.border.radius[4]}
+                                flexShrink={0}
+                                backgroundColor={colors[index]}
+                                data-color={colors[index]}
+                            />
+                            {legend.total !== undefined ? (
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={8}
+                                >
+                                    <Text
+                                        fontSize={legendTokens.item.fontSize}
+                                        fontWeight={
+                                            legendTokens.item.fontWeight
+                                        }
+                                        truncate={true}
+                                        color={legendTokens.item.color.default}
+                                        data-chart-legend-text={dataKey}
+                                    >
+                                        {dataKey}
+                                    </Text>
+                                    <Text
+                                        fontSize={legendTokens.item.fontSize}
+                                        fontWeight={
+                                            legendTokens.item.fontWeight
+                                        }
+                                        color={legendTokens.item.color.default}
+                                    >
+                                        |
+                                    </Text>
+                                    <Text
+                                        fontSize={legendTokens.item.fontSize}
+                                        fontWeight={
+                                            legendTokens.item.fontWeight
+                                        }
+                                        color={legendTokens.item.color.default}
+                                    >
+                                        {legend.total}
+                                    </Text>
+                                </Block>
+                            ) : (
+                                <Text
+                                    fontSize={legendTokens.item.fontSize}
+                                    fontWeight={legendTokens.item.fontWeight}
+                                    truncate={true}
+                                    color={legendTokens.item.color.default}
+                                    data-chart-legend-text={dataKey}
+                                >
+                                    {dataKey}
+                                </Text>
+                            )}
+                        </PrimitiveButton>
+                    )
+                })}
+                {cuttOffIndex < displayLegends.length && (
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>
                             <Block
@@ -235,7 +281,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     color: legendTokens.item.color.hover,
                                 }}
                             >
-                                + {keys.length - cuttOffIndex} more
+                                + {displayLegends.length - cuttOffIndex} more
                             </Block>
                         </DropdownMenu.Trigger>
                         <DropdownMenu.Content asChild>
@@ -253,9 +299,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     overflowY: 'auto',
                                 }}
                             >
-                                {keys
+                                {displayLegends
                                     .slice(cuttOffIndex)
-                                    .map((dataKey, index) => {
+                                    .map((legend, index) => {
+                                        const dataKey = legend.title
                                         const colorIndex = cuttOffIndex + index
                                         const itemColor =
                                             colors[colorIndex] ||
@@ -382,7 +429,22 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         }
                                                         data-color={itemColor}
                                                     />
-                                                    {dataKey}
+                                                    {legend.total !==
+                                                    undefined ? (
+                                                        <>
+                                                            {dataKey}
+                                                            <span
+                                                                style={{
+                                                                    margin: '0 8px',
+                                                                }}
+                                                            >
+                                                                |
+                                                            </span>
+                                                            {legend.total}
+                                                        </>
+                                                    ) : (
+                                                        dataKey
+                                                    )}
                                                 </PrimitiveButton>
                                             </DropdownMenu.Item>
                                         )
@@ -394,7 +456,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             </Block>
             {selectedKeys &&
                 selectedKeys.length > 0 &&
-                selectedKeys.length !== keys.length && (
+                selectedKeys.length !== displayLegends.length && (
                     <PrimitiveButton
                         type="button"
                         aria-label="Reset all legend filters"

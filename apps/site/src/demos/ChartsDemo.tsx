@@ -5,6 +5,7 @@ import {
     Activity,
     LoaderCircle,
     ChartBar,
+    CircleDot,
 } from 'lucide-react'
 import {
     Charts,
@@ -28,6 +29,7 @@ import {
     LegendsChangeType,
     AxisType,
     AxisIntervalType,
+    DotItemDotProps,
 } from '../../../../packages/blend/lib/components/Charts/types'
 import {
     last1hour15minsData,
@@ -5661,6 +5663,29 @@ const ChartDemo = () => {
         { value: 10.21, delta: 2.1, changeType: LegendsChangeType.DECREASE },
     ]
 
+    const CustomizedDot = (props: DotItemDotProps) => {
+        const { cx, cy, value, payload } = props
+
+        if (cx == null || cy == null) {
+            return <g />
+        }
+
+        if (payload?.name?.toString() === '1759773600000' && value === 28.16) {
+            return (
+                <CircleDot
+                    x={cx - 7}
+                    y={cy - 7}
+                    stroke="red"
+                    strokeWidth={3}
+                    size={14}
+                    // r={12}
+                />
+            )
+        }
+
+        return <g />
+    }
+
     return (
         <div className="p-8 gap-12 flex flex-col ">
             <h5 className="text-xl font-bold">
@@ -5780,6 +5805,15 @@ const ChartDemo = () => {
             <Charts
                 height={200}
                 data={last1hour15minsData}
+                legends={[
+                    { title: 'Overall', total: 54 },
+                    { title: 'PAYTM_V2', total: 10 },
+                    { title: 'DUMMY', total: 10 },
+                    { title: 'RAZORPAY', total: 10 },
+                    { title: 'GOCASHFREE', total: 10 },
+                    { title: 'CCAVENUE_V2', total: 10 },
+                ]}
+                CustomizedDot={CustomizedDot}
                 chartType={ChartType.LINE}
                 xAxis={{
                     label: 'Date (Timestamp)',

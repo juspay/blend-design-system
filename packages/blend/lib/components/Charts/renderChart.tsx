@@ -51,6 +51,7 @@ export const renderChart = ({
     yAxis,
     noData,
     height,
+    CustomizedDot,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -374,9 +375,9 @@ export const renderChart = ({
                                 stroke={getColor(key, chartType)}
                                 strokeWidth={2}
                                 activeDot={{ r: hoveredKey === key ? 4 : 0 }}
-                                dot={false}
                                 animationDuration={350}
                                 onMouseOver={() => setHoveredKey(key)}
+                                dot={CustomizedDot || false}
                             />
                         ))}
                 </LineChart>

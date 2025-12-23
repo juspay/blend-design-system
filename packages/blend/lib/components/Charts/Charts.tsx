@@ -40,6 +40,8 @@ const Charts: React.FC<ChartsProps> = ({
     onExpandedChange,
     chartName = 'Chart',
     skeleton,
+    legends,
+    CustomizedDot,
     ...props
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -73,7 +75,6 @@ const Charts: React.FC<ChartsProps> = ({
 
     if (!colors || colors.length === 0) colors = DEFAULT_COLORS
     const flattenedData = transformNestedData(data, selectedKeys)
-
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []
 
     const mergedXAxis = {
@@ -356,6 +357,7 @@ const Charts: React.FC<ChartsProps> = ({
                                   >
                                       {
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -399,6 +401,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={250}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -466,6 +469,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={300}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -504,6 +508,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -651,6 +656,7 @@ const Charts: React.FC<ChartsProps> = ({
                                       {!isSmallScreen && (
                                           <Block ref={legendContainerRef}>
                                               <ChartLegends
+                                                  legends={legends}
                                                   chartContainerRef={
                                                       chartContainerRef
                                                   }
@@ -699,6 +705,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   //   height={'auto'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       chartName,
                                                       flattenedData,
                                                       chartType,
@@ -744,6 +751,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   {(showLegend ||
                                                       !stackedLegends) && (
                                                       <ChartLegends
+                                                          legends={legends}
                                                           isSmallScreen={
                                                               isSmallScreen
                                                           }
@@ -873,6 +881,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={'100%'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -911,6 +920,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
