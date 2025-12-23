@@ -40,6 +40,7 @@ const Charts: React.FC<ChartsProps> = ({
     onExpandedChange,
     chartName = 'Chart',
     skeleton,
+    CustomizedDot,
     ...props
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -399,6 +400,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={250}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -466,6 +468,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={300}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -699,6 +702,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   //   height={'auto'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       chartName,
                                                       flattenedData,
                                                       chartType,
@@ -873,6 +877,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={'100%'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,

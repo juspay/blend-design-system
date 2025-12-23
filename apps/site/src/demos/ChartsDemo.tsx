@@ -5,6 +5,7 @@ import {
     Activity,
     LoaderCircle,
     ChartBar,
+    CircleDot,
 } from 'lucide-react'
 import {
     Charts,
@@ -28,6 +29,7 @@ import {
     LegendsChangeType,
     AxisType,
     AxisIntervalType,
+    DotItemDotProps,
 } from '../../../../packages/blend/lib/components/Charts/types'
 import {
     last1hour15minsData,
@@ -5661,6 +5663,172 @@ const ChartDemo = () => {
         { value: 10.21, delta: 2.1, changeType: LegendsChangeType.DECREASE },
     ]
 
+    const customizedDotData = [
+        {
+            name: 'test',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1200 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test2',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1400 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test3',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1600 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test4',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1800 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test5',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2000 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test6',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2200 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test7',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2400 },
+                    aux: [],
+                },
+            },
+        },
+
+        {
+            name: 'test8',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2600 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test9',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2400 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test10',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 2200 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test11',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 200 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test12',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1800 },
+                    aux: [],
+                },
+            },
+        },
+        {
+            name: 'test13',
+            data: {
+                value: {
+                    primary: { label: 'Requests', val: 1600 },
+                    aux: [],
+                },
+            },
+        },
+    ]
+
+    const CustomizedDot = (props: DotItemDotProps) => {
+        const { cx, cy, value } = props
+
+        if (cx == null || cy == null) {
+            return <g />
+        }
+
+        if (value >= 1300 && value <= 1600) {
+            return (
+                <CircleDot
+                    x={cx - 7}
+                    y={cy - 7}
+                    stroke="red"
+                    strokeWidth={3}
+                    size={14}
+                    // r={12}
+                />
+            )
+        }
+
+        if (value >= 1600 && value <= 2000) {
+            return (
+                <CircleDot
+                    x={cx - 7}
+                    y={cy - 7}
+                    stroke="green"
+                    strokeWidth={3}
+                    size={14}
+                    // r={12}
+                />
+            )
+        }
+
+        return (
+            <CircleDot
+                x={cx - 7}
+                y={cy - 7}
+                stroke="orange"
+                strokeWidth={3}
+                size={14}
+                // r={12}
+            />
+        )
+    }
+
     return (
         <div className="p-8 gap-12 flex flex-col ">
             <h5 className="text-xl font-bold">
@@ -5740,6 +5908,20 @@ const ChartDemo = () => {
                     to override this behavior.
                 </div>
             </div>
+
+            <Charts
+                CustomizedDot={CustomizedDot}
+                colors={['#2B7FFF']}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <Activity size={16} className="text-green-600" />
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            Example of Customized Dot
+                        </h4>
+                    </div>
+                }
+                data={customizedDotData}
+            />
 
             <Charts
                 skeleton={{
