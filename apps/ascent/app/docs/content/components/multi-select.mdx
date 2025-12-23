@@ -779,6 +779,28 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MultiSelect.showClearButton',
+                hintText:
+                    'Optional boolean that controls the visibility of the X icon (clear button) beside the multi-select trigger. When true, the clear button is shown when items are selected. When false, the clear button is hidden. If not provided, defaults to showing the clear button when variant=CONTAINER and items are selected. Useful for analytics filters where API calls should only happen on explicit actions (Apply/Reset buttons).',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'undefined (defaults based on variant and selection)' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onClearAllClick',
+                hintText:
+                    "Optional callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange, allowing you to handle clear actions differently (e.g., making API calls). If not provided, clicking the clear button calls onChange('') to clear selections. Useful for analytics filters where clearing should trigger API calls.",
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when clear button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'MultiSelectMenuGroupType.groupLabel',
                 hintText:
                     'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., "Frontend", "Backend", "Tools"). The label is styled distinctly from menu items.',

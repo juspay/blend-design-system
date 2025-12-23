@@ -154,6 +154,8 @@ export type MultiSelectProps = {
     skeleton?: MultiSelectSkeletonProps
     allowCustomValue?: boolean
     customValueLabel?: string
+    showClearButton?: boolean
+    onClearAllClick?: () => void
 }
 
 // Multi Select Menu Dropdpown

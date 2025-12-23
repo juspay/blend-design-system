@@ -394,6 +394,24 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
                 category: 'Content',
             },
         },
+        showClearButton: {
+            control: { type: 'boolean' },
+            description:
+                'Controls the visibility of the X icon (clear button) beside the multi-select trigger. When true, shows clear button when items are selected. When false, hides clear button. If not provided, defaults based on variant and selection state.',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'Behavior',
+            },
+        },
+        onClearAllClick: {
+            action: 'clear-all-clicked',
+            description:
+                "Callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange for handling clear actions (e.g., API calls). If not provided, falls back to onChange('').",
+            table: {
+                type: { summary: '() => void' },
+                category: 'Behavior',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -1290,6 +1308,116 @@ export const WithActionButtons: Story = {
         docs: {
             description: {
                 story: 'MultiSelect with action buttons for batch operations and confirmations.',
+            },
+        },
+    },
+}
+
+// Clear button control
+export const ClearButtonControl: Story = {
+    render: () => {
+        const [hiddenClearSelected, setHiddenClearSelected] = useState<
+            string[]
+        >(['react', 'nodejs'])
+        const [callbackClearSelected, setCallbackClearSelected] = useState<
+            string[]
+        >(['react', 'nodejs', 'postgresql'])
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    width: '400px',
+                }}
+            >
+                <MultiSelect
+                    label="Hidden Clear Button"
+                    sublabel="Clear button hidden - use Apply/Reset buttons"
+                    placeholder="Select filters"
+                    items={skillItems}
+                    selectedValues={hiddenClearSelected}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setHiddenClearSelected([])
+                        } else if (typeof value === 'string') {
+                            setHiddenClearSelected((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    showClearButton={false}
+                    showActionButtons
+                    primaryAction={{
+                        text: 'Apply Filters',
+                        onClick: (values) =>
+                            alert(
+                                `API Call: Applied filters: ${values.join(', ')}`
+                            ),
+                    }}
+                    secondaryAction={{
+                        text: 'Reset',
+                        onClick: () => {
+                            setHiddenClearSelected([])
+                            alert('API Call: Reset filters')
+                        },
+                    }}
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="Clear button is hidden. Use Apply/Reset buttons for API calls."
+                />
+
+                <MultiSelect
+                    label="Clear Button with Separate Callback"
+                    sublabel="X icon triggers separate callback"
+                    placeholder="Select filters"
+                    items={permissionItems}
+                    selectedValues={callbackClearSelected}
+                    onChange={(value) => {
+                        if (value === '') {
+                            setCallbackClearSelected([])
+                        } else if (typeof value === 'string') {
+                            setCallbackClearSelected((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    showClearButton={true}
+                    onClearAllClick={() => {
+                        alert(
+                            'API Call: Clear button clicked - clearing filters'
+                        )
+                        setCallbackClearSelected([])
+                    }}
+                    showActionButtons
+                    primaryAction={{
+                        text: 'Apply',
+                        onClick: (values) =>
+                            alert(
+                                `API Call: Apply button clicked: ${values.join(', ')}`
+                            ),
+                    }}
+                    secondaryAction={{
+                        text: 'Reset',
+                        onClick: () => {
+                            alert('API Call: Reset button clicked')
+                            setCallbackClearSelected([])
+                        },
+                    }}
+                    selectionTagType={MultiSelectSelectionTagType.COUNT}
+                    helpIconHintText="X icon has separate callback from Apply button. Perfect for analytics filters."
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Control the visibility and behavior of the X icon (clear button). Use showClearButton to hide/show the button, and onClearAllClick for a separate callback when the X icon is clicked. Perfect for analytics filters where API calls should only happen on explicit actions.',
             },
         },
     },
