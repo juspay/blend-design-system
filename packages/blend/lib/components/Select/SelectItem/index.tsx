@@ -2,7 +2,7 @@ import { forwardRef, useRef, useState, useEffect, useCallback } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
-import { Tooltip } from '../../Tooltip'
+import { Tooltip, TooltipSide } from '../../Tooltip'
 import { Checkbox } from '../../Checkbox'
 import { Check } from 'lucide-react'
 import { type SelectItemProps, SelectItemType } from './types'
@@ -342,6 +342,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 <Tooltip
                     content={tooltipContent}
                     fullWidth={true}
+                    side={item.tooltipProps?.side || TooltipSide.RIGHT}
                     {...item.tooltipProps}
                 >
                     {itemContent}

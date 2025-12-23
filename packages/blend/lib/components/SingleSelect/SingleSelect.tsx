@@ -9,7 +9,6 @@ import {
     SelectMenuSize,
     SelectMenuVariant,
 } from '../Select'
-import Text from '../Text/Text'
 import SingleSelectMenu from './SingleSelectMenu'
 import { ChevronDown } from 'lucide-react'
 import type { SingleSelectProps } from './types'
@@ -27,6 +26,7 @@ import {
 } from '../common/error.animations'
 import styled from 'styled-components'
 import { setupAccessibility } from './utils'
+import { TruncatedTextWithTooltip } from '../common'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -275,10 +275,16 @@ const SingleSelect = ({
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
+                                    width={
+                                        fullWidth
+                                            ? '100%'
+                                            : maxTriggerWidth || minTriggerWidth
+                                              ? undefined
+                                              : 'fit-content'
+                                    }
                                     name={uniqueName}
                                     id={uniqueName}
                                     position="relative"
-                                    width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
                                     alignItems="center"
                                     overflow="hidden"
@@ -345,12 +351,20 @@ const SingleSelect = ({
                                         display="flex"
                                         alignItems="center"
                                         gap={8}
+                                        style={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            overflow: 'hidden',
+                                        }}
                                     >
                                         {slot && (
                                             <Block
                                                 data-element="icon"
                                                 ref={slotRef}
                                                 contentCentered
+                                                style={{
+                                                    flexShrink: 0,
+                                                }}
                                             >
                                                 {slot}
                                             </Block>
@@ -369,6 +383,8 @@ const SingleSelect = ({
                                                 style={{
                                                     textAlign: 'left',
                                                     flexGrow: 1,
+                                                    flexShrink: 1,
+                                                    minWidth: 0,
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
@@ -417,80 +433,41 @@ const SingleSelect = ({
                                                     />
                                                 </Block>
                                                 {selected && (
-                                                    <Text
-                                                        variant="body.md"
-                                                        color={
-                                                            singleSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .color
-                                                        }
-                                                        fontWeight={
-                                                            singleSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .fontWeight
-                                                        }
-                                                        fontSize={
-                                                            singleSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .fontSize
+                                                    <TruncatedTextWithTooltip
+                                                        text={
+                                                            valueLabelMap[
+                                                                selected
+                                                            ] || selected
                                                         }
                                                         style={{
-                                                            overflow: 'hidden',
-                                                            textOverflow:
-                                                                'ellipsis',
-                                                            whiteSpace:
-                                                                'nowrap',
+                                                            fontSize:
+                                                                singleSelectTokens
+                                                                    .trigger
+                                                                    .placeholder
+                                                                    .fontSize,
+                                                            color: singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color,
+                                                            fontWeight:
+                                                                singleSelectTokens
+                                                                    .trigger
+                                                                    .placeholder
+                                                                    .fontWeight,
                                                         }}
-                                                    >
-                                                        {valueLabelMap[
-                                                            selected
-                                                        ] || selected}
-                                                    </Text>
+                                                    />
                                                 )}
                                             </Block>
                                         ) : (
-                                            <Text
+                                            <TruncatedTextWithTooltip
+                                                text={
+                                                    selected
+                                                        ? valueLabelMap[
+                                                              selected
+                                                          ] || selected
+                                                        : placeholder
+                                                }
                                                 data-element="placeholder"
-                                                color={
-                                                    selected
-                                                        ? singleSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .color
-                                                        : singleSelectTokens
-                                                              .trigger
-                                                              .placeholder.color
-                                                }
-                                                fontWeight={
-                                                    selected
-                                                        ? singleSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .fontWeight
-                                                        : singleSelectTokens
-                                                              .trigger
-                                                              .placeholder
-                                                              .fontWeight
-                                                }
-                                                fontSize={
-                                                    selected
-                                                        ? singleSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .fontSize
-                                                        : singleSelectTokens
-                                                              .trigger
-                                                              .placeholder
-                                                              .fontSize
-                                                }
-                                                style={{
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
-                                                }}
                                                 data-id={
                                                     selected
                                                         ? valueLabelMap[
@@ -498,17 +475,47 @@ const SingleSelect = ({
                                                           ] || selected
                                                         : placeholder
                                                 }
-                                            >
-                                                {selected
-                                                    ? valueLabelMap[selected] ||
-                                                      selected
-                                                    : placeholder}
-                                            </Text>
+                                                style={{
+                                                    flexGrow: 1,
+                                                    flexShrink: 1,
+                                                    minWidth: 0,
+                                                    color: selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .color
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .color,
+                                                    fontWeight: selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontWeight
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontWeight,
+                                                    fontSize: selected
+                                                        ? singleSelectTokens
+                                                              .trigger
+                                                              .selectedValue
+                                                              .fontSize
+                                                        : singleSelectTokens
+                                                              .trigger
+                                                              .placeholder
+                                                              .fontSize,
+                                                }}
+                                            />
                                         )}
                                     </Block>
                                     <Block
                                         data-element="chevron-icon"
                                         contentCentered
+                                        style={{
+                                            flexShrink: 0,
+                                        }}
                                     >
                                         <ChevronDown
                                             size={16}
