@@ -32,6 +32,15 @@ interface DrawerAccessibilityContextValue {
 const DrawerAccessibilityContext =
     React.createContext<DrawerAccessibilityContextValue | null>(null)
 
+type DrawerOpenChangeContextValue = {
+    onOpenChange?: (open: boolean) => void
+}
+
+const DrawerOpenChangeContext =
+    React.createContext<DrawerOpenChangeContextValue>({
+        onOpenChange: undefined,
+    })
+
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
@@ -52,6 +61,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
         left?: string
         right?: string
     }
+    fullScreen?: boolean
 }>`
     z-index: 100;
     background-color: ${({ tokens }) => tokens.content.backgroundColor};
@@ -67,12 +77,28 @@ const StyledContent = styled(VaulDrawer.Content)<{
         customWidth,
         customMaxWidth,
         mobileOffset,
+        fullScreen,
     }) => {
         const offset = {
             top: mobileOffset?.top ?? tokens.offset.top,
             bottom: mobileOffset?.bottom ?? tokens.offset.bottom,
             left: mobileOffset?.left ?? tokens.offset.left,
             right: mobileOffset?.right ?? tokens.offset.right,
+        }
+
+        if (fullScreen) {
+            return `
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                max-width: 100%;
+                max-height: 100%;
+            `
         }
 
         if (direction === 'bottom') {
@@ -315,16 +341,18 @@ export const Drawer = ({
 
     return (
         <DrawerConfigContext.Provider value={{ disableDrag }}>
-            <DrawerAccessibilityContext.Provider
-                value={{
-                    titleId,
-                    descriptionId,
-                    setTitleId,
-                    setDescriptionId,
-                }}
-            >
-                <RootComponent {...vaulProps}>{children}</RootComponent>
-            </DrawerAccessibilityContext.Provider>
+            <DrawerOpenChangeContext.Provider value={{ onOpenChange }}>
+                <DrawerAccessibilityContext.Provider
+                    value={{
+                        titleId,
+                        descriptionId,
+                        setTitleId,
+                        setDescriptionId,
+                    }}
+                >
+                    <RootComponent {...vaulProps}>{children}</RootComponent>
+                </DrawerAccessibilityContext.Provider>
+            </DrawerOpenChangeContext.Provider>
         </DrawerConfigContext.Provider>
     )
 }
@@ -416,6 +444,7 @@ export const DrawerContent = forwardRef<
             width,
             maxWidth,
             mobileOffset,
+            fullScreen = false,
             'aria-label': ariaLabel,
             'aria-describedby': ariaDescribedBy,
             ...props
@@ -446,6 +475,7 @@ export const DrawerContent = forwardRef<
                 customWidth={width}
                 customMaxWidth={maxWidth}
                 mobileOffset={mobileOffset}
+                fullScreen={fullScreen}
                 role="dialog"
                 aria-modal="true"
                 aria-label={ariaLabel}
@@ -454,6 +484,7 @@ export const DrawerContent = forwardRef<
                 {...props}
             >
                 {resolvedShowHandle &&
+                    !fullScreen &&
                     (direction === 'bottom' || direction === 'top') &&
                     (handle || (
                         <Block
