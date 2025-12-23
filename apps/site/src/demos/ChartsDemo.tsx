@@ -5665,12 +5665,10 @@ const ChartDemo = () => {
 
     const CustomizedDot = (props: DotItemDotProps) => {
         const { cx, cy, value, payload } = props
-        console.log('props', props)
 
         if (cx == null || cy == null) {
             return <g />
         }
-        console.log('value', value)
 
         if (payload?.name?.toString() === '1759773600000' && value === 28.16) {
             return (

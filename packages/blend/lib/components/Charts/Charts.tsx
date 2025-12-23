@@ -75,7 +75,6 @@ const Charts: React.FC<ChartsProps> = ({
 
     if (!colors || colors.length === 0) colors = DEFAULT_COLORS
     const flattenedData = transformNestedData(data, selectedKeys)
-    console.log('legends', legends)
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []
 
     const mergedXAxis = {
