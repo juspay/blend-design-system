@@ -4,7 +4,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const KeyValuePairPreview = () => {
-    const tsCode = `import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from 'blend-v1'
+    const tsCode = `import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from '@juspay/blend-design-system'
 
 function MyComponent() {
     return (

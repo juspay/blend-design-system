@@ -25,7 +25,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Ensure the Sidebar component from blend-v1 has sticky behavior */
+/* Ensure the Sidebar component from @juspay/blend-design-system has sticky behavior */
 /* The Sidebar component already handles sticky positioning internally */
 /* These styles ensure proper layout and scrolling behavior */
 

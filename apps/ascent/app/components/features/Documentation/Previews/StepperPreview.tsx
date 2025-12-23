@@ -4,7 +4,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const StepperPreview = () => {
-    const tsCode = `import { Stepper, StepperType, StepState } from 'blend-v1'
+    const tsCode = `import { Stepper, StepperType, StepState } from '@juspay/blend-design-system'
 
 function MyComponent() {
     const steps = [

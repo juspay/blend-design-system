@@ -11,6 +11,14 @@ import {
     Target,
     Lightbulb,
     Circle,
+    CreditCard,
+    Wallet,
+    Building,
+    Globe,
+    Smartphone,
+    Banknote,
+    Coins,
+    ShoppingCart,
 } from 'lucide-react'
 import { useState } from 'react'
 import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
@@ -201,6 +209,289 @@ const MultiSelectDemo = () => {
     const [customValueFormSelected, setCustomValueFormSelected] = useState<
         string[]
     >([])
+
+    // Payment Gateway demo state
+    const [gatewaySelected, setGatewaySelected] = useState<string[]>([])
+
+    // Helper function to get icon for gateway
+    const getGatewayIcon = (gateway: string) => {
+        const iconMap: Record<string, React.ReactNode> = {
+            ADYEN: <CreditCard size={16} />,
+            AIRPAY: <Wallet size={16} />,
+            AIRWALLEX: <Globe size={16} />,
+            AMAZONPAY: <ShoppingCart size={16} />,
+            AMEX: <CreditCard size={16} />,
+            AMEX_DI: <CreditCard size={16} />,
+            AMPS: <Building size={16} />,
+            AXISNB: <Building size={16} />,
+            AXIS_BIZ: <Building size={16} />,
+            BILLDESK: <Banknote size={16} />,
+            CAMSPAY: <Smartphone size={16} />,
+            CAREEMPAY: <Smartphone size={16} />,
+            CCAVENUE_V2: <CreditCard size={16} />,
+            CYBERSOURCE: <Shield size={16} />,
+            DIGIO: <Smartphone size={16} />,
+            DUMMY: <Circle size={16} />,
+            GOCASHFREE: <Wallet size={16} />,
+            GPAY_IMF: <Smartphone size={16} />,
+            HDFC: <Building size={16} />,
+            HDFCBANK_SMARTGATEWAY: <Building size={16} />,
+            HDFC_CC_EMI: <CreditCard size={16} />,
+            HSBC: <Building size={16} />,
+            HSBC_BIZ: <Building size={16} />,
+            HYPERPAY: <CreditCard size={16} />,
+            HYPERPG: <CreditCard size={16} />,
+            IATAPAY: <Globe size={16} />,
+            LOTUSPAY: <CreditCard size={16} />,
+            LSP_ETB: <Building size={16} />,
+            MPGS: <CreditCard size={16} />,
+            MYFATOORAH: <Globe size={16} />,
+            PAYAMIGO: <CreditCard size={16} />,
+            PAYFORT: <Globe size={16} />,
+            PAYTM_V2: <Wallet size={16} />,
+            PAYU: <CreditCard size={16} />,
+            PHONEPE: <Smartphone size={16} />,
+            PINELABS: <CreditCard size={16} />,
+            PINELABS_ONLINE: <CreditCard size={16} />,
+            QWIKCILVER: <Wallet size={16} />,
+            RAZORPAY: <CreditCard size={16} />,
+            SETU: <Building size={16} />,
+            SODEXO: <Coins size={16} />,
+            STRIPE: <CreditCard size={16} />,
+            TABBY: <CreditCard size={16} />,
+            TATA_PA: <Building size={16} />,
+            TPSL: <CreditCard size={16} />,
+            TWOC_TWOP: <CreditCard size={16} />,
+            UNIPG: <CreditCard size={16} />,
+            YES_BIZ: <Building size={16} />,
+            YPP: <CreditCard size={16} />,
+            ZAAKPAY: <CreditCard size={16} />,
+        }
+        return iconMap[gateway] || <CreditCard size={16} />
+    }
+
+    // Payment Gateway items
+    const gatewayItems: MultiSelectMenuGroupType[] = [
+        {
+            groupLabel: 'Payment Gateways',
+            items: [
+                {
+                    label: 'ADYEN',
+                    value: 'ADYEN',
+                    slot1: getGatewayIcon('ADYEN'),
+                },
+                {
+                    label: 'AIRPAY',
+                    value: 'AIRPAY',
+                    slot1: getGatewayIcon('AIRPAY'),
+                },
+                {
+                    label: 'AIRWALLEX',
+                    value: 'AIRWALLEX',
+                    slot1: getGatewayIcon('AIRWALLEX'),
+                },
+                {
+                    label: 'AMAZONPAY',
+                    value: 'AMAZONPAY',
+                    slot1: getGatewayIcon('AMAZONPAY'),
+                },
+                { label: 'AMEX', value: 'AMEX', slot1: getGatewayIcon('AMEX') },
+                {
+                    label: 'AMEX_DI',
+                    value: 'AMEX_DI',
+                    slot1: getGatewayIcon('AMEX_DI'),
+                },
+                { label: 'AMPS', value: 'AMPS', slot1: getGatewayIcon('AMPS') },
+                {
+                    label: 'AXISNB',
+                    value: 'AXISNB',
+                    slot1: getGatewayIcon('AXISNB'),
+                },
+                {
+                    label: 'AXIS_BIZ',
+                    value: 'AXIS_BIZ',
+                    slot1: getGatewayIcon('AXIS_BIZ'),
+                },
+                {
+                    label: 'BILLDESK',
+                    value: 'BILLDESK',
+                    slot1: getGatewayIcon('BILLDESK'),
+                },
+                {
+                    label: 'CAMSPAY',
+                    value: 'CAMSPAY',
+                    slot1: getGatewayIcon('CAMSPAY'),
+                },
+                {
+                    label: 'CAREEMPAY',
+                    value: 'CAREEMPAY',
+                    slot1: getGatewayIcon('CAREEMPAY'),
+                },
+                {
+                    label: 'CCAVENUE_V2',
+                    value: 'CCAVENUE_V2',
+                    slot1: getGatewayIcon('CCAVENUE_V2'),
+                },
+                {
+                    label: 'CYBERSOURCE',
+                    value: 'CYBERSOURCE',
+                    slot1: getGatewayIcon('CYBERSOURCE'),
+                },
+                {
+                    label: 'DIGIO',
+                    value: 'DIGIO',
+                    slot1: getGatewayIcon('DIGIO'),
+                },
+                {
+                    label: 'DUMMY',
+                    value: 'DUMMY',
+                    slot1: getGatewayIcon('DUMMY'),
+                },
+                {
+                    label: 'GOCASHFREE',
+                    value: 'GOCASHFREE',
+                    slot1: getGatewayIcon('GOCASHFREE'),
+                },
+                {
+                    label: 'GPAY_IMF',
+                    value: 'GPAY_IMF',
+                    slot1: getGatewayIcon('GPAY_IMF'),
+                },
+                { label: 'HDFC', value: 'HDFC', slot1: getGatewayIcon('HDFC') },
+                {
+                    label: 'HDFCBANK_SMARTGATEWAY',
+                    value: 'HDFCBANK_SMARTGATEWAY',
+                    slot1: getGatewayIcon('HDFCBANK_SMARTGATEWAY'),
+                },
+                {
+                    label: 'HDFC_CC_EMI',
+                    value: 'HDFC_CC_EMI',
+                    slot1: getGatewayIcon('HDFC_CC_EMI'),
+                },
+                { label: 'HSBC', value: 'HSBC', slot1: getGatewayIcon('HSBC') },
+                {
+                    label: 'HSBC_BIZ',
+                    value: 'HSBC_BIZ',
+                    slot1: getGatewayIcon('HSBC_BIZ'),
+                },
+                {
+                    label: 'HYPERPAY',
+                    value: 'HYPERPAY',
+                    slot1: getGatewayIcon('HYPERPAY'),
+                },
+                {
+                    label: 'HYPERPG',
+                    value: 'HYPERPG',
+                    slot1: getGatewayIcon('HYPERPG'),
+                },
+                {
+                    label: 'IATAPAY',
+                    value: 'IATAPAY',
+                    slot1: getGatewayIcon('IATAPAY'),
+                },
+                {
+                    label: 'LOTUSPAY',
+                    value: 'LOTUSPAY',
+                    slot1: getGatewayIcon('LOTUSPAY'),
+                },
+                {
+                    label: 'LSP_ETB',
+                    value: 'LSP_ETB',
+                    slot1: getGatewayIcon('LSP_ETB'),
+                },
+                { label: 'MPGS', value: 'MPGS', slot1: getGatewayIcon('MPGS') },
+                {
+                    label: 'MYFATOORAH',
+                    value: 'MYFATOORAH',
+                    slot1: getGatewayIcon('MYFATOORAH'),
+                },
+                {
+                    label: 'PAYAMIGO',
+                    value: 'PAYAMIGO',
+                    slot1: getGatewayIcon('PAYAMIGO'),
+                },
+                {
+                    label: 'PAYFORT',
+                    value: 'PAYFORT',
+                    slot1: getGatewayIcon('PAYFORT'),
+                },
+                {
+                    label: 'PAYTM_V2',
+                    value: 'PAYTM_V2',
+                    slot1: getGatewayIcon('PAYTM_V2'),
+                },
+                { label: 'PAYU', value: 'PAYU', slot1: getGatewayIcon('PAYU') },
+                {
+                    label: 'PHONEPE',
+                    value: 'PHONEPE',
+                    slot1: getGatewayIcon('PHONEPE'),
+                },
+                {
+                    label: 'PINELABS',
+                    value: 'PINELABS',
+                    slot1: getGatewayIcon('PINELABS'),
+                },
+                {
+                    label: 'PINELABS_ONLINE',
+                    value: 'PINELABS_ONLINE',
+                    slot1: getGatewayIcon('PINELABS_ONLINE'),
+                },
+                {
+                    label: 'QWIKCILVER',
+                    value: 'QWIKCILVER',
+                    slot1: getGatewayIcon('QWIKCILVER'),
+                },
+                {
+                    label: 'RAZORPAY',
+                    value: 'RAZORPAY',
+                    slot1: getGatewayIcon('RAZORPAY'),
+                },
+                { label: 'SETU', value: 'SETU', slot1: getGatewayIcon('SETU') },
+                {
+                    label: 'SODEXO',
+                    value: 'SODEXO',
+                    slot1: getGatewayIcon('SODEXO'),
+                },
+                {
+                    label: 'STRIPE',
+                    value: 'STRIPE',
+                    slot1: getGatewayIcon('STRIPE'),
+                },
+                {
+                    label: 'TABBY',
+                    value: 'TABBY',
+                    slot1: getGatewayIcon('TABBY'),
+                },
+                {
+                    label: 'TATA_PA',
+                    value: 'TATA_PA',
+                    slot1: getGatewayIcon('TATA_PA'),
+                },
+                { label: 'TPSL', value: 'TPSL', slot1: getGatewayIcon('TPSL') },
+                {
+                    label: 'TWOC_TWOP',
+                    value: 'TWOC_TWOP',
+                    slot1: getGatewayIcon('TWOC_TWOP'),
+                },
+                {
+                    label: 'UNIPG',
+                    value: 'UNIPG',
+                    slot1: getGatewayIcon('UNIPG'),
+                },
+                {
+                    label: 'YES_BIZ',
+                    value: 'YES_BIZ',
+                    slot1: getGatewayIcon('YES_BIZ'),
+                },
+                { label: 'YPP', value: 'YPP', slot1: getGatewayIcon('YPP') },
+                {
+                    label: 'ZAAKPAY',
+                    value: 'ZAAKPAY',
+                    slot1: getGatewayIcon('ZAAKPAY'),
+                },
+            ],
+        },
+    ]
 
     // Sample data
     const simpleItems: MultiSelectMenuGroupType[] = [
@@ -1855,6 +2146,51 @@ const MultiSelectDemo = () => {
                                             label: 'Product Management',
                                             value: 'product',
                                             slot1: <Target size={16} />,
+                                        },
+                                        {
+                                            label: 'Mobile Development11',
+                                            value: 'mobile',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'Game Development1',
+                                            value: 'gamedev1',
+                                            slot1: <Code size={16} />,
+                                        },
+                                        {
+                                            label: 'UI/UX Design1',
+                                            value: 'design1',
+                                            slot1: <Star size={16} />,
+                                        },
+                                        {
+                                            label: 'Product Management1',
+                                            value: 'product1',
+                                            slot1: <Target size={16} />,
+                                        },
+                                        {
+                                            label: 'Machine Learning1',
+                                            value: 'ml1',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Artificial Intelligence1',
+                                            value: 'ai1',
+                                            slot1: <Database size={16} />,
+                                        },
+                                        {
+                                            label: 'Blockchain1',
+                                            value: 'blockchain1',
+                                            slot1: <Shield size={16} />,
+                                        },
+                                        {
+                                            label: 'Cloud Computing1',
+                                            value: 'cloud1',
+                                            slot1: <Server size={16} />,
+                                        },
+                                        {
+                                            label: 'Cybersecurity1',
+                                            value: 'cybersecurity1',
+                                            slot1: <Shield size={16} />,
                                         },
                                     ],
                                 },
@@ -3877,6 +4213,137 @@ const MultiSelectDemo = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Payment Gateway Demo - Large Dataset Test */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    💳 Payment Gateway Selection (Large Dataset Test)
+                </h2>
+                <p className="text-gray-600">
+                    This demo showcases MultiSelect with a large dataset of 50+
+                    payment gateways. Perfect for testing search functionality,
+                    ResizeObserver performance, and handling rapid filtering
+                    without errors. Try typing in the search box to filter
+                    gateways!
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Payment Gateway Selection
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Select from 50+ payment gateways. This large dataset
+                            tests the ResizeObserver fix with rapid search and
+                            filtering.
+                        </p>
+                        <MultiSelect
+                            label="Select Payment Gateways"
+                            sublabel="Choose payment gateways for your integration"
+                            items={gatewayItems}
+                            selectedValues={gatewaySelected}
+                            onChange={handleMultiSelectChange(
+                                gatewaySelected,
+                                setGatewaySelected
+                            )}
+                            placeholder="Search and select payment gateways..."
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            searchPlaceholder="Type to search gateways..."
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                            useDrawerOnMobile={false}
+                            slot={<CreditCard size={16} />}
+                        />
+                        {gatewaySelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected Gateways (
+                                        {gatewaySelected.length}):
+                                    </strong>{' '}
+                                    {gatewaySelected.slice(0, 5).join(', ')}
+                                    {gatewaySelected.length > 5 &&
+                                        ` +${gatewaySelected.length - 5} more`}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    ✅ Large dataset handled smoothly • ✅
+                                    Search works perfectly • ✅ No
+                                    ResizeObserver errors
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Gateway Selection with Actions
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Same large dataset with action buttons for
+                            confirmation workflow.
+                        </p>
+                        <MultiSelect
+                            label="Configure Payment Gateways"
+                            sublabel="Select and apply gateway configuration"
+                            items={gatewayItems}
+                            selectedValues={gatewaySelected}
+                            onChange={handleMultiSelectChange(
+                                gatewaySelected,
+                                setGatewaySelected
+                            )}
+                            placeholder="Search and configure gateways..."
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            searchPlaceholder="Type to search..."
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            useDrawerOnMobile={false}
+                            slot={<CreditCard size={16} />}
+                            primaryAction={{
+                                text: 'Apply Configuration',
+                                onClick: () => {
+                                    console.log(
+                                        'Applied gateways:',
+                                        gatewaySelected
+                                    )
+                                    addSnackbar({
+                                        header: 'Configuration Applied',
+                                        description: `${gatewaySelected.length} payment gateways configured successfully`,
+                                    })
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Clear All',
+                                onClick: () => {
+                                    setGatewaySelected([])
+                                },
+                            }}
+                        />
+                        <div className="p-3 bg-green-50 rounded-lg">
+                            <p className="text-xs text-green-700">
+                                <strong>Test Instructions:</strong>
+                            </p>
+                            <ul className="text-xs text-green-600 mt-1 space-y-1">
+                                <li>
+                                    • Type rapidly in the search box to test
+                                    ResizeObserver fix
+                                </li>
+                                <li>
+                                    • Try backspacing quickly to remove search
+                                    text
+                                </li>
+                                <li>
+                                    • Select multiple gateways to test with
+                                    large selections
+                                </li>
+                                <li>
+                                    • Verify no console errors appear during
+                                    search
+                                </li>
+                            </ul>
+                        </div>
+                    </div> */}
                 </div>
             </div>
         </div>

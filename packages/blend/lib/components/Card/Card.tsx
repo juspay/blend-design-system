@@ -106,7 +106,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 borderRadius={cardToken.borderRadius}
                 backgroundColor={cardToken.backgroundColor}
                 boxShadow={cardToken.boxShadow}
-                overflow="hidden"
                 display="flex"
                 flexDirection="column"
                 onMouseEnter={handleMouseEnter}

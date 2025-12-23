@@ -4,7 +4,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const UploadPreview = () => {
-    const tsCode = `import { Upload, UploadState } from 'blend-v1'
+    const tsCode = `import { Upload, UploadState } from '@juspay/blend-design-system'
 
 function MyComponent() {
     const handleDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {

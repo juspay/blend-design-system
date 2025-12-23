@@ -4,7 +4,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const CardPreview = () => {
-    const tsCode = `import { Card, CardVariant, Button, ButtonType } from 'blend-v1'
+    const tsCode = `import { Card, CardVariant, Button, ButtonType } from '@juspay/blend-design-system'
 
 function MyComponent() {
     return (

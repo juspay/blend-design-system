@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/frontend/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
-import { Button, ButtonType, ButtonSize } from 'blend-v1'
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
 import { Zap, AlertCircle } from 'lucide-react'
 import Loader from '@/frontend/components/shared/Loader'
 

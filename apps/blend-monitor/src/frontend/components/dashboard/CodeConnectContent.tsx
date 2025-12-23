@@ -19,7 +19,7 @@ import {
     TabsTrigger,
     TabsContent,
     TabsVariant,
-} from 'blend-v1'
+} from '@juspay/blend-design-system'
 import { Package, Check, X, RefreshCw } from 'lucide-react'
 
 export default function CodeConnectContent() {

@@ -43,7 +43,7 @@ apps/blend-monitor/
 
 - **Frontend**: Next.js 14 (App Router), React, TypeScript
 - **Backend**: Next.js API Routes, PostgreSQL
-- **UI Components**: Blend Design System (blend-v1)
+- **UI Components**: Blend Design System (@juspay/blend-design-system)
 - **Authentication**: Firebase Auth
 - **Database**: PostgreSQL with custom service layer
 - **External APIs**: NPM Registry API, Figma API
