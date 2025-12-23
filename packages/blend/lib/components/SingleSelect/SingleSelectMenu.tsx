@@ -603,52 +603,48 @@ const SingleSelectMenu = ({
                                         FOUNDATION_THEME.colors.gray[0]
                                     }
                                 >
-                                    <Block
-                                        marginBottom={FOUNDATION_THEME.unit[6]}
-                                    >
-                                        <SearchInput
-                                            ref={searchInputRef}
-                                            placeholder={searchPlaceholder}
-                                            value={searchText}
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLInputElement>
-                                            ) => {
+                                    <SearchInput
+                                        ref={searchInputRef}
+                                        placeholder={searchPlaceholder}
+                                        value={searchText}
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            setSearchText(e.target.value)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'ArrowDown' ||
+                                                e.key === 'ArrowUp'
+                                            ) {
                                                 e.preventDefault()
                                                 e.stopPropagation()
-                                                setSearchText(e.target.value)
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (
-                                                    e.key === 'ArrowDown' ||
-                                                    e.key === 'ArrowUp'
-                                                ) {
-                                                    e.preventDefault()
-                                                    e.stopPropagation()
-                                                    const menuContent =
-                                                        e.currentTarget.closest(
-                                                            '[data-dropdown="dropdown"]'
+                                                const menuContent =
+                                                    e.currentTarget.closest(
+                                                        '[data-dropdown="dropdown"]'
+                                                    )
+                                                if (menuContent) {
+                                                    const firstMenuItem =
+                                                        menuContent.querySelector<HTMLElement>(
+                                                            '[role="menuitem"]:not([data-disabled])'
                                                         )
-                                                    if (menuContent) {
-                                                        const firstMenuItem =
-                                                            menuContent.querySelector<HTMLElement>(
-                                                                '[role="menuitem"]:not([data-disabled])'
-                                                            )
-                                                        if (firstMenuItem) {
-                                                            firstMenuItem.focus()
-                                                        }
+                                                    if (firstMenuItem) {
+                                                        firstMenuItem.focus()
                                                     }
                                                 }
-                                                if (e.key === 'Tab') {
-                                                    return
-                                                }
-                                            }}
-                                            autoFocus
-                                            aria-label={
-                                                searchPlaceholder ||
-                                                'Search options'
                                             }
-                                        />
-                                    </Block>
+                                            if (e.key === 'Tab') {
+                                                return
+                                            }
+                                        }}
+                                        autoFocus
+                                        aria-label={
+                                            searchPlaceholder ||
+                                            'Search options'
+                                        }
+                                    />
                                 </Block>
                             )}
                             {items.length === 0 ? (
