@@ -1854,6 +1854,8 @@ const SingleSelectDemo = () => {
                                 />
 
                                 <SingleSelect
+                                    maxTriggerWidth={200}
+                                    minTriggerWidth={200}
                                     label="Account Type"
                                     items={groupedItems}
                                     selected={formAccountSelected}
@@ -2025,6 +2027,8 @@ const SingleSelectDemo = () => {
                 // maxWidth={100}
                 error={playgroundError}
                 errorMessage={playgroundErrorMessage}
+                maxTriggerWidth={200}
+                minTriggerWidth={200}
                 onBlur={() => {
                     console.log('blur')
                 }}
@@ -2037,7 +2041,7 @@ const SingleSelectDemo = () => {
                 // hintText={playgroundHintText}
                 placeholder={playgroundPlaceholder}
                 // size={playgroundSize}
-                variant={SelectMenuVariant.NO_CONTAINER}
+                // variant={SelectMenuVariant.NO_CONTAINER}
                 // alignment={playgroundAlignment}
                 side={playgroundSide}
                 items={[
@@ -2055,10 +2059,14 @@ const SingleSelectDemo = () => {
                                 label: 'Days',
                                 value: 'Days',
                             },
+                            {
+                                label: 'Daysddddddddddd',
+                                value: 'Daysddddddddddd',
+                            },
                         ],
                     },
                 ]}
-                selected={'Days'}
+                selected={'Daysddddddddddd'}
                 onSelect={(value) => {
                     setPlaygroundSelected(value)
                     addSnackbar({
