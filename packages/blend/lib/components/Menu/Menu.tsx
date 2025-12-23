@@ -76,6 +76,8 @@ const Menu = ({
 }: MenuProps) => {
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
+    const justOpenedRef = useRef(false)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
 
@@ -84,11 +86,38 @@ const Menu = ({
     }
 
     const handleOpenChange = (newOpen: boolean) => {
-        if (!newOpen && enableSearch) {
-            setSearchText('')
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
+            timeoutRef.current = null
         }
+
+        if (newOpen) {
+            justOpenedRef.current = true
+            timeoutRef.current = setTimeout(() => {
+                justOpenedRef.current = false
+                timeoutRef.current = null
+            }, 100)
+        } else {
+            justOpenedRef.current = false
+            if (enableSearch) {
+                setSearchText('')
+            }
+        }
+
         onOpenChange?.(newOpen)
     }
+
+    const handleOutsideInteraction = useCallback((e: Event) => {
+        if (justOpenedRef.current) {
+            e.preventDefault()
+            return
+        }
+
+        const target = e.target as HTMLElement
+        if (target?.closest('[data-radix-dropdown-menu-trigger]')) {
+            e.preventDefault()
+        }
+    }, [])
 
     const virtualListItems = useMemo(() => {
         const virtualItems: VirtualListItem[] = []
@@ -210,6 +239,8 @@ const Menu = ({
                 side={side}
                 align={alignment}
                 collisionBoundary={collisonBoundaryRef}
+                onInteractOutside={handleOutsideInteraction}
+                onPointerDownOutside={handleOutsideInteraction}
                 style={{
                     maxHeight: maxHeight
                         ? `${maxHeight}px`

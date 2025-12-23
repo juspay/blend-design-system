@@ -1,4 +1,10 @@
-import React, { forwardRef, useRef, useEffect, useState } from 'react'
+import React, {
+    forwardRef,
+    useRef,
+    useEffect,
+    useState,
+    useCallback,
+} from 'react'
 import { styled } from 'styled-components'
 import { TableCellProps } from './types'
 import { TableTokenType } from '../dataTable.tokens'
@@ -10,6 +16,7 @@ import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuVariant } from '../../Select'
 import { SelectMenuGroupType } from '../../Select/types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize } from '../../Tooltip/types'
 
@@ -76,23 +83,42 @@ const TruncatedTextWithTooltip = ({
     style?: React.CSSProperties
 }) => {
     const textRef = useRef<HTMLSpanElement>(null)
-    const [isOverflowing, setIsOverflowing] = useState(false)
+    const [isTruncated, setIsTruncated] = useState(false)
+    const rafRef = useRef<number | null>(null)
 
-    useEffect(() => {
-        const checkOverflow = () => {
-            if (textRef.current) {
-                const element = textRef.current
-                const isTextOverflowing =
-                    element.scrollWidth > element.clientWidth
-                setIsOverflowing(isTextOverflowing)
-            }
+    const checkTruncation = useCallback(() => {
+        if (rafRef.current !== null) {
+            cancelAnimationFrame(rafRef.current)
         }
 
-        checkOverflow()
+        rafRef.current = requestAnimationFrame(() => {
+            const element = textRef.current
+            if (element) {
+                const truncated =
+                    element.scrollWidth > element.clientWidth &&
+                    element.clientWidth > 0
+                setIsTruncated(truncated)
+            }
+            rafRef.current = null
+        })
+    }, [])
 
-        window.addEventListener('resize', checkOverflow)
-        return () => window.removeEventListener('resize', checkOverflow)
-    }, [text])
+    useResizeObserver(textRef as React.RefObject<HTMLElement>, () =>
+        checkTruncation()
+    )
+
+    useEffect(() => {
+        const timeoutId = setTimeout(checkTruncation, 0)
+        window.addEventListener('resize', checkTruncation, { passive: true })
+
+        return () => {
+            clearTimeout(timeoutId)
+            window.removeEventListener('resize', checkTruncation)
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current)
+            }
+        }
+    }, [text, checkTruncation])
 
     const truncatedContent = (
         <span
@@ -109,7 +135,7 @@ const TruncatedTextWithTooltip = ({
         </span>
     )
 
-    if (isOverflowing) {
+    if (isTruncated && text) {
         return (
             <Tooltip
                 content={text}
