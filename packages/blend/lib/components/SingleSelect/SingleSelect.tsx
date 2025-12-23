@@ -275,10 +275,16 @@ const SingleSelect = ({
                                     type="button"
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
+                                    width={
+                                        fullWidth
+                                            ? '100%'
+                                            : maxTriggerWidth || minTriggerWidth
+                                              ? undefined
+                                              : 'fit-content'
+                                    }
                                     name={uniqueName}
                                     id={uniqueName}
                                     position="relative"
-                                    width={fullWidth ? '100%' : 'fit-content'}
                                     display="flex"
                                     alignItems="center"
                                     overflow="hidden"
@@ -345,12 +351,20 @@ const SingleSelect = ({
                                         display="flex"
                                         alignItems="center"
                                         gap={8}
+                                        style={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            overflow: 'hidden',
+                                        }}
                                     >
                                         {slot && (
                                             <Block
                                                 data-element="icon"
                                                 ref={slotRef}
                                                 contentCentered
+                                                style={{
+                                                    flexShrink: 0,
+                                                }}
                                             >
                                                 {slot}
                                             </Block>
@@ -369,6 +383,8 @@ const SingleSelect = ({
                                                 style={{
                                                     textAlign: 'left',
                                                     flexGrow: 1,
+                                                    flexShrink: 1,
+                                                    minWidth: 0,
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
@@ -487,6 +503,9 @@ const SingleSelect = ({
                                                               .fontSize
                                                 }
                                                 style={{
+                                                    flexGrow: 1,
+                                                    flexShrink: 1,
+                                                    minWidth: 0,
                                                     overflow: 'hidden',
                                                     textOverflow: 'ellipsis',
                                                     whiteSpace: 'nowrap',
@@ -509,6 +528,9 @@ const SingleSelect = ({
                                     <Block
                                         data-element="chevron-icon"
                                         contentCentered
+                                        style={{
+                                            flexShrink: 0,
+                                        }}
                                     >
                                         <ChevronDown
                                             size={16}
