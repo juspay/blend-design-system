@@ -10,27 +10,25 @@ import React, {
 import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { Tag } from '../../main'
-import { TagColor, TagSize, TagVariant } from '../Tags/types'
-import { Menu } from '../Menu'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
-import { Paperclip, X, Plus, FileMinus, Image, FileText } from 'lucide-react'
-import { getChatInputTokens } from './chatInput.tokens'
+import { Paperclip, FileMinus, Image, FileText } from 'lucide-react'
+import { ChatInputTokensType } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
-    createOverflowMenuItems,
     handleAutoResize,
     isValidMessageLength,
     filterDuplicateFiles,
 } from './utils'
-import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
-import { useResizeObserver } from '../../hooks/useResizeObserver'
-import { useDebounce } from '../../hooks/useDebounce'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import { addSnackbar, SnackbarVariant } from '../Snackbar'
-import { Tooltip } from '../Tooltip/Tooltip'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import MobileChatInput from './MobileChatInput'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
+import AttachmentFile from './AttachmentFile'
 
 export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
     switch (fileType) {
@@ -90,23 +88,15 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         },
         ref
     ) => {
-        const tokens = getChatInputTokens(FOUNDATION_THEME).sm
+        const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
-        const filesContainerRef = useRef<HTMLDivElement>(null)
         const containerRef = useRef<HTMLDivElement>(null!)
-        const lastWidth = useRef<number>(0)
-        const isExpanding = useRef<boolean>(false)
-        const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
         const [isTextareaFocused, setIsTextareaFocused] = useState(false)
-        const [cutOffIndex, setCutOffIndex] = useState<number>(
-            attachedFiles.length
-        )
         const [focusedQueryIndex, setFocusedQueryIndex] = useState<number>(-1)
 
         const generatedId = useId()
         const chatInputId = `chat-input-${generatedId}`
-        const filesRegionId = `chat-input-files-${generatedId}`
         const topQueriesId = `chat-input-queries-${generatedId}`
         const characterCountId = `chat-input-count-${generatedId}`
         const fileInputLabelId = `chat-input-file-label-${generatedId}`
@@ -114,110 +104,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
 
-        // Dynamic overflow calculation
-        const handleResize = useCallback(() => {
-            if (!filesContainerRef.current || attachedFiles.length === 0) return
-
-            const container = filesContainerRef.current
-            const containerRect = container.getBoundingClientRect()
-            const containerWidth = containerRect.width
-
-            const BUFFER = 30
-            const MORE_BUTTON_ESTIMATED_WIDTH = 100
-            const GAP_SIZE = 8 // from tokens.filesContainer.gap
-
-            const fileItems = Array.from(container.children).filter(
-                (child) => !child.classList.contains('overflow-menu-trigger')
-            )
-
-            if (
-                isExpanding.current &&
-                fileItems.length < attachedFiles.length
-            ) {
-                setCutOffIndex(attachedFiles.length)
-                isExpanding.current = false
-
-                setTimeout(() => {
-                    handleResize()
-                }, 50)
-                return
-            }
-
-            let totalWidth = 0
-            let optimalCutoff = 0
-
-            for (
-                let i = 0;
-                i < Math.min(fileItems.length, attachedFiles.length);
-                i++
-            ) {
-                const itemWidth = (
-                    fileItems[i] as HTMLElement
-                ).getBoundingClientRect().width
-
-                const totalGaps = i > 0 ? i * GAP_SIZE : 0
-
-                const remainingItems = attachedFiles.length - (i + 1)
-                const needsMoreButton = remainingItems > 0
-                const requiredSpace =
-                    totalWidth +
-                    itemWidth +
-                    totalGaps +
-                    (needsMoreButton
-                        ? MORE_BUTTON_ESTIMATED_WIDTH + GAP_SIZE
-                        : 0) +
-                    BUFFER
-
-                if (requiredSpace <= containerWidth) {
-                    totalWidth += itemWidth
-                    optimalCutoff = i + 1
-                } else {
-                    break
-                }
-            }
-
-            const newCutoff = Math.max(
-                1,
-                Math.min(optimalCutoff, attachedFiles.length)
-            )
-            setCutOffIndex(newCutoff)
-        }, [attachedFiles.length])
-
-        const debouncedResize = useDebounce(handleResize, 150)
-
-        // Watch for container width changes
-        useResizeObserver(containerRef, ({ width }) => {
-            if (width && Math.abs(width - lastWidth.current) > 10) {
-                if (width > lastWidth.current + 20) {
-                    isExpanding.current = true
-                }
-
-                lastWidth.current = width
-                debouncedResize()
-            }
-        })
-
-        // Reset cutoff when files change
-        useEffect(() => {
-            setCutOffIndex(attachedFiles.length)
-            isExpanding.current = false
-
-            const timeoutId = setTimeout(() => {
-                handleResize()
-            }, 150)
-
-            return () => clearTimeout(timeoutId)
-        }, [attachedFiles.length, handleResize])
-
-        const visibleFiles = useMemo(() => {
-            return attachedFiles.slice(0, cutOffIndex)
-        }, [attachedFiles, cutOffIndex])
-
-        const hiddenFiles = useMemo(() => {
-            return attachedFiles.slice(cutOffIndex)
-        }, [attachedFiles, cutOffIndex])
-
-        const hasOverflow = hiddenFiles.length > 0
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
 
         const handleTextareaChange = useCallback(
             (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -341,13 +229,38 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             return parts.length > 0 ? parts.join(' ') : undefined
         }, [ariaDescribedBy, maxLength, characterCountId])
 
-        const overflowMenuItems = useMemo(() => {
-            return createOverflowMenuItems(
-                hiddenFiles,
-                onFileRemove || (() => {}),
-                onFileClick || (() => {})
+        const hiddenFileInput = (
+            <PrimitiveInput
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileInputChange}
+                style={{ display: 'none' }}
+                accept="image/*,.pdf,.csv,.txt,.doc,.docx"
+                aria-label="Attach files"
+                id={fileInputLabelId}
+            />
+        )
+
+        if (isMobile) {
+            return (
+                <>
+                    {hiddenFileInput}
+                    <MobileChatInput
+                        value={value}
+                        onChange={onChange || (() => {})}
+                        slot1={slot1}
+                        placeholder={placeholder}
+                        attachedFiles={attachedFiles}
+                        handleAttachClick={handleAttachClick}
+                        onFileRemove={onFileRemove}
+                        onFileClick={onFileClick}
+                        overflowMenuProps={overflowMenuProps}
+                        // containerRef={containerRef}
+                    />
+                </>
             )
-        }, [hiddenFiles, onFileRemove, onFileClick])
+        }
 
         return (
             <Block
@@ -375,116 +288,17 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 cursor={disabled ? 'not-allowed' : 'default'}
                 boxShadow={tokens.container.boxShadow.default}
             >
-                {/* Hidden file input */}
-                <PrimitiveInput
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    onChange={handleFileInputChange}
-                    style={{ display: 'none' }}
-                    accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                    aria-label="Attach files"
-                    id={fileInputLabelId}
-                />
+                {hiddenFileInput}
                 {/* Files container */}
                 {attachedFiles.length > 0 && (
-                    <Block
-                        ref={filesContainerRef}
-                        display="flex"
-                        gap={tokens.filesContainer.gap}
-                        maxHeight={tokens.filesContainer.maxHeight}
-                        overflowY={tokens.filesContainer.overflowY}
-                        role="region"
-                        aria-label={`${attachedFiles.length} file${
-                            attachedFiles.length !== 1 ? 's' : ''
-                        } attached`}
-                        id={filesRegionId}
-                    >
-                        {visibleFiles.map((file) => {
-                            const fileName =
-                                file.name || capitalizeFirstLetter(file.type)
-                            return (
-                                <Tooltip key={file.id} content={file.name}>
-                                    <Tag
-                                        key={file.id}
-                                        text={capitalizeFirstLetter(file.type)}
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.NEUTRAL}
-                                        size={TagSize.XS}
-                                        leftSlot={getDocIcon(file.type)}
-                                        rightSlot={
-                                            <X
-                                                size={12}
-                                                aria-hidden="true"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    onFileRemove?.(file.id)
-                                                }}
-                                                aria-label={`Remove ${fileName} file`}
-                                            />
-                                        }
-                                        onClick={(e) => {
-                                            const target =
-                                                e.target as HTMLElement
-                                            if (
-                                                target.closest(
-                                                    '[aria-label*="Remove"]'
-                                                )
-                                            ) {
-                                                return
-                                            }
-                                            onFileClick?.(file)
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (
-                                                e.key === 'Delete' ||
-                                                e.key === 'Backspace'
-                                            ) {
-                                                e.preventDefault()
-                                                e.stopPropagation()
-                                                onFileRemove?.(file.id)
-                                            }
-                                        }}
-                                        aria-label={`${fileName} file, press Delete to remove, click to view`}
-                                    />
-                                </Tooltip>
-                            )
-                        })}
-
-                        {hasOverflow && (
-                            <Block className="overflow-menu-trigger">
-                                <Menu
-                                    trigger={
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            subType={ButtonSubType.INLINE}
-                                            leadingIcon={<Plus size={14} />}
-                                            text={`${hiddenFiles.length} more`}
-                                            aria-label={`Show ${hiddenFiles.length} more attached file${
-                                                hiddenFiles.length !== 1
-                                                    ? 's'
-                                                    : ''
-                                            }`}
-                                        >
-                                            <Plus size={14} />
-                                            {hiddenFiles.length} more
-                                        </Button>
-                                    }
-                                    items={[
-                                        {
-                                            items: overflowMenuItems,
-                                        },
-                                    ]}
-                                    open={overflowMenuOpen}
-                                    onOpenChange={setOverflowMenuOpen}
-                                    {...overflowMenuProps}
-                                />
-                            </Block>
-                        )}
-                    </Block>
+                    <AttachmentFile
+                        attachedFiles={attachedFiles}
+                        onFileRemove={onFileRemove}
+                        onFileClick={onFileClick}
+                        overflowMenuProps={overflowMenuProps}
+                        containerRef={containerRef}
+                    />
                 )}
-
                 <Block
                     backgroundColor={
                         attachedFiles.length > 0
@@ -502,7 +316,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             : 0
                     }
                 >
-                    <textarea
+                    <PrimitiveTextarea
                         ref={textareaElement}
                         value={value}
                         onChange={handleTextareaChange}
@@ -518,23 +332,22 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         }
                         id={chatInputId}
                         rows={1}
-                        style={{
-                            backgroundColor: tokens.textarea.backgroundColor,
-                            color: tokens.textarea.color,
-                            fontSize: tokens.textarea.fontSize,
-                            lineHeight: tokens.textarea.lineHeight,
-                            padding: `${tokens.textarea.paddingY} ${tokens.textarea.paddingX}`,
-                            border: tokens.textarea.border,
-                            borderRadius: tokens.textarea.borderRadius,
-                            outline: 'none',
-                            resize: tokens.textarea.resize,
-                            fontFamily: tokens.textarea.fontFamily,
-                            width: '100%',
-                            minHeight: tokens.textarea.minHeight,
-                            maxHeight: tokens.textarea.maxHeight,
-                            overflowY: tokens.textarea.overflowY,
-                            cursor: disabled ? 'not-allowed' : 'text',
-                        }}
+                        backgroundColor={tokens.textarea.backgroundColor}
+                        color={tokens.textarea.color}
+                        fontSize={tokens.textarea.fontSize}
+                        paddingX={tokens.textarea.paddingX}
+                        paddingY={tokens.textarea.paddingY}
+                        border={tokens.textarea.border}
+                        borderRadius={tokens.textarea.borderRadius}
+                        outline="none"
+                        resize={tokens.textarea.resize}
+                        fontFamily={tokens.textarea.fontFamily}
+                        width="100%"
+                        minHeight={tokens.textarea.minHeight}
+                        maxHeight={tokens.textarea.maxHeight}
+                        overflowY={tokens.textarea.overflowY}
+                        cursor={disabled ? 'not-allowed' : 'text'}
+                        style={{ lineHeight: tokens.textarea.lineHeight }}
                         onFocus={(e) => {
                             setIsTextareaFocused(true)
                             const container =

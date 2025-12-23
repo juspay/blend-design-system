@@ -107,3 +107,45 @@ export const filterDuplicateFiles = (
 
     return { newFiles, duplicateFiles }
 }
+
+/**
+ * Simple utility to truncate placeholder text if it exceeds the textarea's available width
+ * Uses canvas to measure text width and truncates with ellipsis if needed
+ */
+export const truncatePlaceholder = (
+    textarea: HTMLTextAreaElement | null,
+    placeholder: string | undefined
+): string | undefined => {
+    if (!textarea || !placeholder) return placeholder
+
+    const style = window.getComputedStyle(textarea)
+    const padding =
+        parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+    const availableWidth = textarea.clientWidth - padding
+
+    if (availableWidth <= 0) return placeholder
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return placeholder
+
+    ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+
+    if (ctx.measureText(placeholder).width <= availableWidth) {
+        return placeholder
+    }
+
+    // Simple truncation: find max length that fits
+    const ellipsis = '...'
+    let maxLength = placeholder.length
+
+    while (
+        maxLength > 0 &&
+        ctx.measureText(placeholder.slice(0, maxLength) + ellipsis).width >
+            availableWidth
+    ) {
+        maxLength--
+    }
+
+    return maxLength > 0 ? placeholder.slice(0, maxLength) + ellipsis : ellipsis
+}

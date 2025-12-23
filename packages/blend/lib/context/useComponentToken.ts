@@ -41,6 +41,7 @@ import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
+import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -86,7 +87,8 @@ export const useComponentToken = (
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
     | ResponsiveMobileNavigationTokens
-    | ResponsiveDirectoryTokens => {
+    | ResponsiveDirectoryTokens
+    | ResponsiveChatInputTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -174,6 +176,8 @@ export const useComponentToken = (
             return componentTokens.MOBILE_NAVIGATION
         case 'DIRECTORY':
             return componentTokens.DIRECTORY
+        case 'CHAT_INPUT':
+            return componentTokens.CHAT_INPUT
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
