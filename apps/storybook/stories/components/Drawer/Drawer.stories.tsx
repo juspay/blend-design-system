@@ -105,7 +105,72 @@ function MyDrawer() {
             <DrawerClose asChild>
               <Button buttonType={ButtonType.SECONDARY} text="Cancel" />
             </DrawerClose>
-            <Button buttonType={ButtonType.PRIMARY} text="Confirm" />
+            <Button 
+              buttonType={ButtonType.PRIMARY} 
+              text="Confirm"
+              onClick={() => setOpen(false)}
+            />
+          </DrawerFooter>
+        </DrawerContent>
+      </DrawerPortal>
+    </Drawer>
+  );
+}
+\`\`\`
+
+## Custom Close Icon and CTA
+
+You can add custom close icons and primary CTAs by using \`DrawerClose\` component and managing state yourself:
+
+\`\`\`tsx
+import { DrawerClose } from '@juspay/blend-design-system';
+import { X } from 'lucide-react';
+
+function CustomDrawer() {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger>
+        <Button text="Open Drawer" />
+      </DrawerTrigger>
+      <DrawerPortal>
+        <DrawerOverlay />
+        <DrawerContent fullScreen={true}>
+          {/* Custom close icon */}
+          <DrawerClose>
+            <button
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                padding: '8px',
+                borderRadius: '4px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              aria-label="Close drawer"
+            >
+              <X size={20} />
+            </button>
+          </DrawerClose>
+          <DrawerHeader>
+            <DrawerTitle>Full Screen Drawer</DrawerTitle>
+          </DrawerHeader>
+          <DrawerBody>
+            <p>Content goes here</p>
+          </DrawerBody>
+          <DrawerFooter>
+            <Button
+              buttonType={ButtonType.PRIMARY}
+              text="Save & Close"
+              fullWidth
+              onClick={() => {
+                // Your save logic
+                setOpen(false);
+              }}
+            />
           </DrawerFooter>
         </DrawerContent>
       </DrawerPortal>

@@ -123,6 +123,11 @@ export type DrawerContentProps = {
      * ID of the element describing the drawer content
      */
     'aria-describedby'?: string
+    /**
+     * Whether the drawer should take full screen (full height and width, no border radius)
+     * @default false
+     */
+    fullScreen?: boolean
 }
 
 export type DrawerHeaderProps = {
