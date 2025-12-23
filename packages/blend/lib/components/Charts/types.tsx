@@ -21,6 +21,10 @@ export type DataPoint = {
         timeZone?: string
         hour12?: boolean
     }[]
+    error?: {
+        title: string
+        errorData?: { label: string; value: string }[]
+    }
 }
 
 export enum ChartLegendPosition {
@@ -96,9 +100,12 @@ export type XAxisConfig = AxisConfig
 export type YAxisConfig = AxisConfig
 
 export type DotItemDotProps = {
-    cx: number
-    cy: number
-    value: number
+    cx?: number
+    cy?: number
+    value?: number
+    payload?: {
+        name?: string
+    }
 }
 
 export type NewNestedDataPoint = {
@@ -178,6 +185,7 @@ export type ChartsProps = {
     onExpandedChange?: (isExpanded: boolean) => void
     chartName?: string
     skeleton?: ChartsSkeletonProps
+    legends?: { title: string; total?: number }[]
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
 }
 
@@ -215,6 +223,7 @@ export type ChartLegendsProps = {
     stacked?: boolean
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+    legends?: { title: string; total?: number }[]
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {

@@ -3,6 +3,7 @@ export const last1hour5minsData = [
         name: '1759774200000',
         data: {
             Overall: {
+                //error
                 primary: {
                     label: 'Orders Success Rate',
                     val: 28.16,
@@ -1017,6 +1018,13 @@ export const last1hour15minsData = [
                         val: 103,
                     },
                 ],
+                error: {
+                    title: 'Jan 12, 2025 | 14:32',
+                    errorData: [
+                        { label: 'Downtime', value: '2 m 3 s' },
+                        { label: 'Fluctuation', value: '10 m 30 s' },
+                    ],
+                },
             },
             PAYTM_V2: {
                 primary: {

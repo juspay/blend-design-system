@@ -40,6 +40,7 @@ const Charts: React.FC<ChartsProps> = ({
     onExpandedChange,
     chartName = 'Chart',
     skeleton,
+    legends,
     CustomizedDot,
     ...props
 }) => {
@@ -74,7 +75,7 @@ const Charts: React.FC<ChartsProps> = ({
 
     if (!colors || colors.length === 0) colors = DEFAULT_COLORS
     const flattenedData = transformNestedData(data, selectedKeys)
-
+    console.log('legends', legends)
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []
 
     const mergedXAxis = {
@@ -357,6 +358,7 @@ const Charts: React.FC<ChartsProps> = ({
                                   >
                                       {
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -507,6 +509,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -654,6 +657,7 @@ const Charts: React.FC<ChartsProps> = ({
                                       {!isSmallScreen && (
                                           <Block ref={legendContainerRef}>
                                               <ChartLegends
+                                                  legends={legends}
                                                   chartContainerRef={
                                                       chartContainerRef
                                                   }
@@ -748,6 +752,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   {(showLegend ||
                                                       !stackedLegends) && (
                                                       <ChartLegends
+                                                          legends={legends}
                                                           isSmallScreen={
                                                               isSmallScreen
                                                           }
@@ -916,6 +921,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
