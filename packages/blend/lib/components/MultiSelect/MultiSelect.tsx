@@ -92,6 +92,8 @@ const MultiSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    showClearButton,
+    onClearAllClick,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -103,8 +105,11 @@ const MultiSelect = ({
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
-    const showCancelButton =
-        variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
+    const shouldShowClearButton =
+        showClearButton !== undefined
+            ? showClearButton && selectedValues.length > 0
+            : variant === MultiSelectVariant.CONTAINER &&
+              selectedValues.length > 0
 
     const shouldShowActionButtons =
         showActionButtons !== undefined
@@ -128,7 +133,7 @@ const MultiSelect = ({
         isSmallScreen && size === MultiSelectMenuSize.LARGE
 
     const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
-    const appliedBorderRadius = showCancelButton
+    const appliedBorderRadius = shouldShowClearButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
 
@@ -642,46 +647,49 @@ const MultiSelect = ({
                         />
                     </Tooltip>
 
-                    {variant === MultiSelectVariant.CONTAINER &&
-                        selectedValues.length > 0 && (
-                            <PrimitiveButton
-                                data-element="clear-button"
-                                type="button"
-                                borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
-                                backgroundColor={
-                                    FOUNDATION_THEME.colors.gray[0]
+                    {shouldShowClearButton && (
+                        <PrimitiveButton
+                            data-element="clear-button"
+                            type="button"
+                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            contentCentered
+                            height={'100%'}
+                            style={{ aspectRatio: 1 }}
+                            onClick={() => {
+                                if (onClearAllClick) {
+                                    onClearAllClick()
+                                } else {
+                                    onChange('')
                                 }
-                                contentCentered
-                                height={'100%'}
-                                style={{ aspectRatio: 1 }}
-                                onClick={() => onChange('')}
-                                aria-label={
-                                    label
-                                        ? `Clear selection for ${label}`
-                                        : 'Clear selection'
-                                }
-                                outline={
-                                    multiSelectTokens.trigger.outline[variant][
-                                        error ? 'error' : 'closed'
-                                    ]
-                                }
-                                _hover={{
-                                    backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
-                                }}
-                                _focus={{
-                                    backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
-                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
-                                }}
-                            >
-                                <X
-                                    size={16}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                    aria-hidden="true"
-                                />
-                            </PrimitiveButton>
-                        )}
+                            }}
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
+                            }
+                            outline={
+                                multiSelectTokens.trigger.outline[variant][
+                                    error ? 'error' : 'closed'
+                                ]
+                            }
+                            _hover={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                            }}
+                            _focus={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                                outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                            }}
+                        >
+                            <X
+                                size={16}
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
+                            />
+                        </PrimitiveButton>
+                    )}
                 </Wrapper>
             </Block>
 

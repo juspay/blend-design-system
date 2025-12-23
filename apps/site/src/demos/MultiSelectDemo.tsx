@@ -213,6 +213,15 @@ const MultiSelectDemo = () => {
     // Payment Gateway demo state
     const [gatewaySelected, setGatewaySelected] = useState<string[]>([])
 
+    // Clear Button Control demo state
+    const [clearButtonDemoSelected, setClearButtonDemoSelected] = useState<
+        string[]
+    >([])
+    const [
+        clearButtonWithCallbackSelected,
+        setClearButtonWithCallbackSelected,
+    ] = useState<string[]>([])
+
     // Helper function to get icon for gateway
     const getGatewayIcon = (gateway: string) => {
         const iconMap: Record<string, React.ReactNode> = {
@@ -4212,6 +4221,238 @@ const MultiSelectDemo = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Clear Button Control Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    🎯 Clear Button Control Examples
+                </h2>
+                <p className="text-gray-600">
+                    <strong>
+                        NEW: Control the X icon (clear button) visibility and
+                        behavior!
+                    </strong>
+                    Use the{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        showClearButton
+                    </code>{' '}
+                    prop to show/hide the clear button, and{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                        onClearAllClick
+                    </code>{' '}
+                    for a separate callback when the X icon is clicked. Perfect
+                    for analytics filters where API calls should only happen on
+                    explicit actions.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Hidden Clear Button (showClearButton=false)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Clear button is hidden. Users can only clear via
+                            action buttons or by deselecting items.
+                        </p>
+                        <MultiSelect
+                            label="Analytics Filters"
+                            sublabel="Clear button hidden - use Apply/Reset buttons"
+                            items={skillItems}
+                            selectedValues={clearButtonDemoSelected}
+                            onChange={handleMultiSelectChange(
+                                clearButtonDemoSelected,
+                                setClearButtonDemoSelected
+                            )}
+                            placeholder="Select filters"
+                            enableSearch={true}
+                            showClearButton={false}
+                            showActionButtons={true}
+                            primaryAction={{
+                                text: 'Apply Filters',
+                                onClick: () => {
+                                    console.log(
+                                        'API Call: Applied filters:',
+                                        clearButtonDemoSelected
+                                    )
+                                    addSnackbar({
+                                        header: 'Filters Applied',
+                                        description: `Applied ${clearButtonDemoSelected.length} filters`,
+                                    })
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Reset',
+                                onClick: () => {
+                                    setClearButtonDemoSelected([])
+                                    console.log('API Call: Reset filters')
+                                    addSnackbar({
+                                        header: 'Filters Reset',
+                                    })
+                                },
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                        />
+                        {clearButtonDemoSelected.length > 0 && (
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-700">
+                                    <strong>
+                                        Selected Filters (
+                                        {clearButtonDemoSelected.length}):
+                                    </strong>{' '}
+                                    {clearButtonDemoSelected.join(', ')}
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    ✅ No X icon visible • ✅ Use Apply/Reset
+                                    buttons for API calls
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Clear Button with Separate Callback
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Clear button visible with separate onClearAllClick
+                            callback. Perfect for tracking when users clear
+                            filters.
+                        </p>
+                        <MultiSelect
+                            label="Filter Analytics"
+                            sublabel="X icon triggers separate callback"
+                            items={permissionItems}
+                            selectedValues={clearButtonWithCallbackSelected}
+                            onChange={handleMultiSelectChange(
+                                clearButtonWithCallbackSelected,
+                                setClearButtonWithCallbackSelected
+                            )}
+                            placeholder="Select filters"
+                            enableSearch={true}
+                            showClearButton={true}
+                            onClearAllClick={() => {
+                                console.log(
+                                    'API Call: Clear button clicked - clearing filters'
+                                )
+                                setClearButtonWithCallbackSelected([])
+                                addSnackbar({
+                                    header: 'Filters Cleared',
+                                    description:
+                                        'Clear button callback triggered',
+                                })
+                            }}
+                            showActionButtons={true}
+                            primaryAction={{
+                                text: 'Apply',
+                                onClick: () => {
+                                    console.log(
+                                        'API Call: Apply button clicked:',
+                                        clearButtonWithCallbackSelected
+                                    )
+                                    addSnackbar({
+                                        header: 'Filters Applied',
+                                        description: `Applied ${clearButtonWithCallbackSelected.length} filters`,
+                                    })
+                                },
+                            }}
+                            secondaryAction={{
+                                text: 'Reset',
+                                onClick: () => {
+                                    console.log(
+                                        'API Call: Reset button clicked'
+                                    )
+                                    setClearButtonWithCallbackSelected([])
+                                    addSnackbar({
+                                        header: 'Filters Reset',
+                                    })
+                                },
+                            }}
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                        />
+                        {clearButtonWithCallbackSelected.length > 0 && (
+                            <div className="p-3 bg-green-50 rounded-lg">
+                                <p className="text-sm text-green-700">
+                                    <strong>
+                                        Selected Filters (
+                                        {clearButtonWithCallbackSelected.length}
+                                        ):
+                                    </strong>{' '}
+                                    {clearButtonWithCallbackSelected
+                                        .slice(0, 3)
+                                        .join(', ')}
+                                    {clearButtonWithCallbackSelected.length >
+                                        3 &&
+                                        ` +${clearButtonWithCallbackSelected.length - 3} more`}
+                                </p>
+                                <p className="text-xs text-green-600 mt-1">
+                                    ✅ X icon visible • ✅ Separate callback for
+                                    X icon • ✅ Different callback for Apply
+                                    button
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2">
+                        🎯 Clear Button Control Features:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Show/Hide Control:</strong> Use
+                                showClearButton prop to control visibility
+                            </li>
+                            <li>
+                                • <strong>Default Behavior:</strong> Clear
+                                button shows by default when variant=CONTAINER
+                                and items are selected
+                            </li>
+                            <li>
+                                • <strong>Separate Callback:</strong>{' '}
+                                onClearAllClick provides dedicated callback for
+                                X icon clicks
+                            </li>
+                            <li>
+                                • <strong>Fallback:</strong> If onClearAllClick
+                                not provided, falls back to onChange('')
+                            </li>
+                        </ul>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                            <li>
+                                • <strong>Analytics Use Case:</strong> Perfect
+                                for filters where API calls should only happen
+                                on explicit actions
+                            </li>
+                            <li>
+                                • <strong>Action Buttons:</strong> Works
+                                seamlessly with Apply/Reset action buttons
+                            </li>
+                            <li>
+                                • <strong>State Management:</strong> onChange
+                                still updates local state, onClearAllClick
+                                handles API calls
+                            </li>
+                            <li>
+                                • <strong>Accessibility:</strong> Maintains
+                                proper aria-labels and keyboard navigation
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="mt-3 p-2 bg-white rounded border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-700">
+                            <strong>Usage Example:</strong> For analytics
+                            filters, set <code>showClearButton={false}</code> to
+                            hide the X icon, and use <code>primaryAction</code>{' '}
+                            and <code>secondaryAction</code> for Apply/Reset
+                            buttons that trigger API calls. Alternatively, use{' '}
+                            <code>onClearAllClick</code> to handle X icon clicks
+                            separately from onChange.
+                        </p>
                     </div>
                 </div>
             </div>
