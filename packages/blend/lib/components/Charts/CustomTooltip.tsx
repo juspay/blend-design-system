@@ -149,7 +149,7 @@ export const CustomTooltip = ({
             paddingLeft={10}
             border={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
             minWidth={220}
-            maxWidth={200}
+            maxWidth={300}
             // className="debug"
         >
             {chartType === ChartType.LINE && (
@@ -371,7 +371,11 @@ const LineChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
@@ -505,7 +509,11 @@ const PieChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
@@ -635,7 +643,11 @@ const ScatterChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
