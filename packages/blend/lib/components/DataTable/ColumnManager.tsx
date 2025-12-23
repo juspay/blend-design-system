@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import { ColumnManagerProps } from './types'
@@ -199,12 +199,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 if (disabled) return
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.stopPropagation()
+                    e.preventDefault()
                     if (triggerButtonRef.current) {
-                        setTimeout(() => {
-                            if (triggerButtonRef.current) {
-                                triggerButtonRef.current.click()
-                            }
-                        }, 0)
+                        triggerButtonRef.current.click()
                     }
                 }
             }}
