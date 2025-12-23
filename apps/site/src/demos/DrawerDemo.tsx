@@ -20,7 +20,7 @@ import {
     NestedMultiSelectDrawer,
     NestedSingleSelectDrawer,
 } from '../../../../packages/blend/lib/components/Drawer'
-import { ButtonType } from '../../../../packages/blend/lib/components/Button'
+import { Button, ButtonType } from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
 import {
     MultiSelect,
@@ -35,7 +35,7 @@ import {
     SingleSelect,
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
-import { Search, User } from 'lucide-react'
+import { Search, User, X } from 'lucide-react'
 import { SearchInput } from '../../../../packages/blend/lib/main'
 const simpleItems: SelectMenuGroupType[] = [
     {
@@ -4049,6 +4049,171 @@ export const MobileMultiSelectNoDrawerExample = () => {
     )
 }
 
+// Full Screen Drawer with Custom Close Icon and Primary CTA
+const CustomCloseIcon = () => {
+    return (
+        <DrawerClose>
+            <button
+                style={{
+                    position: 'absolute',
+                    top: '16px',
+                    right: '16px',
+                    zIndex: 10,
+                    padding: '8px',
+                    borderRadius: '4px',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                aria-label="Close drawer"
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f3f4f6'
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                }}
+            >
+                <X size={20} color="#6b7280" aria-hidden="true" />
+            </button>
+        </DrawerClose>
+    )
+}
+
+export const FullScreenDrawerExample = () => {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{
+                    display: 'flex',
+                    height: '40px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    overflow: 'hidden',
+                    borderRadius: '20px',
+                    backgroundColor: 'white',
+                    padding: '0 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    border: '1px solid #e5e7eb',
+                    cursor: 'pointer',
+                }}
+            >
+                Full Screen Drawer (All Features)
+            </button>
+            <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerPortal>
+                    <DrawerOverlay />
+                    <DrawerContent fullScreen={true}>
+                        <CustomCloseIcon />
+                        <DrawerHeader>
+                            <DrawerTitle>Full Screen Drawer</DrawerTitle>
+                            <DrawerDescription>
+                                This drawer takes full screen on mobile with no
+                                border radius. It includes a custom close icon at
+                                the top and a custom primary CTA at the bottom.
+                            </DrawerDescription>
+                        </DrawerHeader>
+                        <DrawerBody>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '16px',
+                                    padding: '20px 0',
+                                }}
+                            >
+                                <p>
+                                    This drawer demonstrates all three features:
+                                </p>
+                                <ul
+                                    style={{
+                                        paddingLeft: '20px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <li>
+                                        <strong>fullScreen:</strong> Drawer takes
+                                        full height and width with no border
+                                        radius
+                                    </li>
+                                    <li>
+                                        <strong>Custom Close Icon:</strong> Wrap
+                                        your custom close button with{' '}
+                                        <code>DrawerClose</code> component or use
+                                        your own state management with{' '}
+                                        <code>onOpenChange</code>
+                                    </li>
+                                    <li>
+                                        <strong>Custom Primary CTA:</strong> Add
+                                        your own primary button using{' '}
+                                        <code>DrawerFooter</code> or place it
+                                        anywhere in the content
+                                    </li>
+                                </ul>
+                                <p>
+                                    On mobile devices, this drawer will take the
+                                    full screen with no rounded corners,
+                                    providing a native app-like experience.
+                                </p>
+                                <div
+                                    style={{
+                                        backgroundColor: '#f3f4f6',
+                                        padding: '16px',
+                                        borderRadius: '8px',
+                                        marginTop: '16px',
+                                    }}
+                                >
+                                    <h4
+                                        style={{
+                                            margin: '0 0 8px 0',
+                                            fontSize: '16px',
+                                            fontWeight: '600',
+                                        }}
+                                    >
+                                        Content Area
+                                    </h4>
+                                    <p
+                                        style={{
+                                            margin: 0,
+                                            color: '#6b7280',
+                                            fontSize: '14px',
+                                        }}
+                                    >
+                                        You can add any content here. The drawer
+                                        will scroll if content exceeds the
+                                        available height.
+                                    </p>
+                                </div>
+                            </div>
+                        </DrawerBody>
+                        <DrawerFooter direction="bottom">
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Save & Close"
+                                fullWidth
+                                onClick={() => {
+                                    console.log('Primary CTA clicked')
+                                    setOpen(false)
+                                }}
+                            />
+                        </DrawerFooter>
+                    </DrawerContent>
+                </DrawerPortal>
+            </Drawer>
+        </>
+    )
+}
+
 // All Examples Component
 export const DrawerDemo = () => {
     return (
@@ -4060,6 +4225,20 @@ export const DrawerDemo = () => {
                 padding: '20px',
             }}
         >
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>
+                    New Features: Full Screen, Close Icon & Primary CTA
+                </h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    New props for enhanced drawer functionality: fullScreen (full
+                    height/width, no border radius), closeIcon (X icon at top),
+                    and primaryCTA (primary button at bottom).
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <FullScreenDrawerExample />
+                </div>
+            </div>
+
             <div>
                 <h2 style={{ marginBottom: '8px' }}>Basic Drawer Examples</h2>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
