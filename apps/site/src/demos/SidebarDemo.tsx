@@ -752,6 +752,7 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'chatInput',
                     onClick: () => setActiveComponent('chatInput'),
+                    showOnMobile: true,
                 },
                 {
                     label: 'Multi Value Input',
@@ -1421,7 +1422,7 @@ const SidebarDemo = () => {
                         'aria-label': 'Create new item',
                     }}
                 >
-                    <div className="w-full h-full">{renderContent()}</div>
+                    {renderContent()}
                 </Sidebar>
             </ThemeProvider>
         </div>
