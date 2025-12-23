@@ -191,7 +191,7 @@ export const getChatInputTokens = (
             textarea: {
                 backgroundColor: 'transparent',
                 color: foundationToken.colors.gray[600],
-                fontSize: '16px',
+                fontSize: foundationToken.font.size.body.md.fontSize,
                 lineHeight: '1.5',
                 paddingX: foundationToken.unit[0],
                 paddingY: foundationToken.unit[0],
@@ -202,8 +202,8 @@ export const getChatInputTokens = (
                 },
                 resize: 'none',
                 fontFamily: 'inherit',
-                minHeight: '24px',
-                maxHeight: '120px',
+                minHeight: '44px',
+                maxHeight: '100px',
                 overflowY: 'auto',
             },
 

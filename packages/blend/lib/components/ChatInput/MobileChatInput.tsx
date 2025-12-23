@@ -5,10 +5,11 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../tokens'
-import { getMobileChatInputTokens } from './MobileChatInput.tokens'
+import { ChatInputTokensType } from './chatInput.tokens'
 import { AttachedFile, MenuProps } from '../../main'
 import AttachmentFile from './AttachmentFile'
 import { truncatePlaceholder } from './utils'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const HiddenScrollbarTextarea = styled(PrimitiveTextarea)`
     /* Hide scrollbar for Firefox */
@@ -47,8 +48,8 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
     overflowMenuProps,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null!)
-    const tokens = getMobileChatInputTokens(FOUNDATION_THEME).sm
-    const textareaMobileTokens = tokens.textareaMobile
+    const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
+    const textareaTokens = tokens.textarea
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [isFocused, setIsFocused] = useState(false)
     const [truncatedPlaceholder, setTruncatedPlaceholder] = useState<
@@ -84,21 +85,19 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
 
         el.style.height = 'auto'
         const maxHeight = parseFloat(
-            String(textareaMobileTokens.height.focus).replace('px', '')
+            String(tokens.textarea.maxHeight).replace('px', '')
         )
         el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
 
         const defaultHeight = parseFloat(
-            String(textareaMobileTokens.height.default).replace('px', '')
+            String(tokens.textarea.minHeight).replace('px', '')
         )
         if (el.scrollHeight > defaultHeight) {
-            el.style.borderRadius = textareaMobileTokens.borderRadius
-                .focus as string
+            el.style.borderRadius = FOUNDATION_THEME.unit[20] as string
         } else {
-            el.style.borderRadius = textareaMobileTokens.borderRadius
-                .default as string
+            el.style.borderRadius = FOUNDATION_THEME.unit[100] as string
         }
-    }, [value, textareaMobileTokens])
+    }, [value, tokens])
 
     const attachmentButtonDimensions = useMemo(() => {
         // Button is fixed at 44px (FOUNDATION_THEME.unit[44]) as defined in PrimitiveButton
@@ -177,59 +176,56 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                         onChange={handleTextareaChange}
                         placeholder={truncatedPlaceholder}
                         width="100%"
-                        backgroundColor={textareaMobileTokens.backgroundColor}
-                        color={textareaMobileTokens.color}
-                        fontSize={textareaMobileTokens.fontSize}
+                        backgroundColor={textareaTokens.backgroundColor}
+                        color={textareaTokens.color}
+                        fontSize={textareaTokens.fontSize}
                         borderRadius={
                             isFocused
-                                ? textareaMobileTokens.borderRadius.focus
-                                : textareaMobileTokens.borderRadius.default
+                                ? FOUNDATION_THEME.unit[20]
+                                : FOUNDATION_THEME.unit[100]
                         }
                         border={
                             isFocused
-                                ? textareaMobileTokens.border.focus
-                                : textareaMobileTokens.border.default
+                                ? tokens.container.border.focus
+                                : tokens.container.border.default
                         }
-                        resize="none"
+                        resize={textareaTokens.resize}
                         paddingRight={
                             slot1 ? attachmentButtonDimensions.total : 0
                         }
-                        paddingLeft={textareaMobileTokens.padding}
-                        paddingTop={textareaMobileTokens.padding}
-                        paddingBottom={textareaMobileTokens.padding}
-                        overflow={'auto'}
+                        paddingLeft={FOUNDATION_THEME.unit[12]}
+                        paddingTop={FOUNDATION_THEME.unit[10]}
+                        paddingBottom={FOUNDATION_THEME.unit[10]}
+                        overflow={textareaTokens.overflowY}
                         placeholderStyles={{
-                            color: textareaMobileTokens.placeholder.color,
+                            color: textareaTokens.placeholder.color,
                         }}
                         style={{
-                            lineHeight: textareaMobileTokens.lineHeight,
-                            verticalAlign: textareaMobileTokens.verticalAlign,
+                            lineHeight: textareaTokens.lineHeight,
                         }}
                         onFocus={(e) => {
                             setIsFocused(true)
-                            e.currentTarget.style.borderRadius =
-                                textareaMobileTokens.borderRadius
-                                    .focus as string
-                            e.currentTarget.style.border = textareaMobileTokens
+                            e.currentTarget.style.borderRadius = tokens
+                                .container.borderRadius as string
+                            e.currentTarget.style.border = tokens.container
                                 .border.focus as string
                         }}
                         onBlur={(e) => {
                             setIsFocused(false)
-                            e.currentTarget.style.borderRadius =
-                                textareaMobileTokens.borderRadius
-                                    .default as string
-                            e.currentTarget.style.border = textareaMobileTokens
+                            e.currentTarget.style.borderRadius = tokens
+                                .container.borderRadius as string
+                            e.currentTarget.style.border = tokens.container
                                 .border.default as string
                         }}
                     />
 
                     <Block
                         position="absolute"
-                        bottom={'4px'}
-                        right={'4px'}
-                        width={36}
-                        height={36}
-                        borderRadius="100px"
+                        bottom={FOUNDATION_THEME.unit[5]}
+                        right={FOUNDATION_THEME.unit[4]}
+                        width={FOUNDATION_THEME.unit[36]}
+                        height={FOUNDATION_THEME.unit[36]}
+                        borderRadius={FOUNDATION_THEME.unit[100]}
                         overflow="hidden"
                         display="flex"
                         alignItems="center"
