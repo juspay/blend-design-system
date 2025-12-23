@@ -49,7 +49,6 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null!)
     const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
-    const textareaTokens = tokens.textarea
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const [isFocused, setIsFocused] = useState(false)
     const [truncatedPlaceholder, setTruncatedPlaceholder] = useState<
@@ -84,18 +83,16 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
         if (!el) return
 
         el.style.height = 'auto'
-        const maxHeight = parseFloat(
-            String(tokens.textarea.maxHeight).replace('px', '')
-        )
+        const maxHeight = parseFloat(String(tokens.maxHeight).replace('px', ''))
         el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`
 
         const defaultHeight = parseFloat(
-            String(tokens.textarea.minHeight).replace('px', '')
+            String(tokens.minHeight).replace('px', '')
         )
         if (el.scrollHeight > defaultHeight) {
-            el.style.borderRadius = FOUNDATION_THEME.unit[20] as string
+            el.style.borderRadius = tokens.borderRadius.focus as string
         } else {
-            el.style.borderRadius = FOUNDATION_THEME.unit[100] as string
+            el.style.borderRadius = tokens.borderRadius.default as string
         }
     }, [value, tokens])
 
@@ -139,14 +136,14 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
             <Block
                 display="flex"
                 width="100%"
-                gap={FOUNDATION_THEME.unit[8]}
+                gap={tokens.gap}
                 position="relative"
                 alignItems="stretch"
             >
                 <Block alignSelf="stretch" display="flex" alignItems="end">
                     <PrimitiveButton
                         width={FOUNDATION_THEME.unit[44]}
-                        height={FOUNDATION_THEME.unit[44]}
+                        height={tokens.minHeight}
                         onClick={handleAttachClick}
                         aria-label="Attach files"
                         display="flex"
@@ -176,46 +173,44 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                         onChange={handleTextareaChange}
                         placeholder={truncatedPlaceholder}
                         width="100%"
-                        backgroundColor={textareaTokens.backgroundColor}
-                        color={textareaTokens.color}
-                        fontSize={textareaTokens.fontSize}
+                        backgroundColor={tokens.backgroundColor.default}
+                        color={tokens.text.color.default}
+                        fontSize={tokens.text.fontSize.default}
                         borderRadius={
                             isFocused
-                                ? FOUNDATION_THEME.unit[20]
-                                : FOUNDATION_THEME.unit[100]
+                                ? tokens.borderRadius.focus
+                                : tokens.borderRadius.default
                         }
                         border={
                             isFocused
-                                ? tokens.container.border.focus
-                                : tokens.container.border.default
+                                ? tokens.border.focus
+                                : tokens.border.default
                         }
-                        resize={textareaTokens.resize}
+                        resize={tokens.resize}
                         paddingRight={
                             slot1 ? attachmentButtonDimensions.total : 0
                         }
-                        paddingLeft={FOUNDATION_THEME.unit[12]}
-                        paddingTop={FOUNDATION_THEME.unit[10]}
-                        paddingBottom={FOUNDATION_THEME.unit[10]}
-                        overflow={textareaTokens.overflowY}
+                        paddingLeft={tokens.paddingLeft}
+                        paddingTop={tokens.paddingTop}
+                        paddingBottom={tokens.paddingBottom}
+                        overflow={tokens.overflow}
                         placeholderStyles={{
-                            color: textareaTokens.placeholder.color,
+                            color: tokens.text.color.default,
                         }}
                         style={{
-                            lineHeight: textareaTokens.lineHeight,
+                            lineHeight: tokens.text.lineHeight.default,
                         }}
                         onFocus={(e) => {
                             setIsFocused(true)
                             e.currentTarget.style.borderRadius = tokens
-                                .container.borderRadius as string
-                            e.currentTarget.style.border = tokens.container
-                                .border.focus as string
+                                .borderRadius.focus as string
+                            e.currentTarget.style.border = tokens.border
+                                .focus as string
                         }}
                         onBlur={(e) => {
                             setIsFocused(false)
-                            e.currentTarget.style.borderRadius = tokens
-                                .container.borderRadius as string
-                            e.currentTarget.style.border = tokens.container
-                                .border.default as string
+                            e.currentTarget.style.border = tokens.border
+                                .default as string
                         }}
                     />
 
@@ -225,7 +220,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                         right={FOUNDATION_THEME.unit[4]}
                         width={FOUNDATION_THEME.unit[36]}
                         height={FOUNDATION_THEME.unit[36]}
-                        borderRadius={FOUNDATION_THEME.unit[100]}
+                        borderRadius={tokens.borderRadius.default}
                         overflow="hidden"
                         display="flex"
                         alignItems="center"
