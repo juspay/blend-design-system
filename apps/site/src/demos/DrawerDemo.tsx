@@ -20,7 +20,10 @@ import {
     NestedMultiSelectDrawer,
     NestedSingleSelectDrawer,
 } from '../../../../packages/blend/lib/components/Drawer'
-import { Button, ButtonType } from '../../../../packages/blend/lib/components/Button'
+import {
+    Button,
+    ButtonType,
+} from '../../../../packages/blend/lib/components/Button'
 import ResponsiveSelectDemo from './ResponsiveSelectDemo'
 import {
     MultiSelect,
@@ -4117,8 +4120,9 @@ export const FullScreenDrawerExample = () => {
                             <DrawerTitle>Full Screen Drawer</DrawerTitle>
                             <DrawerDescription>
                                 This drawer takes full screen on mobile with no
-                                border radius. It includes a custom close icon at
-                                the top and a custom primary CTA at the bottom.
+                                border radius. It includes a custom close icon
+                                at the top and a custom primary CTA at the
+                                bottom.
                             </DrawerDescription>
                         </DrawerHeader>
                         <DrawerBody>
@@ -4142,15 +4146,15 @@ export const FullScreenDrawerExample = () => {
                                     }}
                                 >
                                     <li>
-                                        <strong>fullScreen:</strong> Drawer takes
-                                        full height and width with no border
-                                        radius
+                                        <strong>fullScreen:</strong> Drawer
+                                        takes full height and width with no
+                                        border radius
                                     </li>
                                     <li>
                                         <strong>Custom Close Icon:</strong> Wrap
                                         your custom close button with{' '}
-                                        <code>DrawerClose</code> component or use
-                                        your own state management with{' '}
+                                        <code>DrawerClose</code> component or
+                                        use your own state management with{' '}
                                         <code>onOpenChange</code>
                                     </li>
                                     <li>
@@ -4230,9 +4234,9 @@ export const DrawerDemo = () => {
                     New Features: Full Screen, Close Icon & Primary CTA
                 </h2>
                 <p style={{ marginBottom: '16px', color: '#6b7280' }}>
-                    New props for enhanced drawer functionality: fullScreen (full
-                    height/width, no border radius), closeIcon (X icon at top),
-                    and primaryCTA (primary button at bottom).
+                    New props for enhanced drawer functionality: fullScreen
+                    (full height/width, no border radius), closeIcon (X icon at
+                    top), and primaryCTA (primary button at bottom).
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     <FullScreenDrawerExample />
