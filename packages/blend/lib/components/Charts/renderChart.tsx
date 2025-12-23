@@ -359,19 +359,26 @@ export const renderChart = ({
                             })
                         }
                     />
-                    {lineKeys.map((key) => (
-                        <Line
-                            key={key}
-                            type="linear"
-                            dataKey={key}
-                            stroke={getColor(key, chartType)}
-                            strokeWidth={2}
-                            activeDot={{ r: hoveredKey === key ? 4 : 0 }}
-                            dot={false}
-                            animationDuration={350}
-                            onMouseOver={() => setHoveredKey(key)}
-                        />
-                    ))}
+                    {[...lineKeys]
+                        .sort((a, b) => {
+                            // Put hovered key last so it renders on top
+                            if (a === hoveredKey) return 1
+                            if (b === hoveredKey) return -1
+                            return 0
+                        })
+                        .map((key) => (
+                            <Line
+                                key={key}
+                                type="linear"
+                                dataKey={key}
+                                stroke={getColor(key, chartType)}
+                                strokeWidth={2}
+                                activeDot={{ r: hoveredKey === key ? 4 : 0 }}
+                                dot={false}
+                                animationDuration={350}
+                                onMouseOver={() => setHoveredKey(key)}
+                            />
+                        ))}
                 </LineChart>
             )
         case ChartType.BAR:
