@@ -143,6 +143,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                     </>
                 )}
                 {showCollapseIcon && (
+                    // <div style={{ border: '1px solid blue' }}>
                     <PrimitiveButton
                         type="button"
                         aria-label={
@@ -155,7 +156,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                             alignItems: 'center',
                             justifyContent: 'center',
                             background: 'none',
-                            border: 'none',
+                            // border: 'none',
                             cursor: 'pointer',
                             padding: 0,
                         }}
@@ -165,6 +166,9 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                             cursor: 'pointer',
                             outlineOffset: '2px',
                         }}
+                        height={FOUNDATION_THEME.unit[20]}
+                        width={FOUNDATION_THEME.unit[20]}
+                        border={'1px solid red'}
                     >
                         <ChevronsDownUp
                             size={20}
@@ -172,6 +176,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                             aria-hidden="true"
                         />
                     </PrimitiveButton>
+                    // </div>
                 )}
                 {slot3}
             </Block>

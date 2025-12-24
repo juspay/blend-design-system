@@ -226,7 +226,15 @@ export const renderChart = ({
     }
 
     switch (chartType) {
-        case ChartType.LINE:
+        case ChartType.LINE: {
+            const sortedLineKeys = hoveredKey
+                ? [...lineKeys].sort((a, b) => {
+                      if (a === hoveredKey) return 1
+                      if (b === hoveredKey) return -1
+                      return 0
+                  })
+                : lineKeys
+
             return (
                 <LineChart
                     data-chart={chartName}
@@ -366,28 +374,28 @@ export const renderChart = ({
                             })
                         }
                     />
-                    {[...lineKeys]
-                        .sort((a, b) => {
-                            // Put hovered key last so it renders on top
-                            if (a === hoveredKey) return 1
-                            if (b === hoveredKey) return -1
-                            return 0
-                        })
-                        .map((key) => (
-                            <Line
-                                key={key}
-                                type="linear"
-                                dataKey={key}
-                                stroke={getColor(key, chartType)}
-                                strokeWidth={2}
-                                activeDot={{ r: hoveredKey === key ? 4 : 0 }}
-                                animationDuration={350}
-                                onMouseOver={() => setHoveredKey(key)}
-                                dot={CustomizedDot || false}
-                            />
-                        ))}
+                    {sortedLineKeys.map((key) => (
+                        <Line
+                            key={key}
+                            type="linear"
+                            dataKey={key}
+                            stroke={getColor(key, chartType)}
+                            strokeWidth={2}
+                            strokeOpacity={
+                                hoveredKey === null || hoveredKey === key
+                                    ? 1
+                                    : 0.3
+                            }
+                            activeDot={{ r: hoveredKey === key ? 4 : 0 }}
+                            animationDuration={350}
+                            onMouseOver={() => setHoveredKey(key)}
+                            dot={CustomizedDot || false}
+                        />
+                    ))}
                 </LineChart>
             )
+        }
+
         case ChartType.BAR:
             return (
                 <BarChart
