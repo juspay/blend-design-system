@@ -221,7 +221,7 @@ const StatCard = ({
                     statCardToken.textContainer.stats.title.change.text
                         .fontWeight
                 }
-                data-numeric={`${effectiveChange.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange.value.toFixed(2)}%`}
+                data-numeric={`${effectiveChange.value.toFixed(2)?.includes('-') ? '' : '+'}${effectiveChange.value.toFixed(2)}%`}
                 data-element="statcard-delta"
                 data-status={
                     effectiveChange.valueType === ChangeType.INCREASE
@@ -229,7 +229,7 @@ const StatCard = ({
                         : 'decrease'
                 }
             >
-                {effectiveChange.valueType === ChangeType.DECREASE ? '-' : '+'}
+                {effectiveChange.value.toFixed(2)?.includes('-') ? '' : '+'}
                 {effectiveChange.value.toFixed(2)}%
             </Text>
         </Block>
