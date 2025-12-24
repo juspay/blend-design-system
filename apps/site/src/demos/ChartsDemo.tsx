@@ -5806,12 +5806,12 @@ const ChartDemo = () => {
                 height={200}
                 data={last1hour15minsData}
                 legends={[
-                    { title: 'Overall', total: 54 },
-                    { title: 'PAYTM_V2', total: 10 },
-                    { title: 'DUMMY', total: 10 },
-                    { title: 'RAZORPAY', total: 10 },
-                    { title: 'GOCASHFREE', total: 10 },
-                    { title: 'CCAVENUE_V2', total: 10 },
+                    { title: 'Overall', total: '54' },
+                    { title: 'PAYTM_V2', total: '10' },
+                    { title: 'DUMMY', total: '10' },
+                    { title: 'RAZORPAY', total: '10' },
+                    { title: 'GOCASHFREE', total: '10' },
+                    { title: 'CCAVENUE_V2', total: '10' },
                 ]}
                 CustomizedDot={CustomizedDot}
                 chartType={ChartType.LINE}
