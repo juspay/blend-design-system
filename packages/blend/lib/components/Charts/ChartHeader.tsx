@@ -168,7 +168,6 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                         }}
                         height={FOUNDATION_THEME.unit[20]}
                         width={FOUNDATION_THEME.unit[20]}
-                        border={'1px solid red'}
                     >
                         <ChevronsDownUp
                             size={20}

@@ -5900,7 +5900,7 @@ const ChartDemo = () => {
                     { title: 'CCAVENUE_V2', total: '10' },
                 ]}
                 CustomizedDot={CustomizedDot}
-                chartType={ChartType.AREA}
+                chartType={ChartType.LINE}
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
