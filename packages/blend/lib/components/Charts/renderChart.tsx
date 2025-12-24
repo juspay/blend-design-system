@@ -12,6 +12,8 @@ import {
     Cell,
     ScatterChart,
     Scatter,
+    AreaChart,
+    Area,
 } from 'recharts'
 import {
     ChartType,
@@ -49,6 +51,7 @@ export const renderChart = ({
     barsize,
     xAxis,
     yAxis,
+    tooltip,
     noData,
     height,
     CustomizedDot,
@@ -223,7 +226,7 @@ export const renderChart = ({
     }
 
     switch (chartType) {
-        case ChartType.LINE:
+        case ChartType.LINE: {
             return (
                 <LineChart
                     data-chart={chartName}
@@ -241,6 +244,10 @@ export const renderChart = ({
                     }}
                     onMouseLeave={() => setHoveredKey(null)}
                 >
+                    <CartesianGrid
+                        vertical={false}
+                        stroke={chartConfig.gridStroke}
+                    />
                     <XAxis
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
@@ -295,10 +302,7 @@ export const renderChart = ({
                                 : undefined
                         }
                     />
-                    <CartesianGrid
-                        vertical={false}
-                        stroke={chartConfig.gridStroke}
-                    />
+
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
                             axisLine={false}
@@ -343,6 +347,8 @@ export const renderChart = ({
                         />
                     )}
                     <Tooltip
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
                         cursor={{
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
@@ -382,11 +388,13 @@ export const renderChart = ({
                         ))}
                 </LineChart>
             )
+        }
+
         case ChartType.BAR:
             return (
                 <BarChart
                     data-chart={chartName}
-                    data={flattenedData}
+                    data={processedData}
                     margin={{
                         top: 10,
                         right: 30,
@@ -503,6 +511,8 @@ export const renderChart = ({
                     )}
                     <Tooltip
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,
@@ -568,6 +578,8 @@ export const renderChart = ({
                         ))}
                     </Pie>
                     <Tooltip
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,
@@ -717,6 +729,8 @@ export const renderChart = ({
                         }
                     />
                     <Tooltip
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
                         cursor={{
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
@@ -839,6 +853,155 @@ export const renderChart = ({
                     sankeyHeight={sankeyHeight}
                     isSmallScreen={isSmallScreen}
                 />
+            )
+        }
+
+        case ChartType.AREA: {
+            return (
+                <AreaChart
+                    data-chart={chartName}
+                    data={processedData}
+                    margin={{
+                        top: 10,
+                        right: 30,
+                        left:
+                            finalYAxis.label && finalYAxis.showLabel ? 30 : 10,
+                        bottom:
+                            finalXAxis.label &&
+                            finalXAxis.showLabel &&
+                            finalXAxis.show
+                                ? 50
+                                : 30,
+                    }}
+                    onMouseLeave={() => setHoveredKey(null)}
+                >
+                    <CartesianGrid
+                        vertical={false}
+                        stroke={FOUNDATION_THEME.colors.gray[150]}
+                    />
+                    <XAxis
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
+                        axisLine={false}
+                        tickLine={false}
+                        interval={finalXAxis.interval}
+                        tickMargin={20}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
+                        tickFormatter={
+                            finalXAxis.customTick
+                                ? undefined
+                                : finalXAxis.tickFormatter
+                                  ? finalXAxis.tickFormatter
+                                  : finalXAxis.type
+                                    ? getAxisFormatter(finalXAxis)
+                                    : (value) => formatNumber(value)
+                        }
+                        tick={
+                            (!finalXAxis.show
+                                ? false
+                                : finalXAxis.customTick
+                                  ? finalXAxis.customTick
+                                  : {
+                                        fill: FOUNDATION_THEME.colors.gray[400],
+                                        fontSize: isSmallScreen ? 10 : 12,
+                                        fontWeight:
+                                            FOUNDATION_THEME.font.weight[500],
+                                    }) as TickProps
+                        }
+                        label={
+                            finalXAxis.label &&
+                            finalXAxis.showLabel &&
+                            finalXAxis.show &&
+                            !isSmallScreen
+                                ? {
+                                      value: finalXAxis.label,
+                                      position: 'bottom',
+                                      offset: 35,
+                                      fill: FOUNDATION_THEME.colors.gray[400],
+                                      fontSize: 12,
+                                      fontWeight:
+                                          FOUNDATION_THEME.font.weight[500],
+                                  }
+                                : undefined
+                        }
+                    />
+                    {!isSmallScreen && finalYAxis.show && (
+                        <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            interval={finalYAxis.interval}
+                            tickFormatter={
+                                finalYAxis.customTick
+                                    ? undefined
+                                    : finalYAxis.tickFormatter
+                                      ? finalYAxis.tickFormatter
+                                      : finalYAxis.type
+                                        ? getAxisFormatter(finalYAxis)
+                                        : (value) => formatNumber(value)
+                            }
+                            tick={
+                                (finalYAxis.customTick
+                                    ? finalYAxis.customTick
+                                    : {
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
+                                          fontSize: 12,
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
+                                      }) as TickProps
+                            }
+                            label={
+                                finalYAxis.label && finalYAxis.showLabel
+                                    ? {
+                                          value: finalYAxis.label,
+                                          angle: -90,
+                                          position: 'insideLeft',
+                                          style: { textAnchor: 'middle' },
+                                          offset: -15,
+                                          fill: FOUNDATION_THEME.colors
+                                              .gray[400],
+                                          fontSize: 12,
+                                          fontWeight:
+                                              FOUNDATION_THEME.font.weight[500],
+                                      }
+                                    : undefined
+                            }
+                        />
+                    )}
+                    <Tooltip
+                        cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        content={(props) =>
+                            CustomTooltip({
+                                ...props,
+                                hoveredKey,
+                                originalData,
+                                setHoveredKey,
+                                chartType,
+                                selectedKeys,
+                            })
+                        }
+                    />
+                    {lineKeys.map((key) => (
+                        <Area
+                            key={key}
+                            dataKey={key}
+                            fill={getColor(key, chartType)}
+                            stroke={getColor(key, chartType)}
+                            strokeWidth={2}
+                            animationDuration={350}
+                            type="linear"
+                        />
+                    ))}
+                </AreaChart>
             )
         }
 

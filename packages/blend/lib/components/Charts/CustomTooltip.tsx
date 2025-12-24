@@ -152,7 +152,7 @@ export const CustomTooltip = ({
             maxWidth={300}
             // className="debug"
         >
-            {chartType === ChartType.LINE && (
+            {chartType == ChartType.LINE && (
                 <LineChartTooltip
                     active={active}
                     payload={payload}
@@ -166,7 +166,7 @@ export const CustomTooltip = ({
                     yAxis={yAxis}
                 />
             )}
-            {chartType === ChartType.BAR && (
+            {(chartType === ChartType.BAR || chartType === ChartType.AREA) && (
                 <BarChartTooltip
                     originalData={originalData}
                     label={label}
@@ -218,7 +218,7 @@ const BarChartTooltip = ({
     const relevantData = findDataPointByLabel(originalData, label)?.data
     return (
         <>
-            <Block border="1px solid red">
+            <Block>
                 <Block display="flex" flexDirection="column">
                     <Text
                         fontSize={14}
