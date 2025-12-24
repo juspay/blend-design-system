@@ -270,9 +270,9 @@ export const getDropdownInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     y: {
-                        sm: foundationTokens.unit[7],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[10],
+                        sm: foundationTokens.unit[4],
+                        md: foundationTokens.unit[6],
+                        lg: foundationTokens.unit[8],
                     },
                 },
                 border: {

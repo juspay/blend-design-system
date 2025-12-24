@@ -416,21 +416,23 @@ const ButtonDemo = () => {
                                 checked={isLoading}
                                 onChange={() => setIsLoading(!isLoading)}
                             />
-                            <Button
-                                text="Submit Form"
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.MEDIUM}
-                                loading={isLoading}
-                                onClick={() => {
-                                    if (!isLoading) {
-                                        addSnackbar({
-                                            header: 'Form submitted!',
-                                            description:
-                                                'This button demonstrates loading state accessibility',
-                                        })
-                                    }
-                                }}
-                            />
+                            <div className="flex items-center gap-6 flex-wrap h-20">
+                                <Button
+                                    text="Submit Form"
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.MEDIUM}
+                                    loading={isLoading}
+                                    onClick={() => {
+                                        if (!isLoading) {
+                                            addSnackbar({
+                                                header: 'Form submitted!',
+                                                description:
+                                                    'This button demonstrates loading state accessibility',
+                                            })
+                                        }
+                                    }}
+                                />
+                            </div>
                             <p className="text-sm text-gray-600 text-center max-w-md">
                                 <strong>Test with screen reader:</strong> When
                                 you toggle loading ON, the screen reader should

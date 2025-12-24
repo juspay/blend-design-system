@@ -263,9 +263,9 @@ export const getMultiValueInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     y: {
-                        sm: foundationTokens.unit[5],
-                        md: foundationTokens.unit[7],
-                        lg: foundationTokens.unit[9],
+                        sm: foundationTokens.unit[4],
+                        md: foundationTokens.unit[6],
+                        lg: foundationTokens.unit[8],
                     },
                 },
                 border: {
