@@ -13,6 +13,7 @@ import {
     MultiSelectVariant,
 } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import Text from '../Text/Text'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { SearchInput } from '../Inputs'
@@ -381,9 +382,8 @@ const MultiSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {' '}
                             <StickyHeader>
-                                {enableSearch && (
+                                {enableSearch && items.length > 0 && (
                                     <Block>
                                         <SearchInput
                                             ref={searchInputRef}
@@ -446,7 +446,9 @@ const MultiSelectMenu = ({
                                         : '320px',
                                 }}
                             >
-                                {items.length === 0 ? (
+                                {items.length === 0 ||
+                                (filteredItems.length === 0 &&
+                                    searchText.length > 0) ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -455,37 +457,18 @@ const MultiSelectMenu = ({
                                             multiSelectTokens.menu.item.padding
                                         }
                                     >
-                                        <PrimitiveText
-                                            fontSize={14}
+                                        <Text
+                                            variant="body.md"
                                             color={
                                                 multiSelectTokens.menu.item
                                                     .optionsLabel.color.default
                                             }
                                             textAlign="center"
                                         >
-                                            No items available
-                                        </PrimitiveText>
-                                    </Block>
-                                ) : filteredItems.length === 0 &&
-                                  searchText.length > 0 ? (
-                                    <Block
-                                        display="flex"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        padding={
-                                            multiSelectTokens.menu.item.padding
-                                        }
-                                    >
-                                        <PrimitiveText
-                                            fontSize={14}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                            textAlign="center"
-                                        >
-                                            No results found
-                                        </PrimitiveText>
+                                            {items.length === 0
+                                                ? 'No items available'
+                                                : 'No results found'}
+                                        </Text>
                                     </Block>
                                 ) : enableVirtualization &&
                                   flattenedItems.length > 0 ? (
@@ -800,7 +783,12 @@ const MultiSelectMenu = ({
                                 )}
                             </ScrollableContent>
                             {showActionButtons &&
-                                (primaryAction || secondaryAction) && (
+                                (primaryAction || secondaryAction) &&
+                                items.length > 0 &&
+                                !(
+                                    filteredItems.length === 0 &&
+                                    searchText.length > 0
+                                ) && (
                                     <FixedActionButtons>
                                         {secondaryAction && (
                                             <Button

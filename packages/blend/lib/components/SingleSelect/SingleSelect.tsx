@@ -273,6 +273,7 @@ const SingleSelect = ({
                                 <PrimitiveButton
                                     data-element="single-select-button"
                                     type="button"
+                                    disabled={disabled}
                                     maxWidth={maxTriggerWidth}
                                     minWidth={minTriggerWidth}
                                     width={
@@ -321,18 +322,25 @@ const SingleSelect = ({
                                             singleSelectTokens.trigger.height[
                                                 size
                                             ][variant],
-                                        _hover: {
-                                            outline:
-                                                singleSelectTokens.trigger
-                                                    .outline[variant][
-                                                    error ? 'error' : 'hover'
-                                                ],
-                                            backgroundColor:
-                                                singleSelectTokens.trigger
-                                                    .backgroundColor.container[
-                                                    error ? 'error' : 'hover'
-                                                ],
-                                        },
+                                        ...(!disabled && {
+                                            _hover: {
+                                                outline:
+                                                    singleSelectTokens.trigger
+                                                        .outline[variant][
+                                                        error
+                                                            ? 'error'
+                                                            : 'hover'
+                                                    ],
+                                                backgroundColor:
+                                                    singleSelectTokens.trigger
+                                                        .backgroundColor
+                                                        .container[
+                                                        error
+                                                            ? 'error'
+                                                            : 'hover'
+                                                    ],
+                                            },
+                                        }),
                                         _focus: {
                                             outline:
                                                 singleSelectTokens.trigger
@@ -344,6 +352,16 @@ const SingleSelect = ({
                                                     .backgroundColor.container[
                                                     error ? 'error' : 'focus'
                                                 ],
+                                        },
+                                        _disabled: {
+                                            cursor: 'not-allowed',
+                                            backgroundColor:
+                                                singleSelectTokens.trigger
+                                                    .backgroundColor[variant][
+                                                    'closed'
+                                                ],
+                                            color: singleSelectTokens.label
+                                                .color.disabled,
                                         },
                                     })}
                                 >
@@ -445,10 +463,15 @@ const SingleSelect = ({
                                                                     .trigger
                                                                     .placeholder
                                                                     .fontSize,
-                                                            color: singleSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .color,
+                                                            color: disabled
+                                                                ? singleSelectTokens
+                                                                      .label
+                                                                      .color
+                                                                      .disabled
+                                                                : singleSelectTokens
+                                                                      .trigger
+                                                                      .placeholder
+                                                                      .color,
                                                             fontWeight:
                                                                 singleSelectTokens
                                                                     .trigger
@@ -479,15 +502,19 @@ const SingleSelect = ({
                                                     flexGrow: 1,
                                                     flexShrink: 1,
                                                     minWidth: 0,
-                                                    color: selected
+                                                    color: disabled
                                                         ? singleSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .color
-                                                        : singleSelectTokens
-                                                              .trigger
-                                                              .placeholder
-                                                              .color,
+                                                              .label.color
+                                                              .disabled
+                                                        : selected
+                                                          ? singleSelectTokens
+                                                                .trigger
+                                                                .selectedValue
+                                                                .color
+                                                          : singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color,
                                                     fontWeight: selected
                                                         ? singleSelectTokens
                                                               .trigger
@@ -520,11 +547,16 @@ const SingleSelect = ({
                                         <ChevronDown
                                             size={16}
                                             color={
-                                                selected
-                                                    ? singleSelectTokens.trigger
-                                                          .selectedValue.color
-                                                    : singleSelectTokens.trigger
-                                                          .placeholder.color
+                                                disabled
+                                                    ? singleSelectTokens.label
+                                                          .color.disabled
+                                                    : selected
+                                                      ? singleSelectTokens
+                                                            .trigger
+                                                            .selectedValue.color
+                                                      : singleSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                             }
                                         />
                                     </Block>
