@@ -416,27 +416,36 @@ const StatCard = ({
                                     justifyContent="center"
                                 >
                                     <Tooltip content={helpIconText}>
-                                        <CircleHelp
-                                            width={parseInt(
-                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                    '16'
-                                            )}
-                                            height={parseInt(
-                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                    '16'
-                                            )}
-                                            color={
-                                                statCardToken.textContainer
-                                                    .header.helpIcon.color
-                                                    .default
-                                            }
+                                        <Block
+                                            as="span"
+                                            display="inline-flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            borderRadius="4px"
+                                            role="button"
+                                            tabIndex={0}
                                             aria-label={
                                                 helpIconText ||
                                                 `Help for ${title}`
                                             }
-                                            role="button"
-                                            tabIndex={0}
-                                        />
+                                        >
+                                            <CircleHelp
+                                                width={parseInt(
+                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                        '16'
+                                                )}
+                                                height={parseInt(
+                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                        '16'
+                                                )}
+                                                color={
+                                                    statCardToken.textContainer
+                                                        .header.helpIcon.color
+                                                        .default
+                                                }
+                                                aria-hidden="true"
+                                            />
+                                        </Block>
                                     </Tooltip>
                                 </Block>
                             )}
@@ -662,24 +671,39 @@ const StatCard = ({
                                                     <Tooltip
                                                         content={helpIconText}
                                                     >
-                                                        <CircleHelp
-                                                            width={parseInt(
-                                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                    '16'
-                                                            )}
-                                                            height={parseInt(
-                                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                    '16'
-                                                            )}
-                                                            color={
-                                                                statCardToken
-                                                                    .textContainer
-                                                                    .header
-                                                                    .helpIcon
-                                                                    .color
-                                                                    .default
+                                                        <Block
+                                                            as="span"
+                                                            display="inline-flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                            borderRadius="4px"
+                                                            role="button"
+                                                            tabIndex={0}
+                                                            aria-label={
+                                                                helpIconText ||
+                                                                `Help for ${title}`
                                                             }
-                                                        />
+                                                        >
+                                                            <CircleHelp
+                                                                width={parseInt(
+                                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                        '16'
+                                                                )}
+                                                                height={parseInt(
+                                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                        '16'
+                                                                )}
+                                                                color={
+                                                                    statCardToken
+                                                                        .textContainer
+                                                                        .header
+                                                                        .helpIcon
+                                                                        .color
+                                                                        .default
+                                                                }
+                                                                aria-hidden="true"
+                                                            />
+                                                        </Block>
                                                     </Tooltip>
                                                 </Block>
                                             )}
@@ -806,24 +830,39 @@ const StatCard = ({
                                                                 helpIconText
                                                             }
                                                         >
-                                                            <CircleHelp
-                                                                width={parseInt(
-                                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                        '16'
-                                                                )}
-                                                                height={parseInt(
-                                                                    statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                        '16'
-                                                                )}
-                                                                color={
-                                                                    statCardToken
-                                                                        .textContainer
-                                                                        .header
-                                                                        .helpIcon
-                                                                        .color
-                                                                        .default
+                                                            <Block
+                                                                as="span"
+                                                                display="inline-flex"
+                                                                alignItems="center"
+                                                                justifyContent="center"
+                                                                borderRadius="4px"
+                                                                role="button"
+                                                                tabIndex={0}
+                                                                aria-label={
+                                                                    helpIconText ||
+                                                                    `Help for ${title}`
                                                                 }
-                                                            />
+                                                            >
+                                                                <CircleHelp
+                                                                    width={parseInt(
+                                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                            '16'
+                                                                    )}
+                                                                    height={parseInt(
+                                                                        statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                            '16'
+                                                                    )}
+                                                                    color={
+                                                                        statCardToken
+                                                                            .textContainer
+                                                                            .header
+                                                                            .helpIcon
+                                                                            .color
+                                                                            .default
+                                                                    }
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </Block>
                                                         </Tooltip>
                                                     </Block>
                                                 )}
@@ -1047,28 +1086,39 @@ const StatCard = ({
                                                 justifyContent="center"
                                             >
                                                 <Tooltip content={helpIconText}>
-                                                    <CircleHelp
-                                                        width={parseInt(
-                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                '16'
-                                                        )}
-                                                        height={parseInt(
-                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
-                                                                '16'
-                                                        )}
-                                                        color={
-                                                            statCardToken
-                                                                .textContainer
-                                                                .header.helpIcon
-                                                                .color.default
-                                                        }
+                                                    <Block
+                                                        as="span"
+                                                        display="inline-flex"
+                                                        alignItems="center"
+                                                        justifyContent="center"
+                                                        borderRadius="4px"
+                                                        role="button"
+                                                        tabIndex={0}
                                                         aria-label={
                                                             helpIconText ||
                                                             `Help for ${title}`
                                                         }
-                                                        role="button"
-                                                        tabIndex={0}
-                                                    />
+                                                    >
+                                                        <CircleHelp
+                                                            width={parseInt(
+                                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                    '16'
+                                                            )}
+                                                            height={parseInt(
+                                                                statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                    '16'
+                                                            )}
+                                                            color={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .helpIcon
+                                                                    .color
+                                                                    .default
+                                                            }
+                                                            aria-hidden="true"
+                                                        />
+                                                    </Block>
                                                 </Tooltip>
                                             </Block>
                                         )}
