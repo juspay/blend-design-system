@@ -99,7 +99,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 ? 'fit-content'
                 : isInButtonGroup
                   ? undefined
-                  : 'auto'
+                  : 'fit-content'
 
         const iconMaxHeight =
             subType === ButtonSubType.INLINE
