@@ -20,8 +20,16 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
-import { sanitizeNumberInput } from './utils'
-import { clampValueOnBlur } from './utils'
+import {
+    sanitizeNumberInput,
+    clampValueOnBlur,
+    isValueOutsideRange,
+    getRangeErrorMessage,
+    incrementValue,
+    decrementValue,
+    wouldExceedMax,
+    wouldGoBelowMin,
+} from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -59,7 +67,9 @@ const NumberInput = ({
 
     const [isFocused, setIsFocused] = useState(false)
     const [internalValue, setInternalValue] = useState('')
-    const shouldShake = useErrorShake(error)
+    const [internalError, setInternalError] = useState(false)
+    const [internalErrorMessage, setInternalErrorMessage] = useState<string>()
+    const shouldShake = useErrorShake(error || internalError)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
@@ -82,6 +92,42 @@ const NumberInput = ({
 
     const numericMin = min !== undefined ? Number(min) : undefined
     const numericMax = max !== undefined ? Number(max) : undefined
+    const stepValue = step ?? 1
+
+    const currentNumericValue =
+        value !== null && value !== undefined ? Number(value) : null
+
+    const hasError = error || internalError
+    const displayErrorMessage = errorMessage || internalErrorMessage
+
+    const updateValue = (
+        newValue: number,
+        clearError: boolean = true
+    ): void => {
+        if (clearError) {
+            setInternalError(false)
+            setInternalErrorMessage(undefined)
+        }
+        setInternalValue(String(newValue))
+        onChange({
+            target: {
+                value: String(newValue),
+            },
+        } as React.ChangeEvent<HTMLInputElement>)
+    }
+
+    const isUpButtonDisabled =
+        disabled ||
+        wouldExceedMax(currentNumericValue, stepValue, numericMin, numericMax)
+
+    const isDownButtonDisabled =
+        disabled ||
+        wouldGoBelowMin(
+            currentNumericValue,
+            stepValue,
+            numericMin,
+            preventNegative
+        )
 
     const displayValue = isFocused
         ? internalValue
@@ -163,6 +209,27 @@ const NumberInput = ({
                                 ? null
                                 : Number(sanitized)
 
+                        if (numValue !== null && !isNaN(numValue)) {
+                            if (
+                                isValueOutsideRange(
+                                    numValue,
+                                    numericMin,
+                                    numericMax
+                                )
+                            ) {
+                                setInternalError(true)
+                                setInternalErrorMessage(
+                                    getRangeErrorMessage(numericMin, numericMax)
+                                )
+                            } else {
+                                setInternalError(false)
+                                setInternalErrorMessage(undefined)
+                            }
+                        } else {
+                            setInternalError(false)
+                            setInternalErrorMessage(undefined)
+                        }
+
                         onChange({
                             ...e,
                             target: {
@@ -189,7 +256,7 @@ const NumberInput = ({
                     aria-valuemin={numericMin}
                     aria-valuemax={numericMax}
                     aria-required={required ? 'true' : undefined}
-                    aria-invalid={error ? 'true' : 'false'}
+                    aria-invalid={hasError ? 'true' : 'false'}
                     aria-describedby={ariaDescribedBy}
                     paddingX={paddingX}
                     paddingTop={
@@ -207,7 +274,7 @@ const NumberInput = ({
                     }
                     border={
                         numberInputTokens.inputContainer.border[
-                            error ? 'error' : 'default'
+                            hasError ? 'error' : 'default'
                         ]
                     }
                     fontSize={numberInputTokens.inputContainer.fontSize[size]}
@@ -229,12 +296,12 @@ const NumberInput = ({
                     }}
                     _hover={{
                         border: numberInputTokens.inputContainer.border[
-                            error ? 'error' : 'hover'
+                            hasError ? 'error' : 'hover'
                         ],
                     }}
                     _focus={{
                         border: numberInputTokens.inputContainer.border[
-                            error ? 'error' : 'focus'
+                            hasError ? 'error' : 'focus'
                         ],
                         boxShadow: '0 0 0 3px #EFF6FF',
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
@@ -250,6 +317,32 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border
                             .disabled,
                         cursor: 'not-allowed',
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'ArrowUp' && !isUpButtonDisabled) {
+                            e.preventDefault()
+                            const newValue = incrementValue(
+                                currentNumericValue,
+                                stepValue,
+                                numericMin,
+                                numericMax,
+                                preventNegative
+                            )
+                            updateValue(newValue)
+                        } else if (
+                            e.key === 'ArrowDown' &&
+                            !isDownButtonDisabled
+                        ) {
+                            e.preventDefault()
+                            const newValue = decrementValue(
+                                currentNumericValue,
+                                stepValue,
+                                numericMin,
+                                numericMax,
+                                preventNegative
+                            )
+                            updateValue(newValue)
+                        }
                     }}
                     onFocus={(e) => {
                         setIsFocused(true)
@@ -269,6 +362,9 @@ const NumberInput = ({
                         )
 
                         setInternalValue(clamped)
+
+                        setInternalError(false)
+                        setInternalErrorMessage(undefined)
 
                         if (clamped !== e.target.value) {
                             onChange({
@@ -310,7 +406,7 @@ const NumberInput = ({
                                 ? numberInputTokens.inputContainer.border
                                       .disabled
                                 : numberInputTokens.inputContainer.border[
-                                      error ? 'error' : 'default'
+                                      hasError ? 'error' : 'default'
                                   ]
                         }
                     ></Block>
@@ -320,23 +416,15 @@ const NumberInput = ({
                             label ? `Increase ${label}` : 'Increase value'
                         }
                         onClick={() => {
-                            const currentValue =
-                                value !== null && value !== undefined
-                                    ? Number(value)
-                                    : 0
-                            const newValue = currentValue + (step ?? 1)
-                            const clampedValue =
-                                numericMax !== undefined &&
-                                newValue > numericMax
-                                    ? numericMax
-                                    : newValue
-
-                            setInternalValue(String(clampedValue))
-                            onChange({
-                                target: {
-                                    value: String(clampedValue),
-                                },
-                            } as React.ChangeEvent<HTMLInputElement>)
+                            if (isUpButtonDisabled) return
+                            const newValue = incrementValue(
+                                currentNumericValue,
+                                stepValue,
+                                numericMin,
+                                numericMax,
+                                preventNegative
+                            )
+                            updateValue(newValue)
                         }}
                         backgroundColor={
                             numberInputTokens.inputContainer.stepperButton
@@ -352,13 +440,7 @@ const NumberInput = ({
                         }
                         contentCentered
                         borderRadius={`0 ${numberInputTokens.inputContainer.borderRadius[size]} 0 0`}
-                        disabled={
-                            disabled ||
-                            (numericMax !== undefined &&
-                                value !== undefined &&
-                                value !== null &&
-                                value >= numericMax)
-                        }
+                        disabled={isUpButtonDisabled}
                         _focus={{
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
@@ -404,29 +486,15 @@ const NumberInput = ({
                             label ? `Decrease ${label}` : 'Decrease value'
                         }
                         onClick={() => {
-                            const currentValue =
-                                value !== null && value !== undefined
-                                    ? Number(value)
-                                    : 0
-                            const newValue = currentValue - (step ?? 1)
-                            let finalValue = newValue
-
-                            if (preventNegative && finalValue < 0) {
-                                finalValue = 0
-                            }
-                            if (
-                                numericMin !== undefined &&
-                                finalValue < numericMin
-                            ) {
-                                finalValue = numericMin
-                            }
-
-                            setInternalValue(String(finalValue))
-                            onChange({
-                                target: {
-                                    value: String(finalValue),
-                                },
-                            } as React.ChangeEvent<HTMLInputElement>)
+                            if (isDownButtonDisabled) return
+                            const newValue = decrementValue(
+                                currentNumericValue,
+                                stepValue,
+                                numericMin,
+                                numericMax,
+                                preventNegative
+                            )
+                            updateValue(newValue)
                         }}
                         backgroundColor={
                             numberInputTokens.inputContainer.stepperButton
@@ -457,13 +525,7 @@ const NumberInput = ({
                                 numberInputTokens.inputContainer.stepperButton
                                     .backgroundColor.disabled,
                         }}
-                        disabled={
-                            disabled ||
-                            (numericMin !== undefined &&
-                                value !== undefined &&
-                                value !== null &&
-                                value <= numericMin)
-                        }
+                        disabled={isDownButtonDisabled}
                     >
                         <Triangle
                             style={{
@@ -492,8 +554,8 @@ const NumberInput = ({
                 </Block>
             </Wrapper>
             <InputFooter
-                error={error}
-                errorMessage={errorMessage}
+                error={hasError}
+                errorMessage={displayErrorMessage}
                 hintText={hintText}
                 errorId={errorId}
                 hintId={hintId}
