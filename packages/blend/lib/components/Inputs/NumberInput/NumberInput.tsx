@@ -27,8 +27,6 @@ import {
     getRangeErrorMessage,
     incrementValue,
     decrementValue,
-    wouldExceedMax,
-    wouldGoBelowMin,
 } from './utils'
 
 const Wrapper = styled(Block)`
@@ -104,30 +102,42 @@ const NumberInput = ({
         newValue: number,
         clearError: boolean = true
     ): void => {
+        const newValueString = String(newValue)
+
+        if (currentNumericValue === newValue) return
+
         if (clearError) {
             setInternalError(false)
             setInternalErrorMessage(undefined)
         }
-        setInternalValue(String(newValue))
+        setInternalValue(newValueString)
         onChange({
             target: {
-                value: String(newValue),
+                value: newValueString,
             },
         } as React.ChangeEvent<HTMLInputElement>)
     }
 
     const isUpButtonDisabled =
         disabled ||
-        wouldExceedMax(currentNumericValue, stepValue, numericMin, numericMax)
+        (numericMax !== undefined &&
+            (currentNumericValue === null
+                ? (numericMin ?? 0) + stepValue > numericMax
+                : currentNumericValue >= numericMax ||
+                  currentNumericValue + stepValue > numericMax))
 
     const isDownButtonDisabled =
         disabled ||
-        wouldGoBelowMin(
-            currentNumericValue,
-            stepValue,
-            numericMin,
-            preventNegative
-        )
+        (currentNumericValue === null
+            ? preventNegative ||
+              (numericMin !== undefined &&
+                  (numericMin ?? 0) - stepValue < numericMin)
+            : (numericMin !== undefined &&
+                  (currentNumericValue <= numericMin ||
+                      currentNumericValue - stepValue < numericMin)) ||
+              (preventNegative &&
+                  (currentNumericValue <= 0 ||
+                      currentNumericValue - stepValue < 0)))
 
     const displayValue = isFocused
         ? internalValue
@@ -209,6 +219,17 @@ const NumberInput = ({
                                 ? null
                                 : Number(sanitized)
 
+                        const valueString =
+                            numValue !== null && !isNaN(numValue)
+                                ? String(numValue)
+                                : ''
+
+                        const currentValueString =
+                            currentNumericValue !== null
+                                ? String(currentNumericValue)
+                                : ''
+                        if (valueString === currentValueString) return
+
                         if (numValue !== null && !isNaN(numValue)) {
                             if (
                                 isValueOutsideRange(
@@ -234,10 +255,7 @@ const NumberInput = ({
                             ...e,
                             target: {
                                 ...e.target,
-                                value:
-                                    numValue !== null && !isNaN(numValue)
-                                        ? String(numValue)
-                                        : '',
+                                value: valueString,
                             },
                         } as React.ChangeEvent<HTMLInputElement>)
                     }}
@@ -362,11 +380,15 @@ const NumberInput = ({
                         )
 
                         setInternalValue(clamped)
-
                         setInternalError(false)
                         setInternalErrorMessage(undefined)
 
-                        if (clamped !== e.target.value) {
+                        const clampedNumValue =
+                            clamped === '' ? null : Number(clamped)
+                        if (
+                            clamped !== e.target.value &&
+                            clampedNumValue !== currentNumericValue
+                        ) {
                             onChange({
                                 ...e,
                                 target: {
