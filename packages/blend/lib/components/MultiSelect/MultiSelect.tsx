@@ -340,6 +340,7 @@ const MultiSelect = ({
                                         id={uniqueName}
                                         data-element="multi-select-button"
                                         type="button"
+                                        disabled={disabled}
                                         position="relative"
                                         width={
                                             fullWidth ? '100%' : 'fit-content'
@@ -388,24 +389,29 @@ const MultiSelect = ({
                                                           : 'closed'
                                                 ],
 
-                                            _hover: {
-                                                outline:
-                                                    multiSelectTokens.trigger
-                                                        .outline[variant][
-                                                        error
-                                                            ? 'error'
-                                                            : 'hover'
-                                                    ],
-                                                backgroundColor:
-                                                    multiSelectTokens.trigger
-                                                        .backgroundColor[
-                                                        variant
-                                                    ][
-                                                        error
-                                                            ? 'error'
-                                                            : 'hover'
-                                                    ],
-                                            },
+                                            ...(!disabled && {
+                                                _hover: {
+                                                    outline:
+                                                        multiSelectTokens
+                                                            .trigger.outline[
+                                                            variant
+                                                        ][
+                                                            error
+                                                                ? 'error'
+                                                                : 'hover'
+                                                        ],
+                                                    backgroundColor:
+                                                        multiSelectTokens
+                                                            .trigger
+                                                            .backgroundColor[
+                                                            variant
+                                                        ][
+                                                            error
+                                                                ? 'error'
+                                                                : 'hover'
+                                                        ],
+                                                },
+                                            }),
                                             _focus: {
                                                 outline:
                                                     multiSelectTokens.trigger
@@ -423,6 +429,14 @@ const MultiSelect = ({
                                                             ? 'error'
                                                             : 'focus'
                                                     ],
+                                            },
+                                            _disabled: {
+                                                cursor: 'not-allowed',
+                                                backgroundColor:
+                                                    multiSelectTokens.trigger
+                                                        .backgroundColor[
+                                                        variant
+                                                    ]['closed'],
                                             },
                                         })}
                                     >

@@ -592,7 +592,7 @@ const SingleSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {enableSearch && (
+                            {enableSearch && items.length > 0 && (
                                 <Block
                                     position="sticky"
                                     top={0}
@@ -647,29 +647,9 @@ const SingleSelectMenu = ({
                                     />
                                 </Block>
                             )}
-                            {items.length === 0 ? (
-                                <Block
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    padding={
-                                        singleSelectTokens.menu.item.padding
-                                    }
-                                    paddingTop={0}
-                                >
-                                    <Text
-                                        variant="body.md"
-                                        color={
-                                            singleSelectTokens.menu.item
-                                                .optionsLabel.color.default
-                                        }
-                                        textAlign="center"
-                                    >
-                                        No items available
-                                    </Text>
-                                </Block>
-                            ) : filteredItems.length === 0 &&
-                              searchText.length > 0 ? (
+                            {items.length === 0 ||
+                            (filteredItems.length === 0 &&
+                                searchText.length > 0) ? (
                                 <Block
                                     display="flex"
                                     justifyContent="center"
@@ -686,7 +666,9 @@ const SingleSelectMenu = ({
                                         }
                                         textAlign="center"
                                     >
-                                        No results found
+                                        {items.length === 0
+                                            ? 'No items available'
+                                            : 'No results found'}
                                     </Text>
                                 </Block>
                             ) : enableVirtualization &&
