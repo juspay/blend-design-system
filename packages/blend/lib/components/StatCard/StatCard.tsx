@@ -421,9 +421,6 @@ const StatCard = ({
                                             display="inline-flex"
                                             alignItems="center"
                                             justifyContent="center"
-                                            borderRadius={
-                                                statCardToken.borderRadius
-                                            }
                                             role="button"
                                             tabIndex={0}
                                             aria-label={
@@ -678,9 +675,6 @@ const StatCard = ({
                                                             display="inline-flex"
                                                             alignItems="center"
                                                             justifyContent="center"
-                                                            borderRadius={
-                                                                statCardToken.borderRadius
-                                                            }
                                                             role="button"
                                                             tabIndex={0}
                                                             aria-label={
@@ -839,9 +833,6 @@ const StatCard = ({
                                                                 display="inline-flex"
                                                                 alignItems="center"
                                                                 justifyContent="center"
-                                                                borderRadius={
-                                                                    statCardToken.borderRadius
-                                                                }
                                                                 role="button"
                                                                 tabIndex={0}
                                                                 aria-label={
@@ -1097,9 +1088,6 @@ const StatCard = ({
                                                         display="inline-flex"
                                                         alignItems="center"
                                                         justifyContent="center"
-                                                        borderRadius={
-                                                            statCardToken.borderRadius
-                                                        }
                                                         role="button"
                                                         tabIndex={0}
                                                         aria-label={
