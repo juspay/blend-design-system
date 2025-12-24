@@ -360,6 +360,8 @@ const SingleSelect = ({
                                                     .backgroundColor[variant][
                                                     'closed'
                                                 ],
+                                            color: singleSelectTokens.label
+                                                .color.disabled,
                                         },
                                     })}
                                 >
@@ -461,10 +463,15 @@ const SingleSelect = ({
                                                                     .trigger
                                                                     .placeholder
                                                                     .fontSize,
-                                                            color: singleSelectTokens
-                                                                .trigger
-                                                                .placeholder
-                                                                .color,
+                                                            color: disabled
+                                                                ? singleSelectTokens
+                                                                      .label
+                                                                      .color
+                                                                      .disabled
+                                                                : singleSelectTokens
+                                                                      .trigger
+                                                                      .placeholder
+                                                                      .color,
                                                             fontWeight:
                                                                 singleSelectTokens
                                                                     .trigger
@@ -495,15 +502,19 @@ const SingleSelect = ({
                                                     flexGrow: 1,
                                                     flexShrink: 1,
                                                     minWidth: 0,
-                                                    color: selected
+                                                    color: disabled
                                                         ? singleSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .color
-                                                        : singleSelectTokens
-                                                              .trigger
-                                                              .placeholder
-                                                              .color,
+                                                              .label.color
+                                                              .disabled
+                                                        : selected
+                                                          ? singleSelectTokens
+                                                                .trigger
+                                                                .selectedValue
+                                                                .color
+                                                          : singleSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color,
                                                     fontWeight: selected
                                                         ? singleSelectTokens
                                                               .trigger
@@ -536,11 +547,16 @@ const SingleSelect = ({
                                         <ChevronDown
                                             size={16}
                                             color={
-                                                selected
-                                                    ? singleSelectTokens.trigger
-                                                          .selectedValue.color
-                                                    : singleSelectTokens.trigger
-                                                          .placeholder.color
+                                                disabled
+                                                    ? singleSelectTokens.label
+                                                          .color.disabled
+                                                    : selected
+                                                      ? singleSelectTokens
+                                                            .trigger
+                                                            .selectedValue.color
+                                                      : singleSelectTokens
+                                                            .trigger.placeholder
+                                                            .color
                                             }
                                         />
                                     </Block>
