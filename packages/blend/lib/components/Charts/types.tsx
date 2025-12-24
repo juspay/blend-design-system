@@ -37,7 +37,7 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
-
+    AREA = 'area',
     SANKEY = 'sankey',
 }
 
@@ -99,6 +99,11 @@ export type AxisConfig = {
 export type XAxisConfig = AxisConfig
 export type YAxisConfig = AxisConfig
 
+export type TooltipConfig = {
+    position?: { x?: number; y?: number }
+    allowEscapeViewBox?: { x?: boolean; y?: boolean }
+}
+
 export type DotItemDotProps = {
     cx?: number
     cy?: number
@@ -135,6 +140,7 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     noData?: NoDataProps
     height?: number | string
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
@@ -147,6 +153,7 @@ export type CoreChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     height?: number | string
     width?: number | string
     isSmallScreen?: boolean
@@ -177,6 +184,7 @@ export type ChartsProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     noData?: NoDataProps
     height?: number
     showHeader?: boolean

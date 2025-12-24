@@ -808,6 +808,13 @@ const GranularChartsDemo = () => {
                                     <div className="h-68 w-full">
                                         <CoreChart
                                             data={dashboardData}
+                                            tooltip={{
+                                                position: { y: -120 },
+                                                allowEscapeViewBox: {
+                                                    x: false,
+                                                    y: true,
+                                                },
+                                            }}
                                             chartType={panel.type}
                                             colors={chartColors}
                                             hoveredKey={hoveredKey}
@@ -5803,6 +5810,85 @@ const ChartDemo = () => {
             />
 
             <Charts
+                chartType={ChartType.AREA}
+                data={[
+                    {
+                        name: 'Links created',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Links created',
+                                    val: 550,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        name: 'Transaction created',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Transaction created',
+                                    val: 0,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        name: 'Link Success',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Link Success',
+                                    val: 0,
+                                },
+                            },
+                        },
+                    },
+                ]}
+                colors={[FOUNDATION_THEME.colors.primary[500] as string]}
+                height={400}
+                showHeader={true}
+                showCollapseIcon={false}
+                chartHeaderSlot={
+                    <div
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 600,
+                            color: FOUNDATION_THEME.colors.gray[800],
+                        }}
+                    >
+                        Distribution Managed by JUSPAY
+                    </div>
+                }
+                slot1={
+                    <Block width={200}>
+                        <SingleSelect
+                            variant={SelectMenuVariant.CONTAINER}
+                            placeholder="Channel Types"
+                            selected="All Channels"
+                            onSelect={(value: string) => {
+                                console.log('Selected:', value)
+                            }}
+                            items={[
+                                {
+                                    items: [
+                                        {
+                                            label: 'All Channels',
+                                            value: 'All Channels',
+                                        },
+                                        { label: 'Web', value: 'Web' },
+                                        { label: 'Mobile', value: 'Mobile' },
+                                        { label: 'API', value: 'API' },
+                                    ],
+                                },
+                            ]}
+                        />
+                    </Block>
+                }
+            />
+
+            <Charts
                 height={200}
                 data={last1hour15minsData}
                 legends={[
@@ -5814,7 +5900,7 @@ const ChartDemo = () => {
                     { title: 'CCAVENUE_V2', total: '10' },
                 ]}
                 CustomizedDot={CustomizedDot}
-                chartType={ChartType.LINE}
+                chartType={ChartType.AREA}
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
@@ -5824,12 +5910,12 @@ const ChartDemo = () => {
                     // timeOnly: true,
                     // showYear: true,
                 }}
-                yAxis={{
-                    label: 'Currency',
-                    show: true,
-                    showLabel: true,
-                    type: AxisType.CURRENCY,
-                }}
+                // yAxis={{
+                //     label: 'Currency',
+                //     show: true,
+                //     showLabel: true,
+                //     type: AxisType.CURRENCY,
+                // }}
                 chartHeaderSlot={
                     <div className="chart-header">
                         <Activity size={16} className="text-green-600" />

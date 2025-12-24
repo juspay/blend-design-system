@@ -32,6 +32,7 @@ const Charts: React.FC<ChartsProps> = ({
     barsize,
     xAxis,
     yAxis,
+    tooltip,
     noData,
     height = 400,
     showHeader = true,
@@ -423,6 +424,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -491,6 +493,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -728,6 +731,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -903,6 +907,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===

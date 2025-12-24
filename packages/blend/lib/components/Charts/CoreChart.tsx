@@ -12,6 +12,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     barsize,
     xAxis,
     yAxis,
+    tooltip,
     height = '100%',
     width = '100%',
     isSmallScreen = false,
@@ -61,6 +62,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
                 barsize,
                 xAxis,
                 yAxis,
+                tooltip,
             })}
         </ResponsiveContainer>
     )
