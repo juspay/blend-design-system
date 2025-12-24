@@ -185,7 +185,7 @@ export type ChartsProps = {
     onExpandedChange?: (isExpanded: boolean) => void
     chartName?: string
     skeleton?: ChartsSkeletonProps
-    legends?: { title: string; total?: number }[]
+    legends?: { title: string; total?: string }[]
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
 }
 
@@ -223,7 +223,7 @@ export type ChartLegendsProps = {
     stacked?: boolean
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
-    legends?: { title: string; total?: number }[]
+    legends?: { title: string; total?: string }[]
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
