@@ -65,6 +65,87 @@ export const sanitizeNumberInput = (
 }
 
 /**
+ * Clamps a numeric value to the nearest valid boundary (min or max)
+ * If value is less than min, returns min
+ * If value is greater than max, returns max
+ * Otherwise returns the value unchanged
+ *
+ * @param value - The numeric value to clamp
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @returns Clamped numeric value
+ */
+export const clampToBoundary = (
+    value: number,
+    min?: number,
+    max?: number
+): number => {
+    if (min !== undefined && value < min) {
+        return min
+    }
+    if (max !== undefined && value > max) {
+        return max
+    }
+    return value
+}
+
+/**
+ * Increments a value by step, respecting min/max constraints
+ *
+ * @param currentValue - Current numeric value (can be null)
+ * @param step - Step size
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @param preventNegative - Whether to prevent negative values
+ * @returns New incremented value, clamped to boundaries
+ */
+export const incrementValue = (
+    currentValue: number | null,
+    step: number = 1,
+    min?: number,
+    max?: number,
+    preventNegative: boolean = false
+): number => {
+    const baseValue = currentValue ?? min ?? 0
+    const newValue = baseValue + step
+    let clampedValue = clampToBoundary(newValue, min, max)
+
+    if (preventNegative && clampedValue < 0) {
+        clampedValue = 0
+    }
+
+    return clampedValue
+}
+
+/**
+ * Decrements a value by step, respecting min/max constraints
+ *
+ * @param currentValue - Current numeric value (can be null)
+ * @param step - Step size
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @param preventNegative - Whether to prevent negative values
+ * @returns New decremented value, clamped to boundaries
+ */
+export const decrementValue = (
+    currentValue: number | null,
+    step: number = 1,
+    min?: number,
+    max?: number,
+    preventNegative: boolean = false
+): number => {
+    const baseValue = currentValue ?? min ?? 0
+    const newValue = baseValue - step
+    let clampedValue = clampToBoundary(newValue, min, max)
+
+    if (preventNegative && clampedValue < 0) {
+        clampedValue = 0
+    }
+
+    return clampedValue
+}
+
+/**
  * Clamps and sanitizes the value on blur
  * Similar to Chakra UI's clampValueOnBlur behavior
  *
@@ -72,7 +153,7 @@ export const sanitizeNumberInput = (
  * @param allowNegative - Whether negative numbers are allowed
  * @param min - Minimum allowed value
  * @param max - Maximum allowed value
- * @returns Clamped and sanitized number value or empty string
+ * @returns Clamped and sanitized value string
  */
 export const clampValueOnBlur = (
     inputValue: string,
@@ -100,24 +181,137 @@ export const clampValueOnBlur = (
     }
 
     // Prevent -0
-    if (Object.is(numValue, -0)) {
-        return '0'
-    }
+    const normalizedValue = Object.is(numValue, -0) ? 0 : numValue
 
-    // Clamp to min/max
-    let clampedValue = numValue
-    if (min !== undefined && clampedValue < min) {
-        clampedValue = min
-    } else if (max !== undefined && clampedValue > max) {
-        clampedValue = max
-    }
-
-    // If negative not allowed and value is negative, clamp to 0
+    let clampedValue = normalizedValue
     if (!allowNegative && clampedValue < 0) {
         clampedValue = 0
     }
 
+    clampedValue = clampToBoundary(clampedValue, min, max)
+
     return String(clampedValue)
+}
+
+/**
+ * Checks if a numeric value is outside the valid range
+ *
+ * @param value - The numeric value to check
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @returns True if value is outside the valid range
+ */
+export const isValueOutsideRange = (
+    value: number,
+    min?: number,
+    max?: number
+): boolean => {
+    if (min !== undefined && value < min) return true
+    if (max !== undefined && value > max) return true
+    return false
+}
+
+/**
+ * Checks if incrementing would exceed max
+ *
+ * @param currentValue - Current numeric value (can be null)
+ * @param step - Step size
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @returns True if incrementing would exceed max
+ */
+export const wouldExceedMax = (
+    currentValue: number | null,
+    step: number,
+    min?: number,
+    max?: number
+): boolean => {
+    if (max === undefined) return false
+    const baseValue = currentValue ?? min ?? 0
+    return baseValue + step > max
+}
+
+/**
+ * Checks if decrementing would go below min
+ *
+ * @param currentValue - Current numeric value (can be null)
+ * @param step - Step size
+ * @param min - Minimum allowed value
+ * @param preventNegative - Whether to prevent negative values
+ * @returns True if decrementing would go below min
+ */
+export const wouldGoBelowMin = (
+    currentValue: number | null,
+    step: number,
+    min?: number,
+    preventNegative: boolean = false
+): boolean => {
+    if (currentValue === null) {
+        if (preventNegative) return true
+        if (min !== undefined) {
+            const startValue = min ?? 0
+            return startValue - step < min
+        }
+        return false
+    }
+
+    if (min !== undefined) {
+        return currentValue <= min || currentValue - step < min
+    }
+
+    if (preventNegative) {
+        return currentValue <= 0 || currentValue - step < 0
+    }
+
+    return false
+}
+
+/**
+ * Generates an error message for a value outside the valid range
+ *
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @returns Error message string
+ */
+export const getRangeErrorMessage = (min?: number, max?: number): string => {
+    if (min !== undefined && max !== undefined) {
+        return `Value must be between ${min} and ${max}`
+    }
+    if (min !== undefined) {
+        return `Value must be at least ${min}`
+    }
+    if (max !== undefined) {
+        return `Value must be at most ${max}`
+    }
+    return 'Invalid value'
+}
+
+/**
+ * Validates if a number value is within min/max bounds
+ *
+ * @param value - The number value to validate
+ * @param min - Minimum allowed value
+ * @param max - Maximum allowed value
+ * @returns True if value is within bounds, false otherwise
+ */
+export const isValueInRange = (
+    value: number | null | undefined,
+    min?: number,
+    max?: number
+): boolean => {
+    if (value === null || value === undefined) {
+        return true
+    }
+
+    if (min !== undefined && value < min) {
+        return false
+    }
+
+    if (max !== undefined && value > max) {
+        return false
+    }
+
+    return true
 }
 
 /**
