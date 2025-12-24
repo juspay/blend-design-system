@@ -326,9 +326,9 @@ export const getNumberInputTokens = (
                         lg: foundationToken.unit[14],
                     },
                     y: {
-                        sm: foundationToken.unit[6],
-                        md: foundationToken.unit[8],
-                        lg: foundationToken.unit[10],
+                        sm: foundationToken.unit[4],
+                        md: foundationToken.unit[6],
+                        lg: foundationToken.unit[8],
                     },
                 },
                 border: {

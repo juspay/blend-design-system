@@ -414,6 +414,50 @@ const NumberInputDemo = () => {
             {/* Min/Max Examples */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Min/Max Examples</h2>
+
+                {/* Interactive Min/Max Demo */}
+                <div className="space-y-4 p-6 bg-gray-50 rounded-lg border-2 border-blue-200">
+                    <h3 className="text-lg font-semibold text-blue-900">
+                        🎯 Interactive Min/Max Demo (Try it!)
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                        This demo shows the fixed min/max behavior: Try typing
+                        values outside the range (e.g., 3 or 40), then blur the
+                        input to see it clamp and show an error. Use the stepper
+                        buttons to see them disable at boundaries.
+                    </p>
+                    <div className="max-w-md">
+                        <NumberInput
+                            label="Value (Min: 5, Max: 10)"
+                            value={playgroundValue}
+                            onChange={(e) => {
+                                const newValue =
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                setPlaygroundValue(newValue)
+                                console.log('newValue', newValue)
+                            }}
+                            placeholder="Try typing 3 or 40..."
+                            min={5}
+                            max={10}
+                            step={1}
+                            hintText="Type 3 or 40, then blur to see clamping"
+                        />
+                    </div>
+                    <div className="mt-4 p-4 bg-white rounded border border-gray-200">
+                        <p className="text-xs font-mono text-gray-700">
+                            <strong>Expected behavior:</strong>
+                            <br />
+                            • Down arrow disabled when value ≤ 5<br />
+                            • Up arrow disabled when value ≥ 10
+                            <br />
+                            • Typing 40 → blurs to 10 with error
+                            <br />• Typing 3 → blurs to 5 with error
+                        </p>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
@@ -439,7 +483,7 @@ const NumberInputDemo = () => {
                             onChange={() => {}}
                             placeholder="Min 0"
                             min={0}
-                            hintText="Button disabled at 0, can type negative"
+                            hintText="Down arrow disabled at 0"
                         />
                     </div>
 
@@ -447,10 +491,11 @@ const NumberInputDemo = () => {
                         <h3 className="text-lg font-semibold">Max Only</h3>
                         <NumberInput
                             label="Max 100"
-                            value={0}
+                            value={50}
                             onChange={() => {}}
                             placeholder="Max 100"
                             max={100}
+                            hintText="Up arrow disabled at 100"
                         />
                     </div>
 
@@ -463,6 +508,7 @@ const NumberInputDemo = () => {
                             placeholder="0 to 100"
                             min={0}
                             max={100}
+                            hintText="Try typing outside range"
                         />
                     </div>
 
@@ -476,6 +522,7 @@ const NumberInputDemo = () => {
                             min={0}
                             max={120}
                             step={1}
+                            hintText="Valid age range"
                         />
                     </div>
 
@@ -489,6 +536,7 @@ const NumberInputDemo = () => {
                             min={0}
                             max={100}
                             step={1}
+                            hintText="0 to 100 percent"
                         />
                     </div>
 
@@ -502,6 +550,39 @@ const NumberInputDemo = () => {
                             min={-50}
                             max={50}
                             step={0.1}
+                            hintText="Valid temperature range"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Strict Range (5-10)
+                        </h3>
+                        <NumberInput
+                            label="Strict Range"
+                            value={7}
+                            onChange={() => {}}
+                            placeholder="5 to 10"
+                            min={5}
+                            max={10}
+                            step={1}
+                            hintText="Type 3 or 40 to see clamping"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Small Range (10-20)
+                        </h3>
+                        <NumberInput
+                            label="Small Range"
+                            value={15}
+                            onChange={() => {}}
+                            placeholder="10 to 20"
+                            min={10}
+                            max={20}
+                            step={1}
+                            hintText="Test stepper buttons at boundaries"
                         />
                     </div>
                 </div>
