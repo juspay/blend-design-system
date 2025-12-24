@@ -1233,7 +1233,7 @@ const DataTable = forwardRef(
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'relative',
-                        overflow: 'visible',
+                        overflow: 'auto',
                     }}
                 >
                     <BulkActionBar
