@@ -386,7 +386,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                               : '100%'
                     }
                     minWidth={
-                        iconOnlyMode ? String(tokens.maxWidth.iconOnly) : undefined
+                        iconOnlyMode
+                            ? String(tokens.maxWidth.iconOnly)
+                            : undefined
                     }
                     borderRight={
                         isPanelOnlyMode || iconOnlyMode
@@ -401,13 +403,21 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                               ? 'absolute'
                               : 'relative'
                     }
-                    zIndex={isPanelOnlyMode || iconOnlyMode ? '48' : getSidebarZIndex()}
+                    zIndex={
+                        isPanelOnlyMode || iconOnlyMode
+                            ? '48'
+                            : getSidebarZIndex()
+                    }
                     height="100%"
                     id={skipToNavId}
                     role="navigation"
                     aria-label={sidebarLabel}
                     aria-expanded={
-                        isPanelOnlyMode || iconOnlyMode ? undefined : isExpanded ? true : false
+                        isPanelOnlyMode || iconOnlyMode
+                            ? undefined
+                            : isExpanded
+                              ? true
+                              : false
                     }
                     style={{
                         willChange: 'transform',
@@ -416,7 +426,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isPanelOnlyMode || iconOnlyMode || disableIntermediateState
+                        isPanelOnlyMode ||
+                        iconOnlyMode ||
+                        disableIntermediateState
                             ? undefined
                             : handleMouseLeave
                     }
@@ -466,8 +478,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         role="region"
                                         aria-label="Navigation menu"
                                         style={{
-                                            width: String(tokens.maxWidth.iconOnly),
-                                            maxWidth: String(tokens.maxWidth.iconOnly),
+                                            width: String(
+                                                tokens.maxWidth.iconOnly
+                                            ),
+                                            maxWidth: String(
+                                                tokens.maxWidth.iconOnly
+                                            ),
                                         }}
                                     >
                                         <Directory
