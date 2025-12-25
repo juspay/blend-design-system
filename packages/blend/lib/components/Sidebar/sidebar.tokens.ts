@@ -27,7 +27,8 @@ export type SidebarTokenType = {
     // Controls sidebar width based on expanded/collapsed state and left panel presence
     maxWidth: {
         withLeftPanel: CSSObject['maxWidth'] // Width when tenant panel is present
-        withoutLeftPanel: CSSObject['maxWidth'] // Width when no tenant pane
+        withoutLeftPanel: CSSObject['maxWidth'] // Width when no tenant panel
+        iconOnly: CSSObject['maxWidth'] // Width for icon-only mode (52px)
     }
 
     // Controls sidebar container background color for different interaction states
@@ -112,6 +113,7 @@ export const getSidebarTokens = (
             maxWidth: {
                 withLeftPanel: '300px',
                 withoutLeftPanel: '250px',
+                iconOnly: foundationToken.unit[52],
             },
             // State-dependent base properties
             backgroundColor: foundationToken.colors.gray[25],
@@ -189,6 +191,7 @@ export const getSidebarTokens = (
             maxWidth: {
                 withLeftPanel: '320px',
                 withoutLeftPanel: '270px',
+                iconOnly: foundationToken.unit[52],
             },
             // State-dependent base properties
             backgroundColor: foundationToken.colors.gray[25],

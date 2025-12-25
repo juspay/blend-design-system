@@ -16,6 +16,7 @@ const Directory = ({
     activeItem,
     onActiveItemChange,
     defaultActiveItem,
+    iconOnlyMode = false,
 }: DirectoryProps) => {
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
@@ -44,9 +45,9 @@ const Directory = ({
                 alignItems="center"
                 overflow="auto"
                 aria-label="Directory navigation"
-                gap={tokens.gap}
-                paddingX={tokens.paddingX}
-                paddingY={tokens.paddingY}
+                gap={iconOnlyMode ? '8px' : tokens.gap}
+                paddingX={iconOnlyMode ? '0px' : tokens.paddingX}
+                paddingY={iconOnlyMode ? '12px' : tokens.paddingY}
             >
                 {directoryData.map((section, sectionIndex) => (
                     <Section
@@ -54,6 +55,7 @@ const Directory = ({
                         section={section}
                         sectionIndex={sectionIndex}
                         idPrefix={idPrefix}
+                        iconOnlyMode={iconOnlyMode}
                         onNavigateBetweenSections={(direction, currentIndex) =>
                             handleSectionNavigation(
                                 direction,

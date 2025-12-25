@@ -178,6 +178,7 @@ const SidebarDemo = () => {
     const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
 
     const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
+    const [iconOnlyMode, setIconOnlyMode] = useState<boolean>(false)
 
     const tenants = [
         {
@@ -1148,6 +1149,7 @@ const SidebarDemo = () => {
                     disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
+                    iconOnlyMode={iconOnlyMode}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1316,6 +1318,34 @@ const SidebarDemo = () => {
                                     <Users
                                         color={
                                             panelOnlyMode
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setIconOnlyMode(!iconOnlyMode)
+                                    }
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        iconOnlyMode
+                                            ? 'Show Full Sidebar'
+                                            : 'Icon Only Mode (52px)'
+                                    }
+                                    style={{
+                                        backgroundColor: iconOnlyMode
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Grid
+                                        color={
+                                            iconOnlyMode
                                                 ? FOUNDATION_THEME.colors
                                                       .primary[600]
                                                 : FOUNDATION_THEME.colors

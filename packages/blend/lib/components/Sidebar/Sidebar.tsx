@@ -83,6 +83,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             defaultIsExpanded = true,
             panelOnlyMode = false,
             disableIntermediateState = false,
+            iconOnlyMode = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
             activeItem,
@@ -221,6 +222,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+        const shouldShowMerchantInTopbar = iconOnlyMode && merchantInfo
         const [mobileNavigationHeight, setMobileNavigationHeight] =
             useState<string>()
 
@@ -345,6 +347,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 {!isExpanded &&
                     !isMobile &&
                     !isPanelOnlyMode &&
+                    !iconOnlyMode &&
                     !disableIntermediateState && (
                         <Block
                             position="absolute"
@@ -363,36 +366,48 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     as="nav"
                     backgroundColor={tokens.backgroundColor}
                     maxWidth={
-                        isPanelOnlyMode
-                            ? 'fit-content'
-                            : getSidebarWidth(
-                                  isExpanded,
-                                  isHovering,
-                                  hasLeftPanel,
-                                  tokens
-                              )
+                        iconOnlyMode
+                            ? String(tokens.maxWidth.iconOnly)
+                            : isPanelOnlyMode
+                              ? 'fit-content'
+                              : getSidebarWidth(
+                                    isExpanded,
+                                    isHovering,
+                                    hasLeftPanel,
+                                    tokens,
+                                    iconOnlyMode
+                                )
                     }
-                    width={isPanelOnlyMode ? 'auto' : '100%'}
+                    width={
+                        iconOnlyMode
+                            ? String(tokens.maxWidth.iconOnly)
+                            : isPanelOnlyMode
+                              ? 'auto'
+                              : '100%'
+                    }
+                    minWidth={
+                        iconOnlyMode ? String(tokens.maxWidth.iconOnly) : undefined
+                    }
                     borderRight={
-                        isPanelOnlyMode
+                        isPanelOnlyMode || iconOnlyMode
                             ? tokens.borderRight
                             : getSidebarBorder(isExpanded, isHovering, tokens)
                     }
                     display={isMobile ? 'none' : 'flex'}
                     position={
-                        isPanelOnlyMode
+                        isPanelOnlyMode || iconOnlyMode
                             ? 'relative'
                             : !isExpanded
                               ? 'absolute'
                               : 'relative'
                     }
-                    zIndex={isPanelOnlyMode ? '48' : getSidebarZIndex()}
+                    zIndex={isPanelOnlyMode || iconOnlyMode ? '48' : getSidebarZIndex()}
                     height="100%"
                     id={skipToNavId}
                     role="navigation"
                     aria-label={sidebarLabel}
                     aria-expanded={
-                        isPanelOnlyMode ? undefined : isExpanded ? true : false
+                        isPanelOnlyMode || iconOnlyMode ? undefined : isExpanded ? true : false
                     }
                     style={{
                         willChange: 'transform',
@@ -401,22 +416,26 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isPanelOnlyMode || disableIntermediateState
+                        isPanelOnlyMode || iconOnlyMode || disableIntermediateState
                             ? undefined
                             : handleMouseLeave
                     }
                     data-is-sidebar-expanded={
-                        isPanelOnlyMode ? 'false' : isExpanded
+                        isPanelOnlyMode || iconOnlyMode ? 'false' : isExpanded
                     }
                     boxShadow={
-                        isPanelOnlyMode
+                        isPanelOnlyMode || iconOnlyMode
                             ? 'none'
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
                               : 'none'
                     }
                     data-sidebar-state={
-                        isPanelOnlyMode ? 'panel-only' : getSidebarState()
+                        isPanelOnlyMode
+                            ? 'panel-only'
+                            : iconOnlyMode
+                              ? 'icon-only'
+                              : getSidebarState()
                     }
                 >
                     {!isMobile && (
@@ -432,7 +451,42 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 />
                             )}
 
-                            {!isPanelOnlyMode && (
+                            {iconOnlyMode && (
+                                <Block
+                                    width={String(tokens.maxWidth.iconOnly)}
+                                    height="100%"
+                                    display="flex"
+                                    flexDirection="column"
+                                    position="relative"
+                                    overflow="hidden"
+                                >
+                                    <DirectoryContainer
+                                        data-directory-container
+                                        id={sidebarNavId}
+                                        role="region"
+                                        aria-label="Navigation menu"
+                                        style={{
+                                            width: String(tokens.maxWidth.iconOnly),
+                                            maxWidth: String(tokens.maxWidth.iconOnly),
+                                        }}
+                                    >
+                                        <Directory
+                                            directoryData={data}
+                                            idPrefix={`${baseId}-`}
+                                            activeItem={activeItem}
+                                            onActiveItemChange={
+                                                onActiveItemChange
+                                            }
+                                            defaultActiveItem={
+                                                defaultActiveItem
+                                            }
+                                            iconOnlyMode={iconOnlyMode}
+                                        />
+                                    </DirectoryContainer>
+                                </Block>
+                            )}
+
+                            {!isPanelOnlyMode && !iconOnlyMode && (
                                 <>
                                     {hasLeftPanel &&
                                         leftPanel &&
@@ -530,7 +584,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             sidebarTopSlot={sidebarTopSlot}
                             topbar={topbar}
                             leftPanel={leftPanel}
-                            merchantInfo={merchantInfo || defaultMerchantInfo}
+                            merchantInfo={
+                                shouldShowMerchantInTopbar
+                                    ? merchantInfo
+                                    : !iconOnlyMode
+                                      ? merchantInfo || defaultMerchantInfo
+                                      : undefined
+                            }
                             rightActions={rightActions}
                             isVisible={isTopbarVisible}
                             ariaControls={sidebarNavId}

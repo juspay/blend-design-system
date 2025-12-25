@@ -6,6 +6,7 @@ export type DirectoryProps = {
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
+    iconOnlyMode?: boolean
 }
 
 export type DirectoryData = {
@@ -39,6 +40,7 @@ export type SectionProps = {
         currentIndex: number
     ) => void
     idPrefix?: string
+    iconOnlyMode?: boolean
 }
 
 export type NavItemProps = {
@@ -46,4 +48,5 @@ export type NavItemProps = {
     index: number
     onNavigate: (direction: 'up' | 'down', currentIndex: number) => void
     itemPath?: string
+    iconOnlyMode?: boolean
 }

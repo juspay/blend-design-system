@@ -113,6 +113,18 @@ export type SidebarProps = {
     disableIntermediateState?: boolean
 
     /**
+     * When true, shows only icons (52px width) with tooltips on hover
+     * In this mode:
+     * - Directory items show only their icons
+     * - Tooltips appear on hover showing the item label
+     * - Sections render as horizontal dividers
+     * - Merchant switcher moves to topbar
+     * - No intermediate/hover state expansion
+     * Defaults to false
+     */
+    iconOnlyMode?: boolean
+
+    /**
      * Show primary action button in mobile navigation
      */
     showPrimaryActionButton?: boolean
