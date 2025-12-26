@@ -119,10 +119,18 @@ export type SidebarProps = {
      * - Tooltips appear on hover showing the item label
      * - Sections render as horizontal dividers
      * - Merchant switcher moves to topbar
-     * - No intermediate/hover state expansion
+     * - Supports intermediate/hover state expansion
      * Defaults to false
      */
     iconOnlyMode?: boolean
+
+    /**
+     * When true, clicking the toggle button in icon-only mode will completely hide the sidebar.
+     * When false, clicking the toggle button will expand to full sidebar view.
+     * Only applies when iconOnlyMode is true
+     * @default false
+     */
+    hideOnIconOnlyToggle?: boolean
 
     /**
      * Show primary action button in mobile navigation

@@ -179,6 +179,9 @@ const SidebarDemo = () => {
 
     const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
     const [iconOnlyMode, setIconOnlyMode] = useState<boolean>(false)
+    const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
+        useState<boolean>(false)
+    const [isExpanded, setIsExpanded] = useState<boolean>(true)
 
     const tenants = [
         {
@@ -1146,10 +1149,13 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    disableIntermediateState={true}
+                    // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
                     iconOnlyMode={iconOnlyMode}
+                    hideOnIconOnlyToggle={hideOnIconOnlyToggle}
+                    isExpanded={isExpanded}
+                    onExpandedChange={setIsExpanded}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1327,14 +1333,19 @@ const SidebarDemo = () => {
                                     />
                                 </button>
                                 <button
-                                    onClick={() =>
-                                        setIconOnlyMode(!iconOnlyMode)
-                                    }
+                                    onClick={() => {
+                                        const newIconOnlyMode = !iconOnlyMode
+                                        setIconOnlyMode(newIconOnlyMode)
+                                        // Auto-collapse when enabling icon-only mode
+                                        if (newIconOnlyMode && isExpanded) {
+                                            setIsExpanded(false)
+                                        }
+                                    }}
                                     className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
                                     title={
                                         iconOnlyMode
-                                            ? 'Show Full Sidebar'
-                                            : 'Icon Only Mode (52px)'
+                                            ? 'Disable Icon Only Mode'
+                                            : 'Enable Icon Only Mode (52px)'
                                     }
                                     style={{
                                         backgroundColor: iconOnlyMode
@@ -1354,6 +1365,39 @@ const SidebarDemo = () => {
                                         size={20}
                                     />
                                 </button>
+                                {iconOnlyMode && (
+                                    <button
+                                        onClick={() =>
+                                            setHideOnIconOnlyToggle(
+                                                !hideOnIconOnlyToggle
+                                            )
+                                        }
+                                        className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                        title={
+                                            hideOnIconOnlyToggle
+                                                ? 'Toggle: Expand Sidebar'
+                                                : 'Toggle: Hide Sidebar'
+                                        }
+                                        style={{
+                                            backgroundColor:
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[100]
+                                                    : 'transparent',
+                                        }}
+                                    >
+                                        <Layout
+                                            color={
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[600]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    </button>
+                                )}
                                 <button
                                     onClick={() =>
                                         setColorTheme(

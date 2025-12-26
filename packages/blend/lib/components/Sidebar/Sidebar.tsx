@@ -31,6 +31,11 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import SidebarMobileNavigation from './SidebarMobile'
+import { PanelsTopLeft } from 'lucide-react'
+import { Tooltip } from '../Tooltip'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useComponentToken } from '../../context/useComponentToken'
+import type { ResponsiveTopbarTokens } from '../Topbar/topbar.tokens'
 
 // Styled wrappers for pseudo-element support (::webkit-scrollbar)
 // Block primitive doesn't support pseudo-elements, so we need minimal styled wrappers
@@ -84,6 +89,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             panelOnlyMode = false,
             disableIntermediateState = false,
             iconOnlyMode = false,
+            hideOnIconOnlyToggle = false,
             showPrimaryActionButton,
             primaryActionButtonProps,
             activeItem,
@@ -119,6 +125,27 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
             onExpandedChange?.(newValue)
         }, [isExpanded, isControlled, onExpandedChange, setInternalExpanded])
+
+        const handleIconOnlyToggle = useCallback(() => {
+            if (hideOnIconOnlyToggle) {
+                // Collapse to hide (iconOnlyMode should be turned off by parent)
+                if (!isControlled) {
+                    setInternalExpanded(false)
+                }
+                onExpandedChange?.(false)
+            } else {
+                // Expand to full sidebar
+                if (!isControlled) {
+                    setInternalExpanded(true)
+                }
+                onExpandedChange?.(true)
+            }
+        }, [
+            hideOnIconOnlyToggle,
+            isControlled,
+            onExpandedChange,
+            setInternalExpanded,
+        ])
 
         const handleToggle = useCallback(() => {
             toggleSidebar()
@@ -222,6 +249,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+        const topbarTokens = useComponentToken(
+            'TOPBAR'
+        ) as ResponsiveTopbarTokens
+        const topbarToken = isMobile ? topbarTokens.sm : topbarTokens.lg
         const shouldShowMerchantInTopbar = iconOnlyMode && merchantInfo
         const [mobileNavigationHeight, setMobileNavigationHeight] =
             useState<string>()
@@ -347,13 +378,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 {!isExpanded &&
                     !isMobile &&
                     !isPanelOnlyMode &&
-                    !iconOnlyMode &&
                     !disableIntermediateState && (
                         <Block
                             position="absolute"
                             left="0"
                             top="0"
-                            width={FOUNDATION_THEME.unit[24]}
+                            width={
+                                iconOnlyMode
+                                    ? String(tokens.maxWidth.iconOnly)
+                                    : FOUNDATION_THEME.unit[24]
+                            }
                             height="100%"
                             zIndex="98"
                             onMouseEnter={handleMouseEnter}
@@ -366,7 +400,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     as="nav"
                     backgroundColor={tokens.backgroundColor}
                     maxWidth={
-                        iconOnlyMode
+                        iconOnlyMode && !isExpanded && !isHovering
                             ? String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'fit-content'
@@ -375,36 +409,39 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     isHovering,
                                     hasLeftPanel,
                                     tokens,
-                                    iconOnlyMode
+                                    false
                                 )
                     }
                     width={
-                        iconOnlyMode
+                        iconOnlyMode && !isExpanded && !isHovering
                             ? String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'auto'
                               : '100%'
                     }
                     minWidth={
-                        iconOnlyMode
+                        iconOnlyMode && !isExpanded && !isHovering
                             ? String(tokens.maxWidth.iconOnly)
                             : undefined
                     }
                     borderRight={
-                        isPanelOnlyMode || iconOnlyMode
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
                             ? tokens.borderRight
                             : getSidebarBorder(isExpanded, isHovering, tokens)
                     }
                     display={isMobile ? 'none' : 'flex'}
                     position={
-                        isPanelOnlyMode || iconOnlyMode
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
                             ? 'relative'
                             : !isExpanded
                               ? 'absolute'
                               : 'relative'
                     }
                     zIndex={
-                        isPanelOnlyMode || iconOnlyMode
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
                             ? '48'
                             : getSidebarZIndex()
                     }
@@ -413,7 +450,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     role="navigation"
                     aria-label={sidebarLabel}
                     aria-expanded={
-                        isPanelOnlyMode || iconOnlyMode
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
                             ? undefined
                             : isExpanded
                               ? true
@@ -426,17 +464,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isPanelOnlyMode ||
-                        iconOnlyMode ||
-                        disableIntermediateState
+                        isPanelOnlyMode || disableIntermediateState
                             ? undefined
                             : handleMouseLeave
                     }
+                    onMouseEnter={
+                        isPanelOnlyMode || disableIntermediateState
+                            ? undefined
+                            : handleMouseEnter
+                    }
                     data-is-sidebar-expanded={
-                        isPanelOnlyMode || iconOnlyMode ? 'false' : isExpanded
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
+                            ? 'false'
+                            : isExpanded
                     }
                     boxShadow={
-                        isPanelOnlyMode || iconOnlyMode
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded && !isHovering)
                             ? 'none'
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
@@ -445,7 +490,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     data-sidebar-state={
                         isPanelOnlyMode
                             ? 'panel-only'
-                            : iconOnlyMode
+                            : iconOnlyMode && !isExpanded && !isHovering
                               ? 'icon-only'
                               : getSidebarState()
                     }
@@ -463,7 +508,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 />
                             )}
 
-                            {iconOnlyMode && (
+                            {iconOnlyMode && !isExpanded && !isHovering && (
                                 <Block
                                     width={String(tokens.maxWidth.iconOnly)}
                                     height="100%"
@@ -472,6 +517,67 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     position="relative"
                                     overflow="hidden"
                                 >
+                                    <Block
+                                        width="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        padding={topbarToken.padding}
+                                        backgroundColor={
+                                            topbarToken.backgroundColor
+                                        }
+                                        style={{
+                                            backdropFilter:
+                                                topbarToken.backdropFilter,
+                                        }}
+                                    >
+                                        <Tooltip
+                                            content={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                                        >
+                                            <PrimitiveButton
+                                                type="button"
+                                                onClick={handleIconOnlyToggle}
+                                                data-icon="sidebar-hamburger"
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                border="none"
+                                                backgroundColor={
+                                                    tokens.header.toggleButton
+                                                        .backgroundColor.default
+                                                }
+                                                borderRadius="10px"
+                                                cursor="pointer"
+                                                padding="9px"
+                                                aria-label={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                                                aria-expanded={false}
+                                                title={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                                                style={{
+                                                    transition:
+                                                        'background-color 0.15s ease',
+                                                }}
+                                                _hover={{
+                                                    backgroundColor:
+                                                        tokens.header
+                                                            .toggleButton
+                                                            .backgroundColor
+                                                            .hover,
+                                                }}
+                                            >
+                                                <PanelsTopLeft
+                                                    color={
+                                                        FOUNDATION_THEME.colors
+                                                            .gray[600]
+                                                    }
+                                                    size={
+                                                        tokens.header
+                                                            .toggleButton.width
+                                                    }
+                                                    aria-hidden="true"
+                                                />
+                                            </PrimitiveButton>
+                                        </Tooltip>
+                                    </Block>
                                     <DirectoryContainer
                                         data-directory-container
                                         id={sidebarNavId}
@@ -496,10 +602,78 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             defaultActiveItem={
                                                 defaultActiveItem
                                             }
-                                            iconOnlyMode={iconOnlyMode}
+                                            iconOnlyMode={
+                                                !isExpanded && !isHovering
+                                            }
                                         />
                                     </DirectoryContainer>
                                 </Block>
+                            )}
+
+                            {iconOnlyMode && (isExpanded || isHovering) && (
+                                <>
+                                    {hasLeftPanel &&
+                                        leftPanel &&
+                                        (isExpanded || isHovering) && (
+                                            <TenantPanel
+                                                items={leftPanel.items}
+                                                selected={leftPanel.selected}
+                                                onSelect={leftPanel.onSelect}
+                                                tenantSlot1={
+                                                    leftPanel.tenantSlot1
+                                                }
+                                                tenantSlot2={
+                                                    leftPanel.tenantSlot2
+                                                }
+                                                tenantFooter={
+                                                    leftPanel.tenantFooter
+                                                }
+                                            />
+                                        )}
+
+                                    <Block
+                                        width="100%"
+                                        height="100%"
+                                        display="flex"
+                                        flexDirection="column"
+                                        position="relative"
+                                    >
+                                        <SidebarHeader
+                                            sidebarTopSlot={sidebarTopSlot}
+                                            merchantInfo={merchantInfo}
+                                            isExpanded={isExpanded}
+                                            isScrolled={isScrolled}
+                                            sidebarCollapseKey={
+                                                sidebarCollapseKey
+                                            }
+                                            onToggle={handleToggle}
+                                            sidebarNavId={sidebarNavId}
+                                            hideToggleButton={iconOnlyMode}
+                                        />
+
+                                        <DirectoryContainer
+                                            data-directory-container
+                                            id={sidebarNavId}
+                                            role="region"
+                                            aria-label="Navigation menu"
+                                        >
+                                            <Directory
+                                                directoryData={data}
+                                                idPrefix={`${baseId}-`}
+                                                activeItem={activeItem}
+                                                onActiveItemChange={
+                                                    onActiveItemChange
+                                                }
+                                                defaultActiveItem={
+                                                    defaultActiveItem
+                                                }
+                                                iconOnlyMode={false}
+                                            />
+                                        </DirectoryContainer>
+
+                                        <SidebarFooter footer={footer} />
+                                    </Block>
+                                </>
                             )}
 
                             {!isPanelOnlyMode && !iconOnlyMode && (
@@ -541,6 +715,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 }
                                                 onToggle={handleToggle}
                                                 sidebarNavId={sidebarNavId}
+                                                hideToggleButton={false}
                                             />
 
                                             <DirectoryContainer
@@ -595,7 +770,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         <Topbar
                             isExpanded={isExpanded}
                             onToggleExpansion={handleToggle}
-                            showToggleButton={showToggleButton}
+                            showToggleButton={showToggleButton && !iconOnlyMode}
                             panelOnlyMode={isPanelOnlyMode}
                             sidebarTopSlot={sidebarTopSlot}
                             topbar={topbar}

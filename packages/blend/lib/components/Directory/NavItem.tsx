@@ -219,7 +219,31 @@ const NavItem = ({
 
     const renderContent = () => {
         if (iconOnlyMode) {
-            if (item.leftSlot && React.isValidElement(item.leftSlot)) {
+            if (!item.leftSlot) {
+                // Icon is mandatory in icon-only mode
+                console.warn(
+                    `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
+                )
+                // Return placeholder div with same height as icons
+                return (
+                    <Block
+                        width="20px"
+                        height="20px"
+                        backgroundColor={
+                            isActive
+                                ? tokens.section.itemList.item.backgroundColor
+                                      .active
+                                : tokens.section.itemList.item.backgroundColor
+                                      .default
+                        }
+                        borderRadius={tokens.section.itemList.item.borderRadius}
+                        style={{
+                            opacity: 0.3,
+                        }}
+                    />
+                )
+            }
+            if (React.isValidElement(item.leftSlot)) {
                 return React.cloneElement(
                     item.leftSlot as React.ReactElement<
                         React.SVGProps<SVGSVGElement>
