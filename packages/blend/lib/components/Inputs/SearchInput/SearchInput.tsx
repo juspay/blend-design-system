@@ -97,6 +97,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                 const syntheticEvent = {
                     target: { value: '' },
                     currentTarget: { value: '' },
+                    preventDefault: () => {},
+                    stopPropagation: () => {},
                 } as React.ChangeEvent<HTMLInputElement>
                 onChange(syntheticEvent)
             }
