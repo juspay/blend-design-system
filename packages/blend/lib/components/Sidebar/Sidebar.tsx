@@ -378,16 +378,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 {!isExpanded &&
                     !isMobile &&
                     !isPanelOnlyMode &&
+                    !iconOnlyMode &&
                     !disableIntermediateState && (
                         <Block
                             position="absolute"
                             left="0"
                             top="0"
-                            width={
-                                iconOnlyMode
-                                    ? String(tokens.maxWidth.iconOnly)
-                                    : FOUNDATION_THEME.unit[24]
-                            }
+                            width={FOUNDATION_THEME.unit[24]}
                             height="100%"
                             zIndex="98"
                             onMouseEnter={handleMouseEnter}
@@ -400,7 +397,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     as="nav"
                     backgroundColor={tokens.backgroundColor}
                     maxWidth={
-                        iconOnlyMode && !isExpanded && !isHovering
+                        iconOnlyMode && !isExpanded
                             ? String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'fit-content'
@@ -413,35 +410,32 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 )
                     }
                     width={
-                        iconOnlyMode && !isExpanded && !isHovering
+                        iconOnlyMode && !isExpanded
                             ? String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'auto'
                               : '100%'
                     }
                     minWidth={
-                        iconOnlyMode && !isExpanded && !isHovering
+                        iconOnlyMode && !isExpanded
                             ? String(tokens.maxWidth.iconOnly)
                             : undefined
                     }
                     borderRight={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? tokens.borderRight
                             : getSidebarBorder(isExpanded, isHovering, tokens)
                     }
                     display={isMobile ? 'none' : 'flex'}
                     position={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? 'relative'
                             : !isExpanded
                               ? 'absolute'
                               : 'relative'
                     }
                     zIndex={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? '48'
                             : getSidebarZIndex()
                     }
@@ -450,8 +444,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     role="navigation"
                     aria-label={sidebarLabel}
                     aria-expanded={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? undefined
                             : isExpanded
                               ? true
@@ -464,24 +457,26 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         overflow: 'hidden',
                     }}
                     onMouseLeave={
-                        isPanelOnlyMode || disableIntermediateState
+                        isPanelOnlyMode ||
+                        iconOnlyMode ||
+                        disableIntermediateState
                             ? undefined
                             : handleMouseLeave
                     }
                     onMouseEnter={
-                        isPanelOnlyMode || disableIntermediateState
+                        isPanelOnlyMode ||
+                        iconOnlyMode ||
+                        disableIntermediateState
                             ? undefined
                             : handleMouseEnter
                     }
                     data-is-sidebar-expanded={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? 'false'
                             : isExpanded
                     }
                     boxShadow={
-                        isPanelOnlyMode ||
-                        (iconOnlyMode && !isExpanded && !isHovering)
+                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
                             ? 'none'
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
@@ -490,7 +485,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     data-sidebar-state={
                         isPanelOnlyMode
                             ? 'panel-only'
-                            : iconOnlyMode && !isExpanded && !isHovering
+                            : iconOnlyMode && !isExpanded
                               ? 'icon-only'
                               : getSidebarState()
                     }
@@ -508,7 +503,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 />
                             )}
 
-                            {iconOnlyMode && !isExpanded && !isHovering && (
+                            {iconOnlyMode && !isExpanded && (
                                 <Block
                                     width={String(tokens.maxWidth.iconOnly)}
                                     height="100%"
@@ -602,34 +597,26 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             defaultActiveItem={
                                                 defaultActiveItem
                                             }
-                                            iconOnlyMode={
-                                                !isExpanded && !isHovering
-                                            }
+                                            iconOnlyMode={!isExpanded}
                                         />
                                     </DirectoryContainer>
                                 </Block>
                             )}
 
-                            {iconOnlyMode && (isExpanded || isHovering) && (
+                            {iconOnlyMode && isExpanded && (
                                 <>
-                                    {hasLeftPanel &&
-                                        leftPanel &&
-                                        (isExpanded || isHovering) && (
-                                            <TenantPanel
-                                                items={leftPanel.items}
-                                                selected={leftPanel.selected}
-                                                onSelect={leftPanel.onSelect}
-                                                tenantSlot1={
-                                                    leftPanel.tenantSlot1
-                                                }
-                                                tenantSlot2={
-                                                    leftPanel.tenantSlot2
-                                                }
-                                                tenantFooter={
-                                                    leftPanel.tenantFooter
-                                                }
-                                            />
-                                        )}
+                                    {hasLeftPanel && leftPanel && (
+                                        <TenantPanel
+                                            items={leftPanel.items}
+                                            selected={leftPanel.selected}
+                                            onSelect={leftPanel.onSelect}
+                                            tenantSlot1={leftPanel.tenantSlot1}
+                                            tenantSlot2={leftPanel.tenantSlot2}
+                                            tenantFooter={
+                                                leftPanel.tenantFooter
+                                            }
+                                        />
+                                    )}
 
                                     <Block
                                         width="100%"
@@ -648,7 +635,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             }
                                             onToggle={handleToggle}
                                             sidebarNavId={sidebarNavId}
-                                            hideToggleButton={iconOnlyMode}
+                                            hideToggleButton={false}
                                         />
 
                                         <DirectoryContainer

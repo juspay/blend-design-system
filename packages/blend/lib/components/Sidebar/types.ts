@@ -119,7 +119,8 @@ export type SidebarProps = {
      * - Tooltips appear on hover showing the item label
      * - Sections render as horizontal dividers
      * - Merchant switcher moves to topbar
-     * - Supports intermediate/hover state expansion
+     * - Intermediate/hover state expansion is disabled
+     * - Toggle button appears at the top of the icon-only panel
      * Defaults to false
      */
     iconOnlyMode?: boolean

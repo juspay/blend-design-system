@@ -28,7 +28,7 @@ export type SidebarTokenType = {
     maxWidth: {
         withLeftPanel: CSSObject['maxWidth'] // Width when tenant panel is present
         withoutLeftPanel: CSSObject['maxWidth'] // Width when no tenant panel
-        iconOnly: CSSObject['maxWidth'] // Width for icon-only mode (52px)
+        iconOnly?: CSSObject['maxWidth'] // Width for icon-only mode (52px)
     }
 
     // Controls sidebar container background color for different interaction states
