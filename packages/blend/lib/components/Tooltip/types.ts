@@ -37,4 +37,5 @@ export type TooltipProps = {
     offset?: number
     maxWidth?: string
     fullWidth?: boolean
+    disableInteractive?: boolean
 }

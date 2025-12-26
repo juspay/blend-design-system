@@ -1,7 +1,6 @@
 import { css } from 'styled-components'
 
 const easingIn = 'cubic-bezier(0.16, 1, 0.3, 1)'
-const easingOut = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
 export const tooltipContentAnimations = css`
     transform-origin: var(--radix-tooltip-content-transform-origin);
