@@ -39,6 +39,7 @@ export const Tooltip = ({
     open,
     maxWidth,
     fullWidth = false,
+    disableInteractive = false,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
 
@@ -59,7 +60,10 @@ export const Tooltip = ({
         trigger
     )
     return (
-        <RadixTooltip.Provider delayDuration={delayDuration}>
+        <RadixTooltip.Provider
+            delayDuration={delayDuration}
+            disableHoverableContent={disableInteractive}
+        >
             <RadixTooltip.Root open={open}>
                 <RadixTooltip.Trigger asChild>
                     {wrappedTrigger}
