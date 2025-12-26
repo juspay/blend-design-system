@@ -209,6 +209,26 @@ const navigationData = [
                 category: 'Behavior',
             },
         },
+        iconOnlyMode: {
+            control: 'boolean',
+            description:
+                'When true, shows only icons (52px width) with tooltips on hover. In this mode: directory items show only their icons, tooltips appear on hover showing the item label, sections render as horizontal dividers, merchant switcher moves to topbar, and intermediate/hover state expansion is disabled. The toggle button appears at the top of the icon-only panel. Clicking the toggle button expands to full sidebar view (or hides the sidebar if hideOnIconOnlyToggle is true). Defaults to false.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Behavior',
+            },
+        },
+        hideOnIconOnlyToggle: {
+            control: 'boolean',
+            description:
+                'When true, clicking the toggle button in icon-only mode will completely hide the sidebar. When false, clicking the toggle button will expand to full sidebar view with tenant panel (if provided) and directory. Only applies when iconOnlyMode is true. Defaults to false (expands to full sidebar).',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Behavior',
+            },
+        },
     },
     tags: ['autodocs'],
 }
