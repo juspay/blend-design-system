@@ -522,7 +522,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="center"
-                                        padding={topbarToken.padding}
+                                        padding={`${FOUNDATION_THEME.unit[16]} 0`}
                                         backgroundColor={
                                             topbarToken.backgroundColor
                                         }
