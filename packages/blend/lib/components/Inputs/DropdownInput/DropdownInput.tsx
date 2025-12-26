@@ -304,6 +304,11 @@ const DropdownInput = ({
                     }
                     outline="none"
                     width={'100%'}
+                    backgroundColor={
+                        dropdownInputTokens.inputContainer.backgroundColor[
+                            error ? 'error' : 'default'
+                        ]
+                    }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     placeholderStyles={{
                         transition: 'opacity 150ms ease-out',
@@ -313,6 +318,10 @@ const DropdownInput = ({
                         border: dropdownInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
+                        backgroundColor:
+                            dropdownInputTokens.inputContainer.backgroundColor[
+                                error ? 'error' : 'hover'
+                            ],
                     }}
                     color={
                         isInputDisabled

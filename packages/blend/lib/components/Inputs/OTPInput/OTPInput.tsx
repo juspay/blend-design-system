@@ -260,10 +260,19 @@ const OTPInput = ({
                                     ]
                                 }
                                 outline="none"
+                                backgroundColor={
+                                    otpInputTokens.inputContainer.input
+                                        .backgroundColor[
+                                        error ? 'error' : 'default'
+                                    ]
+                                }
                                 transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                                 _hover={{
                                     border: otpInputTokens.inputContainer.input
                                         .border.hover,
+                                    backgroundColor:
+                                        otpInputTokens.inputContainer.input
+                                            .backgroundColor.hover,
                                 }}
                                 color={
                                     otpInputTokens.inputContainer.input.color[
