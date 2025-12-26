@@ -306,7 +306,11 @@ const NumberInput = ({
                     }
                     outline="none"
                     width={'100%'}
-                    backgroundColor="transparent"
+                    backgroundColor={
+                        numberInputTokens.inputContainer.backgroundColor[
+                            hasError ? 'error' : 'default'
+                        ]
+                    }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     placeholderStyles={{
                         transition: 'opacity 150ms ease-out',
@@ -316,6 +320,10 @@ const NumberInput = ({
                         border: numberInputTokens.inputContainer.border[
                             hasError ? 'error' : 'hover'
                         ],
+                        backgroundColor:
+                            numberInputTokens.inputContainer.backgroundColor[
+                                hasError ? 'error' : 'hover'
+                            ],
                     }}
                     _focus={{
                         border: numberInputTokens.inputContainer.border[

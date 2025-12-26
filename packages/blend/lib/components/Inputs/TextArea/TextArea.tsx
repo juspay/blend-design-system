@@ -158,6 +158,11 @@ const TextArea = ({
                     }
                     fontSize={textAreaTokens.inputContainer.fontSize}
                     fontWeight={textAreaTokens.inputContainer.fontWeight}
+                    backgroundColor={
+                        textAreaTokens.inputContainer.backgroundColor[
+                            error ? 'error' : 'default'
+                        ]
+                    }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     placeholderStyles={{
                         transition: 'opacity 150ms ease-out',
@@ -167,6 +172,10 @@ const TextArea = ({
                         border: textAreaTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
+                        backgroundColor:
+                            textAreaTokens.inputContainer.backgroundColor[
+                                error ? 'error' : 'hover'
+                            ],
                     }}
                     color={
                         textAreaTokens.inputContainer.color[
