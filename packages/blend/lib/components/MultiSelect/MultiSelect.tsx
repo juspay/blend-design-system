@@ -355,7 +355,7 @@ const MultiSelect = ({
                                         borderRadius={appliedBorderRadius}
                                         style={getErrorShakeStyle(shouldShake)}
                                         {...ariaAttributes}
-                                        outline={
+                                        border={
                                             multiSelectTokens.trigger.outline[
                                                 variant
                                             ][
@@ -391,15 +391,14 @@ const MultiSelect = ({
 
                                             ...(!disabled && {
                                                 _hover: {
-                                                    outline:
-                                                        multiSelectTokens
-                                                            .trigger.outline[
-                                                            variant
-                                                        ][
-                                                            error
-                                                                ? 'error'
-                                                                : 'hover'
-                                                        ],
+                                                    border: multiSelectTokens
+                                                        .trigger.outline[
+                                                        variant
+                                                    ][
+                                                        error
+                                                            ? 'error'
+                                                            : 'hover'
+                                                    ],
                                                     backgroundColor:
                                                         multiSelectTokens
                                                             .trigger
@@ -413,13 +412,10 @@ const MultiSelect = ({
                                                 },
                                             }),
                                             _focus: {
-                                                outline:
-                                                    multiSelectTokens.trigger
-                                                        .outline[variant][
-                                                        error
-                                                            ? 'error'
-                                                            : 'focus'
-                                                    ],
+                                                border: multiSelectTokens
+                                                    .trigger.outline[variant][
+                                                    error ? 'error' : 'focus'
+                                                ],
                                                 backgroundColor:
                                                     multiSelectTokens.trigger
                                                         .backgroundColor[
@@ -711,7 +707,7 @@ const MultiSelect = ({
                                     ? `Clear selection for ${label}`
                                     : 'Clear selection'
                             }
-                            outline={
+                            border={
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
                                 ]

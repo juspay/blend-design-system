@@ -5,6 +5,7 @@ import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSe
 import { TextArea } from '../../../../packages/blend/lib/components/Inputs/TextArea'
 import {
     Button,
+    ButtonSize,
     ButtonType,
 } from '../../../../packages/blend/lib/components/Button'
 import {
@@ -149,42 +150,50 @@ const FormElementsDemo = () => {
                         min={0}
                         max={100000}
                     />
-                    <Button
-                        text="Reset"
-                        buttonType={ButtonType.SECONDARY}
-                        onClick={handleReset}
-                    />
-                    <SingleSelect
-                        label="Country"
-                        selected={formData.country}
-                        onSelect={(value) =>
-                            setFormData({ ...formData, country: value })
-                        }
-                        placeholder="Select country"
-                        items={[
-                            {
-                                items: [
-                                    { value: 'us', label: 'United States' },
-                                    { value: 'uk', label: 'United Kingdom' },
-                                    { value: 'ca', label: 'Canada' },
-                                    { value: 'au', label: 'Australia' },
-                                ],
-                            },
-                        ]}
-                    />
-                    <MultiSelect
-                        enableSearch={true}
-                        enableSelectAll={true}
-                        label="Basic Options"
-                        items={simpleItems}
-                        selectedValues={basicSimpleSelected}
-                        onChange={handleMultiSelectChange(
-                            basicSimpleSelected,
-                            setBasicSimpleSelected
-                        )}
-                        placeholder="Choose multiple options"
-                        selectionTagType={MultiSelectSelectionTagType.COUNT}
-                    />
+                    <div className="flex gap-2">
+                        <Button
+                            text="Reset"
+                            buttonType={ButtonType.SECONDARY}
+                            onClick={handleReset}
+                            size={ButtonSize.MEDIUM}
+                        />
+                        <SingleSelect
+                            // label="Country"
+                            selected={formData.country}
+                            onSelect={(value) =>
+                                setFormData({ ...formData, country: value })
+                            }
+                            placeholder="Select country"
+                            items={[
+                                {
+                                    items: [
+                                        { value: 'us', label: 'United States' },
+                                        {
+                                            value: 'uk',
+                                            label: 'United Kingdom',
+                                        },
+                                        { value: 'ca', label: 'Canada' },
+                                        { value: 'au', label: 'Australia' },
+                                    ],
+                                },
+                            ]}
+                        />
+
+                        <MultiSelect
+                            enableSearch={true}
+                            enableSelectAll={true}
+                            label=""
+                            items={simpleItems}
+                            selectedValues={basicSimpleSelected}
+                            onChange={handleMultiSelectChange(
+                                basicSimpleSelected,
+                                setBasicSimpleSelected
+                            )}
+                            placeholder="Choose multiple options"
+                            selectionTagType={MultiSelectSelectionTagType.COUNT}
+                        />
+                    </div>
+
                     <TextArea
                         label="Bio"
                         value={formData.bio}
