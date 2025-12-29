@@ -476,7 +476,9 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             : isExpanded
                     }
                     boxShadow={
-                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
+                        isPanelOnlyMode ||
+                        (iconOnlyMode && !isExpanded) ||
+                        isExpanded
                             ? 'none'
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
