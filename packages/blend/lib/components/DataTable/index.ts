@@ -5,7 +5,7 @@ export * from './TableBody/types'
 export * from './TableCell/types'
 export * from './TableFooter/types'
 export * from './DataTableHeader/types'
-export type { TableTokenType } from './dataTable.tokens'
+export * from './dataTable.tokens'
 
 export { validateColumnData, getColumnTypeConfig } from './columnTypes'
 

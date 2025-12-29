@@ -7,4 +7,5 @@ export { default as ChartLegends } from './ChartLegend'
 export { default as SankeyNode } from './SankeyNode'
 export { default as SankeyLink } from './SankeyLink'
 
+export * from './chart.tokens'
 export * from './types'

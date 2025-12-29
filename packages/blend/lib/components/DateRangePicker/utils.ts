@@ -1446,8 +1446,8 @@ export const getDateCellStates = (
 
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
-        (disablePastDates && date < today) ||
-        (customDisableDates && customDisableDates(date))
+            (disablePastDates && date < today) ||
+            (customDisableDates && customDisableDates(date))
     )
 
     return {

@@ -28,8 +28,7 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
     border: props.$accordionToken.trigger.border[props.$accordionType].default,
 
     borderRadius: props.$accordionToken.borderRadius[props.$accordionType],
-    overflow:
-        props.$accordionType === AccordionType.BORDER ? 'hidden' : 'visible',
+    overflow: 'visible',
     ...(props.$isDisabled &&
         props.$accordionType === AccordionType.BORDER && {
             backgroundColor:
@@ -159,7 +158,7 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionType: AccordionType
     $accordionToken: AccordionTokenType
 }>((props) => ({
-    overflow: 'hidden',
+    overflow: 'visible',
     transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 
     '&[data-state="open"]': {
