@@ -23,6 +23,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         // Generate unique IDs for ARIA relationships
         const baseId = useId()
         const cardId = `${baseId}-card`
+        let headerTitle = 'headerTitle' in props ? props.headerTitle : undefined
 
         // Generate accessible label for the card
         const cardLabel = useMemo(() => {
@@ -110,7 +111,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
                 flexDirection="column"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                data-card="true"
+                data-card={headerTitle}
                 role="region"
                 aria-label={cardLabel}
                 aria-labelledby={
