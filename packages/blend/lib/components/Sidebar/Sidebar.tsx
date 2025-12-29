@@ -39,15 +39,22 @@ import type { ResponsiveTopbarTokens } from '../Topbar/topbar.tokens'
 
 // Styled wrappers for pseudo-element support (::webkit-scrollbar)
 // Block primitive doesn't support pseudo-elements, so we need minimal styled wrappers
-const DirectoryContainer = styled(Block)`
+const DirectoryContainer = styled(Block)<{
+    $showTopBlur?: boolean
+    $showBottomBlur?: boolean
+}>`
     flex: 1;
     overflow-y: auto;
+    position: relative;
 
     &::-webkit-scrollbar {
         display: none;
+        width: 0;
+        height: 0;
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
+    scrollbar-color: transparent transparent;
 `
 
 const MainContentContainer = styled(Block)`
