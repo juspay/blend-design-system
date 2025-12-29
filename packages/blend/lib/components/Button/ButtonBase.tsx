@@ -274,6 +274,9 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     flexShrink: 0,
+                                    color: buttonTokens.text.color[buttonType][
+                                        subType
+                                    ][disabled ? 'disabled' : 'default'],
                                 }}
                             >
                                 {leadingIcon}
@@ -312,6 +315,9 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     flexShrink: 0,
+                                    color: buttonTokens.text.color[buttonType][
+                                        subType
+                                    ][disabled ? 'disabled' : 'default'],
                                 }}
                             >
                                 {trailingIcon}
