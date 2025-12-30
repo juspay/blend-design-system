@@ -1,4 +1,12 @@
-import { useState, useEffect, useMemo, forwardRef, useRef, useId } from 'react'
+import {
+    useState,
+    useEffect,
+    useMemo,
+    forwardRef,
+    useRef,
+    useId,
+    useCallback,
+} from 'react'
 import {
     DndContext,
     closestCenter,
@@ -145,6 +153,9 @@ const DataTable = forwardRef(
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const tableContainerRef = useRef<HTMLDivElement>(null)
+        const [isNarrowContainer, setIsNarrowContainer] =
+            useState<boolean>(false)
         const tableId = useId()
         const tableLabelId = title ? `${tableId}-label` : undefined
         const tableDescriptionId = description
@@ -488,6 +499,25 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
         ])
+
+        useEffect(() => {
+            const container = tableContainerRef.current
+            if (!container) return
+
+            const updateContainerWidth = () => {
+                const width = container.clientWidth
+                setIsNarrowContainer(width < 640)
+            }
+
+            updateContainerWidth()
+
+            const resizeObserver = new ResizeObserver(updateContainerWidth)
+            resizeObserver.observe(container)
+
+            return () => {
+                resizeObserver.disconnect()
+            }
+        }, [])
 
         const currentData = useMemo(() => {
             if (
@@ -1141,9 +1171,21 @@ const DataTable = forwardRef(
             }, 0)
         }
 
+        const containerRefCallback = useCallback(
+            (node: HTMLDivElement | null) => {
+                tableContainerRef.current = node
+                if (typeof ref === 'function') {
+                    ref(node)
+                } else if (ref) {
+                    ref.current = node
+                }
+            },
+            [ref]
+        )
+
         return (
             <Block
-                ref={ref}
+                ref={containerRefCallback}
                 style={{
                     position: tableToken.position,
                     padding: tableToken.padding,
@@ -1748,6 +1790,7 @@ const DataTable = forwardRef(
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
+                            isNarrowContainer={isNarrowContainer}
                             onPageChange={handlePageChange}
                             onPageSizeChange={handlePageSizeChange}
                         />
