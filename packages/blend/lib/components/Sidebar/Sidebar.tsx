@@ -55,57 +55,6 @@ const DirectoryContainer = styled(Block)<{
     -ms-overflow-style: none;
     scrollbar-width: none;
     scrollbar-color: transparent transparent;
-
-    /* Top blur overlay using pseudo-element */
-    &::before {
-        content: '';
-        position: sticky;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: ${FOUNDATION_THEME.unit[24]};
-        background: linear-gradient(
-            to bottom,
-            ${FOUNDATION_THEME.colors.gray[0]}ee 0%,
-            ${FOUNDATION_THEME.colors.gray[0]}88 40%,
-            ${FOUNDATION_THEME.colors.gray[0]}00 100%
-        );
-        backdrop-filter: blur(8px) saturate(180%);
-        -webkit-backdrop-filter: blur(8px) saturate(180%);
-        pointer-events: none;
-        z-index: 100;
-        display: block;
-        opacity: ${({ $showTopBlur }) => ($showTopBlur ? 1 : 0)};
-        transition: opacity 0.2s ease;
-        margin-bottom: -${FOUNDATION_THEME.unit[24]};
-        visibility: ${({ $showTopBlur }) =>
-            $showTopBlur ? 'visible' : 'hidden'};
-    }
-
-    /* Bottom blur overlay using pseudo-element */
-    &::after {
-        content: '';
-        position: sticky;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: ${FOUNDATION_THEME.unit[24]};
-        background: linear-gradient(
-            to top,
-            ${FOUNDATION_THEME.colors.gray[0]}ee 0%,
-            ${FOUNDATION_THEME.colors.gray[0]}88 40%,
-            ${FOUNDATION_THEME.colors.gray[0]}00 100%
-        );
-        backdrop-filter: blur(8px) saturate(180%);
-        -webkit-backdrop-filter: blur(8px) saturate(180%);
-        pointer-events: none;
-        z-index: 100;
-        display: block;
-        opacity: ${({ $showBottomBlur }) => ($showBottomBlur ? 1 : 0)};
-        transition: opacity 0.2s ease;
-        margin-top: -${FOUNDATION_THEME.unit[24]};
-    }
 `
 
 const MainContentContainer = styled(Block)`
