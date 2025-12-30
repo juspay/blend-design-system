@@ -5653,16 +5653,37 @@ const ChartDemo = () => {
         }
     }
 
-    const getColors = () => {
+    const getColors = (): { key: string; color: string }[] => {
         switch (selectedChartType) {
             case ChartType.LINE:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
             case ChartType.BAR:
-                return ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#8b5cf6' },
+                    { key: '1', color: '#06b6d4' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
             case ChartType.PIE:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                    { key: '4', color: '#8b5cf6' },
+                ]
             default:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
         }
     }
 
@@ -6217,10 +6238,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     data={getCurrentData()}
                     chartType={selectedChartType}
                     legendPosition={selectedLegendPosition}
-                    colors={getColors().map((color) => ({
-                        key: color.key,
-                        color: color.color,
-                    }))}
+                    colors={getColors()}
                     xAxis={{
                         label:
                             selectedDataset === 'analytics'
