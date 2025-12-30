@@ -166,7 +166,7 @@ const SidebarDemo = () => {
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
-    >('buttons')
+    >('formElements')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

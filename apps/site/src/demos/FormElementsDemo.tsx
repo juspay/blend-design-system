@@ -28,7 +28,7 @@ const FormElementsDemo = () => {
         email: '',
         password: '',
         budget: 1000,
-        country: 'us',
+        country: '',
         bio: '',
         accountType: 'personal',
         newsletter: false,
@@ -136,20 +136,27 @@ const FormElementsDemo = () => {
                         hintText="Must be at least 8 characters"
                         required
                     />
-
-                    <NumberInput
-                        label="Budget"
-                        value={formData.budget}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                budget: parseFloat(e.target.value) || 0,
-                            })
-                        }
-                        placeholder="Enter budget"
-                        min={0}
-                        max={100000}
-                    />
+                    <div className="flex gap-2">
+                        <Button
+                            text="Reset"
+                            buttonType={ButtonType.SECONDARY}
+                            onClick={handleReset}
+                            size={ButtonSize.MEDIUM}
+                        />
+                        <NumberInput
+                            // label="Budget"
+                            value={formData.budget}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    budget: parseFloat(e.target.value) || 0,
+                                })
+                            }
+                            placeholder="Enter budget"
+                            min={0}
+                            max={100000}
+                        />
+                    </div>
                     <div className="flex gap-2">
                         <Button
                             text="Reset"
