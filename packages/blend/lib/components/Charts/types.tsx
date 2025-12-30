@@ -132,7 +132,7 @@ export type RenderChartProps = {
     chartType: ChartType
     hoveredKey: string | null
     lineKeys: string[]
-    colors: string[]
+    colors: string[] | { key: string; color: string }[]
     setHoveredKey: (key: string | null) => void
     data: NewNestedDataPoint[]
     selectedKeys: string[]
@@ -149,7 +149,7 @@ export type RenderChartProps = {
 export type CoreChartProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
-    colors?: string[]
+    colors?: string[] | { key: string; color: string }[]
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
@@ -173,7 +173,7 @@ export type ChartsSkeletonProps = {
 export type ChartsProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
-    colors?: string[]
+    colors?: string[] | { key: string; color: string }[]
     slot1?: ReactNode
     slot2?: ReactNode
     slot3?: ReactNode
@@ -220,7 +220,7 @@ export type ChartHeaderProps = {
 export type ChartLegendsProps = {
     chartContainerRef: React.RefObject<HTMLDivElement>
     keys: string[]
-    colors: string[]
+    colors: string[] | { key: string; color: string }[]
     handleLegendClick: (key: string) => void
     handleLegendEnter: (key: string) => void
     handleLegendLeave: () => void

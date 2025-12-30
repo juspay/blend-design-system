@@ -118,20 +118,20 @@ export const renderChart = ({
     const getColor = (key: string, chartType: ChartType) => {
         const originalIndex = lineKeys.indexOf(key)
         const baseColor = colors[originalIndex % colors.length]
-
+        const colorValue = baseColor.color
         if (chartType === ChartType.BAR) {
             return hoveredKey === null
-                ? baseColor
+                ? colorValue
                 : hoveredKey === key
-                  ? baseColor
-                  : lightenHexColor(baseColor, 0.3)
+                  ? colorValue
+                  : lightenHexColor(colorValue, 0.3)
         }
 
         if (hoveredKey && hoveredKey !== key) {
-            return lightenHexColor(baseColor, 0.3)
+            return lightenHexColor(colorValue, 0.3)
         }
 
-        return baseColor
+        return colorValue
     }
 
     const chartConfig = {
@@ -560,7 +560,7 @@ export const renderChart = ({
                         outerRadius="100%"
                         innerRadius="70%"
                         paddingAngle={0}
-                        fill={colors[0]}
+                        fill={colors[0]?.color}
                         dataKey="value"
                         nameKey="name"
                         label={false}
