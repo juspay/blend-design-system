@@ -709,6 +709,13 @@ const GranularChartsDemo = () => {
         dashboardData.length > 0 ? Object.keys(dashboardData[0].data) : []
     const activeKeys = selectedKeys.length > 0 ? selectedKeys : lineKeys
 
+    const chartColorsFormatted: { key: string; color: string }[] = lineKeys.map(
+        (key, index) => ({
+            key,
+            color: chartColors[index % chartColors.length],
+        })
+    )
+
     const handleLegendClick = (key: string) => {
         setSelectedKeys((prevSelected) => {
             const isCurrentlySelected = prevSelected.includes(key)
@@ -760,7 +767,7 @@ const GranularChartsDemo = () => {
                             <ChartLegends
                                 chartContainerRef={chartContainerRef}
                                 keys={lineKeys}
-                                colors={chartColors}
+                                colors={chartColorsFormatted}
                                 handleLegendClick={handleLegendClick}
                                 handleLegendEnter={handleLegendEnter}
                                 handleLegendLeave={handleLegendLeave}
@@ -819,7 +826,7 @@ const GranularChartsDemo = () => {
                                                 },
                                             }}
                                             chartType={panel.type}
-                                            colors={chartColors}
+                                            colors={chartColorsFormatted}
                                             hoveredKey={hoveredKey}
                                             onHoveredKeyChange={setHoveredKey}
                                             selectedKeys={selectedKeys}
@@ -5736,7 +5743,7 @@ const ChartDemo = () => {
             case 'CCAVENUE_V2':
                 return { key, color: '#a89d32' }
             default:
-                return { key, color: '#10b981' }
+                return { key, color: '#c70e0e' }
         }
     })
 

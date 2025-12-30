@@ -284,7 +284,7 @@ export type SankeyNodeProps = {
     index?: number
     payload?: SankeyNode & { value?: number }
     containerWidth?: number
-    nodeColors?: string[]
+    nodeColors?: (string | { key: string; color: string })[]
     onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
     onMouseLeave?: () => void
 }
@@ -299,7 +299,7 @@ export type SankeyLinkProps = {
     linkWidth?: number
     index?: number
     payload?: SankeyLink
-    linkColors?: string[]
+    linkColors?: (string | { key: string; color: string })[]
     onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
     onMouseLeave?: () => void
 }
