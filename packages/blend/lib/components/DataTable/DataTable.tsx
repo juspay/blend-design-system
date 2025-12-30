@@ -154,7 +154,8 @@ const DataTable = forwardRef(
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const tableContainerRef = useRef<HTMLDivElement>(null)
-        const [isNarrowContainer, setIsNarrowContainer] = useState<boolean>(false)
+        const [isNarrowContainer, setIsNarrowContainer] =
+            useState<boolean>(false)
         const tableId = useId()
         const tableLabelId = title ? `${tableId}-label` : undefined
         const tableDescriptionId = description
