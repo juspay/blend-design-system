@@ -32,7 +32,7 @@ import {
 import { FOUNDATION_THEME } from '../../tokens'
 import SidebarMobileNavigation from './SidebarMobile'
 import { PanelsTopLeft } from 'lucide-react'
-import { Tooltip } from '../Tooltip'
+import { Tooltip, TooltipSide } from '../Tooltip'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from '../Topbar/topbar.tokens'
@@ -55,6 +55,57 @@ const DirectoryContainer = styled(Block)<{
     -ms-overflow-style: none;
     scrollbar-width: none;
     scrollbar-color: transparent transparent;
+
+    /* Top blur overlay using pseudo-element */
+    &::before {
+        content: '';
+        position: sticky;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: ${FOUNDATION_THEME.unit[24]};
+        background: linear-gradient(
+            to bottom,
+            ${FOUNDATION_THEME.colors.gray[0]}ee 0%,
+            ${FOUNDATION_THEME.colors.gray[0]}88 40%,
+            ${FOUNDATION_THEME.colors.gray[0]}00 100%
+        );
+        backdrop-filter: blur(8px) saturate(180%);
+        -webkit-backdrop-filter: blur(8px) saturate(180%);
+        pointer-events: none;
+        z-index: 100;
+        display: block;
+        opacity: ${({ $showTopBlur }) => ($showTopBlur ? 1 : 0)};
+        transition: opacity 0.2s ease;
+        margin-bottom: -${FOUNDATION_THEME.unit[24]};
+        visibility: ${({ $showTopBlur }) =>
+            $showTopBlur ? 'visible' : 'hidden'};
+    }
+
+    /* Bottom blur overlay using pseudo-element */
+    &::after {
+        content: '';
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: ${FOUNDATION_THEME.unit[24]};
+        background: linear-gradient(
+            to top,
+            ${FOUNDATION_THEME.colors.gray[0]}ee 0%,
+            ${FOUNDATION_THEME.colors.gray[0]}88 40%,
+            ${FOUNDATION_THEME.colors.gray[0]}00 100%
+        );
+        backdrop-filter: blur(8px) saturate(180%);
+        -webkit-backdrop-filter: blur(8px) saturate(180%);
+        pointer-events: none;
+        z-index: 100;
+        display: block;
+        opacity: ${({ $showBottomBlur }) => ($showBottomBlur ? 1 : 0)};
+        transition: opacity 0.2s ease;
+        margin-top: -${FOUNDATION_THEME.unit[24]};
+    }
 `
 
 const MainContentContainer = styled(Block)`
@@ -112,6 +163,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [showToggleButton, setShowToggleButton] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
+        const [showTopBlur, setShowTopBlur] = useState<boolean>(false)
+        const [showBottomBlur, setShowBottomBlur] = useState<boolean>(false)
 
         const isExpanded = isControlled
             ? controlledIsExpanded!
@@ -229,18 +282,69 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             setInternalExpanded,
         ])
 
-        // Directory scroll detection
         useEffect(() => {
             const directoryContainer = document.querySelector(
                 '[data-directory-container]'
-            )
+            ) as HTMLElement | null
             if (!directoryContainer) return
-            const handleScroll = () =>
-                setIsScrolled(directoryContainer.scrollTop > 0)
-            directoryContainer.addEventListener('scroll', handleScroll)
-            return () =>
-                directoryContainer.removeEventListener('scroll', handleScroll)
-        }, [])
+
+            const getScrollingElement = (): HTMLElement | null => {
+                const navElement = directoryContainer.querySelector('nav')
+                const checkElement = (el: HTMLElement): boolean => {
+                    const style = window.getComputedStyle(el)
+                    const hasOverflow =
+                        style.overflow === 'auto' ||
+                        style.overflowY === 'auto' ||
+                        style.overflow === 'scroll' ||
+                        style.overflowY === 'scroll'
+                    return hasOverflow && el.scrollHeight > el.clientHeight
+                }
+
+                if (navElement && checkElement(navElement as HTMLElement)) {
+                    return navElement as HTMLElement
+                }
+                if (checkElement(directoryContainer)) {
+                    return directoryContainer
+                }
+                return null
+            }
+
+            const scrollingElement = getScrollingElement()
+            if (!scrollingElement) {
+                setShowTopBlur(false)
+                setShowBottomBlur(false)
+                return
+            }
+
+            const updateBlurState = () => {
+                const { scrollTop, scrollHeight, clientHeight } =
+                    scrollingElement
+                const hasScrollableContent = scrollHeight > clientHeight
+                const isAtTop = scrollTop <= 5
+                const isAtBottom =
+                    Math.abs(scrollTop + clientHeight - scrollHeight) <= 5
+
+                setIsScrolled(scrollTop > 0)
+                setShowTopBlur(
+                    hasScrollableContent && !isAtTop && scrollTop > 5
+                )
+                setShowBottomBlur(hasScrollableContent && !isAtBottom)
+            }
+
+            updateBlurState()
+
+            scrollingElement.addEventListener('scroll', updateBlurState, {
+                passive: true,
+            })
+
+            const handleResize = () => setTimeout(updateBlurState, 50)
+            window.addEventListener('resize', handleResize, { passive: true })
+
+            return () => {
+                scrollingElement.removeEventListener('scroll', updateBlurState)
+                window.removeEventListener('resize', handleResize)
+            }
+        }, [isExpanded, iconOnlyMode, data])
 
         const handleMouseEnter = useCallback(() => {
             if (!disableIntermediateState) {
@@ -537,6 +641,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     >
                                         <Tooltip
                                             content={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                                            side={TooltipSide.RIGHT}
                                         >
                                             <PrimitiveButton
                                                 type="button"
@@ -555,7 +660,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 padding="9px"
                                                 aria-label={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
                                                 aria-expanded={false}
-                                                title={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                                                 style={{
                                                     transition:
                                                         'background-color 0.15s ease',
@@ -587,6 +691,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         id={sidebarNavId}
                                         role="region"
                                         aria-label="Navigation menu"
+                                        $showTopBlur={showTopBlur}
+                                        $showBottomBlur={showBottomBlur}
                                         style={{
                                             width: String(
                                                 tokens.maxWidth.iconOnly
@@ -652,6 +758,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             id={sidebarNavId}
                                             role="region"
                                             aria-label="Navigation menu"
+                                            $showTopBlur={showTopBlur}
+                                            $showBottomBlur={showBottomBlur}
                                         >
                                             <Directory
                                                 directoryData={data}
@@ -719,6 +827,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 id={sidebarNavId}
                                                 role="region"
                                                 aria-label="Navigation menu"
+                                                $showTopBlur={showTopBlur}
+                                                $showBottomBlur={showBottomBlur}
                                             >
                                                 <Directory
                                                     directoryData={data}

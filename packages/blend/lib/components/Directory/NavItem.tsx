@@ -27,6 +27,7 @@ const StyledElement = styled(Block)<{
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
     width: 100%;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: ${({ $iconOnlyMode }) =>
@@ -35,7 +36,7 @@ const StyledElement = styled(Block)<{
         $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
     padding: ${({ $tokens, $iconOnlyMode }) =>
         $iconOnlyMode
-            ? '10px'
+            ? '8px 10px'
             : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
@@ -87,6 +88,9 @@ const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
         $tokens.section.itemList.nested.paddingLeft};
     margin-top: ${({ $tokens }) => $tokens.section.itemList.nested.marginTop};
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: ${({ $tokens }) => $tokens.section.itemList.gap};
 
     & > div:first-child {
         position: absolute;
@@ -224,7 +228,6 @@ const NavItem = ({
                 console.warn(
                     `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
                 )
-                // Return placeholder div with same height as icons
                 return (
                     <Block
                         width="20px"
@@ -352,8 +355,10 @@ const NavItem = ({
             style={{
                 width: '100%',
                 display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
+                position: 'relative',
             }}
         >
             {iconOnlyMode && item.leftSlot ? (

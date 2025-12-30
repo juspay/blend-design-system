@@ -112,7 +112,6 @@ const Section = ({
             flexDirection="column"
             gap={iconOnlyMode ? '8px' : tokens.section.gap}
             width="100%"
-            alignItems={iconOnlyMode ? 'center' : 'flex-start'}
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
             data-sidebar-section={section.label || `section-${sectionIndex}`}
@@ -185,8 +184,7 @@ const Section = ({
                         width: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: iconOnlyMode ? 'center' : 'flex-start',
-                        gap: iconOnlyMode ? '8px' : tokens.section.itemList.gap,
+                        gap: tokens.section.itemList.gap,
                     }}
                     id={`${idPrefix || ''}section-content-${sectionIndex}`}
                     role="list"
