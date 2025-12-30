@@ -185,38 +185,30 @@ const DataTable = forwardRef(
 
             return allVisibleColumns
         })
-        const visibleColumnsString = initialColumns.toString()
 
         useEffect(() => {
-            const updatedVisibleColumns: ColumnDefinition<T>[] =
-                visibleColumns.map((col) => {
-                    if (
-                        initialColumns.includes(col) &&
+            const updatedVisibleColumns: ColumnDefinition<T>[] = []
+
+            visibleColumns.forEach((col) => {
+                const matchingCustomColumn = initialColumns.find(
+                    (item): item is typeof col =>
+                        item.field === col.field &&
+                        item.header === col.header &&
                         col.type === ColumnType.CUSTOM
-                    ) {
-                        const matchingCustomColumn = initialColumns.find(
-                            (item): item is typeof col => item === col
-                        )
-
-                        if (matchingCustomColumn) {
-                            return {
-                                ...col,
-                                renderCell: matchingCustomColumn.renderCell,
-                            }
-                        }
-
-                        return col
-                    }
-
-                    return col
-                })
+                )
+                if (matchingCustomColumn) {
+                    const newVal = {
+                        ...col,
+                        renderCell: matchingCustomColumn.renderCell,
+                    } as ColumnDefinition<T>
+                    updatedVisibleColumns.push(newVal)
+                } else {
+                    updatedVisibleColumns.push(col)
+                }
+            })
 
             setVisibleColumns(updatedVisibleColumns)
-        }, [
-            visibleColumnsString,
-            columnManagerMaxSelections,
-            columnManagerAlwaysSelected,
-        ])
+        }, [initialColumns])
 
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(
             () => initialColumns.filter((col) => col.isVisible !== false).length
