@@ -106,6 +106,7 @@ import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
+import OutageChartsDemo from './OutageChartsDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -166,6 +167,7 @@ const SidebarDemo = () => {
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
+        | 'outageCharts'
     >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -422,6 +424,8 @@ const SidebarDemo = () => {
                 return <DataTableDemo />
             case 'charts':
                 return <ChartsDemo />
+            case 'outageCharts':
+                return <OutageChartsDemo />
             case 'popover':
                 return <PopoverDemo />
             case 'multiValueInput':
@@ -955,6 +959,14 @@ const SidebarDemo = () => {
                         }
                     },
                     showOnMobile: true,
+                },
+                {
+                    label: 'Outage Charts',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageCharts',
+                    onClick: () => setActiveComponent('outageCharts'),
                 },
                 {
                     label: 'Stat Card',
