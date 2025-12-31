@@ -169,6 +169,58 @@ Skeleton loading follows this priority order:
 2. **Row-level** `isRowLoading` function
 3. **Global** `showSkeleton` or `isLoading` (lowest priority)
 
+## Delta Sorting
+
+The DataTable supports delta sorting, allowing you to sort by a different field than the column's primary field. This is useful when you have related fields like `total_volume` and `delta_total_volume`, where you want to sort by the delta value instead of the primary value.
+
+### Enabling Delta Sorting
+
+To enable delta sorting for a column:
+
+1. Set `isDeltaSortable: true` on the column definition
+2. Provide a `getSortField` function that returns the appropriate field based on `sortType`
+3. Optionally provide a `sortValueFormatter` for custom value transformation
+
+```tsx
+const columns: ColumnDefinition<DataRow>[] = [
+    {
+        field: 'total_volume',
+        header: 'Total Volume',
+        type: ColumnType.NUMBER,
+        isSortable: true,
+        isDeltaSortable: true, // Enable delta sorting UI
+        getSortField: (sortType) => {
+            // Return delta field when sortType is 'delta'
+            return sortType === 'delta' ? 'delta_total_volume' : 'total_volume'
+        },
+        // Optional: Format values before comparison
+        sortValueFormatter: (value) => {
+            // Extract numeric value from formatted string if needed
+            if (typeof value === 'string') {
+                const num = parseFloat(value.replace(/[^\d.-]/g, ''))
+                return isNaN(num) ? 0 : num
+            }
+            return value
+        },
+    },
+]
+```
+
+When `isDeltaSortable` is enabled, the sorting popover displays two sections:
+
+- **Value**: Standard sorting by the primary field
+- **Delta**: Sorting by the delta field (via `getSortField`)
+
+### Sort Value Formatter
+
+The `sortValueFormatter` function allows you to transform values before comparison. This is useful for:
+
+- Extracting numbers from formatted currency strings (e.g., "INR 276" → 276)
+- Parsing percentage strings (e.g., "12.5%" → 12.5)
+- Custom normalization logic
+
+If the formatter throws an error, the original value is used as a fallback.
+
 ## Hiding the Footer
 
 For compact tables with only a few rows, you can hide the pagination footer completely using the `showFooter` prop. This is useful when displaying 1-2 rows where pagination controls are unnecessary.
@@ -1261,6 +1313,46 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'boolean',
                 hintText: 'true enables sorting, false disables column sorting',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'getSortField',
+                hintText:
+                    'Optional function that returns the field name to sort by, allowing sorting by a different field than the column\'s field. Receives an optional sortType parameter (e.g., "primary", "delta", "absolute") and returns the field name string. When provided, this function is called during sorting to determine which data field to use. Useful for delta sorting where you want to sort by a related field (e.g., sorting by "delta_total_volume" when sortType is "delta" instead of "total_volume").',
+            },
+            {
+                content: '(sortType?: string) => string',
+                hintText:
+                    'Function that returns the field name to sort by based on sort type',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDeltaSortable',
+                hintText:
+                    'When true, enables delta sorting UI in the sorting popover. When enabled, the sorting popover displays "Value | Delta" sections, allowing users to sort by either the primary field or a delta field. Requires getSortField to be provided for delta sorting to work. When false or undefined, only standard sorting options are shown. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows delta sorting UI, false/undefined shows only standard sorting',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sortValueFormatter',
+                hintText:
+                    'Optional function to format/transform values before comparison during sorting. Receives value (the raw value from the data row), row (the entire row data), and column (the column definition). Returns the formatted value to use for comparison. Useful for custom sorting logic, such as extracting numbers from formatted strings (e.g., "INR 276" -> 276) or parsing percentage strings (e.g., "12.5%" -> 12.5). If the formatter throws an error, the original value is used as a fallback.',
+            },
+            {
+                content:
+                    '(value: unknown, row: T, column: ColumnDefinition<T>) => unknown',
+                hintText:
+                    'Function that transforms values before sorting comparison',
             },
             { content: '' },
         ],

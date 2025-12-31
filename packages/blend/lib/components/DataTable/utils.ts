@@ -675,16 +675,35 @@ export const sortData = <T extends Record<string, unknown>>(
     columns?: ColumnDefinition<T>[]
 ): T[] => {
     return [...data].sort((a, b) => {
-        const aValue = a[sortConfig.field]
-        const bValue = b[sortConfig.field]
+        const column = columns?.find(
+            (col) => String(col.field) === sortConfig.field
+        )
+
+        const actualSortField = column?.getSortField
+            ? column.getSortField(sortConfig.sortType)
+            : sortConfig.field
+
+        let aValue: unknown = (a as Record<string, unknown>)[actualSortField]
+        let bValue: unknown = (b as Record<string, unknown>)[actualSortField]
+
+        if (column?.sortValueFormatter) {
+            try {
+                aValue = column.sortValueFormatter(aValue, a, column)
+                bValue = column.sortValueFormatter(bValue, b, column)
+            } catch (error) {
+                console.warn(
+                    'sortValueFormatter error, using original values:',
+                    error
+                )
+                aValue = (a as Record<string, unknown>)[actualSortField]
+                bValue = (b as Record<string, unknown>)[actualSortField]
+            }
+        }
 
         if (aValue == null && bValue == null) return 0
         if (aValue == null) return 1
         if (bValue == null) return -1
 
-        const column = columns?.find(
-            (col) => String(col.field) === sortConfig.field
-        )
         const columnType = column?.type
 
         const aCompare = extractSortableValue(aValue, columnType)

@@ -145,6 +145,43 @@ export type BaseColumnDefinition<T> = {
     filterType?: FilterType
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    /**
+     * Function to get the field to sort by. Allows sorting by a different field than the column's field.
+     * @param sortType - Optional sort type identifier (e.g., 'primary', 'delta', 'absolute')
+     * @returns The field name to sort by
+     * @example
+     * // Sort by delta_total_volume when sortType is 'delta'
+     * getSortField: (sortType) => sortType === 'delta' ? 'delta_total_volume' : 'total_volume'
+     */
+    getSortField?: (sortType?: string) => string
+    /**
+     * Enable delta sorting UI in the sorting popover. When true, shows "Value | Delta" sections.
+     * Requires getSortField to be provided for delta sorting to work.
+     * @default false
+     */
+    isDeltaSortable?: boolean
+    /**
+     * Optional function to format/transform values before comparison during sorting.
+     * Useful for custom sorting logic (e.g., extracting numbers from formatted strings like "INR 276").
+     * @param value - The raw value from the data row
+     * @param row - The entire row data
+     * @param column - The column definition
+     * @returns The formatted value to use for comparison
+     * @example
+     * // Extract numeric value from formatted currency string
+     * sortValueFormatter: (value) => {
+     *   if (typeof value === 'string') {
+     *     const num = parseFloat(value.replace(/[^\d.-]/g, ''))
+     *     return isNaN(num) ? 0 : num
+     *   }
+     *   return value
+     * }
+     */
+    sortValueFormatter?: (
+        value: unknown,
+        row: T,
+        column: ColumnDefinition<T>
+    ) => unknown
 }
 
 export type ColumnDefinition<T> =
@@ -223,6 +260,7 @@ export type ColumnDefinition<T> =
 export type SortConfig = {
     field: string
     direction: SortDirection
+    sortType?: string // Optional sort type (e.g., 'primary', 'delta', 'absolute')
 }
 
 export type SearchConfig = {
