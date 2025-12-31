@@ -27,8 +27,15 @@ const SankeyLink: React.FC<SankeyLinkProps> = ({
     onMouseLeave,
 }) => {
     const typedPayload = payload as PayloadWithColor | undefined
+    const linkColorValue = linkColors[index || 0]
+    const linkColorString =
+        typeof linkColorValue === 'string'
+            ? linkColorValue
+            : typeof linkColorValue === 'object' && linkColorValue?.color
+              ? linkColorValue.color
+              : undefined
     const defaultFill =
-        linkColors[index || 0] || typedPayload?.color || 'url(#linkGradient)'
+        linkColorString || typedPayload?.color || 'url(#linkGradient)'
     const [fill, setFill] = useState<string>(defaultFill)
 
     const handleMouseEnter = (e: React.MouseEvent) => {
