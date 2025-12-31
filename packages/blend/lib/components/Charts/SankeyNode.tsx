@@ -32,10 +32,26 @@ const SankeyNode: React.FC<SankeyNodeProps> = ({
     const nodeName = truncateLabel(payload?.name || '', maxLabelLength)
 
     const typedPayload = payload as PayloadWithColor | undefined
-    const nodeColor =
-        nodeColors[index] ||
+    const nodeColorValue = nodeColors[index]
+
+    // Extract color string from either string or object format
+    const getColorString = (
+        value: string | { key: string; color: string } | undefined
+    ): string | undefined => {
+        if (typeof value === 'string') return value
+        if (typeof value === 'object' && value !== null && 'color' in value) {
+            return value.color
+        }
+        return undefined
+    }
+
+    const defaultColorObj = DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+    const defaultColorString = defaultColorObj.color
+
+    const nodeColor: string =
+        getColorString(nodeColorValue) ||
         typedPayload?.color ||
-        DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+        defaultColorString
 
     const handleMouseEnter = (e: React.MouseEvent) => {
         if (onMouseEnter && payload) {
