@@ -196,6 +196,31 @@ const DataTable = forwardRef(
 
             return allVisibleColumns
         })
+
+        useEffect(() => {
+            const updatedVisibleColumns: ColumnDefinition<T>[] = []
+
+            visibleColumns.forEach((col) => {
+                const matchingCustomColumn = initialColumns.find(
+                    (item): item is typeof col =>
+                        item.field === col.field &&
+                        item.header === col.header &&
+                        col.type === ColumnType.CUSTOM
+                )
+                if (matchingCustomColumn) {
+                    const newVal = {
+                        ...col,
+                        renderCell: matchingCustomColumn.renderCell,
+                    } as ColumnDefinition<T>
+                    updatedVisibleColumns.push(newVal)
+                } else {
+                    updatedVisibleColumns.push(col)
+                }
+            })
+
+            setVisibleColumns(updatedVisibleColumns)
+        }, [initialColumns])
+
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(
             () => initialColumns.filter((col) => col.isVisible !== false).length
         )
