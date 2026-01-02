@@ -52,11 +52,11 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             new Set()
         )
 
-        // useEffect(() => {
-        //     if (value !== undefined) {
-        //         setActiveTab(value)
-        //     }
-        // }, [value])
+        useEffect(() => {
+            if (value !== undefined) {
+                setActiveTab(value)
+            }
+        }, [value])
 
         // Update defaultTabs when items change (to include new items with isDefault: true)
         useEffect(() => {
@@ -72,13 +72,12 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             const updatedItems = items.map((item) => {
                 // Preserve isDefault: true for tabs that are in defaultTabs Set
                 if (defaultTabs.has(item.value)) {
-                    // Only set newItem: true for tabs that were newly added from dropdown
+                    // Only set closable: true for tabs that were newly added from dropdown
                     const isNewItem = newlyAddedTabs.has(item.value)
                     return {
                         ...item,
                         isDefault: true,
-                        closable: true,
-                        ...(isNewItem && { newItem: true }),
+                        ...(isNewItem && { closable: true }),
                     }
                 }
                 // Explicitly set isDefault: false for tabs not in defaultTabs Set
@@ -118,38 +117,32 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 
         const handleTabClose = useCallback(
             (tabValue: string) => {
-                // Find the most recent previous tab with isDefault: true BEFORE removing from defaultTabs
-                let previousDefaultTab: (typeof items)[0] | null = null
-                const DefaultTabs = itemsWithDefaultsAtEnd.filter(
-                    (item) => item.isDefault === true
-                )
-
                 if (tabValue === activeTab && items.length > 1) {
-                    // Search in itemsWithDefaultsAtEnd (display order) for the most recent previous default tab
-                    const currentIndexInDisplay = DefaultTabs.findIndex(
-                        (item) => item.value === tabValue
+                    // Get all default tabs (isDefault: true) before removing the closed one
+                    const defaultTabsList = itemsWithDefaultsAtEnd.filter(
+                        (item) => item.isDefault === true
                     )
-                    // Search backwards from current position to find the most recent previous default tab
-                    if (currentIndexInDisplay > 0) {
-                        for (let i = currentIndexInDisplay - 1; i >= 0; i--) {
-                            const item = DefaultTabs[i]
-                            if (defaultTabs.has(item.value)) {
-                                previousDefaultTab = item
-                                break // Found the most recent previous default tab
-                            }
-                        }
-                    }
-                    // Fallback: if not found in display order, use next/previous tab
-                    const currentIndex = DefaultTabs.findIndex(
-                        (item) => item.value === tabValue
-                    )
-                    const nextTab =
-                        previousDefaultTab ||
-                        DefaultTabs[currentIndex + 1] ||
-                        DefaultTabs[currentIndex - 1]
 
-                    if (nextTab) {
-                        handleValueChange(nextTab.value)
+                    // Find the index of the closed tab in the default tabs list
+                    const currentIndex = defaultTabsList.findIndex(
+                        (item) => item.value === tabValue
+                    )
+
+                    // Get the previous default tab
+                    let previousDefaultTab = null
+                    if (currentIndex > 0) {
+                        // Previous default tab exists
+                        previousDefaultTab = defaultTabsList[currentIndex - 1]
+                    } else if (
+                        currentIndex === 0 &&
+                        defaultTabsList.length > 1
+                    ) {
+                        // Closed tab is first default tab, so use the next default tab
+                        previousDefaultTab = defaultTabsList[currentIndex + 1]
+                    }
+
+                    if (previousDefaultTab) {
+                        handleValueChange(previousDefaultTab.value)
                     }
                 }
 

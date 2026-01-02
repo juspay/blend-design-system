@@ -379,7 +379,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             isActive={tabValue === activeTab}
                                             tabsGroupId={tabsGroupId}
                                             closable={
-                                                item.closable && item.newItem
+                                                item.isDefault && item.closable
                                             }
                                             onClose={() =>
                                                 handleTabClose(item.value)

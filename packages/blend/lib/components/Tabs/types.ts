@@ -18,14 +18,13 @@ export type TabItem = {
     value: string
     label: string
     content: ReactNode
-    closable?: boolean
     isDefault?: boolean
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     leftSlot?: ReactNode
     rightSlot?: ReactNode
-    newItem?: boolean
+    closable?: boolean
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {

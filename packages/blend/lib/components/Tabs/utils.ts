@@ -39,8 +39,8 @@ export const processTabsWithConcatenation = (tabs: TabItem[]): TabItem[] => {
                 value: limitedItems.map((item) => item.value).join('_'),
                 label: concatenatedLabel,
                 content: limitedItems[0].content,
-                closable: true,
                 isDefault: false,
+                closable: false,
             })
         } else {
             // Single item - keep as is
@@ -88,8 +88,8 @@ export const createTabsFromSelection = <
             value: item.value,
             label: item.label,
             content,
-            closable: true,
             isDefault: false,
+            closable: false,
         }))
 }
 
