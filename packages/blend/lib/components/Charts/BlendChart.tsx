@@ -1,9 +1,25 @@
+'use client'
+
 import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 import 'highcharts/modules/xrange'
 import { forwardRef, useRef } from 'react'
 import { FOUNDATION_THEME } from '../../tokens'
 import { BlendChartProps, BlendChartReactRefObject } from './BlendChart.types'
+
+// Polyfill CSS.supports for Highcharts compatibility
+if (
+    typeof globalThis !== 'undefined' &&
+    typeof globalThis.CSS === 'undefined'
+) {
+    ;(
+        globalThis as unknown as {
+            CSS: { supports: (property: string, value?: string) => boolean }
+        }
+    ).CSS = {
+        supports: () => true,
+    }
+}
 
 const BlendChart = forwardRef<BlendChartReactRefObject, BlendChartProps>(
     ({ highcharts = Highcharts, ...props }, ref) => {
