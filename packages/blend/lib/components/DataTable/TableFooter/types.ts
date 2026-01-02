@@ -8,6 +8,7 @@ export type TableFooterProps = {
     isLoading?: boolean
     showSkeleton?: boolean
     hasData?: boolean
+    isNarrowContainer?: boolean
     onPageChange: (page: number) => void
     onPageSizeChange: (size: number) => void
 }

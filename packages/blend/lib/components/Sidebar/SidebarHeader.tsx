@@ -19,6 +19,7 @@ type SidebarHeaderProps = {
     sidebarCollapseKey: string
     onToggle: () => void
     sidebarNavId?: string
+    hideToggleButton?: boolean
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -29,6 +30,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     sidebarCollapseKey,
     onToggle,
     sidebarNavId,
+    hideToggleButton = false,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
@@ -104,57 +106,62 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            <Tooltip
-                content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
-            >
-                <PrimitiveButton
-                    type="button"
-                    onClick={onToggle}
-                    data-icon="sidebar-hamburger"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    border="none"
-                    backgroundColor={
-                        tokens.header.toggleButton.backgroundColor.default
-                    }
-                    borderRadius="10px"
-                    cursor="pointer"
-                    padding="9px"
-                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
-                    aria-expanded={isExpanded}
-                    aria-controls={
-                        isExpanded && sidebarNavId ? sidebarNavId : undefined
-                    }
-                    title={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
-                    style={{ transition: 'background-color 0.15s ease' }}
-                    _hover={{
-                        backgroundColor:
-                            tokens.header.toggleButton.backgroundColor.hover,
-                    }}
+            {!hideToggleButton && (
+                <Tooltip
+                    content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                 >
-                    <PanelsTopLeft
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                        size={tokens.header.toggleButton.width}
-                        aria-hidden="true"
-                    />
-                    <span
-                        style={{
-                            position: 'absolute',
-                            width: '1px',
-                            height: '1px',
-                            padding: 0,
-                            margin: '-1px',
-                            overflow: 'hidden',
-                            clip: 'rect(0, 0, 0, 0)',
-                            whiteSpace: 'nowrap',
-                            borderWidth: 0,
+                    <PrimitiveButton
+                        type="button"
+                        onClick={onToggle}
+                        data-icon="sidebar-hamburger"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        border="none"
+                        backgroundColor={
+                            tokens.header.toggleButton.backgroundColor.default
+                        }
+                        borderRadius="10px"
+                        cursor="pointer"
+                        padding="9px"
+                        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                        aria-expanded={isExpanded}
+                        aria-controls={
+                            isExpanded && sidebarNavId
+                                ? sidebarNavId
+                                : undefined
+                        }
+                        title={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                        style={{ transition: 'background-color 0.15s ease' }}
+                        _hover={{
+                            backgroundColor:
+                                tokens.header.toggleButton.backgroundColor
+                                    .hover,
                         }}
                     >
-                        {isExpanded ? 'Collapse' : 'Expand'} sidebar
-                    </span>
-                </PrimitiveButton>
-            </Tooltip>
+                        <PanelsTopLeft
+                            color={FOUNDATION_THEME.colors.gray[600]}
+                            size={tokens.header.toggleButton.width}
+                            aria-hidden="true"
+                        />
+                        <span
+                            style={{
+                                position: 'absolute',
+                                width: '1px',
+                                height: '1px',
+                                padding: 0,
+                                margin: '-1px',
+                                overflow: 'hidden',
+                                clip: 'rect(0, 0, 0, 0)',
+                                whiteSpace: 'nowrap',
+                                borderWidth: 0,
+                            }}
+                        >
+                            {isExpanded ? 'Collapse' : 'Expand'} sidebar
+                        </span>
+                    </PrimitiveButton>
+                </Tooltip>
+            )}
         </Block>
     )
 }
