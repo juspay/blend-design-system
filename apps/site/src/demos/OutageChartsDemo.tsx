@@ -84,11 +84,11 @@ const data = [
 const zones = [
     {
         value: 1766980800000,
-        color: FOUNDATION_THEME.colors.purple[400],
+        color: FOUNDATION_THEME.colors.red[500],
     },
     {
         value: 1766983387000,
-        color: FOUNDATION_THEME.colors.purple[400],
+        color: FOUNDATION_THEME.colors.red[500],
     },
     {
         value: 1766983387000,
@@ -113,15 +113,18 @@ const xRangeData = [
         x: 1766980800000,
         x2: 1766983387000,
         y: 0,
-        color: FOUNDATION_THEME.colors.green[400],
+        color: FOUNDATION_THEME.colors.red[500],
         name: 'Central Bank of India',
+        downTime: '2m 3s',
     },
+
     {
         x: 1766983387000,
         x2: 1766983828000,
         y: 0,
         color: '#FFC560',
         name: 'Central Bank of India',
+        fluctuation: '1.2%',
     },
     {
         x: 1766983828000,
@@ -228,6 +231,7 @@ const OutageChartsDemo = () => {
                 <BlendChartHeader>
                     <Block
                         display="flex"
+                        width={'100% '}
                         alignItems="center"
                         justifyContent="space-between"
                         backgroundColor={FOUNDATION_THEME.colors.gray[25]}
@@ -282,7 +286,6 @@ const OutageChartsDemo = () => {
                 </BlendChartHeader>
 
                 {/* Body */}
-
                 <Block display="flex" flexDirection="column">
                     <Block
                         display="flex"
@@ -318,6 +321,9 @@ const OutageChartsDemo = () => {
                         <BlendChart
                             ref={lineChartRef}
                             options={{
+                                tooltip: {
+                                    enabled: false,
+                                },
                                 xAxis: {
                                     type: 'datetime',
                                 },
@@ -343,6 +349,107 @@ const OutageChartsDemo = () => {
                             options={{
                                 chart: {
                                     height: categories.length * 60 + 40,
+                                },
+                                tooltip: {
+                                    useHTML: true,
+                                    // outside: true,
+                                    formatter: function (this: {
+                                        point: {
+                                            name?: string
+                                            downTime?: string
+                                            fluctuation?: string
+                                            x: number
+                                            x2?: number
+                                            color?: string
+                                        }
+                                    }) {
+                                        const point = this.point
+
+                                        // Format UTC time as "Jan 12, 2025 | 14:32"
+                                        const formatUTCTime = (
+                                            timestamp: number
+                                        ) => {
+                                            const date = new Date(timestamp)
+                                            const months = [
+                                                'Jan',
+                                                'Feb',
+                                                'Mar',
+                                                'Apr',
+                                                'May',
+                                                'Jun',
+                                                'Jul',
+                                                'Aug',
+                                                'Sep',
+                                                'Oct',
+                                                'Nov',
+                                                'Dec',
+                                            ]
+                                            const month =
+                                                months[date.getUTCMonth()]
+                                            const day = date.getUTCDate()
+                                            const year = date.getUTCFullYear()
+                                            const hours = String(
+                                                date.getUTCHours()
+                                            ).padStart(2, '0')
+                                            const minutes = String(
+                                                date.getUTCMinutes()
+                                            ).padStart(2, '0')
+                                            return `${month} ${day}, ${year} | ${hours}:${minutes}`
+                                        }
+
+                                        const startTime = formatUTCTime(point.x)
+                                        const endTime = point.x2
+                                            ? formatUTCTime(point.x2)
+                                            : formatUTCTime(point.x)
+
+                                        return `
+                                            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 8px; border: 1px solid ${FOUNDATION_THEME.colors.gray[150]}; background: ${FOUNDATION_THEME.colors.gray[0]}; box-shadow: ${FOUNDATION_THEME.shadows.sm};">
+                                                <div style="font-size: 13px; font-weight: 600; color: ${FOUNDATION_THEME.colors.gray[900]}">${point.name || 'Bank'}</div>
+                                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                                    <div style="font-size: 12px; font-weight: 400; color: ${FOUNDATION_THEME.colors.gray[500]}">${startTime} - ${endTime}</div>
+                                                    <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                                                      ${point.downTime || point.fluctuation ? `<div style="width: 4px; height: 16px; border-radius: 8px; background-color: ${point.color || '#FFC560'}; flex-shrink: 0;"></div>` : ''}
+                                                        <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                                                            ${
+                                                                point.downTime
+                                                                    ? `<div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                                                                        <div style="font-size: 12px; font-weight: 400; color: ${FOUNDATION_THEME.colors.gray[500]}">Downtime:</div>
+                                                                        <div style="font-size: 16px; font-weight: 600; color: ${FOUNDATION_THEME.colors.gray[900]}">${point.downTime}</div>
+                                                                    </div>`
+                                                                    : ''
+                                                            }
+                                                            ${
+                                                                point.fluctuation
+                                                                    ? `<div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                                                                        <div style="font-size: 12px; font-weight: 400; color: ${FOUNDATION_THEME.colors.gray[500]}">Fluctuation:</div>
+                                                                        <div style="font-size: 16px; font-weight: 600; color: ${FOUNDATION_THEME.colors.gray[900]}">${point.fluctuation}</div>
+                                                                    </div>`
+                                                                    : ''
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `
+                                    },
+                                    position: {
+                                        x: 10,
+                                        y: 10,
+                                    },
+                                    backgroundColor: 'transparent',
+                                    borderColor: 'transparent',
+                                    borderRadius: 0,
+                                    borderWidth: 0,
+                                    shadow: false,
+                                    style: {
+                                        fontSize:
+                                            FOUNDATION_THEME.font.size.body.sm
+                                                .fontSize,
+                                        fontFamily:
+                                            FOUNDATION_THEME.font.family.body,
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[400],
+                                    },
                                 },
                                 yAxis: {
                                     categories: categories,
