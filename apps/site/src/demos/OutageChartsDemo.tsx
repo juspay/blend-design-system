@@ -208,8 +208,6 @@ const updateLineChartOnHover = (
         animation: false,
     }
 
-    console.log({ updateOptions })
-
     series.update(updateOptions as BlendChartSeriesOptionsType, false)
 
     chart.redraw(false)
@@ -298,6 +296,7 @@ const OutageChartsDemo = () => {
                             display="flex"
                             alignItems="center"
                             gap={FOUNDATION_THEME.unit[8]}
+                            position="relative"
                         >
                             <ArrowLeft
                                 size={FOUNDATION_THEME.unit[14]}
@@ -349,10 +348,11 @@ const OutageChartsDemo = () => {
                             options={{
                                 chart: {
                                     height: categories.length * 60 + 40,
+                                    // height: 'auto',
                                 },
                                 tooltip: {
                                     useHTML: true,
-                                    // outside: true,
+                                    outside: true,
                                     formatter: function (this: {
                                         point: {
                                             name?: string
@@ -432,10 +432,25 @@ const OutageChartsDemo = () => {
                                             </div>
                                         `
                                     },
-                                    position: {
-                                        x: 10,
-                                        y: 10,
-                                    },
+                                    // positioner: function () {
+                                    //     const chart = (
+                                    //         this as unknown as {
+                                    //             chart: {
+                                    //                 plotLeft?: number
+                                    //                 plotTop?: number
+                                    //                 plotWidth?: number
+                                    //                 plotHeight?: number
+                                    //             }
+                                    //         }
+                                    //     ).chart
+
+                                    //     console.log({ chart })
+
+                                    //     return {
+                                    //         x: 300,
+                                    //         y: -300,
+                                    //     }
+                                    // },
                                     backgroundColor: 'transparent',
                                     borderColor: 'transparent',
                                     borderRadius: 0,
@@ -449,6 +464,8 @@ const OutageChartsDemo = () => {
                                             FOUNDATION_THEME.font.family.body,
                                         color: FOUNDATION_THEME.colors
                                             .gray[400],
+                                        position: 'absolute',
+                                        zIndex: 100000,
                                     },
                                 },
                                 yAxis: {
