@@ -48,8 +48,12 @@ export const getSidebarWidth = (
     isExpanded: boolean,
     isHovering: boolean,
     hasLeftPanel: boolean,
-    tokens: SidebarTokenType
+    tokens: SidebarTokenType,
+    iconOnlyMode = false
 ): string => {
+    if (iconOnlyMode) {
+        return String(tokens.maxWidth.iconOnly)
+    }
     if (isExpanded || isHovering) {
         return hasLeftPanel
             ? String(tokens.maxWidth.withLeftPanel)
