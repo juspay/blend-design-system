@@ -1079,7 +1079,7 @@ export const createSearchConfig = (
     caseSensitive = false,
     searchFields?: string[]
 ): SearchConfig => ({
-    query: query.trim(),
+    query: query,
     caseSensitive,
     searchFields,
 })
