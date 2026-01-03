@@ -11,7 +11,6 @@ const BlendChartContainer = ({ children }: BlendChartContainerProps) => {
             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
             boxShadow={FOUNDATION_THEME.shadows.sm}
             width="100%"
-            height="100%"
             overflow="hidden"
         >
             {children}

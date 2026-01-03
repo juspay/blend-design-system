@@ -213,6 +213,30 @@ const updateLineChartOnHover = (
     chart.redraw(false)
 }
 
+const formatUTCTime = (timestamp: number) => {
+    const date = new Date(timestamp)
+    const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+    ]
+    const month = months[date.getUTCMonth()]
+    const day = date.getUTCDate()
+    const year = date.getUTCFullYear()
+    const hours = String(date.getUTCHours()).padStart(2, '0')
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0')
+    return `${month} ${day}, ${year} | ${hours}:${minutes}`
+}
+
 const OutageChartsDemo = () => {
     const lineChartRef = useRef<BlendChartReactRefObject | null>(null)
 
@@ -343,7 +367,7 @@ const OutageChartsDemo = () => {
                         />
                     </Block>
 
-                    <Block>
+                    <Block className="px-5">
                         <BlendChart
                             options={{
                                 chart: {
@@ -364,39 +388,6 @@ const OutageChartsDemo = () => {
                                         }
                                     }) {
                                         const point = this.point
-
-                                        // Format UTC time as "Jan 12, 2025 | 14:32"
-                                        const formatUTCTime = (
-                                            timestamp: number
-                                        ) => {
-                                            const date = new Date(timestamp)
-                                            const months = [
-                                                'Jan',
-                                                'Feb',
-                                                'Mar',
-                                                'Apr',
-                                                'May',
-                                                'Jun',
-                                                'Jul',
-                                                'Aug',
-                                                'Sep',
-                                                'Oct',
-                                                'Nov',
-                                                'Dec',
-                                            ]
-                                            const month =
-                                                months[date.getUTCMonth()]
-                                            const day = date.getUTCDate()
-                                            const year = date.getUTCFullYear()
-                                            const hours = String(
-                                                date.getUTCHours()
-                                            ).padStart(2, '0')
-                                            const minutes = String(
-                                                date.getUTCMinutes()
-                                            ).padStart(2, '0')
-                                            return `${month} ${day}, ${year} | ${hours}:${minutes}`
-                                        }
-
                                         const startTime = formatUTCTime(point.x)
                                         const endTime = point.x2
                                             ? formatUTCTime(point.x2)
@@ -497,9 +488,13 @@ const OutageChartsDemo = () => {
                                             return tagHTML
                                         },
                                     },
+                                    gridLineWidth: 0,
                                 },
                                 xAxis: {
                                     type: 'datetime',
+                                    labels: {
+                                        enabled: false,
+                                    },
                                 },
                                 series: [
                                     {
@@ -541,6 +536,95 @@ const OutageChartsDemo = () => {
                         />
                     </Block>
                 </Block>
+            </BlendChartContainer>
+
+            {/* Bar Chart Demo */}
+
+            <BlendChartContainer>
+                {/* header */}
+                <BlendChartHeader>
+                    <Block
+                        display="flex"
+                        width={'100% '}
+                        alignItems="center"
+                        justifyContent="space-between"
+                        backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+                    >
+                        <Block>
+                            <SingleSelect
+                                placeholder="Select a chart"
+                                items={[]}
+                                selected="Transaction Success Rate"
+                                onSelect={() => {}}
+                                // inline={true}
+                                size={SelectMenuSize.SMALL}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                            />
+                        </Block>
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={FOUNDATION_THEME.unit[20]}
+                        >
+                            <SingleSelect
+                                placeholder="Select a chart"
+                                items={[]}
+                                selected="Top 5"
+                                onSelect={() => {}}
+                                // inline={true}
+                                size={SelectMenuSize.SMALL}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                            />
+                            <SingleSelect
+                                placeholder="Select a chart"
+                                items={[]}
+                                selected="Hourly"
+                                onSelect={() => {}}
+                                // inline={true}
+                                size={SelectMenuSize.SMALL}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                            />
+                            <Block
+                                height={FOUNDATION_THEME.unit[20]}
+                                width={FOUNDATION_THEME.unit[20]}
+                                contentCentered
+                                onClick={() => {}}
+                            >
+                                <EllipsisVerticalIcon
+                                    size={FOUNDATION_THEME.unit[20]}
+                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                />
+                            </Block>
+                        </Block>
+                    </Block>
+                </BlendChartHeader>
+
+                {/* Body */}
+                <BlendChart
+                    options={{
+                        xAxis: {
+                            type: 'datetime',
+                            title: {
+                                text: 'Time',
+                            },
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Value',
+                            },
+                        },
+                        series: [
+                            {
+                                type: 'column',
+                                data: data,
+                                color: FOUNDATION_THEME.colors.primary[500],
+                                marker: {
+                                    enabled: false,
+                                },
+                            },
+                        ],
+                    }}
+                />
             </BlendChartContainer>
         </div>
     )
