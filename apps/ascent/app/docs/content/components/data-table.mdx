@@ -193,15 +193,20 @@ const columns: ColumnDefinition<DataRow>[] = [
             // Return delta field when sortType is 'delta'
             return sortType === 'delta' ? 'delta_total_volume' : 'total_volume'
         },
-        // Optional: Format values before comparison
-        sortValueFormatter: (value) => {
-            // Extract numeric value from formatted string if needed
-            if (typeof value === 'string') {
-                const num = parseFloat(value.replace(/[^\d.-]/g, ''))
-                return isNaN(num) ? 0 : num
-            }
-            return value
-        },
+    // Optional: Format values before comparison
+    // sortType parameter allows different formatting for delta vs primary sorting
+    sortValueFormatter: (value, row, column, sortType) => {
+      // For delta sorting, values might already be numbers
+      if (sortType === 'delta') {
+        return typeof value === 'number' ? value : 0
+      }
+      // For primary sorting, extract numeric value from formatted string
+      if (typeof value === 'string') {
+        const num = parseFloat(value.replace(/[^\d.-]/g, ''))
+        return isNaN(num) ? 0 : num
+      }
+      return value
+    },
     },
 ]
 ```
@@ -1346,13 +1351,13 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'sortValueFormatter',
                 hintText:
-                    'Optional function to format/transform values before comparison during sorting. Receives value (the raw value from the data row), row (the entire row data), and column (the column definition). Returns the formatted value to use for comparison. Useful for custom sorting logic, such as extracting numbers from formatted strings (e.g., "INR 276" -> 276) or parsing percentage strings (e.g., "12.5%" -> 12.5). If the formatter throws an error, the original value is used as a fallback.',
+                    'Optional function to format/transform values before comparison during sorting. Receives value (the raw value from the data row), row (the entire row data), column (the column definition), and sortType (optional sort type identifier like "primary", "delta", "absolute" - same value passed to getSortField). The sortType parameter allows you to apply different formatting logic for delta sorting vs primary sorting. For example, delta values might already be numbers while primary values might be formatted strings. Returns the formatted value to use for comparison. Useful for custom sorting logic, such as extracting numbers from formatted strings (e.g., "INR 276" -> 276) or parsing percentage strings (e.g., "12.5%" -> 12.5). If the formatter throws an error, the original value is used as a fallback.',
             },
             {
                 content:
-                    '(value: unknown, row: T, column: ColumnDefinition<T>) => unknown',
+                    '(value: unknown, row: T, column: ColumnDefinition<T>, sortType?: string) => unknown',
                 hintText:
-                    'Function that transforms values before sorting comparison',
+                    'Function that transforms values before sorting comparison, with sortType context to differentiate delta vs primary sorting',
             },
             { content: '' },
         ],

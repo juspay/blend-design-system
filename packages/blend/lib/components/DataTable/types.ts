@@ -163,13 +163,20 @@ export type BaseColumnDefinition<T> = {
     /**
      * Optional function to format/transform values before comparison during sorting.
      * Useful for custom sorting logic (e.g., extracting numbers from formatted strings like "INR 276").
+     * The sortType parameter allows you to apply different formatting logic for delta sorting vs primary sorting.
      * @param value - The raw value from the data row
      * @param row - The entire row data
      * @param column - The column definition
+     * @param sortType - Optional sort type identifier (e.g., 'primary', 'delta', 'absolute') - same value passed to getSortField. Use this to determine if delta sorting is active and apply appropriate formatting.
      * @returns The formatted value to use for comparison
      * @example
-     * // Extract numeric value from formatted currency string
-     * sortValueFormatter: (value) => {
+     * // Different formatting for delta vs primary sorting
+     * sortValueFormatter: (value, row, column, sortType) => {
+     *   // For delta sorting, values might already be numbers
+     *   if (sortType === 'delta') {
+     *     return typeof value === 'number' ? value : 0
+     *   }
+     *   // For primary sorting, extract numeric value from formatted string
      *   if (typeof value === 'string') {
      *     const num = parseFloat(value.replace(/[^\d.-]/g, ''))
      *     return isNaN(num) ? 0 : num
@@ -180,7 +187,8 @@ export type BaseColumnDefinition<T> = {
     sortValueFormatter?: (
         value: unknown,
         row: T,
-        column: ColumnDefinition<T>
+        column: ColumnDefinition<T>,
+        sortType?: string
     ) => unknown
 }
 

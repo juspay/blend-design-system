@@ -2026,8 +2026,10 @@ const DataTableDemo = () => {
             isDeltaSortable: true,
             getSortField: (sortType) =>
                 sortType === 'delta' ? 'delta_revenue' : 'revenue',
-            sortValueFormatter: (value) => {
-                // Extract numeric value from formatted currency string (e.g., "$12,500.00" -> 12500)
+            sortValueFormatter: (value, _row, _column, sortType) => {
+                if (sortType === 'delta') {
+                    return typeof value === 'number' ? value : 0
+                }
                 if (typeof value === 'string') {
                     const num = parseFloat(
                         value.replace(/[^\d.-]/g, '').replace(/,/g, '')
@@ -2049,8 +2051,10 @@ const DataTableDemo = () => {
             isDeltaSortable: true,
             getSortField: (sortType) =>
                 sortType === 'delta' ? 'delta_growthRate' : 'growthRate',
-            sortValueFormatter: (value) => {
-                // Extract numeric value from percentage string (e.g., "12.5%" -> 12.5)
+            sortValueFormatter: (value, _row, _column, sortType) => {
+                if (sortType === 'delta') {
+                    return typeof value === 'number' ? value : 0
+                }
                 if (typeof value === 'string') {
                     const num = parseFloat(value.replace('%', ''))
                     return isNaN(num) ? 0 : num

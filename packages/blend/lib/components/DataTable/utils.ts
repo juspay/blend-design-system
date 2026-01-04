@@ -688,8 +688,18 @@ export const sortData = <T extends Record<string, unknown>>(
 
         if (column?.sortValueFormatter) {
             try {
-                aValue = column.sortValueFormatter(aValue, a, column)
-                bValue = column.sortValueFormatter(bValue, b, column)
+                aValue = column.sortValueFormatter(
+                    aValue,
+                    a,
+                    column,
+                    sortConfig.sortType
+                )
+                bValue = column.sortValueFormatter(
+                    bValue,
+                    b,
+                    column,
+                    sortConfig.sortType
+                )
             } catch (error) {
                 console.warn(
                     'sortValueFormatter error, using original values:',
