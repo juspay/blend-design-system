@@ -193,20 +193,20 @@ const columns: ColumnDefinition<DataRow>[] = [
             // Return delta field when sortType is 'delta'
             return sortType === 'delta' ? 'delta_total_volume' : 'total_volume'
         },
-    // Optional: Format values before comparison
-    // sortType parameter allows different formatting for delta vs primary sorting
-    sortValueFormatter: (value, row, column, sortType) => {
-      // For delta sorting, values might already be numbers
-      if (sortType === 'delta') {
-        return typeof value === 'number' ? value : 0
-      }
-      // For primary sorting, extract numeric value from formatted string
-      if (typeof value === 'string') {
-        const num = parseFloat(value.replace(/[^\d.-]/g, ''))
-        return isNaN(num) ? 0 : num
-      }
-      return value
-    },
+        // Optional: Format values before comparison
+        // sortType parameter allows different formatting for delta vs primary sorting
+        sortValueFormatter: (value, row, column, sortType) => {
+            // For delta sorting, values might already be numbers
+            if (sortType === 'delta') {
+                return typeof value === 'number' ? value : 0
+            }
+            // For primary sorting, extract numeric value from formatted string
+            if (typeof value === 'string') {
+                const num = parseFloat(value.replace(/[^\d.-]/g, ''))
+                return isNaN(num) ? 0 : num
+            }
+            return value
+        },
     },
 ]
 ```
