@@ -1,5 +1,6 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getTagLightTokens = (foundationToken: FoundationTokenType) => {
     return {
         sm: {

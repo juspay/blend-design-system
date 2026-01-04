@@ -106,6 +106,8 @@ import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
+import OutageChartsDemo from './OutageChartsDemo'
+import ChartDemoV2 from './ChartDemoV2'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -166,6 +168,8 @@ const SidebarDemo = () => {
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
+        | 'outageCharts'
+        | 'chartDemoV2'
     >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -426,6 +430,8 @@ const SidebarDemo = () => {
                 return <DataTableDemo />
             case 'charts':
                 return <ChartsDemo />
+            case 'outageCharts':
+                return <OutageChartsDemo />
             case 'popover':
                 return <PopoverDemo />
             case 'multiValueInput':
@@ -452,6 +458,8 @@ const SidebarDemo = () => {
                 return <CodeEditorDemo />
             case 'formElements':
                 return <FormElementsDemo />
+            case 'chartDemoV2':
+                return <ChartDemoV2 />
             default:
                 return (
                     <div className="p-8">
@@ -959,6 +967,22 @@ const SidebarDemo = () => {
                         }
                     },
                     showOnMobile: true,
+                },
+                {
+                    label: 'Chart Demo V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartDemoV2',
+                    onClick: () => setActiveComponent('chartDemoV2'),
+                },
+                {
+                    label: 'Outage Charts',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageCharts',
+                    onClick: () => setActiveComponent('outageCharts'),
                 },
                 {
                     label: 'Stat Card',
