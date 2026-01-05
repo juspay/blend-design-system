@@ -81,7 +81,6 @@ const StackedLegends: React.FC<{
                     <PrimitiveButton
                         type="button"
                         key={key}
-                        data-chart-legend={key}
                         aria-label={`Toggle ${key} series visibility`}
                         aria-pressed={selectedKeys.includes(key)}
                         onClick={() => handleLegendClick(key)}
@@ -120,10 +119,12 @@ const StackedLegends: React.FC<{
                             height={FOUNDATION_THEME.unit[12]}
                             borderRadius={FOUNDATION_THEME.border.radius[4]}
                             flexShrink={0}
-                            data-color={colors[index]}
+                            data-element="chart-legend-color"
+                            data-id={colors[index]}
                         />
                         <Text
-                            data-chart-legend-text={key}
+                            data-element="chart-legend-text"
+                            data-id={key}
                             fontSize={legendTokens.item.fontSize}
                             fontWeight={legendTokens.item.fontWeight}
                             color={
@@ -337,7 +338,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                         <PrimitiveButton
                             type="button"
                             key={dataKey}
-                            data-chart-legend={dataKey}
+                            data-element="chart-legend"
+                            data-id={dataKey}
                             aria-label={`Toggle ${dataKey} series visibility`}
                             aria-pressed={selectedKeys.includes(dataKey)}
                             onClick={() => handleLegendClick(dataKey)}
@@ -376,7 +378,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                 borderRadius={FOUNDATION_THEME.border.radius[4]}
                                 flexShrink={0}
                                 backgroundColor={colors[index]?.color}
-                                data-color={colors[index]?.color}
+                                data-element="chart-legend-color"
+                                data-id={colors[index]?.color}
                             />
                             {legend.total !== undefined ? (
                                 <Block
@@ -391,7 +394,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                         }
                                         truncate={true}
                                         color={legendTokens.item.color.default}
-                                        data-chart-legend-text={dataKey}
+                                        data-element="chart-legend-text"
+                                        data-id={dataKey}
                                     >
                                         {dataKey}
                                     </Text>
@@ -420,7 +424,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     fontWeight={legendTokens.item.fontWeight}
                                     truncate={true}
                                     color={legendTokens.item.color.default}
-                                    data-chart-legend-text={dataKey}
+                                    data-element="chart-legend-text"
+                                    data-id={dataKey}
                                 >
                                     {dataKey}
                                 </Text>
@@ -533,9 +538,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         )
                                                     }
                                                     onBlur={handleLegendLeave}
-                                                    data-chart-legend-text={
-                                                        dataKey
-                                                    }
+                                                    data-element="chart-legend-text"
+                                                    data-id={dataKey}
                                                     style={{
                                                         padding: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
                                                         fontSize:
@@ -595,6 +599,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         data-color={
                                                             itemColor?.color
                                                         }
+                                                        data-element="chart-legend-color"
+                                                        data-id={itemColor}
                                                     />
                                                     {legend.total !==
                                                     undefined ? (

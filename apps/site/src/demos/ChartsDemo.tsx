@@ -6001,7 +6001,6 @@ const ChartDemo = () => {
                     variant: 'pulse',
                 }}
                 colors={customColors}
-                data-chart-segment="Chart-1"
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
                 slot1={<div>Hello</div>}
