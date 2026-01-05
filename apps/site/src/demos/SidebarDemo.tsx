@@ -108,6 +108,7 @@ import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 import OutageChartsDemo from './OutageChartsDemo'
 import ChartDemoV2 from './ChartDemoV2'
+import TextInputAutofillTest from './TextInputAutofillTest'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -170,7 +171,8 @@ const SidebarDemo = () => {
         | 'formElements'
         | 'outageCharts'
         | 'chartDemoV2'
-    >('formElements')
+        | 'textInputAutofillTest'
+    >('textInputAutofillTest')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -460,6 +462,8 @@ const SidebarDemo = () => {
                 return <FormElementsDemo />
             case 'chartDemoV2':
                 return <ChartDemoV2 />
+            case 'textInputAutofillTest':
+                return <TextInputAutofillTest />
             default:
                 return (
                     <div className="p-8">
@@ -695,6 +699,14 @@ const SidebarDemo = () => {
             label: 'Inputs',
             isCollapsible: false,
             items: [
+                {
+                    label: 'Text Input Autofill Test',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTest',
+                    onClick: () => setActiveComponent('textInputAutofillTest'),
+                },
                 {
                     label: 'Text Input777',
                     leftSlot: (

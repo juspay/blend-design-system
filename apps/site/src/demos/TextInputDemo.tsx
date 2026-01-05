@@ -25,6 +25,8 @@ const InputDemo = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [isFocused, setIsFocused] = useState(false)
 
+    const [testValue, setTestValue] = useState('')
+
     console.log({ isFocused, length: value.length })
 
     useEffect(() => {
@@ -231,15 +233,18 @@ const InputDemo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
-                            Required Field
+                            Required Field test
                         </h3>
                         <TextInput
+                            size={TextInputSize.LARGE}
                             label="Username"
-                            value=""
-                            onChange={() => {}}
+                            value={testValue}
+                            onChange={(e) => {
+                                setTestValue(e.target.value)
+                            }}
                             placeholder="Enter username"
-                            required
-                            leftSlot={<User size={16} />}
+                            // required
+                            // leftSlot={<User size={16} />}
                         />
                     </div>
 
