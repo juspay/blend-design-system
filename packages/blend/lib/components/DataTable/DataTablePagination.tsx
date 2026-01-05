@@ -17,6 +17,7 @@ type DataTablePaginationProps = {
     pageSizeOptions: number[]
     isLoading?: boolean
     hasData?: boolean
+    isNarrowContainer?: boolean
     onPageChange: (page: number) => void
     onPageSizeChange: (pageSize: number) => void
 }
@@ -28,12 +29,13 @@ export function DataTablePagination({
     pageSizeOptions,
     isLoading = false,
     hasData = true,
+    isNarrowContainer = false,
     onPageChange,
     onPageSizeChange,
 }: DataTablePaginationProps) {
     const tableToken = useResponsiveTokens('TABLE') as TableTokenType
     const { breakPointLabel } = useBreakpoints()
-    const isMobile = breakPointLabel === 'sm'
+    const isMobile = isNarrowContainer || breakPointLabel === 'sm'
     const PAGINATION_ITEM_HEIGHT = 33
 
     const totalPages = Math.ceil(totalRows / pageSize)

@@ -405,6 +405,12 @@ importers:
             framer-motion:
                 specifier: ^12.23.24
                 version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+            highcharts:
+                specifier: ^12.4.0
+                version: 12.4.0
+            highcharts-react-official:
+                specifier: ^3.2.3
+                version: 3.2.3(highcharts@12.4.0)(react@19.2.3)
             lucide-react:
                 specifier: ^0.511.0
                 version: 0.511.0(react@19.2.3)
@@ -7821,6 +7827,21 @@ packages:
                 integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==,
             }
         hasBin: true
+
+    highcharts-react-official@3.2.3:
+        resolution:
+            {
+                integrity: sha512-2gL8bVGe6Pf75tSe6IB5Ucd0nIOJX7ZrpttQBZVrjN2J9StdVZ12aOinXHIOFvlc6EzP8CbN13WS8NUq+9mptA==,
+            }
+        peerDependencies:
+            highcharts: '>=6.0.0'
+            react: '>=16.8.0'
+
+    highcharts@12.4.0:
+        resolution:
+            {
+                integrity: sha512-o6UxxfChSUrvrZUbWrAuqL1HO/+exhAUPcZY6nnqLsadZQlnP16d082sg7DnXKZCk1gtfkyfkp6g3qkIZ9miZg==,
+            }
 
     hoist-non-react-statics@3.3.2:
         resolution:
@@ -16856,7 +16877,7 @@ snapshots:
             eslint: 9.39.2(jiti@2.6.1)
             eslint-import-resolver-node: 0.3.9
             eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-react-hooks: 5.2.0(eslint@9.39.2(jiti@2.6.1))
@@ -16886,7 +16907,7 @@ snapshots:
             tinyglobby: 0.2.15
             unrs-resolver: 1.11.1
         optionalDependencies:
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
         transitivePeerDependencies:
             - supports-color
 
@@ -16901,7 +16922,7 @@ snapshots:
         transitivePeerDependencies:
             - supports-color
 
-    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1)):
+    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
         dependencies:
             '@rtsao/scc': 1.1.0
             array-includes: 3.1.9
@@ -17633,6 +17654,13 @@ snapshots:
             '@types/hast': 3.0.4
 
     he@1.2.0: {}
+
+    highcharts-react-official@3.2.3(highcharts@12.4.0)(react@19.2.3):
+        dependencies:
+            highcharts: 12.4.0
+            react: 19.2.3
+
+    highcharts@12.4.0: {}
 
     hoist-non-react-statics@3.3.2:
         dependencies:

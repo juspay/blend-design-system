@@ -12,7 +12,6 @@ import {
     FloatingShortcutsButton,
     TableOfContents,
 } from '../index'
-import { Snackbar } from '@juspay/blend-design-system'
 import {
     DocumentIcon,
     BlogIcon,
@@ -27,6 +26,23 @@ import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectW
 import { Footer } from '@/app/landing/components/footer/Footer'
 import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
 import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
+
+// Create a wrapper component for Snackbar that loads dynamically on the client
+const DynamicSnackbar = () => {
+    const [BlendLib, setBlendLib] = React.useState<{
+        Snackbar: React.ComponentType
+    } | null>(null)
+
+    React.useEffect(() => {
+        import('@juspay/blend-design-system').then((mod) => {
+            setBlendLib({ Snackbar: mod.Snackbar })
+        })
+    }, [])
+
+    if (!BlendLib) return null
+    const { Snackbar } = BlendLib
+    return <Snackbar />
+}
 
 export interface SharedDocLayoutProps {
     /** Title displayed in the navigation bar */
@@ -253,7 +269,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                 </div>
             </main>
             {/* Global Snackbar for all doc pages */}
-            <Snackbar />
+            <DynamicSnackbar />
         </GlobalKeyboardNavigationProvider>
     )
 }

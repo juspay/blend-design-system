@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
     getAllBlogPosts,
     getFeaturedBlogPosts,
@@ -12,34 +12,25 @@ import {
 import { BLOG_CONFIG } from '@/blog/config'
 
 /**
- * Blog page component with optimized performance
+ * Blog page component - server component for static export
  * @returns React component
  */
 export default function BlogPage() {
-    // Memoize expensive operations
-    const allPosts = useMemo(() => getAllBlogPosts(), [])
-    const featuredPosts = useMemo(() => getFeaturedBlogPosts(), [])
+    // Fetch data at build time (no need for useMemo in server components)
+    const allPosts = getAllBlogPosts()
+    const featuredPosts = getFeaturedBlogPosts()
 
-    // Memoize filtered posts to prevent unnecessary recalculations
-    const regularPosts = useMemo(
-        () => allPosts.filter((post: BlogPost) => !post.featured),
-        [allPosts]
-    )
+    // Filter regular posts
+    const regularPosts = allPosts.filter((post: BlogPost) => !post.featured)
 
-    // Memoize title calculation
-    const gridTitle = useMemo(
-        () =>
-            featuredPosts.length > 0
-                ? BLOG_CONFIG.latestSectionTitle
-                : BLOG_CONFIG.allSectionTitle,
-        [featuredPosts.length]
-    )
+    // Calculate title
+    const gridTitle =
+        featuredPosts.length > 0
+            ? BLOG_CONFIG.latestSectionTitle
+            : BLOG_CONFIG.allSectionTitle
 
-    // Memoize whether to show featured section
-    const showFeaturedSection = useMemo(
-        () => featuredPosts.length > 0,
-        [featuredPosts.length]
-    )
+    // Check whether to show featured section
+    const showFeaturedSection = featuredPosts.length > 0
 
     return (
         <div
