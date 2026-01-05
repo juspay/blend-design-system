@@ -199,8 +199,11 @@ const TextInput = ({
         const input = inputRef.current
         if (!input) return
 
+        if (input.value && input.value.length > 0) {
+            setIsAutofilled(true)
+        }
+
         const handleAnimationStart = (e: AnimationEvent) => {
-            console.log('animationName', e.animationName)
             if (e.animationName === 'blend-autofill-start') {
                 setIsAutofilled(true)
             }
@@ -213,15 +216,6 @@ const TextInput = ({
 
         return () => {
             input.removeEventListener('animationstart', handleAnimationStart)
-        }
-    }, [])
-
-    useEffect(() => {
-        const input = inputRef.current
-        if (!input) return
-
-        if (input.value && input.value.length > 0) {
-            setIsAutofilled(true)
         }
     }, [])
 
