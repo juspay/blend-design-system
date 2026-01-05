@@ -232,6 +232,11 @@ const [files, setFiles] = useState<File[]>([]);
             options: Object.values(UploadState),
             description: 'Current upload state',
         },
+        onStateChange: {
+            action: 'stateChanged',
+            description:
+                'Callback that provides the current upload state information. Useful for controlling external submit buttons based on error/success state.',
+        },
     },
     tags: ['autodocs'],
 }

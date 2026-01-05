@@ -1,4 +1,11 @@
-import React, { useRef, useState, useCallback, useMemo, useId } from 'react'
+import React, {
+    useRef,
+    useState,
+    useCallback,
+    useMemo,
+    useId,
+    useEffect,
+} from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Tooltip, TooltipSize } from '../Tooltip'
@@ -65,6 +72,7 @@ const Upload: React.FC<UploadProps> = ({
     isDragReject: controlledIsDragReject,
     validator,
     progressSpeed = 200,
+    onStateChange,
     ...rest
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
@@ -178,7 +186,12 @@ const Upload: React.FC<UploadProps> = ({
 
     const handleFileRemoveWithOnChange = useCallback(
         (fileId: string) => {
-            if (controlledValue && onChange) {
+            // Check if this is a failed file
+            const isFailedFile = failedFiles.some((f) => f.id === fileId)
+
+            if (controlledValue && onChange && !isFailedFile) {
+                // Only handle successful files in controlled mode
+                // Failed files are not part of the controlled value
                 const currentFiles = getFilesFromValue(controlledValue)
                 const fileToRemove = uploadedFiles.find((f) => f.id === fileId)
                 if (fileToRemove) {
@@ -191,6 +204,8 @@ const Upload: React.FC<UploadProps> = ({
                     onChange(formValue)
                 }
             } else {
+                // For failed files or when not using controlled mode, use internal handler
+                // This ensures failed files can always be removed
                 handleInternalFileRemove(fileId)
             }
             onFileRemove?.(fileId)
@@ -200,6 +215,7 @@ const Upload: React.FC<UploadProps> = ({
             onChange,
             getFilesFromValue,
             uploadedFiles,
+            failedFiles,
             multiple,
             handleInternalFileRemove,
             onFileRemove,
@@ -239,25 +255,27 @@ const Upload: React.FC<UploadProps> = ({
                 }
             })
 
-            if (onChange && acceptedFiles.length > 0) {
-                if (multiple) {
-                    const existingFiles = getFilesFromValue(controlledValue)
-                    const allFiles = [...existingFiles, ...acceptedFiles]
-                    onChange(allFiles)
-                } else {
-                    onChange(acceptedFiles[0] || null)
+            if (rejectedFiles.length > 0) {
+                onDropRejected?.(rejectedFiles)
+            }
+
+            if (acceptedFiles.length > 0) {
+                if (onChange) {
+                    if (multiple) {
+                        const existingFiles = getFilesFromValue(controlledValue)
+                        const allFiles = [...existingFiles, ...acceptedFiles]
+                        onChange(allFiles)
+                    } else {
+                        onChange(acceptedFiles[0] || null)
+                    }
                 }
+                onDropAccepted?.(acceptedFiles)
+            } else if (rejectedFiles.length > 0 && onChange && !multiple) {
+                onChange(null)
             }
 
             if (finalOnDrop) {
                 finalOnDrop(acceptedFiles, rejectedFiles)
-            } else {
-                if (acceptedFiles.length > 0) {
-                    onDropAccepted?.(acceptedFiles)
-                }
-                if (rejectedFiles.length > 0) {
-                    onDropRejected?.(rejectedFiles)
-                }
             }
         },
         [
@@ -303,6 +321,81 @@ const Upload: React.FC<UploadProps> = ({
         !!errorText ||
         (uploadContent.hasErrorFiles && uploadContent.errorFiles.length > 0)
     const errorId = hasError ? `${uploadId}-error` : undefined
+
+    const errorFileIdsString =
+        uploadContent.errorFiles
+            .map((f) => f.id)
+            .sort()
+            .join(',') || ''
+    const successfulFileIdsString =
+        uploadContent.successfulFiles
+            .map((f) => f.id)
+            .sort()
+            .join(',') || ''
+
+    const prevStateInfoRef = useRef<{
+        state: UploadState
+        hasError: boolean
+        hasSuccess: boolean
+        hasUploading: boolean
+        errorFileIds: string
+        successfulFileIds: string
+    } | null>(null)
+
+    useEffect(() => {
+        if (!onStateChange) return
+
+        const prev = prevStateInfoRef.current
+        const currentHasSuccess =
+            uploadContent.isSuccess &&
+            uploadContent.hasSuccessfulFiles &&
+            !hasError
+        const currentHasUploading =
+            uploadContent.hasUploadingFiles &&
+            uploadContent.uploadingFile !== null
+
+        const hasChanged =
+            !prev ||
+            prev.state !== state ||
+            prev.hasError !== hasError ||
+            prev.hasSuccess !== currentHasSuccess ||
+            prev.hasUploading !== currentHasUploading ||
+            prev.errorFileIds !== errorFileIdsString ||
+            prev.successfulFileIds !== successfulFileIdsString
+
+        if (hasChanged) {
+            prevStateInfoRef.current = {
+                state,
+                hasError,
+                hasSuccess: currentHasSuccess,
+                hasUploading: currentHasUploading,
+                errorFileIds: errorFileIdsString,
+                successfulFileIds: successfulFileIdsString,
+            }
+            try {
+                onStateChange({
+                    state,
+                    hasError,
+                    hasSuccess: currentHasSuccess,
+                    hasUploading: currentHasUploading,
+                    errorFiles: uploadContent.errorFiles || [],
+                    successfulFiles: uploadContent.successfulFiles || [],
+                })
+            } catch (error) {
+                console.error('Error in onStateChange callback:', error)
+            }
+        }
+    }, [
+        onStateChange,
+        state,
+        hasError,
+        uploadContent.isSuccess,
+        uploadContent.hasSuccessfulFiles,
+        uploadContent.hasUploadingFiles,
+        uploadContent.uploadingFile,
+        errorFileIdsString,
+        successfulFileIdsString,
+    ])
 
     const renderContent = () => {
         if (uploadContent.hasUploadingFiles && uploadContent.uploadingFile) {

@@ -407,6 +407,20 @@ const handleDrop = async (acceptedFiles: File[]) => {
             { content: '' },
             { content: '200' },
         ],
+        [
+            {
+                content: 'onStateChange',
+                hintText:
+                    'Callback that provides the current upload state information. Useful for controlling external submit buttons based on error/success state. Receives an object with state, hasError, hasSuccess, hasUploading, errorFiles, and successfulFiles.',
+            },
+            {
+                content:
+                    '(stateInfo: { state: UploadState, hasError: boolean, hasSuccess: boolean, hasUploading: boolean, errorFiles: UploadedFileWithStatus[], successfulFiles: UploadedFileWithStatus[] }) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

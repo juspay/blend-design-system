@@ -75,6 +75,19 @@ export type UploadProps = {
     onDropRejected?: (fileRejections: FileRejection[]) => void
     onFileRemove?: (fileId: string) => void
     onReplaceFile?: () => void
+    /**
+     * Callback that provides the current upload state information.
+     * Useful for controlling external submit buttons based on error/success state.
+     * @param stateInfo - Object containing current state, hasError, hasSuccess, etc.
+     */
+    onStateChange?: (stateInfo: {
+        state: UploadState
+        hasError: boolean
+        hasSuccess: boolean
+        hasUploading: boolean
+        errorFiles: UploadedFileWithStatus[]
+        successfulFiles: UploadedFileWithStatus[]
+    }) => void
 
     // Visual state - controlled by consumer
     isDragActive?: boolean
