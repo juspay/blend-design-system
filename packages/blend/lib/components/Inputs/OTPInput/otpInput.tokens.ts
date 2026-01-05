@@ -156,9 +156,9 @@ export const getOTPInputTokens = (
                         error: foundationToken.colors.gray[0],
                     },
                     color: {
-                        default: foundationToken.colors.gray[800],
-                        hover: foundationToken.colors.gray[800],
-                        focus: foundationToken.colors.gray[800],
+                        default: foundationToken.colors.gray[700],
+                        hover: foundationToken.colors.gray[700],
+                        focus: foundationToken.colors.gray[700],
                         error: foundationToken.colors.red[800],
                         disabled: foundationToken.colors.gray[300],
                     },

@@ -365,11 +365,11 @@ const StyledTextarea = styled.textarea.withConfig({
 
     const placeholderStyle = props.placeholderStyles
         ? {
-              '::placeholder': props.placeholderStyles,
-              '::-webkit-input-placeholder': props.placeholderStyles,
-              '::-moz-placeholder': props.placeholderStyles,
-              ':-ms-input-placeholder': props.placeholderStyles,
-              ':-moz-placeholder': props.placeholderStyles,
+              '&::placeholder': props.placeholderStyles,
+              '&::-webkit-input-placeholder': props.placeholderStyles,
+              '&::-moz-placeholder': props.placeholderStyles,
+              '&:-ms-input-placeholder': props.placeholderStyles,
+              '&:-moz-placeholder': props.placeholderStyles,
           }
         : {}
 
