@@ -116,8 +116,12 @@ export const renderChart = ({
     }
 
     const getColor = (key: string, chartType: ChartType) => {
+        // Try to find color by matching key first
+        const colorByKey = colors.find((color) => color.key === key)
+
+        // If not found by key, fall back to index-based assignment
         const originalIndex = lineKeys.indexOf(key)
-        const baseColor = colors[originalIndex % colors.length]
+        const baseColor = colorByKey || colors[originalIndex % colors.length]
         const colorValue = baseColor.color
         if (chartType === ChartType.BAR) {
             return hoveredKey === null
