@@ -32,6 +32,7 @@ const Charts: React.FC<ChartsProps> = ({
     barsize,
     xAxis,
     yAxis,
+    tooltip,
     noData,
     height = 400,
     showHeader = true,
@@ -40,6 +41,8 @@ const Charts: React.FC<ChartsProps> = ({
     onExpandedChange,
     chartName = 'Chart',
     skeleton,
+    legends,
+    CustomizedDot,
     ...props
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -71,9 +74,31 @@ const Charts: React.FC<ChartsProps> = ({
 
     useScrollLock(isFullscreen)
 
+    if (
+        colors &&
+        colors.length > 0 &&
+        !colors.every(
+            (item) => item && typeof item === 'object' && 'color' in item
+        )
+    ) {
+        // If any object is missing 'color' key, add fallback color from DEFAULT_COLORS
+        colors = colors.map((item, index) => {
+            if (item && typeof item === 'object' && 'color' in item) {
+                return item as { key: string; color: string }
+            }
+            const defaultColor = DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+            const itemKey =
+                typeof item === 'object' && item && 'key' in item
+                    ? (item as { key: string }).key
+                    : String(index)
+            return {
+                key: itemKey,
+                color: defaultColor.color,
+            }
+        })
+    }
     if (!colors || colors.length === 0) colors = DEFAULT_COLORS
     const flattenedData = transformNestedData(data, selectedKeys)
-
     const lineKeys = data.length > 0 ? Object.keys(data[0].data) : []
 
     const mergedXAxis = {
@@ -356,6 +381,7 @@ const Charts: React.FC<ChartsProps> = ({
                                   >
                                       {
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -399,6 +425,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={250}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -420,6 +447,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -466,6 +494,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={300}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -487,6 +516,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -504,6 +534,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }
@@ -651,6 +682,7 @@ const Charts: React.FC<ChartsProps> = ({
                                       {!isSmallScreen && (
                                           <Block ref={legendContainerRef}>
                                               <ChartLegends
+                                                  legends={legends}
                                                   chartContainerRef={
                                                       chartContainerRef
                                                   }
@@ -699,6 +731,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   //   height={'auto'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       chartName,
                                                       flattenedData,
                                                       chartType,
@@ -721,6 +754,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -744,6 +778,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   {(showLegend ||
                                                       !stackedLegends) && (
                                                       <ChartLegends
+                                                          legends={legends}
                                                           isSmallScreen={
                                                               isSmallScreen
                                                           }
@@ -873,6 +908,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={'100%'}
                                               >
                                                   {renderChart({
+                                                      CustomizedDot,
                                                       flattenedData,
                                                       chartType,
                                                       hoveredKey,
@@ -894,6 +930,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   ? false
                                                                   : mergedYAxis.showLabel,
                                                       },
+                                                      tooltip,
                                                       noData,
                                                       height:
                                                           typeof height ===
@@ -911,6 +948,7 @@ const Charts: React.FC<ChartsProps> = ({
                                           justifyContent="center"
                                       >
                                           <ChartLegends
+                                              legends={legends}
                                               chartContainerRef={
                                                   chartContainerRef
                                               }

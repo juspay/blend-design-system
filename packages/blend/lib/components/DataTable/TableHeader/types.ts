@@ -40,9 +40,9 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     mobileConfig?: MobileDataTableConfig
     mobileOverflowColumns?: ColumnDefinition<T>[]
     onMobileOverflowClick?: (row: T) => void
-    onSort: (field: keyof T) => void
-    onSortAscending?: (field: keyof T) => void
-    onSortDescending?: (field: keyof T) => void
+    onSort: (field: keyof T, sortType?: string) => void
+    onSortAscending?: (field: keyof T, sortType?: string) => void
+    onSortDescending?: (field: keyof T, sortType?: string) => void
     onSelectAll: (checked: boolean | 'indeterminate') => void
     onColumnChange: (columns: ColumnDefinition<T>[]) => void
     onColumnReorder?: (columns: ColumnDefinition<T>[]) => void

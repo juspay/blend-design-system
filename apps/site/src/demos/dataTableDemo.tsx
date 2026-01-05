@@ -1622,6 +1622,8 @@ const DataTableDemo = () => {
         revenue: string
         revenueAmount: number // New field for slider filtering
         growthRate: string
+        delta_revenue: number
+        delta_growthRate: number
     }
 
     // Generate larger dataset for server-side demo
@@ -1832,6 +1834,14 @@ const DataTableDemo = () => {
                     '19.5%',
                     '13.4%',
                 ][index % 15],
+                delta_revenue: [
+                    1250, -875, 1520, 2210, -580, 980, 1460, -745, 3120, 2755,
+                    1890, 1130, 2575, -685, 4250,
+                ][index % 15],
+                delta_growthRate: [
+                    1.25, -0.87, 1.52, 2.21, -0.58, 0.93, 1.46, -0.74, 3.12,
+                    1.89, 1.13, 2.57, -0.68, 1.95, 1.34,
+                ][index % 15],
             }
         })
     }
@@ -2013,6 +2023,21 @@ const DataTableDemo = () => {
             type: ColumnType.TEXT,
             isSortable: true,
             isEditable: false,
+            isDeltaSortable: true,
+            getSortField: (sortType) =>
+                sortType === 'delta' ? 'delta_revenue' : 'revenue',
+            sortValueFormatter: (value, _row, _column, sortType) => {
+                if (sortType === 'delta') {
+                    return typeof value === 'number' ? value : 0
+                }
+                if (typeof value === 'string') {
+                    const num = parseFloat(
+                        value.replace(/[^\d.-]/g, '').replace(/,/g, '')
+                    )
+                    return isNaN(num) ? 0 : num
+                }
+                return value
+            },
             minWidth: '120px',
             maxWidth: '160px',
         },
@@ -2023,6 +2048,19 @@ const DataTableDemo = () => {
             type: ColumnType.NUMBER,
             isSortable: true,
             isEditable: true,
+            isDeltaSortable: true,
+            getSortField: (sortType) =>
+                sortType === 'delta' ? 'delta_growthRate' : 'growthRate',
+            sortValueFormatter: (value, _row, _column, sortType) => {
+                if (sortType === 'delta') {
+                    return typeof value === 'number' ? value : 0
+                }
+                if (typeof value === 'string') {
+                    const num = parseFloat(value.replace('%', ''))
+                    return isNaN(num) ? 0 : num
+                }
+                return value
+            },
             minWidth: '120px',
             maxWidth: '160px',
         },

@@ -168,9 +168,9 @@ export const getMultiValueInputTokens = (
                     disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },
@@ -263,9 +263,9 @@ export const getMultiValueInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     y: {
-                        sm: foundationTokens.unit[5],
-                        md: foundationTokens.unit[7],
-                        lg: foundationTokens.unit[9],
+                        sm: foundationTokens.unit[4],
+                        md: foundationTokens.unit[6],
+                        lg: foundationTokens.unit[8],
                     },
                 },
                 border: {
@@ -276,9 +276,9 @@ export const getMultiValueInputTokens = (
                     disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },

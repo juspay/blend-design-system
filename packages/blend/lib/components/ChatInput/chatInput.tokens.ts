@@ -14,6 +14,52 @@ import { FoundationTokenType } from '../../tokens/theme.token'
  * - topQueries: Top queries section with header and items
  */
 export type ChatInputTokensType = Readonly<{
+    backgroundColor: {
+        default: CSSObject['backgroundColor']
+        hover: CSSObject['backgroundColor']
+        disabled: CSSObject['backgroundColor']
+    }
+    borderRadius: {
+        default: CSSObject['borderRadius']
+        focus: CSSObject['borderRadius']
+    }
+    border: {
+        default: CSSObject['border']
+        focus: CSSObject['border']
+    }
+    minHeight: CSSObject['minHeight']
+    maxHeight: CSSObject['maxHeight']
+    gap: CSSObject['gap']
+    text: {
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            focus: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+        fontSize: {
+            default: CSSObject['fontSize']
+            hover: CSSObject['fontSize']
+            focus: CSSObject['fontSize']
+            disabled: CSSObject['fontSize']
+        }
+        fontWeight: {
+            default: CSSObject['fontWeight']
+            hover: CSSObject['fontWeight']
+            focus: CSSObject['fontWeight']
+            disabled: CSSObject['fontWeight']
+        }
+        lineHeight: {
+            default: CSSObject['lineHeight']
+            hover: CSSObject['lineHeight']
+            focus: CSSObject['lineHeight']
+        }
+    }
+    resize: CSSObject['resize']
+    overflow: CSSObject['overflow']
+    paddingLeft: CSSObject['paddingLeft']
+    paddingTop: CSSObject['paddingTop']
+    paddingBottom: CSSObject['paddingBottom']
     container: {
         backgroundColor: {
             default: CSSObject['backgroundColor']
@@ -157,6 +203,52 @@ export const getChatInputTokens = (
 ): ResponsiveChatInputTokensType => {
     return {
         sm: {
+            backgroundColor: {
+                default: foundationToken.colors.gray[0],
+                hover: foundationToken.colors.gray[25],
+                disabled: foundationToken.colors.gray[0],
+            },
+            borderRadius: {
+                default: foundationToken.unit[100],
+                focus: foundationToken.unit[20],
+            },
+            border: {
+                default: `1px solid ${foundationToken.colors.gray[200]}`,
+                focus: `1px solid ${foundationToken.colors.primary[500]}`,
+            },
+            minHeight: foundationToken.unit[44],
+            maxHeight: foundationToken.unit[100],
+            gap: foundationToken.unit[8],
+            text: {
+                color: {
+                    default: foundationToken.colors.gray[600],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    disabled: foundationToken.colors.gray[400],
+                },
+                fontSize: {
+                    default: foundationToken.font.size.body.md.fontSize,
+                    hover: foundationToken.font.size.body.md.fontSize,
+                    focus: foundationToken.font.size.body.md.fontSize,
+                    disabled: foundationToken.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    default: foundationToken.font.weight[500],
+                    hover: foundationToken.font.weight[500],
+                    focus: foundationToken.font.weight[500],
+                    disabled: foundationToken.font.weight[500],
+                },
+                lineHeight: {
+                    default: '1.5',
+                    hover: '1.5',
+                    focus: '1.5',
+                },
+            },
+            resize: 'none',
+            overflow: 'auto',
+            paddingLeft: foundationToken.unit[12],
+            paddingTop: foundationToken.unit[10],
+            paddingBottom: foundationToken.unit[10],
             container: {
                 backgroundColor: {
                     default: foundationToken.colors.gray[0],
@@ -191,7 +283,7 @@ export const getChatInputTokens = (
             textarea: {
                 backgroundColor: 'transparent',
                 color: foundationToken.colors.gray[600],
-                fontSize: '16px',
+                fontSize: foundationToken.font.size.body.md.fontSize,
                 lineHeight: '1.5',
                 paddingX: foundationToken.unit[0],
                 paddingY: foundationToken.unit[0],
@@ -202,8 +294,8 @@ export const getChatInputTokens = (
                 },
                 resize: 'none',
                 fontFamily: 'inherit',
-                minHeight: '24px',
-                maxHeight: '120px',
+                minHeight: '44px',
+                maxHeight: '100px',
                 overflowY: 'auto',
             },
 
@@ -292,6 +384,52 @@ export const getChatInputTokens = (
         },
 
         lg: {
+            backgroundColor: {
+                default: foundationToken.colors.gray[0],
+                hover: foundationToken.colors.gray[25],
+                disabled: foundationToken.colors.gray[0],
+            },
+            borderRadius: {
+                default: foundationToken.unit[100],
+                focus: foundationToken.unit[20],
+            },
+            border: {
+                default: `1px solid ${foundationToken.colors.gray[200]}`,
+                focus: `1px solid ${foundationToken.colors.primary[500]}`,
+            },
+            minHeight: foundationToken.unit[44],
+            maxHeight: foundationToken.unit[100],
+            gap: foundationToken.unit[8],
+            text: {
+                color: {
+                    default: foundationToken.colors.gray[600],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    disabled: foundationToken.colors.gray[400],
+                },
+                fontSize: {
+                    default: foundationToken.font.size.body.md.fontSize,
+                    hover: foundationToken.font.size.body.md.fontSize,
+                    focus: foundationToken.font.size.body.md.fontSize,
+                    disabled: foundationToken.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    default: foundationToken.font.weight[500],
+                    hover: foundationToken.font.weight[500],
+                    focus: foundationToken.font.weight[500],
+                    disabled: foundationToken.font.weight[500],
+                },
+                lineHeight: {
+                    default: '1.5',
+                    hover: '1.5',
+                    focus: '1.5',
+                },
+            },
+            resize: 'none',
+            overflow: 'auto',
+            paddingLeft: foundationToken.unit[12],
+            paddingTop: foundationToken.unit[10],
+            paddingBottom: foundationToken.unit[10],
             container: {
                 backgroundColor: {
                     default: foundationToken.colors.gray[0],

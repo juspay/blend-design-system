@@ -26,6 +26,7 @@ const TooltipDemo: React.FC = () => {
         slotDirection: TooltipSlotDirection.RIGHT,
         delayDuration: 300,
         offset: 5,
+        disableInteractive: true,
     })
 
     const handleChange = (
@@ -268,6 +269,19 @@ const TooltipDemo: React.FC = () => {
                                     <span>Include Slot</span>
                                 </label>
                             </div>
+
+                            <div>
+                                <label className="flex items-center cursor-pointer text-gray-700">
+                                    <input
+                                        type="checkbox"
+                                        name="disableInteractive"
+                                        checked={config.disableInteractive}
+                                        onChange={handleChange}
+                                        className="mr-2 cursor-pointer"
+                                    />
+                                    <span>Disable Interactive</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -285,6 +299,7 @@ const TooltipDemo: React.FC = () => {
                     delayDuration={config.delayDuration}
                     offset={config.offset}
                     open={config.forceVisible || undefined}
+                    disableInteractive={config.disableInteractive}
                 >
                     <Button
                         data-tooltip={'Hover Me'}

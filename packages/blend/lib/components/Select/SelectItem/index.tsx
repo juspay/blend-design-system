@@ -1,8 +1,8 @@
-import { forwardRef, useRef, useState, useEffect } from 'react'
+import { forwardRef, useRef, useState, useEffect, useCallback } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
-import { Tooltip } from '../../Tooltip'
+import { Tooltip, TooltipSide } from '../../Tooltip'
 import { Checkbox } from '../../Checkbox'
 import { Check } from 'lucide-react'
 import { type SelectItemProps, SelectItemType } from './types'
@@ -49,31 +49,47 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 : singleSelectTokens
 
         const isSelected = isItemSelected(item.value, selected, type)
+        const rafRef = useRef<number | null>(null)
+
+        const checkTruncation = useCallback(() => {
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current)
+            }
+
+            rafRef.current = requestAnimationFrame(() => {
+                if (textRef.current) {
+                    setShowTooltip(checkIfTruncated(textRef.current))
+                }
+                if (item.subLabel && subLabelRef.current) {
+                    setShowSubLabelTooltip(
+                        checkIfTruncated(subLabelRef.current)
+                    )
+                }
+                rafRef.current = null
+            })
+        }, [item.subLabel])
 
         useEffect(() => {
-            if (!item.disableTruncation) {
-                const checkTruncation = () => {
-                    setShowTooltip(checkIfTruncated(textRef.current))
-                    if (item.subLabel) {
-                        setShowSubLabelTooltip(
-                            checkIfTruncated(subLabelRef.current)
-                        )
-                    }
-                }
+            if (item.disableTruncation) return
 
-                checkTruncation()
+            checkTruncation()
 
-                const resizeObserver = new ResizeObserver(checkTruncation)
-                if (textRef.current) {
-                    resizeObserver.observe(textRef.current)
-                }
-                if (subLabelRef.current) {
-                    resizeObserver.observe(subLabelRef.current)
-                }
+            const resizeObserver = new ResizeObserver(checkTruncation)
 
-                return () => resizeObserver.disconnect()
+            if (textRef.current) {
+                resizeObserver.observe(textRef.current)
             }
-        }, [item.label, item.subLabel, item.disableTruncation])
+            if (subLabelRef.current) {
+                resizeObserver.observe(subLabelRef.current)
+            }
+
+            return () => {
+                resizeObserver.disconnect()
+                if (rafRef.current !== null) {
+                    cancelAnimationFrame(rafRef.current)
+                }
+            }
+        }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
 
         const handleSelect = (e: Event) => {
             if (item.disabled) {
@@ -326,6 +342,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 <Tooltip
                     content={tooltipContent}
                     fullWidth={true}
+                    side={item.tooltipProps?.side || TooltipSide.RIGHT}
                     {...item.tooltipProps}
                 >
                     {itemContent}

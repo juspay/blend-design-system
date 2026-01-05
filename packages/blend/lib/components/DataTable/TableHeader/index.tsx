@@ -236,6 +236,7 @@ const TableHeader = forwardRef<
         const [sortState, setSortState] = useState<SortState>({
             currentSortField: sortConfig?.field || null,
             currentSortDirection: sortConfig?.direction || SortDirection.NONE,
+            currentSortType: sortConfig?.sortType,
         })
 
         const [filterState, setFilterState] = useState<FilterState>({
@@ -280,6 +281,7 @@ const TableHeader = forwardRef<
                 currentSortField: sortConfig?.field || null,
                 currentSortDirection:
                     sortConfig?.direction || SortDirection.NONE,
+                currentSortType: sortConfig?.sortType,
             })
         }, [sortConfig])
 

@@ -365,11 +365,11 @@ const StyledTextarea = styled.textarea.withConfig({
 
     const placeholderStyle = props.placeholderStyles
         ? {
-              '::placeholder': props.placeholderStyles,
-              '::-webkit-input-placeholder': props.placeholderStyles,
-              '::-moz-placeholder': props.placeholderStyles,
-              ':-ms-input-placeholder': props.placeholderStyles,
-              ':-moz-placeholder': props.placeholderStyles,
+              '&::placeholder': props.placeholderStyles,
+              '&::-webkit-input-placeholder': props.placeholderStyles,
+              '&::-moz-placeholder': props.placeholderStyles,
+              '&:-ms-input-placeholder': props.placeholderStyles,
+              '&:-moz-placeholder': props.placeholderStyles,
           }
         : {}
 
@@ -387,11 +387,12 @@ const StyledTextarea = styled.textarea.withConfig({
     })
 })
 
-const PrimitiveTextarea: React.FC<TextareaProps> = forwardRef<
-    HTMLTextAreaElement,
-    TextareaProps
->((props, ref) => {
-    return <StyledTextarea {...props} ref={ref} />
-})
+const PrimitiveTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+    (props, ref) => {
+        return <StyledTextarea {...props} ref={ref} />
+    }
+)
+
+PrimitiveTextarea.displayName = 'PrimitiveTextarea'
 
 export default PrimitiveTextarea

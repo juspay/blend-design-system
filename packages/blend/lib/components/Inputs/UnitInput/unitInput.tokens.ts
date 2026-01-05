@@ -174,9 +174,9 @@ export const getUnitInputTokens = (
                     lg: foundationTokens.font.weight[500],
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },
@@ -310,9 +310,9 @@ export const getUnitInputTokens = (
                     lg: foundationTokens.font.weight[500],
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },
@@ -323,9 +323,9 @@ export const getUnitInputTokens = (
                         lg: foundationTokens.unit[14],
                     },
                     y: {
-                        sm: foundationTokens.unit[6],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[10],
+                        sm: foundationTokens.unit[4],
+                        md: foundationTokens.unit[6],
+                        lg: foundationTokens.unit[8],
                     },
                 },
                 border: {

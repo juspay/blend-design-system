@@ -307,6 +307,11 @@ const UnitInput = ({
                     fontWeight={unitInputTokens.inputContainer.fontWeight[size]}
                     outline="none"
                     width={'100%'}
+                    backgroundColor={
+                        unitInputTokens.inputContainer.backgroundColor[
+                            error ? 'error' : 'default'
+                        ]
+                    }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     placeholderStyles={{
                         transition: 'opacity 150ms ease-out',
@@ -316,6 +321,10 @@ const UnitInput = ({
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
+                        backgroundColor:
+                            unitInputTokens.inputContainer.backgroundColor[
+                                error ? 'error' : 'hover'
+                            ],
                     }}
                     color={
                         unitInputTokens.inputContainer.color[

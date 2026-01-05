@@ -7,4 +7,8 @@ export { default as ChartLegends } from './ChartLegend'
 export { default as SankeyNode } from './SankeyNode'
 export { default as SankeyLink } from './SankeyLink'
 
+export { default as BlendChart } from './BlendChart'
+export { default as BlendChartContainer } from './BlendChartContainer'
+export { default as BlendChartHeader } from './BlendChartHeader'
 export * from './types'
+export * from './BlendChart.types'

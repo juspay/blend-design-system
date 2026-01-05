@@ -140,9 +140,13 @@ export type ComponentTokenType = {
     MOBILE_NAVIGATION?: ResponsiveMobileNavigationTokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
+    CHAT_INPUT?: ResponsiveChatInputTokensType
 }
 
 import { Theme } from './theme.enum'
+import getChatInputTokens, {
+    ResponsiveChatInputTokensType,
+} from '../components/ChatInput/chatInput.tokens'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
@@ -195,6 +199,7 @@ const ThemeContext = createContext<ThemeContextType>({
         MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
+        CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

@@ -92,6 +92,8 @@ const MultiSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    showClearButton,
+    onClearAllClick,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -103,8 +105,11 @@ const MultiSelect = ({
     const { innerWidth } = useBreakpoints()
     const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
-    const showCancelButton =
-        variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
+    const shouldShowClearButton =
+        showClearButton !== undefined
+            ? showClearButton && selectedValues.length > 0
+            : variant === MultiSelectVariant.CONTAINER &&
+              selectedValues.length > 0
 
     const shouldShowActionButtons =
         showActionButtons !== undefined
@@ -128,7 +133,7 @@ const MultiSelect = ({
         isSmallScreen && size === MultiSelectMenuSize.LARGE
 
     const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
-    const appliedBorderRadius = showCancelButton
+    const appliedBorderRadius = shouldShowClearButton
         ? `${borderRadius} 0px 0px ${borderRadius}`
         : borderRadius
 
@@ -335,6 +340,7 @@ const MultiSelect = ({
                                         id={uniqueName}
                                         data-element="multi-select-button"
                                         type="button"
+                                        disabled={disabled}
                                         position="relative"
                                         width={
                                             fullWidth ? '100%' : 'fit-content'
@@ -349,7 +355,7 @@ const MultiSelect = ({
                                         borderRadius={appliedBorderRadius}
                                         style={getErrorShakeStyle(shouldShake)}
                                         {...ariaAttributes}
-                                        outline={
+                                        border={
                                             multiSelectTokens.trigger.outline[
                                                 variant
                                             ][
@@ -383,14 +389,33 @@ const MultiSelect = ({
                                                           : 'closed'
                                                 ],
 
-                                            _hover: {
-                                                outline:
-                                                    multiSelectTokens.trigger
-                                                        .outline[variant][
+                                            ...(!disabled && {
+                                                _hover: {
+                                                    border: multiSelectTokens
+                                                        .trigger.outline[
+                                                        variant
+                                                    ][
                                                         error
                                                             ? 'error'
                                                             : 'hover'
                                                     ],
+                                                    backgroundColor:
+                                                        multiSelectTokens
+                                                            .trigger
+                                                            .backgroundColor[
+                                                            variant
+                                                        ][
+                                                            error
+                                                                ? 'error'
+                                                                : 'hover'
+                                                        ],
+                                                },
+                                            }),
+                                            _focus: {
+                                                border: multiSelectTokens
+                                                    .trigger.outline[variant][
+                                                    error ? 'error' : 'focus'
+                                                ],
                                                 backgroundColor:
                                                     multiSelectTokens.trigger
                                                         .backgroundColor[
@@ -398,26 +423,18 @@ const MultiSelect = ({
                                                     ][
                                                         error
                                                             ? 'error'
-                                                            : 'hover'
+                                                            : 'focus'
                                                     ],
                                             },
-                                            _focus: {
-                                                outline:
-                                                    multiSelectTokens.trigger
-                                                        .outline[variant][
-                                                        error
-                                                            ? 'error'
-                                                            : 'focus'
-                                                    ],
+                                            _disabled: {
+                                                cursor: 'not-allowed',
                                                 backgroundColor:
                                                     multiSelectTokens.trigger
                                                         .backgroundColor[
                                                         variant
-                                                    ][
-                                                        error
-                                                            ? 'error'
-                                                            : 'focus'
-                                                    ],
+                                                    ]['closed'],
+                                                color: multiSelectTokens.label
+                                                    .color.disabled,
                                             },
                                         })}
                                     >
@@ -461,9 +478,14 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens
-                                                            .trigger.placeholder
-                                                            .color
+                                                        disabled
+                                                            ? multiSelectTokens
+                                                                  .label.color
+                                                                  .disabled
+                                                            : multiSelectTokens
+                                                                  .trigger
+                                                                  .placeholder
+                                                                  .color
                                                     }
                                                     fontWeight={
                                                         multiSelectTokens
@@ -544,16 +566,21 @@ const MultiSelect = ({
                                                         as="span"
                                                         // variant="body.md"
                                                         color={
-                                                            selectedValues.length >
-                                                            0
+                                                            disabled
                                                                 ? multiSelectTokens
-                                                                      .trigger
-                                                                      .selectedValue
+                                                                      .label
                                                                       .color
-                                                                : multiSelectTokens
-                                                                      .trigger
-                                                                      .placeholder
-                                                                      .color
+                                                                      .disabled
+                                                                : selectedValues.length >
+                                                                    0
+                                                                  ? multiSelectTokens
+                                                                        .trigger
+                                                                        .selectedValue
+                                                                        .color
+                                                                  : multiSelectTokens
+                                                                        .trigger
+                                                                        .placeholder
+                                                                        .color
                                                         }
                                                         fontWeight={
                                                             multiSelectTokens
@@ -581,26 +608,37 @@ const MultiSelect = ({
                                                     as="span"
                                                     variant="body.md"
                                                     color={
-                                                        multiSelectTokens
-                                                            .trigger
-                                                            .selectionTag
-                                                            .container[
-                                                            MultiSelectSelectionTagType
-                                                                .COUNT
-                                                        ].color
+                                                        disabled
+                                                            ? multiSelectTokens
+                                                                  .label.color
+                                                                  .disabled
+                                                            : multiSelectTokens
+                                                                  .trigger
+                                                                  .selectionTag
+                                                                  .container[
+                                                                  MultiSelectSelectionTagType
+                                                                      .COUNT
+                                                              ].color
                                                     }
                                                     fontWeight={500}
                                                     style={{
                                                         height: '100%',
                                                         marginLeft: 8,
                                                         backgroundColor:
-                                                            multiSelectTokens
-                                                                .trigger
-                                                                .selectionTag
-                                                                .container[
-                                                                MultiSelectSelectionTagType
-                                                                    .COUNT
-                                                            ].backgroundColor,
+                                                            disabled
+                                                                ? multiSelectTokens
+                                                                      .trigger
+                                                                      .backgroundColor[
+                                                                      variant
+                                                                  ]['closed']
+                                                                : multiSelectTokens
+                                                                      .trigger
+                                                                      .selectionTag
+                                                                      .container[
+                                                                      MultiSelectSelectionTagType
+                                                                          .COUNT
+                                                                  ]
+                                                                      .backgroundColor,
                                                         borderRadius: 4,
                                                         padding: '0px 6px',
                                                     }}
@@ -623,14 +661,20 @@ const MultiSelect = ({
                                                 size={16}
                                                 aria-hidden="true"
                                                 color={
-                                                    selectedValues.length > 0
+                                                    disabled
                                                         ? multiSelectTokens
-                                                              .trigger
-                                                              .selectedValue
-                                                              .color
-                                                        : multiSelectTokens
-                                                              .trigger
-                                                              .placeholder.color
+                                                              .label.color
+                                                              .disabled
+                                                        : selectedValues.length >
+                                                            0
+                                                          ? multiSelectTokens
+                                                                .trigger
+                                                                .selectedValue
+                                                                .color
+                                                          : multiSelectTokens
+                                                                .trigger
+                                                                .placeholder
+                                                                .color
                                                 }
                                             />
                                         </Block>
@@ -642,46 +686,49 @@ const MultiSelect = ({
                         />
                     </Tooltip>
 
-                    {variant === MultiSelectVariant.CONTAINER &&
-                        selectedValues.length > 0 && (
-                            <PrimitiveButton
-                                data-element="clear-button"
-                                type="button"
-                                borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
-                                backgroundColor={
-                                    FOUNDATION_THEME.colors.gray[0]
+                    {shouldShowClearButton && (
+                        <PrimitiveButton
+                            data-element="clear-button"
+                            type="button"
+                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            contentCentered
+                            height={'100%'}
+                            style={{ aspectRatio: 1 }}
+                            onClick={() => {
+                                if (onClearAllClick) {
+                                    onClearAllClick()
+                                } else {
+                                    onChange('')
                                 }
-                                contentCentered
-                                height={'100%'}
-                                style={{ aspectRatio: 1 }}
-                                onClick={() => onChange('')}
-                                aria-label={
-                                    label
-                                        ? `Clear selection for ${label}`
-                                        : 'Clear selection'
-                                }
-                                outline={
-                                    multiSelectTokens.trigger.outline[variant][
-                                        error ? 'error' : 'closed'
-                                    ]
-                                }
-                                _hover={{
-                                    backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
-                                }}
-                                _focus={{
-                                    backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
-                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
-                                }}
-                            >
-                                <X
-                                    size={16}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                    aria-hidden="true"
-                                />
-                            </PrimitiveButton>
-                        )}
+                            }}
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
+                            }
+                            border={
+                                multiSelectTokens.trigger.outline[variant][
+                                    error ? 'error' : 'closed'
+                                ]
+                            }
+                            _hover={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                            }}
+                            _focus={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                                border: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                            }}
+                        >
+                            <X
+                                size={16}
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
+                            />
+                        </PrimitiveButton>
+                    )}
                 </Wrapper>
             </Block>
 

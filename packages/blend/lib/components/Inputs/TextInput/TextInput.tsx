@@ -307,12 +307,20 @@ const TextInput = ({
                     fontSize={textInputTokens.inputContainer.fontSize[size]}
                     fontWeight={textInputTokens.inputContainer.fontWeight[size]}
                     lineHeight={FOUNDATION_THEME.unit[20]}
-                    backgroundColor="transparent"
+                    backgroundColor={
+                        textInputTokens.inputContainer.backgroundColor[
+                            error ? 'error' : 'default'
+                        ]
+                    }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'hover'
                         ],
+                        backgroundColor:
+                            textInputTokens.inputContainer.backgroundColor[
+                                error ? 'error' : 'hover'
+                            ],
                     }}
                     color={
                         textInputTokens.inputContainer.color[
