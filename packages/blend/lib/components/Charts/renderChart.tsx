@@ -36,6 +36,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
+import { DEFAULT_COLORS } from './utils'
 
 export const renderChart = ({
     chartName,
@@ -119,9 +120,11 @@ export const renderChart = ({
         // Try to find color by matching key first
         const colorByKey = colors.find((color) => color.key === key)
 
-        // If not found by key, fall back to index-based assignment
+        // If not found by key, use backup color from DEFAULT_COLORS
         const originalIndex = lineKeys.indexOf(key)
-        const baseColor = colorByKey || colors[originalIndex % colors.length]
+        const backupColor =
+            DEFAULT_COLORS[originalIndex % DEFAULT_COLORS.length]
+        const baseColor = colorByKey || backupColor
         const colorValue = baseColor.color
         if (chartType === ChartType.BAR) {
             return hoveredKey === null
