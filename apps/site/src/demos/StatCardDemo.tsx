@@ -52,6 +52,7 @@ const StatCardDemo = () => {
     const [showSkeleton, setShowSkeleton] = useState(false)
 
     const [dataDisplay, setDataDisplay] = useState(true)
+    const [showBorder, setShowBorder] = useState(true)
     // Sample chart data
     const sampleLineData = [
         { value: 100, name: 'JAN' },
@@ -269,8 +270,13 @@ const StatCardDemo = () => {
                             checked={dataDisplay}
                             onChange={() => setDataDisplay(!dataDisplay)}
                         />
+                        <Switch
+                            label="Show Border"
+                            checked={showBorder}
+                            onChange={() => setShowBorder(!showBorder)}
+                        />
                     </div>
-                    <div className="w-[350px]">
+                    <div className="w-87.5">
                         <StatCard
                             skeleton={{
                                 show: showSkeleton,
@@ -332,6 +338,7 @@ const StatCardDemo = () => {
                                       : undefined
                             }
                             dataDisplay={dataDisplay}
+                            showBorder={showBorder}
                             progressValue={
                                 playgroundVariant ===
                                 StatCardVariant.PROGRESS_BAR
