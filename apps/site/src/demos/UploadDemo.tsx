@@ -105,7 +105,7 @@ const UploadDemo = () => {
                         </span>
                     </div>
 
-                    <div className="min-h-[200px] rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
+                    <div className="min-h-50 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Upload
                             label="Upload Files"
                             subLabel="Max 10MB"
@@ -141,12 +141,19 @@ const UploadDemo = () => {
                             maxSize={8 * 1024 * 1024} // 8MB
                             style={{ width: '480px' }}
                             maxFiles={5}
+                            progressSpeed={playgroundProgressSpeed}
                         >
                             {playgroundCustomSlot
                                 ? renderCustomSlot()
                                 : undefined}
                         </Upload>
                     </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                        The progress speed controls how fast the progress
+                        animation completes (in milliseconds). This is useful
+                        for matching the visual feedback to your backend
+                        processing time.
+                    </p>
                 </div>
             </div>
 
@@ -403,6 +410,34 @@ const UploadDemo = () => {
                     Examples showing how Upload component integrates with forms,
                     capturing all file metadata (files, filenames, filemimes).
                 </p>
+
+                {/* State Management Example */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                        State Management & Error Handling
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        This example demonstrates:
+                        <ul className="list-disc list-inside mt-2 space-y-1">
+                            <li>
+                                onDropRejected callback is always called for
+                                rejected files
+                            </li>
+                            <li>
+                                Failed files can be removed using the cross icon
+                            </li>
+                            <li>
+                                onChange clears value when all files are
+                                rejected (single file mode)
+                            </li>
+                            <li>
+                                onStateChange provides state information for
+                                external submit button control
+                            </li>
+                        </ul>
+                    </p>
+                    <StateManagementExample />
+                </div>
 
                 {/* Single File Form Integration */}
                 <div className="space-y-4">
@@ -819,6 +854,190 @@ const ApiUploadExample = () => {
                     </div>
                 </div>
             )}
+        </div>
+    )
+}
+
+// State Management Example
+const StateManagementExample = () => {
+    const [file, setFile] = useState<File | null>(null)
+    const [rejectedFiles, setRejectedFiles] = useState<
+        Array<{ file: File; errors: Array<{ code: string; message: string }> }>
+    >([])
+    const [uploadState, setUploadState] = useState<{
+        state: string
+        hasError: boolean
+        hasSuccess: boolean
+        hasUploading: boolean
+        errorFiles: any[]
+        successfulFiles: any[]
+    } | null>(null)
+    const [logs, setLogs] = useState<string[]>([])
+
+    const addLog = (message: string) => {
+        setLogs((prev) => [
+            ...prev,
+            `${new Date().toLocaleTimeString()}: ${message}`,
+        ])
+    }
+
+    const handleChange = (value: UploadFormValue) => {
+        const fileValue = Array.isArray(value) ? value[0] || null : value
+        setFile(fileValue)
+        addLog(
+            `onChange called: ${fileValue ? fileValue.name : 'null (cleared)'}`
+        )
+    }
+
+    const handleDropRejected = (
+        rejections: Array<{
+            file: File
+            errors: Array<{ code: string; message: string }>
+        }>
+    ) => {
+        setRejectedFiles(rejections)
+        addLog(
+            `onDropRejected called with ${rejections.length} rejected file(s): ${rejections.map((r) => r.file.name).join(', ')}`
+        )
+        rejections.forEach((rejection) => {
+            rejection.errors.forEach((error) => {
+                addLog(`  - ${rejection.file.name}: ${error.message}`)
+            })
+        })
+    }
+
+    const handleStateChange = (stateInfo: {
+        state: string
+        hasError: boolean
+        hasSuccess: boolean
+        hasUploading: boolean
+        errorFiles: any[]
+        successfulFiles: any[]
+    }) => {
+        setUploadState(stateInfo)
+        addLog(
+            `onStateChange: state=${stateInfo.state}, hasError=${stateInfo.hasError}, hasSuccess=${stateInfo.hasSuccess}`
+        )
+    }
+
+    const handleSubmit = () => {
+        if (uploadState?.hasError) {
+            alert('Cannot submit: Upload has errors')
+        } else if (uploadState?.hasSuccess && file) {
+            alert(`Submitting file: ${file.name}`)
+        } else {
+            alert('No file to submit')
+        }
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="max-w-md">
+                <Upload
+                    label="Test State Management"
+                    description="Try uploading valid and invalid files"
+                    accept={['.pdf', '.txt']}
+                    maxSize={5 * 1024 * 1024}
+                    value={file}
+                    onChange={handleChange}
+                    onDropRejected={handleDropRejected}
+                    onStateChange={handleStateChange}
+                >
+                    <FileText size={32} color="#6366f1" />
+                </Upload>
+            </div>
+
+            {/* State Display */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+                <h4 className="font-semibold text-sm">Current State:</h4>
+                {uploadState ? (
+                    <div className="text-xs space-y-1">
+                        <div>
+                            <strong>State:</strong> {uploadState.state}
+                        </div>
+                        <div>
+                            <strong>Has Error:</strong>{' '}
+                            {uploadState.hasError ? 'Yes' : 'No'}
+                        </div>
+                        <div>
+                            <strong>Has Success:</strong>{' '}
+                            {uploadState.hasSuccess ? 'Yes' : 'No'}
+                        </div>
+                        <div>
+                            <strong>Error Files:</strong>{' '}
+                            {uploadState.errorFiles.length}
+                        </div>
+                        <div>
+                            <strong>Successful Files:</strong>{' '}
+                            {uploadState.successfulFiles.length}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-xs text-gray-500">No state yet</div>
+                )}
+            </div>
+
+            {/* Submit Button (controlled by state) */}
+            <div>
+                <button
+                    onClick={handleSubmit}
+                    disabled={
+                        !uploadState?.hasSuccess ||
+                        uploadState?.hasError ||
+                        !file
+                    }
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                    {uploadState?.hasError
+                        ? 'Cannot Submit (Has Errors)'
+                        : uploadState?.hasSuccess && file
+                          ? `Submit: ${file.name}`
+                          : 'No File to Submit'}
+                </button>
+            </div>
+
+            {/* Rejected Files Display */}
+            {rejectedFiles.length > 0 && (
+                <div className="p-4 bg-red-50 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2 text-red-800">
+                        Rejected Files ({rejectedFiles.length}):
+                    </h4>
+                    <div className="text-xs space-y-1">
+                        {rejectedFiles.map((rejection, idx) => (
+                            <div key={idx} className="text-red-700">
+                                <strong>{rejection.file.name}:</strong>{' '}
+                                {rejection.errors
+                                    .map((e) => e.message)
+                                    .join(', ')}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Event Logs */}
+            <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-semibold text-sm">Event Logs:</h4>
+                    <button
+                        onClick={() => setLogs([])}
+                        className="text-xs text-blue-600 hover:text-blue-800"
+                    >
+                        Clear Logs
+                    </button>
+                </div>
+                <div className="text-xs space-y-1 max-h-48 overflow-y-auto font-mono bg-white p-2 rounded">
+                    {logs.length > 0 ? (
+                        logs.map((log, idx) => (
+                            <div key={idx} className="text-gray-700">
+                                {log}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-gray-500">No events yet</div>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }
