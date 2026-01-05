@@ -66,6 +66,7 @@ export type UploadProps = {
 
     // Upload configuration
     enforceFileTypeConsistency?: boolean // Enforce same file type for multiple uploads
+    progressSpeed?: number // Duration in ms for progress animation (default: 200)
 
     value?: UploadFormValue
     onChange?: (value: UploadFormValue) => void

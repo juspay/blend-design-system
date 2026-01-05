@@ -141,12 +141,19 @@ const UploadDemo = () => {
                             maxSize={8 * 1024 * 1024} // 8MB
                             style={{ width: '480px' }}
                             maxFiles={5}
+                            progressSpeed={playgroundProgressSpeed}
                         >
                             {playgroundCustomSlot
                                 ? renderCustomSlot()
                                 : undefined}
                         </Upload>
                     </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                        The progress speed controls how fast the progress
+                        animation completes (in milliseconds). This is useful
+                        for matching the visual feedback to your backend
+                        processing time.
+                    </p>
                 </div>
             </div>
 

@@ -79,6 +79,54 @@ const [files, setFiles] = useState<File[]>([])
 />
 ```
 
+### Progress Speed Control
+
+Control the animation speed of the progress bar to match your backend processing time:
+
+```tsx
+<Upload
+    label="Upload File"
+    progressSpeed={1000} // Progress animation takes 1 second
+    value={file}
+    onChange={setFile}
+/>
+```
+
+**Use Cases:**
+
+- **Fast simulation (200ms)**: For testing or instant feedback
+- **Medium simulation (500-800ms)**: Matches typical file processing
+- **Slow simulation (1000ms+)**: For large files or complex processing
+
+### API Integration Example
+
+For real API uploads, use the `onDrop` callback to handle file uploads manually with your own progress tracking:
+
+```tsx
+const handleDrop = async (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0]
+
+    try {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch('https://your-api.com/upload', {
+            method: 'POST',
+            body: formData,
+        })
+
+        if (!response.ok) throw new Error('Upload failed')
+
+        const result = await response.json()
+        console.log('Upload successful:', result)
+    } catch (error) {
+        console.error('Upload error:', error)
+    }
+}
+
+;<Upload label="Upload Document" onDrop={handleDrop} progressSpeed={500} />
+```
+
 ## API Reference
 
 <DocsTypeTable
@@ -348,6 +396,16 @@ const [files, setFiles] = useState<File[]>([])
             },
             { content: '' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'progressSpeed',
+                hintText:
+                    'Duration in milliseconds for progress animation (controls how fast the progress bar animates)',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+            { content: '200' },
         ],
     ]}
     className="mb-8"

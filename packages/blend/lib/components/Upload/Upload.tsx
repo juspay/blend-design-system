@@ -64,6 +64,7 @@ const Upload: React.FC<UploadProps> = ({
     isDragAccept: controlledIsDragAccept,
     isDragReject: controlledIsDragReject,
     validator,
+    progressSpeed = 200,
     ...rest
 }) => {
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
@@ -149,7 +150,8 @@ const Upload: React.FC<UploadProps> = ({
                 setInternalUploadingFiles,
                 setInternalUploadedFiles,
                 setInternalFailedFiles,
-                uploadManager
+                uploadManager,
+                progressSpeed
             ),
         [
             multiple,
@@ -160,6 +162,7 @@ const Upload: React.FC<UploadProps> = ({
             uploadedFiles,
             failedFiles,
             uploadManager,
+            progressSpeed,
         ]
     )
 

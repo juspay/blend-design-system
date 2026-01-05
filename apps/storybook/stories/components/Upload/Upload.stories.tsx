@@ -210,6 +210,11 @@ const [files, setFiles] = useState<File[]>([]);
             description:
                 'Maximum number of files (only applies when multiple=true)',
         },
+        progressSpeed: {
+            control: 'number',
+            description:
+                'Duration in milliseconds for progress animation (controls how fast the progress bar animates)',
+        },
         disabled: {
             control: 'boolean',
             description: 'Disable the upload component',
