@@ -1,6 +1,6 @@
-# Changelog for v0.0.32-beta (Beta)
+# Changelog for v0.0.32
 
-> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
+> **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
@@ -34,6 +34,7 @@
 
 ## 🔧 Chores
 
+- **release**: v0.0.32-beta [BETA] ([5df42c9](../../commit/5df42c9))
 - dev to staging (#931) ([d1659cb](../../commit/d1659cb))
 - Feat/mulit colored line chart (#927) ([3db0e5f](../../commit/3db0e5f))
 - Add sidebar icon only state (#906) ([09b4035](../../commit/09b4035))
@@ -46,20 +47,17 @@
 - Fix/chatinput mweb(refactored) (#871) ([f7a16de](../../commit/f7a16de))
 - Remove overflow from card (#877) ([637d743](../../commit/637d743))
 - **release**: v0.0.31 [STABLE] ([d0f1630](../../commit/d0f1630))
-- **release**: v0.0.31-beta [BETA] ([7206071](../../commit/7206071))
 
 ---
 
 **Release Date**: 2026-01-05
-**Commit Range**: v0.0.31-beta..HEAD
+**Commit Range**: v0.0.31..HEAD
 **Total Changes**: 34 commits
 
-## Beta Installation
+## Installation
 
 ```bash
-npm install @juspay/blend-design-system@beta
-# or specific beta version
-npm install @juspay/blend-design-system@0.0.32-beta
+npm install @juspay/blend-design-system@latest
+# or specific version
+npm install @juspay/blend-design-system@0.0.32
 ```
-
-> **Note**: Beta versions are for testing only. Use stable versions in production.
