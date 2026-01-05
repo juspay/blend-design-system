@@ -933,24 +933,15 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                                 </code>
                             </p>
                             <p>
-                                <strong>Total Tabs:</strong>{' '}
-                                {analyticsTabsItems.length}
+                                <strong>Total Tabs:</strong> {testData.length}
                             </p>
                             <p>
                                 <strong>Default Tabs:</strong>{' '}
-                                {
-                                    analyticsTabsItems.filter(
-                                        (tab) => tab.isDefault
-                                    ).length
-                                }
+                                {testData.filter((tab) => tab.isDefault).length}
                             </p>
                             <p>
                                 <strong>Closable Tabs:</strong>{' '}
-                                {
-                                    analyticsTabsItems.filter(
-                                        (tab) => tab.isDefault && tab.closable
-                                    ).length
-                                }
+                                {testData.filter((tab) => tab.closable).length}
                             </p>
                         </div>
                     </div>
