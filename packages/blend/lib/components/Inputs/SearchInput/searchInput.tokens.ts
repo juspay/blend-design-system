@@ -134,8 +134,8 @@ export const getSearchInputTokens = (
                 boxShadow: foundationTokens.shadows.sm,
                 color: {
                     default: foundationTokens.colors.gray[400],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     disabled: foundationTokens.colors.gray[300],
                     error: foundationTokens.colors.red[800],
                 },
@@ -213,8 +213,8 @@ export const getSearchInputTokens = (
                 boxShadow: foundationTokens.shadows.sm,
                 color: {
                     default: foundationTokens.colors.gray[400],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
                     disabled: foundationTokens.colors.gray[300],
                     error: foundationTokens.colors.red[800],
                 },

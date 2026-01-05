@@ -21,6 +21,10 @@ export type DataPoint = {
         timeZone?: string
         hour12?: boolean
     }[]
+    error?: {
+        title: string
+        errorData?: { label: string; value: string }[]
+    }
 }
 
 export enum ChartLegendPosition {
@@ -33,7 +37,7 @@ export enum ChartType {
     BAR = 'bar',
     PIE = 'pie',
     SCATTER = 'scatter',
-
+    AREA = 'area',
     SANKEY = 'sankey',
 }
 
@@ -95,6 +99,20 @@ export type AxisConfig = {
 export type XAxisConfig = AxisConfig
 export type YAxisConfig = AxisConfig
 
+export type TooltipConfig = {
+    position?: { x?: number; y?: number }
+    allowEscapeViewBox?: { x?: boolean; y?: boolean }
+}
+
+export type DotItemDotProps = {
+    cx?: number
+    cy?: number
+    value?: number
+    payload?: {
+        name?: string
+    }
+}
+
 export type NewNestedDataPoint = {
     name: string
     data: {
@@ -114,7 +132,7 @@ export type RenderChartProps = {
     chartType: ChartType
     hoveredKey: string | null
     lineKeys: string[]
-    colors: string[]
+    colors: { key: string; color: string }[]
     setHoveredKey: (key: string | null) => void
     data: NewNestedDataPoint[]
     selectedKeys: string[]
@@ -122,17 +140,20 @@ export type RenderChartProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     noData?: NoDataProps
     height?: number | string
+    CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
 }
 
 export type CoreChartProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
-    colors?: string[]
+    colors?: { key: string; color: string }[]
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     height?: number | string
     width?: number | string
     isSmallScreen?: boolean
@@ -152,7 +173,7 @@ export type ChartsSkeletonProps = {
 export type ChartsProps = {
     chartType?: ChartType
     data: NewNestedDataPoint[]
-    colors?: string[]
+    colors?: { key: string; color: string }[]
     slot1?: ReactNode
     slot2?: ReactNode
     slot3?: ReactNode
@@ -163,6 +184,7 @@ export type ChartsProps = {
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    tooltip?: TooltipConfig
     noData?: NoDataProps
     height?: number
     showHeader?: boolean
@@ -171,6 +193,8 @@ export type ChartsProps = {
     onExpandedChange?: (isExpanded: boolean) => void
     chartName?: string
     skeleton?: ChartsSkeletonProps
+    legends?: { title: string; total?: string }[]
+    CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
 }
 
 export type FlattenedDataPoint = {
@@ -196,7 +220,7 @@ export type ChartHeaderProps = {
 export type ChartLegendsProps = {
     chartContainerRef: React.RefObject<HTMLDivElement>
     keys: string[]
-    colors: string[]
+    colors: { key: string; color: string }[]
     handleLegendClick: (key: string) => void
     handleLegendEnter: (key: string) => void
     handleLegendLeave: () => void
@@ -207,6 +231,7 @@ export type ChartLegendsProps = {
     stacked?: boolean
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+    legends?: { title: string; total?: string }[]
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
@@ -259,7 +284,7 @@ export type SankeyNodeProps = {
     index?: number
     payload?: SankeyNode & { value?: number }
     containerWidth?: number
-    nodeColors?: string[]
+    nodeColors?: (string | { key: string; color: string })[]
     onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
     onMouseLeave?: () => void
 }
@@ -274,7 +299,7 @@ export type SankeyLinkProps = {
     linkWidth?: number
     index?: number
     payload?: SankeyLink
-    linkColors?: string[]
+    linkColors?: (string | { key: string; color: string })[]
     onMouseEnter?: (data: SankeyTooltipData, event: React.MouseEvent) => void
     onMouseLeave?: () => void
 }

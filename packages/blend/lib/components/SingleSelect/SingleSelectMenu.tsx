@@ -592,7 +592,7 @@ const SingleSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {enableSearch && (
+                            {enableSearch && items.length > 0 && (
                                 <Block
                                     position="sticky"
                                     top={0}
@@ -603,77 +603,53 @@ const SingleSelectMenu = ({
                                         FOUNDATION_THEME.colors.gray[0]
                                     }
                                 >
-                                    <Block
-                                        marginBottom={FOUNDATION_THEME.unit[6]}
-                                    >
-                                        <SearchInput
-                                            ref={searchInputRef}
-                                            placeholder={searchPlaceholder}
-                                            value={searchText}
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLInputElement>
-                                            ) => {
+                                    <SearchInput
+                                        ref={searchInputRef}
+                                        placeholder={searchPlaceholder}
+                                        value={searchText}
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            setSearchText(e.target.value)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'ArrowDown' ||
+                                                e.key === 'ArrowUp'
+                                            ) {
                                                 e.preventDefault()
                                                 e.stopPropagation()
-                                                setSearchText(e.target.value)
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (
-                                                    e.key === 'ArrowDown' ||
-                                                    e.key === 'ArrowUp'
-                                                ) {
-                                                    e.preventDefault()
-                                                    e.stopPropagation()
-                                                    const menuContent =
-                                                        e.currentTarget.closest(
-                                                            '[data-dropdown="dropdown"]'
+                                                const menuContent =
+                                                    e.currentTarget.closest(
+                                                        '[data-dropdown="dropdown"]'
+                                                    )
+                                                if (menuContent) {
+                                                    const firstMenuItem =
+                                                        menuContent.querySelector<HTMLElement>(
+                                                            '[role="menuitem"]:not([data-disabled])'
                                                         )
-                                                    if (menuContent) {
-                                                        const firstMenuItem =
-                                                            menuContent.querySelector<HTMLElement>(
-                                                                '[role="menuitem"]:not([data-disabled])'
-                                                            )
-                                                        if (firstMenuItem) {
-                                                            firstMenuItem.focus()
-                                                        }
+                                                    if (firstMenuItem) {
+                                                        firstMenuItem.focus()
                                                     }
                                                 }
-                                                if (e.key === 'Tab') {
-                                                    return
-                                                }
-                                            }}
-                                            autoFocus
-                                            aria-label={
-                                                searchPlaceholder ||
-                                                'Search options'
                                             }
-                                        />
-                                    </Block>
+                                            if (e.key === 'Tab') {
+                                                return
+                                            }
+                                        }}
+                                        autoFocus
+                                        aria-label={
+                                            searchPlaceholder ||
+                                            'Search options'
+                                        }
+                                    />
                                 </Block>
                             )}
-                            {items.length === 0 ? (
-                                <Block
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    padding={
-                                        singleSelectTokens.menu.item.padding
-                                    }
-                                    paddingTop={0}
-                                >
-                                    <Text
-                                        variant="body.md"
-                                        color={
-                                            singleSelectTokens.menu.item
-                                                .optionsLabel.color.default
-                                        }
-                                        textAlign="center"
-                                    >
-                                        No items available
-                                    </Text>
-                                </Block>
-                            ) : filteredItems.length === 0 &&
-                              searchText.length > 0 ? (
+                            {items.length === 0 ||
+                            (filteredItems.length === 0 &&
+                                searchText.length > 0) ? (
                                 <Block
                                     display="flex"
                                     justifyContent="center"
@@ -690,7 +666,9 @@ const SingleSelectMenu = ({
                                         }
                                         textAlign="center"
                                     >
-                                        No results found
+                                        {items.length === 0
+                                            ? 'No items available'
+                                            : 'No results found'}
                                     </Text>
                                 </Block>
                             ) : enableVirtualization &&

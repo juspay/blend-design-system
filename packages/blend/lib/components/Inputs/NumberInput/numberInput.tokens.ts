@@ -180,9 +180,9 @@ export const getNumberInputTokens = (
                     lg: foundationToken.font.weight[500],
                 },
                 color: {
-                    default: foundationToken.colors.gray[800],
-                    hover: foundationToken.colors.gray[800],
-                    focus: foundationToken.colors.gray[800],
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
                     error: foundationToken.colors.red[800],
                     disabled: foundationToken.colors.gray[300],
                 },
@@ -313,9 +313,9 @@ export const getNumberInputTokens = (
                     lg: foundationToken.font.weight[500],
                 },
                 color: {
-                    default: foundationToken.colors.gray[800],
-                    hover: foundationToken.colors.gray[800],
-                    focus: foundationToken.colors.gray[800],
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
                     error: foundationToken.colors.red[800],
                     disabled: foundationToken.colors.gray[300],
                 },
@@ -326,9 +326,9 @@ export const getNumberInputTokens = (
                         lg: foundationToken.unit[14],
                     },
                     y: {
-                        sm: foundationToken.unit[6],
-                        md: foundationToken.unit[8],
-                        lg: foundationToken.unit[10],
+                        sm: foundationToken.unit[4],
+                        md: foundationToken.unit[6],
+                        lg: foundationToken.unit[8],
                     },
                 },
                 border: {

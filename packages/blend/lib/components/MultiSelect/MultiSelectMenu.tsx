@@ -13,6 +13,7 @@ import {
     MultiSelectVariant,
 } from './types'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import Text from '../Text/Text'
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { SearchInput } from '../Inputs'
@@ -166,7 +167,8 @@ const MultiSelectMenu = ({
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
-
+    const justOpenedRef = useRef(false)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const hasMatch = React.useMemo(
         () => checkExactMatch(searchText, items),
         [searchText, items]
@@ -258,15 +260,34 @@ const MultiSelectMenu = ({
         [enableSearch, searchText]
     )
 
-    const handleOpenChange = (newOpen: boolean) => {
-        if (disabled) return
+    const handleOpenChange = useCallback(
+        (newOpen: boolean) => {
+            if (disabled) return
 
-        if (!newOpen && enableSearch) {
-            setSearchText('')
-        }
+            if (newOpen) {
+                justOpenedRef.current = true
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                }
+                timeoutRef.current = setTimeout(() => {
+                    justOpenedRef.current = false
+                    timeoutRef.current = null
+                }, 150)
+            } else {
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                    timeoutRef.current = null
+                }
+                justOpenedRef.current = false
+                if (enableSearch) {
+                    setSearchText('')
+                }
+            }
 
-        onOpenChange(newOpen)
-    }
+            onOpenChange(newOpen)
+        },
+        [disabled, enableSearch, onOpenChange]
+    )
 
     const handleSearchChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,6 +295,19 @@ const MultiSelectMenu = ({
         },
         []
     )
+
+    const handleOutsideInteraction = useCallback((e: Event) => {
+        if (justOpenedRef.current) {
+            e.preventDefault()
+            return
+        }
+
+        const target = e.target as HTMLElement
+        const trigger = target?.closest('[data-radix-dropdown-menu-trigger]')
+        if (trigger) {
+            e.preventDefault()
+        }
+    }, [])
 
     // RCA: When customTrigger is a Tooltip wrapping a Button, nested asChild props conflict
     // Solution: Detect Tooltip wrapper and restructure to: Tooltip > MenuTrigger > Button
@@ -326,6 +360,8 @@ const MultiSelectMenu = ({
                     side={side}
                     avoidCollisions
                     onKeyDown={handleKeyDown}
+                    onInteractOutside={handleOutsideInteraction}
+                    onPointerDownOutside={handleOutsideInteraction}
                     role="listbox"
                     aria-multiselectable="true"
                     style={{
@@ -346,9 +382,8 @@ const MultiSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {' '}
                             <StickyHeader>
-                                {enableSearch && (
+                                {enableSearch && items.length > 0 && (
                                     <Block>
                                         <SearchInput
                                             ref={searchInputRef}
@@ -411,7 +446,9 @@ const MultiSelectMenu = ({
                                         : '320px',
                                 }}
                             >
-                                {items.length === 0 ? (
+                                {items.length === 0 ||
+                                (filteredItems.length === 0 &&
+                                    searchText.length > 0) ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -420,37 +457,18 @@ const MultiSelectMenu = ({
                                             multiSelectTokens.menu.item.padding
                                         }
                                     >
-                                        <PrimitiveText
-                                            fontSize={14}
+                                        <Text
+                                            variant="body.md"
                                             color={
                                                 multiSelectTokens.menu.item
                                                     .optionsLabel.color.default
                                             }
                                             textAlign="center"
                                         >
-                                            No items available
-                                        </PrimitiveText>
-                                    </Block>
-                                ) : filteredItems.length === 0 &&
-                                  searchText.length > 0 ? (
-                                    <Block
-                                        display="flex"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        padding={
-                                            multiSelectTokens.menu.item.padding
-                                        }
-                                    >
-                                        <PrimitiveText
-                                            fontSize={14}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                            textAlign="center"
-                                        >
-                                            No results found
-                                        </PrimitiveText>
+                                            {items.length === 0
+                                                ? 'No items available'
+                                                : 'No results found'}
+                                        </Text>
                                     </Block>
                                 ) : enableVirtualization &&
                                   flattenedItems.length > 0 ? (
@@ -765,7 +783,12 @@ const MultiSelectMenu = ({
                                 )}
                             </ScrollableContent>
                             {showActionButtons &&
-                                (primaryAction || secondaryAction) && (
+                                (primaryAction || secondaryAction) &&
+                                items.length > 0 &&
+                                !(
+                                    filteredItems.length === 0 &&
+                                    searchText.length > 0
+                                ) && (
                                     <FixedActionButtons>
                                         {secondaryAction && (
                                             <Button

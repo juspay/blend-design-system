@@ -149,10 +149,10 @@ export const CustomTooltip = ({
             paddingLeft={10}
             border={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
             minWidth={220}
-            maxWidth={200}
+            maxWidth={300}
             // className="debug"
         >
-            {chartType === ChartType.LINE && (
+            {chartType == ChartType.LINE && (
                 <LineChartTooltip
                     active={active}
                     payload={payload}
@@ -166,7 +166,7 @@ export const CustomTooltip = ({
                     yAxis={yAxis}
                 />
             )}
-            {chartType === ChartType.BAR && (
+            {(chartType === ChartType.BAR || chartType === ChartType.AREA) && (
                 <BarChartTooltip
                     originalData={originalData}
                     label={label}
@@ -371,7 +371,11 @@ const LineChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
@@ -442,6 +446,90 @@ const LineChartTooltip = ({
                     ))}
                 </Block>
             )}
+            {relevantData.error && (
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    gap={FOUNDATION_THEME.unit[8]}
+                    padding={FOUNDATION_THEME.unit[12]}
+                    borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
+                >
+                    <Text
+                        fontSize={12}
+                        color={FOUNDATION_THEME.colors.gray[500]}
+                        fontWeight={FOUNDATION_THEME.font.weight[400]}
+                    >
+                        {relevantData.error.title}
+                    </Text>
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        gap={FOUNDATION_THEME.unit[8]}
+                    >
+                        {relevantData.error.errorData?.map(
+                            (
+                                errorItem: { label: string; value: string },
+                                index: number
+                            ) => (
+                                <Block
+                                    key={`error-${index}`}
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={FOUNDATION_THEME.unit[6]}
+                                    >
+                                        <Block
+                                            backgroundColor={
+                                                index === 0
+                                                    ? FOUNDATION_THEME.colors
+                                                          .red[500]
+                                                    : FOUNDATION_THEME.colors
+                                                          .orange[400]
+                                            }
+                                            width={FOUNDATION_THEME.unit[4]}
+                                            height={FOUNDATION_THEME.unit[16]}
+                                            borderRadius={
+                                                FOUNDATION_THEME.border
+                                                    .radius[8]
+                                            }
+                                            transition="all 75ms"
+                                        />
+                                        <Text
+                                            fontSize={12}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[500]
+                                            }
+                                            fontWeight={
+                                                FOUNDATION_THEME.font
+                                                    .weight[400]
+                                            }
+                                        >
+                                            {errorItem.label}
+                                        </Text>
+                                    </Block>
+
+                                    <Text
+                                        fontSize={16}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[900]
+                                        }
+                                        fontWeight={
+                                            FOUNDATION_THEME.font.weight[600]
+                                        }
+                                    >
+                                        {errorItem.value}
+                                    </Text>
+                                </Block>
+                            )
+                        )}
+                    </Block>
+                </Block>
+            )}
         </>
     )
 }
@@ -505,7 +593,11 @@ const PieChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
@@ -635,7 +727,11 @@ const ScatterChartTooltip = ({
                     borderRadius={FOUNDATION_THEME.border.radius[8]}
                     transition="all 75ms"
                 />
-                <Block display="flex" flexDirection="column">
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    style={{ wordBreak: 'break-word' }}
+                >
                     <Text
                         fontSize={14}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}

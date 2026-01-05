@@ -150,6 +150,11 @@ import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '@juspay/blend-d
             description:
                 'Whether the trigger wrapper should take full width (useful for menu items)',
         },
+        disableInteractive: {
+            control: 'boolean',
+            description:
+                'If true, the tooltip will close when the cursor moves away from the trigger element, even if hovering over the tooltip itself. This prevents the tooltip from blocking interaction with elements below it.',
+        },
         children: {
             description:
                 'The trigger element that will show the tooltip on hover/focus',
@@ -897,7 +902,6 @@ export const FullWidthExamples: Story = {
         },
     },
 }
-
 // Max width examples
 export const MaxWidthExamples: Story = {
     render: () => (

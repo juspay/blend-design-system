@@ -5,6 +5,7 @@ import {
     Activity,
     LoaderCircle,
     ChartBar,
+    CircleDot,
 } from 'lucide-react'
 import {
     Charts,
@@ -28,6 +29,7 @@ import {
     LegendsChangeType,
     AxisType,
     AxisIntervalType,
+    DotItemDotProps,
 } from '../../../../packages/blend/lib/components/Charts/types'
 import {
     last1hour15minsData,
@@ -163,7 +165,10 @@ const TimezoneDemo = () => {
             <Charts
                 data={timezoneData}
                 chartType={ChartType.LINE}
-                colors={['#3b82f6', '#10b981']}
+                colors={[
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                ]}
                 xAxis={{
                     label: `Time (${timezoneOptions.find((tz) => tz.value === selectedTimezone)?.label})`,
                     type: AxisType.DATE_TIME,
@@ -704,6 +709,13 @@ const GranularChartsDemo = () => {
         dashboardData.length > 0 ? Object.keys(dashboardData[0].data) : []
     const activeKeys = selectedKeys.length > 0 ? selectedKeys : lineKeys
 
+    const chartColorsFormatted: { key: string; color: string }[] = lineKeys.map(
+        (key, index) => ({
+            key,
+            color: chartColors[index % chartColors.length],
+        })
+    )
+
     const handleLegendClick = (key: string) => {
         setSelectedKeys((prevSelected) => {
             const isCurrentlySelected = prevSelected.includes(key)
@@ -755,7 +767,7 @@ const GranularChartsDemo = () => {
                             <ChartLegends
                                 chartContainerRef={chartContainerRef}
                                 keys={lineKeys}
-                                colors={chartColors}
+                                colors={chartColorsFormatted}
                                 handleLegendClick={handleLegendClick}
                                 handleLegendEnter={handleLegendEnter}
                                 handleLegendLeave={handleLegendLeave}
@@ -806,8 +818,15 @@ const GranularChartsDemo = () => {
                                     <div className="h-68 w-full">
                                         <CoreChart
                                             data={dashboardData}
+                                            tooltip={{
+                                                position: { y: -120 },
+                                                allowEscapeViewBox: {
+                                                    x: false,
+                                                    y: true,
+                                                },
+                                            }}
                                             chartType={panel.type}
-                                            colors={chartColors}
+                                            colors={chartColorsFormatted}
                                             hoveredKey={hoveredKey}
                                             onHoveredKeyChange={setHoveredKey}
                                             selectedKeys={selectedKeys}
@@ -5641,16 +5660,37 @@ const ChartDemo = () => {
         }
     }
 
-    const getColors = () => {
+    const getColors = (): { key: string; color: string }[] => {
         switch (selectedChartType) {
             case ChartType.LINE:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
             case ChartType.BAR:
-                return ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#8b5cf6' },
+                    { key: '1', color: '#06b6d4' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
             case ChartType.PIE:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                    { key: '4', color: '#8b5cf6' },
+                ]
             default:
-                return ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                return [
+                    { key: '0', color: '#3b82f6' },
+                    { key: '1', color: '#10b981' },
+                    { key: '2', color: '#f59e0b' },
+                    { key: '3', color: '#ef4444' },
+                ]
         }
     }
 
@@ -5660,6 +5700,52 @@ const ChartDemo = () => {
         { value: 20.21, delta: 5.1, changeType: LegendsChangeType.INCREASE },
         { value: 10.21, delta: 2.1, changeType: LegendsChangeType.DECREASE },
     ]
+
+    const CustomizedDot = (props: DotItemDotProps) => {
+        const { cx, cy, value, payload } = props
+
+        if (cx == null || cy == null) {
+            return <g />
+        }
+
+        if (payload?.name?.toString() === '1759773600000' && value === 28.16) {
+            return (
+                <CircleDot
+                    x={cx - 7}
+                    y={cy - 7}
+                    stroke="red"
+                    strokeWidth={3}
+                    size={14}
+                    // r={12}
+                />
+            )
+        }
+
+        return <g />
+    }
+    const keys = Object.keys(last1hour5minsData[0].data)
+    const customColors = keys.map((key) => {
+        switch (key) {
+            case 'Overall':
+                return { key, color: '#10b981' }
+            case 'PAYTM_V2':
+                return { key, color: '#f59e0b' }
+            case 'DUMMY':
+                return { key, color: '#ef4444' }
+            case 'RAZORPAY':
+                return { key, color: '#c75e0e' }
+            case 'GOCASHFREE':
+                return { key, color: '#32a852' }
+            case 'BILLDESK':
+                return { key, color: '#a89d32' }
+            case 'UNKNOWN':
+                return { key, color: '#8b5cf4ff' }
+            case 'CCAVENUE_V2':
+                return { key, color: '#a89d32' }
+            default:
+                return { key, color: '#c70e0e' }
+        }
+    })
 
     return (
         <div className="p-8 gap-12 flex flex-col ">
@@ -5746,6 +5832,7 @@ const ChartDemo = () => {
                     show: showSkeleton,
                     variant: 'pulse',
                 }}
+                colors={customColors}
                 data-chart-segment="Chart-1"
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
@@ -5778,8 +5865,101 @@ const ChartDemo = () => {
             />
 
             <Charts
+                chartType={ChartType.AREA}
+                data={[
+                    {
+                        name: 'Links created',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Links created',
+                                    val: 550,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        name: 'Transaction created',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Transaction created',
+                                    val: 0,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        name: 'Link Success',
+                        data: {
+                            value: {
+                                primary: {
+                                    label: 'Link Success',
+                                    val: 0,
+                                },
+                            },
+                        },
+                    },
+                ]}
+                colors={[
+                    {
+                        key: '0',
+                        color: FOUNDATION_THEME.colors.primary[500] as string,
+                    },
+                ]}
+                height={400}
+                showHeader={true}
+                showCollapseIcon={false}
+                chartHeaderSlot={
+                    <div
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 600,
+                            color: FOUNDATION_THEME.colors.gray[800],
+                        }}
+                    >
+                        Distribution Managed by JUSPAY
+                    </div>
+                }
+                slot1={
+                    <Block width={200}>
+                        <SingleSelect
+                            variant={SelectMenuVariant.CONTAINER}
+                            placeholder="Channel Types"
+                            selected="All Channels"
+                            onSelect={(value: string) => {
+                                console.log('Selected:', value)
+                            }}
+                            items={[
+                                {
+                                    items: [
+                                        {
+                                            label: 'All Channels',
+                                            value: 'All Channels',
+                                        },
+                                        { label: 'Web', value: 'Web' },
+                                        { label: 'Mobile', value: 'Mobile' },
+                                        { label: 'API', value: 'API' },
+                                    ],
+                                },
+                            ]}
+                        />
+                    </Block>
+                }
+            />
+
+            <Charts
                 height={200}
                 data={last1hour15minsData}
+                legends={[
+                    { title: 'Overall', total: '54' },
+                    { title: 'PAYTM_V2', total: '10' },
+                    { title: 'DUMMY', total: '10' },
+                    { title: 'RAZORPAY', total: '10' },
+                    { title: 'GOCASHFREE', total: '10' },
+                    { title: 'CCAVENUE_V2', total: '10' },
+                ]}
+                CustomizedDot={CustomizedDot}
                 chartType={ChartType.LINE}
                 xAxis={{
                     label: 'Date (Timestamp)',
@@ -5790,12 +5970,12 @@ const ChartDemo = () => {
                     // timeOnly: true,
                     // showYear: true,
                 }}
-                yAxis={{
-                    label: 'Currency',
-                    show: true,
-                    showLabel: true,
-                    type: AxisType.CURRENCY,
-                }}
+                // yAxis={{
+                //     label: 'Currency',
+                //     show: true,
+                //     showLabel: true,
+                //     type: AxisType.CURRENCY,
+                // }}
                 chartHeaderSlot={
                     <div className="chart-header">
                         <Activity size={16} className="text-green-600" />
@@ -6288,7 +6468,12 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={financialData}
                         chartType={ChartType.LINE}
-                        colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+                        colors={[
+                            { key: '0', color: '#3b82f6' },
+                            { key: '1', color: '#10b981' },
+                            { key: '2', color: '#f59e0b' },
+                            { key: '3', color: '#ef4444' },
+                        ]}
                         chartHeaderSlot={
                             <div className="chart-header">
                                 <TrendingUp
@@ -6319,7 +6504,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                         height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
-                        colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
+                        // colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
                         chartHeaderSlot={
                             <div className="chart-header">
                                 <Activity
@@ -6340,7 +6525,12 @@ const [selectedKeys, setSelectedKeys] = useState([])
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}
-                        colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444']}
+                        colors={[
+                            { key: '0', color: '#3b82f6' },
+                            { key: '1', color: '#10b981' },
+                            { key: '2', color: '#f59e0b' },
+                            { key: '3', color: '#ef4444' },
+                        ]}
                         chartHeaderSlot={
                             <div className="chart-header">
                                 <Users size={16} className="text-green-600" />
@@ -6436,16 +6626,16 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             chartType={ChartType.PIE}
                             legendPosition={ChartLegendPosition.TOP}
                             colors={[
-                                '#3b82f6',
-                                '#10b981',
-                                '#f59e0b',
-                                '#ef4444',
-                                '#8b5cf6',
-                                '#06b6d4',
-                                '#f97316',
-                                '#84cc16',
-                                '#ec4899',
-                                '#6366f1',
+                                { key: '0', color: '#3b82f6' },
+                                { key: '1', color: '#10b981' },
+                                { key: '2', color: '#f59e0b' },
+                                { key: '3', color: '#ef4444' },
+                                { key: '4', color: '#8b5cf6' },
+                                { key: '5', color: '#06b6d4' },
+                                { key: '6', color: '#f97316' },
+                                { key: '7', color: '#84cc16' },
+                                { key: '8', color: '#ec4899' },
+                                { key: '9', color: '#6366f1' },
                             ]}
                             chartHeaderSlot={
                                 <div className="chart-header">
@@ -6592,7 +6782,10 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             },
                         ]}
                         chartType={ChartType.SCATTER}
-                        colors={['#3b82f6', '#10b981']}
+                        colors={[
+                            { key: '0', color: '#3b82f6' },
+                            { key: '1', color: '#10b981' },
+                        ]}
                         xAxis={{
                             label: 'Marketing Spend ($K)',
                             type: AxisType.CURRENCY,
@@ -6723,7 +6916,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 },
                             ]}
                             chartType={ChartType.BAR}
-                            colors={['#3b82f6']}
+                            colors={[{ key: '0', color: '#3b82f6' }]}
                             xAxis={{
                                 label: 'Date',
                                 type: AxisType.DATE_TIME,
@@ -6827,7 +7020,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 },
                             ]}
                             chartType={ChartType.LINE}
-                            colors={['#10b981']}
+                            colors={[{ key: '0', color: '#10b981' }]}
                             xAxis={{
                                 label: 'Date',
                                 type: AxisType.DATE_TIME,
@@ -6942,7 +7135,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                                 },
                             ]}
                             chartType={ChartType.LINE}
-                            colors={['#f59e0b']}
+                            colors={[{ key: '0', color: '#f59e0b' }]}
                             xAxis={{
                                 label: 'Time',
                                 type: AxisType.DATE_TIME,
@@ -7124,7 +7317,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={timeData}
                         chartType={ChartType.BAR}
-                        colors={['#ef4444']}
+                        colors={[{ key: '0', color: '#ef4444' }]}
                         xAxis={{
                             label: 'POSIX Time (seconds)',
                             show: true,
@@ -7149,7 +7342,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={utcFormatData}
                         chartType={ChartType.LINE}
-                        colors={['#8b5cf6']}
+                        colors={[{ key: '0', color: '#8b5cf6' }]}
                         xAxis={{
                             label: 'UTC Formats',
                             show: true,
@@ -7282,7 +7475,10 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={timeSeriesData}
                         chartType={ChartType.LINE}
-                        colors={['#3b82f6', '#10b981']}
+                        colors={[
+                            { key: '0', color: '#3b82f6' },
+                            { key: '1', color: '#10b981' },
+                        ]}
                         xAxis={{
                             label: 'Time & Date',
                             show: true,
@@ -7312,7 +7508,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={timeSeriesData}
                         chartType={ChartType.BAR}
-                        colors={['#f59e0b']}
+                        colors={[{ key: '0', color: '#f59e0b' }]}
                         xAxis={{
                             label: 'Date (Standard Format)',
                             show: true,
@@ -7397,7 +7593,7 @@ xAxis={{
                     <Charts
                         data={dateTimeData}
                         chartType={ChartType.LINE}
-                        colors={['#3b82f6']}
+                        colors={[{ key: '0', color: '#3b82f6' }]}
                         xAxis={{
                             label: 'Date (ISO Format)',
                             show: true,
@@ -7425,7 +7621,7 @@ xAxis={{
                     <Charts
                         data={timestampData}
                         chartType={ChartType.BAR}
-                        colors={['#10b981']}
+                        colors={[{ key: '0', color: '#10b981' }]}
                         xAxis={{
                             label: 'Date (Timestamp)',
                             show: true,
@@ -7454,7 +7650,7 @@ xAxis={{
                     <Charts
                         data={dateTimeData}
                         chartType={ChartType.BAR}
-                        colors={['#f59e0b']}
+                        colors={[{ key: '0', color: '#f59e0b' }]}
                         xAxis={{
                             label: 'Date',
                             show: true,
@@ -7545,7 +7741,7 @@ xAxis={{
                     <Charts
                         data={financialData}
                         chartType={ChartType.BAR}
-                        colors={['#10b981']}
+                        colors={[{ key: '0', color: '#10b981' }]}
                         xAxis={{
                             label: 'Months',
                             show: true,
@@ -7576,7 +7772,7 @@ xAxis={{
                     <Charts
                         data={performanceData}
                         chartType={ChartType.LINE}
-                        colors={['#3b82f6']}
+                        colors={[{ key: '0', color: '#3b82f6' }]}
                         xAxis={{
                             label: 'Performance Metrics',
                             show: true,
@@ -7641,7 +7837,7 @@ xAxis={{
                     <Charts
                         data={financialData}
                         chartType={ChartType.BAR}
-                        colors={['#3b82f6']}
+                        colors={[{ key: '0', color: '#3b82f6' }]}
                         xAxis={{
                             label: 'Custom Month Ticks',
                             show: true,
@@ -7688,7 +7884,7 @@ xAxis={{
                     <Charts
                         data={performanceData}
                         chartType={ChartType.LINE}
-                        colors={['#10b981']}
+                        colors={[{ key: '0', color: '#10b981' }]}
                         xAxis={{
                             label: 'Performance Metrics',
                             show: true,
@@ -7736,7 +7932,7 @@ xAxis={{
                     <Charts
                         data={analyticsData}
                         chartType={ChartType.BAR}
-                        colors={['#f59e0b']}
+                        colors={[{ key: '0', color: '#f59e0b' }]}
                         xAxis={{
                             label: 'Device Categories',
                             show: true,
@@ -8025,7 +8221,11 @@ xAxis={{
                     <Charts
                         data={performanceData}
                         chartType={ChartType.BAR}
-                        colors={['#dc2626', '#059669', '#7c3aed']}
+                        colors={[
+                            { key: '0', color: '#dc2626' },
+                            { key: '1', color: '#059669' },
+                            { key: '2', color: '#7c3aed' },
+                        ]}
                         chartHeaderSlot={
                             <div className="chart-header">
                                 <h4 style={{ margin: 0 }}>
@@ -8855,7 +9055,11 @@ xAxis={{
                                 <Charts
                                     data={[]} // Empty data array
                                     chartType={ChartType.LINE}
-                                    colors={['#3b82f6', '#10b981', '#f59e0b']}
+                                    colors={[
+                                        { key: '0', color: '#3b82f6' },
+                                        { key: '1', color: '#10b981' },
+                                        { key: '2', color: '#f59e0b' },
+                                    ]}
                                     chartHeaderSlot={null}
                                     xAxis={{
                                         label: 'Time Period',
@@ -8894,7 +9098,10 @@ xAxis={{
                                 <Charts
                                     data={[]} // Empty data array for cleaner demo
                                     chartType={ChartType.BAR}
-                                    colors={['#ef4444', '#8b5cf6']}
+                                    colors={[
+                                        { key: '0', color: '#ef4444' },
+                                        { key: '1', color: '#8b5cf6' },
+                                    ]}
                                     chartHeaderSlot={null}
                                     xAxis={{
                                         label: 'Categories',
@@ -8918,7 +9125,11 @@ xAxis={{
                                 <Charts
                                     data={[]} // Empty data array
                                     chartType={ChartType.PIE}
-                                    colors={['#f97316', '#06b6d4', '#84cc16']}
+                                    colors={[
+                                        { key: '0', color: '#f97316' },
+                                        { key: '1', color: '#06b6d4' },
+                                        { key: '2', color: '#84cc16' },
+                                    ]}
                                     chartHeaderSlot={null}
                                 />
                             </div>

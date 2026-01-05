@@ -42,6 +42,33 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
     disconnect: vi.fn(),
 }))
 
+// Mock CSS.supports for Highcharts compatibility
+// Highcharts uses CSS.supports which is not available in jsdom
+const mockCSSSupports = vi.fn().mockImplementation(() => true)
+
+if (typeof global.CSS === 'undefined') {
+    ;(global as unknown as { CSS: { supports: typeof mockCSSSupports } }).CSS =
+        {
+            supports: mockCSSSupports,
+        }
+} else {
+    if (!CSS.supports || typeof CSS.supports !== 'function') {
+        Object.defineProperty(CSS, 'supports', {
+            writable: true,
+            configurable: true,
+            value: mockCSSSupports,
+        })
+    }
+}
+
+// Also ensure window.CSS exists
+if (typeof window !== 'undefined' && typeof window.CSS === 'undefined') {
+    ;(window as unknown as { CSS: { supports: typeof mockCSSSupports } }).CSS =
+        {
+            supports: mockCSSSupports,
+        }
+}
+
 // Suppress console errors in tests unless explicitly testing them
 const originalError = console.error
 beforeAll(() => {

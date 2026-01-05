@@ -3,6 +3,7 @@ import { SortDirection, FilterType, ColumnDefinition } from '../types'
 export type SortState = {
     currentSortField: string | null
     currentSortDirection: SortDirection
+    currentSortType?: string // Optional sort type (e.g., 'primary', 'delta', 'absolute')
 }
 
 export type FilterState = {
@@ -30,25 +31,31 @@ export type ColumnFilterHandler = (
 ) => void
 
 export type SortHandlers = {
-    handleSort: (field: string) => void
-    handleSortAscending: (field: string) => void
-    handleSortDescending: (field: string) => void
+    handleSort: (field: string, sortType?: string) => void
+    handleSortAscending: (field: string, sortType?: string) => void
+    handleSortDescending: (field: string, sortType?: string) => void
 }
 
 export const createSortHandlers = (
     sortState: SortState,
-    onSort: (field: keyof Record<string, unknown>) => void,
-    onSortAscending?: (field: keyof Record<string, unknown>) => void,
-    onSortDescending?: (field: keyof Record<string, unknown>) => void
+    onSort: (field: keyof Record<string, unknown>, sortType?: string) => void,
+    onSortAscending?: (
+        field: keyof Record<string, unknown>,
+        sortType?: string
+    ) => void,
+    onSortDescending?: (
+        field: keyof Record<string, unknown>,
+        sortType?: string
+    ) => void
 ): SortHandlers => {
-    const handleSort = (field: string) => {
-        onSort(field as keyof Record<string, unknown>)
+    const handleSort = (field: string, sortType?: string) => {
+        onSort(field as keyof Record<string, unknown>, sortType)
     }
 
-    const handleSortAscending = (field: string) => {
+    const handleSortAscending = (field: string, sortType?: string) => {
         const fieldKey = field as keyof Record<string, unknown>
         if (onSortAscending) {
-            onSortAscending(fieldKey)
+            onSortAscending(fieldKey, sortType)
             return
         }
 
@@ -56,28 +63,28 @@ export const createSortHandlers = (
             sortState.currentSortField === field &&
             sortState.currentSortDirection === SortDirection.ASCENDING
         ) {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
             setTimeout(() => {
-                onSort(fieldKey)
+                onSort(fieldKey, sortType)
             }, 0)
         } else if (
             sortState.currentSortField === field &&
             sortState.currentSortDirection === SortDirection.DESCENDING
         ) {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
             setTimeout(() => {
-                onSort(fieldKey)
+                onSort(fieldKey, sortType)
             }, 0)
         } else {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
         }
     }
 
-    const handleSortDescending = (field: string) => {
+    const handleSortDescending = (field: string, sortType?: string) => {
         const fieldKey = field as keyof Record<string, unknown>
 
         if (onSortDescending) {
-            onSortDescending(fieldKey)
+            onSortDescending(fieldKey, sortType)
             return
         }
 
@@ -85,16 +92,16 @@ export const createSortHandlers = (
             sortState.currentSortField === field &&
             sortState.currentSortDirection === SortDirection.DESCENDING
         ) {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
         } else if (
             sortState.currentSortField === field &&
             sortState.currentSortDirection === SortDirection.ASCENDING
         ) {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
         } else {
-            onSort(fieldKey)
+            onSort(fieldKey, sortType)
             setTimeout(() => {
-                onSort(fieldKey)
+                onSort(fieldKey, sortType)
             }, 0)
         }
     }
