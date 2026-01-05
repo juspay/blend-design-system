@@ -1687,37 +1687,80 @@ const DataTable = forwardRef(
                                                 }
                                             />
                                         ) : (
-                                            <>
-                                                <tbody
-                                                    style={{ height: '100%' }}
+                                            <tbody style={{ height: '100%' }}>
+                                                <tr
+                                                    style={{
+                                                        height: '100%',
+                                                    }}
                                                 >
-                                                    <tr
+                                                    <td
+                                                        colSpan={
+                                                            visibleColumns.length +
+                                                            (enableRowSelection
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableRowExpansion
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableInlineEdit
+                                                                ? 1
+                                                                : 0) +
+                                                            (enableColumnManager
+                                                                ? 1
+                                                                : 0)
+                                                        }
+                                                        role="status"
+                                                        aria-live="polite"
+                                                        aria-atomic="true"
                                                         style={{
+                                                            padding: '0',
                                                             height: '100%',
+                                                            position:
+                                                                'relative',
+                                                            color: tableToken
+                                                                .dataTable.table
+                                                                .body.cell
+                                                                .color,
+                                                            fontSize:
+                                                                tableToken
+                                                                    .dataTable
+                                                                    .table.body
+                                                                    .cell
+                                                                    .fontSize,
                                                         }}
                                                     >
-                                                        <td
-                                                            colSpan={
-                                                                visibleColumns.length +
-                                                                (enableRowSelection
-                                                                    ? 1
-                                                                    : 0) +
-                                                                (enableRowExpansion
-                                                                    ? 1
-                                                                    : 0) +
-                                                                (enableInlineEdit
-                                                                    ? 1
-                                                                    : 0) +
-                                                                (enableColumnManager
-                                                                    ? 1
-                                                                    : 0)
-                                                            }
+                                                        <Block
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                minHeight:
+                                                                    emptyStateMinHeight,
+                                                                backgroundColor:
+                                                                    FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
+                                                            }}
+                                                        />
+                                                        <Block
                                                             role="status"
                                                             aria-live="polite"
                                                             aria-atomic="true"
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
                                                             style={{
-                                                                padding: '0',
-                                                                height: '100%',
+                                                                position:
+                                                                    'absolute',
+                                                                top: 0,
+                                                                left: 0,
+                                                                right: 0,
+                                                                bottom: 0,
+                                                                minHeight:
+                                                                    emptyStateMinHeight,
+                                                                backgroundColor:
+                                                                    FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
                                                                 color: tableToken
                                                                     .dataTable
                                                                     .table.body
@@ -1729,92 +1772,55 @@ const DataTable = forwardRef(
                                                                         .body
                                                                         .cell
                                                                         .fontSize,
+                                                                pointerEvents:
+                                                                    'none',
                                                             }}
                                                         >
-                                                            <Block
-                                                                style={{
-                                                                    width: '100%',
-                                                                    height: '100%',
-                                                                    minHeight:
-                                                                        emptyStateMinHeight,
-                                                                    backgroundColor:
+                                                            {isLoading ? (
+                                                                <Block
+                                                                    display="flex"
+                                                                    alignItems="center"
+                                                                    justifyContent="center"
+                                                                    gap={
                                                                         FOUNDATION_THEME
-                                                                            .colors
-                                                                            .gray[0],
-                                                                }}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                                <Block
-                                                    role="status"
-                                                    aria-live="polite"
-                                                    aria-atomic="true"
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        left: 0,
-                                                        right: 0,
-                                                        bottom: 0,
-                                                        minHeight:
-                                                            emptyStateMinHeight,
-                                                        backgroundColor:
-                                                            FOUNDATION_THEME
-                                                                .colors.gray[0],
-                                                        color: tableToken
-                                                            .dataTable.table
-                                                            .body.cell.color,
-                                                        fontSize:
-                                                            tableToken.dataTable
-                                                                .table.body.cell
-                                                                .fontSize,
-                                                        pointerEvents: 'none',
-                                                    }}
-                                                >
-                                                    {isLoading ? (
-                                                        <Block
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="center"
-                                                            gap={
-                                                                FOUNDATION_THEME
-                                                                    .unit[8]
-                                                            }
-                                                            style={{
-                                                                pointerEvents:
-                                                                    'auto',
-                                                            }}
-                                                        >
-                                                            <Loader2
-                                                                size={
-                                                                    FOUNDATION_THEME
-                                                                        .unit[20]
-                                                                }
-                                                                className="animate-spin"
-                                                                style={{
-                                                                    animation:
-                                                                        'spin 1s linear infinite',
-                                                                }}
-                                                            />
-                                                            <span>
-                                                                Loading data...
-                                                            </span>
+                                                                            .unit[8]
+                                                                    }
+                                                                    style={{
+                                                                        pointerEvents:
+                                                                            'auto',
+                                                                    }}
+                                                                >
+                                                                    <Loader2
+                                                                        size={
+                                                                            FOUNDATION_THEME
+                                                                                .unit[20]
+                                                                        }
+                                                                        className="animate-spin"
+                                                                        style={{
+                                                                            animation:
+                                                                                'spin 1s linear infinite',
+                                                                        }}
+                                                                    />
+                                                                    <span>
+                                                                        Loading
+                                                                        data...
+                                                                    </span>
+                                                                </Block>
+                                                            ) : (
+                                                                <span
+                                                                    style={{
+                                                                        pointerEvents:
+                                                                            'auto',
+                                                                    }}
+                                                                >
+                                                                    No data
+                                                                    available
+                                                                </span>
+                                                            )}
                                                         </Block>
-                                                    ) : (
-                                                        <span
-                                                            style={{
-                                                                pointerEvents:
-                                                                    'auto',
-                                                            }}
-                                                        >
-                                                            No data available
-                                                        </span>
-                                                    )}
-                                                </Block>
-                                            </>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
                                         )}
                                     </table>
                                 </ScrollableContainer>

@@ -170,7 +170,7 @@ const SidebarDemo = () => {
         | 'formElements'
         | 'outageCharts'
         | 'chartDemoV2'
-    >('formElements')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
