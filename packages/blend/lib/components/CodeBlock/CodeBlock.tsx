@@ -70,6 +70,8 @@ const TokenizedCodeLine: React.FC<TokenizedCodeLineProps> = ({
     paddingRight,
 }) => (
     <code
+        data-element="codeblock-line-code"
+        data-id={tokens.map((token) => token.value).join('')}
         style={{
             flex: 1,
             whiteSpace: 'pre-wrap',
@@ -103,13 +105,23 @@ const TokenizedCodeLine: React.FC<TokenizedCodeLineProps> = ({
 type CodeLineWrapperProps = {
     children: React.ReactNode
     style?: React.CSSProperties
+    lineIndex?: number
 }
 
 const CodeLineWrapper: React.FC<CodeLineWrapperProps> = ({
     children,
     style,
+    lineIndex,
 }) => (
-    <Block display="flex" alignItems="flex-start" style={style}>
+    <Block
+        data-element="codeblock-line"
+        data-numeric={
+            lineIndex !== undefined ? (lineIndex + 1).toString() : undefined
+        }
+        display="flex"
+        alignItems="flex-start"
+        style={style}
+    >
         {children}
     </Block>
 )
@@ -249,6 +261,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 boxShadow={tokens.boxShadow}
                 role="region"
                 aria-label={codeBlockDescription}
+                data-codeblock={header}
             >
                 {/* Header */}
                 {showHeader && (
@@ -278,6 +291,8 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             )}
                             <h2
                                 id={`${headerId}-title`}
+                                data-element="codeblock-title"
+                                data-id={header}
                                 style={{
                                     margin: 0,
                                     fontSize: tokens.header.text.fontSize,
@@ -301,6 +316,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
                         {showCopyButton && (
                             <Button
+                                data-element="codeblock-copy"
                                 type="button"
                                 onClick={copyToClipboard}
                                 buttonType={ButtonType.SECONDARY}
@@ -370,6 +386,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                         .map((line, lineIndex) => (
                                             <CodeLineWrapper
                                                 key={lineIndex}
+                                                lineIndex={lineIndex}
                                                 style={getDiffLineBackgroundLocal(
                                                     line.type
                                                 )}
@@ -446,6 +463,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                         .map((line, lineIndex) => (
                                             <CodeLineWrapper
                                                 key={lineIndex}
+                                                lineIndex={lineIndex}
                                                 style={getDiffLineBackgroundLocal(
                                                     line.type
                                                 )}
@@ -511,6 +529,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 return (
                                     <CodeLineWrapper
                                         key={lineIndex}
+                                        lineIndex={lineIndex}
                                         style={getDiffLineBackgroundLocal(
                                             lineType
                                         )}
