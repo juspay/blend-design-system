@@ -769,7 +769,7 @@ const DataTable = forwardRef(
             }
         }
 
-        const handleSort = (field: keyof T) => {
+        const handleSort = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -778,26 +778,41 @@ const DataTable = forwardRef(
             let direction: SortDirection
             let newSortConfig: SortConfig | null
 
-            if (sortConfig?.field === field) {
+            const isSameSort =
+                sortConfig?.field === field && sortConfig?.sortType === sortType
+
+            if (isSameSort) {
                 if (sortConfig.direction === SortDirection.ASCENDING) {
                     direction = SortDirection.DESCENDING
-                    newSortConfig = { field: field.toString(), direction }
+                    newSortConfig = {
+                        field: field.toString(),
+                        direction,
+                        sortType,
+                    }
                 } else if (sortConfig.direction === SortDirection.DESCENDING) {
                     direction = SortDirection.NONE
                     newSortConfig = null
                 } else {
                     direction = SortDirection.ASCENDING
-                    newSortConfig = { field: field.toString(), direction }
+                    newSortConfig = {
+                        field: field.toString(),
+                        direction,
+                        sortType,
+                    }
                 }
             } else {
                 direction = SortDirection.ASCENDING
-                newSortConfig = { field: field.toString(), direction }
+                newSortConfig = {
+                    field: field.toString(),
+                    direction,
+                    sortType,
+                }
             }
 
             applySortConfig(field, newSortConfig)
         }
 
-        const handleSortAscending = (field: keyof T) => {
+        const handleSortAscending = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -805,19 +820,21 @@ const DataTable = forwardRef(
 
             const isCurrentlyAscending =
                 sortConfig?.field === field &&
-                sortConfig.direction === SortDirection.ASCENDING
+                sortConfig.direction === SortDirection.ASCENDING &&
+                sortConfig?.sortType === sortType
 
             const newSortConfig = isCurrentlyAscending
                 ? null
                 : {
                       field: field.toString(),
                       direction: SortDirection.ASCENDING,
+                      sortType,
                   }
 
             applySortConfig(field, newSortConfig)
         }
 
-        const handleSortDescending = (field: keyof T) => {
+        const handleSortDescending = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -825,13 +842,15 @@ const DataTable = forwardRef(
 
             const isCurrentlyDescending =
                 sortConfig?.field === field &&
-                sortConfig.direction === SortDirection.DESCENDING
+                sortConfig.direction === SortDirection.DESCENDING &&
+                sortConfig?.sortType === sortType
 
             const newSortConfig = isCurrentlyDescending
                 ? null
                 : {
                       field: field.toString(),
                       direction: SortDirection.DESCENDING,
+                      sortType,
                   }
 
             applySortConfig(field, newSortConfig)
