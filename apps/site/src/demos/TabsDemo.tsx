@@ -834,22 +834,6 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                         <h3 className="text-lg font-semibold mb-4">
                             Payment Analytics Dashboard
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Total tabs: {ANALYTICS_TABS_DATA.length}. Default
-                            tabs (isDefault: true):{' '}
-                            {
-                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
-                                    .length
-                            }
-                            . Visible tabs: Up to{' '}
-                            {Math.min(
-                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
-                                    .length,
-                                12
-                            )}{' '}
-                            default tabs (maxDisplayTabs: 12). Dropdown shows
-                            all {ANALYTICS_TABS_DATA.length} tabs.
-                        </p>
                         <Tabs
                             items={testData}
                             value={analyticsActiveTab}
