@@ -247,6 +247,15 @@ function MyComponent() {
         ],
         [
             {
+                content: 'StatCard.showBorder',
+                hintText:
+                    'Optional boolean to control whether the stat card displays a border. When set to false, the card appears without a border. Defaults to true, maintaining backward compatibility with existing implementations.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true (default), false' },
+        ],
+        [
+            {
                 content: 'StatCardChange.value',
                 hintText: 'The percentage change value',
             },
