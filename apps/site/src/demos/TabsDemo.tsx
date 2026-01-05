@@ -221,8 +221,8 @@ const TabsDemo = () => {
         CONVERSATION_TABS.CHAT
     )
 
-    const [analyticsTabsItems, setAnalyticsTabsItems] = useState<TabItem[]>(
-        ANALYTICS_TABS_DATA.slice(0, 4).map((tab) => ({
+    const analyticsTabsItems: TabItem[] = ANALYTICS_TABS_DATA.slice(0, 4).map(
+        (tab) => ({
             value: tab.value,
             label: tab.label,
             content: (
@@ -236,7 +236,7 @@ const TabsDemo = () => {
                 </div>
             ),
             isDefault: tab.isDefault,
-        }))
+        })
     )
     const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
         ANALYTICS_TABS_DATA[0].value
@@ -419,7 +419,7 @@ const TabsDemo = () => {
     }
 
     const handleAnalyticsTabAdd = () => {
-        const newValue = 't1'
+        const newValue = 'Test_Tab'
         // Check if value already exists before updating state
         const alreadyExists = testData.some((item) => item.value === newValue)
 
@@ -429,7 +429,7 @@ const TabsDemo = () => {
                 ...prev,
                 {
                     value: newValue,
-                    label: 't1',
+                    label: 'Test_Tab',
                     content: null,
                     isDefault: true,
                     closable: true,
