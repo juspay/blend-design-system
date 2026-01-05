@@ -87,7 +87,10 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         }, [processedItems, activeTab])
 
         const dropdownItems = useMemo(() => {
-            return prepareDropdownItems(sourceItems, sourceItems)
+            const defaultItems = sourceItems.filter(
+                (item) => item.isDefault === true
+            )
+            return prepareDropdownItems(defaultItems, defaultItems)
         }, [sourceItems])
 
         const originalTabValues = useMemo(

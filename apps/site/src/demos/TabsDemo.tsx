@@ -69,121 +69,7 @@ const ANALYTICS_TABS_DATA = [
         label: 'Actual Payment Status',
         isDefault: true,
     },
-    { value: 'order_status', label: 'Order Status', isDefault: false },
-    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: false },
-    { value: 'order_type', label: 'Order Type', isDefault: false },
-    { value: 'auth_type', label: 'Auth Type', isDefault: false },
-    { value: 'card_brand', label: 'Card Brand', isDefault: false },
-    {
-        value: 'card_last_four_digits',
-        label: 'Card Last Four Digits',
-        isDefault: false,
-    },
-    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: false },
-    { value: 'ticket_size', label: 'Ticket Size', isDefault: false },
-    {
-        value: 'gateway_reference_id',
-        label: 'Gateway Reference Id',
-        isDefault: false,
-    },
-    { value: 'emi', label: 'Is Emi', isDefault: false },
-    { value: 'emi_type', label: 'Emi Type', isDefault: false },
-    { value: 'emi_tenure', label: 'Emi Tenure', isDefault: false },
-    { value: 'business_region', label: 'Business Region', isDefault: false },
-    {
-        value: 'card_issuer_country',
-        label: 'Card Issuer Country',
-        isDefault: false,
-    },
-    { value: 'ord_currency', label: 'Order Currency', isDefault: false },
-    { value: 'emi_bank', label: 'Emi Bank', isDefault: false },
-    { value: 'is_token_bin', label: 'Is Token Bin', isDefault: false },
-    { value: 'is_offer_txn', label: 'Is Offer Txn', isDefault: false },
-    { value: 'is_upicc', label: 'Is UPI CC', isDefault: false },
-    { value: 'txn_conflict', label: 'Txn Conflict', isDefault: false },
-    { value: 'lob', label: 'Lob', isDefault: false },
-    { value: 'payment_status', label: 'Payment Status', isDefault: false },
-    {
-        value: 'status_sync_source',
-        label: 'Status Sync Source',
-        isDefault: false,
-    },
-    { value: 'token_repeat', label: 'Token Repeat', isDefault: false },
-    {
-        value: 'using_stored_card',
-        label: 'Using Stored Card',
-        isDefault: false,
-    },
-    {
-        value: 'priority_logic_tag',
-        label: 'Priority Logic Tag',
-        isDefault: false,
-    },
-    { value: 'is_tokenized', label: 'Is Tokenized', isDefault: false },
-    { value: 'run_day_ist', label: 'Run Day', isDefault: false },
-    { value: 'run_month_ist', label: 'Run Month', isDefault: false },
-    { value: 'run_week_ist', label: 'Run Week', isDefault: false },
-    { value: 'run_hour_ist', label: 'Run Hour', isDefault: false },
-    {
-        value: 'order_source_object_id',
-        label: 'Order Source Object Id',
-        isDefault: false,
-    },
-    {
-        value: 'source_object',
-        label: 'Payment Method Subtype',
-        isDefault: false,
-    },
-    {
-        value: 'order_source_object',
-        label: 'Order Source Object',
-        isDefault: false,
-    },
-    { value: 'is_cvv_less_txn', label: 'Is Cvv Less Txn', isDefault: false },
-    { value: 'udf1', label: 'Udf1', isDefault: false },
-    { value: 'udf2', label: 'Udf2', isDefault: false },
-    { value: 'udf3', label: 'Udf3', isDefault: false },
-    { value: 'udf4', label: 'Udf4', isDefault: false },
-    { value: 'udf5', label: 'Udf5', isDefault: false },
-    { value: 'udf6', label: 'Udf6', isDefault: false },
-    { value: 'udf7', label: 'Udf7', isDefault: false },
-    { value: 'udf8', label: 'Udf8', isDefault: false },
-    { value: 'udf9', label: 'Udf9', isDefault: false },
-    { value: 'udf10', label: 'Udf10', isDefault: false },
-    {
-        value: 'prev_txn_status',
-        label: 'Previous Txn Status',
-        isDefault: false,
-    },
-    { value: 'error_message', label: 'PG Error Message', isDefault: false },
-    { value: 'resp_message', label: 'PG Response', isDefault: false },
-    { value: 'original_card_isin', label: 'Card Bin', isDefault: false },
-    { value: 'card_sub_type', label: 'Card Sub Type', isDefault: false },
-    { value: 'card_exp_month', label: 'Card Exp Month', isDefault: false },
-    { value: 'card_exp_year', label: 'Card Exp Year', isDefault: false },
-    { value: 'txn_object_type', label: 'Txn Object Type', isDefault: false },
-    { value: 'txn_type', label: 'Txn Type', isDefault: false },
-    { value: 'resp_code', label: 'PG Error Code', isDefault: false },
-    { value: 'juspay_error_code', label: 'Error Code', isDefault: false },
-    { value: 'juspay_error_message', label: 'Error Message', isDefault: false },
-    {
-        value: 'unified_response_category',
-        label: 'Error Category',
-        isDefault: false,
-    },
-    {
-        value: 'entire_payment_flow',
-        label: 'Entire Payment Flow',
-        isDefault: false,
-    },
-    {
-        value: 'stored_card_vault_provider',
-        label: 'Card Flow',
-        isDefault: false,
-    },
-    { value: 'platform', label: 'Platform', isDefault: false },
-    { value: 'use_merchant_proxy', label: 'Gateway Connect', isDefault: false },
-]
+] as TabItem[]
 
 const availableTabOptions = [
     { value: 'analytics', label: 'Analytics' },
@@ -208,6 +94,7 @@ const TabsDemo = () => {
     const [showIcons, setShowIcons] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [activeTab, setActiveTab] = useState('payment_gateway')
+    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
 
     const playgroundTabs: TabItem[] = [
         {
@@ -349,7 +236,6 @@ const TabsDemo = () => {
                 </div>
             ),
             isDefault: tab.isDefault,
-            closable: !tab.isDefault,
         }))
     )
     const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
@@ -478,7 +364,6 @@ const TabsDemo = () => {
                             </p>
                         </div>
                     ),
-                    closable: true,
                     isDefault: false,
                 })
                 return acc
@@ -503,46 +388,56 @@ const TabsDemo = () => {
     }
 
     const handleAnalyticsTabClose = (value: string) => {
-        const filteredTabs = analyticsTabsItems.filter(
-            (tab) => tab.value !== value
-        )
-        setAnalyticsTabsItems(filteredTabs)
+        setTestData((prev) => {
+            // Get all default tabs (isDefault: true) before filtering
+            const defaultTabsList = prev.filter((tab) => tab.isDefault === true)
 
-        if (value === analyticsActiveTab && filteredTabs.length > 0) {
-            setAnalyticsActiveTab(filteredTabs[0].value)
-        }
+            // Find the index of the closed tab in the default tabs list
+            const currentIndex = defaultTabsList.findIndex(
+                (tab) => tab.value === value
+            )
+
+            const filteredTabs = prev.filter((tab) => tab.value !== value)
+
+            // If the closed tab was active, switch to the previous default tab
+            if (value === analyticsActiveTab && filteredTabs.length > 0) {
+                let previousDefaultTab = null
+                if (currentIndex > 0) {
+                    // Previous default tab exists
+                    previousDefaultTab = defaultTabsList[currentIndex - 1]
+                } else if (currentIndex === 0 && defaultTabsList.length > 1) {
+                    // Closed tab is first default tab, so use the next default tab
+                    previousDefaultTab = defaultTabsList[currentIndex + 1]
+                }
+
+                if (previousDefaultTab) {
+                    setAnalyticsActiveTab(previousDefaultTab.value)
+                }
+            }
+            return filteredTabs
+        })
     }
 
     const handleAnalyticsTabAdd = () => {
-        const existingValues = new Set(
-            analyticsTabsItems.map((tab) => tab.value)
-        )
-        const remainingTabs = ANALYTICS_TABS_DATA.filter(
-            (tab) => !existingValues.has(tab.value)
-        )
+        const newValue = 't1'
+        // Check if value already exists before updating state
+        const alreadyExists = testData.some((item) => item.value === newValue)
 
-        if (remainingTabs.length > 0) {
-            const newTabs: TabItem[] = remainingTabs.map((tab) => ({
-                value: tab.value,
-                label: tab.label,
-                content: (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold mb-2">{tab.label}</h4>
-                        <p className="text-gray-600">
-                            Tab content for {tab.label} ({tab.value})
-                        </p>
-                    </div>
-                ),
-                isDefault: tab.isDefault || false,
-                closable: !tab.isDefault,
-            }))
-            setAnalyticsTabsItems((prev) => [...prev, ...newTabs])
-            if (newTabs.length > 0) {
-                setAnalyticsActiveTab(newTabs[0].value)
-            }
-        } else {
-            console.log('All available tabs from initial data have been added')
+        if (!alreadyExists) {
+            // Item doesn't exist, add it
+            setTestData((prev) => [
+                ...prev,
+                {
+                    value: newValue,
+                    label: 't1',
+                    content: null,
+                    isDefault: true,
+                    closable: true,
+                },
+            ])
         }
+        // Set as active tab (works for both new and existing tabs)
+        setAnalyticsActiveTab(newValue)
     }
 
     const multiSelectItems = [
@@ -956,23 +851,7 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                             all {ANALYTICS_TABS_DATA.length} tabs.
                         </p>
                         <Tabs
-                            items={ANALYTICS_TABS_DATA.map((tab) => ({
-                                value: tab.value,
-                                label: tab.label,
-                                content: (
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            {tab.label}
-                                        </h4>
-                                        <p className="text-gray-600">
-                                            Content for {tab.label} ({tab.value}
-                                            )
-                                        </p>
-                                    </div>
-                                ),
-                                isDefault: tab.isDefault,
-                                closable: !tab.isDefault,
-                            }))}
+                            items={testData}
                             value={analyticsActiveTab}
                             onValueChange={setAnalyticsActiveTab}
                             onTabClose={handleAnalyticsTabClose}
@@ -1069,7 +948,7 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                                 <strong>Closable Tabs:</strong>{' '}
                                 {
                                     analyticsTabsItems.filter(
-                                        (tab) => tab.closable
+                                        (tab) => tab.isDefault && tab.closable
                                     ).length
                                 }
                             </p>
@@ -1278,7 +1157,6 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
   label: tab.name,         // e.g., 'Payment Gateway'
   content: <TabContent />,
   isDefault: tab.isDefault || false,
-  closable: !tab.isDefault,
 }))
 
 // Use directly - underscores work correctly!
