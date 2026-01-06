@@ -131,6 +131,11 @@ import { StatCard, StatCardVariant, ChangeType } from '@juspay/blend-design-syst
             control: 'text',
             description: 'Tooltip text for the help icon',
         },
+        showBorder: {
+            control: 'boolean',
+            description: 'Control whether the stat card displays a border',
+            defaultValue: true,
+        },
     },
     tags: ['autodocs'],
 }

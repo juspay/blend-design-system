@@ -68,6 +68,7 @@ const StatCard = ({
     direction = StatCardDirection.VERTICAL,
     skeleton,
     dataDisplay = true,
+    showBorder = true,
     ...props
 }: StatCardProps) => {
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
@@ -328,11 +329,11 @@ const StatCard = ({
                 height={
                     height && !isSmallScreen ? height : statCardToken.height
                 }
-                border={statCardToken.border}
+                border={showBorder ? statCardToken.border : undefined}
                 borderRadius={statCardToken.borderRadius}
                 overflow="hidden"
                 backgroundColor={statCardToken.backgroundColor}
-                boxShadow={statCardToken.boxShadow}
+                boxShadow={showBorder ? statCardToken.boxShadow : undefined}
                 padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
                 display="flex"
                 flexDirection="column"
@@ -534,11 +535,11 @@ const StatCard = ({
     return (
         <Block
             height={height && !isSmallScreen ? height : statCardToken.height}
-            border={statCardToken.border}
+            border={showBorder ? statCardToken.border : undefined}
             borderRadius={statCardToken.borderRadius}
             overflow="hidden"
             backgroundColor={statCardToken.backgroundColor}
-            boxShadow={statCardToken.boxShadow}
+            boxShadow={showBorder ? statCardToken.boxShadow : undefined}
             padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
             display="flex"
             flexDirection="column"

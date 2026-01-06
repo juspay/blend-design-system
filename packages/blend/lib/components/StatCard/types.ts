@@ -78,4 +78,5 @@ export type StatCardProps = {
     direction?: StatCardDirection
     skeleton?: StatCardSkeletonProps
     dataDisplay?: boolean
+    showBorder?: boolean
 }
