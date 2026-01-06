@@ -109,7 +109,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_status',
@@ -125,7 +124,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_method',
@@ -142,7 +140,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_history',
@@ -159,7 +156,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
     ]
 
@@ -178,7 +174,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_status',
@@ -194,7 +189,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
     ])
 
@@ -235,7 +229,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: tab.isDefault,
         })
     )
     const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
@@ -302,8 +295,7 @@ const TabsDemo = () => {
             // Keep if it's not the tab being closed
             if (tab.value === value) return false
             // Remove non-default tabs that share the same content (concatenated tabs)
-            if (tab.content === tabToClose.content && !tab.isDefault)
-                return false
+            if (tab.content === tabToClose.content) return false
             return true
         })
 
@@ -364,7 +356,6 @@ const TabsDemo = () => {
                             </p>
                         </div>
                     ),
-                    isDefault: false,
                 })
                 return acc
             },
@@ -390,7 +381,7 @@ const TabsDemo = () => {
     const handleAnalyticsTabClose = (value: string) => {
         setTestData((prev) => {
             // Get all default tabs (isDefault: true) before filtering
-            const defaultTabsList = prev.filter((tab) => tab.isDefault === true)
+            const defaultTabsList = prev
 
             // Find the index of the closed tab in the default tabs list
             const currentIndex = defaultTabsList.findIndex(
@@ -917,10 +908,6 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                             </p>
                             <p>
                                 <strong>Total Tabs:</strong> {testData.length}
-                            </p>
-                            <p>
-                                <strong>Default Tabs:</strong>{' '}
-                                {testData.filter((tab) => tab.isDefault).length}
                             </p>
                             <p>
                                 <strong>Closable Tabs:</strong>{' '}

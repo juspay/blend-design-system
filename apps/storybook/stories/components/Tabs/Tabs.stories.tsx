@@ -48,8 +48,7 @@ A flexible tabs component for organizing content into multiple panels with vario
 - Support for icons in tab triggers
 - Expandable tab lists
 - Fit content option for tab lists
-- **Dynamic tab management with closable tabs**
-- **Default tabs that cannot be closed**
+- **Dynamic tab management with newItem tabs**
 - **Tab concatenation for shared content (TabA+TabB+TabC)**
 - **MultiSelect integration for adding tabs**
 - **Dropdown navigation for all tabs (including scrolled-out)**
@@ -121,13 +120,13 @@ const [tabs, setTabs] = useState<TabItem[]>([
     value: 'home',
     label: 'Home',
     content: <div>Home content</div>,
-    isDefault: true, // Cannot be closed
+    newItem: false, // Cannot be closed
   },
   {
     value: 'projects',
     label: 'Projects', 
     content: <div>Projects content</div>,
-    closable: true, // Can be closed
+    newItem: true, // Can be closed
   }
 ]);
 
@@ -367,7 +366,7 @@ export const Default: Story = {
 // ============================================================================
 
 /**
- * Dynamic tab management with closable tabs, MultiSelect integration, and dropdown navigation
+ * Dynamic tab management with newItem tabs, MultiSelect integration, and dropdown navigation
  */
 export const DynamicTabManagement: Story = {
     render: () => {
@@ -410,7 +409,7 @@ export const DynamicTabManagement: Story = {
         ]
 
         const [tabs, setTabs] = useState<TabItem[]>([
-            // Default tabs - always visible at front, no X icon
+            // Tabs without newItem - cannot be closed
             {
                 value: 'dashboard',
                 label: 'Dashboard',
@@ -432,12 +431,11 @@ export const DynamicTabManagement: Story = {
                             Dashboard Content
                         </h3>
                         <p style={{ margin: 0, color: '#1e40af' }}>
-                            This is a default tab that cannot be closed. Default
-                            tabs are always visible at the front.
+                            This is a tab that cannot be closed.
                         </p>
                     </div>
                 ),
-                isDefault: true,
+                newItem: false,
             },
             {
                 value: 'overview',
@@ -460,12 +458,12 @@ export const DynamicTabManagement: Story = {
                             Overview Content
                         </h3>
                         <p style={{ margin: 0, color: '#166534' }}>
-                            Another default tab. Notice it doesn't have an X
-                            button and stays at the front.
+                            Another tab that cannot be closed. Notice it doesn't
+                            have an X button.
                         </p>
                     </div>
                 ),
-                isDefault: true,
+                newItem: false,
             },
         ])
 
@@ -542,8 +540,7 @@ export const DynamicTabManagement: Story = {
                     value: item.value,
                     label: item.label,
                     content,
-                    closable: true,
-                    isDefault: false,
+                    newItem: true,
                 }
             })
 
@@ -592,7 +589,8 @@ export const DynamicTabManagement: Story = {
                         }}
                     >
                         <li>
-                            Default tabs (Dashboard, Overview) cannot be closed
+                            Tabs (Dashboard, Overview) without newItem cannot be
+                            closed
                         </li>
                         <li>Click + to add new tabs via MultiSelect</li>
                         <li>
@@ -694,7 +692,7 @@ export const DynamicTabManagement: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Complete dynamic tab management with default tabs, closable tabs, MultiSelect integration, concatenation, and navigation dropdown. All interactive elements maintain proper accessibility.',
+                story: 'Complete dynamic tab management with newItem tabs, MultiSelect integration, concatenation, and navigation dropdown. All interactive elements maintain proper accessibility.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -757,25 +755,25 @@ export const TabConcatenation: Story = {
                         </p>
                     </div>
                 ),
-                isDefault: true,
+                newItem: false,
             },
             {
                 value: 'analytics',
                 label: 'Analytics',
                 content: sharedContent,
-                closable: true,
+                newItem: true,
             },
             {
                 value: 'reports',
                 label: 'Reports',
                 content: sharedContent,
-                closable: true,
+                newItem: true,
             },
             {
                 value: 'dashboards',
                 label: 'Dashboards',
                 content: sharedContent,
-                closable: true,
+                newItem: true,
             },
             {
                 value: 'settings',
@@ -802,7 +800,7 @@ export const TabConcatenation: Story = {
                         </p>
                     </div>
                 ),
-                closable: true,
+                newItem: true,
             },
         ])
 
@@ -2154,7 +2152,7 @@ export const ComplexExample: Story = {
 }
 
 /**
- * Closable tabs with default tabs that cannot be closed
+ * Tabs with newItem property to control closability
  */
 export const ClosableTabs: Story = {
     render: () => {
@@ -2180,12 +2178,12 @@ export const ClosableTabs: Story = {
                             Home Dashboard
                         </h3>
                         <p style={{ margin: 0, color: '#0369a1' }}>
-                            Welcome! This is a default tab that cannot be
-                            closed. It serves as your home base.
+                            Welcome! This tab cannot be closed. It serves as
+                            your home base.
                         </p>
                     </div>
                 ),
-                isDefault: true,
+                newItem: false,
             },
             {
                 value: 'analytics',
@@ -2213,7 +2211,7 @@ export const ClosableTabs: Story = {
                         </p>
                     </div>
                 ),
-                closable: true,
+                newItem: true,
             },
             {
                 value: 'reports',
@@ -2236,12 +2234,12 @@ export const ClosableTabs: Story = {
                             Reports Center
                         </h3>
                         <p style={{ margin: 0, color: '#92400e' }}>
-                            Generate and export reports. This tab is also
-                            closable for a cleaner interface.
+                            Generate and export reports. This tab can be closed
+                            for a cleaner interface.
                         </p>
                     </div>
                 ),
-                closable: true,
+                newItem: true,
             },
             {
                 value: 'settings',
@@ -2269,7 +2267,7 @@ export const ClosableTabs: Story = {
                         </p>
                     </div>
                 ),
-                closable: true,
+                newItem: true,
             },
         ])
 
@@ -2302,7 +2300,7 @@ export const ClosableTabs: Story = {
                             fontWeight: '600',
                         }}
                     >
-                        Closable Tabs Demo
+                        Tabs with newItem Demo
                     </h3>
                     <p
                         style={{
@@ -2312,8 +2310,8 @@ export const ClosableTabs: Story = {
                         }}
                     >
                         Try closing different tabs using the X button. Notice
-                        that the Home tab cannot be closed as it's marked as
-                        default.
+                        that the Home tab cannot be closed as it has newItem set
+                        to false.
                     </p>
                 </div>
 
@@ -2331,7 +2329,7 @@ export const ClosableTabs: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Demonstrates closable tabs with default tabs that cannot be closed. Shows how tab closing affects active tab selection. Close buttons have proper aria-label attributes.',
+                story: 'Demonstrates tabs with newItem property to control closability. Shows how tab closing affects active tab selection. Close buttons have proper aria-label attributes.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -3628,7 +3626,7 @@ export const Accessibility: Story = {
                                         accessibility.
                                     </p>
                                 ),
-                                closable: true,
+                                newItem: true,
                             },
                             {
                                 value: 'tab2',
@@ -3639,7 +3637,7 @@ export const Accessibility: Story = {
                                         accessible names via aria-label.
                                     </p>
                                 ),
-                                closable: true,
+                                newItem: true,
                             },
                         ]}
                         defaultValue="tab1"

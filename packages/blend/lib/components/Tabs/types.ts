@@ -18,7 +18,6 @@ export type TabItem = {
     value: string
     label: string
     content: ReactNode
-    isDefault?: boolean
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant

@@ -39,9 +39,7 @@ export const processTabsWithConcatenation = (tabs: TabItem[]): TabItem[] => {
  * Sorts tabs to ensure default tabs appear first
  */
 export const sortTabsByDefault = (tabs: TabItem[]): TabItem[] => {
-    const defaultTabs = tabs.filter((tab) => tab.isDefault)
-    const dynamicTabs = tabs.filter((tab) => !tab.isDefault)
-    return [...defaultTabs, ...dynamicTabs]
+    return [...tabs]
 }
 
 /**
@@ -72,8 +70,7 @@ export const createTabsFromSelection = <
             value: item.value,
             label: item.label,
             content,
-            isDefault: false,
-            closable: false,
+            newItem: false,
         }))
 }
 
@@ -110,7 +107,7 @@ export const getDisplayTabs = (
     maxDisplayTabs?: number,
     activeTab?: string
 ): TabItem[] => {
-    const defaultTabs = tabs.filter((tab) => tab.isDefault === true)
+    const defaultTabs = tabs
 
     if (
         !maxDisplayTabs ||
