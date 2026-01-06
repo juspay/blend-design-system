@@ -9,22 +9,7 @@ import { TabItem } from './types'
  * @returns Processed tabs with concatenation applied
  */
 export const processTabsWithConcatenation = (tabs: TabItem[]): TabItem[] => {
-    const defaultTabs = tabs.filter((tab) => tab.isDefault)
-    const dynamicTabs = tabs.filter((tab) => !tab.isDefault)
-
     const contentGroups = new Map<ReactNode, TabItem[]>()
-
-    dynamicTabs.forEach((tab) => {
-        const existingGroup = Array.from(contentGroups.entries()).find(
-            ([content]) => content === tab.content
-        )
-
-        if (existingGroup) {
-            existingGroup[1].push(tab)
-        } else {
-            contentGroups.set(tab.content, [tab])
-        }
-    })
 
     const processedDynamic: TabItem[] = []
 
@@ -39,8 +24,7 @@ export const processTabsWithConcatenation = (tabs: TabItem[]): TabItem[] => {
                 value: limitedItems.map((item) => item.value).join('_'),
                 label: concatenatedLabel,
                 content: limitedItems[0].content,
-                isDefault: false,
-                closable: false,
+                newItem: false,
             })
         } else {
             // Single item - keep as is
@@ -48,7 +32,7 @@ export const processTabsWithConcatenation = (tabs: TabItem[]): TabItem[] => {
         }
     })
 
-    return [...defaultTabs, ...processedDynamic]
+    return [...tabs, ...processedDynamic]
 }
 
 /**

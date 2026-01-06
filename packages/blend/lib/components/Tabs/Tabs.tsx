@@ -37,12 +37,9 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 
         // Track which tabs should have isDefault: true (persists across tab changes)
         const [defaultTabs, setDefaultTabs] = useState<Set<string>>(() => {
-            // Initialize with tabs that already have isDefault: true
             const initialDefaults = new Set<string>()
             items.forEach((item) => {
-                if (item.isDefault === true) {
-                    initialDefaults.add(item.value)
-                }
+                initialDefaults.add(item.value)
             })
             return initialDefaults
         })
@@ -61,27 +58,25 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         // Update defaultTabs when items change (to include new items with isDefault: true)
         useEffect(() => {
             items.forEach((item) => {
-                if (item.isDefault === true && !defaultTabs.has(item.value)) {
+                if (!defaultTabs.has(item.value)) {
                     setDefaultTabs((prev) => new Set(prev).add(item.value))
                 }
             })
         }, [items, defaultTabs])
 
         const itemsWithDefaultsAtEnd = useMemo(() => {
-            // Map items and update isDefault property
             const updatedItems = items.map((item) => {
                 // Preserve isDefault: true for tabs that are in defaultTabs Set
                 if (defaultTabs.has(item.value)) {
-                    // Only set closable: true for tabs that were newly added from dropdown
+                    // Only set newItem: true for tabs that were newly added from dropdown
                     const isNewItem = newlyAddedTabs.has(item.value)
                     return {
                         ...item,
-                        isDefault: true,
-                        ...(isNewItem && { closable: true }),
+                        ...(isNewItem && { newItem: true }),
                     }
                 }
                 // Explicitly set isDefault: false for tabs not in defaultTabs Set
-                return { ...item, isDefault: false }
+                return { ...item }
             })
 
             // Separate items into two groups: non-default and default
@@ -118,13 +113,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         const handleTabClose = useCallback(
             (tabValue: string) => {
                 if (tabValue === activeTab && items.length > 1) {
-                    // Get all default tabs (isDefault: true) before removing the closed one
-                    const defaultTabsList = itemsWithDefaultsAtEnd.filter(
-                        (item) => item.isDefault === true
-                    )
-
                     // Find the index of the closed tab in the default tabs list
-                    const currentIndex = defaultTabsList.findIndex(
+                    const currentIndex = itemsWithDefaultsAtEnd.findIndex(
                         (item) => item.value === tabValue
                     )
 
@@ -132,13 +122,15 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     let previousDefaultTab = null
                     if (currentIndex > 0) {
                         // Previous default tab exists
-                        previousDefaultTab = defaultTabsList[currentIndex - 1]
+                        previousDefaultTab =
+                            itemsWithDefaultsAtEnd[currentIndex - 1]
                     } else if (
                         currentIndex === 0 &&
-                        defaultTabsList.length > 1
+                        itemsWithDefaultsAtEnd.length > 1
                     ) {
                         // Closed tab is first default tab, so use the next default tab
-                        previousDefaultTab = defaultTabsList[currentIndex + 1]
+                        previousDefaultTab =
+                            itemsWithDefaultsAtEnd[currentIndex + 1]
                     }
 
                     if (previousDefaultTab) {

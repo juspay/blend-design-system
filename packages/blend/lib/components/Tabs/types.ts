@@ -24,7 +24,7 @@ export type TabItem = {
     skeletonVariant?: SkeletonVariant
     leftSlot?: ReactNode
     rightSlot?: ReactNode
-    closable?: boolean
+    newItem?: boolean
 }
 
 export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {

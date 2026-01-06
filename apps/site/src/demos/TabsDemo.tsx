@@ -51,23 +51,23 @@ const sharedContent = (
 )
 
 const ANALYTICS_TABS_DATA = [
-    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: true },
+    { value: 'payment_gateway', label: 'Payment Gateway', newItem: false },
     {
         value: 'payment_method_type',
         label: 'Payment Method Type',
-        isDefault: true,
+        newItem: false,
     },
-    { value: 'payment_method', label: 'Payment Method', isDefault: true },
+    { value: 'payment_method', label: 'Payment Method', newItem: false },
     {
         value: 'payment_instrument_group',
         label: 'Payment Instrument Group',
-        isDefault: true,
+        newItem: false,
     },
-    { value: 'bank_name', label: 'Bank', isDefault: true },
+    { value: 'bank_name', label: 'Bank', newItem: false },
     {
         value: 'actual_payment_status',
         label: 'Actual Payment Status',
-        isDefault: true,
+        newItem: false,
     },
 ] as TabItem[]
 
@@ -431,8 +431,7 @@ const TabsDemo = () => {
                     value: newValue,
                     label: 'Test_Tab',
                     content: null,
-                    isDefault: true,
-                    closable: true,
+                    newItem: true,
                 },
             ])
         }
@@ -925,7 +924,7 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                             </p>
                             <p>
                                 <strong>Closable Tabs:</strong>{' '}
-                                {testData.filter((tab) => tab.closable).length}
+                                {testData.filter((tab) => tab.newItem).length}
                             </p>
                         </div>
                     </div>
