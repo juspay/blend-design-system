@@ -92,6 +92,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         // }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
 
         useEffect(() => {
+            console.log('test log')
             if (item.disableTruncation) return
 
             // Run once on mount / deps change
