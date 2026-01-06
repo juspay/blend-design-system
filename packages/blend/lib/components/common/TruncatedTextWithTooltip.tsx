@@ -3,7 +3,7 @@ import Tooltip from '../Tooltip/Tooltip'
 import { TooltipSide, TooltipSize } from '../Tooltip/types'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 
-type TruncatedTextWithTooltipProps = {
+export type TruncatedTextWithTooltipProps = {
     text: string
     style?: React.CSSProperties
     tooltipSize?: TooltipSize
@@ -26,33 +26,50 @@ export const TruncatedTextWithTooltip = ({
     const textRef = useRef<HTMLSpanElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
     const rafRef = useRef<number | null>(null)
+    const isMeasuringRef = useRef(false)
+    console.log('TruncatedTextWithTooltip--->>>>>')
 
     const checkTruncation = useCallback(() => {
+        if (isMeasuringRef.current) return
+
         if (rafRef.current !== null) {
             cancelAnimationFrame(rafRef.current)
         }
 
         rafRef.current = requestAnimationFrame(() => {
-            const element = textRef.current
-            if (element) {
-                const truncated =
-                    element.scrollWidth > element.clientWidth &&
-                    element.clientWidth > 0
-                setIsTruncated(truncated)
-            }
+            const el = textRef.current
+            if (!el) return
+
+            const next = el.scrollWidth > el.clientWidth && el.clientWidth > 0
+
+            // 🔑 Guard state updates
+            setIsTruncated((prev) => (prev !== next ? next : prev))
+
             rafRef.current = null
         })
     }, [])
 
-    useResizeObserver(textRef as React.RefObject<HTMLElement>, checkTruncation)
+    // 🔥 SAFE ResizeObserver usage
+    useResizeObserver(textRef as React.RefObject<HTMLElement>, () => {
+        if (isMeasuringRef.current) return
+
+        isMeasuringRef.current = true
+        checkTruncation()
+
+        // Re-enable observation AFTER layout settles
+        requestAnimationFrame(() => {
+            isMeasuringRef.current = false
+        })
+    })
 
     useEffect(() => {
-        const timeoutId = setTimeout(checkTruncation, 0)
-        window.addEventListener('resize', checkTruncation, { passive: true })
+        checkTruncation()
+
+        const onResize = () => checkTruncation()
+        window.addEventListener('resize', onResize)
 
         return () => {
-            clearTimeout(timeoutId)
-            window.removeEventListener('resize', checkTruncation)
+            window.removeEventListener('resize', onResize)
             if (rafRef.current !== null) {
                 cancelAnimationFrame(rafRef.current)
             }
@@ -71,7 +88,7 @@ export const TruncatedTextWithTooltip = ({
         }
     })
 
-    const truncatedContent = (
+    const content = (
         <span
             ref={textRef}
             style={{
@@ -96,10 +113,10 @@ export const TruncatedTextWithTooltip = ({
                 delayDuration={delayDuration}
                 side={TooltipSide.RIGHT}
             >
-                {truncatedContent}
+                {content}
             </Tooltip>
         )
     }
 
-    return truncatedContent
+    return content
 }
