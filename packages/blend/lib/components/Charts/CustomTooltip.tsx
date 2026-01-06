@@ -7,7 +7,6 @@ import {
     YAxisConfig,
 } from './types'
 import {
-    capitaliseCamelCase,
     formatNumber,
     getAxisFormatter,
     createDateTimeFormatter,
@@ -38,7 +37,7 @@ const formatTooltipLabel = (
     label: string | number,
     xAxis?: XAxisConfig
 ): string => {
-    if (!xAxis) return capitaliseCamelCase(String(label))
+    if (!xAxis) return String(label)
 
     if (xAxis.tickFormatter) {
         return xAxis.tickFormatter(label)
@@ -60,7 +59,7 @@ const formatTooltipLabel = (
         return getAxisFormatter(xAxis)(label)
     }
 
-    return capitaliseCamelCase(String(label))
+    return String(label)
 }
 
 const formatTooltipValue = (
@@ -269,7 +268,7 @@ const BarChartTooltip = ({
                                                     .gray[400]
                                             }
                                         >
-                                            {capitaliseCamelCase(key)}
+                                            {key}
                                         </Text>
                                     </Block>
                                     <Block paddingLeft={10} width="100%">
@@ -381,7 +380,7 @@ const LineChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(hoveredKey)}
+                        {hoveredKey}
                     </Text>
                     <Text
                         fontSize={12}
@@ -603,7 +602,7 @@ const PieChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(name)}
+                        {name}
                     </Text>
                     <Text
                         fontSize={12}
@@ -621,7 +620,7 @@ const PieChartTooltip = ({
                     fontWeight={FOUNDATION_THEME.font.weight[500]}
                     color={FOUNDATION_THEME.colors.gray[400]}
                 >
-                    {capitaliseCamelCase(data.primary.label)}
+                    {data.primary.label}
                 </Text>
                 <Text
                     fontSize={12}
@@ -737,7 +736,7 @@ const ScatterChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(seriesKey)}
+                        {seriesKey}
                     </Text>
                     <Text
                         fontSize={12}
