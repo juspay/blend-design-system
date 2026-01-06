@@ -252,6 +252,7 @@ const TableHeader = forwardRef<
         >({})
         const justOpenedPopovers = useRef<Record<string, number>>({})
         const scrollCloseEnabled = useRef<boolean>(false)
+        const openPopoversRef = useRef<Record<string, boolean>>({})
 
         useEffect(() => {
             const timer = setTimeout(() => {
@@ -295,7 +296,11 @@ const TableHeader = forwardRef<
         }, [sortConfig])
 
         useEffect(() => {
-            const handleScroll = (e: Event) => {
+            openPopoversRef.current = openPopovers
+        }, [openPopovers])
+
+        useEffect(() => {
+            const handleScrollOrWheel = (e: Event) => {
                 if (!scrollCloseEnabled.current) return
 
                 const target = e.target as Element
@@ -315,47 +320,13 @@ const TableHeader = forwardRef<
                 }
 
                 const now = Date.now()
-                const shouldClose = Object.keys(openPopovers).filter((key) => {
-                    const openedAt = justOpenedPopovers.current[key]
-                    return !openedAt || now - openedAt > 400
-                })
+                const shouldClose = Object.keys(openPopoversRef.current).filter(
+                    (key) => {
+                        const openedAt = justOpenedPopovers.current[key]
+                        return !openedAt || now - openedAt > 400
+                    }
+                )
 
-                if (!isMobile && shouldClose.length > 0) {
-                    setOpenPopovers((prev) => {
-                        const newState = { ...prev }
-                        shouldClose.forEach((key) => {
-                            delete newState[key]
-                            delete justOpenedPopovers.current[key]
-                        })
-                        return newState
-                    })
-                }
-            }
-
-            const handleWheel = (e: Event) => {
-                if (!scrollCloseEnabled.current) return
-
-                const target = e.target as Element
-                if (target) {
-                    const popoverContent =
-                        target.closest('[data-radix-popper-content-wrapper]') ||
-                        target.closest('[role="dialog"]') ||
-                        target.closest('.popover-content')
-
-                    const drawerContent =
-                        target.closest('[data-drawer-content]') ||
-                        target.closest('[data-drawer-overlay]') ||
-                        target.closest('[data-drawer-portal]') ||
-                        target.closest('[role="dialog"][data-drawer]')
-
-                    if (popoverContent || drawerContent) return
-                }
-
-                const now = Date.now()
-                const shouldClose = Object.keys(openPopovers).filter((key) => {
-                    const openedAt = justOpenedPopovers.current[key]
-                    return !openedAt || now - openedAt > 400
-                })
                 if (!isMobile && shouldClose.length > 0) {
                     setOpenPopovers((prev) => {
                         const newState = { ...prev }
@@ -369,11 +340,9 @@ const TableHeader = forwardRef<
             }
 
             const scrollContainers: Element[] = []
-
             if (ref && typeof ref === 'object' && ref.current) {
                 const thead = ref.current
                 const table = thead.closest('table')
-
                 if (table) {
                     let parent = table.parentElement
                     while (parent && parent !== document.body) {
@@ -392,36 +361,44 @@ const TableHeader = forwardRef<
                     }
                 }
             }
-            const listeners: (() => void)[] = []
 
+            const listeners: (() => void)[] = []
             scrollContainers.forEach((container) => {
-                container.addEventListener('scroll', handleScroll, {
+                container.addEventListener('scroll', handleScrollOrWheel, {
                     passive: true,
                 })
-                container.addEventListener('wheel', handleWheel, {
+                container.addEventListener('wheel', handleScrollOrWheel, {
                     passive: true,
                 })
                 listeners.push(() => {
-                    container.removeEventListener('scroll', handleScroll)
-                    container.removeEventListener('wheel', handleWheel)
+                    container.removeEventListener('scroll', handleScrollOrWheel)
+                    container.removeEventListener('wheel', handleScrollOrWheel)
                 })
             })
 
-            document.addEventListener('scroll', handleScroll, { passive: true })
-            document.addEventListener('wheel', handleWheel, { passive: true })
-            window.addEventListener('scroll', handleScroll, { passive: true })
-            window.addEventListener('wheel', handleWheel, { passive: true })
+            document.addEventListener('scroll', handleScrollOrWheel, {
+                passive: true,
+            })
+            document.addEventListener('wheel', handleScrollOrWheel, {
+                passive: true,
+            })
+            window.addEventListener('scroll', handleScrollOrWheel, {
+                passive: true,
+            })
+            window.addEventListener('wheel', handleScrollOrWheel, {
+                passive: true,
+            })
 
             listeners.push(() => {
-                document.removeEventListener('scroll', handleScroll)
-                document.removeEventListener('wheel', handleWheel)
-                window.removeEventListener('scroll', handleScroll)
-                window.removeEventListener('wheel', handleWheel)
+                document.removeEventListener('scroll', handleScrollOrWheel)
+                document.removeEventListener('wheel', handleScrollOrWheel)
+                window.removeEventListener('scroll', handleScrollOrWheel)
+                window.removeEventListener('wheel', handleScrollOrWheel)
             })
             return () => {
                 listeners.forEach((cleanup) => cleanup())
             }
-        }, [ref, isMobile, openPopovers])
+        }, [ref, isMobile])
 
         useEffect(() => {
             if (editingField && editableRef.current) {
@@ -1301,41 +1278,51 @@ const TableHeader = forwardRef<
                                                         )
 
                                                         if (open) {
+                                                            const timestamp =
+                                                                Date.now()
                                                             justOpenedPopovers.current[
                                                                 fieldKey
-                                                            ] = Date.now()
+                                                            ] = timestamp
 
+                                                            openPopoversRef.current =
+                                                                {
+                                                                    ...openPopoversRef.current,
+                                                                    [fieldKey]: true,
+                                                                }
                                                             setOpenPopovers({
                                                                 [fieldKey]: true,
                                                             })
-                                                            setTimeout(() => {
-                                                                const popoverContent =
-                                                                    document.querySelector(
-                                                                        `[data-popover="Filter ${column.header}"]`
-                                                                    )
-                                                                if (
-                                                                    popoverContent
-                                                                ) {
-                                                                    const firstMenuItem =
-                                                                        popoverContent.querySelector(
-                                                                            '[role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]'
-                                                                        ) as HTMLElement
-                                                                    if (
-                                                                        firstMenuItem
-                                                                    ) {
-                                                                        firstMenuItem.focus()
-                                                                    }
-                                                                }
-                                                            }, 150)
                                                         } else {
+                                                            const openedAt =
+                                                                justOpenedPopovers
+                                                                    .current[
+                                                                    fieldKey
+                                                                ]
+                                                            const timeSinceOpen =
+                                                                Date.now() -
+                                                                (openedAt || 0)
+
+                                                            if (
+                                                                timeSinceOpen <
+                                                                300
+                                                            ) {
+                                                                return
+                                                            }
+                                                            openPopoversRef.current =
+                                                                {
+                                                                    ...openPopoversRef.current,
+                                                                    [fieldKey]: false,
+                                                                }
                                                             setOpenPopovers(
                                                                 (prev) => ({
                                                                     ...prev,
-                                                                    [String(
-                                                                        column.field
-                                                                    )]: false,
+                                                                    [fieldKey]: false,
                                                                 })
                                                             )
+                                                            delete justOpenedPopovers
+                                                                .current[
+                                                                fieldKey
+                                                            ]
                                                         }
                                                     }}
                                                 >

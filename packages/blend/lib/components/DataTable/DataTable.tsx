@@ -1056,19 +1056,19 @@ const DataTable = forwardRef(
             setMobileDrawerOpen(true)
         }
 
-        const handleTableFocus = () => {
-            if (!focusedCell && currentData.length > 0) {
-                setFocusedCell({ rowIndex: 0, colIndex: 0 })
-                setTimeout(() => {
-                    const firstCell = document.querySelector(
-                        '[data-row-index="0"][data-col-index="0"]'
-                    ) as HTMLElement
-                    if (firstCell) {
-                        firstCell.focus()
-                    }
-                }, 0)
-            }
-        }
+        // const handleTableFocus = () => {
+        //     if (!focusedCell && currentData.length > 0) {
+        //         setFocusedCell({ rowIndex: 0, colIndex: 0 })
+        //         setTimeout(() => {
+        //             const firstCell = document.querySelector(
+        //                 '[data-row-index="0"][data-col-index="0"]'
+        //             ) as HTMLElement
+        //             if (firstCell) {
+        //                 firstCell.focus()
+        //             }
+        //         }, 0)
+        //     }
+        // }
 
         const totalColumnsT =
             effectiveVisibleColumns.length +
@@ -1400,7 +1400,7 @@ const DataTable = forwardRef(
                                                 .join(' ') || undefined
                                         }
                                         onKeyDown={handleTableKeyDown}
-                                        onFocus={handleTableFocus}
+                                        // onFocus={handleTableFocus}
                                         tabIndex={-1}
                                         style={{
                                             width: tableToken.dataTable.table
