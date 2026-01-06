@@ -292,6 +292,23 @@ const StepComponent = forwardRef<
 
         return (
             <Block
+                data-element="stepper-status"
+                data-id={
+                    isClickable
+                        ? `Step ${stepIndex + 1} of ${step.title}${
+                              stepState === StepState.COMPLETED
+                                  ? ', completed'
+                                  : stepState === StepState.CURRENT
+                                    ? ', current'
+                                    : stepState === StepState.DISABLED
+                                      ? ', disabled'
+                                      : stepState === StepState.SKIPPED
+                                        ? ', skipped'
+                                        : ', pending'
+                          }`
+                        : undefined
+                }
+                data-numeric={step.id}
                 ref={ref}
                 height={'100%'}
                 display="flex"
@@ -557,6 +574,7 @@ const StepComponent = forwardRef<
                         step?.substeps &&
                         step?.substeps.length > 0 && (
                             <div
+                                data-element={`substeps:Step ${stepIndex + 1}`}
                                 id={`substeps-${stepId}`}
                                 role="group"
                                 aria-label={`Substeps for ${step.title}`}
@@ -606,6 +624,19 @@ const StepComponent = forwardRef<
                                             }
                                         >
                                             <Block
+                                                data-element="substep"
+                                                data-id={`Substep ${index + 1}: ${subStep.title}${
+                                                    isSubstepCompleted
+                                                        ? ', completed'
+                                                        : isSubstepCurrent
+                                                          ? ', current'
+                                                          : isSubstepDisabled
+                                                            ? ', disabled'
+                                                            : isSubstepSkipped
+                                                              ? ', skipped'
+                                                              : ', pending'
+                                                }`}
+                                                data-numeric={subStep.id}
                                                 ref={(el) => {
                                                     substepRefs.current[index] =
                                                         el
@@ -890,6 +921,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
 
         return (
             <Block
+                data-stepper="stepper"
                 ref={ref}
                 height={'100%'}
                 display="flex"

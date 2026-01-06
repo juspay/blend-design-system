@@ -264,6 +264,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         return (
             <Block
+                data-chatinput={placeholder || 'Message input'}
+                data-status={disabled ? 'disabled' : 'enabled'}
                 ref={containerRef}
                 display="flex"
                 flexDirection="column"
@@ -369,6 +371,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         {...textAreaProps}
                     />
                     <Block
+                        data-element="chat-input-actions"
                         display="flex"
                         alignItems="center"
                         justifyContent={tokens.bottomActions.justifyContent}

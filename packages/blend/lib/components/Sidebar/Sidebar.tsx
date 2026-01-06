@@ -530,11 +530,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             ? undefined
                             : handleMouseEnter
                     }
-                    data-is-sidebar-expanded={
-                        isPanelOnlyMode || (iconOnlyMode && !isExpanded)
-                            ? 'false'
-                            : isExpanded
-                    }
+                    data-sidebar="sidebar"
+                    data-status={isExpanded ? 'expanded' : 'collapsed'}
                     boxShadow={
                         isPanelOnlyMode ||
                         (iconOnlyMode && !isExpanded) ||
@@ -543,13 +540,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                             : isHovering
                               ? '0 3px 16px 3px rgba(5, 5, 6, 0.07)'
                               : 'none'
-                    }
-                    data-sidebar-state={
-                        isPanelOnlyMode
-                            ? 'panel-only'
-                            : iconOnlyMode && !isExpanded
-                              ? 'icon-only'
-                              : getSidebarState()
                     }
                 >
                     {!isMobile && (
@@ -567,6 +557,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                             {iconOnlyMode && !isExpanded && (
                                 <Block
+                                    data-element="sub-sidebar"
                                     width={String(tokens.maxWidth.iconOnly)}
                                     height="100%"
                                     display="flex"
@@ -595,7 +586,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             <PrimitiveButton
                                                 type="button"
                                                 onClick={handleIconOnlyToggle}
-                                                data-icon="sidebar-hamburger"
+                                                data-element="sidebar-hamburger"
                                                 display="flex"
                                                 alignItems="center"
                                                 justifyContent="center"
@@ -683,6 +674,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     )}
 
                                     <Block
+                                        data-element="sub-sidebar"
                                         width="100%"
                                         height="100%"
                                         display="flex"
@@ -752,6 +744,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                                     {(isExpanded || isHovering) && (
                                         <Block
+                                            data-element="sub-sidebar"
                                             width="100%"
                                             height="100%"
                                             display="flex"
