@@ -69,27 +69,61 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             })
         }, [item.subLabel])
 
+        // useEffect(() => {
+        //     if (item.disableTruncation) return
+
+        //     checkTruncation()
+
+        //     const resizeObserver = new ResizeObserver(checkTruncation)
+
+        //     if (textRef.current) {
+        //         resizeObserver.observe(textRef.current)
+        //     }
+        //     if (subLabelRef.current) {
+        //         resizeObserver.observe(subLabelRef.current)
+        //     }
+
+        //     return () => {
+        //         resizeObserver.disconnect()
+        //         if (rafRef.current !== null) {
+        //             cancelAnimationFrame(rafRef.current)
+        //         }
+        //     }
+        // }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
+
         useEffect(() => {
             if (item.disableTruncation) return
 
+            // Run once on mount / deps change
             checkTruncation()
 
-            const resizeObserver = new ResizeObserver(checkTruncation)
+            const resizeObserver = new ResizeObserver(() => {
+                // Prevent ResizeObserver → layout → ResizeObserver loop
+                if (rafRef.current !== null) return
+
+                rafRef.current = requestAnimationFrame(() => {
+                    checkTruncation()
+                    rafRef.current = null
+                })
+            })
 
             if (textRef.current) {
                 resizeObserver.observe(textRef.current)
             }
+
             if (subLabelRef.current) {
                 resizeObserver.observe(subLabelRef.current)
             }
 
             return () => {
                 resizeObserver.disconnect()
+
                 if (rafRef.current !== null) {
                     cancelAnimationFrame(rafRef.current)
+                    rafRef.current = null
                 }
             }
-        }, [item.label, item.subLabel, item.disableTruncation])
+        }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
 
         const handleSelect = (e: Event) => {
             if (item.disabled) {
