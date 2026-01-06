@@ -89,7 +89,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     cancelAnimationFrame(rafRef.current)
                 }
             }
-        }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
+        }, [item.label, item.subLabel, item.disableTruncation])
 
         const handleSelect = (e: Event) => {
             if (item.disabled) {
