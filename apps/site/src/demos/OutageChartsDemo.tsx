@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { BlendChartBaseInstance } from '../../../../packages/blend/lib/components/Charts/BlendChart.types'
 import type {
@@ -25,6 +25,7 @@ import { ArrowLeft, EllipsisVerticalIcon } from 'lucide-react'
 import BlendChart from '../../../../packages/blend/lib/components/Charts/BlendChart'
 import BlendChartContainer from '../../../../packages/blend/lib/components/Charts/BlendChartContainer'
 import BlendChartHeader from '../../../../packages/blend/lib/components/Charts/BlendChartHeader'
+import HollowDot from '../assets/icons/HollowDot.svg'
 
 const data = [
     {
@@ -239,6 +240,7 @@ const formatUTCTime = (timestamp: number) => {
 
 const OutageChartsDemo = () => {
     const lineChartRef = useRef<BlendChartReactRefObject | null>(null)
+    const [showZones, setShowZones] = useState(false)
 
     const handleRangeHover = (
         range: { x: number; x2: number; color: string } | null
@@ -248,152 +250,287 @@ const OutageChartsDemo = () => {
 
     return (
         <div className="p-8 gap-12 flex flex-col ">
-            <BlendChartContainer>
-                {/* header */}
-                <BlendChartHeader>
-                    <Block
-                        display="flex"
-                        width={'100% '}
-                        alignItems="center"
-                        justifyContent="space-between"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-                    >
-                        <Block>
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Transaction Success Rate"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                        </Block>
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            gap={FOUNDATION_THEME.unit[20]}
-                        >
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Top 5"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Hourly"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <Block
-                                height={FOUNDATION_THEME.unit[20]}
-                                width={FOUNDATION_THEME.unit[20]}
-                                contentCentered
-                                onClick={() => {}}
-                            >
-                                <EllipsisVerticalIcon
-                                    size={FOUNDATION_THEME.unit[20]}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                />
-                            </Block>
-                        </Block>
-                    </Block>
-                </BlendChartHeader>
-
-                {/* Body */}
-                <Block display="flex" flexDirection="column">
-                    <Block
-                        display="flex"
-                        flexDirection="column"
-                        gap={FOUNDATION_THEME.unit[24]}
-                        padding={FOUNDATION_THEME.unit[20]}
-                        paddingBottom={FOUNDATION_THEME.unit[16]}
-                    >
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            gap={FOUNDATION_THEME.unit[8]}
-                            position="relative"
-                        >
-                            <ArrowLeft
-                                size={FOUNDATION_THEME.unit[14]}
-                                color={FOUNDATION_THEME.colors.gray[600]}
-                            />
-                            <p
-                                style={{
-                                    fontSize:
-                                        FOUNDATION_THEME.font.size.body.md
-                                            .fontSize,
-                                    fontWeight:
-                                        FOUNDATION_THEME.font.weight[500],
-                                    color: FOUNDATION_THEME.colors.gray[600],
-                                    fontFamily:
-                                        FOUNDATION_THEME.font.family.body,
-                                }}
-                            >
-                                UPI Outage Trend
-                            </p>
-                        </Block>
-                        <BlendChart
-                            ref={lineChartRef}
-                            options={{
-                                tooltip: {
-                                    enabled: false,
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                },
-                                series: [
-                                    {
-                                        type: 'line',
-                                        data: data,
-                                        color: FOUNDATION_THEME.colors
-                                            .purple[400],
-                                        zoneAxis: 'x',
-                                        zones: zones,
-                                        marker: {
-                                            enabled: false,
+            <BlendChart
+                ref={lineChartRef}
+                options={{
+                    xAxis: {
+                        type: 'datetime',
+                    },
+                    series: [
+                        {
+                            type: 'line',
+                            name: 'Overall',
+                            data: data,
+                            color: FOUNDATION_THEME.colors.purple[400],
+                            marker: {
+                                enabled: false,
+                            },
+                        },
+                        {
+                            type: 'line',
+                            name: 'Paytm',
+                            data: [
+                                {
+                                    x: 1766980800000,
+                                    y: 2,
+                                    marker: {
+                                        enabled: true,
+                                        symbol: `url(${HollowDot})`,
+                                        size: 6,
+                                        fillColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeWidth: 1,
+                                    },
+                                    events: {
+                                        click: () => {
+                                            setShowZones(!showZones)
+                                            console.log('clicked')
                                         },
                                     },
-                                ],
-                            }}
-                        />
-                    </Block>
-
-                    <Block className="px-5">
-                        <BlendChart
-                            options={{
-                                chart: {
-                                    height: categories.length * 60 + 40,
-                                    // height: 'auto',
                                 },
-                                tooltip: {
-                                    useHTML: true,
-                                    outside: true,
-                                    formatter: function (this: {
-                                        point: {
-                                            name?: string
-                                            downTime?: string
-                                            fluctuation?: string
-                                            x: number
-                                            x2?: number
-                                            color?: string
+                                {
+                                    x: 1766981100000,
+                                    y: 1,
+                                },
+                                {
+                                    x: 1766981400000,
+                                    y: 7,
+                                },
+                                {
+                                    x: 1766981700000,
+                                    y: 3,
+                                },
+                                {
+                                    x: 1766982000000,
+                                    y: 10,
+                                    marker: {
+                                        enabled: true,
+                                        symbol: `url(${HollowDot})`,
+                                        size: 6,
+                                        fillColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeWidth: 1,
+                                    },
+                                    events: {
+                                        click: () => {
+                                            setShowZones(!showZones)
+                                            console.log('clicked')
+                                        },
+                                    },
+                                },
+                                {
+                                    x: 1766982300000,
+                                    y: 4,
+                                },
+                                {
+                                    x: 1766982600000,
+                                    y: 5,
+                                    marker: {
+                                        enabled: true,
+                                        symbol: `url(${HollowDot})`,
+                                        size: 6,
+                                        fillColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeColor:
+                                            FOUNDATION_THEME.colors.red[500],
+                                        strokeWidth: 1,
+                                    },
+                                    events: {
+                                        click: () => {
+                                            setShowZones(!showZones)
+                                            console.log('clicked')
+                                        },
+                                    },
+                                },
+                                {
+                                    x: 1766982900000,
+                                    y: 1,
+                                },
+                                {
+                                    x: 1766983200000,
+                                    y: 18,
+                                },
+                                {
+                                    x: 1766983500000,
+                                    y: 6,
+                                },
+                                {
+                                    x: 1766983800000,
+                                    y: 7,
+                                },
+                                {
+                                    x: 1766984100000,
+                                    y: 2,
+                                },
+                                {
+                                    x: 1766984400000,
+                                    y: 26,
+                                },
+                            ],
+                            color: FOUNDATION_THEME.colors.primary[500],
+                            marker: {
+                                enabled: false,
+                            },
+                        },
+                    ],
+                }}
+            />
+            {
+                <BlendChartContainer>
+                    {/* header */}
+                    <BlendChartHeader>
+                        <Block
+                            display="flex"
+                            width={'100% '}
+                            alignItems="center"
+                            justifyContent="space-between"
+                            backgroundColor={FOUNDATION_THEME.colors.gray[25]}
+                        >
+                            <Block>
+                                <SingleSelect
+                                    placeholder="Select a chart"
+                                    items={[]}
+                                    selected="Transaction Success Rate"
+                                    onSelect={() => {}}
+                                    // inline={true}
+                                    size={SelectMenuSize.SMALL}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                />
+                            </Block>
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                gap={FOUNDATION_THEME.unit[20]}
+                            >
+                                <SingleSelect
+                                    placeholder="Select a chart"
+                                    items={[]}
+                                    selected="Top 5"
+                                    onSelect={() => {}}
+                                    // inline={true}
+                                    size={SelectMenuSize.SMALL}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                />
+                                <SingleSelect
+                                    placeholder="Select a chart"
+                                    items={[]}
+                                    selected="Hourly"
+                                    onSelect={() => {}}
+                                    // inline={true}
+                                    size={SelectMenuSize.SMALL}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                />
+                                <Block
+                                    height={FOUNDATION_THEME.unit[20]}
+                                    width={FOUNDATION_THEME.unit[20]}
+                                    contentCentered
+                                    onClick={() => {}}
+                                >
+                                    <EllipsisVerticalIcon
+                                        size={FOUNDATION_THEME.unit[20]}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
                                         }
-                                    }) {
-                                        const point = this.point
-                                        const startTime = formatUTCTime(point.x)
-                                        const endTime = point.x2
-                                            ? formatUTCTime(point.x2)
-                                            : formatUTCTime(point.x)
+                                    />
+                                </Block>
+                            </Block>
+                        </Block>
+                    </BlendChartHeader>
 
-                                        return `
+                    {/* Body */}
+                    <Block display="flex" flexDirection="column">
+                        <Block
+                            display="flex"
+                            flexDirection="column"
+                            gap={FOUNDATION_THEME.unit[24]}
+                            padding={FOUNDATION_THEME.unit[20]}
+                            paddingBottom={FOUNDATION_THEME.unit[16]}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                gap={FOUNDATION_THEME.unit[8]}
+                                position="relative"
+                            >
+                                <ArrowLeft
+                                    size={FOUNDATION_THEME.unit[14]}
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                />
+                                <p
+                                    style={{
+                                        fontSize:
+                                            FOUNDATION_THEME.font.size.body.md
+                                                .fontSize,
+                                        fontWeight:
+                                            FOUNDATION_THEME.font.weight[500],
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[600],
+                                        fontFamily:
+                                            FOUNDATION_THEME.font.family.body,
+                                    }}
+                                >
+                                    UPI Outage Trend
+                                </p>
+                            </Block>
+                            <BlendChart
+                                ref={lineChartRef}
+                                options={{
+                                    tooltip: {
+                                        enabled: false,
+                                    },
+                                    xAxis: {
+                                        type: 'datetime',
+                                    },
+                                    series: [
+                                        {
+                                            type: 'line',
+                                            data: data,
+                                            color: FOUNDATION_THEME.colors
+                                                .purple[400],
+                                            zoneAxis: 'x',
+                                            zones: zones,
+                                            marker: {
+                                                enabled: false,
+                                            },
+                                        },
+                                    ],
+                                }}
+                            />
+                        </Block>
+
+                        <Block className="px-5">
+                            <BlendChart
+                                options={{
+                                    chart: {
+                                        // height: categories.length * 60 + 40,
+                                        // height: 'auto',
+                                    },
+                                    tooltip: {
+                                        useHTML: true,
+                                        outside: true,
+                                        formatter: function (this: {
+                                            point: {
+                                                name?: string
+                                                downTime?: string
+                                                fluctuation?: string
+                                                x: number
+                                                x2?: number
+                                                color?: string
+                                            }
+                                        }) {
+                                            const point = this.point
+                                            const startTime = formatUTCTime(
+                                                point.x
+                                            )
+                                            const endTime = point.x2
+                                                ? formatUTCTime(point.x2)
+                                                : formatUTCTime(point.x)
+
+                                            return `
                                             <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 8px; border: 1px solid ${FOUNDATION_THEME.colors.gray[150]}; background: ${FOUNDATION_THEME.colors.gray[0]}; box-shadow: ${FOUNDATION_THEME.shadows.sm};">
                                                 <div style="font-size: 13px; font-weight: 600; color: ${FOUNDATION_THEME.colors.gray[900]}">${point.name || 'Bank'}</div>
                                                 <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -422,210 +559,127 @@ const OutageChartsDemo = () => {
                                                 </div>
                                             </div>
                                         `
-                                    },
-                                    // positioner: function () {
-                                    //     const chart = (
-                                    //         this as unknown as {
-                                    //             chart: {
-                                    //                 plotLeft?: number
-                                    //                 plotTop?: number
-                                    //                 plotWidth?: number
-                                    //                 plotHeight?: number
-                                    //             }
-                                    //         }
-                                    //     ).chart
+                                        },
+                                        // positioner: function () {
+                                        //     const chart = (
+                                        //         this as unknown as {
+                                        //             chart: {
+                                        //                 plotLeft?: number
+                                        //                 plotTop?: number
+                                        //                 plotWidth?: number
+                                        //                 plotHeight?: number
+                                        //             }
+                                        //         }
+                                        //     ).chart
 
-                                    //     console.log({ chart })
+                                        //     console.log({ chart })
 
-                                    //     return {
-                                    //         x: 300,
-                                    //         y: -300,
-                                    //     }
-                                    // },
-                                    backgroundColor: 'transparent',
-                                    borderColor: 'transparent',
-                                    borderRadius: 0,
-                                    borderWidth: 0,
-                                    shadow: false,
-                                    style: {
-                                        fontSize:
-                                            FOUNDATION_THEME.font.size.body.sm
-                                                .fontSize,
-                                        fontFamily:
-                                            FOUNDATION_THEME.font.family.body,
-                                        color: FOUNDATION_THEME.colors
-                                            .gray[400],
-                                        position: 'absolute',
-                                        zIndex: 100000,
-                                    },
-                                },
-                                yAxis: {
-                                    categories: categories,
-                                    labels: {
-                                        useHTML: true,
-                                        align: 'left',
-                                        x: 12,
-                                        y: -30,
-                                        formatter: function (this: {
-                                            value: string | number
-                                        }) {
-                                            const tagHTML =
-                                                renderToStaticMarkup(
-                                                    <Tag
-                                                        text={String(
-                                                            this.value
-                                                        )}
-                                                        variant={
-                                                            TagVariant.SUBTLE
-                                                        }
-                                                        size={TagSize.SM}
-                                                        color={TagColor.NEUTRAL}
-                                                        shape={
-                                                            TagShape.SQUARICAL
-                                                        }
-                                                    />
-                                                )
-                                            return tagHTML
+                                        //     return {
+                                        //         x: 300,
+                                        //         y: -300,
+                                        //     }
+                                        // },
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'transparent',
+                                        borderRadius: 0,
+                                        borderWidth: 0,
+                                        shadow: false,
+                                        style: {
+                                            fontSize:
+                                                FOUNDATION_THEME.font.size.body
+                                                    .sm.fontSize,
+                                            fontFamily:
+                                                FOUNDATION_THEME.font.family
+                                                    .body,
+                                            color: FOUNDATION_THEME.colors
+                                                .gray[400],
+                                            position: 'absolute',
+                                            zIndex: 100000,
                                         },
                                     },
-                                    gridLineWidth: 0,
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                    labels: {
-                                        enabled: false,
-                                    },
-                                },
-                                series: [
-                                    {
-                                        type: 'xrange',
-                                        name: 'Banks',
-                                        data: xRangeData,
-                                        pointWidth: 8,
-                                        point: {
-                                            events: {
-                                                mouseOver(
-                                                    this: BlendChartPoint
-                                                ) {
-                                                    const point =
-                                                        this as BlendChartPoint & {
-                                                            x: number
-                                                            x2?: number
-                                                            color?: string
-                                                        }
-                                                    const range = {
-                                                        x: point.x,
-                                                        x2: point.x2 ?? point.x,
-                                                        color:
-                                                            point.color ??
-                                                            '#FFC560',
-                                                    }
-                                                    handleRangeHover(range)
-                                                },
-                                                mouseOut() {
-                                                    handleRangeHover(null)
-                                                },
+                                    yAxis: {
+                                        categories: categories,
+                                        labels: {
+                                            useHTML: true,
+                                            align: 'left',
+                                            x: 12,
+                                            y: -30,
+                                            formatter: function (this: {
+                                                value: string | number
+                                            }) {
+                                                const tagHTML =
+                                                    renderToStaticMarkup(
+                                                        <Tag
+                                                            text={String(
+                                                                this.value
+                                                            )}
+                                                            variant={
+                                                                TagVariant.SUBTLE
+                                                            }
+                                                            size={TagSize.SM}
+                                                            color={
+                                                                TagColor.NEUTRAL
+                                                            }
+                                                            shape={
+                                                                TagShape.SQUARICAL
+                                                            }
+                                                        />
+                                                    )
+                                                return tagHTML
                                             },
                                         },
-                                        dataLabels: {
+                                        gridLineWidth: 0,
+                                    },
+                                    xAxis: {
+                                        type: 'datetime',
+                                        labels: {
                                             enabled: false,
                                         },
                                     },
-                                ],
-                            }}
-                        />
-                    </Block>
-                </Block>
-            </BlendChartContainer>
-
-            {/* Bar Chart Demo */}
-
-            <BlendChartContainer>
-                {/* header */}
-                <BlendChartHeader>
-                    <Block
-                        display="flex"
-                        width={'100% '}
-                        alignItems="center"
-                        justifyContent="space-between"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[25]}
-                    >
-                        <Block>
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Transaction Success Rate"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
+                                    series: [
+                                        {
+                                            type: 'xrange',
+                                            name: 'Banks',
+                                            data: xRangeData,
+                                            pointWidth: 8,
+                                            point: {
+                                                events: {
+                                                    mouseOver(
+                                                        this: BlendChartPoint
+                                                    ) {
+                                                        const point =
+                                                            this as BlendChartPoint & {
+                                                                x: number
+                                                                x2?: number
+                                                                color?: string
+                                                            }
+                                                        const range = {
+                                                            x: point.x,
+                                                            x2:
+                                                                point.x2 ??
+                                                                point.x,
+                                                            color:
+                                                                point.color ??
+                                                                '#FFC560',
+                                                        }
+                                                        handleRangeHover(range)
+                                                    },
+                                                    mouseOut() {
+                                                        handleRangeHover(null)
+                                                    },
+                                                },
+                                            },
+                                            dataLabels: {
+                                                enabled: false,
+                                            },
+                                        },
+                                    ],
+                                }}
                             />
                         </Block>
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            gap={FOUNDATION_THEME.unit[20]}
-                        >
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Top 5"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <SingleSelect
-                                placeholder="Select a chart"
-                                items={[]}
-                                selected="Hourly"
-                                onSelect={() => {}}
-                                // inline={true}
-                                size={SelectMenuSize.SMALL}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <Block
-                                height={FOUNDATION_THEME.unit[20]}
-                                width={FOUNDATION_THEME.unit[20]}
-                                contentCentered
-                                onClick={() => {}}
-                            >
-                                <EllipsisVerticalIcon
-                                    size={FOUNDATION_THEME.unit[20]}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
-                                />
-                            </Block>
-                        </Block>
                     </Block>
-                </BlendChartHeader>
-
-                {/* Body */}
-                <BlendChart
-                    options={{
-                        xAxis: {
-                            type: 'datetime',
-                            title: {
-                                text: 'Time',
-                            },
-                        },
-                        yAxis: {
-                            title: {
-                                text: 'Value',
-                            },
-                        },
-                        series: [
-                            {
-                                type: 'column',
-                                data: data,
-                                color: FOUNDATION_THEME.colors.primary[500],
-                                marker: {
-                                    enabled: false,
-                                },
-                            },
-                        ],
-                    }}
-                />
-            </BlendChartContainer>
+                </BlendChartContainer>
+            }
         </div>
     )
 }

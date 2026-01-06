@@ -76,7 +76,7 @@ const BlendChart = forwardRef<BlendChartReactRefObject, BlendChartProps>(
                 ...subtitle,
             },
             legend: {
-                enabled: false,
+                enabled: true,
                 ...legend,
             },
             xAxis: {
