@@ -243,7 +243,9 @@ describe('Card Accessibility', () => {
                 />
             )
             // headerSlot1 should be wrapped in a container with aria-hidden if decorative
-            const headerSlot = container.querySelector('[data-card-header]')
+            const headerSlot = container.querySelector(
+                '[data-element="card-header"]'
+            )
             expect(headerSlot).toBeInTheDocument()
         })
 
