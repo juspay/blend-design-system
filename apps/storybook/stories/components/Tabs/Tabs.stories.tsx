@@ -213,6 +213,11 @@ const [tabs, setTabs] = useState<TabItem[]>([
             description:
                 'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
         },
+        stickyHeader: {
+            control: 'boolean',
+            description:
+                'When true, makes the tab listing header stick to the top of its container when scrolling. This keeps the tab navigation visible while scrolling through long tab content. The header will have position: sticky, top: 0, and a z-index to stay above other content.',
+        },
     },
     tags: ['autodocs'],
 }

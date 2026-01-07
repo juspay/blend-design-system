@@ -215,6 +215,15 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Tabs.stickyHeader',
+                hintText:
+                    'When true, makes the tab listing header stick to the top of its container when scrolling. This keeps the tab navigation visible while scrolling through long tab content. The header will have position: sticky, top: 0, and a z-index to stay above other content. This is particularly useful for documentation pages, settings panels, and dashboards with lengthy content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
                 content: 'TabsList.variant',
                 hintText:
                     'Optional TabsVariant enum value that determines the visual style variant of the tabs list. UNDERLINE creates tabs with an underline indicator, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
