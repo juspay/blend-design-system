@@ -563,7 +563,6 @@ export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
                 id={id}
                 {...props}
                 data-element="drawer-header"
-                data-id={id}
             >
                 {children}
             </StyledTitle>
@@ -598,7 +597,6 @@ export const DrawerDescription = forwardRef<
             id={id}
             {...props}
             data-element="drawer-header-subtitle"
-            data-id={id}
         >
             {children}
         </StyledDescription>
