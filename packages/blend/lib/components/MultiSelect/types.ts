@@ -117,6 +117,7 @@ export type MultiSelectProps = {
     inline?: boolean
     onBlur?: () => void
     onFocus?: () => void
+    onOpenChange?: (open: boolean) => void
 
     // error
     error?: boolean
