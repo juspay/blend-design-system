@@ -809,6 +809,7 @@ const HeavyComponent = lazy(() => import('./components/HeavyComponent'))
 - [RFC 0003](./0003-accessibility-standards.md) - Accessibility Standards
 - [RFC 0004](./0004-typography-system.md) - Typography System
 - [RFC 0005](./0005-token-naming-conventions.md) - Token Naming Conventions
+- [RFC 0007](./0007-component-refactoring-standards.md) - Component Refactoring Standards
 
 ## References
 

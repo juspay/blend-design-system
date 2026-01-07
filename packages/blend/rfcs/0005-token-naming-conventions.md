@@ -815,6 +815,7 @@ const Button = styled.button`
 - [RFC 0003](./0003-accessibility-standards.md) - Accessibility Standards
 - [RFC 0004](./0004-typography-system.md) - Typography System
 - [RFC 0006](./0006-bundle-size-optimization.md) - Bundle Size Optimization
+- [RFC 0007](./0007-component-refactoring-standards.md) - Component Refactoring Standards
 
 ## References
 

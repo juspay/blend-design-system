@@ -817,6 +817,7 @@ We will measure success through:
 - [RFC 0004](./0004-typography-system.md) - Typography System
 - [RFC 0005](./0005-token-naming-conventions.md) - Token Naming Conventions
 - [RFC 0006](./0006-bundle-size-optimization.md) - Bundle Size Optimization
+- [RFC 0007](./0007-component-refactoring-standards.md) - Component Refactoring Standards
 
 ## References
 
