@@ -23,7 +23,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         // Generate unique IDs for ARIA relationships
         const baseId = useId()
         const cardId = `${baseId}-card`
-        let headerTitle = 'headerTitle' in props ? props.headerTitle : undefined
+        const headerTitle =
+            'headerTitle' in props ? props.headerTitle : undefined
 
         // Generate accessible label for the card
         const cardLabel = useMemo(() => {
