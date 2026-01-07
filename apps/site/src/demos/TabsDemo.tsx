@@ -1127,6 +1127,187 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
                 </div>
             </div>
 
+            {/* Sticky Header Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Sticky Header</h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        The{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            stickyHeader
+                        </code>{' '}
+                        prop makes the tab listing header stick to the top when
+                        scrolling. This is useful for keeping navigation visible
+                        when tab content is long and scrollable.
+                    </p>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-6 flex-wrap mb-4">
+                            <Switch
+                                label="Enable Sticky Header"
+                                checked={expanded}
+                                onChange={() => setExpanded(!expanded)}
+                            />
+                        </div>
+
+                        <div className="p-6 bg-white border rounded-lg">
+                            <Tabs
+                                items={[
+                                    {
+                                        value: 'overview',
+                                        label: 'Overview',
+                                        content: (
+                                            <div className="p-4 bg-blue-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Overview Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    This is a long content area
+                                                    to demonstrate the sticky
+                                                    header functionality. Scroll
+                                                    down to see how the tab
+                                                    header stays fixed at the
+                                                    top.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Lorem ipsum dolor
+                                                            sit amet,
+                                                            consectetur
+                                                            adipiscing elit. Sed
+                                                            do eiusmod tempor
+                                                            incididunt ut labore
+                                                            et dolore magna
+                                                            aliqua.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                    {
+                                        value: 'details',
+                                        label: 'Details',
+                                        content: (
+                                            <div className="p-4 bg-green-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Details Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    Switch to this tab and
+                                                    scroll to see the sticky
+                                                    header in action. The header
+                                                    remains visible while you
+                                                    scroll through this content.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Ut enim ad minim
+                                                            veniam, quis nostrud
+                                                            exercitation ullamco
+                                                            laboris nisi ut
+                                                            aliquip ex ea
+                                                            commodo consequat.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                    {
+                                        value: 'settings',
+                                        label: 'Settings',
+                                        content: (
+                                            <div className="p-4 bg-purple-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Settings Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    This tab also has long
+                                                    content. Notice how the
+                                                    header sticks to the top
+                                                    regardless of which tab is
+                                                    active.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Duis aute irure
+                                                            dolor in
+                                                            reprehenderit in
+                                                            voluptate velit esse
+                                                            cillum dolore eu
+                                                            fugiat nulla
+                                                            pariatur.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                ]}
+                                stickyHeader={expanded}
+                                variant={TabsVariant.UNDERLINE}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Sticky Header Benefits:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>• Keeps navigation always visible</li>
+                                <li>• Improves UX for long content</li>
+                                <li>• Works with all tab variants</li>
+                                <li>• Compatible with dynamic tabs</li>
+                                <li>
+                                    • Optional feature (disabled by default)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Use Cases:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>• Documentation pages</li>
+                                <li>• Settings panels</li>
+                                <li>• Long forms with sections</li>
+                                <li>• Analytics dashboards</li>
+                                <li>• Multi-step wizards</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Code Example:
+                        </h4>
+                        <div className="font-mono text-sm text-gray-700">
+                            <pre>{`<Tabs
+  items={tabItems}
+  stickyHeader={true}
+  variant={TabsVariant.UNDERLINE}
+/>`}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Disabled State Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Disabled State</h2>

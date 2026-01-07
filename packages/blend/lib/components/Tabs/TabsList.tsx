@@ -48,6 +48,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             disable = false,
             showSkeleton = false,
             skeletonVariant = 'pulse',
+            stickyHeader = false,
             children,
         },
         ref
@@ -301,7 +302,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         alignItems: 'center',
                         width: '100%',
                         overflow: 'hidden',
-                        position: 'relative',
+                        position: stickyHeader ? 'sticky' : 'relative',
+                        top: stickyHeader ? 0 : 'auto',
+                        zIndex: stickyHeader ? 50 : 'auto',
+                        backgroundColor: stickyHeader
+                            ? FOUNDATION_THEME.colors.gray[0]
+                            : 'transparent',
                         borderBottom:
                             variant === TabsVariant.UNDERLINE && !hasAnySkeleton
                                 ? tabsToken.borderBottom[variant]
@@ -310,6 +316,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                             variant === TabsVariant.UNDERLINE
                                 ? FOUNDATION_THEME.unit[8]
                                 : '0',
+                        boxShadow: stickyHeader
+                            ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                            : 'none',
                     }}
                 >
                     <Block
@@ -512,11 +521,20 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 data-element="tabs-list"
                 data-state={expanded ? 'expanded' : 'collapsed'}
                 style={{
+                    position: stickyHeader ? 'sticky' : 'relative',
+                    top: stickyHeader ? 0 : 'auto',
+                    zIndex: stickyHeader ? 50 : 'auto',
+                    backgroundColor: stickyHeader
+                        ? FOUNDATION_THEME.colors.gray[0]
+                        : 'transparent',
                     borderBottom:
                         variant === TabsVariant.UNDERLINE &&
                         !hasAnyChildSkeleton
                             ? tabsToken.borderBottom[variant]
                             : 'none',
+                    boxShadow: stickyHeader
+                        ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                        : 'none',
                 }}
             >
                 <Block

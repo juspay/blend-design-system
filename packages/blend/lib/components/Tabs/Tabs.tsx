@@ -26,6 +26,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             disable = false,
             showSkeleton = false,
             skeletonVariant = 'pulse',
+            stickyHeader = false,
             children,
             ...props
         },
@@ -212,6 +213,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         addButtonTooltip={addButtonTooltip}
                         onTabChange={handleTabChange}
                         activeTab={activeTab}
+                        stickyHeader={stickyHeader}
                     />
 
                     {items.map((item) => (
@@ -256,6 +258,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                             skeletonVariant,
                             variant,
                             size,
+                            stickyHeader,
                         }),
                         ...(isTabsTrigger && {
                             showSkeleton:
