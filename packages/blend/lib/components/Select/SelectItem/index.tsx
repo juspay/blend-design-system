@@ -38,8 +38,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         const [showTooltip, setShowTooltip] = useState(false)
         const [showSubLabelTooltip, setShowSubLabelTooltip] = useState(false)
 
-        console.log('select item--->>>>>')
-
         const multiSelectTokens =
             useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
         const singleSelectTokens =

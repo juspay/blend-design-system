@@ -27,7 +27,6 @@ export const TruncatedTextWithTooltip = ({
     const [isTruncated, setIsTruncated] = useState(false)
     const rafRef = useRef<number | null>(null)
     const isMeasuringRef = useRef(false)
-    console.log('TruncatedTextWithTooltip--->>>>>')
 
     const checkTruncation = useCallback(() => {
         if (isMeasuringRef.current) return
