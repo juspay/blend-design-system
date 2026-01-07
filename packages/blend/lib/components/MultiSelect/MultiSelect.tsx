@@ -94,6 +94,7 @@ const MultiSelect = ({
     customValueLabel = 'Specify',
     showClearButton,
     onClearAllClick,
+    onOpenChange,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -218,6 +219,7 @@ const MultiSelect = ({
                 skeleton={skeleton}
                 allowCustomValue={allowCustomValue}
                 customValueLabel={customValueLabel}
+                onOpenChange={onOpenChange}
             />
         )
     }
@@ -311,6 +313,7 @@ const MultiSelect = ({
                                 } else {
                                     onBlur?.()
                                 }
+                                onOpenChange?.(isOpen)
                             }}
                             showActionButtons={shouldShowActionButtons}
                             primaryAction={
