@@ -532,7 +532,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     }
                     data-sidebar="sidebar"
                     data-status={isExpanded ? 'expanded' : 'collapsed'}
-                    data-id={isHovering ? 'intermediate' : 'closed'}
+                    data-state={isHovering ? 'hover' : 'idle'}
                     boxShadow={
                         isPanelOnlyMode ||
                         (iconOnlyMode && !isExpanded) ||
