@@ -472,7 +472,6 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                         const itemColor =
                                             colors[colorIndex] ||
                                             colors[index % colors.length]
-                                        console.log(itemColor, 'itemColor')
                                         const isHovered = hoveredKey === dataKey
                                         const isSelected =
                                             selectedKeys.includes(dataKey)
