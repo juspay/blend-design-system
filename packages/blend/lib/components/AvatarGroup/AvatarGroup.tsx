@@ -71,7 +71,7 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                 aria-label={`Group of ${avatars.length} avatars${internalSelectedIds.length > 0 ? `, ${internalSelectedIds.length} selected` : ''}`}
                 aria-live="polite"
                 aria-atomic="true"
-                data-avatar-group="true"
+                data-avatar-group="avatar-group"
                 data-avatar-group-count={avatars.length}
                 data-avatar-group-selected-count={internalSelectedIds.length}
                 data-avatar-group-max-count={safeMaxCount}
@@ -156,6 +156,8 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                                         overflowCount
                                     }
                                     onMouseDown={(e) => e.preventDefault()}
+                                    data-element="avatar-group-overflow-counter"
+                                    data-id={`${overflowCount}-more-avatars`}
                                 >
                                     +{overflowCount}
                                 </StyledOverflowCounter>
