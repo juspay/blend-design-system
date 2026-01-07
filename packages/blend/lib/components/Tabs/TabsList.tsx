@@ -69,22 +69,6 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             () => processTabsWithConcatenation(items),
             [items]
         )
-        const defaultTabs = useMemo(() => {
-            const hasAnyDefault = processedItems.some(
-                (item) => item.isDefault === true
-            )
-
-            if (hasAnyDefault) {
-                // If any items have isDefault, show only those + active tab
-                return processedItems.filter(
-                    (item) =>
-                        item.isDefault === true || item.value === activeTab
-                )
-            } else {
-                // If no items have isDefault, show all items
-                return processedItems
-            }
-        }, [processedItems, activeTab])
 
         const dropdownItems = useMemo(() => {
             return prepareDropdownItems(sourceItems, sourceItems)
@@ -361,7 +345,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     marginBottom: 0,
                                 }}
                             >
-                                {defaultTabs.map((item) => {
+                                {processedItems.map((item) => {
                                     const tabValue = getActualTabValue(
                                         item.value,
                                         originalTabValues
@@ -378,9 +362,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                             size={size}
                                             isActive={tabValue === activeTab}
                                             tabsGroupId={tabsGroupId}
-                                            closable={
-                                                item.closable && item.newItem
-                                            }
+                                            closable={item.newItem}
                                             onClose={() =>
                                                 handleTabClose(item.value)
                                             }
@@ -422,10 +404,12 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         >
                             {showDropdown && (
                                 <SingleSelect
+                                    enableSearch={true}
                                     items={dropdownItems}
                                     selected={activeTab}
                                     onSelect={handleDropdownSelect}
                                     placeholder="Navigate"
+                                    searchPlaceholder="Search and navigate to tab"
                                     customTrigger={
                                         <PrimitiveButton
                                             height={FOUNDATION_THEME.unit[20]}

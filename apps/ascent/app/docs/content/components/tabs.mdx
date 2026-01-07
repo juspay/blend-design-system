@@ -97,7 +97,7 @@ function MyComponent() {
             {
                 content: 'Tabs.items',
                 hintText:
-                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like closable tabs, default tabs, disabled states, and skeleton loading per tab.',
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like newItem tabs, disabled states, and skeleton loading per tab.',
             },
             { content: 'TabItem[]', hintText: 'array' },
             { content: '' },
@@ -253,7 +253,7 @@ function MyComponent() {
             {
                 content: 'TabsList.items',
                 hintText:
-                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like closable tabs, default tabs, disabled states, and skeleton loading per tab.',
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like newItem tabs, disabled states, and skeleton loading per tab.',
             },
             { content: 'TabItem[]', hintText: 'array' },
             { content: '' },
@@ -402,7 +402,8 @@ function MyComponent() {
         [
             {
                 content: 'TabsTrigger.closable',
-                hintText: 'Whether the tab can be closed',
+                hintText:
+                    'Whether the tab shows a close button (maps from TabItem.newItem)',
             },
             { content: 'boolean', hintText: 'boolean' },
             { content: '' },

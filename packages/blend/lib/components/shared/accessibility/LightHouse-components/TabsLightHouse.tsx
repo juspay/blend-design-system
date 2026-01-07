@@ -102,19 +102,19 @@ const TabsLightHouse = () => {
                         value: 'tab1',
                         label: 'Tab 1',
                         content: <div>Content for Tab 1</div>,
-                        closable: true,
+                        newItem: true,
                     },
                     {
                         value: 'tab2',
                         label: 'Tab 2',
                         content: <div>Content for Tab 2</div>,
-                        closable: true,
+                        newItem: true,
                     },
                     {
                         value: 'tab3',
                         label: 'Tab 3',
                         content: <div>Content for Tab 3</div>,
-                        closable: false,
+                        newItem: false,
                     },
                 ]}
                 variant={TabsVariant.UNDERLINE}
@@ -290,14 +290,14 @@ const TabsLightHouse = () => {
                         label: 'Settings',
                         content: <div>Settings Content</div>,
                         leftSlot: <Settings size={16} />,
-                        closable: true,
+                        newItem: true,
                     },
                     {
                         value: 'tab2',
                         label: 'Profile',
                         content: <div>Profile Content</div>,
                         rightSlot: <User size={16} />,
-                        closable: true,
+                        newItem: true,
                     },
                     {
                         value: 'tab3',
