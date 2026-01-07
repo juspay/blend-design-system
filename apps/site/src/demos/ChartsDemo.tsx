@@ -363,6 +363,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756947600000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 100,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 100,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -386,6 +398,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756954800000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 60,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 60,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -409,6 +433,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756958400000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 60,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 50,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -432,6 +468,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756962000000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 30,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 30,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -455,6 +503,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756965600000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 20,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 20,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -478,6 +538,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756969200000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 10,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 10,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -501,6 +573,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756972800000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 5,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 5,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -524,6 +608,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756976400000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 80,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 80,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -547,6 +643,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756980000000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 70,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 70,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -570,6 +678,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756983600000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 60,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 60,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -593,6 +713,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756987200000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 50,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 50,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -616,6 +748,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756990800000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 40,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 40,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -639,6 +783,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756994400000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 30,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 30,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',
@@ -662,6 +818,18 @@ const GranularChartsDemo = () => {
         {
             name: '1756998000000',
             data: {
+                ZELLE: {
+                    primary: {
+                        label: 'ZELLE',
+                        val: 20,
+                    },
+                },
+                VENMO: {
+                    primary: {
+                        label: 'VENMO',
+                        val: 20,
+                    },
+                },
                 Overall: {
                     primary: {
                         label: 'Overall',

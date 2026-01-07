@@ -590,9 +590,17 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         }
                                                         flexShrink={0}
                                                         backgroundColor={
-                                                            typeof itemColor?.color
+                                                            typeof itemColor ===
+                                                            'string'
+                                                                ? itemColor
+                                                                : itemColor?.color
                                                         }
-                                                        data-color={itemColor}
+                                                        data-color={
+                                                            typeof itemColor ===
+                                                            'string'
+                                                                ? itemColor
+                                                                : itemColor?.color
+                                                        }
                                                     />
                                                     {legend.total !==
                                                     undefined ? (
