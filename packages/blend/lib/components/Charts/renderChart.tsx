@@ -232,8 +232,6 @@ export const renderChart = ({
         )
     }
 
-    console.log({ processedData, originalData })
-
     switch (chartType) {
         case ChartType.LINE: {
             return (

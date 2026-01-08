@@ -310,16 +310,9 @@ const TableCell = forwardRef<
                                                 ...dropdownData,
                                                 selectedValue: value,
                                             }
-                                        console.log(
-                                            '🔄 Dropdown option selected (editing):',
-                                            { value, updatedDropdownData }
-                                        )
+
                                         if (onFieldChange) {
                                             onFieldChange(updatedDropdownData)
-                                            console.log(
-                                                '✅ onFieldChange called (editing):',
-                                                updatedDropdownData
-                                            )
                                         }
                                     }}
                                     minMenuWidth={150}
