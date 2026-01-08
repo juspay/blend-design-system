@@ -18,8 +18,6 @@ export type TabItem = {
     value: string
     label: string
     content: ReactNode
-    closable?: boolean
-    isDefault?: boolean
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -43,6 +41,7 @@ export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    stickyHeader?: boolean
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<
@@ -65,6 +64,7 @@ export type TabsListProps = ComponentPropsWithoutRef<
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    stickyHeader?: boolean
 }
 
 export type TabsTriggerProps = ComponentPropsWithoutRef<

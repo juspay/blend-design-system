@@ -236,7 +236,7 @@ export const renderChart = ({
         case ChartType.LINE: {
             return (
                 <LineChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -256,6 +256,7 @@ export const renderChart = ({
                         stroke={chartConfig.gridStroke}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -312,6 +313,7 @@ export const renderChart = ({
 
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -387,7 +389,35 @@ export const renderChart = ({
                                 dataKey={key}
                                 stroke={getColor(key, chartType)}
                                 strokeWidth={2}
-                                activeDot={{ r: hoveredKey === key ? 4 : 0 }}
+                                activeDot={(props: {
+                                    cx?: number
+                                    cy?: number
+                                    payload?: Record<string, unknown>
+                                }) => {
+                                    const dataPoint = originalData.find(
+                                        (d) => d.name === props.payload?.name
+                                    )
+                                    const hasError =
+                                        !!dataPoint?.data?.[key]?.error
+
+                                    return (
+                                        <circle
+                                            cx={props.cx}
+                                            cy={props.cy}
+                                            r={hoveredKey === key ? 4 : 0}
+                                            stroke={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                            fill={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                        />
+                                    )
+                                }}
                                 animationDuration={350}
                                 onMouseOver={() => setHoveredKey(key)}
                                 dot={CustomizedDot || false}
@@ -400,7 +430,7 @@ export const renderChart = ({
         case ChartType.BAR:
             return (
                 <BarChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -421,6 +451,7 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -475,6 +506,7 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -557,7 +589,7 @@ export const renderChart = ({
 
             return (
                 <PieChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
                 >
                     <Pie
@@ -622,6 +654,7 @@ export const renderChart = ({
 
             return (
                 <ScatterChart
+                    data-chart={chartType}
                     data={scatterData}
                     margin={{
                         top: 20,
@@ -642,6 +675,7 @@ export const renderChart = ({
                     onMouseLeave={() => setHoveredKey(null)}
                 >
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         type="number"
                         dataKey="x"
                         axisLine={false}
@@ -692,6 +726,7 @@ export const renderChart = ({
                         stroke={chartConfig.gridStroke}
                     />
                     <YAxis
+                        data-element="chart-y-axis-labels"
                         type="number"
                         dataKey="y"
                         axisLine={false}
@@ -781,7 +816,7 @@ export const renderChart = ({
                         justifyContent="center"
                         flexDirection="column"
                         gap={28}
-                        data-chart="No-Data"
+                        data-chart={chartType}
                     >
                         <Text
                             variant="body.lg"
@@ -866,7 +901,7 @@ export const renderChart = ({
         case ChartType.AREA: {
             return (
                 <AreaChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -887,6 +922,7 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -941,6 +977,7 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}

@@ -56,7 +56,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
             role="group"
             aria-label="Chart header"
         >
-            <Block>{chartHeaderSlot}</Block>
+            <Block data-element="chart-header-slot">{chartHeaderSlot}</Block>
             <Block
                 display="flex"
                 alignItems="center"
@@ -145,6 +145,10 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                 {showCollapseIcon && (
                     // <div style={{ border: '1px solid blue' }}>
                     <PrimitiveButton
+                        data-element="collapse-button"
+                        data-state={
+                            isExpanded ? 'Collapse Chart' : 'Expand Chart'
+                        }
                         type="button"
                         aria-label={
                             isExpanded ? 'Collapse chart' : 'Expand chart'

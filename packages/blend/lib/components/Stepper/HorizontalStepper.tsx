@@ -131,9 +131,25 @@ const StepComponent = forwardRef<
         const stepDescriptionId = step.description
             ? `${stepId}-description`
             : undefined
+        const stepStatus = isClickable
+            ? `Step ${stepIndex + 1} of ${step.title}${
+                  stepState === StepState.COMPLETED
+                      ? ', completed'
+                      : stepState === StepState.CURRENT
+                        ? ', current'
+                        : stepState === StepState.DISABLED
+                          ? ', disabled'
+                          : stepState === StepState.SKIPPED
+                            ? ', skipped'
+                            : ', pending'
+              }`
+            : undefined
 
         return (
             <Block
+                data-element="stepper-status"
+                data-id={stepStatus}
+                data-numeric={step.id}
                 ref={ref}
                 width="100%"
                 display="flex"
@@ -416,6 +432,7 @@ const HorizontalStepper = forwardRef<HTMLDivElement, StepperProps>(
 
         return (
             <Block
+                data-stepper="stepper"
                 ref={ref}
                 display="flex"
                 width="100%"

@@ -222,6 +222,7 @@ const AttachmentFile = ({
                                     }
                                 }}
                                 aria-label={`${fileName} file, press Delete to remove, click to view`}
+                                data-element="file-attachment-item"
                             />
                         </Tooltip>
                     )
