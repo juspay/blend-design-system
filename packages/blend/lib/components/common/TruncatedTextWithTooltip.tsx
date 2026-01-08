@@ -41,21 +41,18 @@ export const TruncatedTextWithTooltip = ({
 
             const next = el.scrollWidth > el.clientWidth && el.clientWidth > 0
 
-            // 🔑 Guard state updates
             setIsTruncated((prev) => (prev !== next ? next : prev))
 
             rafRef.current = null
         })
     }, [])
 
-    // 🔥 SAFE ResizeObserver usage
     useResizeObserver(textRef as React.RefObject<HTMLElement>, () => {
         if (isMeasuringRef.current) return
 
         isMeasuringRef.current = true
         checkTruncation()
 
-        // Re-enable observation AFTER layout settles
         requestAnimationFrame(() => {
             isMeasuringRef.current = false
         })

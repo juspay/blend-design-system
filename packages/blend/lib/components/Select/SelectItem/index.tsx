@@ -56,8 +56,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             if (rafRef.current !== null) {
                 cancelAnimationFrame(rafRef.current)
             }
-
-            // 🔴 Disconnect BEFORE measuring & setting state
             resizeObserverRef.current?.disconnect()
 
             rafRef.current = requestAnimationFrame(() => {
@@ -73,8 +71,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         subLabelRef.current
                     )
                 }
-
-                // ✅ Guarded state updates
                 setShowTooltip((prev) =>
                     prev !== nextShowTooltip ? nextShowTooltip : prev
                 )
@@ -85,7 +81,6 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                         : prev
                 )
 
-                // 🟢 Reconnect AFTER layout settles
                 requestAnimationFrame(() => {
                     if (!resizeObserverRef.current) return
 
