@@ -389,7 +389,35 @@ export const renderChart = ({
                                 dataKey={key}
                                 stroke={getColor(key, chartType)}
                                 strokeWidth={2}
-                                activeDot={{ r: hoveredKey === key ? 4 : 0 }}
+                                activeDot={(props: {
+                                    cx?: number
+                                    cy?: number
+                                    payload?: Record<string, unknown>
+                                }) => {
+                                    const dataPoint = originalData.find(
+                                        (d) => d.name === props.payload?.name
+                                    )
+                                    const hasError =
+                                        !!dataPoint?.data?.[key]?.error
+
+                                    return (
+                                        <circle
+                                            cx={props.cx}
+                                            cy={props.cy}
+                                            r={hoveredKey === key ? 4 : 0}
+                                            stroke={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                            fill={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                        />
+                                    )
+                                }}
                                 animationDuration={350}
                                 onMouseOver={() => setHoveredKey(key)}
                                 dot={CustomizedDot || false}
