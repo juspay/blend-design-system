@@ -1,13 +1,5 @@
 # RFC 0003: Accessibility Standards
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Ensure all components meet WCAG 2.2 Level AA requirements through comprehensive keyboard navigation, ARIA support, screen reader optimization, and automated accessibility testing in CI/CD.
@@ -438,5 +430,3 @@ return <button onClick={onClick} onKeyDown={onKeyDown}>...</button>
 - [shadcn/ui Accessibility](https://ui.shadcn.com/docs/accessibility) - 2024 patterns
 
 ---
-
-**Discussion**: [Link to GitHub issue or discussion]

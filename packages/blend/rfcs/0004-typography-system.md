@@ -1,13 +1,5 @@
 # RFC 0004: Typography System
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Establish a comprehensive typography system based on the Major Third (1.250) modular scale, including responsive/fluid typography, consistent line heights and letter spacing, with dark mode and high contrast support.
@@ -493,5 +485,3 @@ const typography = {
 - [shadcn/ui Typography](https://ui.shadcn.com/docs/components/typography) - 2024 patterns
 
 ---
-
-**Discussion**: [Link to GitHub issue or discussion]

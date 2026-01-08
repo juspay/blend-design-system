@@ -1,13 +1,5 @@
 # RFC 0001: Test Infrastructure Overhaul
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Establish modern testing infrastructure for the Blend Design System by consolidating test files, implementing environment-aware performance testing, and achieving 95% code coverage across all components.

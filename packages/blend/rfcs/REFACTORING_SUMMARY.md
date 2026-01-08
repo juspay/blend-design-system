@@ -102,7 +102,6 @@ When refactoring any component in the Blend Design System, follow these standard
 | [0006](./0006-bundle-size-optimization.md)        | Bundle Size           | Performance and bundle optimization  |
 | [0007](./0007-component-refactoring-standards.md) | Refactoring Standards | Component refactoring guidelines     |
 | [FLOWCHART](./REFACTORING_FLOWCHART.md)           | Refactoring Flowchart | Step-by-step refactoring process     |
-| [QUICK REF](./REFACTORING_QUICK_REFERENCE.md)     | Quick Reference       | Quick checklist                      |
 
 ---
 

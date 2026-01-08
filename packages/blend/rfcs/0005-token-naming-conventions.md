@@ -1,13 +1,5 @@
 # RFC 0005: Design Token Naming Conventions
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Establish consistent naming conventions for design tokens following the Design Tokens Community Group (DTCG) specification and 2024-2025 industry standards, improving maintainability, tooling support, and discoverability.
@@ -450,5 +442,3 @@ const Button = styled.button`
 - [shadcn/ui Tokens](https://ui.shadcn.com/docs/theming) - 2024 patterns
 
 ---
-
-**Discussion**: [Link to GitHub issue or discussion]

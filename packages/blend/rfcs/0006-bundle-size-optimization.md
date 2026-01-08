@@ -1,13 +1,5 @@
 # RFC 0006: Bundle Size Optimization
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Implement comprehensive bundle size optimization through code splitting, tree shaking, lazy loading, and modern build optimizations to reduce main bundle to <50KB gzipped and ensure fast load times.
@@ -451,5 +443,3 @@ const HeavyComponent = lazy(() => import('./components/HeavyComponent'))
 - [React Optimizations](https://react.dev/learn/render-and-commit/optimize-rendering) - React performance
 
 ---
-
-**Discussion**: [Link to GitHub issue or discussion]

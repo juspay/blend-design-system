@@ -16,9 +16,9 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    START REFACTORING                         │
-│                  Component: [ComponentName]                  │
-└───────────────────────────┬───────────────────────────────────┘
+│                    START REFACTORING                        │
+│                  Component: [ComponentName]                 │
+└───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
         ┌───────────────────────────────────────┐
@@ -60,9 +60,9 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
         │                                       │
         ▼                                       ▼
 ┌───────────────┐                      ┌───────────────┐
-│ Replace       │                      │ Create        │
-│ Hardcoded     │                      │ Component     │
-│ Values        │                      │ Tokens        │
+│ Create        │                      │ Replace       │
+│ Component     │                      │ Hardcoded     │
+│ Tokens        │                      │ Values        │
 └───────────────┘                      └───────────────┘
         │                                       │
         └───────────────────┬───────────────────┘
@@ -91,9 +91,9 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
         │                                       │
         ▼                                       ▼
 ┌───────────────┐                      ┌───────────────┐
-│ Identify      │                      │ Create       │
+│ Identify      │                      │ Create        │
 │ Composable    │                      │ Sub-components│
-│ Parts         │                      │              │
+│ Parts         │                      │               │
 └───────────────┘                      └───────────────┘
         │                                       │
         └───────────────────┬───────────────────┘
@@ -107,7 +107,7 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
         │                                       │
         ▼                                       ▼
 ┌───────────────┐                      ┌───────────────┐
-│ Use Block &   │                      │ Keep SC only │
+│ Use Block &   │                      │ Keep SC only  │
 │ Primitives    │                      │ if necessary  │
 └───────────────┘                      └───────────────┘
         │                                       │
@@ -153,7 +153,7 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
         │                                       │
         ▼                                       ▼
 ┌───────────────┐                      ┌───────────────┐
-│ Add HTML      │                      │ Add width/   │
+│ Add HTML      │                      │ Add width/    │
 │ Props Support │                      │ height (if    │
 │ (primitives)  │                      │ container)    │
 └───────────────┘                      └───────────────┘
@@ -184,8 +184,8 @@ This flowchart provides a comprehensive, step-by-step process for refactoring co
         │                                       │
         ▼                                       ▼
 ┌───────────────┐                      ┌───────────────┐
-│ Functional   │                      │ Accessibility│
-│ Tests        │                      │ Tests        │
+│ Functional    │                      │ Accessibility │
+│ Tests         │                      │ Tests         │
 └───────────────┘                      └───────────────┘
         │                                       │
         └───────────────────┬───────────────────┘
@@ -1091,6 +1091,3 @@ A successfully refactored component:
 ✅ Complete documentation
 
 ---
-
-**Last Updated**: 2026-01-07  
-**Maintained By**: Blend Design System Team

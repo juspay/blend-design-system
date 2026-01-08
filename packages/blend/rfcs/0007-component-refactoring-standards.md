@@ -1,13 +1,5 @@
 # RFC 0007: Component Refactoring Standards
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Establish comprehensive refactoring standards for all components, defining component structure, token anatomy, code organization patterns, performance targets (95+ Lighthouse), and accessibility requirements.
@@ -495,5 +487,3 @@ Use only Block and Primitives, no styled-components.
 - [Design System Architecture](https://www.invisionapp.com/inside-design/design-systems-handbook/) - System architecture
 
 ---
-
-**Discussion**: [Link to GitHub issue or discussion]

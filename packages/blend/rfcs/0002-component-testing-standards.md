@@ -1,13 +1,5 @@
 # RFC 0002: Component Testing Standards
 
-**Status**: Draft
-
-**Authors**: Blend Design System Team
-
-**Created**: 2026-01-07
-
-**Updated**: 2026-01-08
-
 ## Summary
 
 Establish comprehensive testing standards for all components, defining mandatory test categories, consistent patterns, and best practices to ensure maintainable, effective tests across the library.
