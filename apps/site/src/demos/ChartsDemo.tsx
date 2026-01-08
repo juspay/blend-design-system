@@ -5,7 +5,7 @@ import {
     Activity,
     LoaderCircle,
     ChartBar,
-    CircleDot,
+    DotIcon,
 } from 'lucide-react'
 import {
     Charts,
@@ -5878,12 +5878,18 @@ const ChartDemo = () => {
 
         if (payload?.name?.toString() === '1759773600000' && value === 28.16) {
             return (
-                <CircleDot
-                    x={cx - 7}
-                    y={cy - 7}
+                <DotIcon
+                    style={{
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                        console.log('clicked')
+                    }}
+                    x={cx - 25}
+                    y={cy - 25}
                     stroke="red"
                     strokeWidth={3}
-                    size={14}
+                    size={50}
                     // r={12}
                 />
             )

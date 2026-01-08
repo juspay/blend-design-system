@@ -92,7 +92,7 @@ const formatAuxTooltipValue = (
     return typeof value === 'number' ? formatNumber(value) : String(value)
 }
 
-const findDataPointByLabel = (
+export const findDataPointByLabel = (
     originalData: NewNestedDataPoint[],
     label: string | number
 ) => {
@@ -113,6 +113,24 @@ const findDataPointByLabel = (
         const itemTimestamp = parseTimestamp(item.name)
         return itemTimestamp !== null && itemTimestamp === labelTimestamp
     })
+}
+
+export const getRelevantData = (
+    originalData: NewNestedDataPoint[],
+    label: string | number,
+    hoveredKey: string
+) => {
+    const currentDataPoint = findDataPointByLabel(originalData, label)
+
+    if (
+        !currentDataPoint ||
+        !currentDataPoint.data ||
+        !currentDataPoint.data[hoveredKey]
+    ) {
+        return null
+    }
+
+    return currentDataPoint.data[hoveredKey]
 }
 
 export const CustomTooltip = ({
@@ -340,20 +358,7 @@ const LineChartTooltip = ({
         return null
     }
 
-    const getRelevantData = () => {
-        const currentDataPoint = findDataPointByLabel(originalData, label)
-
-        if (
-            !currentDataPoint ||
-            !currentDataPoint.data ||
-            !currentDataPoint.data[hoveredKey]
-        ) {
-            return null
-        }
-
-        return currentDataPoint.data[hoveredKey]
-    }
-    const relevantData = getRelevantData()
+    const relevantData = getRelevantData(originalData, label, hoveredKey)
     if (!relevantData) {
         return null
     }
