@@ -316,7 +316,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
                         {showCopyButton && (
                             <Button
-                                data-element="codeblock-copy"
+                                data-element="copy-button"
                                 type="button"
                                 onClick={copyToClipboard}
                                 buttonType={ButtonType.SECONDARY}

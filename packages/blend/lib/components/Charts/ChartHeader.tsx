@@ -145,7 +145,8 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                 {showCollapseIcon && (
                     // <div style={{ border: '1px solid blue' }}>
                     <PrimitiveButton
-                        data-element={
+                        data-element="collapse-button"
+                        data-state={
                             isExpanded ? 'Collapse Chart' : 'Expand Chart'
                         }
                         type="button"

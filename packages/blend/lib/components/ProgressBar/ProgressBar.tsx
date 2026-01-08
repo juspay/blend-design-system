@@ -122,7 +122,7 @@ const CircularProgressBar: React.FC<
                     alignItems="center"
                     justifyContent="center"
                     data-element="progress-bar-value-now"
-                    data-value={`${Math.round(percentage)}%`}
+                    data-id={`${Math.round(percentage)}%`}
                 >
                     <Text
                         as="span"
@@ -229,7 +229,7 @@ const LinearProgressBar: React.FC<
                 <Block
                     flexShrink={0}
                     data-element="progress-bar-value-now"
-                    data-value={`${Math.round(percentage)}%`}
+                    data-id={`${Math.round(percentage)}%`}
                 >
                     <Text
                         as="span"

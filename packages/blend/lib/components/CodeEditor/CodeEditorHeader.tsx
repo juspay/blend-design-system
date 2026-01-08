@@ -111,7 +111,7 @@ export const CodeEditorHeader = ({
                     }}
                 >
                     <Button
-                        data-element="codeeditor-copy"
+                        data-element="copy-button"
                         type="button"
                         onClick={onCopy}
                         buttonType={ButtonType.SECONDARY}

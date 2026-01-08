@@ -290,24 +290,23 @@ const StepComponent = forwardRef<
         const stepContentRole = isClickable ? 'button' : 'group'
         const stepContentTabIndex = isClickable ? 0 : -1
 
+        const stepStatus = isClickable
+            ? `Step ${stepIndex + 1} of ${step.title}${
+                  stepState === StepState.COMPLETED
+                      ? ', completed'
+                      : stepState === StepState.CURRENT
+                        ? ', current'
+                        : stepState === StepState.DISABLED
+                          ? ', disabled'
+                          : stepState === StepState.SKIPPED
+                            ? ', skipped'
+                            : ', pending'
+              }`
+            : undefined
         return (
             <Block
                 data-element="stepper-status"
-                data-id={
-                    isClickable
-                        ? `Step ${stepIndex + 1} of ${step.title}${
-                              stepState === StepState.COMPLETED
-                                  ? ', completed'
-                                  : stepState === StepState.CURRENT
-                                    ? ', current'
-                                    : stepState === StepState.DISABLED
-                                      ? ', disabled'
-                                      : stepState === StepState.SKIPPED
-                                        ? ', skipped'
-                                        : ', pending'
-                          }`
-                        : undefined
-                }
+                data-id={stepStatus}
                 data-numeric={step.id}
                 ref={ref}
                 height={'100%'}

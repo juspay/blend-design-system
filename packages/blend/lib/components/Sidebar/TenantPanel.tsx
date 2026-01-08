@@ -42,7 +42,7 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
 
     return (
         <Block
-            data-element="main-sidebar"
+            data-element="tenant-panel"
             width={tokens.leftPanel.width}
             height="100%"
             borderRight={tokens.leftPanel.borderRight}
