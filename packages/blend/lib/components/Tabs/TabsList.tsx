@@ -519,7 +519,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         return (
             <Block
                 data-element="tabs-list"
-                data-state={expanded ? 'expanded' : 'collapsed'}
+                data-status={expanded ? 'expanded' : 'collapsed'}
                 style={{
                     position: stickyHeader ? 'sticky' : 'relative',
                     top: stickyHeader ? 0 : 'auto',

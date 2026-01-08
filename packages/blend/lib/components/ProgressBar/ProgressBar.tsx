@@ -98,7 +98,7 @@ const CircularProgressBar: React.FC<
                     }
                 />
                 <circle
-                    data-color={tokens.circular.stroke[type]}
+                    data-id={tokens.circular.stroke[type]}
                     cx={center}
                     cy={center}
                     r={radius}
@@ -198,7 +198,7 @@ const LinearProgressBar: React.FC<
                 aria-hidden="true"
             >
                 <Block
-                    data-color={fillBackgroundColor}
+                    data-id={fillBackgroundColor}
                     height="100%"
                     backgroundColor={fillBackgroundColor}
                     borderRadius={fillBorderRadius}
@@ -210,7 +210,7 @@ const LinearProgressBar: React.FC<
                 {variant === ProgressBarVariant.SEGMENTED && (
                     <Block
                         height="100%"
-                        data-color={emptyBackgroundColor}
+                        data-id={emptyBackgroundColor}
                         backgroundColor={emptyBackgroundColor}
                         backgroundImage={
                             tokens.linear.empty.backgroundImage.segmented

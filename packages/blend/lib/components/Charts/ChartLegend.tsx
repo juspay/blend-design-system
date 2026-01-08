@@ -596,11 +596,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         backgroundColor={
                                                             itemColor?.color
                                                         }
-                                                        data-color={
+                                                        data-element="chart-legend-color"
+                                                        data-id={
                                                             itemColor?.color
                                                         }
-                                                        data-element="chart-legend-color"
-                                                        data-id={itemColor}
                                                     />
                                                     {legend.total !==
                                                     undefined ? (
