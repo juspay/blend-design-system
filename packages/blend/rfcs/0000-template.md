@@ -10,187 +10,114 @@
 
 ## Summary
 
-[Brief summary of the RFC - 2-3 sentences explaining what this RFC proposes]
+[2-3 sentence summary of what this RFC proposes]
 
 ## Motivation
 
 ### Problem Statement
 
-[What problem does this RFC solve? What pain points exist currently?]
+[What problem does this RFC solve?]
 
 ### Goals
 
-[What are the goals of this RFC? What do we hope to achieve?]
+[List 3-5 key goals]
 
 ### Non-Goals
 
-[What is explicitly out of scope for this RFC?]
+[What is explicitly out of scope?]
 
 ## Proposed Solution
 
-[Detailed technical description of the proposed solution]
-
 ### Key Changes
 
-[List the main changes proposed]
+[Bullet list of main changes]
 
 ### Technical Details
 
-[Technical implementation details, code examples, diagrams, etc.]
-
-### API Changes
-
-[If the RFC involves API changes, describe them here]
+[Technical implementation details]
 
 ### Example Usage
 
 ```typescript
-// Code examples showing how the proposed changes would be used
+// Code example
 ```
 
 ## Alternatives Considered
 
 ### Option 1: [Alternative Name]
 
-[Description of alternative approach]
+[Description]
 
-**Pros:**
-
-- Pro 1
-- Pro 2
-
-**Cons:**
-
-- Con 1
-- Con 2
-
-**Why not chosen:** [Reason]
+**Why not chosen**: [Brief reason]
 
 ### Option 2: [Alternative Name]
 
-[Description of alternative approach]
+[Description]
 
-**Pros:**
-
-- Pro 1
-- Pro 2
-
-**Cons:**
-
-- Con 1
-- Con 2
-
-**Why not chosen:** [Reason]
+**Why not chosen**: [Brief reason]
 
 ## Impact Analysis
 
 ### Breaking Changes
 
-[Are there any breaking changes? List them here.]
+[Yes/No. List any breaking changes.]
 
 ### Backward Compatibility
 
-[How will this affect existing code? Will it break existing usage?]
+[How this affects existing code]
 
 ### Performance Impact
 
-[What is the performance impact of this change?]
+[Positive/Negative/Neutral]
 
 ### Bundle Size Impact
 
-[Will this increase or decrease bundle size? By how much?]
-
-### Developer Experience
-
-[How will this improve or impact developer experience?]
+[Increase/Decrease in KB]
 
 ### Migration Effort
 
-[How much effort will it take to migrate existing code?]
+[Low/Medium/High]
 
 ## Migration Guide
-
-[Step-by-step guide for migrating existing code to the new approach]
 
 ### Before
 
 ```typescript
-// Old code example
+// Old code
 ```
 
 ### After
 
 ```typescript
-// New code example
+// New code
 ```
-
-### Automatic Migration
-
-[Is it possible to provide automated migration tools? codemods?]
 
 ## Implementation Plan
 
-### Phase 1: [Phase Name]
-
-**Duration**: [Time estimate]
-
-**Tasks**:
-
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Task 3
-
-**Deliverables**:
-
-- Deliverable 1
-- Deliverable 2
-
-### Phase 2: [Phase Name]
-
-**Duration**: [Time estimate]
-
-**Tasks**:
+**Phase 1: Foundation** ([X] weeks)
 
 - [ ] Task 1
 - [ ] Task 2
 
-**Deliverables**:
-
-- Deliverable 1
-
-### Phase 3: [Phase Name]
-
-**Duration**: [Time estimate]
-
-**Tasks**:
+**Phase 2: Implementation** ([X] weeks)
 
 - [ ] Task 1
+- [ ] Task 2
 
-**Deliverables**:
+**Phase 3: Documentation** ([X] weeks)
 
-- Deliverable 1
+- [ ] Task 1
+- [ ] Task 2
 
 ## Risks and Mitigations
 
-### Risk 1: [Risk Description]
+### Risk 1: [Risk Name]
 
-**Likelihood**: [High | Medium | Low]
-
-**Impact**: [High | Medium | Low]
-
-**Mitigation**: [How we will mitigate this risk]
-
-### Risk 2: [Risk Description]
-
-**Likelihood**: [High | Medium | Low]
-
-**Impact**: [High | Medium | Low]
-
-**Mitigation**: [How we will mitigate this risk]
+**Likelihood**: [High/Medium/Low]
+**Impact**: [High/Medium/Low]
+**Mitigation**: [Strategy]
 
 ## Success Metrics
-
-How will we measure the success of this RFC?
 
 - [ ] Metric 1
 - [ ] Metric 2
@@ -198,36 +125,17 @@ How will we measure the success of this RFC?
 
 ## Unresolved Questions
 
-[List any open questions that need to be resolved]
-
 1. Question 1
 2. Question 2
-3. Question 3
 
 ## Related RFCs
 
-- [RFC NNNN](./NNNN-title.md) - Related RFC title
 - [RFC NNNN](./NNNN-title.md) - Related RFC title
 
 ## References
 
 - [Link 1] - Description
 - [Link 2] - Description
-- [Link 3] - Description
-
-## Appendix
-
-### Appendix A: Additional Technical Details
-
-[Any additional technical details that don't fit in the main sections]
-
-### Appendix B: Survey Results
-
-[If you surveyed users or the team, include results here]
-
-### Appendix C: Proof of Concept
-
-[If you have a proof of concept, describe it here]
 
 ---
 
