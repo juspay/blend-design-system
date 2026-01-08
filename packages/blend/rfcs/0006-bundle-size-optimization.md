@@ -154,10 +154,7 @@ export default defineConfig({
         rollupOptions: {
             external: ['react', 'react-dom'],
             output: {
-                globals: {
-                    react: 'React',
-                    'react-dom': 'ReactDOM',
-                },
+                globals: { react: 'React', 'react-dom': 'ReactDOM' },
             },
         },
     },
@@ -181,10 +178,10 @@ export default defineConfig({
 ### Import Optimization
 
 ```typescript
-// ❌ BAD: Barrel file causes entire module to load
+// Incorrect: Barrel file causes entire module to load
 import { Button, Input, Modal } from '@/components'
 
-// ✅ GOOD: Direct imports enable tree shaking
+// Correct: Direct imports enable tree shaking
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
 import { Modal } from '@/components/Modal'

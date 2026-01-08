@@ -74,12 +74,9 @@ export type TokenCategory =
 
 ```typescript
 export const colorTokens = {
-    // Brand colors
     'color/brand/primary': '#0066CC',
     'color/brand/primary-hover': '#0052A3',
     'color/brand/secondary': '#6B7280',
-
-    // Semantic colors
     'color/surface/background': '#FFFFFF',
     'color/surface/background-alt': '#F9FAFB',
     'color/text/primary': '#111827',
@@ -87,8 +84,6 @@ export const colorTokens = {
     'color/text/disabled': '#D1D5DB',
     'color/border/default': '#E5E7EB',
     'color/border/focus': '#3B82F6',
-
-    // Status colors
     'color/status/success': '#10B981',
     'color/status/error': '#EF4444',
     'color/status/warning': '#F59E0B',
@@ -268,7 +263,6 @@ export const isValidColor = (value: string): boolean => {
 ```typescript
 /**
  * Brand Colors
- *
  * Primary brand color for the Blend Design System.
  * Used for primary actions, links, and brand elements.
  *
@@ -276,7 +270,6 @@ export const isValidColor = (value: string): boolean => {
  * @group brand
  * @usage Primary buttons, links, brand elements
  * @accessibility Meets WCAG 2.2 AA contrast requirements
- * @dark-mode-adjustment Lighten by 10% for dark backgrounds
  */
 export const brandPrimary: ColorToken = 'color/brand/primary'
 ```

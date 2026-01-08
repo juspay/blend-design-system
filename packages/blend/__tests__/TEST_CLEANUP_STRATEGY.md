@@ -21,56 +21,56 @@ This document outlines the comprehensive strategy for cleaning up and modernizin
 
 ### Problems with Current Test Structure
 
-#### 1. **Inconsistent Test Coverage**
+#### 1. Inconsistent Test Coverage
 
-- **Issue**: Only 7 out of 40+ components have functional tests
-- **Impact**: Critical component behaviors are untested, leading to potential regressions
-- **Components Missing Functional Tests**:
-    - Accordion, Alert, Avatar, Breadcrumb, Card, Charts, ChatInput
-    - CodeBlock, DataTable, DateRangePicker, Drawer, All Input components
-    - KeyValuePair, Menu, Modal, MultiSelect, Popover, ProgressBar
-    - Sidebar, SingleSelect, Slider, Snackbar, SplitTag, StatCard, Stepper, Tabs, Tags, Upload
+Only 7 out of 40+ components have functional tests. Critical component behaviors are untested, leading to potential regressions.
 
-#### 2. **Incomplete Testing Suite**
+**Components Missing Functional Tests**:
 
-- **Issue**: Components have varying combinations of test types
-- **Current State**:
-    - Button: Functional ✓, Accessibility ✓, Performance ✓
-    - Checkbox: Functional ✓, Accessibility ✓, Performance ✓
-    - Radio: Functional ✓, Accessibility ✓, Performance ✓
-    - Switch: Functional ✓, Accessibility ✓, Performance ✓
-    - Tooltip: Functional ✓, Accessibility ✓, Performance ✓
-    - **All Others**: Only Accessibility tests
+- Accordion, Alert, Avatar, Breadcrumb, Card, Charts, ChatInput
+- CodeBlock, DataTable, DateRangePicker, Drawer, All Input components
+- KeyValuePair, Menu, Modal, MultiSelect, Popover, ProgressBar
+- Sidebar, SingleSelect, Slider, Snackbar, SplitTag, StatCard, Stepper, Tabs, Tags, Upload
 
-#### 3. **Redundant Accessibility Testing**
+#### 2. Incomplete Testing Suite
 
-- **Issue**: Accessibility tests duplicate axe-core checks without covering all scenarios
-- **Impact**: Missed edge cases and false confidence in accessibility compliance
+Components have varying combinations of test types.
 
-#### 4. **Outdated Testing Patterns**
+**Current State**:
 
-- **Issue**: Tests mix old and new patterns (fireEvent vs userEvent, manual DOM manipulation vs Testing Library queries)
-- **Impact**: Fragile tests that break on implementation changes
+- Button: Functional, Accessibility, Performance
+- Checkbox: Functional, Accessibility, Performance
+- Radio: Functional, Accessibility, Performance
+- Switch: Functional, Accessibility, Performance
+- Tooltip: Functional, Accessibility, Performance
+- All Others: Accessibility tests only
 
-#### 5. **Missing Critical Test Scenarios**
+#### 3. Redundant Accessibility Testing
 
-- **Issue**: No tests for:
-    - Form integration (controlled vs uncontrolled components)
-    - Error states and validation
-    - Edge cases (empty data, special characters, RTL support)
-    - Responsive behavior
-    - Dark mode theming
-    - Internationalization
+Accessibility tests duplicate axe-core checks without covering all scenarios, leading to missed edge cases and false confidence in accessibility compliance.
 
-#### 6. **Performance Testing Limitations**
+#### 4. Outdated Testing Patterns
 
-- **Issue**: Performance tests don't use environment-aware thresholds consistently
-- **Impact**: Tests fail in CI but pass locally, creating developer friction
+Tests mix old and new patterns (fireEvent vs userEvent, manual DOM manipulation vs Testing Library queries), resulting in fragile tests that break on implementation changes.
 
-#### 7. **Poor Test Organization**
+#### 5. Missing Critical Test Scenarios
 
-- **Issue**: Tests are split across multiple files without clear ownership
-- **Impact**: Difficult to understand what's tested and what's missing
+No tests for:
+
+- Form integration (controlled vs uncontrolled components)
+- Error states and validation
+- Edge cases (empty data, special characters, RTL support)
+- Responsive behavior
+- Dark mode theming
+- Internationalization
+
+#### 6. Performance Testing Limitations
+
+Performance tests don't use environment-aware thresholds consistently, causing tests to fail in CI but pass locally.
+
+#### 7. Poor Test Organization
+
+Tests are split across multiple files without clear ownership, making it difficult to understand what's tested and what's missing.
 
 ---
 
@@ -132,22 +132,13 @@ __tests__/components/
 
 ### Existing Test Infrastructure
 
-#### Strengths
+**Strengths**
 
-- ✅ Good test utilities infrastructure (builders, helpers, assertions)
-- ✅ Environment-aware performance testing utilities
-- ✅ Custom render with ThemeProvider
-- ✅ jest-axe integration for accessibility testing
-- ✅ Vitest configuration with coverage thresholds
+Good test utilities infrastructure (builders, helpers, assertions), environment-aware performance testing utilities, custom render with ThemeProvider, jest-axe integration for accessibility testing, Vitest configuration with coverage thresholds.
 
-#### Weaknesses
+**Weaknesses**
 
-- ❌ Inconsistent usage of test utilities across components
-- ❌ Mixed testing patterns (old vs new)
-- ❌ Lack of test factories for common scenarios
-- ❌ Missing integration tests for component composition
-- ❌ No visual regression testing setup
-- ❌ Limited snapshot usage strategy
+Inconsistent usage of test utilities across components, mixed testing patterns (old vs new), lack of test factories for common scenarios, missing integration tests for component composition, no visual regression testing setup, limited snapshot usage strategy.
 
 ---
 
@@ -481,8 +472,6 @@ export const ButtonTestFactory = {
     text: 'With Icon',
     leadingIcon: <MockIcon />
   }),
-
-  // ... more factories
 }
 ```
 

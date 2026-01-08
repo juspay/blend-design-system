@@ -130,10 +130,12 @@ const menuTokens = {
 
 ### Code Organization Principles
 
-#### Principle 1: UI Rendering Only in .tsx
+#### Code Organization Principles
+
+**UI Rendering Only in .tsx**
 
 ```typescript
-// ❌ BAD: Logic mixed with UI
+// Incorrect: Logic mixed with UI
 const Button = ({ onClick }) => {
     const [isLoading, setIsLoading] = useState(false)
     const handleClick = async () => {
@@ -145,16 +147,14 @@ const Button = ({ onClick }) => {
     return <button onClick={handleClick}>...</button>
 }
 
-// ✅ GOOD: Logic in utils, UI in component
+// Correct: Logic in utils, UI in component
 // Button.utils.ts
 export const createButtonClickHandler = (
     onClick?: () => void,
     asyncAction?: () => Promise<void>
 ) => {
     return async () => {
-        if (asyncAction) {
-            await asyncAction()
-        }
+        if (asyncAction) await asyncAction()
         onClick?.()
     }
 }
@@ -166,7 +166,7 @@ const Button = ({ onClick, asyncAction, ...props }) => {
 }
 ```
 
-#### Principle 2: Extract Logic to Utils
+**Extract Logic to Utils**
 
 ```typescript
 // ComponentName.utils.ts
@@ -186,13 +186,13 @@ export const createEventHandler = (config: HandlerConfig) => {
 ### Primitive-First Approach
 
 ```typescript
-// ❌ BAD: Excessive styled-components
+// Incorrect: Excessive styled-components
 const StyledContainer = styled.div`
     padding: 16px;
     background: white;
 `
 
-// ✅ GOOD: Use Block and Primitives
+// Correct: Use Block and Primitives
 import Block from '../Primitives/Block/Block'
 
 const Component = () => {
@@ -212,12 +212,12 @@ const Component = () => {
 ### Composable Primitives Pattern
 
 ```typescript
-// ❌ BAD: Monolithic component
+// Incorrect: Monolithic component
 const Menu = ({ items, onSelect }) => {
     // 500+ lines of mixed logic and UI
 }
 
-// ✅ GOOD: Composable primitives
+// Correct: Composable primitives
 // Menu/MenuTrigger.tsx
 export const MenuTrigger = forwardRef<HTMLButtonElement, MenuTriggerProps>(...)
 
@@ -257,7 +257,6 @@ export const Menu = ({ trigger, items }) => {
 - Total Blocking Time (TBT) < 200ms
 
 ```typescript
-// ✅ GOOD: Proper use of React hooks
 const Component = ({ items, filter }) => {
     const filteredItems = useMemo(() => {
         return items.filter(item => item.category === filter)
@@ -274,7 +273,6 @@ const Component = ({ items, filter }) => {
 ### Accessibility by Default
 
 ```typescript
-// ✅ GOOD: Use shared accessibility utilities
 import {
     getButtonAriaAttributes,
     createButtonKeyboardHandler,

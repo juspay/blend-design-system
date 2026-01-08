@@ -41,13 +41,15 @@ Establish comprehensive testing standards for all components, defining mandatory
 
 ### Testing Principles
 
-#### Principle 1: Test Behavior, Not Implementation
+#### Testing Principles
+
+**Test Behavior, Not Implementation**
 
 ```typescript
-// ❌ Tests implementation
+// Incorrect: Tests implementation
 it('uses useState hook', () => {})
 
-// ✅ Tests behavior
+// Correct: Tests behavior
 it('opens when trigger is clicked', async () => {
     const { user } = render(<Dialog />)
     await user.click(screen.getByRole('button', { name: 'Open' }))
@@ -55,30 +57,29 @@ it('opens when trigger is clicked', async () => {
 })
 ```
 
-#### Principle 2: Test Like a User
+**Test Like a User**
 
 ```typescript
-// ❌ Programmatic events
+// Incorrect: Programmatic events
 fireEvent.click(button)
 
-// ✅ User-like interactions
+// Correct: User-like interactions
 await user.click(button)
 ```
 
-#### Principle 3: Use Semantic Queries
+**Use Semantic Queries**
+
+Query priority (highest to lowest):
+
+1. `getByRole('button', { name: 'Submit' })`
+2. `getByLabelText('Email address')`
+3. `getByText('Welcome')`
+4. `getByTestId('submit-button')` - Last resort
+
+**One Assertion Per Test**
 
 ```typescript
-// Query priority (highest to lowest):
-screen.getByRole('button', { name: 'Submit' })
-screen.getByLabelText('Email address')
-screen.getByText('Welcome')
-screen.getByTestId('submit-button') // Last resort
-```
-
-#### Principle 4: One Assertion Per Test
-
-```typescript
-// ❌ Tests multiple behaviors
+// Incorrect: Tests multiple behaviors
 it('handles user interactions', async () => {
     await user.click(button)
     await user.type(input, 'test')
@@ -86,25 +87,22 @@ it('handles user interactions', async () => {
     expect(handleChange).toHaveBeenCalled()
 })
 
-// ✅ One behavior per test
+// Correct: One behavior per test
 it('handles click events', async () => {
     await user.click(button)
     expect(handleClick).toHaveBeenCalled()
 })
 ```
 
-#### Principle 5: Arrange-Act-Assert Pattern
+**Arrange-Act-Assert Pattern**
 
 ```typescript
 it('submits form with valid data', async () => {
-    // ARRANGE
     const { user } = render(<Form onSubmit={handleSubmit} />)
 
-    // ACT
     await user.type(screen.getByLabelText('Name'), 'John Doe')
     await user.click(screen.getByRole('button', { name: 'Submit' }))
 
-    // ASSERT
     expect(handleSubmit).toHaveBeenCalledWith({ name: 'John Doe' })
 })
 ```
@@ -198,12 +196,12 @@ describe('ComponentName', () => {
 
 ### Test Naming Convention
 
-```
-it('[verb] [what] when [condition]', () => {})
-```
+Format: `'[verb] [what] when [condition]'`
 
-✅ Good: `'renders with default props'`, `'calls onClick when clicked'`
-❌ Bad: `'it works'`, `'test 1'`, `'should render'`
+Examples:
+
+- Good: `'renders with default props'`, `'calls onClick when clicked'`
+- Bad: `'it works'`, `'test 1'`, `'should render'`
 
 ## Alternatives Considered
 

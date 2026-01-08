@@ -144,17 +144,17 @@ export const ButtonTestFactory = {
 #### Modern Testing Patterns
 
 ```typescript
-// ✅ Use userEvent (not fireEvent)
+// Use userEvent instead of fireEvent
 const { user } = render(<Component />)
 await user.click(button)
 
-// ✅ Use semantic queries (priority order)
+// Use semantic queries in priority order
 screen.getByRole('button', { name: 'Submit' })
 screen.getByLabelText('Email address')
 screen.getByText('Welcome')
-screen.getByTestId('submit-button') // Last resort
+screen.getByTestId('submit-button')
 
-// ✅ Test behavior (not implementation)
+// Test behavior, not implementation
 it('displays initial value', () => {
     render(<Component initialValue="test" />)
     expect(screen.getByText('test')).toBeInTheDocument()
@@ -206,22 +206,7 @@ Change from Vitest to Jest.
 
 ## Migration Guide
 
-### Before: Split test files
-
-```typescript
-// Button.test.tsx
-describe('Button', () => { /* ... */ })
-
-// Button.accessibility.test.tsx
-describe('Button Accessibility', () => {
-    it('is accessible', async () => {
-        const { container } = render(<Button />)
-        expect(await axe(container)).toHaveNoViolations()
-    })
-})
-```
-
-### After: Unified test file
+### Unified Test File Structure
 
 ```typescript
 // Button.test.tsx

@@ -77,7 +77,7 @@ Ensure all components meet WCAG 2.2 Level AA requirements through comprehensive 
 
 #### Required for All Components
 
-**Keyboard Navigation**
+**Keyboard Navigation Tests**
 
 ```typescript
 it('can be activated with Enter key', async () => {
@@ -95,7 +95,7 @@ it('can be activated with Space key', async () => {
 })
 ```
 
-**Focus Management**
+**Focus Management Tests**
 
 ```typescript
 it('has visible focus indicator', () => {
@@ -106,7 +106,7 @@ it('has visible focus indicator', () => {
 })
 ```
 
-**ARIA Attributes**
+**ARIA Attributes Tests**
 
 ```typescript
 it('has proper ARIA attributes when disabled', () => {
@@ -227,16 +227,11 @@ export const checkContrast = (
 
 #### Semantic HTML
 
-```typescript
-// ✅ Use semantic elements
-<nav>, <main>, <article>, <section>, <aside>
+Use semantic elements:
 
-// ❌ Avoid
-<div role="navigation">, <div role="main">
-
-// ✅ Proper heading hierarchy
-<h1> → <h2> → <h3>
-```
+- `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`
+- Avoid: `<div role="navigation">`, `<div role="main">`
+- Maintain proper heading hierarchy: `<h1>` → `<h2>` → `<h3>`
 
 #### ARIA Live Regions
 
