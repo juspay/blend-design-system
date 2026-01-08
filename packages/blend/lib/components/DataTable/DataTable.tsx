@@ -1237,7 +1237,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
-                data-table={title}
+                data-table={title || 'table'}
                 role="region"
                 aria-label={title || 'Data table'}
                 aria-describedby={

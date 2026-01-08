@@ -96,7 +96,8 @@ const MultiValueInput = ({
     const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
     return (
         <Block
-            data-component-field-wrapper={`field-multi-value-input`}
+            data-multi-value-input={label || 'multi-value-input'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
             gap={8}

@@ -98,6 +98,7 @@ const CircularProgressBar: React.FC<
                     }
                 />
                 <circle
+                    data-id={tokens.circular.stroke[type]}
                     cx={center}
                     cy={center}
                     r={radius}
@@ -120,6 +121,8 @@ const CircularProgressBar: React.FC<
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    data-element="progress-bar-value-now"
+                    data-id={`${Math.round(percentage)}%`}
                 >
                     <Text
                         as="span"
@@ -195,6 +198,7 @@ const LinearProgressBar: React.FC<
                 aria-hidden="true"
             >
                 <Block
+                    data-id={fillBackgroundColor}
                     height="100%"
                     backgroundColor={fillBackgroundColor}
                     borderRadius={fillBorderRadius}
@@ -206,6 +210,7 @@ const LinearProgressBar: React.FC<
                 {variant === ProgressBarVariant.SEGMENTED && (
                     <Block
                         height="100%"
+                        data-id={emptyBackgroundColor}
                         backgroundColor={emptyBackgroundColor}
                         backgroundImage={
                             tokens.linear.empty.backgroundImage.segmented
@@ -221,7 +226,11 @@ const LinearProgressBar: React.FC<
             </Block>
 
             {showLabel && (
-                <Block flexShrink={0}>
+                <Block
+                    flexShrink={0}
+                    data-element="progress-bar-value-now"
+                    data-id={`${Math.round(percentage)}%`}
+                >
                     <Text
                         as="span"
                         fontWeight={tokens.label.fontWeight}
@@ -273,14 +282,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
     if (variant === ProgressBarVariant.CIRCULAR) {
         return (
-            <Block {...restProps}>
+            <Block {...restProps} data-progressbar="progressbar">
                 <CircularProgressBar {...sharedProps} size={size} type={type} />
             </Block>
         )
     }
 
     return (
-        <Block {...restProps}>
+        <Block {...restProps} data-progressbar="progressbar">
             <LinearProgressBar {...sharedProps} size={size} variant={variant} />
         </Block>
     )
