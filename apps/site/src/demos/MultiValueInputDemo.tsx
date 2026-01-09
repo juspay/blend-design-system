@@ -4,7 +4,7 @@ import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
-import { Search, Mail, Hash, X } from 'lucide-react'
+import { Search, Mail, Hash } from 'lucide-react'
 
 const MultiValueInputDemo = () => {
     // State for different examples
