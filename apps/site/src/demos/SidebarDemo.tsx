@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ButtonDemo from './ButtonDemo'
+import ButtonV2Demo from './ButtonV2Demo'
 import {
     Tag as TagIcon,
     Menu as MenuIcon,
@@ -113,6 +114,7 @@ import TextInputAutofillTest from './TextInputAutofillTest'
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
         | 'buttons'
+        | 'buttonV2'
         | 'accessibility'
         | 'tooltips'
         | 'tags'
@@ -368,6 +370,8 @@ const SidebarDemo = () => {
         switch (activeComponent) {
             case 'buttons':
                 return <ButtonDemo />
+            case 'buttonV2':
+                return <ButtonV2Demo />
             case 'accessibility':
                 return <AccessibilityDashboard />
             case 'buttonGroups':
@@ -625,7 +629,21 @@ const SidebarDemo = () => {
                     },
                     showOnMobile: true,
                 },
-
+                {
+                    label: 'Button V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonV2',
+                    onClick: () => {
+                        setActiveComponent('buttonV2')
+                        // Show topbar when navigating to regular components (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
                 {
                     label: 'Button Group',
                     leftSlot: (
