@@ -619,8 +619,7 @@ const MultiSelect = ({
                                                                   .trigger
                                                                   .selectionTag
                                                                   .container[
-                                                                  MultiSelectSelectionTagType
-                                                                      .COUNT
+                                                                  selectionTagType
                                                               ].color
                                                     }
                                                     fontWeight={500}
@@ -638,15 +637,45 @@ const MultiSelect = ({
                                                                       .trigger
                                                                       .selectionTag
                                                                       .container[
-                                                                      MultiSelectSelectionTagType
-                                                                          .COUNT
+                                                                      selectionTagType
                                                                   ]
                                                                       .backgroundColor,
                                                         borderRadius: 4,
-                                                        padding: '0px 6px',
+                                                        padding:
+                                                            selectionTagType ===
+                                                            MultiSelectSelectionTagType.COUNT
+                                                                ? '0px 6px'
+                                                                : '0px 0px',
+                                                        overflow: 'hidden',
+                                                        textOverflow:
+                                                            'ellipsis',
+                                                        whiteSpace: 'nowrap',
                                                     }}
+                                                    data-badge-value={
+                                                        selectionTagType ===
+                                                        MultiSelectSelectionTagType.COUNT
+                                                            ? selectedValues.length
+                                                            : selectedValues
+                                                                  .map(
+                                                                      (v) =>
+                                                                          valueLabelMap[
+                                                                              v
+                                                                          ]
+                                                                  )
+                                                                  .join(', ')
+                                                    }
                                                 >
-                                                    {selectedValues.length}
+                                                    {selectionTagType ===
+                                                    MultiSelectSelectionTagType.COUNT
+                                                        ? selectedValues.length
+                                                        : selectedValues
+                                                              .map(
+                                                                  (v) =>
+                                                                      valueLabelMap[
+                                                                          v
+                                                                      ]
+                                                              )
+                                                              .join(', ')}
                                                 </Text>
                                             )}
                                         </Block>
