@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     Tabs,
     TabsList,
@@ -84,18 +84,36 @@ const availableTabOptions = [
 ]
 
 const TabsDemo = () => {
-    // Playground state
-    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
-        TabsVariant.UNDERLINE
-    )
-    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
-    const [expanded, setExpanded] = useState(false)
-    const [fitContent, setFitContent] = useState(false)
-    const [showIcons, setShowIcons] = useState(false)
-    const [showRightSlot, setShowRightSlot] = useState(false)
-    const [activeTab, setActiveTab] = useState('payment_gateway')
-    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
-
+    const playgroundTabs2: TabItem[] = [
+        {
+            value: 'Test_Tab_1',
+            label: 'Test Tab 1',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">Home Content</h3>
+                    <p className="text-gray-600">
+                        This is the home tab content. You can put any content
+                        here including forms, lists, or other components.
+                    </p>
+                </div>
+            ),
+        },
+        {
+            value: 'Test_Tab_2',
+            label: 'Test Tab 2',
+            content: (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Profile Content
+                    </h3>
+                    <p className="text-gray-600">
+                        This is the profile tab content. Here you can display
+                        user information, preferences, or account settings.
+                    </p>
+                </div>
+            ),
+        },
+    ]
     const playgroundTabs: TabItem[] = [
         {
             value: 'payment_gateway',
@@ -158,6 +176,22 @@ const TabsDemo = () => {
             ),
         },
     ]
+
+    // Playground state
+    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
+        TabsVariant.UNDERLINE
+    )
+    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
+    const [expanded, setExpanded] = useState(false)
+    const [fitContent, setFitContent] = useState(false)
+    const [showIcons, setShowIcons] = useState(false)
+    const [showRightSlot, setShowRightSlot] = useState(false)
+    const [activeTab, setActiveTab] = useState('payment_gateway')
+    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
+    const [newlyAddedTabs, setNewlyAddedTabs] = useState<TabItem[]>([
+        ...playgroundTabs,
+    ])
+    const [playgroundTabsItems, setPlaygroundTabsItems] = useState('Tab 1')
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
@@ -246,6 +280,10 @@ const TabsDemo = () => {
     const sizeOptions = [
         { value: TabsSize.MD, label: 'Medium' },
         { value: TabsSize.LG, label: 'Large' },
+    ]
+    const tabsOptions = [
+        { value: 'Tab 1', label: 'Tab 1' },
+        { value: 'Tab 2', label: 'Tab 2' },
     ]
 
     const getIconForTab = (tabId: string) => {
@@ -441,6 +479,14 @@ const TabsDemo = () => {
         },
     ]
 
+    useEffect(() => {
+        if (playgroundTabsItems === 'Tab 1') {
+            setNewlyAddedTabs(playgroundTabs)
+        } else if (playgroundTabsItems === 'Tab 2') {
+            setNewlyAddedTabs(playgroundTabs2)
+        }
+    }, [playgroundTabsItems])
+
     return (
         <div className="p-8 space-y-12">
             <div className="space-y-6">
@@ -463,6 +509,15 @@ const TabsDemo = () => {
                             selected={playgroundSize}
                             onSelect={(value) =>
                                 setPlaygroundSize(value as TabsSize)
+                            }
+                            placeholder="Select size"
+                        />
+                        <SingleSelect
+                            label="Tabs"
+                            items={[{ items: tabsOptions }]}
+                            selected={playgroundTabsItems}
+                            onSelect={(value) =>
+                                setPlaygroundTabsItems(value as string)
                             }
                             placeholder="Select size"
                         />
@@ -494,7 +549,7 @@ const TabsDemo = () => {
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-4">
                         <div className="w-full">
                             <Tabs
-                                items={playgroundTabs.map((tab) => ({
+                                items={newlyAddedTabs.map((tab) => ({
                                     ...tab,
                                     leftSlot: showIcons
                                         ? getIconForTab(tab.value)

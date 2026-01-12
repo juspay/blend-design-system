@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
+import {
+    forwardRef,
+    useState,
+    useEffect,
+    useCallback,
+    useMemo,
+    useRef,
+} from 'react'
 import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
 import TabsList from './TabsList'
@@ -55,6 +62,14 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                 setActiveTab(value)
             }
         }, [value])
+
+        useEffect(() => {
+            if (items.length > 0) {
+                const firstItemValue = items[0].value
+                // Always set to first item when items change
+                setActiveTab(firstItemValue)
+            }
+        }, [items])
 
         // Update defaultTabs when items change (to include new items with isDefault: true)
         useEffect(() => {
