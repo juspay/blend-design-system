@@ -146,106 +146,69 @@ export function getSkeletonWidth(
 }
 
 /**
- * Get button layout props
+ * Get all button styles in one call for better performance
  */
-export function getButtonLayoutProps(
-    fullWidth?: boolean,
-    width?: string | number,
-    justifyContent?: string,
-    buttonHeight?: string | undefined,
-    gap?: string | number
-) {
-    return {
-        display: 'flex' as const,
-        alignItems: 'center' as const,
-        justifyContent: (justifyContent ?? 'center') as
-            | 'flex-start'
-            | 'center'
-            | 'flex-end'
-            | 'space-between',
-        width: fullWidth ? '100%' : (width ?? 'fit-content'),
-        gap,
-        ...(buttonHeight !== undefined && { height: buttonHeight }),
-    }
-}
-
-/**
- * Get button state styles (_active)
- */
-export function getButtonActiveStyles(
+export function getButtonStyles(
     isSkeleton: boolean,
     isDisabled: boolean,
     buttonType: ButtonType,
     subType: ButtonSubType,
     tokens: ButtonTokensType
 ) {
-    if (isSkeleton || isDisabled) return undefined
+    const tokenState = isSkeleton
+        ? 'transparent'
+        : tokens.backgroundColor[buttonType][subType].default
+    const textColorState = isSkeleton
+        ? 'transparent'
+        : tokens.text.color[buttonType][subType].default
+    const borderState = isSkeleton
+        ? 'transparent'
+        : tokens.border[buttonType][subType].default
+    const outlineState = isSkeleton
+        ? 'transparent'
+        : tokens.outline[buttonType][subType].default
 
     return {
-        background: tokens.backgroundColor[buttonType][subType].active,
-        border: tokens.border[buttonType][subType].active,
-        boxShadow: tokens.shadow[buttonType][subType].active,
-        transform: 'scale(0.99)',
-    }
-}
-
-/**
- * Get button state styles (_hover)
- */
-export function getButtonHoverStyles(
-    isSkeleton: boolean,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
-    tokens: ButtonTokensType
-) {
-    if (isSkeleton) return undefined
-
-    return {
-        background: tokens.backgroundColor[buttonType][subType].hover,
-        color: tokens.text.color[buttonType][subType].hover,
-        border: tokens.border[buttonType][subType].hover,
-    }
-}
-
-/**
- * Get button state styles (_focusVisible)
- */
-export function getButtonFocusVisibleStyles(
-    isSkeleton: boolean,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
-    tokens: ButtonTokensType
-) {
-    if (isSkeleton) return undefined
-
-    return {
-        border: tokens.border[buttonType][subType].default,
-        outline: tokens.outline[buttonType][subType].active,
-        outlineOffset: FOUNDATION_THEME.unit[2],
-    }
-}
-
-/**
- * Get button state styles (_disabled)
- */
-export function getButtonDisabledStyles(
-    isSkeleton: boolean,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
-    tokens: ButtonTokensType
-) {
-    if (isSkeleton) {
-        return {
-            background: 'transparent',
-            border: 'transparent',
-            cursor: 'default',
-        }
-    }
-
-    return {
-        background: tokens.backgroundColor[buttonType][subType].disabled,
-        border: tokens.border[buttonType][subType].disabled,
-        cursor: 'not-allowed',
+        background: tokenState,
+        color: textColorState,
+        border: borderState,
+        outline: outlineState,
+        _active:
+            isSkeleton || isDisabled
+                ? undefined
+                : {
+                      background:
+                          tokens.backgroundColor[buttonType][subType].active,
+                      border: tokens.border[buttonType][subType].active,
+                      boxShadow: tokens.shadow[buttonType][subType].active,
+                      transform: 'scale(0.99)',
+                  },
+        _hover: isSkeleton
+            ? undefined
+            : {
+                  background: tokens.backgroundColor[buttonType][subType].hover,
+                  color: tokens.text.color[buttonType][subType].hover,
+                  border: tokens.border[buttonType][subType].hover,
+              },
+        _focusVisible: isSkeleton
+            ? undefined
+            : {
+                  border: tokens.border[buttonType][subType].default,
+                  outline: tokens.outline[buttonType][subType].active,
+                  outlineOffset: FOUNDATION_THEME.unit[2],
+              },
+        _disabled: isSkeleton
+            ? {
+                  background: 'transparent',
+                  border: 'transparent',
+                  cursor: 'default',
+              }
+            : {
+                  background:
+                      tokens.backgroundColor[buttonType][subType].disabled,
+                  border: tokens.border[buttonType][subType].disabled,
+                  cursor: 'not-allowed',
+              },
     }
 }
 
@@ -282,18 +245,4 @@ export function getTextColor(
     const color =
         tokens.text.color[buttonType][subType][disabled ? 'disabled' : state]
     return color ? String(color) : 'transparent'
-}
-
-/**
- * Get aria label for button
- */
-export function getButtonAriaLabel(
-    isSkeleton: boolean,
-    text: string | undefined,
-    providedAriaLabel: string | undefined
-): string | undefined {
-    if (isSkeleton && text && !providedAriaLabel) {
-        return text
-    }
-    return providedAriaLabel
 }

@@ -32,6 +32,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
     const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
     const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
+    // Calculate skeleton dimensions
     const skeletonRadius = getSkeletonBorderRadius(
         size,
         buttonType,
@@ -40,6 +41,26 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
         buttonTokens
     )
     const skeletonWidth = getSkeletonWidth(fullWidth, width)
+
+    // Common props for ButtonBase
+    const baseProps = {
+        ref,
+        buttonType,
+        size,
+        subType,
+        text,
+        leadingIcon,
+        trailingIcon,
+        disabled,
+        onClick,
+        loading,
+        buttonGroupPosition,
+        fullWidth,
+        justifyContent,
+        state,
+        tokens: buttonTokens,
+        ...restHtmlProps,
+    }
 
     if (shouldShowSkeleton) {
         return (
@@ -54,51 +75,12 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
                 justifyContent="center"
                 pointerEvents="none"
             >
-                <ButtonBase
-                    ref={ref}
-                    buttonType={buttonType}
-                    size={size}
-                    subType={subType}
-                    text={text}
-                    leadingIcon={leadingIcon}
-                    trailingIcon={trailingIcon}
-                    disabled={disabled}
-                    onClick={onClick}
-                    loading={loading}
-                    buttonGroupPosition={buttonGroupPosition}
-                    fullWidth={fullWidth}
-                    width={skeletonWidth}
-                    justifyContent={justifyContent}
-                    state={state}
-                    tokens={buttonTokens}
-                    isSkeleton
-                    {...restHtmlProps}
-                />
+                <ButtonBase {...baseProps} width={skeletonWidth} isSkeleton />
             </Skeleton>
         )
     }
 
-    return (
-        <ButtonBase
-            ref={ref}
-            buttonType={buttonType}
-            size={size}
-            subType={subType}
-            text={text}
-            leadingIcon={leadingIcon}
-            trailingIcon={trailingIcon}
-            disabled={disabled}
-            onClick={onClick}
-            loading={loading}
-            buttonGroupPosition={buttonGroupPosition}
-            fullWidth={fullWidth}
-            width={width}
-            justifyContent={justifyContent}
-            state={state}
-            tokens={buttonTokens}
-            {...restHtmlProps}
-        />
-    )
+    return <ButtonBase {...baseProps} width={width} />
 })
 
 ButtonV2.displayName = 'ButtonV2'

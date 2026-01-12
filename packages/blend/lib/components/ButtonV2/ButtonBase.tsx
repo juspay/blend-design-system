@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, type MouseEvent } from 'react'
 import styled from 'styled-components'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
@@ -6,29 +6,23 @@ import Text from '../Text/Text'
 import type { ButtonV2Props } from './types'
 import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
 import type { ButtonTokensType } from './button.tokens'
-import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     getBorderRadius,
     getDefaultLineHeight,
-    createButtonClickHandler,
     getButtonHeight,
     getIconMaxHeight,
     getButtonStatus,
     getButtonTabIndex,
-    getButtonLayoutProps,
-    getButtonActiveStyles,
-    getButtonHoverStyles,
-    getButtonFocusVisibleStyles,
-    getButtonDisabledStyles,
+    getButtonStyles,
     getIconColor,
     getTextColor,
-    getButtonAriaLabel,
 } from './utils'
 import {
     getButtonAriaAttributes,
     createButtonKeyboardHandler,
 } from '../../utils/accessibility'
+import { LoadingSpinner } from './LoadingSpinner'
 
 const VisuallyHidden = styled.span`
     position: absolute;
@@ -81,12 +75,11 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const paddingTokens = buttonTokens.padding[size][buttonType][subType]
         const lineHeight = getDefaultLineHeight()
         const buttonStatus = getButtonStatus(isLoading, isDisabled)
-        const handleClick = createButtonClickHandler(
-            onClick,
-            isSkeleton ?? false,
-            isDisabled,
-            isLoading
-        )
+
+        const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+            if (isSkeleton || isDisabled || isLoading) return
+            onClick?.(event)
+        }
 
         const borderRadius = getBorderRadius(
             size,
@@ -98,63 +91,35 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         const buttonHeight = getButtonHeight(subType)
         const iconMaxHeight = getIconMaxHeight(subType, size, buttonTokens)
 
-        // Get aria label
-        const ariaLabel = getButtonAriaLabel(
-            isSkeleton,
-            text,
-            htmlProps['aria-label']
-        )
+        const ariaLabel =
+            isSkeleton && text && !htmlProps['aria-label']
+                ? text
+                : htmlProps['aria-label']
 
-        // Accessibility attributes
         const ariaAttrs = getButtonAriaAttributes({
             disabled: isDisabled,
             loading: isLoading,
             ariaLabel,
         })
 
-        // Keyboard handler
-        const keyboardHandler = createButtonKeyboardHandler(
-            () => onClick?.(undefined as any),
-            isDisabled ?? false
-        )
+        const keyboardHandler = createButtonKeyboardHandler(() => {
+            if (!isDisabled && !isLoading && onClick) {
+                const syntheticEvent = {
+                    preventDefault: () => {},
+                    stopPropagation: () => {},
+                } as MouseEvent<HTMLButtonElement>
+                onClick(syntheticEvent)
+            }
+        }, isDisabled)
 
-        // Get layout props
-        const buttonProps = getButtonLayoutProps(
-            fullWidth,
-            width,
-            justifyContent,
-            buttonHeight,
-            buttonTokens.gap
-        )
-
-        // Get state styles
-        const activeStyles = getButtonActiveStyles(
+        const buttonStyles = getButtonStyles(
             isSkeleton,
             isDisabled,
             buttonType,
             subType,
             buttonTokens
         )
-        const hoverStyles = getButtonHoverStyles(
-            isSkeleton,
-            buttonType,
-            subType,
-            buttonTokens
-        )
-        const focusVisibleStyles = getButtonFocusVisibleStyles(
-            isSkeleton,
-            buttonType,
-            subType,
-            buttonTokens
-        )
-        const disabledStyles = getButtonDisabledStyles(
-            isSkeleton,
-            buttonType,
-            subType,
-            buttonTokens
-        )
 
-        // Get icon and text colors
         const iconColor = getIconColor(
             isSkeleton,
             disabled,
@@ -173,40 +138,28 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
 
         return (
             <PrimitiveButton
-                {...buttonProps}
                 ref={ref}
                 onClick={handleClick}
                 {...keyboardHandler}
-                background={
-                    isSkeleton
-                        ? 'transparent'
-                        : buttonTokens.backgroundColor[buttonType][subType]
-                              .default
-                }
+                display="flex"
+                alignItems="center"
+                justifyContent={justifyContent}
+                width={fullWidth ? '100%' : (width ?? 'fit-content')}
+                height={buttonHeight}
+                gap={buttonTokens.gap}
+                background={buttonStyles.background}
                 disabled={isDisabled}
                 tabIndex={getButtonTabIndex(isDisabled, htmlProps.tabIndex)}
-                color={
-                    isSkeleton
-                        ? 'transparent'
-                        : buttonTokens.text.color[buttonType][subType].default
-                }
+                color={buttonStyles.color}
                 borderRadius={borderRadius}
-                border={
-                    isSkeleton
-                        ? 'transparent'
-                        : buttonTokens.border[buttonType][subType].default
-                }
-                outline={
-                    isSkeleton
-                        ? 'transparent'
-                        : buttonTokens.outline[buttonType][subType].default
-                }
+                border={buttonStyles.border}
+                outline={buttonStyles.outline}
                 transition="transform 0.15s ease-in-out"
                 {...ariaAttrs}
-                _active={activeStyles}
-                _hover={hoverStyles}
-                _focusVisible={focusVisibleStyles}
-                _disabled={disabledStyles}
+                _active={buttonStyles._active}
+                _hover={buttonStyles._hover}
+                _focusVisible={buttonStyles._focusVisible}
+                _disabled={buttonStyles._disabled}
                 paddingX={paddingTokens.x}
                 paddingY={paddingTokens.y}
                 data-button={text}
@@ -215,17 +168,12 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             >
                 {isLoading ? (
                     <>
-                        <LoaderCircle
+                        <LoadingSpinner
                             size={16}
-                            color={
+                            color={String(
                                 buttonTokens.text.color[buttonType][subType]
                                     .default
-                            }
-                            data-status="loading"
-                            aria-hidden="true"
-                            style={{
-                                animation: 'spin 1s linear infinite',
-                            }}
+                            )}
                         />
                         <VisuallyHidden aria-live="polite">
                             Loading, please wait
