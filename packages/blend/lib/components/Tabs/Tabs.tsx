@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { forwardRef, useState, useEffect, useCallback, useMemo } from 'react'
+import {
+    forwardRef,
+    useState,
+    useEffect,
+    useCallback,
+    useMemo,
+    useRef,
+} from 'react'
 import { type TabsProps } from './types'
 import { StyledTabs } from './StyledTabs'
 import TabsList from './TabsList'
