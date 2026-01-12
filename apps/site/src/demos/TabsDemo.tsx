@@ -423,6 +423,7 @@ const TabsDemo = () => {
                     label: 'Test_Tab',
                     content: null,
                     newItem: true,
+                    rightSlot: <Settings size={16} />,
                 },
             ])
         }
