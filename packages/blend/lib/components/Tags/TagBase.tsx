@@ -118,6 +118,7 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             alignItems="center"
             justifyContent="center"
             width={width ?? 'fit-content'}
+            maxWidth={FOUNDATION_THEME.unit[200]}
             height="fit-content"
             flexShrink={0}
             gap={tagTokens.gap}
@@ -162,7 +163,6 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
                     color: isSkeleton ? 'transparent' : undefined,
                     whiteSpace: 'nowrap',
                     width: 'fit-content',
-                    maxWidth: FOUNDATION_THEME.unit[200],
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 }}

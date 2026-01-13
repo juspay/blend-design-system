@@ -39,6 +39,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                 display="flex"
                 flexWrap="wrap"
                 gap={FOUNDATION_THEME.unit[10]}
+                justifyContent="center"
             >
                 {displayFiles.map((file) => (
                     <Tooltip key={file.id} content={file.file.name}>
