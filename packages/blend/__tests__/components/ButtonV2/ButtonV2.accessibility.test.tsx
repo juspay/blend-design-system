@@ -69,11 +69,22 @@ describe('ButtonV2 Accessibility', () => {
                 />
             )
             const results = await axe(container)
-            // This should catch the "button-name" violation - icon-only buttons MUST have accessible name
             const buttonNameViolations = results.violations.filter(
                 (v) => v.id === 'button-name'
             )
             expect(buttonNameViolations.length).toBeGreaterThan(0)
+        })
+
+        it('catches violation when icon-only lacks accessible name (no subtype specified)', async () => {
+            const { container } = render(
+                <ButtonV2 leadingIcon={<MockIcon />} />
+            )
+            const results = await axe(container)
+
+            expect(results.violations.length).toBeGreaterThan(0)
+            expect(results.violations.some((v) => v.id === 'button-name')).toBe(
+                true
+            )
         })
 
         it('passes when icon-only button has aria-label', async () => {
@@ -121,6 +132,26 @@ describe('ButtonV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('icon-only button does not hide icon from screen readers', async () => {
+            const { container } = render(
+                <ButtonV2
+                    leadingIcon={<MockIcon />}
+                    subType={ButtonSubType.ICON_ONLY}
+                    aria-label="Save document"
+                />
+            )
+
+            const button = screen.getByRole('button', {
+                name: 'Save document',
+            })
+            const icon = button.querySelector('[data-element="leading-icon"]')
+
+            expect(icon).not.toHaveAttribute('aria-hidden')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 2.1.1 Keyboard - Critical Navigation', () => {
@@ -158,7 +189,6 @@ describe('ButtonV2 Accessibility', () => {
                 <ButtonV2 text="Loading" loading onClick={handleClick} />
             )
 
-            const button = screen.getByRole('button')
             await user.tab()
             await user.keyboard('{Enter}')
 

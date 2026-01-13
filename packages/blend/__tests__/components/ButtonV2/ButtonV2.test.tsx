@@ -50,6 +50,9 @@ describe('ButtonV2', () => {
             expect(button).toBeInTheDocument()
             expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
 
+            const icon = button.querySelector('[data-element="leading-icon"]')
+            expect(icon).toHaveAttribute('aria-hidden', 'true')
+
             expect(await axe(container)).toHaveNoViolations()
         })
 
@@ -60,6 +63,9 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button', { name: 'Next' })
             expect(button).toBeInTheDocument()
             expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
+
+            const icon = button.querySelector('[data-element="trailing-icon"]')
+            expect(icon).toHaveAttribute('aria-hidden', 'true')
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -75,6 +81,16 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button', { name: 'Action' })
             expect(button).toBeInTheDocument()
             expect(screen.getAllByTestId('mock-icon')).toHaveLength(2)
+
+            // Verify both decorative icons are hidden from screen readers
+            const leadingIcon = button.querySelector(
+                '[data-element="leading-icon"]'
+            )
+            const trailingIcon = button.querySelector(
+                '[data-element="trailing-icon"]'
+            )
+            expect(leadingIcon).toHaveAttribute('aria-hidden', 'true')
+            expect(trailingIcon).toHaveAttribute('aria-hidden', 'true')
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -206,20 +222,16 @@ describe('ButtonV2', () => {
                 button.querySelector('[data-status="loading"]')
             ).toBeInTheDocument()
 
-            // Loading spinner should be visible
             const spinner = button.querySelector('[data-status="loading"]')
             expect(spinner).toBeInTheDocument()
 
-            // VisuallyHidden text for screen readers
             const srText = button.querySelector('span[aria-live="polite"]')
             expect(srText).toBeInTheDocument()
             expect(srText).toHaveTextContent('Loading, please wait')
 
-            // Original button text should not be visible (check that text element with data-id is not present)
-            const textElement = button.querySelector('[data-id="Loading"]')
-            expect(textElement).not.toBeInTheDocument()
+            expect(button).toHaveTextContent('Loading, please wait')
+            expect(button).not.toHaveTextContent('Loading Loading, please wait')
 
-            // Loading state should prevent clicks
             await user.click(button)
             expect(handleClick).not.toHaveBeenCalled()
 
@@ -235,7 +247,6 @@ describe('ButtonV2', () => {
             expect(button).toBeDisabled()
             expect(button).toHaveAttribute('aria-disabled', 'true')
             expect(button).toHaveAttribute('tabIndex', '-1')
-            // Skeleton buttons use aria-label from text prop for accessibility
             expect(button).toHaveAttribute('aria-label', 'Skeleton')
 
             expect(await axe(container)).toHaveNoViolations()
@@ -324,7 +335,6 @@ describe('ButtonV2', () => {
             )
 
             const button = screen.getByRole('button')
-            // Skeleton buttons are disabled and have pointer-events: none
             expect(button).toBeDisabled()
             expect(handleClick).not.toHaveBeenCalled()
         })
@@ -353,7 +363,6 @@ describe('ButtonV2', () => {
                 <ButtonV2 text="Enter Key" onClick={handleClick} />
             )
 
-            const button = screen.getByRole('button', { name: 'Enter Key' })
             await user.tab()
             await user.keyboard('{Enter}')
 
@@ -365,8 +374,6 @@ describe('ButtonV2', () => {
             const { user } = render(
                 <ButtonV2 text="Space Key" onClick={handleClick} />
             )
-
-            const button = screen.getByRole('button', { name: 'Space Key' })
             await user.tab()
             await user.keyboard(' ')
 
@@ -593,6 +600,19 @@ describe('ButtonV2', () => {
             )
         })
 
+        it('renders skeleton state within performance budget', async () => {
+            const renderTime = await measureRenderTime(
+                <ButtonV2 text="Skeleton" showSkeleton />
+            )
+
+            assertPerformanceWithContext(
+                renderTime,
+                'render',
+                'simple',
+                getCurrentTestName()
+            )
+        })
+
         it('handles prop changes efficiently', () => {
             const { rerender } = render(<ButtonV2 text="Initial" />)
 
@@ -618,6 +638,180 @@ describe('ButtonV2', () => {
             unmount()
 
             expect(button).not.toBeInTheDocument()
+        })
+    })
+
+    describe('Data Attributes', () => {
+        it('sets data-button attribute with text value', () => {
+            render(<ButtonV2 text="Save Document" />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveAttribute('data-button', 'Save Document')
+        })
+
+        it('sets data-status to enabled by default', () => {
+            render(<ButtonV2 text="Click me" />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveAttribute('data-status', 'enabled')
+        })
+
+        it('sets data-status to loading when loading', () => {
+            render(<ButtonV2 text="Loading" loading />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveAttribute('data-status', 'loading')
+        })
+
+        it('sets data-status to disabled when disabled', () => {
+            render(<ButtonV2 text="Disabled" disabled />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveAttribute('data-status', 'disabled')
+        })
+    })
+
+    describe('Form Integration', () => {
+        it('submits form when type="submit"', async () => {
+            const handleSubmit = vi.fn((e) => e.preventDefault())
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <input name="email" defaultValue="test@example.com" />
+                    <ButtonV2 text="Submit" type="submit" />
+                </form>
+            )
+
+            const button = screen.getByRole('button', { name: 'Submit' })
+            await user.click(button)
+
+            expect(handleSubmit).toHaveBeenCalledTimes(1)
+        })
+
+        it('does not submit form when type="button"', async () => {
+            const handleSubmit = vi.fn()
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <ButtonV2 text="Cancel" type="button" />
+                </form>
+            )
+
+            const button = screen.getByRole('button', { name: 'Cancel' })
+            await user.click(button)
+
+            expect(handleSubmit).not.toHaveBeenCalled()
+        })
+
+        it('resets form when type="reset"', async () => {
+            const { user } = render(
+                <form>
+                    <input name="email" defaultValue="initial@example.com" />
+                    <ButtonV2 text="Reset" type="reset" />
+                </form>
+            )
+
+            const input = screen.getByRole('textbox') as HTMLInputElement
+            const button = screen.getByRole('button', { name: 'Reset' })
+
+            await user.clear(input)
+            await user.type(input, 'changed@example.com')
+            expect(input.value).toBe('changed@example.com')
+
+            await user.click(button)
+            expect(input.value).toBe('initial@example.com')
+        })
+
+        it('associates with form using form attribute', async () => {
+            const handleSubmit = vi.fn((e) => e.preventDefault())
+            const { user } = render(
+                <>
+                    <form id="my-form" onSubmit={handleSubmit}>
+                        <input name="email" />
+                    </form>
+                    <ButtonV2 text="Submit" type="submit" form="my-form" />
+                </>
+            )
+
+            const button = screen.getByRole('button', { name: 'Submit' })
+            await user.click(button)
+
+            expect(handleSubmit).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    describe('Advanced Edge Cases', () => {
+        it('handles very long text without breaking layout', () => {
+            const longText =
+                'This is a very long button text that should be handled gracefully without breaking the layout or causing overflow issues'
+            render(<ButtonV2 text={longText} />)
+
+            const button = screen.getByRole('button', { name: longText })
+            expect(button).toBeInTheDocument()
+        })
+
+        it('handles special characters in text', () => {
+            const specialText = 'Save & Continue → Next Step'
+            render(<ButtonV2 text={specialText} />)
+
+            const button = screen.getByRole('button', { name: specialText })
+            expect(button).toBeInTheDocument()
+        })
+
+        it('handles unicode and emojis in text', () => {
+            const emojiText = '🚀 Launch Now! 🎉'
+            render(<ButtonV2 text={emojiText} />)
+
+            const button = screen.getByRole('button', { name: emojiText })
+            expect(button).toBeInTheDocument()
+        })
+
+        it('handles transition from loading to disabled', async () => {
+            const { rerender } = render(<ButtonV2 text="Action" loading />)
+
+            let button = screen.getByRole('button')
+            expect(button).toHaveAttribute('aria-busy', 'true')
+
+            rerender(<ButtonV2 text="Action" disabled />)
+
+            button = screen.getByRole('button')
+            expect(button).not.toHaveAttribute('aria-busy')
+            expect(button).toBeDisabled()
+        })
+
+        it('hides icon content in skeleton state', () => {
+            render(
+                <ButtonV2
+                    text="Skeleton"
+                    showSkeleton
+                    leadingIcon={<MockIcon />}
+                />
+            )
+
+            const button = screen.getByRole('button')
+            const icon = button.querySelector('[data-element="leading-icon"]')
+            expect(icon).toHaveStyle({ opacity: '0' })
+        })
+    })
+
+    describe('Styling', () => {
+        it('has transition for smooth interactions', () => {
+            render(<ButtonV2 text="Animated" />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveStyle({
+                transition: 'transform 0.15s ease-in-out',
+            })
+        })
+
+        it.each([
+            ['flex-start', 'flex-start'],
+            ['center', 'center'],
+            ['flex-end', 'flex-end'],
+            ['space-between', 'space-between'],
+        ])('renders with justifyContent %s', (value, expected) => {
+            render(<ButtonV2 text="Test" justifyContent={value as any} />)
+            const button = screen.getByRole('button')
+            expect(button).toHaveStyle({ justifyContent: expected })
+        })
+    })
+
+    describe('Component Metadata', () => {
+        it('has correct displayName for debugging', () => {
+            expect(ButtonV2.displayName).toBe('ButtonV2')
         })
     })
 })
