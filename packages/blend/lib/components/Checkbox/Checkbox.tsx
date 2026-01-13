@@ -149,7 +149,18 @@ const CheckboxIndicator: React.FC<{
     tokens: CheckboxTokensType
     disabled: boolean
 }> = ({ checked, size, tokens, disabled }) => (
-    <StyledCheckboxIndicator forceMount={true} size={size} aria-hidden="true">
+    <StyledCheckboxIndicator
+        forceMount={true}
+        size={size}
+        aria-hidden="true"
+        data-state={
+            checked === 'indeterminate'
+                ? 'indeterminate'
+                : checked
+                  ? 'checked'
+                  : 'unchecked'
+        }
+    >
         {checked ? (
             <Block
                 as="span"
