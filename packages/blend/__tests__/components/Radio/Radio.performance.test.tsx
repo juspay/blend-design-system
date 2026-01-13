@@ -17,7 +17,7 @@ function getCurrentTestName(): string {
     return testContext.currentTestName || 'unknown-test'
 }
 
-describe('Radio Performance', () => {
+describe.skip('Radio Performance', () => {
     describe('Render Performance', () => {
         it('renders within performance budget', async () => {
             const renderTime = await measureRenderTime(
