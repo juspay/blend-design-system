@@ -984,8 +984,8 @@ export const getButtonTokens = (
             backgroundColor: {
                 primary: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
-                        hover: foundationToken.colors.primary[500],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
+                        hover: foundationToken.colors.primary[600],
                         active: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
                         disabled: foundationToken.colors.primary[300],
                     },
@@ -1233,16 +1233,16 @@ export const getButtonTokens = (
                 lg: {
                     primary: {
                         default: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         iconOnly: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         inline: {
                             default: foundationToken.border.radius[6],
@@ -1253,16 +1253,16 @@ export const getButtonTokens = (
                     },
                     secondary: {
                         default: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         iconOnly: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         inline: {
                             default: foundationToken.border.radius[6],
@@ -1273,16 +1273,16 @@ export const getButtonTokens = (
                     },
                     danger: {
                         default: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         iconOnly: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         inline: {
                             default: foundationToken.border.radius[6],
@@ -1293,16 +1293,16 @@ export const getButtonTokens = (
                     },
                     success: {
                         default: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         iconOnly: {
-                            default: foundationToken.border.radius[10],
-                            hover: foundationToken.border.radius[10],
-                            active: foundationToken.border.radius[10],
-                            disabled: foundationToken.border.radius[10],
+                            default: foundationToken.border.radius[12],
+                            hover: foundationToken.border.radius[12],
+                            active: foundationToken.border.radius[12],
+                            disabled: foundationToken.border.radius[12],
                         },
                         inline: {
                             default: foundationToken.border.radius[6],
@@ -1497,7 +1497,7 @@ export const getButtonTokens = (
                 primary: {
                     default: {
                         default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
                         active: `1px solid ${foundationToken.colors.primary[600]}`,
                         disabled: `1px solid ${foundationToken.colors.primary[300]}`,
                     },
