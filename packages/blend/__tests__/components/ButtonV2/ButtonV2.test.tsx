@@ -803,7 +803,7 @@ describe('ButtonV2', () => {
             ['flex-end', 'flex-end'],
             ['space-between', 'space-between'],
         ])('renders with justifyContent %s', (value, expected) => {
-            render(<ButtonV2 text="Test" justifyContent={value as any} />)
+            render(<ButtonV2 text="Test" justifyContent={value} />)
             const button = screen.getByRole('button')
             expect(button).toHaveStyle({ justifyContent: expected })
         })
