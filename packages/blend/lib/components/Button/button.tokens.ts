@@ -986,13 +986,13 @@ export const getButtonTokens = (
                     default: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
                         hover: foundationToken.colors.primary[600],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
                         disabled: foundationToken.colors.primary[300],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
                         hover: foundationToken.colors.primary[500],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
                         disabled: foundationToken.colors.primary[300],
                     },
                     inline: {
@@ -1024,13 +1024,13 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
-                        hover: foundationToken.colors.red[500],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.red[500]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
+                        hover: foundationToken.colors.red[600],
                         active: foundationToken.colors.red[500],
                         disabled: foundationToken.colors.red[300],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
+                        default: `linear-gradient(180deg, ${foundationToken.colors.red[500]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
                         hover: foundationToken.colors.red[500],
                         active: foundationToken.colors.red[500],
                         disabled: foundationToken.colors.red[300],
@@ -1044,13 +1044,13 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
+                        default: `linear-gradient(180deg, ${foundationToken.colors.green[500]} 0%, ${foundationToken.colors.green[600]} 100%)`,
                         hover: foundationToken.colors.green[500],
                         active: foundationToken.colors.green[600],
                         disabled: foundationToken.colors.green[300],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
+                        default: `linear-gradient(180deg, ${foundationToken.colors.green[500]} 0%, ${foundationToken.colors.green[600]} 100%)`,
                         hover: foundationToken.colors.green[500],
                         active: foundationToken.colors.green[600],
                         disabled: foundationToken.colors.green[300],
@@ -1537,7 +1537,7 @@ export const getButtonTokens = (
                 danger: {
                     default: {
                         default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        hover: `1px solid ${foundationToken.colors.red[600]}`,
                         active: `1px solid ${foundationToken.colors.red[500]}`,
                         disabled: `1px solid ${foundationToken.colors.red[300]}`,
                     },
