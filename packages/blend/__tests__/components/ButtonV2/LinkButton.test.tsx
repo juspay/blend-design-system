@@ -6,7 +6,7 @@ import { LinkButton } from '../../../lib/components/ButtonV2'
 import {
     ButtonType,
     ButtonSize,
-    ButtonSubType
+    ButtonSubType,
 } from '../../../lib/components/ButtonV2/types'
 import { MockIcon } from '../../test-utils'
 
