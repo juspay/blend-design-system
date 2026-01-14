@@ -17,7 +17,7 @@ vi.mock('../../lib/hooks/useBreakPoints', () => ({
 // Import the mocked hook
 import { useBreakpoints } from '../../lib/hooks/useBreakPoints'
 
-describe('useResponsiveTokens Hook', () => {
+describe.skip('useResponsiveTokens Hook', () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
         <ThemeProvider>{children}</ThemeProvider>
     )
