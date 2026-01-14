@@ -12,6 +12,10 @@ import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
 const StyledButtonText = styled(Text)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: ${FOUNDATION_THEME.unit[6]};
     button:active & {
         transform: translateY(${FOUNDATION_THEME.unit[1.5]});
     }
@@ -252,7 +256,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                         </VisuallyHidden>
                     </>
                 ) : (
-                    <>
+                    <StyledButtonText>
                         {leadingIcon && (
                             <Block
                                 as="span"
@@ -275,7 +279,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             </Block>
                         )}
                         {text && (
-                            <StyledButtonText
+                            <Text
                                 fontSize={buttonTokens.text.fontSize[size]}
                                 fontWeight={buttonTokens.text.fontWeight[size]}
                                 as="span"
@@ -292,7 +296,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 data-id={text}
                             >
                                 {text}
-                            </StyledButtonText>
+                            </Text>
                         )}
                         {trailingIcon && (
                             <Block
@@ -315,7 +319,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 {trailingIcon}
                             </Block>
                         )}
-                    </>
+                    </StyledButtonText>
                 )}
             </PrimitiveButton>
         )
