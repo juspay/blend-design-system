@@ -7,7 +7,7 @@ import type { KeyboardEvent } from 'react'
  * WCAG 2.2 Level AA standards and ARIA Authoring Practices Guide.
  */
 
-export interface KeyboardHandler {
+export type KeyboardHandler = {
     onKeyDown: (e: KeyboardEvent<HTMLElement>) => void
 }
 

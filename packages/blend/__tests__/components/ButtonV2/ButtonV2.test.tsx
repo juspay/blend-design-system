@@ -56,6 +56,34 @@ describe('ButtonV2', () => {
             expect(await axe(container)).toHaveNoViolations()
         })
 
+        it('leading icon without text has no aria-hidden (accessible to screen readers)', async () => {
+            const { container } = render(
+                <ButtonV2 leadingIcon={<MockIcon />} aria-label="Save" />
+            )
+            const button = screen.getByRole('button', { name: 'Save' })
+            expect(button).toBeInTheDocument()
+
+            const icon = button.querySelector('[data-element="leading-icon"]')
+            expect(icon).toBeInTheDocument()
+            expect(icon).not.toHaveAttribute('aria-hidden')
+
+            expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('trailing icon without text has no aria-hidden (accessible to screen readers)', async () => {
+            const { container } = render(
+                <ButtonV2 trailingIcon={<MockIcon />} aria-label="Next" />
+            )
+            const button = screen.getByRole('button', { name: 'Next' })
+            expect(button).toBeInTheDocument()
+
+            const icon = button.querySelector('[data-element="trailing-icon"]')
+            expect(icon).toBeInTheDocument()
+            expect(icon).not.toHaveAttribute('aria-hidden')
+
+            expect(await axe(container)).toHaveNoViolations()
+        })
+
         it('renders with trailing icon and text', async () => {
             const { container } = render(
                 <ButtonV2 text="Next" trailingIcon={<MockIcon />} />
@@ -66,6 +94,32 @@ describe('ButtonV2', () => {
 
             const icon = button.querySelector('[data-element="trailing-icon"]')
             expect(icon).toHaveAttribute('aria-hidden', 'true')
+
+            expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('renders both icons without text (both are accessible)', async () => {
+            const { container } = render(
+                <ButtonV2
+                    leadingIcon={<MockIcon />}
+                    trailingIcon={<MockIcon />}
+                    aria-label="Actions"
+                />
+            )
+            const button = screen.getByRole('button', { name: 'Actions' })
+            expect(button).toBeInTheDocument()
+
+            const leadingIcon = button.querySelector(
+                '[data-element="leading-icon"]'
+            )
+            const trailingIcon = button.querySelector(
+                '[data-element="trailing-icon"]'
+            )
+
+            expect(leadingIcon).toBeInTheDocument()
+            expect(leadingIcon).not.toHaveAttribute('aria-hidden')
+            expect(trailingIcon).toBeInTheDocument()
+            expect(trailingIcon).not.toHaveAttribute('aria-hidden')
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -250,6 +304,29 @@ describe('ButtonV2', () => {
             expect(button).toHaveAttribute('aria-label', 'Skeleton')
 
             expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('skeleton uses custom aria-label when provided', async () => {
+            const { container } = render(
+                <ButtonV2
+                    text="Original Text"
+                    aria-label="Custom Label"
+                    showSkeleton
+                />
+            )
+
+            const button = screen.getByRole('button')
+            expect(button).toHaveAttribute('aria-label', 'Custom Label')
+
+            expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('skeleton with no text does not set aria-label', () => {
+            render(<ButtonV2 leadingIcon={<MockIcon />} showSkeleton />)
+
+            const button = screen.getByRole('button')
+            expect(button).not.toHaveAttribute('aria-label')
+            // Note: This would fail accessibility - skeleton with icon only needs aria-label
         })
 
         it('applies correct state styling', () => {
@@ -785,6 +862,41 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button')
             const icon = button.querySelector('[data-element="leading-icon"]')
             expect(icon).toHaveStyle({ opacity: '0' })
+        })
+
+        it('hides trailing icon content in skeleton state', () => {
+            render(
+                <ButtonV2
+                    text="Skeleton"
+                    showSkeleton
+                    trailingIcon={<MockIcon />}
+                />
+            )
+
+            const button = screen.getByRole('button')
+            const icon = button.querySelector('[data-element="trailing-icon"]')
+            expect(icon).toHaveStyle({ opacity: '0' })
+        })
+
+        it('hides both icons content in skeleton state', () => {
+            render(
+                <ButtonV2
+                    text="Skeleton"
+                    showSkeleton
+                    leadingIcon={<MockIcon />}
+                    trailingIcon={<MockIcon />}
+                />
+            )
+
+            const button = screen.getByRole('button')
+            const leadingIcon = button.querySelector(
+                '[data-element="leading-icon"]'
+            )
+            const trailingIcon = button.querySelector(
+                '[data-element="trailing-icon"]'
+            )
+            expect(leadingIcon).toHaveStyle({ opacity: '0' })
+            expect(trailingIcon).toHaveStyle({ opacity: '0' })
         })
     })
 

@@ -5,6 +5,7 @@ import {
     ButtonSubType,
 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { ButtonGroup } from '../../../../packages/blend/lib/components/ButtonV2/ButtonGroup'
+import { Group } from '../../../../packages/blend/lib/components/Primitives/Group'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
@@ -29,8 +30,17 @@ import {
     TagVariant,
 } from '../../../../packages/blend/lib/components/Tags'
 import { useState } from 'react'
+import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 
 const ButtonGroupV2Demo = () => {
+    const [formGroup1, setFormGroup1] = useState('')
+    const [formGroup2, setFormGroup2] = useState('')
+    const [formGroup3, setFormGroup3] = useState('')
+    const [quickFilter, setQuickFilter] = useState('')
+    const [sortBy, setSortBy] = useState('')
+    const [compactSelect1, setCompactSelect1] = useState('')
+    const [compactSelect2, setCompactSelect2] = useState('')
+
     const [playgroundStacked, setPlaygroundStacked] = useState(false)
     const [playgroundButtonType, setPlaygroundButtonType] =
         useState<ButtonType>(ButtonType.PRIMARY)
@@ -801,6 +811,251 @@ const ButtonGroupV2Demo = () => {
                                 }}
                             />
                         </ButtonGroup>
+                    </div>
+                </div>
+            </div>
+
+            {/* Form Elements Group */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Form Elements Group</h2>
+                <p className="text-gray-600">
+                    The Group component can also be used to group form elements.
+                    Below are examples of common patterns using SingleSelect and
+                    other form inputs.
+                </p>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Horizontal Form Group (with spacing)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Multiple selects arranged horizontally with
+                            consistent spacing
+                        </p>
+                        <Group gap={10} alignItems="flex-end">
+                            <SingleSelect
+                                label="Category"
+                                placeholder="Select category"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                value: 'tech',
+                                                label: 'Technology',
+                                            },
+                                            {
+                                                value: 'finance',
+                                                label: 'Finance',
+                                            },
+                                            {
+                                                value: 'healthcare',
+                                                label: 'Healthcare',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={formGroup1}
+                                onSelect={setFormGroup1}
+                            />
+                            <SingleSelect
+                                label="Status"
+                                placeholder="Select status"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                value: 'active',
+                                                label: 'Active',
+                                            },
+                                            {
+                                                value: 'inactive',
+                                                label: 'Inactive',
+                                            },
+                                            {
+                                                value: 'pending',
+                                                label: 'Pending',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={formGroup2}
+                                onSelect={setFormGroup2}
+                            />
+                            <SingleSelect
+                                label="Priority"
+                                placeholder="Select priority"
+                                items={[
+                                    {
+                                        items: [
+                                            { value: 'high', label: 'High' },
+                                            {
+                                                value: 'medium',
+                                                label: 'Medium',
+                                            },
+                                            { value: 'low', label: 'Low' },
+                                        ],
+                                    },
+                                ]}
+                                selected={formGroup3}
+                                onSelect={setFormGroup3}
+                            />
+                        </Group>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Search + Filter Pattern
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Common pattern for search interfaces with filters
+                        </p>
+                        <Group gap={8} style={{ maxWidth: '600px' }}>
+                            <div style={{ flex: 1 }}>
+                                <SingleSelect
+                                    label="Quick Filters"
+                                    placeholder="Select filter..."
+                                    items={[
+                                        {
+                                            items: [
+                                                {
+                                                    value: 'date',
+                                                    label: 'Date Range',
+                                                },
+                                                {
+                                                    value: 'status',
+                                                    label: 'Status',
+                                                },
+                                                {
+                                                    value: 'priority',
+                                                    label: 'Priority',
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    selected={quickFilter}
+                                    onSelect={setQuickFilter}
+                                />
+                            </div>
+                            <SingleSelect
+                                label="Sort By"
+                                placeholder="Sort"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                value: 'newest',
+                                                label: 'Newest First',
+                                            },
+                                            {
+                                                value: 'oldest',
+                                                label: 'Oldest First',
+                                            },
+                                            { value: 'az', label: 'A-Z' },
+                                        ],
+                                    },
+                                ]}
+                                selected={sortBy}
+                                onSelect={setSortBy}
+                            />
+                        </Group>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Compact Control Group
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Inline form controls for compact layouts
+                        </p>
+                        <Group gap={8} alignItems="center">
+                            <ButtonV2
+                                text="All"
+                                buttonType={ButtonType.PRIMARY}
+                                size={ButtonSize.SMALL}
+                            />
+                            <SingleSelect
+                                label=""
+                                placeholder="Select"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                value: 'option1',
+                                                label: 'Option 1',
+                                            },
+                                            {
+                                                value: 'option2',
+                                                label: 'Option 2',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={compactSelect1}
+                                onSelect={setCompactSelect1}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                            />
+                            <SingleSelect
+                                label=""
+                                placeholder="Another"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                value: 'opt1',
+                                                label: 'Choice 1',
+                                            },
+                                            {
+                                                value: 'opt2',
+                                                label: 'Choice 2',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected={compactSelect2}
+                                onSelect={setCompactSelect2}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                            />
+                            <ButtonV2
+                                text="Apply"
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                            />
+                        </Group>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Note: Stacked Form Elements
+                        </h3>
+                        <p className="text-gray-600">
+                            Unlike buttons, form elements don't currently have
+                            built-in support for automatic border-radius
+                            adjustment when stacked. To achieve the stacked
+                            (connected) look:
+                        </p>
+                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
+                            <li>
+                                <strong>Option 1:</strong> Wrap elements in a
+                                container with custom CSS to override
+                                border-radius
+                            </li>
+                            <li>
+                                <strong>Option 2:</strong> Use inline styles or
+                                CSS modules to control individual element
+                                borders
+                            </li>
+                            <li>
+                                <strong>Option 3:</strong> For full integration,
+                                each form component would need a{' '}
+                                <code>groupPosition</code> prop (similar to
+                                ButtonV2's <code>buttonGroupPosition</code>)
+                            </li>
+                        </ul>
+                        <p className="text-sm text-gray-500 mt-4">
+                            If you'd like to add automatic border-radius support
+                            to form components, let us know and we can enhance
+                            them with a <code>groupPosition</code> prop!
+                        </p>
                     </div>
                 </div>
             </div>
