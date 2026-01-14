@@ -712,15 +712,15 @@ export const getButtonTokens = (
             shadow: {
                 primary: {
                     default: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: `0 2px 5px 0 rgba(0, 0, 0, 0.10), 0 3px 4px 0 ${foundationToken.colors.primary[800]} inset`,
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: `0 2px 5px 0 rgba(0, 0, 0, 0.10), 0 3px 4px 0 ${foundationToken.colors.primary[800]} inset`,
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     inline: {
@@ -752,15 +752,15 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: '0 2px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 4px 0 rgba(0, 0, 0, 0.12) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: '0 2px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 4px 0 rgba(0, 0, 0, 0.12) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     inline: {
@@ -772,15 +772,15 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: '0 2px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 4px 0 rgba(0, 0, 0, 0.12) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
+                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
-                        active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        active: '0 2px 3px 0 rgba(0, 0, 0, 0.08), 0 4px 4px 0 rgba(0, 0, 0, 0.12) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     inline: {
