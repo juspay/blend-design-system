@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { ButtonV2Props } from '../types'
+import type { ButtonV2Props } from '../buttonV2.types'
 import type { ButtonProps } from '../../Button/types'
 
 export type ButtonGroupV2ChildProps = ButtonV2Props | ButtonProps

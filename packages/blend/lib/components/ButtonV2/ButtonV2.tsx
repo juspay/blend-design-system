@@ -2,8 +2,13 @@ import { forwardRef, type MouseEvent } from 'react'
 import { LoaderCircle } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import type { ButtonV2Props } from './types'
-import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
+import type { ButtonV2Props } from './buttonV2.types'
+import {
+    ButtonSize,
+    ButtonState,
+    ButtonSubType,
+    ButtonType,
+} from './buttonV2.types'
 import type { ButtonTokensType } from './button.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'

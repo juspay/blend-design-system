@@ -4,7 +4,7 @@ import {
     ButtonSize,
     ButtonSubType,
 } from '../../../../packages/blend/lib/components/ButtonV2'
-import { ButtonGroup } from '../../../../packages/blend/lib/components/ButtonV2/ButtonGroup'
+import { ButtonGroupV2 } from '../../../../packages/blend/lib/components/ButtonV2/ButtonGroupV2'
 import { Group } from '../../../../packages/blend/lib/components/Primitives/Group'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -170,9 +170,9 @@ const ButtonGroupV2Demo = () => {
                     </div>
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
-                        <ButtonGroup stacked={playgroundStacked}>
+                        <ButtonGroupV2 stacked={playgroundStacked}>
                             {renderPlaygroundButtons()}
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@ const ButtonGroupV2Demo = () => {
                             Horizontal Group
                         </h3>
                         <div className="space-y-4">
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Save"
                                     leadingIcon={<Download size={16} />}
@@ -205,9 +205,9 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
 
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Edit"
                                     buttonType={ButtonType.PRIMARY}
@@ -238,14 +238,14 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Stacked Group</h3>
                         <div className="space-y-4">
-                            <ButtonGroup stacked>
+                            <ButtonGroupV2 stacked>
                                 <ButtonV2
                                     text="Left"
                                     onClick={() => {
@@ -270,9 +270,9 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
 
-                            <ButtonGroup stacked>
+                            <ButtonGroupV2 stacked>
                                 <ButtonV2
                                     leadingIcon={<Hash size={16} />}
                                     onClick={() => {
@@ -305,7 +305,7 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
                         </div>
                     </div>
                 </div>
@@ -321,7 +321,7 @@ const ButtonGroupV2Demo = () => {
                                 {type}
                             </h3>
                             <div className="space-y-4">
-                                <ButtonGroup>
+                                <ButtonGroupV2>
                                     <ButtonV2
                                         text="First"
                                         buttonType={type}
@@ -349,9 +349,9 @@ const ButtonGroupV2Demo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroup>
+                                </ButtonGroupV2>
 
-                                <ButtonGroup stacked>
+                                <ButtonGroupV2 stacked>
                                     <ButtonV2
                                         text="Left"
                                         buttonType={type}
@@ -379,7 +379,7 @@ const ButtonGroupV2Demo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroup>
+                                </ButtonGroupV2>
                             </div>
                         </div>
                     ))}
@@ -396,7 +396,7 @@ const ButtonGroupV2Demo = () => {
                                 {size}
                             </h3>
                             <div className="space-y-4">
-                                <ButtonGroup>
+                                <ButtonGroupV2>
                                     <ButtonV2
                                         text="Small"
                                         size={size}
@@ -424,9 +424,9 @@ const ButtonGroupV2Demo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroup>
+                                </ButtonGroupV2>
 
-                                <ButtonGroup stacked>
+                                <ButtonGroupV2 stacked>
                                     <ButtonV2
                                         text="Left"
                                         size={size}
@@ -454,7 +454,7 @@ const ButtonGroupV2Demo = () => {
                                             })
                                         }}
                                     />
-                                </ButtonGroup>
+                                </ButtonGroupV2>
                             </div>
                         </div>
                     ))}
@@ -469,7 +469,7 @@ const ButtonGroupV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Primary + Secondary
                         </h3>
-                        <ButtonGroup>
+                        <ButtonGroupV2>
                             <ButtonV2
                                 text="Primary Action"
                                 buttonType={ButtonType.PRIMARY}
@@ -488,14 +488,14 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Success + Danger
                         </h3>
-                        <ButtonGroup>
+                        <ButtonGroupV2>
                             <ButtonV2
                                 text="Approve"
                                 buttonType={ButtonType.SUCCESS}
@@ -516,14 +516,14 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Mixed with Icons
                         </h3>
-                        <ButtonGroup>
+                        <ButtonGroupV2>
                             <ButtonV2
                                 text="Download"
                                 buttonType={ButtonType.PRIMARY}
@@ -553,7 +553,7 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
                 </div>
             </div>
@@ -579,7 +579,7 @@ const ButtonGroupV2Demo = () => {
                             next to an icon-only dropdown button
                         </p>
                         <div className="flex gap-4 flex-wrap">
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Status"
                                     buttonType={ButtonType.SECONDARY}
@@ -609,9 +609,9 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
 
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Priority"
                                     buttonType={ButtonType.PRIMARY}
@@ -641,7 +641,7 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
                         </div>
                     </div>
 
@@ -650,7 +650,7 @@ const ButtonGroupV2Demo = () => {
                             Button with Tag + Icon-Only Button (Medium Size)
                         </h3>
                         <div className="flex gap-4 flex-wrap">
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Category"
                                     buttonType={ButtonType.SECONDARY}
@@ -680,9 +680,9 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
 
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Notifications"
                                     buttonType={ButtonType.PRIMARY}
@@ -712,7 +712,7 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
                         </div>
                     </div>
 
@@ -721,7 +721,7 @@ const ButtonGroupV2Demo = () => {
                             Button with Tag + Icon-Only Button (Large Size)
                         </h3>
                         <div className="flex gap-4 flex-wrap">
-                            <ButtonGroup>
+                            <ButtonGroupV2>
                                 <ButtonV2
                                     text="Team"
                                     buttonType={ButtonType.SECONDARY}
@@ -751,7 +751,7 @@ const ButtonGroupV2Demo = () => {
                                         })
                                     }}
                                 />
-                            </ButtonGroup>
+                            </ButtonGroupV2>
                         </div>
                     </div>
 
@@ -762,7 +762,7 @@ const ButtonGroupV2Demo = () => {
                         <p className="text-sm text-gray-600">
                             Stacked buttons also maintain consistent heights
                         </p>
-                        <ButtonGroup stacked>
+                        <ButtonGroupV2 stacked>
                             <ButtonV2
                                 text="Active Items"
                                 buttonType={ButtonType.SECONDARY}
@@ -810,7 +810,7 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
                 </div>
             </div>
@@ -1066,7 +1066,7 @@ const ButtonGroupV2Demo = () => {
                 <div className="space-y-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">File Actions</h3>
-                        <ButtonGroup>
+                        <ButtonGroupV2>
                             <ButtonV2
                                 text="New File"
                                 buttonType={ButtonType.PRIMARY}
@@ -1097,12 +1097,12 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">User Actions</h3>
-                        <ButtonGroup stacked>
+                        <ButtonGroupV2 stacked>
                             <ButtonV2
                                 text="View Profile"
                                 buttonType={ButtonType.PRIMARY}
@@ -1133,7 +1133,7 @@ const ButtonGroupV2Demo = () => {
                                     })
                                 }}
                             />
-                        </ButtonGroup>
+                        </ButtonGroupV2>
                     </div>
                 </div>
             </div>

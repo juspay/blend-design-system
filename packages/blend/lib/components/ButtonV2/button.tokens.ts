@@ -1,5 +1,10 @@
 import type { CSSObject } from 'styled-components'
-import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
+import {
+    ButtonSize,
+    ButtonState,
+    ButtonSubType,
+    ButtonType,
+} from './buttonV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 

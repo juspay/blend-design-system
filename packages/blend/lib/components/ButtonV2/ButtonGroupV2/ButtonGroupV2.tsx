@@ -1,9 +1,9 @@
 import React, { forwardRef } from 'react'
 import { Group } from '../../Primitives/Group'
 import { GroupOrientation } from '../../Primitives/Group/types'
-import type { ButtonGroupV2Props } from './types'
+import type { ButtonGroupV2Props } from './buttonGroupV2.types'
 
-const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupV2Props>(
+const ButtonGroupV2 = forwardRef<HTMLDivElement, ButtonGroupV2Props>(
     ({ stacked = false, gap, children, ...restProps }, ref) => {
         const totalChildren = React.Children.count(children)
 
@@ -27,6 +27,6 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupV2Props>(
     }
 )
 
-ButtonGroup.displayName = 'ButtonGroup'
+ButtonGroupV2.displayName = 'ButtonGroupV2'
 
-export default ButtonGroup
+export default ButtonGroupV2

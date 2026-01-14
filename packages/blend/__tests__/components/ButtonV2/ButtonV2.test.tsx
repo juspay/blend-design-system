@@ -13,7 +13,7 @@ import {
     ButtonSize,
     ButtonSubType,
     ButtonState,
-} from '../../../lib/components/ButtonV2/types'
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 function getCurrentTestName(): string {

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
-import ButtonV2 from './Button'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import ButtonV2 from './ButtonV2'
+import { ButtonSize, ButtonSubType, ButtonType } from './buttonV2.types'
 
 export interface IconButtonProps extends Omit<
     React.ComponentProps<typeof ButtonV2>,

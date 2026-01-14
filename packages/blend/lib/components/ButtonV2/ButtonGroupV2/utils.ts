@@ -1,4 +1,4 @@
-import type { ButtonGroupPosition } from './types'
+import type { ButtonGroupPosition } from './buttonGroupV2.types'
 import { getGroupPosition, getGroupGap } from '../../Primitives/Group'
 import { GroupOrientation } from '../../Primitives/Group/types'
 

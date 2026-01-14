@@ -2,21 +2,21 @@ import React from 'react'
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
-import { ButtonGroup, ButtonV2 } from '../../../lib/components/ButtonV2'
-import { ButtonType } from '../../../lib/components/ButtonV2/types'
+import { ButtonGroupV2, ButtonV2 } from '../../../lib/components/ButtonV2'
+import { ButtonType } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
-describe('ButtonGroup Accessibility', () => {
+describe('ButtonGroupV2 Accessibility', () => {
     describe('WCAG 2.1 AA Compliance', () => {
         it('passes axe-core validation for horizontal group', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Primary" buttonType={ButtonType.PRIMARY} />
                     <ButtonV2
                         text="Secondary"
                         buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -25,11 +25,11 @@ describe('ButtonGroup Accessibility', () => {
 
         it('passes axe-core validation for stacked group', async () => {
             const { container } = render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -38,11 +38,11 @@ describe('ButtonGroup Accessibility', () => {
 
         it('passes axe-core validation with mixed button states', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Enabled" />
                     <ButtonV2 text="Disabled" disabled />
                     <ButtonV2 text="Loading" loading />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -53,11 +53,11 @@ describe('ButtonGroup Accessibility', () => {
     describe('WCAG 2.4.3 Focus Order', () => {
         it('maintains logical keyboard navigation order', async () => {
             const { user } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
                     <ButtonV2 text="Third" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             await user.tab()
@@ -78,11 +78,11 @@ describe('ButtonGroup Accessibility', () => {
 
         it('skips disabled buttons in keyboard navigation', async () => {
             const { user } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Disabled" disabled />
                     <ButtonV2 text="Third" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             await user.tab()
@@ -101,7 +101,7 @@ describe('ButtonGroup Accessibility', () => {
     describe('WCAG 4.1.2 Name, Role, Value - Individual Button Accessibility', () => {
         it('preserves individual button accessibility in group', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2
                         text="Accessible"
                         aria-label="Accessible button"
@@ -110,7 +110,7 @@ describe('ButtonGroup Accessibility', () => {
                         leadingIcon={<MockIcon />}
                         aria-label="Icon button"
                     />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -126,10 +126,10 @@ describe('ButtonGroup Accessibility', () => {
 
         it('preserves ARIA attributes in stacked group', async () => {
             const { container } = render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Disabled" disabled />
                     <ButtonV2 text="Loading" loading />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const disabledButton = screen.getByRole('button', {
@@ -151,9 +151,9 @@ describe('ButtonGroup Accessibility', () => {
     describe('Edge Cases - Group Accessibility', () => {
         it('handles single button in group correctly', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Single" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -165,7 +165,9 @@ describe('ButtonGroup Accessibility', () => {
                 <ButtonV2 key={i} text={`Button ${i + 1}`} />
             ))
 
-            const { container } = render(<ButtonGroup>{buttons}</ButtonGroup>)
+            const { container } = render(
+                <ButtonGroupV2>{buttons}</ButtonGroupV2>
+            )
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -173,7 +175,7 @@ describe('ButtonGroup Accessibility', () => {
 
         it('maintains accessibility with icon-only buttons in group', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2
                         leadingIcon={<MockIcon />}
                         aria-label="First action"
@@ -182,7 +184,7 @@ describe('ButtonGroup Accessibility', () => {
                         leadingIcon={<MockIcon />}
                         aria-label="Second action"
                     />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(

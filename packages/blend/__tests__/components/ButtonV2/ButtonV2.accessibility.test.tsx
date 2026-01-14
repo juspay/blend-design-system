@@ -6,7 +6,7 @@ import { ButtonV2 } from '../../../lib/components/ButtonV2'
 import {
     ButtonType,
     ButtonSubType,
-} from '../../../lib/components/ButtonV2/types'
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('ButtonV2 Accessibility', () => {

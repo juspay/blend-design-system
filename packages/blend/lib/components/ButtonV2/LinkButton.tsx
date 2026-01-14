@@ -1,10 +1,15 @@
 import { forwardRef } from 'react'
 import PrimitiveLink from '../Primitives/PrimitiveLink'
-import { ButtonSize, ButtonState, ButtonSubType, ButtonType } from './types'
+import {
+    ButtonSize,
+    ButtonState,
+    ButtonSubType,
+    ButtonType,
+} from './buttonV2.types'
 import type { ButtonTokensType } from './button.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
-import { renderButtonContent } from './Button'
+import { renderButtonContent } from './ButtonV2'
 import {
     getBorderRadius,
     getButtonHeight,

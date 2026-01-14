@@ -4,8 +4,8 @@
  */
 
 import type { MouseEvent } from 'react'
-import type { ButtonSize, ButtonState } from './types'
-import { ButtonSubType, ButtonType } from './types'
+import type { ButtonSize, ButtonState } from './buttonV2.types'
+import { ButtonSubType, ButtonType } from './buttonV2.types'
 import type { ButtonTokensType } from './button.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
