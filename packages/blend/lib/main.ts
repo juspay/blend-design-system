@@ -43,12 +43,6 @@ export * from './components/ChatInput'
 export * from './components/CodeBlock'
 export * from './components/CodeEditor'
 
-// V2 Components with Theme Support
-export * from './components/ButtonGroup'
-export * from './components/Button'
-
-// V2 Components
-export * from './components/TagV2'
-
+//Theme and Tokens Export
 export * from './context'
 export * from './tokens'

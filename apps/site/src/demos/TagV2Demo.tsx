@@ -1,6 +1,6 @@
 import {
     addSnackbar,
-    TagV2,
+    SkeletonVariant,
     TextInput,
 } from '../../../../packages/blend/lib/main'
 import {
@@ -9,11 +9,12 @@ import {
     TagV2SubType,
     TagV2Color,
 } from '../../../../packages/blend/lib/components/TagV2/TagV2.types'
+import TagV2 from '../../../../packages/blend/lib/components/TagV2/TagV2'
+
 import { Star, X } from 'lucide-react'
 import { useState } from 'react'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
-import { SkeletonVariant } from '@juspay/blend-design-system'
 const TagV2Demo = () => {
     const [tagText, setTagText] = useState('TagV2')
     const [tagColor, setTagColor] = useState(TagV2Color.PRIMARY)
