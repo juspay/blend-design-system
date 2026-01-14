@@ -712,13 +712,13 @@ export const getButtonTokens = (
             shadow: {
                 primary: {
                     default: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
@@ -752,13 +752,13 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
@@ -772,13 +772,13 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                     },
                     iconOnly: {
-                        default: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
+                        default: '0px 2px 5px 0px rgba(0, 0, 0, 0.10) inset',
                         hover: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         active: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',
                         disabled: '0px 4px 4px 0px rgba(0, 0, 0, 0.15) inset',

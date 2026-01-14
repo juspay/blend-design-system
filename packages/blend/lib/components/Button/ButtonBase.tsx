@@ -11,7 +11,11 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
-
+const StyledButtonText = styled(Text)`
+    button:active & {
+        transform: translateY(${FOUNDATION_THEME.unit[1.5]});
+    }
+`
 const VisuallyHidden = styled.span`
     position: absolute;
     width: 1px;
@@ -23,7 +27,6 @@ const VisuallyHidden = styled.span`
     white-space: nowrap;
     border-width: 0;
 `
-
 export type ButtonBaseProps = Omit<
     ButtonProps,
     'showSkeleton' | 'skeletonVariant'
@@ -31,14 +34,12 @@ export type ButtonBaseProps = Omit<
     isSkeleton?: boolean
     tokens?: ButtonTokensType
 }
-
 const formatLineHeight = (
     value?: number | string | null
 ): string | undefined => {
     if (value === undefined || value === null) return undefined
     return typeof value === 'number' ? `${value}px` : value
 }
-
 const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
     (props, ref) => {
         const {
@@ -60,11 +61,9 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             tokens,
             ...htmlProps
         } = props
-
         const defaultButtonTokens =
             useResponsiveTokens<ButtonTokensType>('BUTTON')
         const buttonTokens = tokens ?? defaultButtonTokens
-
         const getBorderRadius = () => {
             const variantBorderRadius =
                 buttonTokens.borderRadius[size][buttonType][subType].default
@@ -76,7 +75,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             }
             return `0px 0px 0px 0px`
         }
-
         const isLoading = loading && !isSkeleton
         const isDisabled = isSkeleton ? true : disabled
         const paddingTokens = buttonTokens.padding[size][buttonType][subType]
@@ -92,7 +90,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             if (isSkeleton || isDisabled || isLoading) return
             onClick?.(event)
         }
-
         const isInButtonGroup = buttonGroupPosition !== undefined
         const buttonHeight =
             subType === ButtonSubType.INLINE
@@ -100,12 +97,10 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                 : isInButtonGroup
                   ? undefined
                   : 'fit-content'
-
         const iconMaxHeight =
             subType === ButtonSubType.INLINE
                 ? '100%'
                 : buttonTokens.slotMaxHeight[size]
-
         const buttonProps: Partial<
             Pick<
                 PrimitiveButtonProps,
@@ -128,11 +123,9 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
             width: fullWidth ? '100%' : (width ?? 'fit-content'),
             gap: buttonTokens.gap,
         }
-
         if (buttonHeight !== undefined) {
             buttonProps.height = buttonHeight
         }
-
         return (
             <PrimitiveButton
                 {...buttonProps}
@@ -188,7 +181,6 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               boxShadow:
                                   buttonTokens.shadow[buttonType][subType]
                                       .active,
-                              transform: 'scale(0.99)',
                           }
                 }
                 _hover={
@@ -283,7 +275,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             </Block>
                         )}
                         {text && (
-                            <Text
+                            <StyledButtonText
                                 fontSize={buttonTokens.text.fontSize[size]}
                                 fontWeight={buttonTokens.text.fontWeight[size]}
                                 as="span"
@@ -300,7 +292,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                 data-id={text}
                             >
                                 {text}
-                            </Text>
+                            </StyledButtonText>
                         )}
                         {trailingIcon && (
                             <Block
@@ -329,7 +321,5 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
         )
     }
 )
-
 ButtonBase.displayName = 'ButtonBase'
-
 export default ButtonBase
