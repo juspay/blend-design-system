@@ -96,6 +96,12 @@ import {
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import type { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import { Theme } from './theme.enum'
+import getChatInputTokens, {
+    ResponsiveChatInputTokensType,
+} from '../components/ChatInput/chatInput.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -141,12 +147,9 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    TAGV2?: ResponsiveTagV2Tokens
 }
 
-import { Theme } from './theme.enum'
-import getChatInputTokens, {
-    ResponsiveChatInputTokensType,
-} from '../components/ChatInput/chatInput.tokens'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
@@ -200,6 +203,7 @@ const ThemeContext = createContext<ThemeContextType>({
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
+        TAGV2: getTagV2Tokens(FOUNDATION_THEME),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

@@ -109,6 +109,7 @@ import AccessibilityDashboard from '../../../../packages/blend/lib/components/sh
 import OutageChartsDemo from './OutageChartsDemo'
 import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
+import TagV2Demo from './TagV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -116,6 +117,7 @@ const SidebarDemo = () => {
         | 'accessibility'
         | 'tooltips'
         | 'tags'
+        | 'tagV2'
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
@@ -172,7 +174,7 @@ const SidebarDemo = () => {
         | 'outageCharts'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
-    >('textInputAutofillTest')
+    >('tagV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -374,6 +376,8 @@ const SidebarDemo = () => {
                 return <ButtonGroupDemo />
             case 'tags':
                 return <TagDemo />
+            case 'tagV2':
+                return <TagV2Demo />
             case 'avatars':
                 return <AvatarDemo />
             case 'breadcrumb':
@@ -645,6 +649,15 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'TagV2',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagV2',
+                    onClick: () => setActiveComponent('tagV2'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Avatar',
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
@@ -653,6 +666,7 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('avatars'),
                     showOnMobile: true,
                 },
+
                 {
                     label: 'Avatar Group',
                     leftSlot: (

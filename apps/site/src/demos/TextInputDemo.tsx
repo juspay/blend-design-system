@@ -5,6 +5,7 @@ import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/TextInput/types'
 import { Search, Eye, EyeOff, User, Mail, Lock, Phone } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Tooltip, TooltipSide } from '../../../../packages/blend/lib/main'
 
 const InputDemo = () => {
     const [playgroundText, setPlaygroundText] = useState('Your Label')
@@ -76,6 +77,7 @@ const InputDemo = () => {
         )
         return option?.icon
     }
+    const [showTooltip, setShowTooltip] = useState(false)
 
     return (
         <div className="p-8 space-y-12">
@@ -152,47 +154,55 @@ const InputDemo = () => {
 
                     <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
                         <div className="w-full max-w-md">
-                            <TextInput
-                                data-id={'Enter text here...'}
-                                name={playgroundText}
-                                label={playgroundText}
-                                value={playgroundValue}
-                                onChange={(e) =>
-                                    setPlaygroundValue(e.target.value)
-                                }
-                                placeholder={
-                                    isPasswordType
-                                        ? 'Enter password here...'
-                                        : 'Enter text here...'
-                                }
-                                type={isPasswordType ? 'password' : 'text'}
-                                size={playgroundSize}
-                                leftSlot={
-                                    isPasswordType ? (
-                                        <Lock size={16} />
-                                    ) : showLeftSlot ? (
-                                        getLeftSlotIcon()
-                                    ) : undefined
-                                }
-                                rightSlot={
-                                    isPasswordType
-                                        ? undefined
-                                        : showRightSlot
-                                          ? getRightSlotIcon()
-                                          : undefined
-                                }
-                                passwordToggle={isPasswordType}
-                                disabled={isDisabled}
-                                error={hasError}
-                                errorMessage={
-                                    hasError
-                                        ? 'This field has an error'
-                                        : undefined
-                                }
-                                hintText="This is a hint text"
-                                helpIconHintText="This is help text for the input"
-                                required
-                            />
+                            <Tooltip
+                                content="This field has an error"
+                                open={showTooltip}
+                                side={TooltipSide.RIGHT}
+                            >
+                                <TextInput
+                                    data-id={'Enter text here...'}
+                                    name={playgroundText}
+                                    label={playgroundText}
+                                    value={playgroundValue}
+                                    onChange={(e) =>
+                                        setPlaygroundValue(e.target.value)
+                                    }
+                                    placeholder={
+                                        isPasswordType
+                                            ? 'Enter password here...'
+                                            : 'Enter text here...'
+                                    }
+                                    type={isPasswordType ? 'password' : 'text'}
+                                    size={playgroundSize}
+                                    leftSlot={
+                                        isPasswordType ? (
+                                            <Lock size={16} />
+                                        ) : showLeftSlot ? (
+                                            getLeftSlotIcon()
+                                        ) : undefined
+                                    }
+                                    rightSlot={
+                                        isPasswordType
+                                            ? undefined
+                                            : showRightSlot
+                                              ? getRightSlotIcon()
+                                              : undefined
+                                    }
+                                    passwordToggle={isPasswordType}
+                                    disabled={isDisabled}
+                                    error={hasError}
+                                    onMouseOver={() => setShowTooltip(true)}
+                                    onMouseLeave={() => setShowTooltip(false)}
+                                    errorMessage={
+                                        hasError
+                                            ? 'This field has an error'
+                                            : undefined
+                                    }
+                                    hintText="This is a hint text"
+                                    helpIconHintText="This is help text for the input"
+                                    required
+                                />
+                            </Tooltip>
                         </div>
                     </div>
                 </div>

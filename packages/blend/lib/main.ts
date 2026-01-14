@@ -47,5 +47,8 @@ export * from './components/CodeEditor'
 export * from './components/ButtonGroup'
 export * from './components/Button'
 
+// V2 Components
+export * from './components/TagV2'
+
 export * from './context'
 export * from './tokens'

@@ -44,6 +44,7 @@ import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/m
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
+import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -131,6 +132,7 @@ const initTokens = (
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
     }
 }
 
