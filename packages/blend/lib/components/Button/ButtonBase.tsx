@@ -17,7 +17,7 @@ const StyledButtonText = styled(Text)`
     justify-content: center;
     gap: ${FOUNDATION_THEME.unit[6]};
     button:active & {
-        transform: translateY(${FOUNDATION_THEME.unit[1.5]});
+        transform: translateY(${FOUNDATION_THEME.unit[1]});
     }
 `
 const VisuallyHidden = styled.span`
