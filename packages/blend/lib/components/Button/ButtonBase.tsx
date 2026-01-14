@@ -179,7 +179,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                               background:
                                   buttonTokens.backgroundColor[buttonType][
                                       subType
-                                  ].active,
+                                  ].hover,
                               border: buttonTokens.border[buttonType][subType]
                                   .active,
                               boxShadow:
