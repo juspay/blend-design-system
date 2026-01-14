@@ -56,14 +56,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             }
         }, [value])
 
-        useEffect(() => {
-            if (items.length > 0) {
-                const firstItemValue = items[0].value
-                // Always set to first item when items change
-                setActiveTab(firstItemValue)
-            }
-        }, [items])
-
         // Update defaultTabs when items change (to include new items with isDefault: true)
         useEffect(() => {
             items.forEach((item) => {
