@@ -14,7 +14,11 @@ import TagSkeleton from './TagSkeleton'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
 import { filterBlockedProps } from '../../utils/prop-helpers'
-import { createKeyboardHandler, getAccessibleName } from './utils'
+import {
+    createKeyboardHandler,
+    getAccessibleName,
+    getTagBorderRadius,
+} from './utils'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const FOCUS_VISIBLE_STYLES = {
@@ -39,6 +43,7 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
             showSkeleton,
             skeletonVariant,
             onClick,
+            tagGroupPosition,
             ...rest
         },
         ref
@@ -105,7 +110,12 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
                 width="fit-content"
                 gap={tagTokens.gap}
                 border={tagTokens.border[type][color]}
-                borderRadius={tagTokens.borderRadius[size][subType]}
+                borderRadius={getTagBorderRadius(
+                    size,
+                    subType,
+                    tagGroupPosition,
+                    tagTokens
+                )}
                 backgroundColor={tagTokens.backgroundColor[type][color]}
                 height={tagTokens.height[size]}
                 paddingTop={tagTokens.padding.top[size]}

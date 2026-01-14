@@ -39,6 +39,7 @@ export type TagV2Props = {
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLDivElement>
+    tagGroupPosition?: 'center' | 'left' | 'right'
 } & Omit<
     React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
     'size' | 'className' | 'style' | 'onClick'

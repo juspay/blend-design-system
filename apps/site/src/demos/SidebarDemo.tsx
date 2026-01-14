@@ -112,6 +112,7 @@ import OutageChartsDemo from './OutageChartsDemo'
 import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
+import TagV2GroupDemo from './TagV2GroupDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -121,6 +122,7 @@ const SidebarDemo = () => {
         | 'tooltips'
         | 'tags'
         | 'tagV2'
+        | 'tagV2Group'
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
@@ -386,6 +388,8 @@ const SidebarDemo = () => {
                 return <TagDemo />
             case 'tagV2':
                 return <TagV2Demo />
+            case 'tagV2Group':
+                return <TagV2GroupDemo />
             case 'avatars':
                 return <AvatarDemo />
             case 'breadcrumb':
@@ -686,6 +690,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tagV2',
                     onClick: () => setActiveComponent('tagV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'TagV2 Group',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagV2Group',
+                    onClick: () => setActiveComponent('tagV2Group'),
                     showOnMobile: true,
                 },
                 {
