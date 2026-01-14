@@ -1,54 +1,28 @@
-import React, { forwardRef, Children } from 'react'
-import Block from '../../Primitives/Block/Block'
+import React, { forwardRef } from 'react'
+import { Group } from '../../Primitives/Group'
+import { GroupOrientation } from '../../Primitives/Group/types'
 import type { ButtonGroupV2Props } from './types'
-import { getButtonGroupPosition, getButtonGroupGap } from './utils'
 
 const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupV2Props>(
-    ({ stacked = false, gap, children }, ref) => {
-        const totalChildren = Children.count(children)
-        const groupGap = getButtonGroupGap(stacked, gap)
-
-        if (!stacked) {
-            return (
-                <Block
-                    ref={ref}
-                    display="flex"
-                    alignItems="stretch"
-                    gap={groupGap}
-                    data-button-group="true"
-                    data-button-group-stacked="false"
-                    data-button-group-count={totalChildren}
-                >
-                    {children}
-                </Block>
-            )
-        }
+    ({ stacked = false, gap, children, ...restProps }, ref) => {
+        const totalChildren = React.Children.count(children)
 
         return (
-            <Block
+            <Group
                 ref={ref}
-                display="flex"
+                stacked={stacked}
+                gap={gap}
+                orientation={GroupOrientation.HORIZONTAL}
                 alignItems="stretch"
-                gap={groupGap}
+                positionProp="buttonGroupPosition"
+                aria-label="Button group"
                 data-button-group="true"
-                data-button-group-stacked="true"
+                data-button-group-stacked={String(stacked)}
                 data-button-group-count={totalChildren}
+                {...restProps}
             >
-                {Children.map(children, (child, index) => {
-                    if (!React.isValidElement(child)) return child
-
-                    const position = getButtonGroupPosition(
-                        index,
-                        totalChildren
-                    )
-
-                    return React.cloneElement(child, {
-                        ...child.props,
-                        key: child.key || index,
-                        buttonGroupPosition: position,
-                    })
-                })}
-            </Block>
+                {children}
+            </Group>
         )
     }
 )

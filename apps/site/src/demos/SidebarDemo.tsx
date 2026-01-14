@@ -41,6 +41,7 @@ import {
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
+import ButtonGroupV2Demo from './ButtonGroupV2Demo'
 import TagDemo from './TagDemo'
 import AvatarDemo from './AvatarDemo'
 import BreadcrumbDemo from './BreadcrumbDemo'
@@ -132,6 +133,7 @@ const SidebarDemo = () => {
         | 'datePicker'
         | 'selectors'
         | 'buttonGroups'
+        | 'buttonGroupV2'
         | 'avatars'
         | 'menu'
         | 'dropdown'
@@ -376,6 +378,8 @@ const SidebarDemo = () => {
                 return <AccessibilityDashboard />
             case 'buttonGroups':
                 return <ButtonGroupDemo />
+            case 'buttonGroupV2':
+                return <ButtonGroupV2Demo />
             case 'tags':
                 return <TagDemo />
             case 'avatars':
@@ -651,6 +655,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'buttonGroups',
                     onClick: () => setActiveComponent('buttonGroups'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Button Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonGroupV2',
+                    onClick: () => setActiveComponent('buttonGroupV2'),
                     showOnMobile: true,
                 },
                 {

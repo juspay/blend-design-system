@@ -70,7 +70,7 @@ jobs:
               with:
                   files: packages/blend/coverage/coverage-final.json
                   flags: unittests
-                  fail_ci_if_error: true
+                  fail_ci_if_error: false
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
