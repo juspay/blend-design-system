@@ -74,11 +74,14 @@ const Group = forwardRef<HTMLDivElement, GroupProps>(
                         orientation
                     )
 
-                    return React.cloneElement(child as ReactElement<any>, {
-                        ...(child.props ?? {}),
-                        key: child.key ?? index,
-                        [positionProp]: position,
-                    })
+                    return React.cloneElement(
+                        child as ReactElement<Record<string, unknown>>,
+                        {
+                            ...(child.props ?? {}),
+                            key: child.key ?? index,
+                            [positionProp]: position,
+                        }
+                    )
                 })}
             </Block>
         )
