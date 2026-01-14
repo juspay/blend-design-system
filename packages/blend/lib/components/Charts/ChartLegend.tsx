@@ -473,10 +473,26 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     .slice(cuttOffIndex)
                                     .map((legend, index) => {
                                         const dataKey = legend.title
-                                        const colorIndex = cuttOffIndex + index
-                                        const itemColor =
-                                            colors[colorIndex] ||
-                                            colors[index % colors.length]
+                                        // Try to find color by key first, fallback to index
+                                        const colorByKey = colors.find(
+                                            (c) =>
+                                                typeof c !== 'string' &&
+                                                c.key === dataKey
+                                        )
+                                        // Extract color string - prioritize key match, then fallback to index
+                                        let itemColor: string
+                                        if (colorByKey) {
+                                            itemColor = colorByKey.color
+                                        } else {
+                                            const fallbackColor =
+                                                colors[index % colors.length]
+                                            itemColor =
+                                                typeof fallbackColor ===
+                                                'string'
+                                                    ? fallbackColor
+                                                    : fallbackColor?.color ||
+                                                      '#000000'
+                                        }
                                         const isHovered = hoveredKey === dataKey
                                         const isSelected =
                                             selectedKeys.includes(dataKey)
@@ -594,12 +610,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         }
                                                         flexShrink={0}
                                                         backgroundColor={
-                                                            itemColor?.color
+                                                            itemColor
                                                         }
                                                         data-element="chart-legend-color"
-                                                        data-id={
-                                                            itemColor?.color
-                                                        }
+                                                        data-id={itemColor}
                                                     />
                                                     {legend.total !==
                                                     undefined ? (
