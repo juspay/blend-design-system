@@ -36,6 +36,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
+import { DEFAULT_COLORS } from './utils'
 
 export const renderChart = ({
     chartName,
@@ -116,22 +117,28 @@ export const renderChart = ({
     }
 
     const getColor = (key: string, chartType: ChartType) => {
-        const originalIndex = lineKeys.indexOf(key)
-        const baseColor = colors[originalIndex % colors.length]
+        // Try to find color by matching key first
+        const colorByKey = colors.find((color) => color.key === key)
 
+        // If not found by key, use backup color from DEFAULT_COLORS
+        const originalIndex = lineKeys.indexOf(key)
+        const backupColor =
+            DEFAULT_COLORS[originalIndex % DEFAULT_COLORS.length]
+        const baseColor = colorByKey || backupColor
+        const colorValue = baseColor.color
         if (chartType === ChartType.BAR) {
             return hoveredKey === null
-                ? baseColor
+                ? colorValue
                 : hoveredKey === key
-                  ? baseColor
-                  : lightenHexColor(baseColor, 0.3)
+                  ? colorValue
+                  : lightenHexColor(colorValue, 0.3)
         }
 
         if (hoveredKey && hoveredKey !== key) {
-            return lightenHexColor(baseColor, 0.3)
+            return lightenHexColor(colorValue, 0.3)
         }
 
-        return baseColor
+        return colorValue
     }
 
     const chartConfig = {
@@ -229,7 +236,7 @@ export const renderChart = ({
         case ChartType.LINE: {
             return (
                 <LineChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -249,6 +256,7 @@ export const renderChart = ({
                         stroke={chartConfig.gridStroke}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -305,6 +313,7 @@ export const renderChart = ({
 
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -380,7 +389,35 @@ export const renderChart = ({
                                 dataKey={key}
                                 stroke={getColor(key, chartType)}
                                 strokeWidth={2}
-                                activeDot={{ r: hoveredKey === key ? 4 : 0 }}
+                                activeDot={(props: {
+                                    cx?: number
+                                    cy?: number
+                                    payload?: Record<string, unknown>
+                                }) => {
+                                    const dataPoint = originalData.find(
+                                        (d) => d.name === props.payload?.name
+                                    )
+                                    const hasError =
+                                        !!dataPoint?.data?.[key]?.error
+
+                                    return (
+                                        <circle
+                                            cx={props.cx}
+                                            cy={props.cy}
+                                            r={hoveredKey === key ? 4 : 0}
+                                            stroke={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                            fill={
+                                                hasError
+                                                    ? 'none'
+                                                    : getColor(key, chartType)
+                                            }
+                                        />
+                                    )
+                                }}
                                 animationDuration={350}
                                 onMouseOver={() => setHoveredKey(key)}
                                 dot={CustomizedDot || false}
@@ -393,7 +430,7 @@ export const renderChart = ({
         case ChartType.BAR:
             return (
                 <BarChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -414,6 +451,7 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -468,6 +506,7 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}
@@ -550,7 +589,7 @@ export const renderChart = ({
 
             return (
                 <PieChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
                 >
                     <Pie
@@ -560,7 +599,7 @@ export const renderChart = ({
                         outerRadius="100%"
                         innerRadius="70%"
                         paddingAngle={0}
-                        fill={colors[0]}
+                        fill={colors[0]?.color}
                         dataKey="value"
                         nameKey="name"
                         label={false}
@@ -615,6 +654,7 @@ export const renderChart = ({
 
             return (
                 <ScatterChart
+                    data-chart={chartType}
                     data={scatterData}
                     margin={{
                         top: 20,
@@ -635,6 +675,7 @@ export const renderChart = ({
                     onMouseLeave={() => setHoveredKey(null)}
                 >
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         type="number"
                         dataKey="x"
                         axisLine={false}
@@ -685,6 +726,7 @@ export const renderChart = ({
                         stroke={chartConfig.gridStroke}
                     />
                     <YAxis
+                        data-element="chart-y-axis-labels"
                         type="number"
                         dataKey="y"
                         axisLine={false}
@@ -774,7 +816,7 @@ export const renderChart = ({
                         justifyContent="center"
                         flexDirection="column"
                         gap={28}
-                        data-chart="No-Data"
+                        data-chart={chartType}
                     >
                         <Text
                             variant="body.lg"
@@ -859,7 +901,7 @@ export const renderChart = ({
         case ChartType.AREA: {
             return (
                 <AreaChart
-                    data-chart={chartName}
+                    data-chart={chartType}
                     data={processedData}
                     margin={{
                         top: 10,
@@ -880,6 +922,7 @@ export const renderChart = ({
                         stroke={FOUNDATION_THEME.colors.gray[150]}
                     />
                     <XAxis
+                        data-element="chart-x-axis-labels"
                         dataKey={xAxisDataKey}
                         type={isDateTimeAxis ? 'number' : 'category'}
                         scale={isDateTimeAxis ? 'time' : 'auto'}
@@ -934,6 +977,7 @@ export const renderChart = ({
                     />
                     {!isSmallScreen && finalYAxis.show && (
                         <YAxis
+                            data-element="chart-y-axis-labels"
                             axisLine={false}
                             tickLine={false}
                             interval={finalYAxis.interval}

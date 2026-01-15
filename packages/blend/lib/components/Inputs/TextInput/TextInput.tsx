@@ -50,6 +50,8 @@ const TextInput = ({
 }: TextInputProps) => {
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
+    const inputRef = useRef<HTMLInputElement>(null)
+    const [isAutofilled, setIsAutofilled] = useState(false)
 
     const generatedId = useId()
     const inputId = providedId || generatedId
@@ -69,7 +71,9 @@ const TextInput = ({
             : 'password'
         : providedType || 'text'
 
-    const inputFocusedOrWithValue = isFocused || value.length > 0
+    const inputFocusedOrWithValue =
+        isFocused || value.length > 0 || isAutofilled
+
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === TextInputSize.LARGE
 
@@ -191,6 +195,30 @@ const TextInput = ({
         }
     }, [leftSlot, combinedRightSlot])
 
+    useEffect(() => {
+        const input = inputRef.current
+        if (!input) return
+
+        if (input.value && input.value.length > 0) {
+            setIsAutofilled(true)
+        }
+
+        const handleAnimationStart = (e: AnimationEvent) => {
+            if (e.animationName === 'blend-autofill-start') {
+                setIsAutofilled(true)
+            }
+            if (e.animationName === 'blend-autofill-cancel') {
+                setIsAutofilled(false)
+            }
+        }
+
+        input.addEventListener('animationstart', handleAnimationStart)
+
+        return () => {
+            input.removeEventListener('animationstart', handleAnimationStart)
+        }
+    }, [])
+
     return (
         <Block
             display="flex"
@@ -266,6 +294,7 @@ const TextInput = ({
                 )}
 
                 <PrimitiveInput
+                    ref={inputRef}
                     id={inputId}
                     placeholderColor={textInputTokens.placeholder.color}
                     required={required}

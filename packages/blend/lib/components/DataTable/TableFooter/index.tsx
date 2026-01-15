@@ -17,6 +17,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
             onPageChange,
             onPageSizeChange,
             hasData = true,
+            isNarrowContainer = false,
         },
         ref
     ) => {
@@ -46,6 +47,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     }
                     isLoading={isLoading || showSkeleton}
                     hasData={hasData}
+                    isNarrowContainer={isNarrowContainer}
                     onPageChange={onPageChange}
                     onPageSizeChange={onPageSizeChange}
                 />

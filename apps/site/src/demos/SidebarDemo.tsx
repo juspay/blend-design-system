@@ -106,6 +106,9 @@ import ChatInputDemo from './ChatInputDemo'
 import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
+import OutageChartsDemo from './OutageChartsDemo'
+import ChartDemoV2 from './ChartDemoV2'
+import TextInputAutofillTest from './TextInputAutofillTest'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -166,7 +169,10 @@ const SidebarDemo = () => {
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
-    >('buttons')
+        | 'outageCharts'
+        | 'chartDemoV2'
+        | 'textInputAutofillTest'
+    >('textInputAutofillTest')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -178,6 +184,10 @@ const SidebarDemo = () => {
     const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
 
     const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
+    const [iconOnlyMode, setIconOnlyMode] = useState<boolean>(false)
+    const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
+        useState<boolean>(false)
+    const [isExpanded, setIsExpanded] = useState<boolean>(true)
 
     const tenants = [
         {
@@ -422,6 +432,8 @@ const SidebarDemo = () => {
                 return <DataTableDemo />
             case 'charts':
                 return <ChartsDemo />
+            case 'outageCharts':
+                return <OutageChartsDemo />
             case 'popover':
                 return <PopoverDemo />
             case 'multiValueInput':
@@ -448,6 +460,10 @@ const SidebarDemo = () => {
                 return <CodeEditorDemo />
             case 'formElements':
                 return <FormElementsDemo />
+            case 'chartDemoV2':
+                return <ChartDemoV2 />
+            case 'textInputAutofillTest':
+                return <TextInputAutofillTest />
             default:
                 return (
                     <div className="p-8">
@@ -683,6 +699,14 @@ const SidebarDemo = () => {
             label: 'Inputs',
             isCollapsible: false,
             items: [
+                {
+                    label: 'Text Input Autofill Test',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTest',
+                    onClick: () => setActiveComponent('textInputAutofillTest'),
+                },
                 {
                     label: 'Text Input777',
                     leftSlot: (
@@ -957,6 +981,22 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Chart Demo V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartDemoV2',
+                    onClick: () => setActiveComponent('chartDemoV2'),
+                },
+                {
+                    label: 'Outage Charts',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageCharts',
+                    onClick: () => setActiveComponent('outageCharts'),
+                },
+                {
                     label: 'Stat Card',
                     leftSlot: (
                         <FileText style={{ width: '16px', height: '16px' }} />
@@ -1145,9 +1185,13 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    disableIntermediateState={true}
+                    // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
+                    iconOnlyMode={iconOnlyMode}
+                    hideOnIconOnlyToggle={hideOnIconOnlyToggle}
+                    isExpanded={isExpanded}
+                    onExpandedChange={setIsExpanded}
                     {...(isTopbarControlled
                         ? {
                               isTopbarVisible: topbarVisible,
@@ -1324,6 +1368,72 @@ const SidebarDemo = () => {
                                         size={20}
                                     />
                                 </button>
+                                <button
+                                    onClick={() => {
+                                        const newIconOnlyMode = !iconOnlyMode
+                                        setIconOnlyMode(newIconOnlyMode)
+                                        // Auto-collapse when enabling icon-only mode
+                                        if (newIconOnlyMode && isExpanded) {
+                                            setIsExpanded(false)
+                                        }
+                                    }}
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        iconOnlyMode
+                                            ? 'Disable Icon Only Mode'
+                                            : 'Enable Icon Only Mode (52px)'
+                                    }
+                                    style={{
+                                        backgroundColor: iconOnlyMode
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Grid
+                                        color={
+                                            iconOnlyMode
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                                {iconOnlyMode && (
+                                    <button
+                                        onClick={() =>
+                                            setHideOnIconOnlyToggle(
+                                                !hideOnIconOnlyToggle
+                                            )
+                                        }
+                                        className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                        title={
+                                            hideOnIconOnlyToggle
+                                                ? 'Toggle: Expand Sidebar'
+                                                : 'Toggle: Hide Sidebar'
+                                        }
+                                        style={{
+                                            backgroundColor:
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[100]
+                                                    : 'transparent',
+                                        }}
+                                    >
+                                        <Layout
+                                            color={
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[600]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    </button>
+                                )}
                                 <button
                                     onClick={() =>
                                         setColorTheme(

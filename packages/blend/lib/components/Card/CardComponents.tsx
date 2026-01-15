@@ -86,7 +86,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
             {hasHeader && (
                 <Block
                     style={getHeaderBoxStyles(cardToken)}
-                    data-card-header="true"
+                    data-element="card-header"
                     role="group"
                     aria-labelledby={headerTitle ? headerTitleId : undefined}
                 >
@@ -131,7 +131,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                             style={getHeaderTitleStyles(
                                                 cardToken
                                             )}
-                                            data-card-title={headerTitle}
+                                            data-element="card-title"
+                                            data-id={headerTitle}
                                         >
                                             {headerTitle}
                                         </Text>
@@ -148,6 +149,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                                 cardToken
                                             )}
                                             aria-describedby={headerTitleId}
+                                            data-element="card-subtitle"
+                                            data-id={subHeader}
                                         >
                                             {subHeader}
                                         </Text>
@@ -170,7 +173,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                         overflowX: 'hidden',
                     }),
                 }}
-                data-card-body="true"
+                data-element="card-body"
                 role="group"
                 aria-labelledby={
                     bodyTitle
@@ -207,6 +210,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                             as="h3"
                             id={bodyTitleId}
                             style={getBodyTitleStyles(cardToken)}
+                            data-element="body-title"
+                            data-id={bodyTitle}
                         >
                             {bodyTitle}
                         </Text>
@@ -222,7 +227,8 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                                 variant
                             ),
                         }}
-                        data-card-content="true"
+                        data-element="card-body-content"
+                        data-id={content}
                     >
                         <Text
                             as="p"
@@ -260,7 +266,7 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                     <Block
                         display="flex"
                         justifyContent="flex-start"
-                        data-card-action="true"
+                        data-element="card-action"
                     >
                         <Button
                             {...actionButton}

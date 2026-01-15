@@ -49,22 +49,49 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                 : singleSelectTokens
 
         const isSelected = isItemSelected(item.value, selected, type)
+        const resizeObserverRef = useRef<ResizeObserver | null>(null)
         const rafRef = useRef<number | null>(null)
 
         const checkTruncation = useCallback(() => {
             if (rafRef.current !== null) {
                 cancelAnimationFrame(rafRef.current)
             }
+            resizeObserverRef.current?.disconnect()
 
             rafRef.current = requestAnimationFrame(() => {
+                let nextShowTooltip = false
+                let nextShowSubLabelTooltip = false
+
                 if (textRef.current) {
-                    setShowTooltip(checkIfTruncated(textRef.current))
+                    nextShowTooltip = checkIfTruncated(textRef.current)
                 }
+
                 if (item.subLabel && subLabelRef.current) {
-                    setShowSubLabelTooltip(
-                        checkIfTruncated(subLabelRef.current)
+                    nextShowSubLabelTooltip = checkIfTruncated(
+                        subLabelRef.current
                     )
                 }
+                setShowTooltip((prev) =>
+                    prev !== nextShowTooltip ? nextShowTooltip : prev
+                )
+
+                setShowSubLabelTooltip((prev) =>
+                    prev !== nextShowSubLabelTooltip
+                        ? nextShowSubLabelTooltip
+                        : prev
+                )
+
+                requestAnimationFrame(() => {
+                    if (!resizeObserverRef.current) return
+
+                    if (textRef.current) {
+                        resizeObserverRef.current.observe(textRef.current)
+                    }
+                    if (subLabelRef.current) {
+                        resizeObserverRef.current.observe(subLabelRef.current)
+                    }
+                })
+
                 rafRef.current = null
             })
         }, [item.subLabel])
@@ -72,25 +99,21 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         useEffect(() => {
             if (item.disableTruncation) return
 
+            resizeObserverRef.current = new ResizeObserver(() => {
+                checkTruncation()
+            })
+
             checkTruncation()
 
-            const resizeObserver = new ResizeObserver(checkTruncation)
-
-            if (textRef.current) {
-                resizeObserver.observe(textRef.current)
-            }
-            if (subLabelRef.current) {
-                resizeObserver.observe(subLabelRef.current)
-            }
-
             return () => {
-                resizeObserver.disconnect()
+                resizeObserverRef.current?.disconnect()
+                resizeObserverRef.current = null
+
                 if (rafRef.current !== null) {
                     cancelAnimationFrame(rafRef.current)
                 }
             }
         }, [item.label, item.subLabel, item.disableTruncation, checkTruncation])
-
         const handleSelect = (e: Event) => {
             if (item.disabled) {
                 e.preventDefault()

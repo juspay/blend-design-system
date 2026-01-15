@@ -30,6 +30,8 @@ export type MultiValueInputProps = {
     size?: TextInputSize
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
+    leftSlot?: React.ReactNode
+    rightSlot?: React.ReactNode
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onChange' | 'value' | 'onFocus' | 'onBlur'

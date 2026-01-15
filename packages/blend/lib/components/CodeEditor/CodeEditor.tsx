@@ -60,6 +60,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                 boxShadow={tokens.boxShadow}
                 className={className}
                 style={containerStyles}
+                data-codeeditor={header}
             >
                 {showHeader && (
                     <CodeEditorHeader

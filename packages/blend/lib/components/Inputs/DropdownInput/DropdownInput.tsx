@@ -161,6 +161,8 @@ const DropdownInput = ({
             flexDirection="column"
             gap={dropdownInputTokens.gap}
             width={'100%'}
+            data-dropdown-input={label || 'dropdown-input'}
+            data-status={disabled ? 'disabled' : 'enabled'}
         >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels

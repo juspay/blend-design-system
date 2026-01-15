@@ -1,62 +1,63 @@
-# Changelog for v0.0.31
+# Changelog for v0.0.32
 
 > **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
-- Added a prop in numberInput to prevent entry of neg value (#851) ([fa7a3bc](../../commit/fa7a3bc))
-- add timezone support to DateRangePicker (#847) ([2995703](../../commit/2995703))
-- add maxHeight to charts legend dropdown (#841) ([199ad5a](../../commit/199ad5a))
-- enhance ButtonGroup with different stacking (#833) ([6bf338b](../../commit/6bf338b))
-- upload file error state file name added and Data Table hide column manager on no Data (#808) ([b5403e2](../../commit/b5403e2))
-- enhance CodeEditor with customizable header slots and icon visibility (#825) ([5b2acf2](../../commit/5b2acf2))
-- enhance SingleSelect and multiselect with Tooltip integration (#820) ([dbb5a6d](../../commit/dbb5a6d))
-- add autoFocus prop to CodeEditor (#815) ([9b854f2](../../commit/9b854f2))
-- add description tooltip support to DataTable component (#794) ([506852f](../../commit/506852f))
+- Implement delta sorting feature in DataTable (#926) ([b1e754a](../../commit/b1e754a))
+- update input components background colors (#908) ([8a5a5a7](../../commit/8a5a5a7))
+- enhance MultiSelect, SingleSelect with disabled state (#901) ([d848bde](../../commit/d848bde))
+- enhance NumberInput with interactive min/max and validation (#899) ([5bd332d](../../commit/5bd332d))
+- add prop to show clear button in multiselect (#886) ([6de8c22](../../commit/6de8c22))
+- enhance SingleSelect with width adjustments and demo updates (#883) ([62b28ba](../../commit/62b28ba))
+- enhance TableCell with truncation logic and improve Menu (#881) ([742b76f](../../commit/742b76f))
+- improve SelectItem performance (#872) ([b31ed48](../../commit/b31ed48))
 
 ## 🐛 Bug Fixes
 
-- corrected the height for single/multi-select (#850) ([d3bfb4b](../../commit/d3bfb4b))
-- api call example for dropdown (#846) ([4b2c74b](../../commit/4b2c74b))
-- wrap state update calls in requestAnimationFrame (#848) ([aaa5235](../../commit/aaa5235))
-- created separate div for switch and sublable (#843) ([95f3662](../../commit/95f3662))
-- removed overflow from drawerbase (#842) ([ad6b18c](../../commit/ad6b18c))
-- update Card component padding handling for CUSTOM variant (#821) ([164021f](../../commit/164021f))
-- update error message display in ErrorState of upload (#822) ([5fc9973](../../commit/5fc9973))
-- input field disabled lable fixed (#817) ([5f26ded](../../commit/5f26ded))
-- added conditional virtual list to single select (#811) ([745a6d8](../../commit/745a6d8))
-- improve Checkbox component checked state handling (#805) ([c96ff27](../../commit/c96ff27))
-- update Tag component styles for better alignment and sizing (#798) ([6f5a8ca](../../commit/6f5a8ca))
+- data table: space in search box and initialColumns renderCell change sync (#919) ([d79e23e](../../commit/d79e23e))
+- accordion overflow hiiden visibility fix (#915) ([babb52f](../../commit/babb52f))
+- custom legend for chart (#923) ([4236d22](../../commit/4236d22))
+- button icon disable color added (#913) ([54564c2](../../commit/54564c2))
+- De-couple delta sign with graph color (resolved) (#900) ([153b2f2](../../commit/153b2f2))
+- fixed the border issue in statCard help icon (#898) ([899266f](../../commit/899266f))
+- change DataTable overflow property from 'visible' to 'auto' (#896) ([d20d595](../../commit/d20d595))
+- legends total type (#895) ([dbfefd0](../../commit/dbfefd0))
+- linechart overlap issue fixed (#890) ([adceecf](../../commit/adceecf))
+- Text spilling over tooltip box in Charts resolved (#888) ([433afaf](../../commit/433afaf))
+- No padding between 'No items available' in single select fixed (#884) ([08f19ae](../../commit/08f19ae))
 
 ## ♻️ Code Refactoring
 
-- enhance NumberInput with input sanitization (#859) ([0f1196c](../../commit/0f1196c))
-- update Snackbar component layout and structure (#855) ([706c0c0](../../commit/706c0c0))
-- chart legend data handling by removing capitalisation (#856) ([339f0f3](../../commit/339f0f3))
+- enhance MultiSelect, SingleSelect border styling (#917) ([2391a55](../../commit/2391a55))
+- optimize ColumnManager and MultiSelectMenu (#879) ([5f5006e](../../commit/5f5006e))
 
 ## 🔧 Chores
 
-- **release**: v0.0.31-beta [BETA] ([7206071](../../commit/7206071))
-- Migrate from blend-v1 to @juspay/blend-design-system (#858) ([c455dd2](../../commit/c455dd2))
-- Add scroll lock for dropdowns inside modals (#849) ([5990640](../../commit/5990640))
-- Bug fix/otp input (#845) ([ffdd2dd](../../commit/ffdd2dd))
-- Bug fix/issues (#839) ([09cbb15](../../commit/09cbb15))
-- Fix table height and update rows sync with api for pagination (#838) ([2de9da5](../../commit/2de9da5))
-- Fix/multiselect placeholder color (#827) ([39372dd](../../commit/39372dd))
-- Enhance TableHeader component layout and tooltip handling (#816) ([09548ae](../../commit/09548ae))
-- fix stat card mismatch between delta colorsign and graph color (#800) ([fddc85d](../../commit/fddc85d))
-- **release**: v0.0.30 [STABLE] ([21129a5](../../commit/21129a5))
+- **release**: v0.0.32-beta [BETA] ([5df42c9](../../commit/5df42c9))
+- dev to staging (#931) ([d1659cb](../../commit/d1659cb))
+- Feat/mulit colored line chart (#927) ([3db0e5f](../../commit/3db0e5f))
+- Add sidebar icon only state (#906) ([09b4035](../../commit/09b4035))
+- 920 datatable pagination control is not responsive goes out of container (#922) ([fcff2de](../../commit/fcff2de))
+- Remove tooltip exit animations for instant disappearance (#907) ([ff2726c](../../commit/ff2726c))
+- Feat/area chart (#902) ([9003242](../../commit/9003242))
+- Update ButtonBase sizing logic (#894) ([fa08a1e](../../commit/fa08a1e))
+- Feat/charts custom dot (#891) ([d613275](../../commit/d613275))
+- Add full screen support for drawer (#889) ([569456e](../../commit/569456e))
+- Fix/chatinput mweb(refactored) (#871) ([f7a16de](../../commit/f7a16de))
+- Remove overflow from card (#877) ([637d743](../../commit/637d743))
+- **release**: v0.0.31 [STABLE] ([d0f1630](../../commit/d0f1630))
 
 ---
 
-**Release Date**: 2025-12-22
-**Commit Range**: v0.0.30..HEAD
-**Total Changes**: 33 commits
+**Release Date**: 2026-01-05
+**Commit Range**: v0.0.31..HEAD
+**Total Changes**: 34 commits
 
 ## Installation
 
 ```bash
 npm install @juspay/blend-design-system@latest
 # or specific version
-npm install @juspay/blend-design-system@0.0.31
+npm install @juspay/blend-design-system@0.0.32
 ```

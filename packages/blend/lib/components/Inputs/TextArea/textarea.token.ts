@@ -12,6 +12,10 @@ enum TextAreaState {
 
 export type TextAreaTokensType = {
     gap: CSSObject['gap']
+    placeholder?: {
+        color?: CSSObject['color']
+        fontWeight?: CSSObject['fontWeight']
+    }
     label: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -78,6 +82,10 @@ export const getTextAreaTokens = (
     return {
         sm: {
             gap: foundationTokens.unit[8],
+            placeholder: {
+                color: foundationTokens.colors.gray[400],
+                fontWeight: foundationTokens.font.weight[500],
+            },
             label: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
@@ -131,7 +139,7 @@ export const getTextAreaTokens = (
             },
             inputContainer: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,
-                fontWeight: foundationTokens.font.weight[400],
+                fontWeight: foundationTokens.font.weight[500],
                 padding: {
                     x: foundationTokens.unit[14],
                     y: foundationTokens.unit[10],
@@ -146,10 +154,10 @@ export const getTextAreaTokens = (
                     disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
-                    error: foundationTokens.colors.red[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    error: foundationTokens.colors.red[700],
                     disabled: foundationTokens.colors.gray[300],
                 },
                 backgroundColor: {
@@ -163,6 +171,10 @@ export const getTextAreaTokens = (
         },
         lg: {
             gap: foundationTokens.unit[8],
+            placeholder: {
+                color: foundationTokens.colors.gray[400],
+                fontWeight: foundationTokens.font.weight[500],
+            },
             label: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
@@ -216,7 +228,7 @@ export const getTextAreaTokens = (
             },
             inputContainer: {
                 fontSize: foundationTokens.font.size.body.md.fontSize,
-                fontWeight: foundationTokens.font.weight[400],
+                fontWeight: foundationTokens.font.weight[500],
                 padding: {
                     x: foundationTokens.unit[14],
                     y: foundationTokens.unit[10],
@@ -231,10 +243,10 @@ export const getTextAreaTokens = (
                     disabled: `1px solid ${foundationTokens.colors.gray[200]}`,
                 },
                 color: {
-                    default: foundationTokens.colors.gray[800],
-                    hover: foundationTokens.colors.gray[800],
-                    focus: foundationTokens.colors.gray[800],
-                    error: foundationTokens.colors.red[800],
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    error: foundationTokens.colors.red[700],
                     disabled: foundationTokens.colors.gray[300],
                 },
                 backgroundColor: {

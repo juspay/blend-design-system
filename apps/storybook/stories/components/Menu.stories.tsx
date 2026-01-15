@@ -307,10 +307,18 @@ import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } fr
                 category: 'Advanced',
             },
         },
+        skeleton: {
+            control: false,
+            description:
+                'Skeleton loading state configuration for the menu content',
+            table: {
+                type: { summary: 'MenuSkeletonProps' },
+                category: 'Advanced',
+            },
+        },
     },
     tags: ['autodocs'],
 }
-
 export default meta
 type Story = StoryObj<typeof Menu>
 

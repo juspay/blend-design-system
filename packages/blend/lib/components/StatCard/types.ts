@@ -34,7 +34,7 @@ export type ChartDataPoint = {
 }
 
 export type StatCardChange = {
-    value: number
+    value: number | null | undefined
     valueType: ChangeType
     arrowDirection?: StatCardArrowDirection
     tooltip?: ReactNode
@@ -60,7 +60,7 @@ export type StatCardProps = {
     title: string
     value: string | number
     valueTooltip?: ReactNode
-    change?: StatCardChange
+    change?: StatCardChange | null | undefined
     subtitle?: string
     variant: StatCardVariant
     chartData?: ChartDataPoint[]
@@ -78,4 +78,5 @@ export type StatCardProps = {
     direction?: StatCardDirection
     skeleton?: StatCardSkeletonProps
     dataDisplay?: boolean
+    showBorder?: boolean
 }

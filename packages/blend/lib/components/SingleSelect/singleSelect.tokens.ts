@@ -568,7 +568,7 @@ export const getSingleSelectTokens = (
                     },
                 },
                 placeholder: {
-                    color: foundationToken.colors.gray[500],
+                    color: foundationToken.colors.gray[400],
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                 },

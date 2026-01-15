@@ -1,4 +1,12 @@
-import { useState, useEffect, useMemo, forwardRef, useRef, useId } from 'react'
+import {
+    useState,
+    useEffect,
+    useMemo,
+    forwardRef,
+    useRef,
+    useId,
+    useCallback,
+} from 'react'
 import {
     DndContext,
     closestCenter,
@@ -145,6 +153,9 @@ const DataTable = forwardRef(
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const tableContainerRef = useRef<HTMLDivElement>(null)
+        const [isNarrowContainer, setIsNarrowContainer] =
+            useState<boolean>(false)
         const tableId = useId()
         const tableLabelId = title ? `${tableId}-label` : undefined
         const tableDescriptionId = description
@@ -185,6 +196,31 @@ const DataTable = forwardRef(
 
             return allVisibleColumns
         })
+
+        useEffect(() => {
+            const updatedVisibleColumns: ColumnDefinition<T>[] = []
+
+            visibleColumns.forEach((col) => {
+                const matchingCustomColumn = initialColumns.find(
+                    (item): item is typeof col =>
+                        item.field === col.field &&
+                        item.header === col.header &&
+                        col.type === ColumnType.CUSTOM
+                )
+                if (matchingCustomColumn) {
+                    const newVal = {
+                        ...col,
+                        renderCell: matchingCustomColumn.renderCell,
+                    } as ColumnDefinition<T>
+                    updatedVisibleColumns.push(newVal)
+                } else {
+                    updatedVisibleColumns.push(col)
+                }
+            })
+
+            setVisibleColumns(updatedVisibleColumns)
+        }, [initialColumns])
+
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(
             () => initialColumns.filter((col) => col.isVisible !== false).length
         )
@@ -489,6 +525,25 @@ const DataTable = forwardRef(
             serverSideFiltering,
         ])
 
+        useEffect(() => {
+            const container = tableContainerRef.current
+            if (!container) return
+
+            const updateContainerWidth = () => {
+                const width = container.clientWidth
+                setIsNarrowContainer(width < 640)
+            }
+
+            updateContainerWidth()
+
+            const resizeObserver = new ResizeObserver(updateContainerWidth)
+            resizeObserver.observe(container)
+
+            return () => {
+                resizeObserver.disconnect()
+            }
+        }, [])
+
         const currentData = useMemo(() => {
             if (
                 serverSideSearch ||
@@ -714,7 +769,7 @@ const DataTable = forwardRef(
             }
         }
 
-        const handleSort = (field: keyof T) => {
+        const handleSort = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -723,26 +778,41 @@ const DataTable = forwardRef(
             let direction: SortDirection
             let newSortConfig: SortConfig | null
 
-            if (sortConfig?.field === field) {
+            const isSameSort =
+                sortConfig?.field === field && sortConfig?.sortType === sortType
+
+            if (isSameSort) {
                 if (sortConfig.direction === SortDirection.ASCENDING) {
                     direction = SortDirection.DESCENDING
-                    newSortConfig = { field: field.toString(), direction }
+                    newSortConfig = {
+                        field: field.toString(),
+                        direction,
+                        sortType,
+                    }
                 } else if (sortConfig.direction === SortDirection.DESCENDING) {
                     direction = SortDirection.NONE
                     newSortConfig = null
                 } else {
                     direction = SortDirection.ASCENDING
-                    newSortConfig = { field: field.toString(), direction }
+                    newSortConfig = {
+                        field: field.toString(),
+                        direction,
+                        sortType,
+                    }
                 }
             } else {
                 direction = SortDirection.ASCENDING
-                newSortConfig = { field: field.toString(), direction }
+                newSortConfig = {
+                    field: field.toString(),
+                    direction,
+                    sortType,
+                }
             }
 
             applySortConfig(field, newSortConfig)
         }
 
-        const handleSortAscending = (field: keyof T) => {
+        const handleSortAscending = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -750,19 +820,21 @@ const DataTable = forwardRef(
 
             const isCurrentlyAscending =
                 sortConfig?.field === field &&
-                sortConfig.direction === SortDirection.ASCENDING
+                sortConfig.direction === SortDirection.ASCENDING &&
+                sortConfig?.sortType === sortType
 
             const newSortConfig = isCurrentlyAscending
                 ? null
                 : {
                       field: field.toString(),
                       direction: SortDirection.ASCENDING,
+                      sortType,
                   }
 
             applySortConfig(field, newSortConfig)
         }
 
-        const handleSortDescending = (field: keyof T) => {
+        const handleSortDescending = (field: keyof T, sortType?: string) => {
             const column = visibleColumns.find((col) => col.field === field)
             if (!column || column.isSortable === false) {
                 return
@@ -770,13 +842,15 @@ const DataTable = forwardRef(
 
             const isCurrentlyDescending =
                 sortConfig?.field === field &&
-                sortConfig.direction === SortDirection.DESCENDING
+                sortConfig.direction === SortDirection.DESCENDING &&
+                sortConfig?.sortType === sortType
 
             const newSortConfig = isCurrentlyDescending
                 ? null
                 : {
                       field: field.toString(),
                       direction: SortDirection.DESCENDING,
+                      sortType,
                   }
 
             applySortConfig(field, newSortConfig)
@@ -982,19 +1056,19 @@ const DataTable = forwardRef(
             setMobileDrawerOpen(true)
         }
 
-        const handleTableFocus = () => {
-            if (!focusedCell && currentData.length > 0) {
-                setFocusedCell({ rowIndex: 0, colIndex: 0 })
-                setTimeout(() => {
-                    const firstCell = document.querySelector(
-                        '[data-row-index="0"][data-col-index="0"]'
-                    ) as HTMLElement
-                    if (firstCell) {
-                        firstCell.focus()
-                    }
-                }, 0)
-            }
-        }
+        // const handleTableFocus = () => {
+        //     if (!focusedCell && currentData.length > 0) {
+        //         setFocusedCell({ rowIndex: 0, colIndex: 0 })
+        //         setTimeout(() => {
+        //             const firstCell = document.querySelector(
+        //                 '[data-row-index="0"][data-col-index="0"]'
+        //             ) as HTMLElement
+        //             if (firstCell) {
+        //                 firstCell.focus()
+        //             }
+        //         }, 0)
+        //     }
+        // }
 
         const totalColumnsT =
             effectiveVisibleColumns.length +
@@ -1141,9 +1215,21 @@ const DataTable = forwardRef(
             }, 0)
         }
 
+        const containerRefCallback = useCallback(
+            (node: HTMLDivElement | null) => {
+                tableContainerRef.current = node
+                if (typeof ref === 'function') {
+                    ref(node)
+                } else if (ref) {
+                    ref.current = node
+                }
+            },
+            [ref]
+        )
+
         return (
             <Block
-                ref={ref}
+                ref={containerRefCallback}
                 style={{
                     position: tableToken.position,
                     padding: tableToken.padding,
@@ -1151,7 +1237,7 @@ const DataTable = forwardRef(
                     display: tableToken.display,
                     flexDirection: tableToken.flexDirection,
                 }}
-                data-table={title}
+                data-table={title || 'table'}
                 role="region"
                 aria-label={title || 'Data table'}
                 aria-describedby={
@@ -1314,7 +1400,7 @@ const DataTable = forwardRef(
                                                 .join(' ') || undefined
                                         }
                                         onKeyDown={handleTableKeyDown}
-                                        onFocus={handleTableFocus}
+                                        // onFocus={handleTableFocus}
                                         tabIndex={-1}
                                         style={{
                                             width: tableToken.dataTable.table
@@ -1602,7 +1688,11 @@ const DataTable = forwardRef(
                                             />
                                         ) : (
                                             <tbody style={{ height: '100%' }}>
-                                                <tr style={{ height: '100%' }}>
+                                                <tr
+                                                    style={{
+                                                        height: '100%',
+                                                    }}
+                                                >
                                                     <td
                                                         colSpan={
                                                             visibleColumns.length +
@@ -1625,6 +1715,8 @@ const DataTable = forwardRef(
                                                         style={{
                                                             padding: '0',
                                                             height: '100%',
+                                                            position:
+                                                                'relative',
                                                             color: tableToken
                                                                 .dataTable.table
                                                                 .body.cell
@@ -1638,9 +1730,6 @@ const DataTable = forwardRef(
                                                         }}
                                                     >
                                                         <Block
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="center"
                                                             style={{
                                                                 width: '100%',
                                                                 height: '100%',
@@ -1650,6 +1739,41 @@ const DataTable = forwardRef(
                                                                     FOUNDATION_THEME
                                                                         .colors
                                                                         .gray[0],
+                                                            }}
+                                                        />
+                                                        <Block
+                                                            role="status"
+                                                            aria-live="polite"
+                                                            aria-atomic="true"
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                            style={{
+                                                                position:
+                                                                    'absolute',
+                                                                top: 0,
+                                                                left: 0,
+                                                                right: 0,
+                                                                bottom: 0,
+                                                                minHeight:
+                                                                    emptyStateMinHeight,
+                                                                backgroundColor:
+                                                                    FOUNDATION_THEME
+                                                                        .colors
+                                                                        .gray[0],
+                                                                color: tableToken
+                                                                    .dataTable
+                                                                    .table.body
+                                                                    .cell.color,
+                                                                fontSize:
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .body
+                                                                        .cell
+                                                                        .fontSize,
+                                                                pointerEvents:
+                                                                    'none',
                                                             }}
                                                         >
                                                             {isLoading ? (
@@ -1661,6 +1785,10 @@ const DataTable = forwardRef(
                                                                         FOUNDATION_THEME
                                                                             .unit[8]
                                                                     }
+                                                                    style={{
+                                                                        pointerEvents:
+                                                                            'auto',
+                                                                    }}
                                                                 >
                                                                     <Loader2
                                                                         size={
@@ -1679,7 +1807,15 @@ const DataTable = forwardRef(
                                                                     </span>
                                                                 </Block>
                                                             ) : (
-                                                                'No data available'
+                                                                <span
+                                                                    style={{
+                                                                        pointerEvents:
+                                                                            'auto',
+                                                                    }}
+                                                                >
+                                                                    No data
+                                                                    available
+                                                                </span>
                                                             )}
                                                         </Block>
                                                     </td>
@@ -1748,6 +1884,7 @@ const DataTable = forwardRef(
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
+                            isNarrowContainer={isNarrowContainer}
                             onPageChange={handlePageChange}
                             onPageSizeChange={handlePageSizeChange}
                         />

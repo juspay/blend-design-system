@@ -29,6 +29,7 @@ const Section = ({
     // totalSections,
     onNavigateBetweenSections,
     idPrefix,
+    iconOnlyMode = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isOpen, setIsOpen] = React.useState(section.defaultOpen !== false)
@@ -109,15 +110,16 @@ const Section = ({
         <Block
             display="flex"
             flexDirection="column"
-            gap={tokens.section.gap}
+            gap={iconOnlyMode ? '8px' : tokens.section.gap}
             width="100%"
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
-            data-sidebar-section={section.label || `section-${sectionIndex}`}
-            data-sidebar-expanded={isOpen}
             key={`section-${sectionIndex}`}
+            data-element="sidebar-section"
+            data-id={section.label || `section-${sectionIndex}`}
+            data-status={isOpen ? 'expanded' : 'collapsed'}
         >
-            {section.label && (
+            {section.label && !iconOnlyMode && (
                 <Block
                     display="flex"
                     alignItems="center"
@@ -163,6 +165,20 @@ const Section = ({
                 </Block>
             )}
 
+            {iconOnlyMode && sectionIndex > 0 && (
+                <Block
+                    width="32px"
+                    height="1px"
+                    backgroundColor={tokens.section.header.label.color}
+                    style={{
+                        opacity: 0.2,
+                        margin: '0 auto 8px auto',
+                    }}
+                    role="separator"
+                    aria-hidden="true"
+                />
+            )}
+
             {section.items && isOpen && (
                 <ul
                     style={{
@@ -185,6 +201,7 @@ const Section = ({
                             item={item}
                             index={itemIdx}
                             itemPath={item.label}
+                            iconOnlyMode={iconOnlyMode}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

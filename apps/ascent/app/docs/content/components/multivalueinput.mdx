@@ -56,11 +56,63 @@ function MyComponent() {
             {
                 content: 'MultiValueInput.tags',
                 hintText:
-                    'Required array of strings representing the current tag values displayed in the input field. Each string becomes a removable tag/chip. The array is controlled by your component state and updates when tags are added or removed. Defaults to empty array if not provided.',
+                    'Optional array of strings representing the current tag values displayed in the input field. Each string becomes a removable tag/chip. The array is controlled by your component state and updates when tags are added or removed. Defaults to empty array if not provided.',
             },
             {
                 content: 'string[]',
                 hintText: 'Array of tag value strings displayed as chips',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.value',
+                hintText:
+                    'Optional controlled string value for the input field itself (separate from the tags array). Use with onChange to fully control the input value. Useful for implementing custom validation logic or formatting before tags are added. Defaults to empty string if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Controlled value of the text input field (not the tags)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onChange',
+                hintText:
+                    'Optional callback function invoked when the input value changes (before a tag is added). Receives the new input value string as a parameter. Use with value prop for full control of the input field. Useful for custom validation or formatting.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with the new input value when it changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onTagAdd',
+                hintText:
+                    'Optional callback function invoked when a new tag is added. Receives the new tag string as a parameter. Use this to update your tags state array. The function is called when the user presses Enter or submits the input value.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the new tag string when a tag is added',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onTagRemove',
+                hintText:
+                    'Optional callback function invoked when a tag is removed. Receives the tag string to remove as a parameter. Use this to update your tags state array by filtering out the removed tag. The function is called when the user clicks the X button on a tag.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the tag string when a tag is removed',
             },
             { content: '' },
         ],
@@ -74,32 +126,6 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true marks field as required, false allows optional input',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'MultiValueInput.onTagAdd',
-                hintText:
-                    'Required callback function invoked when a new tag is added. Receives the new tag string as a parameter. Use this to update your tags state array. The function is called when the user presses Enter or submits the input value.',
-            },
-            {
-                content: '(tag: string) => void',
-                hintText:
-                    'Function called with the new tag string when a tag is added',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'MultiValueInput.onTagRemove',
-                hintText:
-                    'Required callback function invoked when a tag is removed. Receives the tag string to remove as a parameter. Use this to update your tags state array by filtering out the removed tag. The function is called when the user clicks the X button on a tag.',
-            },
-            {
-                content: '(tag: string) => void',
-                hintText:
-                    'Function called with the tag string when a tag is removed',
             },
             { content: '' },
         ],
@@ -224,6 +250,69 @@ function MyComponent() {
                 content: 'string',
                 hintText:
                     'Name attribute for form identification and submission',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.id',
+                hintText:
+                    'Optional unique identifier string for the input element. Used for accessibility (linking labels, hints, and error messages via aria-describedby) and form handling. If not provided, a unique ID is automatically generated. Useful when you need explicit control over the ID for testing or custom accessibility scenarios.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Unique identifier for the input element for accessibility',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.leftSlot',
+                hintText:
+                    'Optional React node displayed on the left side of the input field. Typically used for icons like Search, User, or Mail that provide visual context about the input type. The slot is positioned before the tags and input.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Icon or content displayed on the left side of the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.rightSlot',
+                hintText:
+                    'Optional React node displayed on the right side of the input field. Typically used for action icons like Plus, Clear, or Dropdown indicators. Positioned absolutely at the right edge of the input container.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Icon or content displayed on the right side of the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onFocus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives the focus event as a parameter. Useful for triggering side effects, analytics, or custom focus behaviors.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Function called when the input receives focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onBlur',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives the blur event as a parameter. Useful for validation, saving state, or triggering side effects on focus loss.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Function called when the input loses focus',
             },
             { content: '' },
         ],

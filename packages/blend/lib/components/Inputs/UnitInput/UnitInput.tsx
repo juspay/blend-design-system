@@ -1,4 +1,3 @@
-import { Weight } from 'lucide-react'
 import { useEffect, useRef, useState, useId } from 'react'
 import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -41,7 +40,7 @@ const UnitInput = ({
     label = 'Number Input',
     hintText,
     leftSlot,
-    rightSlot = <Weight size={16} color={FOUNDATION_THEME.colors.gray[400]} />,
+    rightSlot,
     unit,
     unitPosition = UnitPosition.RIGHT,
     name,
