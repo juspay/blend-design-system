@@ -1,17 +1,9 @@
-/**
- * Button utility functions for business logic extraction
- * Following RFC 0007: Component Refactoring Standards
- */
-
 import type { MouseEvent } from 'react'
 import type { ButtonSize, ButtonState } from './buttonV2.types'
 import { ButtonSubType, ButtonType } from './buttonV2.types'
 import type { ButtonTokensType } from './button.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
-/**
- * Calculate border radius based on button group position
- */
 export function getBorderRadius(
     size: ButtonSize,
     buttonType: ButtonType,
@@ -38,18 +30,12 @@ export function getBorderRadius(
     return '0px 0px 0px 0px'
 }
 
-/**
- * Get default line height from foundation theme
- */
 export function getDefaultLineHeight(): string | undefined {
     const lineHeight = FOUNDATION_THEME.font.size.body.md.lineHeight
     if (lineHeight === undefined || lineHeight === null) return undefined
     return typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight
 }
 
-/**
- * Create click handler with disabled/loading/skeleton checks
- */
 export function createButtonClickHandler(
     onClick?: (event?: MouseEvent<HTMLButtonElement>) => void,
     isSkeleton?: boolean,
@@ -62,22 +48,13 @@ export function createButtonClickHandler(
     }
 }
 
-/**
- * Calculate button height based on subType and buttonGroupPosition
- * Returns undefined for most cases as height is managed by padding
- */
 export function getButtonHeight(subType: ButtonSubType): string | undefined {
-    // Only inline buttons have fit-content height
     if (subType === ButtonSubType.INLINE) {
         return 'fit-content'
     }
-    // For all other cases, return undefined to let padding determine height
     return undefined
 }
 
-/**
- * Calculate icon max height based on subType and size
- */
 export function getIconMaxHeight(
     subType: ButtonSubType,
     size: ButtonSize,
@@ -89,9 +66,6 @@ export function getIconMaxHeight(
     return String(tokens.slotMaxHeight[size])
 }
 
-/**
- * Get button status for data attributes
- */
 export function getButtonStatus(
     isLoading: boolean | undefined,
     isDisabled: boolean | undefined
@@ -101,9 +75,6 @@ export function getButtonStatus(
     return 'enabled'
 }
 
-/**
- * Calculate tabIndex based on disabled state and provided tabIndex
- */
 export function getButtonTabIndex(
     isDisabled: boolean,
     providedTabIndex?: number
@@ -115,9 +86,6 @@ export function getButtonTabIndex(
     return 0
 }
 
-/**
- * Calculate skeleton border radius based on button group position
- */
 export function getSkeletonBorderRadius(
     size: ButtonSize,
     buttonType: ButtonType,
@@ -134,15 +102,54 @@ export function getSkeletonBorderRadius(
     )
 }
 
-/**
- * Calculate skeleton width based on fullWidth and width props
- */
 export function getSkeletonWidth(
     fullWidth?: boolean,
     width?: string | number
 ): string {
     if (fullWidth) return '100%'
     return width ? String(width) : 'fit-content'
+}
+
+export function getButtonBorderStyles(
+    buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
+    defaultBorder: string | undefined
+): {
+    border?: string
+    borderTop?: string
+    borderRight?: string
+    borderBottom?: string
+    borderLeft?: string
+} {
+    const border = defaultBorder ?? 'none'
+
+    if (buttonGroupPosition === undefined) {
+        return { border }
+    }
+
+    if (buttonGroupPosition === 'left') {
+        return {
+            borderTop: border,
+            borderBottom: border,
+            borderLeft: border,
+            borderRight: border,
+        }
+    }
+
+    if (buttonGroupPosition === 'right') {
+        return {
+            borderTop: border,
+            borderBottom: border,
+            borderLeft: border,
+            borderRight: border,
+        }
+    }
+
+    return {
+        borderTop: border,
+        borderBottom: border,
+        borderLeft: 'none',
+        borderRight: 'none',
+    }
 }
 
 /**
@@ -153,7 +160,8 @@ export function getButtonStyles(
     isDisabled: boolean,
     buttonType: ButtonType,
     subType: ButtonSubType,
-    tokens: ButtonTokensType
+    tokens: ButtonTokensType,
+    buttonGroupPosition?: 'center' | 'left' | 'right'
 ) {
     const tokenState = isSkeleton
         ? 'transparent'
@@ -168,10 +176,38 @@ export function getButtonStyles(
         ? 'transparent'
         : tokens.outline[buttonType][subType].default
 
+    const borderStyles = buttonGroupPosition
+        ? getButtonBorderStyles(buttonGroupPosition, String(borderState))
+        : { border: String(borderState) }
+
+    const activeBorder = tokens.border[buttonType][subType]?.active
+    const activeBorderStyles =
+        buttonGroupPosition && !isSkeleton && !isDisabled && activeBorder
+            ? getButtonBorderStyles(buttonGroupPosition, String(activeBorder))
+            : undefined
+
+    const hoverBorder = tokens.border[buttonType][subType]?.hover
+    const hoverBorderStyles =
+        buttonGroupPosition && !isSkeleton && hoverBorder
+            ? getButtonBorderStyles(buttonGroupPosition, String(hoverBorder))
+            : undefined
+
+    const defaultBorder = tokens.border[buttonType][subType]?.default
+    const focusBorderStyles =
+        buttonGroupPosition && !isSkeleton && defaultBorder
+            ? getButtonBorderStyles(buttonGroupPosition, String(defaultBorder))
+            : undefined
+
+    const disabledBorder = tokens.border[buttonType][subType]?.disabled
+    const disabledBorderStyles =
+        buttonGroupPosition && !isSkeleton && disabledBorder
+            ? getButtonBorderStyles(buttonGroupPosition, String(disabledBorder))
+            : undefined
+
     return {
         background: tokenState,
         color: textColorState,
-        border: borderState,
+        ...borderStyles,
         outline: outlineState,
         _active:
             isSkeleton || isDisabled
@@ -179,7 +215,11 @@ export function getButtonStyles(
                 : {
                       background:
                           tokens.backgroundColor[buttonType][subType].active,
-                      border: tokens.border[buttonType][subType].active,
+                      ...(activeBorderStyles || {
+                          border: String(
+                              tokens.border[buttonType][subType].active
+                          ),
+                      }),
                       boxShadow: tokens.shadow[buttonType][subType].active,
                       transform: 'scale(0.99)',
                   },
@@ -188,12 +228,18 @@ export function getButtonStyles(
             : {
                   background: tokens.backgroundColor[buttonType][subType].hover,
                   color: tokens.text.color[buttonType][subType].hover,
-                  border: tokens.border[buttonType][subType].hover,
+                  ...(hoverBorderStyles || {
+                      border: String(tokens.border[buttonType][subType].hover),
+                  }),
               },
         _focusVisible: isSkeleton
             ? undefined
             : {
-                  border: tokens.border[buttonType][subType].default,
+                  ...(focusBorderStyles || {
+                      border: String(
+                          tokens.border[buttonType][subType].default
+                      ),
+                  }),
                   outline: tokens.outline[buttonType][subType].active,
                   outlineOffset: FOUNDATION_THEME.unit[2],
               },
@@ -201,20 +247,25 @@ export function getButtonStyles(
             ? {
                   background: 'transparent',
                   border: 'transparent',
+                  borderTop: 'none',
+                  borderBottom: 'none',
+                  borderLeft: 'none',
+                  borderRight: 'none',
                   cursor: 'default',
               }
             : {
                   background:
                       tokens.backgroundColor[buttonType][subType].disabled,
-                  border: tokens.border[buttonType][subType].disabled,
+                  ...(disabledBorderStyles || {
+                      border: String(
+                          tokens.border[buttonType][subType].disabled
+                      ),
+                  }),
                   cursor: 'not-allowed',
               },
     }
 }
 
-/**
- * Get icon color based on state
- */
 export function getIconColor(
     isSkeleton: boolean,
     disabled: boolean | undefined,
@@ -230,9 +281,6 @@ export function getIconColor(
     return color ? String(color) : 'transparent'
 }
 
-/**
- * Get text color based on state
- */
 export function getTextColor(
     isSkeleton: boolean,
     disabled: boolean | undefined,

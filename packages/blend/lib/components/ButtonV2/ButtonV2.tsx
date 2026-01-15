@@ -222,7 +222,8 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
         isDisabled,
         buttonType,
         subType,
-        buttonTokens
+        buttonTokens,
+        buttonGroupPosition
     )
 
     const buttonElement = (
@@ -242,6 +243,10 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
             color={buttonStyles.color}
             borderRadius={borderRadius}
             border={buttonStyles.border}
+            borderTop={buttonStyles.borderTop}
+            borderRight={buttonStyles.borderRight}
+            borderBottom={buttonStyles.borderBottom}
+            borderLeft={buttonStyles.borderLeft}
             outline={buttonStyles.outline}
             transition="transform 0.15s ease-in-out"
             {...ariaAttrs}

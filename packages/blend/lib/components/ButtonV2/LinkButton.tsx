@@ -115,7 +115,8 @@ const LinkButton = forwardRef<
         isDisabled,
         buttonType,
         subType,
-        buttonTokens
+        buttonTokens,
+        undefined
     )
 
     const linkProps = {
