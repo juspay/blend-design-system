@@ -662,7 +662,8 @@ export const createComplexDropHandler = (
     setInternalFailedFiles: React.Dispatch<
         React.SetStateAction<UploadedFileWithStatus[]>
     >,
-    uploadManager: ReturnType<typeof createUploadManager>
+    uploadManager: ReturnType<typeof createUploadManager>,
+    progressSpeed: number = 200
 ) => {
     return (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
         if (disabled) return
@@ -779,12 +780,9 @@ export const createComplexDropHandler = (
                             )
                         },
                         (id) => {
-                            // Remove from uploading
                             setInternalUploadingFiles((prev) =>
                                 prev.filter((f) => f.id !== id)
                             )
-
-                            // Add to uploaded
                             setInternalUploadedFiles((prev) => {
                                 const fileKey = createFileKey(uploadFile.file)
                                 const alreadyExists = prev.some(
@@ -792,7 +790,7 @@ export const createComplexDropHandler = (
                                 )
 
                                 if (alreadyExists) {
-                                    return prev // Don't add duplicate
+                                    return prev
                                 }
 
                                 return [
@@ -805,7 +803,6 @@ export const createComplexDropHandler = (
                                 ]
                             })
 
-                            // Update state when all uploads are complete
                             setInternalUploadingFiles((current) => {
                                 const remaining = current.filter(
                                     (f) => f.id !== id
@@ -830,7 +827,8 @@ export const createComplexDropHandler = (
                                 }
                                 return remaining
                             })
-                        }
+                        },
+                        progressSpeed
                     )
                 })
             }

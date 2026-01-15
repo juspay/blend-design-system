@@ -47,6 +47,13 @@ export type MenuProps = {
     skeleton?: MenuSkeletonProps
 }
 
+export type SubMenuVirtualScrollProps = {
+    enableVirtualScrolling?: boolean
+    virtualItemHeight?: number
+    virtualOverscan?: number
+    virtualScrollThreshold?: number
+}
+
 export enum MenuItemVariant {
     DEFAULT = 'default',
     ACTION = 'action',
@@ -80,6 +87,10 @@ export type MenuItemType = {
         delayDuration?: number
         offset?: number
     }
+    enableSubMenuVirtualScrolling?: boolean
+    subMenuVirtualItemHeight?: number
+    subMenuVirtualOverscan?: number
+    subMenuVirtualScrollThreshold?: number
 }
 
 export type MenuGroupType = {

@@ -147,7 +147,7 @@ const SingleSelect = ({
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const handleOnSelect = useCallback(
-        (val: string) => onSelect(selected === val ? '' : val),
+        (val: string) => onSelect(val),
         [onSelect, selected]
     )
     const shouldShake = useErrorShake(error)
@@ -292,7 +292,7 @@ const SingleSelect = ({
                                     justifyContent="space-between"
                                     gap={8}
                                     borderRadius={borderRadius}
-                                    outline={
+                                    border={
                                         singleSelectTokens.trigger.outline[
                                             variant
                                         ][
@@ -324,13 +324,10 @@ const SingleSelect = ({
                                             ][variant],
                                         ...(!disabled && {
                                             _hover: {
-                                                outline:
-                                                    singleSelectTokens.trigger
-                                                        .outline[variant][
-                                                        error
-                                                            ? 'error'
-                                                            : 'hover'
-                                                    ],
+                                                border: singleSelectTokens
+                                                    .trigger.outline[variant][
+                                                    error ? 'error' : 'hover'
+                                                ],
                                                 backgroundColor:
                                                     singleSelectTokens.trigger
                                                         .backgroundColor
@@ -342,11 +339,10 @@ const SingleSelect = ({
                                             },
                                         }),
                                         _focus: {
-                                            outline:
-                                                singleSelectTokens.trigger
-                                                    .outline[variant][
-                                                    error ? 'error' : 'focus'
-                                                ],
+                                            border: singleSelectTokens.trigger
+                                                .outline[variant][
+                                                error ? 'error' : 'focus'
+                                            ],
                                             backgroundColor:
                                                 singleSelectTokens.trigger
                                                     .backgroundColor.container[

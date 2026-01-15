@@ -11,8 +11,9 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { FOUNDATION_THEME } from '../../tokens'
 import { filterMenuItem } from './utils'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { submenuContentAnimations } from './menu.animations'
+import { VirtualList, type VirtualListItem } from '../VirtualList'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -169,6 +170,13 @@ export const SubMenu = ({
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
 
+    const {
+        enableSubMenuVirtualScrolling = false,
+        subMenuVirtualItemHeight = 40,
+        subMenuVirtualOverscan = 5,
+        subMenuVirtualScrollThreshold = 20,
+    } = item
+
     const filteredSubMenuItems = React.useMemo(() => {
         if (!item.subMenu) return []
         if (!searchText || !item.enableSubMenuSearch) return item.subMenu
@@ -178,6 +186,38 @@ export const SubMenu = ({
             .map((subItem) => filterMenuItem(subItem, lower))
             .filter(Boolean) as MenuItemType[]
     }, [item.subMenu, searchText, item.enableSubMenuSearch])
+
+    const totalItemCount = useMemo(() => {
+        return filteredSubMenuItems.length
+    }, [filteredSubMenuItems])
+
+    const shouldUseVirtualScrolling =
+        enableSubMenuVirtualScrolling &&
+        totalItemCount >= subMenuVirtualScrollThreshold
+
+    const virtualListItems = useMemo(() => {
+        const virtualItems: VirtualListItem[] = []
+
+        filteredSubMenuItems.forEach((subItem, subIdx) => {
+            virtualItems.push({
+                id: `submenu-item-${idx}-${subIdx}`,
+                data: {
+                    item: subItem,
+                    idx: subIdx,
+                },
+            })
+        })
+
+        return virtualItems
+    }, [filteredSubMenuItems, idx])
+
+    const renderVirtualItem = useCallback(
+        ({ item }: { item: VirtualListItem; index: number }) => {
+            const data = item.data as { item: MenuItemType; idx: number }
+            return <MenuItem key={data.idx} item={data.item} idx={data.idx} />
+        },
+        []
+    )
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
@@ -345,9 +385,34 @@ export const SubMenu = ({
                             />
                         </Block>
                     )}
-                    {filteredSubMenuItems.map((subItem, subIdx) => (
-                        <MenuItem key={subIdx} item={subItem} idx={subIdx} />
-                    ))}
+                    {shouldUseVirtualScrolling ? (
+                        <Block
+                            style={{
+                                height: maxHeight
+                                    ? `${maxHeight}px`
+                                    : 'var(--radix-popper-available-height)',
+                                position: 'relative',
+                            }}
+                        >
+                            <VirtualList
+                                items={virtualListItems}
+                                renderItem={renderVirtualItem}
+                                height={maxHeight || 400}
+                                itemHeight={subMenuVirtualItemHeight}
+                                overscan={subMenuVirtualOverscan}
+                            />
+                        </Block>
+                    ) : (
+                        <>
+                            {filteredSubMenuItems.map((subItem, subIdx) => (
+                                <MenuItem
+                                    key={subIdx}
+                                    item={subItem}
+                                    idx={subIdx}
+                                />
+                            ))}
+                        </>
+                    )}
                 </SubContent>
             </RadixMenu.Portal>
         </RadixMenu.Sub>

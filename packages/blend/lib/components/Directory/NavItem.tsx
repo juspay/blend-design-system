@@ -13,11 +13,13 @@ import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { handleKeyDown } from './utils'
+import { Tooltip, TooltipSide } from '../Tooltip'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
     $isActive?: boolean
     $tokens: DirectoryTokenType
+    $iconOnlyMode?: boolean
 }>`
     background-color: ${({ $isActive, $tokens }) =>
         $isActive
@@ -25,12 +27,17 @@ const StyledElement = styled(Block)<{
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
     width: 100%;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: ${({ $tokens }) => $tokens.section.itemList.item.gap};
-    padding: ${({ $tokens }) =>
-        `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
+    justify-content: ${({ $iconOnlyMode }) =>
+        $iconOnlyMode ? 'center' : 'flex-start'};
+    gap: ${({ $tokens, $iconOnlyMode }) =>
+        $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
+    padding: ${({ $tokens, $iconOnlyMode }) =>
+        $iconOnlyMode
+            ? '8px 10px'
+            : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
             ? $tokens.section.itemList.item.color.active
@@ -81,6 +88,9 @@ const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
         $tokens.section.itemList.nested.paddingLeft};
     margin-top: ${({ $tokens }) => $tokens.section.itemList.nested.marginTop};
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: ${({ $tokens }) => $tokens.section.itemList.gap};
 
     & > div:first-child {
         position: absolute;
@@ -178,6 +188,7 @@ const NavItem = ({
     index,
     onNavigate,
     itemPath = item.label,
+    iconOnlyMode = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isExpanded, setIsExpanded] = React.useState(false)
@@ -210,35 +221,50 @@ const NavItem = ({
     const Element = item.href ? 'a' : 'button'
     const elementProps = item.href ? { href: item.href } : {}
 
-    return (
-        <li style={{ width: '100%' }}>
-            <StyledElement
-                as={Element}
-                $isLink={!!item.href}
-                $isActive={isActive}
-                $tokens={tokens}
-                {...elementProps}
-                ref={refCallback}
-                onClick={handleClick}
-                onKeyDown={(e: React.KeyboardEvent) =>
-                    handleKeyDown(e, {
-                        hasChildren,
-                        isExpanded,
-                        setIsExpanded,
-                        handleClick,
-                        index,
-                        onNavigate,
-                    })
-                }
-                aria-expanded={
-                    hasChildren ? (isExpanded ? true : false) : undefined
-                }
-                aria-label={item.label}
-                tabIndex={0}
-                data-sidebar-selected={isActive}
-                data-sidebar-sub-option={item.label}
-                data-sidebar-expanded={hasChildren ? isExpanded : undefined}
-            >
+    const renderContent = () => {
+        if (iconOnlyMode) {
+            if (!item.leftSlot) {
+                // Icon is mandatory in icon-only mode
+                console.warn(
+                    `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
+                )
+                return (
+                    <Block
+                        width="20px"
+                        height="20px"
+                        backgroundColor={
+                            isActive
+                                ? tokens.section.itemList.item.backgroundColor
+                                      .active
+                                : tokens.section.itemList.item.backgroundColor
+                                      .default
+                        }
+                        borderRadius={tokens.section.itemList.item.borderRadius}
+                        style={{
+                            opacity: 0.3,
+                        }}
+                    />
+                )
+            }
+            if (React.isValidElement(item.leftSlot)) {
+                return React.cloneElement(
+                    item.leftSlot as React.ReactElement<
+                        React.SVGProps<SVGSVGElement>
+                    >,
+                    {
+                        color: isActive
+                            ? tokens.section.itemList.item.color.active
+                            : tokens.section.itemList.item.color.default,
+                        width: 20,
+                        height: 20,
+                    }
+                )
+            }
+            return null
+        }
+
+        return (
+            <>
                 <Block
                     display="flex"
                     alignItems="center"
@@ -287,7 +313,66 @@ const NavItem = ({
                         />
                     </ChevronWrapper>
                 )}
-            </StyledElement>
+            </>
+        )
+    }
+
+    const itemElement = (
+        <StyledElement
+            as={Element}
+            $isLink={!!item.href}
+            $isActive={isActive}
+            $tokens={tokens}
+            $iconOnlyMode={iconOnlyMode}
+            {...elementProps}
+            ref={refCallback}
+            onClick={handleClick}
+            onKeyDown={(e: React.KeyboardEvent) =>
+                handleKeyDown(e, {
+                    hasChildren,
+                    isExpanded,
+                    setIsExpanded,
+                    handleClick,
+                    index,
+                    onNavigate,
+                })
+            }
+            aria-expanded={
+                hasChildren ? (isExpanded ? true : false) : undefined
+            }
+            aria-label={item.label}
+            tabIndex={0}
+            data-sidebar-expanded={hasChildren ? isExpanded : undefined}
+            data-element="sidebar-sub-section"
+            data-id={item.label}
+            data-status={isActive ? 'selected' : 'not selected'}
+        >
+            {renderContent()}
+        </StyledElement>
+    )
+
+    return (
+        <li
+            style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
+                position: 'relative',
+            }}
+        >
+            {iconOnlyMode && item.leftSlot ? (
+                <Tooltip
+                    content={item.label}
+                    side={TooltipSide.RIGHT}
+                    offset={12}
+                >
+                    {itemElement}
+                </Tooltip>
+            ) : (
+                itemElement
+            )}
 
             {hasChildren && isExpanded && (
                 <NestedList
@@ -303,6 +388,7 @@ const NavItem = ({
                                 item={childItem}
                                 index={childIdx}
                                 itemPath={`${itemPath}/${childItem.label}`}
+                                iconOnlyMode={iconOnlyMode}
                                 onNavigate={(direction, currentIndex) => {
                                     if (
                                         direction === 'up' &&

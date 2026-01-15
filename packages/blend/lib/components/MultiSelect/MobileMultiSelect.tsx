@@ -335,6 +335,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    onOpenChange,
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -420,6 +421,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                             setSearchText('')
                         }
                     }
+                    onOpenChange?.(isOpen)
                 }}
             >
                 <DrawerTrigger>

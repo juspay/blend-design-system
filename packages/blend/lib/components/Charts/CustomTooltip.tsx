@@ -7,7 +7,6 @@ import {
     YAxisConfig,
 } from './types'
 import {
-    capitaliseCamelCase,
     formatNumber,
     getAxisFormatter,
     createDateTimeFormatter,
@@ -38,7 +37,7 @@ const formatTooltipLabel = (
     label: string | number,
     xAxis?: XAxisConfig
 ): string => {
-    if (!xAxis) return capitaliseCamelCase(String(label))
+    if (!xAxis) return String(label)
 
     if (xAxis.tickFormatter) {
         return xAxis.tickFormatter(label)
@@ -60,7 +59,7 @@ const formatTooltipLabel = (
         return getAxisFormatter(xAxis)(label)
     }
 
-    return capitaliseCamelCase(String(label))
+    return String(label)
 }
 
 const formatTooltipValue = (
@@ -93,7 +92,7 @@ const formatAuxTooltipValue = (
     return typeof value === 'number' ? formatNumber(value) : String(value)
 }
 
-const findDataPointByLabel = (
+export const findDataPointByLabel = (
     originalData: NewNestedDataPoint[],
     label: string | number
 ) => {
@@ -114,6 +113,24 @@ const findDataPointByLabel = (
         const itemTimestamp = parseTimestamp(item.name)
         return itemTimestamp !== null && itemTimestamp === labelTimestamp
     })
+}
+
+export const getRelevantData = (
+    originalData: NewNestedDataPoint[],
+    label: string | number,
+    hoveredKey: string
+) => {
+    const currentDataPoint = findDataPointByLabel(originalData, label)
+
+    if (
+        !currentDataPoint ||
+        !currentDataPoint.data ||
+        !currentDataPoint.data[hoveredKey]
+    ) {
+        return null
+    }
+
+    return currentDataPoint.data[hoveredKey]
 }
 
 export const CustomTooltip = ({
@@ -269,7 +286,7 @@ const BarChartTooltip = ({
                                                     .gray[400]
                                             }
                                         >
-                                            {capitaliseCamelCase(key)}
+                                            {key}
                                         </Text>
                                     </Block>
                                     <Block paddingLeft={10} width="100%">
@@ -341,20 +358,7 @@ const LineChartTooltip = ({
         return null
     }
 
-    const getRelevantData = () => {
-        const currentDataPoint = findDataPointByLabel(originalData, label)
-
-        if (
-            !currentDataPoint ||
-            !currentDataPoint.data ||
-            !currentDataPoint.data[hoveredKey]
-        ) {
-            return null
-        }
-
-        return currentDataPoint.data[hoveredKey]
-    }
-    const relevantData = getRelevantData()
+    const relevantData = getRelevantData(originalData, label, hoveredKey)
     if (!relevantData) {
         return null
     }
@@ -381,7 +385,7 @@ const LineChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(hoveredKey)}
+                        {hoveredKey}
                     </Text>
                     <Text
                         fontSize={12}
@@ -603,7 +607,7 @@ const PieChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(name)}
+                        {name}
                     </Text>
                     <Text
                         fontSize={12}
@@ -621,7 +625,7 @@ const PieChartTooltip = ({
                     fontWeight={FOUNDATION_THEME.font.weight[500]}
                     color={FOUNDATION_THEME.colors.gray[400]}
                 >
-                    {capitaliseCamelCase(data.primary.label)}
+                    {data.primary.label}
                 </Text>
                 <Text
                     fontSize={12}
@@ -737,7 +741,7 @@ const ScatterChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
                     >
-                        {capitaliseCamelCase(seriesKey)}
+                        {seriesKey}
                     </Text>
                     <Text
                         fontSize={12}

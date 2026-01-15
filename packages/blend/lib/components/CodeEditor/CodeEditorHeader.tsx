@@ -73,6 +73,8 @@ export const CodeEditorHeader = ({
                     />
                 ) : null}
                 <Block
+                    data-element="codeeditor-title"
+                    data-id={header}
                     as="span"
                     fontSize={tokens.header.text.fontSize}
                     fontWeight={tokens.header.text.fontWeight}
@@ -109,6 +111,7 @@ export const CodeEditorHeader = ({
                     }}
                 >
                     <Button
+                        data-element="copy-button"
                         type="button"
                         onClick={onCopy}
                         buttonType={ButtonType.SECONDARY}

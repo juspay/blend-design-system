@@ -50,7 +50,7 @@ export const calculateChangeFromChartData = (
  * @returns Effective change object or null
  */
 export const getEffectiveChange = (
-    change?: StatCardChange,
+    change?: StatCardChange | null | undefined,
     chartData?: ChartDataPoint[]
 ): StatCardChange | Pick<StatCardChange, 'value' | 'valueType'> | null => {
     if (change) return change
