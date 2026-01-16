@@ -251,8 +251,10 @@ const BarChartTooltip = ({
         <>
             <Block display="flex" flexDirection="column">
                 <Text
-                    fontSize={14}
-                    fontWeight={600}
+                    fontSize={
+                        FOUNDATION_THEME.font.size.body.md.fontSize as number
+                    }
+                    fontWeight={FOUNDATION_THEME.font.weight[600]}
                     color={FOUNDATION_THEME.colors.gray[900]}
                 >
                     {formatTooltipLabel(label, xAxis)}
@@ -262,8 +264,8 @@ const BarChartTooltip = ({
             <Block
                 display="flex"
                 flexDirection="column"
-                marginTop={12}
-                gap={12}
+                marginTop={FOUNDATION_THEME.unit[12]}
+                gap={FOUNDATION_THEME.unit[12]}
             >
                 {relevantData &&
                     Object.keys(relevantData)
@@ -278,21 +280,26 @@ const BarChartTooltip = ({
                                 <Block
                                     display="flex"
                                     alignItems="center"
-                                    gap={8}
+                                    gap={FOUNDATION_THEME.unit[8]}
                                 >
                                     <Block
                                         backgroundColor={
                                             getColor(key) || '#AD46FF'
                                         }
-                                        width={4}
-                                        height={16}
+                                        width={FOUNDATION_THEME.unit[4]}
+                                        height={FOUNDATION_THEME.unit[16]}
                                         borderRadius={
                                             FOUNDATION_THEME.border.radius[8]
                                         }
                                     />
                                     <Text
-                                        fontSize={12}
-                                        fontWeight={500}
+                                        fontSize={
+                                            FOUNDATION_THEME.font.size.body.sm
+                                                .fontSize as number
+                                        }
+                                        fontWeight={
+                                            FOUNDATION_THEME.font.weight[500]
+                                        }
                                         color={
                                             FOUNDATION_THEME.colors.gray[400]
                                         }
@@ -300,10 +307,18 @@ const BarChartTooltip = ({
                                         {key}
                                     </Text>
                                 </Block>
-                                <Block paddingLeft={10} width="100%">
+                                <Block
+                                    paddingLeft={FOUNDATION_THEME.unit[10]}
+                                    width="100%"
+                                >
                                     <Text
-                                        fontSize={12}
-                                        fontWeight={600}
+                                        fontSize={
+                                            FOUNDATION_THEME.font.size.body.sm
+                                                .fontSize as number
+                                        }
+                                        fontWeight={
+                                            FOUNDATION_THEME.font.weight[600]
+                                        }
                                         color={
                                             FOUNDATION_THEME.colors.gray[900]
                                         }
@@ -336,7 +351,10 @@ const BarChartTooltip = ({
                             gap={FOUNDATION_THEME.unit[8]}
                         >
                             <Text
-                                fontSize={12}
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.sm
+                                        .fontSize as number
+                                }
                                 color={FOUNDATION_THEME.colors.gray[500]}
                                 truncate={true}
                             >
@@ -345,7 +363,10 @@ const BarChartTooltip = ({
                                     : auxItem.label}
                             </Text>
                             <Text
-                                fontSize={12}
+                                fontSize={
+                                    FOUNDATION_THEME.font.size.body.sm
+                                        .fontSize as number
+                                }
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
