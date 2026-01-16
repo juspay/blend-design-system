@@ -21,7 +21,6 @@ import { useResponsiveTokens } from '../../../../packages/blend/lib/hooks/useRes
 const AlertDemo = () => {
     const [visibleAlerts, setVisibleAlerts] = useState<Set<string>>(new Set())
     const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
-
     // Playground state
     const [playgroundHeading, setPlaygroundHeading] = useState('Alert Heading')
     const [playgroundDescription, setPlaygroundDescription] = useState(
@@ -234,13 +233,14 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Basic Alerts - All Variants
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     <Alert
                         heading="Primary Alert"
                         description="This is a primary alert with subtle styling. It's used for general information and important updates."
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.SUBTLE}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -249,6 +249,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.SUCCESS}
                         style={AlertStyle.SUBTLE}
                         icon={<CheckCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -257,6 +258,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.WARNING}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertTriangle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -265,6 +267,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ERROR}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -273,6 +276,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.PURPLE}
                         style={AlertStyle.SUBTLE}
                         icon={<HelpCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -281,6 +285,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ORANGE}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertTriangle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -289,6 +294,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.NEUTRAL}
                         style={AlertStyle.SUBTLE}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -298,13 +304,14 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     No Fill Style
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     <Alert
                         heading="Primary No Fill"
                         description="This alert uses the no-fill style for a cleaner, border-only appearance."
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.NO_FILL}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -313,6 +320,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.SUCCESS}
                         style={AlertStyle.NO_FILL}
                         icon={<CheckCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -321,6 +329,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ERROR}
                         style={AlertStyle.NO_FILL}
                         icon={<AlertCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -330,7 +339,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Alerts with Actions
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     <Alert
                         heading="Action Required"
                         description="This alert has primary and secondary actions positioned on the right."
@@ -346,6 +355,7 @@ const AlertDemo = () => {
                             onClick: handleSecondaryAction,
                         }}
                         actionPlacement={AlertActionPlacement.RIGHT}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -363,6 +373,7 @@ const AlertDemo = () => {
                             onClick: handleSecondaryAction,
                         }}
                         actionPlacement={AlertActionPlacement.BOTTOM}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -375,6 +386,7 @@ const AlertDemo = () => {
                             label: 'Learn More',
                             onClick: handlePrimaryAction,
                         }}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -384,7 +396,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Dismissible Alerts
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     {visibleAlerts.has('dismissible-1') && (
                         <Alert
                             heading="Dismissible Alert"
@@ -393,6 +405,7 @@ const AlertDemo = () => {
                             style={AlertStyle.SUBTLE}
                             icon={<Info size={16} />}
                             onClose={() => handleClose('dismissible-1')}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -409,6 +422,7 @@ const AlertDemo = () => {
                             }}
                             onClose={() => handleClose('dismissible-2')}
                             actionPlacement={AlertActionPlacement.RIGHT}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -421,6 +435,7 @@ const AlertDemo = () => {
                             icon={<AlertTriangle size={16} />}
                             onClose={() => handleClose('dismissible-3')}
                             actionPlacement={AlertActionPlacement.BOTTOM}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -461,12 +476,13 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Alerts without Icons
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     <Alert
                         heading="No Icon Alert"
                         description="This alert doesn't have an icon, demonstrating the clean layout without visual indicators."
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.SUBTLE}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -474,6 +490,7 @@ const AlertDemo = () => {
                         description="A simple alert with just text content, no icon, no actions, and no close button."
                         variant={AlertVariant.NEUTRAL}
                         style={AlertStyle.NO_FILL}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -483,7 +500,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Interactive Examples
                 </h2>
-                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
+                <div className="space-y-4">
                     <Alert
                         heading="Interactive Alert"
                         description="This alert demonstrates all features: icon, actions, and close functionality. Try clicking the actions or close button to see console logs."
@@ -513,6 +530,7 @@ const AlertDemo = () => {
                             alert('Alert closed!')
                         }}
                         actionPlacement={AlertActionPlacement.RIGHT}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
