@@ -237,24 +237,16 @@ const BarChartTooltip = ({
 
     // Collect all aux data from all DataPoints in relevantData, attaching the key to each aux item
     const auxData = relevantData
-        ? Object.entries(relevantData)
-              .filter(
-                  ([, dataPoint]) =>
-                      dataPoint.aux &&
-                      Array.isArray(dataPoint.aux) &&
-                      dataPoint.aux.length > 0
-              )
-              .flatMap(([key, dataPoint]) =>
-                  (dataPoint.aux || []).map((auxItem: AuxItem) => ({
-                      ...auxItem,
-                      key,
-                  }))
-              )
+        ? Object.entries(relevantData).flatMap(([key, dataPoint]) =>
+              Array.isArray(dataPoint?.aux) && dataPoint.aux.length > 0
+                  ? dataPoint.aux.map((auxItem: AuxItem) => ({
+                        ...auxItem,
+                        key,
+                    }))
+                  : []
+          )
         : undefined
-    let x = Object.entries(relevantData || {})
-    console.log(auxData, 'auxData')
-    console.log(x, 'x')
-    console.log(relevantData, 'relevantData')
+
     return (
         <>
             <Block display="flex" flexDirection="column">
