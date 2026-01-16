@@ -8,6 +8,7 @@ import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
 import { ChartTokensType } from './chart.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { getColorByKey } from './utils'
 
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tag, TagColor, TagVariant } from '../Tags'
@@ -59,118 +60,122 @@ const StackedLegends: React.FC<{
             justifyContent="center"
             gap={legendTokens.gap}
         >
-            {keys.map((key, index) => (
-                <Block
-                    key={key}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    padding={FOUNDATION_THEME.unit[8]}
-                    {...(isSmallScreen && {
-                        _hover: {
-                            backgroundColor: FOUNDATION_THEME.colors.gray[100],
-                            borderRadius: FOUNDATION_THEME.border.radius[4],
-                        },
-                        cursor: 'pointer',
-                        onClick: () => handleLegendClick(key),
-                        onMouseEnter: () => handleLegendEnter(key),
-                        onMouseLeave: handleLegendLeave,
-                        opacity: getItemOpacity(key),
-                    })}
-                >
-                    <PrimitiveButton
-                        type="button"
+            {keys.map((key, index) => {
+                const itemColor = getColorByKey(key, colors, index)
+                return (
+                    <Block
                         key={key}
-                        aria-label={`Toggle ${key} series visibility`}
-                        aria-pressed={selectedKeys.includes(key)}
-                        onClick={() => handleLegendClick(key)}
-                        onMouseEnter={() => handleLegendEnter(key)}
-                        onMouseLeave={handleLegendLeave}
-                        onFocus={() => handleLegendEnter(key)}
-                        onBlur={handleLegendLeave}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap:
-                                typeof legendTokens.item.gap === 'string'
-                                    ? legendTokens.item.gap
-                                    : `${legendTokens.item.gap}px`,
-                            height: FOUNDATION_THEME.unit[16],
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        padding={FOUNDATION_THEME.unit[8]}
+                        {...(isSmallScreen && {
+                            _hover: {
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[100],
+                                borderRadius: FOUNDATION_THEME.border.radius[4],
+                            },
                             cursor: 'pointer',
-                            transition: 'all 300ms',
+                            onClick: () => handleLegendClick(key),
+                            onMouseEnter: () => handleLegendEnter(key),
+                            onMouseLeave: handleLegendLeave,
                             opacity: getItemOpacity(key),
-                            background: 'none',
-                            border: 'none',
-                            padding: 0,
-                            fontFamily: 'inherit',
-                            fontSize: 'inherit',
-                            color: 'inherit',
-                        }}
-                        _focusVisible={{
-                            outline: '3px solid #BEDBFF',
-                            border: '1px solid #0561E2',
-                            cursor: 'pointer',
-                            outlineOffset: '2px',
-                        }}
+                        })}
                     >
-                        <Block
-                            backgroundColor={colors[index]}
-                            width={FOUNDATION_THEME.unit[12]}
-                            height={FOUNDATION_THEME.unit[12]}
-                            borderRadius={FOUNDATION_THEME.border.radius[4]}
-                            flexShrink={0}
-                            data-element="chart-legend-color"
-                            data-id={colors[index]}
-                        />
-                        <Text
-                            data-element="chart-legend-text"
-                            data-id={key}
-                            fontSize={legendTokens.item.fontSize}
-                            fontWeight={legendTokens.item.fontWeight}
-                            color={
-                                activeKeys && activeKeys.includes(key)
-                                    ? legendTokens.item.color.active
-                                    : legendTokens.item.color.default
-                            }
+                        <PrimitiveButton
+                            type="button"
+                            key={key}
+                            aria-label={`Toggle ${key} series visibility`}
+                            aria-pressed={selectedKeys.includes(key)}
+                            onClick={() => handleLegendClick(key)}
+                            onMouseEnter={() => handleLegendEnter(key)}
+                            onMouseLeave={handleLegendLeave}
+                            onFocus={() => handleLegendEnter(key)}
+                            onBlur={handleLegendLeave}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap:
+                                    typeof legendTokens.item.gap === 'string'
+                                        ? legendTokens.item.gap
+                                        : `${legendTokens.item.gap}px`,
+                                height: FOUNDATION_THEME.unit[16],
+                                cursor: 'pointer',
+                                transition: 'all 300ms',
+                                opacity: getItemOpacity(key),
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                                fontFamily: 'inherit',
+                                fontSize: 'inherit',
+                                color: 'inherit',
+                            }}
+                            _focusVisible={{
+                                outline: '3px solid #BEDBFF',
+                                border: '1px solid #0561E2',
+                                cursor: 'pointer',
+                                outlineOffset: '2px',
+                            }}
                         >
-                            {key}
-                        </Text>
-                    </PrimitiveButton>
-                    {isSmallScreen && (
-                        <Block display="flex" alignItems="center" gap={8}>
-                            <Text fontSize={12} fontWeight={600}>
-                                {stackedLegendsData?.[index]
-                                    ? `${stackedLegendsData[index].value.toFixed(2)}%`
-                                    : '0.00%'}
-                            </Text>
-                            <Tag
-                                text={
-                                    stackedLegendsData?.[index]
-                                        ? `${stackedLegendsData[
-                                              index
-                                          ].delta.toFixed(2)}%`
-                                        : '0.00%'
-                                }
-                                color={
-                                    stackedLegendsData?.[index]?.changeType ===
-                                    'increase'
-                                        ? TagColor.SUCCESS
-                                        : TagColor.ERROR
-                                }
-                                variant={TagVariant.SUBTLE}
-                                leftSlot={
-                                    stackedLegendsData?.[index]?.changeType ===
-                                    'increase' ? (
-                                        <ArrowUp size={12} />
-                                    ) : (
-                                        <ArrowDown size={12} />
-                                    )
-                                }
+                            <Block
+                                backgroundColor={itemColor}
+                                width={FOUNDATION_THEME.unit[12]}
+                                height={FOUNDATION_THEME.unit[12]}
+                                borderRadius={FOUNDATION_THEME.border.radius[4]}
+                                flexShrink={0}
+                                data-element="chart-legend-color"
+                                data-id={itemColor}
                             />
-                        </Block>
-                    )}
-                </Block>
-            ))}
+                            <Text
+                                data-element="chart-legend-text"
+                                data-id={key}
+                                fontSize={legendTokens.item.fontSize}
+                                fontWeight={legendTokens.item.fontWeight}
+                                color={
+                                    activeKeys && activeKeys.includes(key)
+                                        ? legendTokens.item.color.active
+                                        : legendTokens.item.color.default
+                                }
+                            >
+                                {key}
+                            </Text>
+                        </PrimitiveButton>
+                        {isSmallScreen && (
+                            <Block display="flex" alignItems="center" gap={8}>
+                                <Text fontSize={12} fontWeight={600}>
+                                    {stackedLegendsData?.[index]
+                                        ? `${stackedLegendsData[index].value.toFixed(2)}%`
+                                        : '0.00%'}
+                                </Text>
+                                <Tag
+                                    text={
+                                        stackedLegendsData?.[index]
+                                            ? `${stackedLegendsData[
+                                                  index
+                                              ].delta.toFixed(2)}%`
+                                            : '0.00%'
+                                    }
+                                    color={
+                                        stackedLegendsData?.[index]
+                                            ?.changeType === 'increase'
+                                            ? TagColor.SUCCESS
+                                            : TagColor.ERROR
+                                    }
+                                    variant={TagVariant.SUBTLE}
+                                    leftSlot={
+                                        stackedLegendsData?.[index]
+                                            ?.changeType === 'increase' ? (
+                                            <ArrowUp size={12} />
+                                        ) : (
+                                            <ArrowDown size={12} />
+                                        )
+                                    }
+                                />
+                            </Block>
+                        )}
+                    </Block>
+                )
+            })}
         </Block>
     )
 }
@@ -334,6 +339,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             >
                 {displayLegends.slice(0, cuttOffIndex).map((legend, index) => {
                     const dataKey = legend.title
+                    const itemColor = getColorByKey(dataKey, colors, index)
                     return (
                         <PrimitiveButton
                             type="button"
@@ -377,9 +383,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                 height={FOUNDATION_THEME.unit[12]}
                                 borderRadius={FOUNDATION_THEME.border.radius[4]}
                                 flexShrink={0}
-                                backgroundColor={colors[index]?.color}
+                                backgroundColor={itemColor}
                                 data-element="chart-legend-color"
-                                data-id={colors[index]?.color}
+                                data-id={itemColor}
                             />
                             {legend.total !== undefined ? (
                                 <Block
@@ -473,10 +479,26 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     .slice(cuttOffIndex)
                                     .map((legend, index) => {
                                         const dataKey = legend.title
-                                        const colorIndex = cuttOffIndex + index
-                                        const itemColor =
-                                            colors[colorIndex] ||
-                                            colors[index % colors.length]
+                                        // Try to find color by key first, fallback to index
+                                        const colorByKey = colors.find(
+                                            (c) =>
+                                                typeof c !== 'string' &&
+                                                c.key === dataKey
+                                        )
+                                        // Extract color string - prioritize key match, then fallback to index
+                                        let itemColor: string
+                                        if (colorByKey) {
+                                            itemColor = colorByKey.color
+                                        } else {
+                                            const fallbackColor =
+                                                colors[index % colors.length]
+                                            itemColor =
+                                                typeof fallbackColor ===
+                                                'string'
+                                                    ? fallbackColor
+                                                    : fallbackColor?.color ||
+                                                      '#000000'
+                                        }
                                         const isHovered = hoveredKey === dataKey
                                         const isSelected =
                                             selectedKeys.includes(dataKey)
@@ -594,12 +616,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         }
                                                         flexShrink={0}
                                                         backgroundColor={
-                                                            itemColor?.color
+                                                            itemColor
                                                         }
                                                         data-element="chart-legend-color"
-                                                        data-id={
-                                                            itemColor?.color
-                                                        }
+                                                        data-id={itemColor}
                                                     />
                                                     {legend.total !==
                                                     undefined ? (

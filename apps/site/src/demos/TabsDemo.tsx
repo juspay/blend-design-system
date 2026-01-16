@@ -84,18 +84,6 @@ const availableTabOptions = [
 ]
 
 const TabsDemo = () => {
-    // Playground state
-    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
-        TabsVariant.UNDERLINE
-    )
-    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
-    const [expanded, setExpanded] = useState(false)
-    const [fitContent, setFitContent] = useState(false)
-    const [showIcons, setShowIcons] = useState(false)
-    const [showRightSlot, setShowRightSlot] = useState(false)
-    const [activeTab, setActiveTab] = useState('payment_gateway')
-    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
-
     const playgroundTabs: TabItem[] = [
         {
             value: 'payment_gateway',
@@ -158,6 +146,18 @@ const TabsDemo = () => {
             ),
         },
     ]
+
+    // Playground state
+    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
+        TabsVariant.UNDERLINE
+    )
+    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
+    const [expanded, setExpanded] = useState(false)
+    const [fitContent, setFitContent] = useState(false)
+    const [showIcons, setShowIcons] = useState(false)
+    const [showRightSlot, setShowRightSlot] = useState(false)
+    const [activeTab, setActiveTab] = useState('payment_gateway')
+    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
@@ -423,6 +423,7 @@ const TabsDemo = () => {
                     label: 'Test_Tab',
                     content: null,
                     newItem: true,
+                    rightSlot: <Settings size={16} />,
                 },
             ])
         }
