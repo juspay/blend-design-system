@@ -54,7 +54,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 role={alertRole}
                 aria-labelledby={headingId}
                 aria-describedby={descriptionId}
-                maxWidth={alertTokens.maxWidth}
                 backgroundColor={alertTokens.background[variant][style]}
                 padding={alertTokens.padding}
                 borderRadius={alertTokens.borderRadius}

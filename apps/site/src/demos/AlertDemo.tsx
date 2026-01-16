@@ -4,6 +4,7 @@ import {
     AlertVariant,
     AlertStyle,
     AlertActionPlacement,
+    AlertTokenType,
 } from '../../../../packages/blend/lib/components/Alert'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -15,9 +16,11 @@ import {
     AlertTriangle,
     HelpCircle,
 } from 'lucide-react'
+import { useResponsiveTokens } from '../../../../packages/blend/lib/hooks/useResponsiveTokens'
 
 const AlertDemo = () => {
     const [visibleAlerts, setVisibleAlerts] = useState<Set<string>>(new Set())
+    const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
 
     // Playground state
     const [playgroundHeading, setPlaygroundHeading] = useState('Alert Heading')
@@ -231,7 +234,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Basic Alerts - All Variants
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     <Alert
                         heading="Primary Alert"
                         description="This is a primary alert with subtle styling. It's used for general information and important updates."
@@ -295,7 +298,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     No Fill Style
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     <Alert
                         heading="Primary No Fill"
                         description="This alert uses the no-fill style for a cleaner, border-only appearance."
@@ -327,7 +330,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Alerts with Actions
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     <Alert
                         heading="Action Required"
                         description="This alert has primary and secondary actions positioned on the right."
@@ -381,7 +384,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Dismissible Alerts
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     {visibleAlerts.has('dismissible-1') && (
                         <Alert
                             heading="Dismissible Alert"
@@ -458,7 +461,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Alerts without Icons
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     <Alert
                         heading="No Icon Alert"
                         description="This alert doesn't have an icon, demonstrating the clean layout without visual indicators."
@@ -480,7 +483,7 @@ const AlertDemo = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Interactive Examples
                 </h2>
-                <div className="space-y-4">
+                <div className={`space-y-4 w-[${alertTokens.maxWidth}]`}>
                     <Alert
                         heading="Interactive Alert"
                         description="This alert demonstrates all features: icon, actions, and close functionality. Try clicking the actions or close button to see console logs."
