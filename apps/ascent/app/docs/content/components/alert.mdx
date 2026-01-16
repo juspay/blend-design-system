@@ -33,6 +33,7 @@ function MyComponent() {
             description="A new version of the application is available. Please update to get the latest features."
             variant={AlertVariant.PRIMARY}
             style={AlertStyle.SUBTLE}
+            maxWidth="600px"
             primaryAction={{
                 label: 'Update Now',
                 onClick: () => console.log('Update clicked'),
@@ -170,6 +171,19 @@ function MyComponent() {
                     'Enum that determines the layout position of action buttons',
             },
             { content: 'BOTTOM, RIGHT' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to "100%" which allows the alert to take full width of its container.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS max-width value (e.g., "600px", "50%", "80ch", "100%")',
+            },
+            { content: '"100%"' },
         ],
     ]}
     className="mb-8"

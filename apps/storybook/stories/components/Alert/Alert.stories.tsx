@@ -149,6 +149,11 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
             control: 'object',
             description: 'Secondary action button configuration',
         },
+        maxWidth: {
+            control: 'text',
+            description:
+                'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to "100%"',
+        },
     },
     tags: ['autodocs'],
 }
@@ -185,6 +190,7 @@ export const Default: Story = {
         style: AlertStyle.SUBTLE,
         actionPlacement: AlertActionPlacement.RIGHT,
         icon: 'info',
+        maxWidth: '600px',
         primaryAction: {
             label: 'Primary Action',
             onClick: () => console.log('Primary action clicked'),
@@ -195,9 +201,7 @@ export const Default: Story = {
         },
     },
     render: (args: any) => (
-        <div style={{ maxWidth: '600px' }}>
-            <Alert {...args} icon={getIcon(args.icon)} onClose={args.onClose} />
-        </div>
+        <Alert {...args} icon={getIcon(args.icon)} onClose={args.onClose} />
     ),
 }
 
@@ -211,6 +215,7 @@ export const Interactive: Story = {
         style: AlertStyle.SUBTLE,
         actionPlacement: AlertActionPlacement.RIGHT,
         icon: 'checkCircle',
+        maxWidth: '600px',
         primaryAction: {
             label: 'Confirm',
             onClick: () => alert('Primary action clicked!'),
@@ -221,15 +226,11 @@ export const Interactive: Story = {
         },
     },
     render: (args: any) => (
-        <div style={{ maxWidth: '600px' }}>
-            <Alert
-                {...args}
-                icon={getIcon(args.icon)}
-                onClose={
-                    args.onClose ? () => alert('Alert closed!') : undefined
-                }
-            />
-        </div>
+        <Alert
+            {...args}
+            icon={getIcon(args.icon)}
+            onClose={args.onClose ? () => alert('Alert closed!') : undefined}
+        />
     ),
     parameters: {
         docs: {
