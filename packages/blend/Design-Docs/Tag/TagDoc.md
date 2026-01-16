@@ -21,7 +21,7 @@ Create a scalable Tag component that can display:
 └─────────────────────────────────────────
 ```
 
-![Tag Anantomy](../Tag/TagAnatomy.png)
+![Tag Anantomy](./TagAnatomy.png)
 
 - **Container**: Flex container with configurable padding, border, background
 - **Left Slot**: Optional ReactNode with maxHeight control
@@ -110,161 +110,99 @@ type TagV2TokensType = {
 
 **Token Pattern**: `component.[target].CSSProp.[size].[variant/type].[subVariant/subType].[state].value`
 
-## Problems in Previous Component & Solutions
+## Design Decisions
 
-### Problem 1: Component Architecture Complexity
+### 1. Conditional Semantic HTML Rendering
 
-**Issue**: Old `Tag` component used a separate `TagBase` component, creating unnecessary abstraction and making the code harder to follow.
+**Decision**: Use `PrimitiveButton` for interactive tags and `Block` for non-interactive tags.
 
-```tsx
-// Old: Two-component structure
-<Tag> → <TagBase> → <Block>
-```
-
-**Solution**: TagV2 uses a single component with conditional rendering based on interactivity:
+**Rationale**: Ensures proper semantic HTML and native browser behavior. Interactive tags should be actual `<button>` elements for better accessibility, keyboard navigation, and screen reader support.
 
 ```tsx
-// New: Single component with semantic HTML
 const TagElement = onClick ? PrimitiveButton : Block
 ```
 
-### Problem 2: Incorrect Semantic HTML
+### 2. Structured Slot Props with MaxHeight Control
 
-**Issue**: Old component always rendered as `<div>` even when interactive, using `role="button"` as a workaround.
+**Decision**: Slots are structured objects with `slot` and `maxHeight` properties instead of simple ReactNode props.
 
-```tsx
-// Old: Always div with role attribute
-<Block role={isInteractive ? 'button' : undefined} onClick={...} />
-```
-
-**Solution**: TagV2 renders actual `<button>` element when interactive, improving accessibility and browser behavior:
+**Rationale**: Provides fine-grained control over slot sizing while maintaining flexibility. Allows per-slot customization while falling back to token-based defaults.
 
 ```tsx
-// New: Proper semantic HTML
-const TagElement = onClick ? PrimitiveButton : Block
-<TagElement role={isInteractive ? 'button' : undefined} />
-```
-
-### Problem 3: Slot Configuration Limitations
-
-**Issue**: Old component slots were simple `ReactNode` props with no control over sizing:
-
-```tsx
-// Old: No maxHeight control
-leftSlot?: ReactNode
-rightSlot?: ReactNode
-```
-
-**Solution**: TagV2 provides structured slot props with `maxHeight` control:
-
-```tsx
-// New: Structured slots with sizing
 leftSlot?: {
     slot: ReactNode
     maxHeight: CSSObject['maxHeight']
 }
 ```
 
-### Problem 4: Mixed Concerns (Ripple Animation)
+### 3. Separate Skeleton Component
 
-**Issue**: Old component mixed ripple animation logic directly in the main component, adding complexity:
+**Decision**: Extract skeleton rendering logic into a dedicated `TagSkeleton` component.
 
-```tsx
-// Old: Ripple logic mixed in component
-const { ripples, createRipple } = useRipple()
-// ... ripple handling code ...
-{
-    showRipple && <RippleContainer ripples={ripples} />
-}
-```
-
-**Solution**: TagV2 focuses on core functionality. Interactive states use native focus-visible styles:
+**Rationale**: Improves code organization and maintainability. Separates concerns between the main component logic and skeleton state handling.
 
 ```tsx
-// New: Clean focus styles without animation complexity
-const focusVisibleStyles = isInteractive ? FOCUS_VISIBLE_STYLES : undefined
-_focusVisible = { focusVisibleStyles }
-```
-
-### Problem 5: Skeleton Logic Embedded
-
-**Issue**: Old component had skeleton rendering logic mixed with main component logic:
-
-```tsx
-// Old: Skeleton logic in main component
-if (shouldShowSkeleton) {
-    return (
-        <Skeleton>
-            <TagBase isSkeleton />
-        </Skeleton>
-    )
-}
-```
-
-**Solution**: TagV2 uses a dedicated `TagSkeleton` component for cleaner separation:
-
-```tsx
-// New: Separate skeleton component
 if (showSkeleton) {
     return <TagSkeleton {...props} />
 }
 ```
 
-### Problem 6: Token Structure Organization
+### 4. Focus-Visible Styles for Accessibility
 
-**Issue**: Old tokens had inconsistent structure and less granular control:
+**Decision**: Use native focus-visible styles instead of custom animation effects for interactive states.
+
+**Rationale**: Provides clear visual feedback for keyboard navigation while maintaining simplicity. Follows WCAG 2.4.7 Focus Visible guidelines.
 
 ```tsx
-// Old: Less organized padding
-padding: { [size in TagSize]: CSSObject['padding'] }
+const FOCUS_VISIBLE_STYLES = {
+    outline: '2px solid #0561E2',
+    outlineOffset: '2px',
+    boxShadow: '0 0 0 3px rgba(5, 97, 226, 0.1)',
+} as const
 ```
 
-**Solution**: TagV2 provides directional padding control:
+### 5. Centralized Accessibility Utilities
+
+**Decision**: Extract accessibility logic into utility functions (`getAccessibleName`, `createKeyboardHandler`).
+
+**Rationale**: Improves code reusability, testability, and maintainability. Keeps the main component focused on rendering logic.
 
 ```tsx
-// New: Directional padding control
-padding: {
-    top: { [size in TagV2Size]: CSSObject['padding'] }
-    bottom: { [size in TagV2Size]: CSSObject['padding'] }
-    left: { [size in TagV2Size]: CSSObject['padding'] }
-    right: { [size in TagV2Size]: CSSObject['padding'] }
-}
-```
-
-### Problem 7: Naming Inconsistency
-
-**Issue**: Old component used `splitTagPosition` which was less clear:
-
-```tsx
-// Old: Unclear naming
-splitTagPosition?: 'left' | 'right'
-```
-
-**Solution**: TagV2 uses clearer `tagGroupPosition` with 'center' option:
-
-```tsx
-// New: Clearer naming with more options
-tagGroupPosition?: 'center' | 'left' | 'right'
-```
-
-### Problem 8: Accessibility Handling
-
-**Issue**: Old component had accessibility logic scattered throughout the component.
-
-**Solution**: TagV2 centralizes accessibility in utility functions:
-
-```tsx
-// New: Centralized accessibility utilities
 const accessibleName = getAccessibleName(text, isInteractive, ariaPressed)
 const handleKeyDown = createKeyboardHandler(isInteractive, onClick)
 ```
 
-## Key Improvements Summary
+### 6. Tag Group Position for Border Radius
 
-1. ✅ **Simpler Architecture**: Single component vs two-component structure
-2. ✅ **Better Semantics**: Proper `<button>` element for interactive tags
-3. ✅ **Enhanced Slots**: Structured props with maxHeight control
-4. ✅ **Cleaner Code**: Separated skeleton component, removed ripple complexity
-5. ✅ **Better Tokens**: More granular control with directional padding
-6. ✅ **Improved Accessibility**: Centralized utilities and proper ARIA handling
-7. ✅ **Clearer Naming**: More intuitive prop names
+**Decision**: Use `tagGroupPosition` prop to adjust border radius when tags are grouped together.
+
+**Rationale**: Enables seamless visual connection between adjacent tags in a group while maintaining individual tag functionality.
+
+```tsx
+borderRadius={getTagBorderRadius(
+    size,
+    subType,
+    tagGroupPosition,
+    tagTokens
+)}
+```
+
+### 7. Slot Opacity Management During Skeleton
+
+**Decision**: Hide slots (opacity: 0) during skeleton state instead of conditionally rendering them.
+
+**Rationale**: Maintains layout stability and prevents content shift when transitioning between skeleton and loaded states.
+
+```tsx
+const slotStyle = showSkeleton ? SLOT_HIDDEN_STYLE : SLOT_VISIBLE_STYLE
+```
+
+### 8. Pointer Events Handling for Interactive Tags
+
+**Decision**: Set `pointerEvents: 'none'` on the container when interactive, delegating pointer handling to the button element.
+
+**Rationale**: Prevents event conflicts and ensures proper click handling in nested interactive elements.
+
+```tsx
+pointerEvents={onClick ? 'none' : undefined}
+```
