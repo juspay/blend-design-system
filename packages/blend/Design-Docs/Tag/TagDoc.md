@@ -21,7 +21,7 @@ Create a scalable Tag component that can display:
 └─────────────────────────────────────────
 ```
 
-![Tag Anantomy](./TagAnatomy.png)
+![Tag Anantomy](../Tag/TagAnatomy.png)
 
 - **Container**: Flex container with configurable padding, border, background
 - **Left Slot**: Optional ReactNode with maxHeight control
