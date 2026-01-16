@@ -31,6 +31,7 @@ interface AuxItem {
     smart?: boolean
     timeZone?: string
     hour12?: boolean
+    key?: string
 }
 
 const formatTooltipLabel = (
@@ -233,82 +234,135 @@ const BarChartTooltip = ({
     yAxis?: YAxisConfig
 }) => {
     const relevantData = findDataPointByLabel(originalData, label)?.data
+
+    // Collect all aux data from all DataPoints in relevantData, attaching the key to each aux item
+    const auxData = relevantData
+        ? Object.entries(relevantData)
+              .filter(
+                  ([, dataPoint]) =>
+                      dataPoint.aux &&
+                      Array.isArray(dataPoint.aux) &&
+                      dataPoint.aux.length > 0
+              )
+              .flatMap(([key, dataPoint]) =>
+                  (dataPoint.aux || []).map((auxItem: AuxItem) => ({
+                      ...auxItem,
+                      key,
+                  }))
+              )
+        : undefined
+    let x = Object.entries(relevantData || {})
+    console.log(auxData, 'auxData')
+    console.log(x, 'x')
+    console.log(relevantData, 'relevantData')
     return (
         <>
-            <Block>
-                <Block display="flex" flexDirection="column">
-                    <Text
-                        fontSize={14}
-                        fontWeight={600}
-                        color={FOUNDATION_THEME.colors.gray[900]}
-                    >
-                        {formatTooltipLabel(label, xAxis)}
-                    </Text>
-                </Block>
-
-                <Block
-                    display="flex"
-                    flexDirection="column"
-                    marginTop={12}
-                    gap={12}
+            <Block display="flex" flexDirection="column">
+                <Text
+                    fontSize={14}
+                    fontWeight={600}
+                    color={FOUNDATION_THEME.colors.gray[900]}
                 >
-                    {relevantData &&
-                        Object.keys(relevantData)
-                            .filter((key) => key !== 'name')
-                            .map((key, index) => (
+                    {formatTooltipLabel(label, xAxis)}
+                </Text>
+            </Block>
+
+            <Block
+                display="flex"
+                flexDirection="column"
+                marginTop={12}
+                gap={12}
+            >
+                {relevantData &&
+                    Object.keys(relevantData)
+                        .filter((key) => key !== 'name')
+                        .map((key, index) => (
+                            <Block
+                                display="flex"
+                                flexDirection="column"
+                                key={`bar-${index}`}
+                                alignItems="flex-start"
+                            >
                                 <Block
                                     display="flex"
-                                    flexDirection="column"
-                                    key={`bar-${index}`}
-                                    alignItems="flex-start"
+                                    alignItems="center"
+                                    gap={8}
                                 >
                                     <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={8}
+                                        backgroundColor={
+                                            getColor(key) || '#AD46FF'
+                                        }
+                                        width={4}
+                                        height={16}
+                                        borderRadius={
+                                            FOUNDATION_THEME.border.radius[8]
+                                        }
+                                    />
+                                    <Text
+                                        fontSize={12}
+                                        fontWeight={500}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                     >
-                                        <Block
-                                            backgroundColor={
-                                                getColor(key) || '#AD46FF'
-                                            }
-                                            width={4}
-                                            height={16}
-                                            borderRadius={
-                                                FOUNDATION_THEME.border
-                                                    .radius[8]
-                                            }
-                                        />
-                                        <Text
-                                            fontSize={12}
-                                            fontWeight={500}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        >
-                                            {key}
-                                        </Text>
-                                    </Block>
-                                    <Block paddingLeft={10} width="100%">
-                                        <Text
-                                            fontSize={12}
-                                            fontWeight={600}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[900]
-                                            }
-                                            truncate={true}
-                                        >
-                                            {formatTooltipValue(
-                                                relevantData[key].primary.val,
-                                                yAxis
-                                            )}
-                                        </Text>
-                                    </Block>
+                                        {key}
+                                    </Text>
                                 </Block>
-                            ))}
-                </Block>
+                                <Block paddingLeft={10} width="100%">
+                                    <Text
+                                        fontSize={12}
+                                        fontWeight={600}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[900]
+                                        }
+                                        truncate={true}
+                                    >
+                                        {formatTooltipValue(
+                                            relevantData[key].primary.val,
+                                            yAxis
+                                        )}
+                                    </Text>
+                                </Block>
+                            </Block>
+                        ))}
             </Block>
+            {auxData && auxData.length > 0 && (
+                <Block
+                    gap={FOUNDATION_THEME.unit[4]}
+                    paddingTop={FOUNDATION_THEME.unit[12]}
+                    paddingLeft={FOUNDATION_THEME.unit[8]}
+                    borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
+                    display="flex"
+                    flexDirection="column"
+                >
+                    {auxData.map((auxItem: AuxItem, index: number) => (
+                        <Block
+                            key={`aux-${index}`}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            gap={FOUNDATION_THEME.unit[8]}
+                        >
+                            <Text
+                                fontSize={12}
+                                color={FOUNDATION_THEME.colors.gray[500]}
+                                truncate={true}
+                            >
+                                {auxData.length > 1
+                                    ? `${auxItem.label} (${auxItem.key})`
+                                    : auxItem.label}
+                            </Text>
+                            <Text
+                                fontSize={12}
+                                fontWeight={FOUNDATION_THEME.font.weight[600]}
+                                color={FOUNDATION_THEME.colors.gray[700]}
+                            >
+                                {formatAuxTooltipValue(auxItem.val, auxItem)}
+                            </Text>
+                        </Block>
+                    ))}
+                </Block>
+            )}
         </>
     )
 }
