@@ -87,7 +87,6 @@ export const getButtonV2Tokens = (
 ): ResponsiveButtonV2Tokens => {
     console.log('theme', theme)
     if (theme === Theme.DARK || theme === 'dark') {
-        debugger
         return getButtonV2DarkTokens(foundationToken)
     }
 
