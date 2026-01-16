@@ -14,6 +14,7 @@ import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/Multi
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -61,6 +62,7 @@ import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/m
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token'
+import { getButtonTokens } from '../components/Button/button.tokens'
 import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -113,7 +115,7 @@ export type ComponentTokenType = {
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
     TABS?: ResponsiveTabsTokens
-    BUTTON?: ResponsiveButtonV2Tokens
+    BUTTON?: ResponsiveButtonTokens
     MODAL?: ResponsiveModalTokens
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: ResponsivePopoverTokens
@@ -173,7 +175,7 @@ const ThemeContext = createContext<ThemeContextType>({
         DROPDOWN_INPUT: getDropdownInputTokens(FOUNDATION_THEME),
         CHECKBOX: getCheckboxTokens(FOUNDATION_THEME),
         TABS: getTabsTokens(FOUNDATION_THEME),
-        BUTTON: getButtonV2Tokens(FOUNDATION_THEME),
+        BUTTON: getButtonTokens(FOUNDATION_THEME),
         MODAL: getModalComponentTokens(FOUNDATION_THEME),
         BREADCRUMB: getBreadcrumbTokens(FOUNDATION_THEME),
         POPOVER: getPopoverTokens(FOUNDATION_THEME),

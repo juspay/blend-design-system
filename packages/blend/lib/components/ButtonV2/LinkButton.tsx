@@ -17,6 +17,7 @@ import {
     getSkeletonBorderRadius,
     getSkeletonWidth,
     getButtonStyles,
+    getButtonPadding,
 } from './utils'
 import { getButtonAriaAttributes } from '../../utils/accessibility'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
@@ -54,7 +55,9 @@ export type LinkButtonNativeProps = Omit<
     | 'className'
     | 'style'
     | 'dangerouslySetInnerHTML'
->
+> & {
+    disabled?: boolean
+}
 
 const LinkButton = forwardRef<
     HTMLAnchorElement,
@@ -77,16 +80,21 @@ const LinkButton = forwardRef<
         href,
         target,
         rel,
+        disabled,
+        onClick,
         ...restHtmlProps
     } = props as LinkButtonProps & LinkButtonNativeProps
 
-    const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTON')
+    const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTONV2')
     const isSkeleton = showSkeleton ?? false
     const isLoading = (loading ?? false) && !isSkeleton
-    const disabled = (restHtmlProps as { disabled?: boolean }).disabled
-    const onClick = restHtmlProps.onClick
     const isDisabled = isSkeleton ? true : (disabled ?? false)
-    const paddingTokens = buttonTokens.padding[size][buttonType][subType]
+    const paddingTokens = getButtonPadding(
+        size,
+        buttonType,
+        subType,
+        buttonTokens
+    )
     const buttonStatus = getButtonStatus(isLoading, isDisabled)
 
     const borderRadius = getBorderRadius(
@@ -142,8 +150,9 @@ const LinkButton = forwardRef<
         border: buttonStyles.border,
         outline: buttonStyles.outline,
         transition: 'transform 0.15s ease-in-out',
-        paddingX: paddingTokens.x,
-        paddingY: paddingTokens.y,
+        paddingTop: paddingTokens.top,
+        paddingX: paddingTokens.right,
+        paddingBottom: paddingTokens.bottom,
         ...ariaAttrs,
         _active: buttonStyles._active,
         _hover: buttonStyles._hover,
@@ -159,7 +168,7 @@ const LinkButton = forwardRef<
             {renderButtonContent({
                 isLoading,
                 isSkeleton,
-                disabled,
+                disabled: isDisabled,
                 state,
                 buttonType,
                 subType,

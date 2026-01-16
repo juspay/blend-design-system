@@ -30,12 +30,6 @@ export function getBorderRadius(
     return '0px 0px 0px 0px'
 }
 
-export function getDefaultLineHeight(): string | undefined {
-    const lineHeight = FOUNDATION_THEME.font.size.body.md.lineHeight
-    if (lineHeight === undefined || lineHeight === null) return undefined
-    return typeof lineHeight === 'number' ? `${lineHeight}px` : lineHeight
-}
-
 export function createButtonClickHandler(
     onClick?: (event?: MouseEvent<HTMLButtonElement>) => void,
     isSkeleton?: boolean,
@@ -289,4 +283,32 @@ export function getTextColor(
     const color =
         tokens.text.color[buttonType][subType][disabled ? 'disabled' : state]
     return color ? String(color) : 'transparent'
+}
+
+export function getButtonPadding(
+    size: ButtonSize,
+    buttonType: ButtonType,
+    subType: ButtonSubType,
+    tokens: ButtonV2TokensType
+): {
+    top: string
+    right: string
+    bottom: string
+    left: string
+} {
+    const padding = tokens.padding[size][buttonType][subType]
+    return {
+        top: String(padding.top),
+        right: String(padding.right),
+        bottom: String(padding.bottom),
+        left: String(padding.left),
+    }
+}
+
+export function getButtonLineHeight(
+    size: ButtonSize,
+    tokens: ButtonV2TokensType
+): string {
+    const lineHeight = tokens.text.lineHeight?.[size]
+    return lineHeight ? String(lineHeight) : 'normal'
 }

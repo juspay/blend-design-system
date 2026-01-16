@@ -16,7 +16,6 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { getButtonTokens } from '../components/Button/button.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
@@ -44,6 +43,7 @@ import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/m
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
+import { getButtonTokens } from '../components/Button/button.tokens'
 import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 
 const initTokens = (

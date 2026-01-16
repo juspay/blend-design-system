@@ -33,8 +33,10 @@ export type ButtonV2TokensType = Readonly<{
         [key in ButtonSize]: {
             [key in ButtonType]: {
                 [key in ButtonSubType]: {
-                    x: CSSObject['padding']
-                    y: CSSObject['padding']
+                    top: CSSObject['padding']
+                    right: CSSObject['padding']
+                    bottom: CSSObject['padding']
+                    left: CSSObject['padding']
                 }
             }
         }
@@ -74,6 +76,9 @@ export type ButtonV2TokensType = Readonly<{
         fontWeight: {
             [key in ButtonSize]: CSSObject['fontWeight']
         }
+        lineHeight: {
+            [key in ButtonSize]: CSSObject['lineHeight']
+        }
     }
 }>
 
@@ -85,7 +90,6 @@ export const getButtonV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
 ): ResponsiveButtonV2Tokens => {
-    console.log('theme', theme)
     if (theme === Theme.DARK || theme === 'dark') {
         return getButtonV2DarkTokens(foundationToken)
     }

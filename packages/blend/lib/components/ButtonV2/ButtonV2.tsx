@@ -22,15 +22,17 @@ import {
     getButtonStyles,
     getSkeletonBorderRadius,
     getSkeletonWidth,
-    getDefaultLineHeight,
     getIconMaxHeight,
     getIconColor,
     getTextColor,
+    getButtonPadding,
+    getButtonLineHeight,
 } from './utils'
 import {
     getButtonAriaAttributes,
     createButtonKeyboardHandler,
 } from '../../utils/accessibility'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type RenderButtonContentProps = {
     isLoading: boolean
@@ -65,7 +67,6 @@ export function renderButtonContent({
     rightSlot,
     tokens,
 }: RenderButtonContentProps) {
-    const lineHeight = getDefaultLineHeight()
     const iconMaxHeight = getIconMaxHeight(
         subType,
         leftSlot?.maxHeight ?? 0,
@@ -134,7 +135,7 @@ export function renderButtonContent({
                     as="span"
                     color={textColor}
                     aria-hidden={isSkeleton ? true : undefined}
-                    lineHeight={lineHeight}
+                    lineHeight={addPxToValue(getButtonLineHeight(size, tokens))}
                     textAlign="center"
                     data-id={text}
                 >
@@ -189,7 +190,12 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
     const isSkeleton = showSkeleton ?? false
     const isLoading = (loading ?? false) && !isSkeleton
     const isDisabled = isSkeleton ? true : (disabled ?? false)
-    const paddingTokens = buttonTokens.padding[size][buttonType][subType]
+    const paddingTokens = getButtonPadding(
+        size,
+        buttonType,
+        subType,
+        buttonTokens
+    )
     const buttonStatus = getButtonStatus(isLoading, isDisabled)
 
     const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -266,8 +272,9 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
             _hover={buttonStyles._hover}
             _focusVisible={buttonStyles._focusVisible}
             _disabled={buttonStyles._disabled}
-            paddingX={paddingTokens.x}
-            paddingY={paddingTokens.y}
+            paddingTop={paddingTokens.top}
+            paddingX={paddingTokens.right}
+            paddingBottom={paddingTokens.bottom}
             data-button={text}
             data-status={buttonStatus}
             {...restHtmlProps}
