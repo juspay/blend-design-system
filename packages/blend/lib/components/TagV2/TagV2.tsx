@@ -40,14 +40,14 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
             color = TagV2Color.PRIMARY,
             leftSlot,
             rightSlot,
-            showSkeleton,
-            skeletonVariant,
+            skeleton = { showSkeleton: false, skeletonVariant: 'pulse' },
             onClick,
             tagGroupPosition,
             ...rest
         },
         ref
     ) => {
+        const { showSkeleton, skeletonVariant } = skeleton
         const tagTokens = useResponsiveTokens<TagV2TokensType>('TAGV2')
         const TagElement = onClick ? PrimitiveButton : Block
         const filteredRest = filterBlockedProps(rest)
@@ -83,8 +83,8 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
                     type={type}
                     subType={subType}
                     color={color}
-                    leftSlot={leftSlot}
-                    rightSlot={rightSlot}
+                    leftSlot={leftSlot?.slot}
+                    rightSlot={rightSlot?.slot}
                 />
             )
         }
@@ -124,8 +124,6 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
                 paddingRight={tagTokens.padding.right[size]}
                 pointerEvents={onClick ? 'none' : undefined}
                 cursor={cursor}
-                // For clickable tags (rendered as buttons), rely on default text selection behavior.
-                // For non-clickable tags (rendered as blocks), allow text selection.
                 userSelect={onClick ? undefined : 'text'}
                 {...(onClick
                     ? {
@@ -141,8 +139,12 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
                         style={slotStyle}
                         data-element="left-slot"
                         contentCentered
+                        maxHeight={
+                            leftSlot.maxHeight ||
+                            tagTokens.leftSlot.maxHeight[size]
+                        }
                     >
-                        {addAccessibleAriaAttributes(leftSlot)}
+                        {addAccessibleAriaAttributes(leftSlot.slot)}
                     </Block>
                 )}
                 <Text
@@ -159,8 +161,12 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
                         data-element="right-slot"
                         contentCentered
                         style={slotStyle}
+                        maxHeight={
+                            rightSlot.maxHeight ||
+                            tagTokens.rightSlot.maxHeight[size]
+                        }
                     >
-                        {addAccessibleAriaAttributes(rightSlot)}
+                        {addAccessibleAriaAttributes(rightSlot.slot)}
                     </Block>
                 )}
             </TagElement>

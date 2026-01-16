@@ -35,6 +35,17 @@ export type TagV2TokensType = Readonly<{
     }
     gap: CSSObject['gap']
 
+    leftSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+    rightSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+
     text: {
         color: {
             [key in TagV2Type]: {

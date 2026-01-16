@@ -114,6 +114,23 @@ export const getTagV2DarkTokens = (
                 },
             },
 
+            leftSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
+            rightSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
+
             text: {
                 color: {
                     noFill: {
@@ -269,6 +286,23 @@ export const getTagV2DarkTokens = (
                     error: `1px solid ${foundationToken.colors.red[500]}`,
                     warning: `1px solid ${foundationToken.colors.orange[400]}`,
                     purple: `1px solid ${foundationToken.colors.purple[400]}`,
+                },
+            },
+
+            leftSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
+            rightSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
                 },
             },
 

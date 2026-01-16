@@ -157,13 +157,25 @@ const TagV2Demo = () => {
                         size={tagSize}
                         subType={tagSubType}
                         color={tagColor}
-                        showSkeleton={showSkeleton}
-                        skeletonVariant={skeletonVariant as SkeletonVariant}
-                        leftSlot={showLeftSlot ? <Star size={12} /> : undefined}
+                        skeleton={{
+                            showSkeleton: showSkeleton,
+                            skeletonVariant: skeletonVariant as SkeletonVariant,
+                        }}
+                        leftSlot={
+                            showLeftSlot
+                                ? {
+                                      slot: <Star size={12} />,
+                                      maxHeight: '100%',
+                                  }
+                                : undefined
+                        }
                         rightSlot={
-                            showRightSlot ? (
-                                <X aria-label="X" size={12} />
-                            ) : undefined
+                            showRightSlot
+                                ? {
+                                      slot: <X aria-label="X" size={12} />,
+                                      maxHeight: '100%',
+                                  }
+                                : undefined
                         }
                         {...(isClickable
                             ? {

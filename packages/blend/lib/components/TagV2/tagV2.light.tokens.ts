@@ -113,7 +113,22 @@ export const getTagV2LightTokens = (
                     purple: `1px solid ${foundationToken.colors.purple[500]}`,
                 },
             },
-
+            leftSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
+            rightSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
             text: {
                 color: {
                     noFill: {
@@ -268,7 +283,22 @@ export const getTagV2LightTokens = (
                     purple: `1px solid ${foundationToken.colors.purple[500]}`,
                 },
             },
-
+            leftSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
+            rightSlot: {
+                maxHeight: {
+                    xs: `${foundationToken.unit[12]}`,
+                    sm: `${foundationToken.unit[12]}`,
+                    md: `${foundationToken.unit[12]}`,
+                    lg: `${foundationToken.unit[12]}`,
+                },
+            },
             text: {
                 color: {
                     noFill: {

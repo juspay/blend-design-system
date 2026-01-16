@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
+import { CSSObject } from 'styled-components'
 
 export enum TagV2Type {
     NO_FILL = 'noFill',
@@ -34,13 +35,20 @@ export type TagV2Props = {
     type?: TagV2Type
     subType?: TagV2SubType
     color?: TagV2Color
-    leftSlot?: ReactNode
-    rightSlot?: ReactNode
-    showSkeleton?: boolean
-    skeletonVariant?: SkeletonVariant
-    onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLDivElement>
+    leftSlot?: {
+        slot: ReactNode
+        maxHeight: CSSObject['maxHeight']
+    }
+    rightSlot?: {
+        slot: ReactNode
+        maxHeight: CSSObject['maxHeight']
+    }
+    skeleton: {
+        showSkeleton?: boolean
+        skeletonVariant?: SkeletonVariant
+    }
     tagGroupPosition?: 'center' | 'left' | 'right'
 } & Omit<
     React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
-    'size' | 'className' | 'style' | 'onClick'
+    'size' | 'className' | 'style'
 >
