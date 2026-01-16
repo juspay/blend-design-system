@@ -8,12 +8,11 @@ import {
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { getButtonV2LightTokens } from './buttonV2.light.tokens'
+import { Theme } from '../../context/theme.enum'
+import { getButtonV2DarkTokens } from './buttonV2.dark.tokens'
 
-export type ButtonTokensType = Readonly<{
+export type ButtonV2TokensType = Readonly<{
     gap: CSSObject['gap']
-    slotMaxHeight: {
-        [key in ButtonSize]: CSSObject['maxHeight']
-    }
     backgroundColor: {
         [key in ButtonType]: {
             [key in ButtonSubType]: {
@@ -79,17 +78,18 @@ export type ButtonTokensType = Readonly<{
 }>
 
 export type ResponsiveButtonV2Tokens = {
-    [key in keyof BreakpointType]: ButtonTokensType
+    [key in keyof BreakpointType]: ButtonV2TokensType
 }
 
 export const getButtonV2Tokens = (
-    foundationToken: FoundationTokenType
+    foundationToken: FoundationTokenType,
+    theme: Theme | string = Theme.LIGHT
 ): ResponsiveButtonV2Tokens => {
-    const tokens = getButtonV2LightTokens(foundationToken)
+    console.log('theme', theme)
+    if (theme === Theme.DARK || theme === 'dark') {
+        debugger
+        return getButtonV2DarkTokens(foundationToken)
+    }
 
-    return {
-        sm: tokens,
-        md: tokens,
-        lg: tokens,
-    } as ResponsiveButtonV2Tokens
+    return getButtonV2LightTokens(foundationToken)
 }

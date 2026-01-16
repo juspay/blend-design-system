@@ -26,7 +26,7 @@ describe('LinkButton', () => {
             const { container } = render(
                 <LinkButton
                     href="/settings"
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                     aria-label="Settings"
                 />
             )
@@ -41,7 +41,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/save"
                     text="Save"
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Save' })
@@ -55,7 +55,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/next"
                     text="Next"
-                    trailingIcon={<MockIcon />}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Next' })
@@ -69,8 +69,8 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/action"
                     text="Action"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Action' })
@@ -79,8 +79,8 @@ describe('LinkButton', () => {
             expect(await axe(container)).toHaveNoViolations()
         })
 
-        it('renders full width when fullWidth prop is true', () => {
-            render(<LinkButton href="/" text="Full Width" fullWidth />)
+        it('renders full width when width prop is 100%', () => {
+            render(<LinkButton href="/" text="Full Width" width="100%" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '100%' })
         })
@@ -89,19 +89,6 @@ describe('LinkButton', () => {
             render(<LinkButton href="/" text="Custom Width" width="200px" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '200px' })
-        })
-
-        it('renders with custom justify content', () => {
-            render(
-                <LinkButton
-                    href="/"
-                    text="Left Aligned"
-                    justifyContent="flex-start"
-                />
-            )
-            const link = screen.getByRole('link')
-            // Just verify the link renders - the style is applied internally by styled-components
-            expect(link).toBeInTheDocument()
         })
     })
 
@@ -244,7 +231,11 @@ describe('LinkButton', () => {
 
         it('skeleton with no text does not set aria-label', () => {
             const { container } = render(
-                <LinkButton href="/" leadingIcon={<MockIcon />} showSkeleton />
+                <LinkButton
+                    href="/"
+                    leftSlot={{ slot: <MockIcon /> }}
+                    showSkeleton
+                />
             )
             const link = container.querySelector('a')
             expect(link).toBeInTheDocument()
@@ -419,8 +410,8 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="With Icons"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const results = await axe(container)

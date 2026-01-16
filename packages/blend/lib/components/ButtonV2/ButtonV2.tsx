@@ -9,7 +9,7 @@ import {
     ButtonSubType,
     ButtonType,
 } from './buttonV2.types'
-import type { ButtonTokensType } from './button.tokens'
+import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -41,9 +41,15 @@ type RenderButtonContentProps = {
     subType: ButtonSubType
     size: ButtonSize
     text?: string
-    leadingIcon?: React.ReactNode
-    trailingIcon?: React.ReactNode
-    tokens: ButtonTokensType
+    leftSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
+    rightSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
+    tokens: ButtonV2TokensType
 }
 
 export function renderButtonContent({
@@ -55,12 +61,16 @@ export function renderButtonContent({
     subType,
     size,
     text,
-    leadingIcon,
-    trailingIcon,
+    leftSlot,
+    rightSlot,
     tokens,
 }: RenderButtonContentProps) {
     const lineHeight = getDefaultLineHeight()
-    const iconMaxHeight = getIconMaxHeight(subType, size, tokens)
+    const iconMaxHeight = getIconMaxHeight(
+        subType,
+        leftSlot?.maxHeight ?? 0,
+        rightSlot?.maxHeight ?? 0
+    )
     const iconColor = getIconColor(
         isSkeleton,
         disabled,
@@ -98,7 +108,7 @@ export function renderButtonContent({
 
     return (
         <>
-            {leadingIcon && (
+            {leftSlot?.slot && (
                 <Block
                     as="span"
                     contentCentered
@@ -114,7 +124,7 @@ export function renderButtonContent({
                         color: iconColor,
                     }}
                 >
-                    {leadingIcon}
+                    {leftSlot.slot}
                 </Block>
             )}
             {text && (
@@ -131,7 +141,7 @@ export function renderButtonContent({
                     {text}
                 </Text>
             )}
-            {trailingIcon && (
+            {rightSlot?.slot && (
                 <Block
                     as="span"
                     contentCentered
@@ -147,7 +157,7 @@ export function renderButtonContent({
                         color: iconColor,
                     }}
                 >
-                    {trailingIcon}
+                    {rightSlot.slot}
                 </Block>
             )}
         </>
@@ -162,8 +172,8 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
         size = ButtonSize.SMALL,
         subType = ButtonSubType.DEFAULT,
         text,
-        leadingIcon,
-        trailingIcon,
+        leftSlot,
+        rightSlot,
         loading,
         buttonGroupPosition,
         width,
@@ -175,7 +185,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
         ...restHtmlProps
     } = props
 
-    const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+    const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTONV2')
     const isSkeleton = showSkeleton ?? false
     const isLoading = (loading ?? false) && !isSkeleton
     const isDisabled = isSkeleton ? true : (disabled ?? false)
@@ -271,8 +281,8 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
                 subType,
                 size,
                 text,
-                leadingIcon,
-                trailingIcon,
+                leftSlot,
+                rightSlot,
                 tokens: buttonTokens,
             })}
         </PrimitiveButton>

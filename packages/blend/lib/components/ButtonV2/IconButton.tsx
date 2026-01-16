@@ -4,7 +4,7 @@ import { ButtonSize, ButtonSubType, ButtonType } from './buttonV2.types'
 
 export interface IconButtonProps extends Omit<
     React.ComponentProps<typeof ButtonV2>,
-    'text' | 'leadingIcon' | 'trailingIcon' | 'subType'
+    'text' | 'leftSlot' | 'rightSlot' | 'subType'
 > {
     icon: React.ReactNode
     'aria-label': string
@@ -25,7 +25,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
                 buttonType={buttonType}
                 size={size}
                 subType={ButtonSubType.ICON_ONLY}
-                leadingIcon={icon}
+                leftSlot={{ slot: icon }}
                 {...restProps}
             />
         )

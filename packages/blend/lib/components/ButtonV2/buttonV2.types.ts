@@ -32,8 +32,14 @@ export type ButtonV2Props = {
     size?: ButtonSize
     subType?: ButtonSubType
     text?: string
-    leadingIcon?: React.ReactNode
-    trailingIcon?: React.ReactNode
+    leftSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
+    rightSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
     loading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant

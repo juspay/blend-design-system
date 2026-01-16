@@ -307,7 +307,7 @@ describe('ButtonGroupV2', () => {
                         aria-label="Accessible button"
                     />
                     <ButtonV2
-                        leadingIcon={<MockIcon />}
+                        leftSlot={{ slot: <MockIcon /> }}
                         aria-label="Icon button"
                     />
                 </ButtonGroupV2>

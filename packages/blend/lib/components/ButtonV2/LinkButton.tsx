@@ -6,7 +6,7 @@ import {
     ButtonSubType,
     ButtonType,
 } from './buttonV2.types'
-import type { ButtonTokensType } from './button.tokens'
+import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import { renderButtonContent } from './ButtonV2'
@@ -29,8 +29,14 @@ export type LinkButtonProps = {
     size?: ButtonSize
     subType?: ButtonSubType
     text?: string
-    leadingIcon?: React.ReactNode
-    trailingIcon?: React.ReactNode
+    leftSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
+    rightSlot?: {
+        slot: React.ReactNode
+        maxHeight?: string | number
+    }
     loading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -61,8 +67,8 @@ const LinkButton = forwardRef<
         size = ButtonSize.SMALL,
         subType = ButtonSubType.DEFAULT,
         text,
-        leadingIcon,
-        trailingIcon,
+        leftSlot,
+        rightSlot,
         loading,
         width,
         minWidth,
@@ -74,7 +80,7 @@ const LinkButton = forwardRef<
         ...restHtmlProps
     } = props as LinkButtonProps & LinkButtonNativeProps
 
-    const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
+    const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTON')
     const isSkeleton = showSkeleton ?? false
     const isLoading = (loading ?? false) && !isSkeleton
     const disabled = (restHtmlProps as { disabled?: boolean }).disabled
@@ -159,8 +165,8 @@ const LinkButton = forwardRef<
                 subType,
                 size,
                 text,
-                leadingIcon,
-                trailingIcon,
+                leftSlot,
+                rightSlot,
                 tokens: buttonTokens,
             })}
         </PrimitiveLink>

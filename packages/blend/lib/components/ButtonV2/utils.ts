@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react'
 import type { ButtonSize, ButtonState } from './buttonV2.types'
 import { ButtonSubType, ButtonType } from './buttonV2.types'
-import type { ButtonTokensType } from './button.tokens'
+import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
 export function getBorderRadius(
@@ -9,7 +9,7 @@ export function getBorderRadius(
     buttonType: ButtonType,
     subType: ButtonSubType,
     buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
-    tokens: ButtonTokensType
+    tokens: ButtonV2TokensType
 ): string {
     const variantBorderRadius = String(
         tokens.borderRadius[size][buttonType][subType].default
@@ -57,13 +57,13 @@ export function getButtonHeight(subType: ButtonSubType): string | undefined {
 
 export function getIconMaxHeight(
     subType: ButtonSubType,
-    size: ButtonSize,
-    tokens: ButtonTokensType
+    leftSlotMaxHeight: string | number,
+    rightSlotMaxHeight: string | number
 ): string {
     if (subType === ButtonSubType.INLINE) {
         return '100%'
     }
-    return String(tokens.slotMaxHeight[size])
+    return String(leftSlotMaxHeight ?? rightSlotMaxHeight)
 }
 
 export function getButtonStatus(
@@ -91,7 +91,7 @@ export function getSkeletonBorderRadius(
     buttonType: ButtonType,
     subType: ButtonSubType,
     buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
-    tokens: ButtonTokensType
+    tokens: ButtonV2TokensType
 ): string {
     return getBorderRadius(
         size,
@@ -156,7 +156,7 @@ export function getButtonStyles(
     isDisabled: boolean,
     buttonType: ButtonType,
     subType: ButtonSubType,
-    tokens: ButtonTokensType,
+    tokens: ButtonV2TokensType,
     buttonGroupPosition?: 'center' | 'left' | 'right'
 ) {
     const tokenState = isSkeleton
@@ -267,7 +267,7 @@ export function getIconColor(
     disabled: boolean | undefined,
     buttonType: ButtonType,
     subType: ButtonSubType,
-    tokens: ButtonTokensType
+    tokens: ButtonV2TokensType
 ): string {
     if (isSkeleton) return 'transparent'
     const color =
@@ -283,7 +283,7 @@ export function getTextColor(
     state: ButtonState,
     buttonType: ButtonType,
     subType: ButtonSubType,
-    tokens: ButtonTokensType
+    tokens: ButtonV2TokensType
 ): string {
     if (isSkeleton) return 'transparent'
     const color =

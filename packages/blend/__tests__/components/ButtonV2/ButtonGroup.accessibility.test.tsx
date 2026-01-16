@@ -107,7 +107,7 @@ describe('ButtonGroupV2 Accessibility', () => {
                         aria-label="Accessible button"
                     />
                     <ButtonV2
-                        leadingIcon={<MockIcon />}
+                        leftSlot={{ slot: <MockIcon /> }}
                         aria-label="Icon button"
                     />
                 </ButtonGroupV2>
@@ -177,11 +177,11 @@ describe('ButtonGroupV2 Accessibility', () => {
             const { container } = render(
                 <ButtonGroupV2>
                     <ButtonV2
-                        leadingIcon={<MockIcon />}
+                        leftSlot={{ slot: <MockIcon /> }}
                         aria-label="First action"
                     />
                     <ButtonV2
-                        leadingIcon={<MockIcon />}
+                        leftSlot={{ slot: <MockIcon /> }}
                         aria-label="Second action"
                     />
                 </ButtonGroupV2>
