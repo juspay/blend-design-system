@@ -164,14 +164,14 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
         text,
         leadingIcon,
         trailingIcon,
-        disabled,
-        onClick,
         loading,
         buttonGroupPosition,
-        fullWidth,
         width,
-        justifyContent = 'center',
+        minWidth,
+        maxWidth,
         state = ButtonState.DEFAULT,
+        disabled,
+        onClick,
         ...restHtmlProps
     } = props
 
@@ -233,8 +233,10 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
             {...keyboardHandler}
             display="flex"
             alignItems="center"
-            justifyContent={justifyContent}
-            width={fullWidth ? '100%' : (width ?? 'fit-content')}
+            justifyContent="center"
+            width={width ?? 'fit-content'}
+            minWidth={minWidth}
+            maxWidth={maxWidth}
             height={buttonHeight}
             gap={buttonTokens.gap}
             background={buttonStyles.background}
@@ -284,7 +286,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>((props, ref) => {
             buttonGroupPosition,
             buttonTokens
         )
-        const skeletonWidth = getSkeletonWidth(fullWidth, width)
+        const skeletonWidth = getSkeletonWidth(width)
 
         return (
             <Skeleton

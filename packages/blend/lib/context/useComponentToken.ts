@@ -14,7 +14,7 @@ import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.toke
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
+import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
@@ -61,7 +61,7 @@ export const useComponentToken = (
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
-    | ResponsiveButtonTokens
+    | ResponsiveButtonV2Tokens
     | ResponsiveModalTokens
     | ResponsiveBreadcrumbTokens
     | ResponsivePopoverTokens

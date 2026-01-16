@@ -13,10 +13,7 @@ import {
     Hash,
     X,
     Plus,
-    Star,
     Download,
-    Upload,
-    Settings,
     Edit,
     Trash2,
     Eye,
@@ -30,16 +27,11 @@ import {
     TagVariant,
 } from '../../../../packages/blend/lib/components/Tags'
 import { useState } from 'react'
-import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 
 const ButtonGroupV2Demo = () => {
     const [formGroup1, setFormGroup1] = useState('')
     const [formGroup2, setFormGroup2] = useState('')
     const [formGroup3, setFormGroup3] = useState('')
-    const [quickFilter, setQuickFilter] = useState('')
-    const [sortBy, setSortBy] = useState('')
-    const [compactSelect1, setCompactSelect1] = useState('')
-    const [compactSelect2, setCompactSelect2] = useState('')
 
     const [playgroundStacked, setPlaygroundStacked] = useState(false)
     const [playgroundButtonType, setPlaygroundButtonType] =
@@ -52,7 +44,6 @@ const ButtonGroupV2Demo = () => {
     )
     const [playgroundCount, setPlaygroundCount] = useState('3')
 
-    // Options for selects
     const typeOptions = [
         { value: ButtonType.PRIMARY, label: 'Primary' },
         { value: ButtonType.SECONDARY, label: 'Secondary' },
@@ -81,7 +72,7 @@ const ButtonGroupV2Demo = () => {
 
     const renderPlaygroundButtons = () => {
         const buttons = []
-        const icons = [Hash, X, Plus, Star, Settings]
+        const icons = [Hash, X, Plus, Download, Edit]
 
         for (let i = 0; i < Number(playgroundCount); i++) {
             const IconComponent = icons[i]
@@ -102,11 +93,9 @@ const ButtonGroupV2Demo = () => {
                             <IconComponent size={16} />
                         ) : undefined
                     }
-                    onClick={() => {
-                        addSnackbar({
-                            header: `Button ${i + 1} clicked!`,
-                        })
-                    }}
+                    onClick={() =>
+                        addSnackbar({ header: `Button ${i + 1} clicked!` })
+                    }
                 />
             )
         }
@@ -114,11 +103,23 @@ const ButtonGroupV2Demo = () => {
     }
 
     return (
-        <div className="p-8 space-y-12">
-            {/* Playground Section */}
-            <div className="space-y-6">
+        <div className="p-8 space-y-10">
+            {/* Header */}
+            <div className="space-y-3">
+                <h1 className="text-3xl font-bold">
+                    ButtonGroupV2 Component Demo
+                </h1>
+                <p className="text-gray-600">
+                    Group buttons together with connected borders and consistent
+                    alignment.
+                </p>
+            </div>
+
+            {/* Playground */}
+            <section className="space-y-4">
                 <h2 className="text-2xl font-bold">Playground</h2>
-                <div className="space-y-6">
+
+                <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <SingleSelect
                             label="Button Type"
@@ -129,7 +130,6 @@ const ButtonGroupV2Demo = () => {
                             }
                             placeholder="Select type"
                         />
-
                         <SingleSelect
                             label="Size"
                             items={[{ items: sizeOptions }]}
@@ -139,7 +139,6 @@ const ButtonGroupV2Demo = () => {
                             }
                             placeholder="Select size"
                         />
-
                         <SingleSelect
                             label="Sub Type"
                             items={[{ items: subTypeOptions }]}
@@ -149,7 +148,6 @@ const ButtonGroupV2Demo = () => {
                             }
                             placeholder="Select sub type"
                         />
-
                         <SingleSelect
                             label="Button Count"
                             items={[{ items: countOptions }]}
@@ -168,42 +166,41 @@ const ButtonGroupV2Demo = () => {
                             }
                         />
                     </div>
-
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
-                        <ButtonGroupV2 stacked={playgroundStacked}>
-                            {renderPlaygroundButtons()}
-                        </ButtonGroupV2>
-                    </div>
                 </div>
-            </div>
+
+                <div className="min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                    <ButtonGroupV2 stacked={playgroundStacked}>
+                        {renderPlaygroundButtons()}
+                    </ButtonGroupV2>
+                </div>
+            </section>
 
             {/* Basic Examples */}
-            <div className="space-y-6">
+            <section className="space-y-4">
                 <h2 className="text-2xl font-bold">Basic Examples</h2>
-                <div className="space-y-8">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Horizontal Group
+
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="text-lg font-semibold mb-3">
+                            Horizontal Groups
                         </h3>
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <ButtonGroupV2>
                                 <ButtonV2
                                     text="Save"
                                     leadingIcon={<Download size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Save clicked!',
-                                        })
-                                    }}
+                                    onClick={() =>
+                                        addSnackbar({ header: 'Save clicked!' })
+                                    }
                                 />
                                 <ButtonV2
                                     text="Cancel"
                                     buttonType={ButtonType.SECONDARY}
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
                                             header: 'Cancel clicked!',
                                         })
-                                    }}
+                                    }
                                 />
                             </ButtonGroupV2>
 
@@ -212,287 +209,97 @@ const ButtonGroupV2Demo = () => {
                                     text="Edit"
                                     buttonType={ButtonType.PRIMARY}
                                     leadingIcon={<Edit size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Edit clicked!',
-                                        })
-                                    }}
+                                    onClick={() =>
+                                        addSnackbar({ header: 'Edit clicked!' })
+                                    }
                                 />
                                 <ButtonV2
                                     text="View"
                                     buttonType={ButtonType.SECONDARY}
                                     leadingIcon={<Eye size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'View clicked!',
-                                        })
-                                    }}
+                                    onClick={() =>
+                                        addSnackbar({ header: 'View clicked!' })
+                                    }
                                 />
                                 <ButtonV2
                                     text="Delete"
                                     buttonType={ButtonType.DANGER}
                                     leadingIcon={<Trash2 size={16} />}
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
                                             header: 'Delete clicked!',
                                         })
-                                    }}
+                                    }
                                 />
                             </ButtonGroupV2>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Stacked Group</h3>
-                        <div className="space-y-4">
+                    <div>
+                        <h3 className="text-lg font-semibold mb-3">
+                            Stacked Groups
+                        </h3>
+                        <div className="space-y-3">
                             <ButtonGroupV2 stacked>
                                 <ButtonV2
                                     text="Left"
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Left button clicked!',
-                                        })
-                                    }}
+                                    onClick={() =>
+                                        addSnackbar({ header: 'Left clicked!' })
+                                    }
                                 />
                                 <ButtonV2
                                     text="Center"
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
-                                            header: 'Center button clicked!',
+                                            header: 'Center clicked!',
                                         })
-                                    }}
+                                    }
                                 />
                                 <ButtonV2
                                     text="Right"
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
-                                            header: 'Right button clicked!',
+                                            header: 'Right clicked!',
                                         })
-                                    }}
-                                />
-                            </ButtonGroupV2>
-
-                            <ButtonGroupV2 stacked>
-                                <ButtonV2
-                                    leadingIcon={<Hash size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Hash button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    leadingIcon={<Plus size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Plus button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    leadingIcon={<Star size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Star button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    leadingIcon={<Settings size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Settings button clicked!',
-                                        })
-                                    }}
+                                    }
                                 />
                             </ButtonGroupV2>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Button Types */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Button Types</h2>
-                <div className="space-y-6">
-                    {Object.values(ButtonType).map((type) => (
-                        <div key={type} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
-                                {type}
-                            </h3>
-                            <div className="space-y-4">
-                                <ButtonGroupV2>
-                                    <ButtonV2
-                                        text="First"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} first button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Second"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} second button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Third"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} third button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                </ButtonGroupV2>
-
-                                <ButtonGroupV2 stacked>
-                                    <ButtonV2
-                                        text="Left"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} left button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Center"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} center button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Right"
-                                        buttonType={type}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${type} right button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                </ButtonGroupV2>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Sizes */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Sizes</h2>
-                <div className="space-y-6">
-                    {Object.values(ButtonSize).map((size) => (
-                        <div key={size} className="space-y-4">
-                            <h3 className="text-lg font-semibold capitalize">
-                                {size}
-                            </h3>
-                            <div className="space-y-4">
-                                <ButtonGroupV2>
-                                    <ButtonV2
-                                        text="Small"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} small button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Medium"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} medium button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Large"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} large button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                </ButtonGroupV2>
-
-                                <ButtonGroupV2 stacked>
-                                    <ButtonV2
-                                        text="Left"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} left button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Center"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} center button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                    <ButtonV2
-                                        text="Right"
-                                        size={size}
-                                        onClick={() => {
-                                            addSnackbar({
-                                                header: `${size} right button clicked!`,
-                                            })
-                                        }}
-                                    />
-                                </ButtonGroupV2>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            </section>
 
             {/* Mixed Types */}
-            <div className="space-y-6">
+            <section className="space-y-4">
                 <h2 className="text-2xl font-bold">Mixed Types</h2>
-                <div className="space-y-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
+
+                <div className="space-y-4">
+                    <div className="p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold mb-3 text-gray-600">
                             Primary + Secondary
                         </h3>
                         <ButtonGroupV2>
                             <ButtonV2
                                 text="Primary Action"
                                 buttonType={ButtonType.PRIMARY}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Primary action clicked!',
-                                    })
-                                }}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Primary clicked!' })
+                                }
                             />
                             <ButtonV2
                                 text="Secondary Action"
                                 buttonType={ButtonType.SECONDARY}
-                                onClick={() => {
+                                onClick={() =>
                                     addSnackbar({
-                                        header: 'Secondary action clicked!',
+                                        header: 'Secondary clicked!',
                                     })
-                                }}
+                                }
                             />
                         </ButtonGroupV2>
                     </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
+                    <div className="p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold mb-3 text-gray-600">
                             Success + Danger
                         </h3>
                         <ButtonGroupV2>
@@ -500,84 +307,60 @@ const ButtonGroupV2Demo = () => {
                                 text="Approve"
                                 buttonType={ButtonType.SUCCESS}
                                 leadingIcon={<Plus size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Approve clicked!',
-                                    })
-                                }}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Approve clicked!' })
+                                }
                             />
                             <ButtonV2
                                 text="Reject"
                                 buttonType={ButtonType.DANGER}
                                 leadingIcon={<X size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Reject clicked!',
-                                    })
-                                }}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Reject clicked!' })
+                                }
                             />
                         </ButtonGroupV2>
                     </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Mixed with Icons
+                    <div className="p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold mb-3 text-gray-600">
+                            With Icons
                         </h3>
                         <ButtonGroupV2>
                             <ButtonV2
                                 text="Download"
                                 buttonType={ButtonType.PRIMARY}
                                 leadingIcon={<Download size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Download clicked!',
-                                    })
-                                }}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Download clicked!' })
+                                }
                             />
                             <ButtonV2
                                 text="Upload"
                                 buttonType={ButtonType.SECONDARY}
-                                leadingIcon={<Upload size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Upload clicked!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                buttonType={ButtonType.DANGER}
-                                leadingIcon={<Trash2 size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Delete clicked!',
-                                    })
-                                }}
+                                leadingIcon={<ChevronDown size={16} />}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Upload clicked!' })
+                                }
                             />
                         </ButtonGroupV2>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* Mixed Content Alignment */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">
-                    Mixed Content Alignment (Bug Fix Demo)
-                </h2>
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">Mixed Content Alignment</h2>
                 <p className="text-gray-600">
-                    These examples demonstrate proper alignment when mixing
-                    buttons with different content types: text with trailing
-                    icons, icon-only buttons, and regular text buttons. All
-                    buttons maintain consistent heights regardless of content.
+                    Proper alignment when mixing buttons with different content
+                    types.
                 </p>
-                <div className="space-y-8">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Button with Tag + Icon-Only Button (Small Size)
+
+                <div className="space-y-4">
+                    <div className="p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold mb-3 text-gray-600">
+                            Button with Tag + Icon Button
                         </h3>
-                        <p className="text-sm text-gray-600">
-                            Common pattern: A button with a trailing tag/badge
-                            next to an icon-only dropdown button
-                        </p>
                         <div className="flex gap-4 flex-wrap">
                             <ButtonGroupV2>
                                 <ButtonV2
@@ -592,176 +375,31 @@ const ButtonGroupV2Demo = () => {
                                             size={TagSize.XS}
                                         />
                                     }
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
-                                            header: 'Status button clicked!',
+                                            header: 'Status clicked!',
                                         })
-                                    }}
+                                    }
                                 />
                                 <ButtonV2
                                     text=""
                                     buttonType={ButtonType.SECONDARY}
                                     size={ButtonSize.SMALL}
                                     leadingIcon={<ChevronDown size={16} />}
-                                    onClick={() => {
+                                    onClick={() =>
                                         addSnackbar({
                                             header: 'Dropdown clicked!',
                                         })
-                                    }}
-                                />
-                            </ButtonGroupV2>
-
-                            <ButtonGroupV2>
-                                <ButtonV2
-                                    text="Priority"
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.SMALL}
-                                    trailingIcon={
-                                        <Tag
-                                            text="High"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.ERROR}
-                                            size={TagSize.XS}
-                                        />
                                     }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Priority button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    text=""
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.SMALL}
-                                    leadingIcon={<Filter size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Filter clicked!',
-                                        })
-                                    }}
                                 />
                             </ButtonGroupV2>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Button with Tag + Icon-Only Button (Medium Size)
+                    <div className="p-4 border rounded-lg bg-white">
+                        <h3 className="text-sm font-semibold mb-3 text-gray-600">
+                            Stacked with Tags
                         </h3>
-                        <div className="flex gap-4 flex-wrap">
-                            <ButtonGroupV2>
-                                <ButtonV2
-                                    text="Category"
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.MEDIUM}
-                                    trailingIcon={
-                                        <Tag
-                                            text="12"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.NEUTRAL}
-                                            size={TagSize.SM}
-                                        />
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Category button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    text=""
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.MEDIUM}
-                                    leadingIcon={<Settings size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Settings clicked!',
-                                        })
-                                    }}
-                                />
-                            </ButtonGroupV2>
-
-                            <ButtonGroupV2>
-                                <ButtonV2
-                                    text="Notifications"
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.MEDIUM}
-                                    trailingIcon={
-                                        <Tag
-                                            text="New"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.WARNING}
-                                            size={TagSize.SM}
-                                        />
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Notifications clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    text=""
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.MEDIUM}
-                                    leadingIcon={<ChevronDown size={16} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'More options!',
-                                        })
-                                    }}
-                                />
-                            </ButtonGroupV2>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Button with Tag + Icon-Only Button (Large Size)
-                        </h3>
-                        <div className="flex gap-4 flex-wrap">
-                            <ButtonGroupV2>
-                                <ButtonV2
-                                    text="Team"
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.LARGE}
-                                    trailingIcon={
-                                        <Tag
-                                            text="8 members"
-                                            variant={TagVariant.SUBTLE}
-                                            color={TagColor.PRIMARY}
-                                            size={TagSize.MD}
-                                        />
-                                    }
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Team button clicked!',
-                                        })
-                                    }}
-                                />
-                                <ButtonV2
-                                    text=""
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.LARGE}
-                                    leadingIcon={<Plus size={20} />}
-                                    onClick={() => {
-                                        addSnackbar({
-                                            header: 'Add member clicked!',
-                                        })
-                                    }}
-                                />
-                            </ButtonGroupV2>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Stacked: Mixed Content
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                            Stacked buttons also maintain consistent heights
-                        </p>
                         <ButtonGroupV2 stacked>
                             <ButtonV2
                                 text="Active Items"
@@ -775,368 +413,84 @@ const ButtonGroupV2Demo = () => {
                                         size={TagSize.SM}
                                     />
                                 }
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Active items clicked!',
-                                    })
-                                }}
+                                onClick={() =>
+                                    addSnackbar({ header: 'Active clicked!' })
+                                }
                             />
                             <ButtonV2
                                 text=""
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.MEDIUM}
                                 leadingIcon={<Filter size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Filter clicked!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                text="Archived"
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.MEDIUM}
-                                trailingIcon={
-                                    <Tag
-                                        text="8"
-                                        variant={TagVariant.SUBTLE}
-                                        color={TagColor.NEUTRAL}
-                                        size={TagSize.SM}
-                                    />
+                                onClick={() =>
+                                    addSnackbar({ header: 'Filter clicked!' })
                                 }
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Archived clicked!',
-                                    })
-                                }}
                             />
                         </ButtonGroupV2>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* Form Elements Group */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Form Elements Group</h2>
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">Form Elements</h2>
                 <p className="text-gray-600">
-                    The Group component can also be used to group form elements.
-                    Below are examples of common patterns using SingleSelect and
-                    other form inputs.
+                    Using the Group component to align form elements.
                 </p>
-                <div className="space-y-8">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Horizontal Form Group (with spacing)
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                            Multiple selects arranged horizontally with
-                            consistent spacing
-                        </p>
-                        <Group gap={10} alignItems="flex-end">
-                            <SingleSelect
-                                label="Category"
-                                placeholder="Select category"
-                                items={[
-                                    {
-                                        items: [
-                                            {
-                                                value: 'tech',
-                                                label: 'Technology',
-                                            },
-                                            {
-                                                value: 'finance',
-                                                label: 'Finance',
-                                            },
-                                            {
-                                                value: 'healthcare',
-                                                label: 'Healthcare',
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                selected={formGroup1}
-                                onSelect={setFormGroup1}
-                            />
-                            <SingleSelect
-                                label="Status"
-                                placeholder="Select status"
-                                items={[
-                                    {
-                                        items: [
-                                            {
-                                                value: 'active',
-                                                label: 'Active',
-                                            },
-                                            {
-                                                value: 'inactive',
-                                                label: 'Inactive',
-                                            },
-                                            {
-                                                value: 'pending',
-                                                label: 'Pending',
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                selected={formGroup2}
-                                onSelect={setFormGroup2}
-                            />
-                            <SingleSelect
-                                label="Priority"
-                                placeholder="Select priority"
-                                items={[
-                                    {
-                                        items: [
-                                            { value: 'high', label: 'High' },
-                                            {
-                                                value: 'medium',
-                                                label: 'Medium',
-                                            },
-                                            { value: 'low', label: 'Low' },
-                                        ],
-                                    },
-                                ]}
-                                selected={formGroup3}
-                                onSelect={setFormGroup3}
-                            />
-                        </Group>
-                    </div>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Search + Filter Pattern
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                            Common pattern for search interfaces with filters
-                        </p>
-                        <Group gap={8} style={{ maxWidth: '600px' }}>
-                            <div style={{ flex: 1 }}>
-                                <SingleSelect
-                                    label="Quick Filters"
-                                    placeholder="Select filter..."
-                                    items={[
+                <div className="p-4 border rounded-lg bg-white">
+                    <h3 className="text-sm font-semibold mb-3 text-gray-600">
+                        Horizontal Form Group
+                    </h3>
+                    <Group gap={10} alignItems="flex-end">
+                        <SingleSelect
+                            label="Category"
+                            placeholder="Select category"
+                            items={[
+                                {
+                                    items: [
+                                        { value: 'tech', label: 'Technology' },
+                                        { value: 'finance', label: 'Finance' },
+                                    ],
+                                },
+                            ]}
+                            selected={formGroup1}
+                            onSelect={setFormGroup1}
+                        />
+                        <SingleSelect
+                            label="Status"
+                            placeholder="Select status"
+                            items={[
+                                {
+                                    items: [
+                                        { value: 'active', label: 'Active' },
                                         {
-                                            items: [
-                                                {
-                                                    value: 'date',
-                                                    label: 'Date Range',
-                                                },
-                                                {
-                                                    value: 'status',
-                                                    label: 'Status',
-                                                },
-                                                {
-                                                    value: 'priority',
-                                                    label: 'Priority',
-                                                },
-                                            ],
+                                            value: 'inactive',
+                                            label: 'Inactive',
                                         },
-                                    ]}
-                                    selected={quickFilter}
-                                    onSelect={setQuickFilter}
-                                />
-                            </div>
-                            <SingleSelect
-                                label="Sort By"
-                                placeholder="Sort"
-                                items={[
-                                    {
-                                        items: [
-                                            {
-                                                value: 'newest',
-                                                label: 'Newest First',
-                                            },
-                                            {
-                                                value: 'oldest',
-                                                label: 'Oldest First',
-                                            },
-                                            { value: 'az', label: 'A-Z' },
-                                        ],
-                                    },
-                                ]}
-                                selected={sortBy}
-                                onSelect={setSortBy}
-                            />
-                        </Group>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Compact Control Group
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                            Inline form controls for compact layouts
-                        </p>
-                        <Group gap={8} alignItems="center">
-                            <ButtonV2
-                                text="All"
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.SMALL}
-                            />
-                            <SingleSelect
-                                label=""
-                                placeholder="Select"
-                                items={[
-                                    {
-                                        items: [
-                                            {
-                                                value: 'option1',
-                                                label: 'Option 1',
-                                            },
-                                            {
-                                                value: 'option2',
-                                                label: 'Option 2',
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                selected={compactSelect1}
-                                onSelect={setCompactSelect1}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <SingleSelect
-                                label=""
-                                placeholder="Another"
-                                items={[
-                                    {
-                                        items: [
-                                            {
-                                                value: 'opt1',
-                                                label: 'Choice 1',
-                                            },
-                                            {
-                                                value: 'opt2',
-                                                label: 'Choice 2',
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                selected={compactSelect2}
-                                onSelect={setCompactSelect2}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                            />
-                            <ButtonV2
-                                text="Apply"
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                            />
-                        </Group>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Note: Stacked Form Elements
-                        </h3>
-                        <p className="text-gray-600">
-                            Unlike buttons, form elements don't currently have
-                            built-in support for automatic border-radius
-                            adjustment when stacked. To achieve the stacked
-                            (connected) look:
-                        </p>
-                        <ul className="list-disc pl-6 text-gray-600 space-y-2">
-                            <li>
-                                <strong>Option 1:</strong> Wrap elements in a
-                                container with custom CSS to override
-                                border-radius
-                            </li>
-                            <li>
-                                <strong>Option 2:</strong> Use inline styles or
-                                CSS modules to control individual element
-                                borders
-                            </li>
-                            <li>
-                                <strong>Option 3:</strong> For full integration,
-                                each form component would need a{' '}
-                                <code>groupPosition</code> prop (similar to
-                                ButtonV2's <code>buttonGroupPosition</code>)
-                            </li>
-                        </ul>
-                        <p className="text-sm text-gray-500 mt-4">
-                            If you'd like to add automatic border-radius support
-                            to form components, let us know and we can enhance
-                            them with a <code>groupPosition</code> prop!
-                        </p>
-                    </div>
+                                    ],
+                                },
+                            ]}
+                            selected={formGroup2}
+                            onSelect={setFormGroup2}
+                        />
+                        <SingleSelect
+                            label="Priority"
+                            placeholder="Select priority"
+                            items={[
+                                {
+                                    items: [
+                                        { value: 'high', label: 'High' },
+                                        { value: 'low', label: 'Low' },
+                                    ],
+                                },
+                            ]}
+                            selected={formGroup3}
+                            onSelect={setFormGroup3}
+                        />
+                    </Group>
                 </div>
-            </div>
-
-            {/* Interactive Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Interactive Examples</h2>
-                <div className="space-y-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">File Actions</h3>
-                        <ButtonGroupV2>
-                            <ButtonV2
-                                text="New File"
-                                buttonType={ButtonType.PRIMARY}
-                                leadingIcon={<Plus size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'New file created!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                text="Open"
-                                buttonType={ButtonType.SECONDARY}
-                                leadingIcon={<Eye size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'File opened!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                text="Save"
-                                buttonType={ButtonType.SUCCESS}
-                                leadingIcon={<Download size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'File saved!',
-                                    })
-                                }}
-                            />
-                        </ButtonGroupV2>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">User Actions</h3>
-                        <ButtonGroupV2 stacked>
-                            <ButtonV2
-                                text="View Profile"
-                                buttonType={ButtonType.PRIMARY}
-                                leadingIcon={<Eye size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Profile viewed!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                text="Edit Profile"
-                                buttonType={ButtonType.SECONDARY}
-                                leadingIcon={<Edit size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Profile edit mode!',
-                                    })
-                                }}
-                            />
-                            <ButtonV2
-                                text="Delete Account"
-                                buttonType={ButtonType.DANGER}
-                                leadingIcon={<Trash2 size={16} />}
-                                onClick={() => {
-                                    addSnackbar({
-                                        header: 'Delete account confirmed!',
-                                    })
-                                }}
-                            />
-                        </ButtonGroupV2>
-                    </div>
-                </div>
-            </div>
+            </section>
         </div>
     )
 }

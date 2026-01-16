@@ -31,14 +31,12 @@ export type LinkButtonProps = {
     text?: string
     leadingIcon?: React.ReactNode
     trailingIcon?: React.ReactNode
-    disabled?: boolean
-    onClick?: (event?: React.MouseEvent<HTMLAnchorElement>) => void
     loading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
-    fullWidth?: boolean
     width?: string | number
-    justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between'
+    minWidth?: string | number
+    maxWidth?: string | number
     state?: ButtonState
 }
 export type LinkButtonNativeProps = Omit<
@@ -46,7 +44,6 @@ export type LinkButtonNativeProps = Omit<
     | 'href'
     | 'target'
     | 'rel'
-    | 'onClick'
     | 'children'
     | 'className'
     | 'style'
@@ -66,12 +63,10 @@ const LinkButton = forwardRef<
         text,
         leadingIcon,
         trailingIcon,
-        disabled,
-        onClick,
         loading,
-        fullWidth,
         width,
-        justifyContent = 'center',
+        minWidth,
+        maxWidth,
         state = ButtonState.DEFAULT,
         href,
         target,
@@ -82,6 +77,8 @@ const LinkButton = forwardRef<
     const buttonTokens = useResponsiveTokens<ButtonTokensType>('BUTTON')
     const isSkeleton = showSkeleton ?? false
     const isLoading = (loading ?? false) && !isSkeleton
+    const disabled = (restHtmlProps as { disabled?: boolean }).disabled
+    const onClick = restHtmlProps.onClick
     const isDisabled = isSkeleton ? true : (disabled ?? false)
     const paddingTokens = buttonTokens.padding[size][buttonType][subType]
     const buttonStatus = getButtonStatus(isLoading, isDisabled)
@@ -127,8 +124,10 @@ const LinkButton = forwardRef<
         onClick: handleClick,
         display: 'flex',
         alignItems: 'center',
-        justifyContent,
-        width: fullWidth ? '100%' : (width ?? 'fit-content'),
+        justifyContent: 'center',
+        width: width ?? 'fit-content',
+        minWidth,
+        maxWidth,
         gap: buttonTokens.gap,
         ...(buttonHeight !== undefined && { height: buttonHeight }),
         background: buttonStyles.background,
@@ -175,7 +174,7 @@ const LinkButton = forwardRef<
             undefined,
             buttonTokens
         )
-        const skeletonWidth = getSkeletonWidth(fullWidth, width)
+        const skeletonWidth = getSkeletonWidth(width)
 
         return (
             <Skeleton

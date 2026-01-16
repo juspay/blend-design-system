@@ -213,9 +213,62 @@ const VisuallyHidden = styled.span`...`
 
 **After:** Uses shared `Group` primitive component, follows same patterns as ButtonV2.
 
+## API Changes
+
+### Removed Props
+
+- **`fullWidth`** - Use `width="100%"` instead for better control
+- **`justifyContent`** - Removed from props (hardcoded to `'center'` for consistency)
+- **`onClick`** - Now handled via native HTML button/anchor props
+- **`disabled`** - Now handled via native HTML button/anchor props
+
+### Added Props
+
+- **`minWidth`** - Minimum width control
+- **`maxWidth`** - Maximum width control
+
+### Native HTML Props
+
+Both `onClick` and `disabled` are now handled via native HTML attributes:
+
+```typescript
+// ButtonV2 - uses native button attributes
+<ButtonV2
+  text="Click me"
+  onClick={(e) => console.log('clicked')}
+  disabled={false}
+/>
+
+// LinkButton - uses native anchor attributes
+<LinkButton
+  href="/path"
+  text="Link"
+  onClick={(e) => e.preventDefault()}
+  disabled={true}  // Custom handling for anchors
+/>
+```
+
+### Width Control
+
+Instead of `fullWidth`, use the `width` prop directly:
+
+```typescript
+// Before
+<ButtonV2 fullWidth text="Button" />
+
+// After
+<ButtonV2 width="100%" text="Button" />
+```
+
+This gives you more flexibility:
+
+```typescript
+<ButtonV2 width="100%" minWidth="200px" maxWidth="500px" text="Button" />
+```
+
 ## What Stayed the Same
 
-- All props API (100% compatible)
+- All other props API (compatible except for removed props above)
 - All visual behavior
 - All accessibility features
 - Token system (shared `button.tokens.ts`)

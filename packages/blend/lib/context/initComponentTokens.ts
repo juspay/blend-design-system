@@ -16,7 +16,7 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { getButtonTokens } from '../components/Button/button.tokens'
+import { getButtonV2Tokens } from '../components/ButtonV2/button.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
@@ -79,7 +79,7 @@ const initTokens = (
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
-        BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
+        BUTTON: componentTokens.BUTTON ?? getButtonV2Tokens(foundationTokens),
         KEYVALUEPAIR:
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),

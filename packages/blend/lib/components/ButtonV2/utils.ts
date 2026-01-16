@@ -102,11 +102,7 @@ export function getSkeletonBorderRadius(
     )
 }
 
-export function getSkeletonWidth(
-    fullWidth?: boolean,
-    width?: string | number
-): string {
-    if (fullWidth) return '100%'
+export function getSkeletonWidth(width?: string | number): string {
     return width ? String(width) : 'fit-content'
 }
 
