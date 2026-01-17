@@ -122,20 +122,7 @@ type TagV2TokensType = {
 const TagElement = onClick ? PrimitiveButton : Block
 ```
 
-### 2. Structured Slot Props with MaxHeight Control
-
-**Decision**: Slots are structured objects with `slot` and `maxHeight` properties instead of simple ReactNode props.
-
-**Rationale**: Provides fine-grained control over slot sizing while maintaining flexibility. Allows per-slot customization while falling back to token-based defaults.
-
-```tsx
-leftSlot?: {
-    slot: ReactNode
-    maxHeight: CSSObject['maxHeight']
-}
-```
-
-### 3. Separate Skeleton Component
+### 2. Separate Skeleton Component
 
 **Decision**: Extract skeleton rendering logic into a dedicated `TagSkeleton` component.
 
@@ -147,7 +134,7 @@ if (showSkeleton) {
 }
 ```
 
-### 4. Focus-Visible Styles for Accessibility
+### 3. Focus-Visible Styles for Accessibility
 
 **Decision**: Use native focus-visible styles instead of custom animation effects for interactive states.
 
@@ -161,7 +148,7 @@ const FOCUS_VISIBLE_STYLES = {
 } as const
 ```
 
-### 5. Centralized Accessibility Utilities
+### 4. Centralized Accessibility Utilities
 
 **Decision**: Extract accessibility logic into utility functions (`getAccessibleName`, `createKeyboardHandler`).
 
@@ -172,7 +159,7 @@ const accessibleName = getAccessibleName(text, isInteractive, ariaPressed)
 const handleKeyDown = createKeyboardHandler(isInteractive, onClick)
 ```
 
-### 6. Tag Group Position for Border Radius
+### 5. Tag Group Position for Border Radius
 
 **Decision**: Use `tagGroupPosition` prop to adjust border radius when tags are grouped together.
 
@@ -187,17 +174,7 @@ borderRadius={getTagBorderRadius(
 )}
 ```
 
-### 7. Slot Opacity Management During Skeleton
-
-**Decision**: Hide slots (opacity: 0) during skeleton state instead of conditionally rendering them.
-
-**Rationale**: Maintains layout stability and prevents content shift when transitioning between skeleton and loaded states.
-
-```tsx
-const slotStyle = showSkeleton ? SLOT_HIDDEN_STYLE : SLOT_VISIBLE_STYLE
-```
-
-### 8. Pointer Events Handling for Interactive Tags
+### 6. Pointer Events Handling for Interactive Tags
 
 **Decision**: Set `pointerEvents: 'none'` on the container when interactive, delegating pointer handling to the button element.
 
