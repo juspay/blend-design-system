@@ -152,7 +152,17 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
         maxWidth: {
             control: 'text',
             description:
-                'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to "100%"',
+                'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to component token value if not provided.',
+        },
+        minWidth: {
+            control: 'text',
+            description:
+                'Optional CSS min-width value to control the minimum width of the alert component. Accepts any valid CSS width value (e.g., "300px", "50%", "20ch"). Useful for ensuring the alert maintains a minimum readable width. Defaults to component token value if not provided.',
+        },
+        width: {
+            control: 'text',
+            description:
+                'Optional CSS width value to set a fixed or specific width for the alert component. Accepts any valid CSS width value (e.g., "500px", "100%", "80ch", "fit-content"). When provided, this overrides the default width behavior. Defaults to component token value if not provided.',
         },
     },
     tags: ['autodocs'],
