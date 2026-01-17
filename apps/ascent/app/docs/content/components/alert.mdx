@@ -33,6 +33,7 @@ function MyComponent() {
             description="A new version of the application is available. Please update to get the latest features."
             variant={AlertVariant.PRIMARY}
             style={AlertStyle.SUBTLE}
+            maxWidth="600px"
             primaryAction={{
                 label: 'Update Now',
                 onClick: () => console.log('Update clicked'),
@@ -170,6 +171,45 @@ function MyComponent() {
                     'Enum that determines the layout position of action buttons',
             },
             { content: 'BOTTOM, RIGHT' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS max-width value (e.g., "600px", "50%", "80ch", "100%")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText:
+                    'Optional CSS min-width value to control the minimum width of the alert component. Accepts any valid CSS width value (e.g., "300px", "50%", "20ch"). Useful for ensuring the alert maintains a minimum readable width. Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS min-width value (e.g., "300px", "50%", "20ch", "auto")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText:
+                    'Optional CSS width value to set a fixed or specific width for the alert component. Accepts any valid CSS width value (e.g., "500px", "100%", "80ch", "fit-content"). When provided, this overrides the default width behavior. Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (e.g., "500px", "100%", "80ch", "fit-content")',
+            },
+            { content: '' },
         ],
     ]}
     className="mb-8"
