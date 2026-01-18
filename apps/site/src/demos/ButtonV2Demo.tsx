@@ -2,10 +2,10 @@ import { Hash, X } from 'lucide-react'
 import { useState } from 'react'
 import {
     ButtonV2,
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-    ButtonState,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2State,
     IconButton,
     LinkButton,
 } from '../../../../packages/blend/lib/components/ButtonV2'
@@ -16,9 +16,13 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 
 const ButtonV2Demo = () => {
     const [text, setText] = useState('Click me')
-    const [buttonType, setButtonType] = useState<ButtonType>(ButtonType.PRIMARY)
-    const [size, setSize] = useState<ButtonSize>(ButtonSize.MEDIUM)
-    const [subType, setSubType] = useState<ButtonSubType>(ButtonSubType.DEFAULT)
+    const [buttonType, setButtonType] = useState<ButtonV2Type>(
+        ButtonV2Type.PRIMARY
+    )
+    const [size, setSize] = useState<ButtonV2Size>(ButtonV2Size.MEDIUM)
+    const [subType, setSubType] = useState<ButtonV2SubType>(
+        ButtonV2SubType.DEFAULT
+    )
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -30,22 +34,22 @@ const ButtonV2Demo = () => {
     const [width, setWidth] = useState<string>('')
 
     const typeOptions = [
-        { value: ButtonType.PRIMARY, label: 'Primary' },
-        { value: ButtonType.SECONDARY, label: 'Secondary' },
-        { value: ButtonType.DANGER, label: 'Danger' },
-        { value: ButtonType.SUCCESS, label: 'Success' },
+        { value: ButtonV2Type.PRIMARY, label: 'Primary' },
+        { value: ButtonV2Type.SECONDARY, label: 'Secondary' },
+        { value: ButtonV2Type.DANGER, label: 'Danger' },
+        { value: ButtonV2Type.SUCCESS, label: 'Success' },
     ]
 
     const sizeOptions = [
-        { value: ButtonSize.SMALL, label: 'Small' },
-        { value: ButtonSize.MEDIUM, label: 'Medium' },
-        { value: ButtonSize.LARGE, label: 'Large' },
+        { value: ButtonV2Size.SMALL, label: 'Small' },
+        { value: ButtonV2Size.MEDIUM, label: 'Medium' },
+        { value: ButtonV2Size.LARGE, label: 'Large' },
     ]
 
     const subTypeOptions = [
-        { value: ButtonSubType.DEFAULT, label: 'Default' },
-        { value: ButtonSubType.ICON_ONLY, label: 'Icon Only' },
-        { value: ButtonSubType.INLINE, label: 'Inline' },
+        { value: ButtonV2SubType.DEFAULT, label: 'Default' },
+        { value: ButtonV2SubType.ICON_ONLY, label: 'Icon Only' },
+        { value: ButtonV2SubType.INLINE, label: 'Inline' },
     ]
 
     const skeletonVariantOptions = [
@@ -80,7 +84,7 @@ const ButtonV2Demo = () => {
                             items={[{ items: typeOptions }]}
                             selected={buttonType}
                             onSelect={(value) =>
-                                setButtonType(value as ButtonType)
+                                setButtonType(value as ButtonV2Type)
                             }
                             placeholder="Select type"
                         />
@@ -88,7 +92,7 @@ const ButtonV2Demo = () => {
                             label="Size"
                             items={[{ items: sizeOptions }]}
                             selected={size}
-                            onSelect={(value) => setSize(value as ButtonSize)}
+                            onSelect={(value) => setSize(value as ButtonV2Size)}
                             placeholder="Select size"
                         />
                         <SingleSelect
@@ -96,7 +100,7 @@ const ButtonV2Demo = () => {
                             items={[{ items: subTypeOptions }]}
                             selected={subType}
                             onSelect={(value) =>
-                                setSubType(value as ButtonSubType)
+                                setSubType(value as ButtonV2SubType)
                             }
                             placeholder="Select sub type"
                         />
@@ -154,7 +158,7 @@ const ButtonV2Demo = () => {
                 <div className="min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
                     <ButtonV2
                         text={
-                            subType === ButtonSubType.ICON_ONLY
+                            subType === ButtonV2SubType.ICON_ONLY
                                 ? undefined
                                 : text
                         }
@@ -173,13 +177,12 @@ const ButtonV2Demo = () => {
                         }
                         loading={loading}
                         disabled={disabled}
-                        showSkeleton={showSkeleton}
-                        skeletonVariant={skeletonVariant}
+                        skeleton={{ showSkeleton, skeletonVariant }}
                         width={width || undefined}
                         state={
                             disabled
-                                ? ButtonState.DISABLED
-                                : ButtonState.DEFAULT
+                                ? ButtonV2State.DISABLED
+                                : ButtonV2State.DEFAULT
                         }
                         onClick={() => {
                             addSnackbar({

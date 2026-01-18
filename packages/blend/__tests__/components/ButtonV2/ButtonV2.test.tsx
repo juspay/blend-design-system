@@ -294,7 +294,7 @@ describe('ButtonV2', () => {
 
         it('renders skeleton state correctly', async () => {
             const { container } = render(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
 
             const button = screen.getByRole('button')
@@ -311,7 +311,7 @@ describe('ButtonV2', () => {
                 <ButtonV2
                     text="Original Text"
                     aria-label="Custom Label"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
 
@@ -322,7 +322,12 @@ describe('ButtonV2', () => {
         })
 
         it('skeleton with no text does not set aria-label', () => {
-            render(<ButtonV2 leftSlot={{ slot: <MockIcon /> }} showSkeleton />)
+            render(
+                <ButtonV2
+                    leftSlot={{ slot: <MockIcon /> }}
+                    skeleton={{ showSkeleton: true }}
+                />
+            )
 
             const button = screen.getByRole('button')
             expect(button).not.toHaveAttribute('aria-label')
@@ -408,7 +413,11 @@ describe('ButtonV2', () => {
         it('does not call onClick when skeleton', () => {
             const handleClick = vi.fn()
             render(
-                <ButtonV2 text="Skeleton" showSkeleton onClick={handleClick} />
+                <ButtonV2
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                    onClick={handleClick}
+                />
             )
 
             const button = screen.getByRole('button')
@@ -527,7 +536,7 @@ describe('ButtonV2', () => {
 
         it('meets WCAG standards in skeleton state', async () => {
             const { container } = render(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -679,7 +688,7 @@ describe('ButtonV2', () => {
 
         it('renders skeleton state within performance budget', async () => {
             const renderTime = await measureRenderTime(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
 
             assertPerformanceWithContext(
@@ -854,7 +863,7 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                     leftSlot={{ slot: <MockIcon /> }}
                 />
             )
@@ -868,7 +877,7 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                     rightSlot={{ slot: <MockIcon /> }}
                 />
             )
@@ -882,7 +891,7 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                     leftSlot={{ slot: <MockIcon /> }}
                     rightSlot={{ slot: <MockIcon /> }}
                 />

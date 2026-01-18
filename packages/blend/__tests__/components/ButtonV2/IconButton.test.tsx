@@ -109,7 +109,7 @@ describe('IconButton', () => {
                 <IconButton
                     icon={<MockIcon />}
                     aria-label="Skeleton"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
             const button = screen.getByRole('button')

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import ButtonV2 from './ButtonV2'
-import { ButtonSize, ButtonSubType, ButtonType } from './buttonV2.types'
+import { ButtonV2Size, ButtonV2SubType, ButtonV2Type } from './buttonV2.types'
 
 export interface IconButtonProps extends Omit<
     React.ComponentProps<typeof ButtonV2>,
@@ -14,8 +14,8 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     (props, ref) => {
         const {
             icon,
-            buttonType = ButtonType.PRIMARY,
-            size = ButtonSize.SMALL,
+            buttonType = ButtonV2Type.PRIMARY,
+            size = ButtonV2Size.SMALL,
             ...restProps
         } = props
 
@@ -24,7 +24,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
                 ref={ref}
                 buttonType={buttonType}
                 size={size}
-                subType={ButtonSubType.ICON_ONLY}
+                subType={ButtonV2SubType.ICON_ONLY}
                 leftSlot={{ slot: icon }}
                 {...restProps}
             />

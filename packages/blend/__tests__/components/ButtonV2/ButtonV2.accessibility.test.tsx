@@ -4,8 +4,8 @@ import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
 import {
-    ButtonType,
-    ButtonSubType,
+    ButtonV2Type,
+    ButtonV2SubType,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -13,10 +13,10 @@ describe('ButtonV2 Accessibility', () => {
     describe('WCAG 2.1 AA Compliance - Critical Violations', () => {
         it('passes axe-core validation for all button types', async () => {
             const buttonTypes = [
-                ButtonType.PRIMARY,
-                ButtonType.SECONDARY,
-                ButtonType.DANGER,
-                ButtonType.SUCCESS,
+                ButtonV2Type.PRIMARY,
+                ButtonV2Type.SECONDARY,
+                ButtonV2Type.DANGER,
+                ButtonV2Type.SUCCESS,
             ]
 
             for (const buttonType of buttonTypes) {
@@ -35,7 +35,7 @@ describe('ButtonV2 Accessibility', () => {
             const states = [
                 { disabled: true },
                 { loading: true },
-                { showSkeleton: true },
+                { skeleton: { showSkeleton: true } },
             ]
 
             for (const state of states) {
@@ -65,7 +65,7 @@ describe('ButtonV2 Accessibility', () => {
             const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
-                    subType={ButtonSubType.ICON_ONLY}
+                    subType={ButtonV2SubType.ICON_ONLY}
                 />
             )
             const results = await axe(container)
@@ -91,7 +91,7 @@ describe('ButtonV2 Accessibility', () => {
             const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
-                    subType={ButtonSubType.ICON_ONLY}
+                    subType={ButtonV2SubType.ICON_ONLY}
                     aria-label="Save document"
                 />
             )
@@ -105,7 +105,7 @@ describe('ButtonV2 Accessibility', () => {
                     <span id="save-label">Save</span>
                     <ButtonV2
                         leftSlot={{ slot: <MockIcon /> }}
-                        subType={ButtonSubType.ICON_ONLY}
+                        subType={ButtonV2SubType.ICON_ONLY}
                         aria-labelledby="save-label"
                     />
                 </>
@@ -137,7 +137,7 @@ describe('ButtonV2 Accessibility', () => {
             const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
-                    subType={ButtonSubType.ICON_ONLY}
+                    subType={ButtonV2SubType.ICON_ONLY}
                     aria-label="Save document"
                 />
             )
@@ -208,7 +208,9 @@ describe('ButtonV2 Accessibility', () => {
         })
 
         it('has correct ARIA attributes for skeleton state', () => {
-            render(<ButtonV2 text="Skeleton" showSkeleton />)
+            render(
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
+            )
             const button = screen.getByRole('button')
 
             expect(button).toHaveAttribute('aria-disabled', 'true')
@@ -301,7 +303,7 @@ describe('ButtonV2 Accessibility', () => {
             const { container } = render(
                 <ButtonV2
                     text="Complete Test"
-                    buttonType={ButtonType.PRIMARY}
+                    buttonType={ButtonV2Type.PRIMARY}
                     loading
                     leftSlot={{ slot: <MockIcon /> }}
                     rightSlot={{ slot: <MockIcon /> }}

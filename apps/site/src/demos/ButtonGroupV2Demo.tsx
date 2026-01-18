@@ -1,8 +1,8 @@
 import {
     ButtonV2,
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { ButtonGroupV2 } from '../../../../packages/blend/lib/components/ButtonV2/ButtonGroupV2'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -13,28 +13,32 @@ import { useState } from 'react'
 
 const ButtonGroupV2Demo = () => {
     const [stacked, setStacked] = useState(false)
-    const [buttonType, setButtonType] = useState<ButtonType>(ButtonType.PRIMARY)
-    const [size, setSize] = useState<ButtonSize>(ButtonSize.MEDIUM)
-    const [subType, setSubType] = useState<ButtonSubType>(ButtonSubType.DEFAULT)
+    const [buttonType, setButtonType] = useState<ButtonV2Type>(
+        ButtonV2Type.PRIMARY
+    )
+    const [size, setSize] = useState<ButtonV2Size>(ButtonV2Size.MEDIUM)
+    const [subType, setSubType] = useState<ButtonV2SubType>(
+        ButtonV2SubType.DEFAULT
+    )
     const [count, setCount] = useState('3')
 
     const typeOptions = [
-        { value: ButtonType.PRIMARY, label: 'Primary' },
-        { value: ButtonType.SECONDARY, label: 'Secondary' },
-        { value: ButtonType.DANGER, label: 'Danger' },
-        { value: ButtonType.SUCCESS, label: 'Success' },
+        { value: ButtonV2Type.PRIMARY, label: 'Primary' },
+        { value: ButtonV2Type.SECONDARY, label: 'Secondary' },
+        { value: ButtonV2Type.DANGER, label: 'Danger' },
+        { value: ButtonV2Type.SUCCESS, label: 'Success' },
     ]
 
     const sizeOptions = [
-        { value: ButtonSize.SMALL, label: 'Small' },
-        { value: ButtonSize.MEDIUM, label: 'Medium' },
-        { value: ButtonSize.LARGE, label: 'Large' },
+        { value: ButtonV2Size.SMALL, label: 'Small' },
+        { value: ButtonV2Size.MEDIUM, label: 'Medium' },
+        { value: ButtonV2Size.LARGE, label: 'Large' },
     ]
 
     const subTypeOptions = [
-        { value: ButtonSubType.DEFAULT, label: 'Default' },
-        { value: ButtonSubType.ICON_ONLY, label: 'Icon Only' },
-        { value: ButtonSubType.INLINE, label: 'Inline' },
+        { value: ButtonV2SubType.DEFAULT, label: 'Default' },
+        { value: ButtonV2SubType.ICON_ONLY, label: 'Icon Only' },
+        { value: ButtonV2SubType.INLINE, label: 'Inline' },
     ]
 
     const countOptions = [
@@ -54,7 +58,7 @@ const ButtonGroupV2Demo = () => {
                 <ButtonV2
                     key={i}
                     text={
-                        subType === ButtonSubType.ICON_ONLY
+                        subType === ButtonV2SubType.ICON_ONLY
                             ? undefined
                             : `Button ${i + 1}`
                     }
@@ -62,7 +66,7 @@ const ButtonGroupV2Demo = () => {
                     size={size}
                     subType={subType}
                     leftSlot={
-                        subType === ButtonSubType.ICON_ONLY && IconComponent
+                        subType === ButtonV2SubType.ICON_ONLY && IconComponent
                             ? { slot: <IconComponent size={16} /> }
                             : undefined
                     }
@@ -95,7 +99,7 @@ const ButtonGroupV2Demo = () => {
                             items={[{ items: typeOptions }]}
                             selected={buttonType}
                             onSelect={(value) =>
-                                setButtonType(value as ButtonType)
+                                setButtonType(value as ButtonV2Type)
                             }
                             placeholder="Select type"
                         />
@@ -103,7 +107,7 @@ const ButtonGroupV2Demo = () => {
                             label="Size"
                             items={[{ items: sizeOptions }]}
                             selected={size}
-                            onSelect={(value) => setSize(value as ButtonSize)}
+                            onSelect={(value) => setSize(value as ButtonV2Size)}
                             placeholder="Select size"
                         />
                         <SingleSelect
@@ -111,7 +115,7 @@ const ButtonGroupV2Demo = () => {
                             items={[{ items: subTypeOptions }]}
                             selected={subType}
                             onSelect={(value) =>
-                                setSubType(value as ButtonSubType)
+                                setSubType(value as ButtonV2SubType)
                             }
                             placeholder="Select sub type"
                         />

@@ -1,18 +1,23 @@
 import type { MouseEvent } from 'react'
-import type { ButtonSize, ButtonState } from './buttonV2.types'
-import { ButtonSubType, ButtonType } from './buttonV2.types'
+import {
+    ButtonV2Size,
+    ButtonV2State,
+    ButtonV2SubType,
+    ButtonV2Type,
+    PaddingDirection,
+} from './buttonV2.types'
 import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
 export function getBorderRadius(
-    size: ButtonSize,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    size: ButtonV2Size,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: ButtonV2TokensType
 ): string {
     const variantBorderRadius = String(
-        tokens.borderRadius[size][buttonType][subType].default
+        tokens.borderRadius[size][buttonType][subType]
     )
 
     if (buttonGroupPosition === undefined) {
@@ -42,22 +47,30 @@ export function createButtonClickHandler(
     }
 }
 
-export function getButtonHeight(subType: ButtonSubType): string | undefined {
-    if (subType === ButtonSubType.INLINE) {
+export function getButtonHeight(subType: ButtonV2SubType): string | undefined {
+    if (subType === ButtonV2SubType.INLINE) {
         return 'fit-content'
     }
     return undefined
 }
 
 export function getIconMaxHeight(
-    subType: ButtonSubType,
-    leftSlotMaxHeight: string | number,
-    rightSlotMaxHeight: string | number
+    subType: ButtonV2SubType,
+    leftSlotMaxHeight: string | number | undefined,
+    rightSlotMaxHeight: string | number | undefined,
+    size: ButtonV2Size
 ): string {
-    if (subType === ButtonSubType.INLINE) {
+    if (subType === ButtonV2SubType.INLINE) {
         return '100%'
     }
-    return String(leftSlotMaxHeight ?? rightSlotMaxHeight)
+    // Default max height based on button size
+    const defaultMaxHeightMap: Record<ButtonV2Size, string> = {
+        [ButtonV2Size.SMALL]: '16px',
+        [ButtonV2Size.MEDIUM]: '18px',
+        [ButtonV2Size.LARGE]: '20px',
+    }
+    const defaultMaxHeight = defaultMaxHeightMap[size] || '16px'
+    return String(leftSlotMaxHeight ?? rightSlotMaxHeight ?? defaultMaxHeight)
 }
 
 export function getButtonStatus(
@@ -81,9 +94,9 @@ export function getButtonTabIndex(
 }
 
 export function getSkeletonBorderRadius(
-    size: ButtonSize,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    size: ButtonV2Size,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: ButtonV2TokensType
 ): string {
@@ -148,8 +161,8 @@ export function getButtonBorderStyles(
 export function getButtonStyles(
     isSkeleton: boolean,
     isDisabled: boolean,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     tokens: ButtonV2TokensType,
     buttonGroupPosition?: 'center' | 'left' | 'right'
 ) {
@@ -162,9 +175,6 @@ export function getButtonStyles(
     const borderState = isSkeleton
         ? 'transparent'
         : tokens.border[buttonType][subType].default
-    const outlineState = isSkeleton
-        ? 'transparent'
-        : tokens.outline[buttonType][subType].default
 
     const borderStyles = buttonGroupPosition
         ? getButtonBorderStyles(buttonGroupPosition, String(borderState))
@@ -198,7 +208,6 @@ export function getButtonStyles(
         background: tokenState,
         color: textColorState,
         ...borderStyles,
-        outline: outlineState,
         _active:
             isSkeleton || isDisabled
                 ? undefined
@@ -230,8 +239,7 @@ export function getButtonStyles(
                           tokens.border[buttonType][subType].default
                       ),
                   }),
-                  outline: tokens.outline[buttonType][subType].active,
-                  outlineOffset: FOUNDATION_THEME.unit[2],
+                  boxShadow: `0 0 0 3px ${FOUNDATION_THEME.colors.primary[200]}`,
               },
         _disabled: isSkeleton
             ? {
@@ -259,14 +267,14 @@ export function getButtonStyles(
 export function getIconColor(
     isSkeleton: boolean,
     disabled: boolean | undefined,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     tokens: ButtonV2TokensType
 ): string {
     if (isSkeleton) return 'transparent'
     const color =
         tokens.text.color[buttonType][subType][
-            disabled ? 'disabled' : 'default'
+            disabled ? ButtonV2State.DISABLED : ButtonV2State.DEFAULT
         ]
     return color ? String(color) : 'transparent'
 }
@@ -274,21 +282,23 @@ export function getIconColor(
 export function getTextColor(
     isSkeleton: boolean,
     disabled: boolean | undefined,
-    state: ButtonState,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    state: ButtonV2State,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     tokens: ButtonV2TokensType
 ): string {
     if (isSkeleton) return 'transparent'
     const color =
-        tokens.text.color[buttonType][subType][disabled ? 'disabled' : state]
+        tokens.text.color[buttonType][subType][
+            disabled ? ButtonV2State.DISABLED : state
+        ]
     return color ? String(color) : 'transparent'
 }
 
 export function getButtonPadding(
-    size: ButtonSize,
-    buttonType: ButtonType,
-    subType: ButtonSubType,
+    size: ButtonV2Size,
+    buttonType: ButtonV2Type,
+    subType: ButtonV2SubType,
     tokens: ButtonV2TokensType
 ): {
     top: string
@@ -296,17 +306,24 @@ export function getButtonPadding(
     bottom: string
     left: string
 } {
-    const padding = tokens.padding[size][buttonType][subType]
     return {
-        top: String(padding.top),
-        right: String(padding.right),
-        bottom: String(padding.bottom),
-        left: String(padding.left),
+        top: String(
+            tokens.padding[PaddingDirection.TOP][size][buttonType][subType]
+        ),
+        right: String(
+            tokens.padding[PaddingDirection.RIGHT][size][buttonType][subType]
+        ),
+        bottom: String(
+            tokens.padding[PaddingDirection.BOTTOM][size][buttonType][subType]
+        ),
+        left: String(
+            tokens.padding[PaddingDirection.LEFT][size][buttonType][subType]
+        ),
     }
 }
 
 export function getButtonLineHeight(
-    size: ButtonSize,
+    size: ButtonV2Size,
     tokens: ButtonV2TokensType
 ): string {
     const lineHeight = tokens.text.lineHeight?.[size]

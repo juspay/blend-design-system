@@ -15,6 +15,7 @@ import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/u
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
@@ -88,6 +89,7 @@ export const useComponentToken = (
     | ResponsiveMobileNavigationTokens
     | ResponsiveDirectoryTokens
     | ResponsiveChatInputTokensType
+    | ResponsiveButtonTokens
     | ResponsiveButtonV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {

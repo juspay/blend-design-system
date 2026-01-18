@@ -204,7 +204,11 @@ describe('LinkButton', () => {
 
         it('renders skeleton state', async () => {
             const { container } = render(
-                <LinkButton href="/" text="Skeleton" showSkeleton />
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
             )
             // In skeleton state, link is wrapped in Skeleton component
             const link = container.querySelector('a')
@@ -221,7 +225,7 @@ describe('LinkButton', () => {
                     href="/"
                     text="Original"
                     aria-label="Custom"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
             const link = container.querySelector('a')
@@ -234,7 +238,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     leftSlot={{ slot: <MockIcon /> }}
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
             const link = container.querySelector('a')
@@ -247,8 +251,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="Skeleton"
-                    showSkeleton
-                    skeletonVariant="pulse"
+                    skeleton={{ showSkeleton: true, skeletonVariant: 'pulse' }}
                 />
             )
             // In skeleton state, link is wrapped in Skeleton component
@@ -428,7 +431,11 @@ describe('LinkButton', () => {
 
         it('meets WCAG standards in skeleton state', async () => {
             const { container } = render(
-                <LinkButton href="/" text="Skeleton" showSkeleton />
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()

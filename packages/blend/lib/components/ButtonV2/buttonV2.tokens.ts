@@ -1,9 +1,10 @@
 import type { CSSObject } from 'styled-components'
 import {
-    ButtonSize,
-    ButtonState,
-    ButtonSubType,
-    ButtonType,
+    ButtonV2Size,
+    ButtonV2State,
+    ButtonV2SubType,
+    ButtonV2Type,
+    PaddingDirection,
 } from './buttonV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
@@ -14,70 +15,65 @@ import { getButtonV2DarkTokens } from './buttonV2.dark.tokens'
 export type ButtonV2TokensType = Readonly<{
     gap: CSSObject['gap']
     backgroundColor: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['background']
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['background']
             }
         }
     }
     borderRadius: {
-        [key in ButtonSize]: {
-            [key in ButtonType]: {
-                [key in ButtonSubType]: {
-                    [key in ButtonState]: CSSObject['borderRadius']
-                }
+        [key in ButtonV2Size]: {
+            [key in ButtonV2Type]: {
+                [key in ButtonV2SubType]: CSSObject['borderRadius']
             }
         }
     }
     padding: {
-        [key in ButtonSize]: {
-            [key in ButtonType]: {
-                [key in ButtonSubType]: {
-                    top: CSSObject['padding']
-                    right: CSSObject['padding']
-                    bottom: CSSObject['padding']
-                    left: CSSObject['padding']
+        [key in PaddingDirection]: {
+            [key in ButtonV2Size]: {
+                [key in ButtonV2Type]: {
+                    [key in ButtonV2SubType]: CSSObject['padding']
                 }
             }
         }
     }
     border: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['border']
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['border']
             }
         }
     }
     shadow: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['boxShadow']
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['boxShadow']
             }
         }
     }
     outline: {
-        [key in ButtonType]: {
-            [key in ButtonSubType]: {
-                [key in ButtonState]: CSSObject['outline']
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['outline']
             }
         }
     }
     text: {
         color: {
-            [key in ButtonType]: {
-                [key in ButtonSubType]: {
-                    [key in ButtonState]: CSSObject['color']
+            [key in ButtonV2Type]: {
+                [key in ButtonV2SubType]: {
+                    [key in ButtonV2State]: CSSObject['color']
                 }
             }
         }
         fontSize: {
-            [key in ButtonSize]: CSSObject['fontSize']
+            [key in ButtonV2Size]: CSSObject['fontSize']
         }
         fontWeight: {
-            [key in ButtonSize]: CSSObject['fontWeight']
+            [key in ButtonV2Size]: CSSObject['fontWeight']
         }
         lineHeight: {
-            [key in ButtonSize]: CSSObject['lineHeight']
+            [key in ButtonV2Size]: CSSObject['lineHeight']
         }
     }
 }>
