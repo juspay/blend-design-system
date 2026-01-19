@@ -14,6 +14,7 @@ import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.toke
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -47,6 +48,7 @@ import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 export const useComponentToken = (
     component: keyof ComponentTokenType
 ):
+    | ResponsiveButtonTokens
     | ResponsiveSearchInputTokens
     | ResponsiveTagTokens
     | ResponsiveTextAreaTokens
@@ -62,7 +64,6 @@ export const useComponentToken = (
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
-    | ResponsiveButtonTokens
     | ResponsiveModalTokens
     | ResponsiveBreadcrumbTokens
     | ResponsivePopoverTokens
@@ -90,7 +91,8 @@ export const useComponentToken = (
     | ResponsiveMobileNavigationTokens
     | ResponsiveDirectoryTokens
     | ResponsiveChatInputTokensType
-    | ResponsiveTagV2Tokens => {
+    | ResponsiveTagV2Tokens
+    | ResponsiveButtonV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -182,6 +184,8 @@ export const useComponentToken = (
             return componentTokens.CHAT_INPUT
         case 'TAGV2':
             return componentTokens.TAGV2
+        case 'BUTTONV2':
+            return componentTokens.BUTTONV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

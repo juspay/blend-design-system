@@ -13,7 +13,7 @@ import {
     ButtonSize,
     ButtonSubType,
     ButtonState,
-} from '../../../lib/components/ButtonV2/types'
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 function getCurrentTestName(): string {
@@ -33,7 +33,10 @@ describe('ButtonV2', () => {
 
         it('renders without text (icon only)', async () => {
             const { container } = render(
-                <ButtonV2 leadingIcon={<MockIcon />} aria-label="Icon button" />
+                <ButtonV2
+                    leftSlot={{ slot: <MockIcon /> }}
+                    aria-label="Icon button"
+                />
             )
             const button = screen.getByRole('button', { name: 'Icon button' })
             expect(button).toBeInTheDocument()
@@ -44,7 +47,7 @@ describe('ButtonV2', () => {
 
         it('renders with leading icon and text', async () => {
             const { container } = render(
-                <ButtonV2 text="Save" leadingIcon={<MockIcon />} />
+                <ButtonV2 text="Save" leftSlot={{ slot: <MockIcon /> }} />
             )
             const button = screen.getByRole('button', { name: 'Save' })
             expect(button).toBeInTheDocument()
@@ -58,7 +61,7 @@ describe('ButtonV2', () => {
 
         it('leading icon without text has no aria-hidden (accessible to screen readers)', async () => {
             const { container } = render(
-                <ButtonV2 leadingIcon={<MockIcon />} aria-label="Save" />
+                <ButtonV2 leftSlot={{ slot: <MockIcon /> }} aria-label="Save" />
             )
             const button = screen.getByRole('button', { name: 'Save' })
             expect(button).toBeInTheDocument()
@@ -72,7 +75,10 @@ describe('ButtonV2', () => {
 
         it('trailing icon without text has no aria-hidden (accessible to screen readers)', async () => {
             const { container } = render(
-                <ButtonV2 trailingIcon={<MockIcon />} aria-label="Next" />
+                <ButtonV2
+                    rightSlot={{ slot: <MockIcon /> }}
+                    aria-label="Next"
+                />
             )
             const button = screen.getByRole('button', { name: 'Next' })
             expect(button).toBeInTheDocument()
@@ -86,7 +92,7 @@ describe('ButtonV2', () => {
 
         it('renders with trailing icon and text', async () => {
             const { container } = render(
-                <ButtonV2 text="Next" trailingIcon={<MockIcon />} />
+                <ButtonV2 text="Next" rightSlot={{ slot: <MockIcon /> }} />
             )
             const button = screen.getByRole('button', { name: 'Next' })
             expect(button).toBeInTheDocument()
@@ -101,8 +107,8 @@ describe('ButtonV2', () => {
         it('renders both icons without text (both are accessible)', async () => {
             const { container } = render(
                 <ButtonV2
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                     aria-label="Actions"
                 />
             )
@@ -128,8 +134,8 @@ describe('ButtonV2', () => {
             const { container } = render(
                 <ButtonV2
                     text="Action"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const button = screen.getByRole('button', { name: 'Action' })
@@ -149,8 +155,8 @@ describe('ButtonV2', () => {
             expect(await axe(container)).toHaveNoViolations()
         })
 
-        it('renders full width when fullWidth prop is true', () => {
-            render(<ButtonV2 text="Full Width" fullWidth />)
+        it('renders full width when width prop is 100%', () => {
+            render(<ButtonV2 text="Full Width" width="100%" />)
             const button = screen.getByRole('button')
             expect(button).toHaveStyle({ width: '100%' })
         })
@@ -159,12 +165,6 @@ describe('ButtonV2', () => {
             render(<ButtonV2 text="Custom Width" width="200px" />)
             const button = screen.getByRole('button')
             expect(button).toHaveStyle({ width: '200px' })
-        })
-
-        it('renders with custom justify content', () => {
-            render(<ButtonV2 text="Left Aligned" justifyContent="flex-start" />)
-            const button = screen.getByRole('button')
-            expect(button).toHaveStyle({ justifyContent: 'flex-start' })
         })
     })
 
@@ -225,7 +225,7 @@ describe('ButtonV2', () => {
         it('renders icon-only subtype with aria-label', async () => {
             const { container } = render(
                 <ButtonV2
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                     subType={ButtonSubType.ICON_ONLY}
                     aria-label="Save"
                 />
@@ -294,7 +294,7 @@ describe('ButtonV2', () => {
 
         it('renders skeleton state correctly', async () => {
             const { container } = render(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
 
             const button = screen.getByRole('button')
@@ -311,7 +311,7 @@ describe('ButtonV2', () => {
                 <ButtonV2
                     text="Original Text"
                     aria-label="Custom Label"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
 
@@ -322,7 +322,12 @@ describe('ButtonV2', () => {
         })
 
         it('skeleton with no text does not set aria-label', () => {
-            render(<ButtonV2 leadingIcon={<MockIcon />} showSkeleton />)
+            render(
+                <ButtonV2
+                    leftSlot={{ slot: <MockIcon /> }}
+                    skeleton={{ showSkeleton: true }}
+                />
+            )
 
             const button = screen.getByRole('button')
             expect(button).not.toHaveAttribute('aria-label')
@@ -408,7 +413,11 @@ describe('ButtonV2', () => {
         it('does not call onClick when skeleton', () => {
             const handleClick = vi.fn()
             render(
-                <ButtonV2 text="Skeleton" showSkeleton onClick={handleClick} />
+                <ButtonV2
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                    onClick={handleClick}
+                />
             )
 
             const button = screen.getByRole('button')
@@ -511,8 +520,8 @@ describe('ButtonV2', () => {
             const { container } = render(
                 <ButtonV2
                     text="With Icons"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const results = await axe(container)
@@ -527,7 +536,7 @@ describe('ButtonV2', () => {
 
         it('meets WCAG standards in skeleton state', async () => {
             const { container } = render(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -536,7 +545,7 @@ describe('ButtonV2', () => {
         it('properly handles icon-only buttons with aria-label', async () => {
             const { container } = render(
                 <ButtonV2
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                     subType={ButtonSubType.ICON_ONLY}
                     aria-label="Save document"
                 />
@@ -663,9 +672,9 @@ describe('ButtonV2', () => {
                     text="Complex Button"
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.LARGE}
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
-                    fullWidth
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
+                    width="100%"
                 />
             )
 
@@ -679,7 +688,7 @@ describe('ButtonV2', () => {
 
         it('renders skeleton state within performance budget', async () => {
             const renderTime = await measureRenderTime(
-                <ButtonV2 text="Skeleton" showSkeleton />
+                <ButtonV2 text="Skeleton" skeleton={{ showSkeleton: true }} />
             )
 
             assertPerformanceWithContext(
@@ -854,8 +863,8 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
-                    leadingIcon={<MockIcon />}
+                    skeleton={{ showSkeleton: true }}
+                    leftSlot={{ slot: <MockIcon /> }}
                 />
             )
 
@@ -868,8 +877,8 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
-                    trailingIcon={<MockIcon />}
+                    skeleton={{ showSkeleton: true }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
 
@@ -882,9 +891,9 @@ describe('ButtonV2', () => {
             render(
                 <ButtonV2
                     text="Skeleton"
-                    showSkeleton
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    skeleton={{ showSkeleton: true }}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
 
@@ -907,17 +916,6 @@ describe('ButtonV2', () => {
             expect(button).toHaveStyle({
                 transition: 'transform 0.15s ease-in-out',
             })
-        })
-
-        it.each([
-            ['flex-start', 'flex-start'],
-            ['center', 'center'],
-            ['flex-end', 'flex-end'],
-            ['space-between', 'space-between'],
-        ])('renders with justifyContent %s', (value, expected) => {
-            render(<ButtonV2 text="Test" justifyContent={value} />)
-            const button = screen.getByRole('button')
-            expect(button).toHaveStyle({ justifyContent: expected })
         })
     })
 

@@ -7,9 +7,9 @@ import {
     assertPerformanceWithContext,
 } from '../../test-utils'
 import { axe } from 'jest-axe'
-import { ButtonGroup } from '../../../lib/components/ButtonV2'
+import { ButtonGroupV2 } from '../../../lib/components/ButtonV2/ButtonGroupV2'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
-import { ButtonType } from '../../../lib/components/ButtonV2/types'
+import { ButtonType } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 function getCurrentTestName(): string {
@@ -17,14 +17,14 @@ function getCurrentTestName(): string {
     return testContext.currentTestName || 'unknown-test'
 }
 
-describe('ButtonGroup', () => {
+describe('ButtonGroupV2', () => {
     describe('Rendering', () => {
         it('renders horizontal group with buttons', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -43,11 +43,11 @@ describe('ButtonGroup', () => {
 
         it('renders stacked group with buttons', async () => {
             const { container } = render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -69,9 +69,9 @@ describe('ButtonGroup', () => {
 
         it('renders with single button', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Single" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -83,10 +83,10 @@ describe('ButtonGroup', () => {
 
         it('renders with custom gap', () => {
             render(
-                <ButtonGroup gap={20}>
+                <ButtonGroupV2 gap={20}>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const group = screen.getByRole('button', {
@@ -97,11 +97,11 @@ describe('ButtonGroup', () => {
 
         it('applies correct data attributes', () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="One" />
                     <ButtonV2 text="Two" />
                     <ButtonV2 text="Three" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const group = container.querySelector('[data-button-group="true"]')
@@ -112,10 +112,10 @@ describe('ButtonGroup', () => {
     describe('Stacked Layout', () => {
         it('applies buttonGroupPosition to first button (left)', () => {
             render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             // The position is applied internally, we verify the buttons render correctly
@@ -129,11 +129,11 @@ describe('ButtonGroup', () => {
 
         it('applies buttonGroupPosition to middle buttons (center)', () => {
             render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -149,10 +149,10 @@ describe('ButtonGroup', () => {
 
         it('applies buttonGroupPosition to last button (right)', () => {
             render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -165,9 +165,9 @@ describe('ButtonGroup', () => {
 
         it('does not apply position to single button in stacked group', () => {
             render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Single" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -177,10 +177,10 @@ describe('ButtonGroup', () => {
 
         it('has zero gap when stacked', () => {
             render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const group = screen.getByRole('button', {
@@ -198,10 +198,10 @@ describe('ButtonGroup', () => {
     describe('Horizontal Layout', () => {
         it('has default gap when not stacked', () => {
             render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const group = screen.getByRole('button', {
@@ -213,10 +213,10 @@ describe('ButtonGroup', () => {
 
         it('uses custom gap when provided', () => {
             render(
-                <ButtonGroup gap={16}>
+                <ButtonGroupV2 gap={16}>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const group = screen.getByRole('button', {
@@ -231,10 +231,10 @@ describe('ButtonGroup', () => {
             const handleFirst = vi.fn()
             const handleSecond = vi.fn()
             const { user } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" onClick={handleFirst} />
                     <ButtonV2 text="Second" onClick={handleSecond} />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             await user.click(screen.getByRole('button', { name: 'First' }))
@@ -246,11 +246,11 @@ describe('ButtonGroup', () => {
 
         it('maintains keyboard navigation order', async () => {
             const { user } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
                     <ButtonV2 text="Third" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             await user.tab()
@@ -273,13 +273,13 @@ describe('ButtonGroup', () => {
     describe('Accessibility', () => {
         it('meets WCAG standards for horizontal group', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Primary" buttonType={ButtonType.PRIMARY} />
                     <ButtonV2
                         text="Secondary"
                         buttonType={ButtonType.SECONDARY}
                     />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -288,11 +288,11 @@ describe('ButtonGroup', () => {
 
         it('meets WCAG standards for stacked group', async () => {
             const { container } = render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const results = await axe(container)
@@ -301,16 +301,16 @@ describe('ButtonGroup', () => {
 
         it('maintains accessibility of individual buttons', async () => {
             const { container } = render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2
                         text="Accessible"
                         aria-label="Accessible button"
                     />
                     <ButtonV2
-                        leadingIcon={<MockIcon />}
+                        leftSlot={{ slot: <MockIcon /> }}
                         aria-label="Icon button"
                     />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -326,10 +326,10 @@ describe('ButtonGroup', () => {
 
         it('preserves button accessibility attributes in stacked group', async () => {
             const { container } = render(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Disabled" disabled />
                     <ButtonV2 text="Loading" loading />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             const disabledButton = screen.getByRole('button', {
@@ -350,17 +350,17 @@ describe('ButtonGroup', () => {
 
     describe('Edge Cases', () => {
         it('handles empty children gracefully', () => {
-            render(<ButtonGroup>{[]}</ButtonGroup>)
+            render(<ButtonGroupV2>{[]}</ButtonGroupV2>)
             const group = document.querySelector('[data-button-group="true"]')
             expect(group).toBeInTheDocument()
         })
 
         it('handles mixed valid and invalid children', () => {
             render(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="Valid" />
                     <ButtonV2 text="Also Valid" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(
@@ -376,7 +376,9 @@ describe('ButtonGroup', () => {
                 <ButtonV2 key={i} text={`Button ${i + 1}`} />
             ))
 
-            const { container } = render(<ButtonGroup>{buttons}</ButtonGroup>)
+            const { container } = render(
+                <ButtonGroupV2>{buttons}</ButtonGroupV2>
+            )
 
             for (let i = 1; i <= 10; i++) {
                 expect(
@@ -393,9 +395,9 @@ describe('ButtonGroup', () => {
         it('forwards ref correctly', () => {
             const ref = React.createRef<HTMLDivElement>()
             render(
-                <ButtonGroup ref={ref}>
+                <ButtonGroupV2 ref={ref}>
                     <ButtonV2 text="With Ref" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
@@ -405,10 +407,10 @@ describe('ButtonGroup', () => {
     describe('Performance', () => {
         it('renders within performance budget', async () => {
             const renderTime = await measureRenderTime(
-                <ButtonGroup>
+                <ButtonGroupV2>
                     <ButtonV2 text="First" />
                     <ButtonV2 text="Second" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             assertPerformanceWithContext(
@@ -421,11 +423,11 @@ describe('ButtonGroup', () => {
 
         it('renders stacked group within budget', async () => {
             const renderTime = await measureRenderTime(
-                <ButtonGroup stacked>
+                <ButtonGroupV2 stacked>
                     <ButtonV2 text="Left" />
                     <ButtonV2 text="Center" />
                     <ButtonV2 text="Right" />
-                </ButtonGroup>
+                </ButtonGroupV2>
             )
 
             assertPerformanceWithContext(
@@ -442,7 +444,7 @@ describe('ButtonGroup', () => {
             ))
 
             const renderTime = await measureRenderTime(
-                <ButtonGroup>{buttons}</ButtonGroup>
+                <ButtonGroupV2>{buttons}</ButtonGroupV2>
             )
 
             assertPerformanceWithContext(

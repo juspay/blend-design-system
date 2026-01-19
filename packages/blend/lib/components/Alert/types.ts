@@ -35,4 +35,7 @@ export type AlertProps = {
     onClose?: () => void
     icon?: ReactNode
     actionPlacement?: AlertActionPlacement
+    maxWidth?: string
+    minWidth?: string
+    width?: string
 }

@@ -26,6 +26,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
             secondaryAction,
             onClose,
             icon,
+            maxWidth,
+            minWidth,
+            width,
             actionPlacement = AlertActionPlacement.RIGHT,
         },
         ref
@@ -54,7 +57,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 role={alertRole}
                 aria-labelledby={headingId}
                 aria-describedby={descriptionId}
-                maxWidth={alertTokens.maxWidth}
+                width={width || alertTokens.width}
+                maxWidth={maxWidth || alertTokens.maxWidth}
+                minWidth={minWidth || alertTokens.minWidth}
                 backgroundColor={alertTokens.background[variant][style]}
                 padding={alertTokens.padding}
                 borderRadius={alertTokens.borderRadius}

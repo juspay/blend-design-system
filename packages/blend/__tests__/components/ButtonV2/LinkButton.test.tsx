@@ -7,7 +7,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
-} from '../../../lib/components/ButtonV2/types'
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('LinkButton', () => {
@@ -26,7 +26,7 @@ describe('LinkButton', () => {
             const { container } = render(
                 <LinkButton
                     href="/settings"
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                     aria-label="Settings"
                 />
             )
@@ -41,7 +41,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/save"
                     text="Save"
-                    leadingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Save' })
@@ -55,7 +55,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/next"
                     text="Next"
-                    trailingIcon={<MockIcon />}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Next' })
@@ -69,8 +69,8 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/action"
                     text="Action"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const link = screen.getByRole('link', { name: 'Action' })
@@ -79,8 +79,8 @@ describe('LinkButton', () => {
             expect(await axe(container)).toHaveNoViolations()
         })
 
-        it('renders full width when fullWidth prop is true', () => {
-            render(<LinkButton href="/" text="Full Width" fullWidth />)
+        it('renders full width when width prop is 100%', () => {
+            render(<LinkButton href="/" text="Full Width" width="100%" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '100%' })
         })
@@ -89,19 +89,6 @@ describe('LinkButton', () => {
             render(<LinkButton href="/" text="Custom Width" width="200px" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '200px' })
-        })
-
-        it('renders with custom justify content', () => {
-            render(
-                <LinkButton
-                    href="/"
-                    text="Left Aligned"
-                    justifyContent="flex-start"
-                />
-            )
-            const link = screen.getByRole('link')
-            // Just verify the link renders - the style is applied internally by styled-components
-            expect(link).toBeInTheDocument()
         })
     })
 
@@ -217,7 +204,11 @@ describe('LinkButton', () => {
 
         it('renders skeleton state', async () => {
             const { container } = render(
-                <LinkButton href="/" text="Skeleton" showSkeleton />
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
             )
             // In skeleton state, link is wrapped in Skeleton component
             const link = container.querySelector('a')
@@ -234,7 +225,7 @@ describe('LinkButton', () => {
                     href="/"
                     text="Original"
                     aria-label="Custom"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
             const link = container.querySelector('a')
@@ -244,7 +235,11 @@ describe('LinkButton', () => {
 
         it('skeleton with no text does not set aria-label', () => {
             const { container } = render(
-                <LinkButton href="/" leadingIcon={<MockIcon />} showSkeleton />
+                <LinkButton
+                    href="/"
+                    leftSlot={{ slot: <MockIcon /> }}
+                    skeleton={{ showSkeleton: true }}
+                />
             )
             const link = container.querySelector('a')
             expect(link).toBeInTheDocument()
@@ -256,8 +251,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="Skeleton"
-                    showSkeleton
-                    skeletonVariant="pulse"
+                    skeleton={{ showSkeleton: true, skeletonVariant: 'pulse' }}
                 />
             )
             // In skeleton state, link is wrapped in Skeleton component
@@ -419,8 +413,8 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="With Icons"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
                 />
             )
             const results = await axe(container)
@@ -437,7 +431,11 @@ describe('LinkButton', () => {
 
         it('meets WCAG standards in skeleton state', async () => {
             const { container } = render(
-                <LinkButton href="/" text="Skeleton" showSkeleton />
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()

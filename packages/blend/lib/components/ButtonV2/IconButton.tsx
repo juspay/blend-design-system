@@ -1,31 +1,32 @@
 import { forwardRef } from 'react'
-import ButtonV2 from './Button'
-import { ButtonSize, ButtonSubType, ButtonType } from './types'
+import ButtonV2 from './ButtonV2'
+import { ButtonV2Size, ButtonV2SubType, ButtonV2Type } from './buttonV2.types'
 
-export interface IconButtonProps extends Omit<
+export type IconButtonProps = Omit<
     React.ComponentProps<typeof ButtonV2>,
-    'text' | 'leadingIcon' | 'trailingIcon' | 'subType'
-> {
+    'text' | 'leftSlot' | 'rightSlot' | 'subType'
+> & {
     icon: React.ReactNode
     'aria-label': string
 }
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-    (props, ref) => {
-        const {
+    (
+        {
             icon,
-            buttonType = ButtonType.PRIMARY,
-            size = ButtonSize.SMALL,
+            buttonType = ButtonV2Type.PRIMARY,
+            size = ButtonV2Size.SMALL,
             ...restProps
-        } = props
-
+        },
+        ref
+    ) => {
         return (
             <ButtonV2
                 ref={ref}
                 buttonType={buttonType}
                 size={size}
-                subType={ButtonSubType.ICON_ONLY}
-                leadingIcon={icon}
+                subType={ButtonV2SubType.ICON_ONLY}
+                leftSlot={{ slot: icon }}
                 {...restProps}
             />
         )

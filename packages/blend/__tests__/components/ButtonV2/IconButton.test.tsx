@@ -3,7 +3,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { IconButton } from '../../../lib/components/ButtonV2'
-import { ButtonType, ButtonSize } from '../../../lib/components/ButtonV2/types'
+import {
+    ButtonType,
+    ButtonSize,
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('IconButton', () => {
@@ -106,7 +109,7 @@ describe('IconButton', () => {
                 <IconButton
                     icon={<MockIcon />}
                     aria-label="Skeleton"
-                    showSkeleton
+                    skeleton={{ showSkeleton: true }}
                 />
             )
             const button = screen.getByRole('button')
