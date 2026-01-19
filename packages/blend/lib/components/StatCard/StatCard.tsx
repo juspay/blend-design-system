@@ -98,7 +98,10 @@ const StatCard = ({
             if (
                 change &&
                 change.value != null &&
-                typeof change.value === 'number'
+                change.value != undefined &&
+                typeof change.value === 'number' &&
+                change.valueType != null &&
+                change.valueType != undefined
             ) {
                 const changeText =
                     change.valueType === ChangeType.INCREASE
@@ -193,6 +196,7 @@ const StatCard = ({
     // Only render if effectiveChange is not null/undefined and value is a valid number (including 0)
     const shouldRenderChange =
         effectiveChange != null &&
+        effectiveChange.value != undefined &&
         effectiveChange.value != null &&
         typeof effectiveChange.value === 'number' &&
         !Number.isNaN(effectiveChange.value)
