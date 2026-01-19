@@ -11,14 +11,15 @@ export type IconButtonProps = Omit<
 }
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-    (props, ref) => {
-        const {
+    (
+        {
             icon,
             buttonType = ButtonV2Type.PRIMARY,
             size = ButtonV2Size.SMALL,
             ...restProps
-        } = props
-
+        },
+        ref
+    ) => {
         return (
             <ButtonV2
                 ref={ref}
