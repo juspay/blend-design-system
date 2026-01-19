@@ -144,12 +144,17 @@ export type ComponentTokenType = {
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
     BUTTONV2?: ResponsiveButtonV2Tokens
+    TAGV2?: ResponsiveTagV2Tokens
 }
 
 import { Theme } from './theme.enum'
 import getChatInputTokens, {
     ResponsiveChatInputTokensType,
 } from '../components/ChatInput/chatInput.tokens'
+import {
+    getTagV2Tokens,
+    ResponsiveTagV2Tokens,
+} from '../components/TagV2/tagV2.tokens'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
@@ -204,6 +209,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
+        TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
