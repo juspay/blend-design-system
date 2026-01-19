@@ -6,8 +6,6 @@ import {
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2State,
-    IconButton,
-    LinkButton,
 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -189,27 +187,6 @@ const ButtonV2Demo = () => {
                                 header: 'ButtonV2 clicked!',
                                 description: `${buttonType} ${size} button`,
                             })
-                        }}
-                    />
-                </div>
-            </section>
-
-            <section className="space-y-4">
-                <h2 className="text-2xl font-bold">IconButton & LinkButton</h2>
-                <div className="flex items-center gap-4 flex-wrap">
-                    <IconButton
-                        icon={<Hash size={16} />}
-                        aria-label="Icon button"
-                        onClick={() =>
-                            addSnackbar({ header: 'IconButton clicked!' })
-                        }
-                    />
-                    <LinkButton
-                        href="#"
-                        text="Link Button"
-                        onClick={(e) => {
-                            e?.preventDefault()
-                            addSnackbar({ header: 'LinkButton clicked!' })
                         }}
                     />
                 </div>

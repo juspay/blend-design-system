@@ -12,16 +12,16 @@ export const getButtonV2DarkTokens = (
             backgroundColor: {
                 primary: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} -5%, ${foundationToken.colors.red[500]} 107.5%)`,
-                        hover: foundationToken.colors.primary[600],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
-                        disabled: foundationToken.colors.primary[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        hover: foundationToken.colors.primary[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[700]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
+                        disabled: foundationToken.colors.primary[800],
                     },
                     iconOnly: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
-                        hover: foundationToken.colors.primary[600],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
-                        disabled: foundationToken.colors.primary[300],
+                        hover: foundationToken.colors.primary[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[700]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
+                        disabled: foundationToken.colors.primary[800],
                     },
                     inline: {
                         default: 'none',
@@ -32,16 +32,16 @@ export const getButtonV2DarkTokens = (
                 },
                 secondary: {
                     default: {
-                        default: foundationToken.colors.gray[900],
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[800],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[900],
                     },
                     iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[800],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[900],
                     },
                     inline: {
                         default: 'none',
@@ -53,15 +53,15 @@ export const getButtonV2DarkTokens = (
                 danger: {
                     default: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[500],
-                        disabled: foundationToken.colors.red[300],
+                        hover: foundationToken.colors.red[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.red[700]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
+                        disabled: foundationToken.colors.red[900],
                     },
                     iconOnly: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[500],
-                        disabled: foundationToken.colors.red[300],
+                        hover: foundationToken.colors.red[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.red[700]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
+                        disabled: foundationToken.colors.red[900],
                     },
                     inline: {
                         default: 'none',
@@ -73,15 +73,15 @@ export const getButtonV2DarkTokens = (
                 success: {
                     default: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[300],
+                        hover: foundationToken.colors.green[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.green[700]} 0%, ${foundationToken.colors.green[600]} 100%)`,
+                        disabled: foundationToken.colors.green[900],
                     },
                     iconOnly: {
                         default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[300],
+                        hover: foundationToken.colors.green[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.green[700]} 0%, ${foundationToken.colors.green[600]} 100%)`,
+                        disabled: foundationToken.colors.green[900],
                     },
                     inline: {
                         default: 'none',
@@ -442,14 +442,14 @@ export const getButtonV2DarkTokens = (
                     default: {
                         default: `1px solid ${foundationToken.colors.primary[600]}`,
                         hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        active: `1px solid ${foundationToken.colors.primary[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[800]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.primary[600]}`,
                         hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        active: `1px solid ${foundationToken.colors.primary[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[800]}`,
                     },
                     inline: {
                         default: `none`,
@@ -460,16 +460,16 @@ export const getButtonV2DarkTokens = (
                 },
                 secondary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.gray[200]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[150]}`,
-                        active: `1px solid ${foundationToken.colors.gray[200]}`,
-                        disabled: `1px solid ${foundationToken.colors.gray[150]}`,
+                        default: `1px solid ${foundationToken.colors.gray[700]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[600]}`,
+                        active: `1px solid ${foundationToken.colors.gray[800]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.gray[200]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[150]}`,
-                        active: `1px solid ${foundationToken.colors.gray[200]}`,
-                        disabled: `1px solid ${foundationToken.colors.gray[150]}`,
+                        default: `1px solid ${foundationToken.colors.gray[700]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[600]}`,
+                        active: `1px solid ${foundationToken.colors.gray[800]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                     },
                     inline: {
                         default: `none`,
@@ -482,14 +482,14 @@ export const getButtonV2DarkTokens = (
                     default: {
                         default: `1px solid ${foundationToken.colors.red[600]}`,
                         hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        active: `1px solid ${foundationToken.colors.red[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[900]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.red[600]}`,
                         hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        active: `1px solid ${foundationToken.colors.red[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[900]}`,
                     },
                     inline: {
                         default: `none`,
@@ -502,14 +502,14 @@ export const getButtonV2DarkTokens = (
                     default: {
                         default: `1px solid ${foundationToken.colors.green[600]}`,
                         hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        active: `1px solid ${foundationToken.colors.green[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[900]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.green[600]}`,
                         hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        active: `1px solid ${foundationToken.colors.green[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[900]}`,
                     },
                     inline: {
                         default: `none`,
@@ -621,30 +621,30 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.primary[600],
-                            hover: foundationToken.colors.primary[600],
-                            active: foundationToken.colors.gray[0],
-                            disabled: foundationToken.colors.primary[300],
+                            default: foundationToken.colors.primary[400],
+                            hover: foundationToken.colors.primary[300],
+                            active: foundationToken.colors.primary[500],
+                            disabled: foundationToken.colors.primary[700],
                         },
                     },
                     secondary: {
                         default: {
-                            default: foundationToken.colors.gray[600],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[300],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                         iconOnly: {
-                            default: foundationToken.colors.gray[600],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[400],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                         inline: {
-                            default: foundationToken.colors.gray[600],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[400],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                     },
                     danger: {
@@ -661,10 +661,10 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.red[600],
-                            hover: foundationToken.colors.red[600],
-                            active: foundationToken.colors.red[600],
-                            disabled: foundationToken.colors.red[400],
+                            default: foundationToken.colors.red[400],
+                            hover: foundationToken.colors.red[300],
+                            active: foundationToken.colors.red[500],
+                            disabled: foundationToken.colors.red[700],
                         },
                     },
                     success: {
@@ -681,10 +681,10 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.green[600],
-                            hover: foundationToken.colors.green[600],
-                            active: foundationToken.colors.green[600],
-                            disabled: foundationToken.colors.green[400],
+                            default: foundationToken.colors.green[400],
+                            hover: foundationToken.colors.green[300],
+                            active: foundationToken.colors.green[500],
+                            disabled: foundationToken.colors.green[700],
                         },
                     },
                 },
@@ -710,16 +710,16 @@ export const getButtonV2DarkTokens = (
             backgroundColor: {
                 primary: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} -5%, ${foundationToken.colors.red[500]} 107.5%)`,
-                        hover: foundationToken.colors.primary[600],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
-                        disabled: foundationToken.colors.primary[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        hover: foundationToken.colors.primary[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[700]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
+                        disabled: foundationToken.colors.primary[800],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
-                        hover: foundationToken.colors.primary[600],
-                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[500]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
-                        disabled: foundationToken.colors.primary[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.primary[600]} -5%, ${foundationToken.colors.primary[500]} 107.5%)`,
+                        hover: foundationToken.colors.primary[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.primary[700]} -5%, ${foundationToken.colors.primary[600]} 107.5%)`,
+                        disabled: foundationToken.colors.primary[800],
                     },
                     inline: {
                         default: 'none',
@@ -730,16 +730,16 @@ export const getButtonV2DarkTokens = (
                 },
                 secondary: {
                     default: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[800],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[900],
                     },
                     iconOnly: {
-                        default: foundationToken.colors.gray[0],
-                        hover: foundationToken.colors.gray[50],
-                        active: foundationToken.colors.gray[0],
-                        disabled: foundationToken.colors.gray[150],
+                        default: foundationToken.colors.gray[800],
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[900],
+                        disabled: foundationToken.colors.gray[900],
                     },
                     inline: {
                         default: 'none',
@@ -750,16 +750,16 @@ export const getButtonV2DarkTokens = (
                 },
                 danger: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[500]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[500],
-                        disabled: foundationToken.colors.red[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
+                        hover: foundationToken.colors.red[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.red[700]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
+                        disabled: foundationToken.colors.red[900],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.red[500]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
-                        hover: foundationToken.colors.red[600],
-                        active: foundationToken.colors.red[500],
-                        disabled: foundationToken.colors.red[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.red[600]} 0%, ${foundationToken.colors.red[500]} 93.75%)`,
+                        hover: foundationToken.colors.red[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.red[700]} 0%, ${foundationToken.colors.red[600]} 93.75%)`,
+                        disabled: foundationToken.colors.red[900],
                     },
                     inline: {
                         default: 'none',
@@ -770,16 +770,16 @@ export const getButtonV2DarkTokens = (
                 },
                 success: {
                     default: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.green[500]} 0%, ${foundationToken.colors.green[600]} 100%)`,
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
+                        hover: foundationToken.colors.green[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.green[700]} 0%, ${foundationToken.colors.green[600]} 100%)`,
+                        disabled: foundationToken.colors.green[900],
                     },
                     iconOnly: {
-                        default: `linear-gradient(180deg, ${foundationToken.colors.green[500]} 0%, ${foundationToken.colors.green[600]} 100%)`,
-                        hover: foundationToken.colors.green[600],
-                        active: foundationToken.colors.green[600],
-                        disabled: foundationToken.colors.green[300],
+                        default: `linear-gradient(180deg, ${foundationToken.colors.green[600]} 0%, ${foundationToken.colors.green[500]} 100%)`,
+                        hover: foundationToken.colors.green[500],
+                        active: `linear-gradient(180deg, ${foundationToken.colors.green[700]} 0%, ${foundationToken.colors.green[600]} 100%)`,
+                        disabled: foundationToken.colors.green[900],
                     },
                     inline: {
                         default: 'none',
@@ -1139,15 +1139,15 @@ export const getButtonV2DarkTokens = (
                 primary: {
                     default: {
                         default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[800]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1px solid ${foundationToken.colors.primary[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.primary[800]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1158,16 +1158,16 @@ export const getButtonV2DarkTokens = (
                 },
                 secondary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.gray[200]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[150]}`,
-                        active: `1px solid ${foundationToken.colors.gray[200]}`,
-                        disabled: `1px solid ${foundationToken.colors.gray[150]}`,
+                        default: `1px solid ${foundationToken.colors.gray[700]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[600]}`,
+                        active: `1px solid ${foundationToken.colors.gray[800]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.gray[200]}`,
-                        hover: `1px solid ${foundationToken.colors.gray[150]}`,
-                        active: `1px solid ${foundationToken.colors.gray[200]}`,
-                        disabled: `1px solid ${foundationToken.colors.gray[150]}`,
+                        default: `1px solid ${foundationToken.colors.gray[700]}`,
+                        hover: `1px solid ${foundationToken.colors.gray[600]}`,
+                        active: `1px solid ${foundationToken.colors.gray[800]}`,
+                        disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1179,15 +1179,15 @@ export const getButtonV2DarkTokens = (
                 danger: {
                     default: {
                         default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[900]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        hover: `1px solid ${foundationToken.colors.red[500]}`,
+                        active: `1px solid ${foundationToken.colors.red[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.red[900]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1199,15 +1199,15 @@ export const getButtonV2DarkTokens = (
                 success: {
                     default: {
                         default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[900]}`,
                     },
                     iconOnly: {
                         default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        hover: `1px solid ${foundationToken.colors.green[500]}`,
+                        active: `1px solid ${foundationToken.colors.green[700]}`,
+                        disabled: `1px solid ${foundationToken.colors.green[900]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1307,7 +1307,7 @@ export const getButtonV2DarkTokens = (
                 color: {
                     primary: {
                         default: {
-                            default: foundationToken.colors.red[700],
+                            default: foundationToken.colors.gray[0],
                             hover: foundationToken.colors.gray[0],
                             active: foundationToken.colors.gray[0],
                             disabled: foundationToken.colors.gray[0],
@@ -1319,30 +1319,30 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.primary[600],
-                            hover: foundationToken.colors.primary[600],
-                            active: foundationToken.colors.gray[0],
-                            disabled: foundationToken.colors.primary[300],
+                            default: foundationToken.colors.primary[400],
+                            hover: foundationToken.colors.primary[300],
+                            active: foundationToken.colors.primary[500],
+                            disabled: foundationToken.colors.primary[700],
                         },
                     },
                     secondary: {
                         default: {
-                            default: foundationToken.colors.gray[700],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[300],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                         iconOnly: {
-                            default: foundationToken.colors.gray[600],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[400],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                         inline: {
-                            default: foundationToken.colors.gray[600],
-                            hover: foundationToken.colors.gray[600],
-                            active: foundationToken.colors.gray[600],
-                            disabled: foundationToken.colors.gray[400],
+                            default: foundationToken.colors.gray[100],
+                            hover: foundationToken.colors.gray[50],
+                            active: foundationToken.colors.gray[100],
+                            disabled: foundationToken.colors.gray[500],
                         },
                     },
                     danger: {
@@ -1359,10 +1359,10 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.red[600],
-                            hover: foundationToken.colors.red[600],
-                            active: foundationToken.colors.red[600],
-                            disabled: foundationToken.colors.red[400],
+                            default: foundationToken.colors.red[400],
+                            hover: foundationToken.colors.red[300],
+                            active: foundationToken.colors.red[500],
+                            disabled: foundationToken.colors.red[700],
                         },
                     },
                     success: {
@@ -1379,10 +1379,10 @@ export const getButtonV2DarkTokens = (
                             disabled: foundationToken.colors.gray[0],
                         },
                         inline: {
-                            default: foundationToken.colors.green[600],
-                            hover: foundationToken.colors.green[600],
-                            active: foundationToken.colors.green[600],
-                            disabled: foundationToken.colors.green[400],
+                            default: foundationToken.colors.green[400],
+                            hover: foundationToken.colors.green[300],
+                            active: foundationToken.colors.green[500],
+                            disabled: foundationToken.colors.green[700],
                         },
                     },
                 },
