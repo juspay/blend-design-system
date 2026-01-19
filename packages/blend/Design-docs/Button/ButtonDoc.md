@@ -133,13 +133,6 @@ export type ButtonV2TokensType = Readonly<{
             }
         }
     }
-    outline: {
-        [type in ButtonV2Type]: {
-            [subType in ButtonV2SubType]: {
-                [state in ButtonV2State]: CSSObject['outline']
-            }
-        }
-    }
     text: {
         color: {
             [type in ButtonV2Type]: {
