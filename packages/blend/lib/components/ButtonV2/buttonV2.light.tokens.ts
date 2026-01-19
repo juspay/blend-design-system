@@ -605,88 +605,88 @@ export const getButtonV2LightTokens = (
             },
             // Pattern: outline.[variant].[subType].[state]
             // Example: outline.success.iconOnly.active
-            outline: {
-                primary: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.primary[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.primary[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `1px solid ${foundationToken.colors.primary[500]}`,
-                        disabled: `none`,
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                },
-                danger: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                },
-                success: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
-                    },
-                },
-            },
+            // outline: {
+            //     primary: {
+            //         default: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.primary[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         iconOnly: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.primary[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         inline: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `1px solid ${foundationToken.colors.primary[500]}`,
+            //             disabled: `none`,
+            //         },
+            //     },
+            //     secondary: {
+            //         default: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.gray[100]}`,
+            //             disabled: `none`,
+            //         },
+            //         iconOnly: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.gray[100]}`,
+            //             disabled: `none`,
+            //         },
+            //         inline: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.gray[100]}`,
+            //             disabled: `none`,
+            //         },
+            //     },
+            //     danger: {
+            //         default: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.red[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         iconOnly: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.red[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         inline: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.red[200]}`,
+            //             disabled: `none`,
+            //         },
+            //     },
+            //     success: {
+            //         default: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.green[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         iconOnly: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.green[200]}`,
+            //             disabled: `none`,
+            //         },
+            //         inline: {
+            //             default: `none`,
+            //             hover: `none`,
+            //             active: `3px solid ${foundationToken.colors.green[200]}`,
+            //             disabled: `none`,
+            //         },
+            //     },
+            // },
             text: {
                 // Pattern: text.color.[variant].[subType].[state]
                 // Example: text.color.primary.inline.hover
@@ -1382,90 +1382,6 @@ export const getButtonV2LightTokens = (
                         hover: 'none',
                         active: 'none',
                         disabled: 'none',
-                    },
-                },
-            },
-            // Pattern: outline.[variant].[subType].[state]
-            // Example: outline.success.iconOnly.active
-            outline: {
-                primary: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.primary[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.primary[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `1px solid ${foundationToken.colors.primary[500]}`,
-                        disabled: `none`,
-                    },
-                },
-                secondary: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.gray[100]}`,
-                        disabled: `none`,
-                    },
-                },
-                danger: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.red[200]}`,
-                        disabled: `none`,
-                    },
-                },
-                success: {
-                    default: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
-                    },
-                    iconOnly: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
-                    },
-                    inline: {
-                        default: `none`,
-                        hover: `none`,
-                        active: `3px solid ${foundationToken.colors.green[200]}`,
-                        disabled: `none`,
                     },
                 },
             },
