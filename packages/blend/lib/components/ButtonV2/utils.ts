@@ -8,6 +8,7 @@ import {
 } from './buttonV2.types'
 import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 export function getBorderRadius(
     size: ButtonV2Size,
@@ -327,5 +328,5 @@ export function getButtonLineHeight(
     tokens: ButtonV2TokensType
 ): string {
     const lineHeight = tokens.text.lineHeight?.[size]
-    return lineHeight ? String(lineHeight) : 'normal'
+    return lineHeight ? addPxToValue(lineHeight) : 'normal'
 }

@@ -32,7 +32,6 @@ import {
     getButtonAriaAttributes,
     createButtonKeyboardHandler,
 } from '../../utils/accessibility'
-import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type RenderButtonContentProps = {
     isLoading: boolean
@@ -141,7 +140,7 @@ export function renderButtonContent({
                     as="span"
                     color={textColor}
                     aria-hidden={isSkeleton ? true : undefined}
-                    lineHeight={addPxToValue(getButtonLineHeight(size, tokens))}
+                    lineHeight={getButtonLineHeight(size, tokens)}
                     textAlign="center"
                     data-id={text}
                 >
