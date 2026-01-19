@@ -6,32 +6,29 @@ on:
     pull_request:
         branches: [main, dev]
 
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
 jobs:
-    build-and-format:
+    lint-build:
+        name: Format & Build
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
+            - uses: actions/checkout@v4
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
 
-            - name: Get pnpm store directory
-              shell: bash
-              run: |
-                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
               with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                  node-version: 20
+                  cache: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -39,8 +36,81 @@ jobs:
             - name: Check formatting
               run: pnpm format:check
 
-            - name: Run accessibility tests
-              run: pnpm test:a11y
-
-            - name: Build project
+            - name: Build
               run: pnpm build
+
+    test:
+        name: Unit Tests & Coverage
+        runs-on: ubuntu-latest
+        needs: lint-build
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - name: Run tests with coverage
+              run: |
+                  cd packages/blend
+                  pnpm test:coverage
+              env:
+                  CI: true
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                  files: packages/blend/coverage/coverage-final.json
+                  flags: unittests
+                  fail_ci_if_error: false
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Upload coverage artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-report
+                  path: packages/blend/coverage
+                  retention-days: 30
+
+    a11y:
+        name: Accessibility Tests
+        runs-on: ubuntu-latest
+        needs: lint-build
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - name: Run accessibility tests
+              run: |
+                  cd packages/blend
+                  pnpm test:a11y
+              env:
+                  CI: true
+
+            - name: Upload a11y results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: accessibility-test-results
+                  path: packages/blend/coverage
+                  retention-days: 30

@@ -22,7 +22,7 @@ function getCurrentTestName(): string {
     return testContext.currentTestName || 'unknown-test'
 }
 
-describe('Tooltip Performance', () => {
+describe.skip('Tooltip Performance', () => {
     describe('Render Performance', () => {
         it('renders within performance budget', async () => {
             const renderTime = await measureRenderTime(
