@@ -111,6 +111,8 @@ import AccessibilityDashboard from '../../../../packages/blend/lib/components/sh
 import OutageChartsDemo from './OutageChartsDemo'
 import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
+import TagV2Demo from './TagV2Demo'
+import TagGroupV2Demo from './TagGroupV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -119,6 +121,8 @@ const SidebarDemo = () => {
         | 'accessibility'
         | 'tooltips'
         | 'tags'
+        | 'tagV2'
+        | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
@@ -382,6 +386,10 @@ const SidebarDemo = () => {
                 return <ButtonGroupV2Demo />
             case 'tags':
                 return <TagDemo />
+            case 'tagV2':
+                return <TagV2Demo />
+            case 'tagGroupV2':
+                return <TagGroupV2Demo />
             case 'avatars':
                 return <AvatarDemo />
             case 'breadcrumb':
@@ -673,6 +681,24 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tags',
                     onClick: () => setActiveComponent('tags'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag V2',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagV2',
+                    onClick: () => setActiveComponent('tagV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagGroupV2',
+                    onClick: () => setActiveComponent('tagGroupV2'),
                     showOnMobile: true,
                 },
                 {

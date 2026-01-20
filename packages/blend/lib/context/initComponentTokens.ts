@@ -45,6 +45,7 @@ import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
 import { getButtonTokens } from '../components/Button/button.tokens'
 import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
+import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -135,6 +136,7 @@ const initTokens = (
         BUTTONV2:
             componentTokens.BUTTONV2 ??
             getButtonV2Tokens(foundationTokens, theme),
+        TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
     }
 }
 

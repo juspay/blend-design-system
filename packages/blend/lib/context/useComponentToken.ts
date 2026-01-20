@@ -43,6 +43,7 @@ import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.tok
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
+import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -90,7 +91,9 @@ export const useComponentToken = (
     | ResponsiveDirectoryTokens
     | ResponsiveChatInputTokensType
     | ResponsiveButtonTokens
-    | ResponsiveButtonV2Tokens => {
+    | ResponsiveButtonV2Tokens
+    | ResponsiveChatInputTokensType
+    | ResponsiveTagV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -182,6 +185,8 @@ export const useComponentToken = (
             return componentTokens.CHAT_INPUT
         case 'BUTTONV2':
             return componentTokens.BUTTONV2
+        case 'TAGV2':
+            return componentTokens.TAGV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

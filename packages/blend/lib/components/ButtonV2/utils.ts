@@ -1,3 +1,4 @@
+import { addPxToValue } from './../../global-utils/GlobalUtils'
 import type { MouseEvent } from 'react'
 import {
     ButtonV2Size,
@@ -327,5 +328,5 @@ export function getButtonLineHeight(
     tokens: ButtonV2TokensType
 ): string {
     const lineHeight = tokens.text.lineHeight?.[size]
-    return lineHeight ? String(lineHeight) : 'normal'
+    return lineHeight ? addPxToValue(lineHeight) : 'normal'
 }
