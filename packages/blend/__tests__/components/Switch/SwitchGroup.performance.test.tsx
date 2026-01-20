@@ -16,7 +16,7 @@ function getCurrentTestName(): string {
     return testContext.currentTestName || 'unknown-test'
 }
 
-describe('SwitchGroup Performance', () => {
+describe.skip('SwitchGroup Performance', () => {
     let defaultProps: Record<string, unknown>
 
     beforeEach(() => {

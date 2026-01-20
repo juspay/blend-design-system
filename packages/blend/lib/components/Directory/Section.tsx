@@ -114,9 +114,10 @@ const Section = ({
             width="100%"
             ref={sectionRef}
             data-state={isOpen ? 'open' : 'closed'}
-            data-sidebar-section={section.label || `section-${sectionIndex}`}
-            data-sidebar-expanded={isOpen}
             key={`section-${sectionIndex}`}
+            data-element="sidebar-section"
+            data-id={section.label || `section-${sectionIndex}`}
+            data-status={isOpen ? 'expanded' : 'collapsed'}
         >
             {section.label && !iconOnlyMode && (
                 <Block

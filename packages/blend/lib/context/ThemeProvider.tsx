@@ -3,6 +3,7 @@ import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
 import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 import { Theme } from './theme.enum'
+import { AutofillStyles } from '../components/Inputs/AutofillStyles/AutofillStyles'
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
     componentTokens?: ComponentTokenType
@@ -27,6 +28,7 @@ const ThemeProvider = ({
 
     return (
         <ThemeContext.Provider value={defaultThemeContextValue}>
+            <AutofillStyles />
             {children}
         </ThemeContext.Provider>
     )

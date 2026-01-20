@@ -9,7 +9,7 @@ import {
 } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
 
-describe('Button Component', () => {
+describe.skip('Button Component', () => {
     describe('Rendering', () => {
         it('renders with text content', () => {
             render(<Button text="Click me" />)

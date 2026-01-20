@@ -384,6 +384,7 @@ export const DrawerTrigger = forwardRef<
                 onClick={onClick}
                 asChild
                 aria-label={ariaLabel}
+                data-element="drawer-trigger"
                 {...props}
             >
                 {children}
@@ -405,6 +406,7 @@ export const DrawerOverlay = forwardRef<HTMLDivElement, { className?: string }>(
                 ref={ref}
                 className={className}
                 tokens={tokens}
+                data-drawer="drawer"
                 {...props}
             />
         )
@@ -555,7 +557,13 @@ export const DrawerTitle = forwardRef<HTMLHeadingElement, DrawerTitleProps>(
         }, [id, accessibilityContext])
 
         return (
-            <StyledTitle ref={ref} className={className} id={id} {...props}>
+            <StyledTitle
+                ref={ref}
+                className={className}
+                id={id}
+                {...props}
+                data-element="drawer-header"
+            >
                 {children}
             </StyledTitle>
         )
@@ -583,7 +591,13 @@ export const DrawerDescription = forwardRef<
     }, [id, accessibilityContext])
 
     return (
-        <StyledDescription ref={ref} className={className} id={id} {...props}>
+        <StyledDescription
+            ref={ref}
+            className={className}
+            id={id}
+            {...props}
+            data-element="drawer-header-subtitle"
+        >
             {children}
         </StyledDescription>
     )
@@ -618,6 +632,7 @@ export const DrawerBody = forwardRef<
 
         return (
             <Block
+                data-element="drawer-body"
                 ref={ref}
                 className={`drawer-body ${className || ''}`}
                 padding={
@@ -655,6 +670,7 @@ export const DrawerFooter = forwardRef<
 
     return (
         <Block
+            data-element="drawer-footer"
             ref={ref}
             className={className}
             padding={tokens.content.padding.x + ' ' + tokens.content.padding.y}
@@ -698,6 +714,7 @@ export const DrawerClose = forwardRef<
                 disabled={disabled}
                 asChild={asChild}
                 aria-label={ariaLabel}
+                data-element="drawer-action-buttons"
                 {...props}
             >
                 {children}

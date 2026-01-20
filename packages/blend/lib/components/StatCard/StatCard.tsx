@@ -68,6 +68,7 @@ const StatCard = ({
     direction = StatCardDirection.VERTICAL,
     skeleton,
     dataDisplay = true,
+    showBorder = true,
     ...props
 }: StatCardProps) => {
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
@@ -94,7 +95,14 @@ const StatCard = ({
                 parts.push(formatMainValueFn(value))
             }
             if (subtitle) parts.push(subtitle)
-            if (change) {
+            if (
+                change &&
+                change.value != null &&
+                change.value != undefined &&
+                typeof change.value === 'number' &&
+                change.valueType != null &&
+                change.valueType != undefined
+            ) {
                 const changeText =
                     change.valueType === ChangeType.INCREASE
                         ? `increased by ${change.value.toFixed(2)}%`
@@ -185,55 +193,71 @@ const StatCard = ({
             ? StatCardArrowDirection.UP
             : StatCardArrowDirection.DOWN)
 
-    const formattedChange = effectiveChange ? (
-        <Block
-            display="flex"
-            alignItems="center"
-            color={
-                effectiveChange.valueType === ChangeType.INCREASE
-                    ? statCardToken.textContainer.stats.title.change.text.color
-                          .increase
-                    : statCardToken.textContainer.stats.title.change.text.color
-                          .decrease
-            }
-        >
-            {arrowDirection === StatCardArrowDirection.UP ? (
-                <ArrowUp
-                    size={parseInt(
-                        statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
-                            '14'
-                    )}
-                />
-            ) : (
-                <ArrowDown
-                    size={parseInt(
-                        statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
-                            '14'
-                    )}
-                />
-            )}
-            <Text
-                as="span"
-                fontSize={
-                    statCardToken.textContainer.stats.title.change.text.fontSize
-                }
-                fontWeight={
-                    statCardToken.textContainer.stats.title.change.text
-                        .fontWeight
-                }
-                data-numeric={`${effectiveChange.value.toFixed(2)?.includes('-') ? '' : '+'}${effectiveChange.value.toFixed(2)}%`}
-                data-element="statcard-delta"
-                data-status={
-                    effectiveChange.valueType === ChangeType.INCREASE
-                        ? 'increase'
-                        : 'decrease'
-                }
-            >
-                {effectiveChange.value.toFixed(2)?.includes('-') ? '' : '+'}
-                {effectiveChange.value.toFixed(2)}%
-            </Text>
-        </Block>
-    ) : null
+    // Only render if effectiveChange is not null/undefined and value is a valid number (including 0)
+    const shouldRenderChange =
+        effectiveChange != null &&
+        effectiveChange.value != undefined &&
+        effectiveChange.value != null &&
+        typeof effectiveChange.value === 'number' &&
+        !Number.isNaN(effectiveChange.value)
+
+    const formattedChange =
+        shouldRenderChange && effectiveChange
+            ? (() => {
+                  const changeValue = effectiveChange.value!
+                  return (
+                      <Block
+                          display="flex"
+                          alignItems="center"
+                          color={
+                              effectiveChange.valueType === ChangeType.INCREASE
+                                  ? statCardToken.textContainer.stats.title
+                                        .change.text.color.increase
+                                  : statCardToken.textContainer.stats.title
+                                        .change.text.color.decrease
+                          }
+                      >
+                          {arrowDirection === StatCardArrowDirection.UP ? (
+                              <ArrowUp
+                                  size={parseInt(
+                                      statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
+                                          '14'
+                                  )}
+                              />
+                          ) : (
+                              <ArrowDown
+                                  size={parseInt(
+                                      statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
+                                          '14'
+                                  )}
+                              />
+                          )}
+                          <Text
+                              as="span"
+                              fontSize={
+                                  statCardToken.textContainer.stats.title.change
+                                      .text.fontSize
+                              }
+                              fontWeight={
+                                  statCardToken.textContainer.stats.title.change
+                                      .text.fontWeight
+                              }
+                              data-numeric={`${changeValue.toFixed(2)?.includes('-') ? '' : '+'}${changeValue.toFixed(2)}%`}
+                              data-element="statcard-delta"
+                              data-status={
+                                  effectiveChange.valueType ===
+                                  ChangeType.INCREASE
+                                      ? 'increase'
+                                      : 'decrease'
+                              }
+                          >
+                              {changeValue.toFixed(2)?.includes('-') ? '' : '+'}
+                              {changeValue.toFixed(2)}%
+                          </Text>
+                      </Block>
+                  )
+              })()
+            : null
 
     const shouldShowDecrease = shouldShowDecreaseColor(
         effectiveChange,
@@ -328,11 +352,11 @@ const StatCard = ({
                 height={
                     height && !isSmallScreen ? height : statCardToken.height
                 }
-                border={statCardToken.border}
+                border={showBorder ? statCardToken.border : undefined}
                 borderRadius={statCardToken.borderRadius}
                 overflow="hidden"
                 backgroundColor={statCardToken.backgroundColor}
-                boxShadow={statCardToken.boxShadow}
+                boxShadow={showBorder ? statCardToken.boxShadow : undefined}
                 padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
                 display="flex"
                 flexDirection="column"
@@ -534,11 +558,11 @@ const StatCard = ({
     return (
         <Block
             height={height && !isSmallScreen ? height : statCardToken.height}
-            border={statCardToken.border}
+            border={showBorder ? statCardToken.border : undefined}
             borderRadius={statCardToken.borderRadius}
             overflow="hidden"
             backgroundColor={statCardToken.backgroundColor}
-            boxShadow={statCardToken.boxShadow}
+            boxShadow={showBorder ? statCardToken.boxShadow : undefined}
             padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
             display="flex"
             flexDirection="column"
@@ -915,9 +939,7 @@ const StatCard = ({
                                                 <Block
                                                     id={changeId}
                                                     cursor="pointer"
-                                                    data-id={`${effectiveChange?.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange?.value.toFixed(
-                                                        2
-                                                    )}%`}
+                                                    data-id={`${effectiveChange?.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange?.value != null && typeof effectiveChange.value === 'number' ? effectiveChange.value.toFixed(2) : '0.00'}%`}
                                                     data-element="statcard-delta"
                                                     data-status={
                                                         effectiveChange?.valueType ===

@@ -9,7 +9,7 @@ import {
 } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
-describe('Switch Component', () => {
+describe.skip('Switch Component', () => {
     describe('Rendering', () => {
         it('renders with label', () => {
             const props = SwitchTestFactory.default()

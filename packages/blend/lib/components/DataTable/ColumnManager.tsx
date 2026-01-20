@@ -178,6 +178,15 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         }, 100)
     }
 
+    const handleOpenChange = (open: boolean) => {
+        if (!open && hasPrimaryAction) {
+            // Reset pending state to match actual visible columns when modal closes
+            setPendingSelectedColumns(
+                visibleColumns.map((col) => String(col.field))
+            )
+        }
+    }
+
     const customTrigger = (
         <PrimitiveButton
             ref={(el) => {
@@ -248,6 +257,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         secondaryAction: columnManagerSecondaryAction,
         disabled,
         onBlur: handleMenuClose,
+        onOpenChange: handleOpenChange,
     }
 
     return (

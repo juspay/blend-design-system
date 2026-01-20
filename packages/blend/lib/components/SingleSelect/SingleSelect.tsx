@@ -147,7 +147,7 @@ const SingleSelect = ({
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const handleOnSelect = useCallback(
-        (val: string) => onSelect(selected === val ? '' : val),
+        (val: string) => onSelect(val),
         [onSelect, selected]
     )
     const shouldShake = useErrorShake(error)

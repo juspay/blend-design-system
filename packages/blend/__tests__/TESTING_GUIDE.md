@@ -145,22 +145,11 @@ export default defineConfig({
 
 ## Environment-Aware Performance Testing
 
-### The Problem with Fixed Thresholds
+### Environment-Aware Performance Testing
 
-Previously, performance tests used fixed thresholds (e.g., "render in less than 50ms") which led to:
+Previously, performance tests used fixed thresholds which led to environment-dependent failures, false positives, and no regression detection.
 
-- ❌ Environment-dependent failures (passing locally, failing in CI)
-- ❌ False positives and negatives
-- ❌ No regression detection
-
-### The Solution: Environment-Aware Testing
-
-Our new approach provides:
-
-- ✅ **Adaptive thresholds** that automatically adjust based on environment
-- ✅ **Regression detection** to track performance changes over time
-- ✅ **Meaningful monitoring** focused on relative performance
-- ✅ **Production insights** for real performance monitoring
+The new approach provides adaptive thresholds that automatically adjust based on environment, regression detection, meaningful monitoring, and production insights.
 
 ### Environment Detection & Thresholds
 
@@ -169,16 +158,16 @@ Our new approach provides:
 ```typescript
 const baseThresholds = {
     render: {
-        simple: 25, // Simple component render
-        complex: 50, // Complex component with all features
+        simple: 25,
+        complex: 50,
     },
     interaction: {
-        click: 30, // Single user interaction
-        rapid: 100, // Multiple rapid interactions
+        click: 30,
+        rapid: 100,
     },
     memory: {
-        basic: 3, // Basic memory operations
-        stress: 5, // Stress test operations
+        basic: 3,
+        stress: 5,
     },
 }
 ```
@@ -191,24 +180,21 @@ const baseThresholds = {
 
 ### Usage Examples
 
-#### Before (Fixed Thresholds - Problematic)
+**Fixed Thresholds (Problematic)**
 
 ```typescript
-// ❌ Environment-dependent failures
-expect(renderTime).toBeLessThan(50) // Fails in CI, passes locally
+expect(renderTime).toBeLessThan(50)
 ```
 
-#### After (Environment-Aware - Robust)
+**Environment-Aware (Robust)**
 
 ```typescript
-// ✅ Adapts to environment automatically
 assertPerformanceWithContext(
     renderTime,
     'render',
     'simple',
     getCurrentTestName()
 )
-
 // Local: 50ms threshold (25ms × 2.0)
 // CI: 75ms threshold (25ms × 3.0)
 // Production: 37.5ms threshold (25ms × 1.5)
@@ -217,7 +203,6 @@ assertPerformanceWithContext(
 #### Helper Function (Required in all performance tests)
 
 ```typescript
-// Add this to any performance test file
 function getCurrentTestName(): string {
     const testContext = expect.getState()
     return testContext.currentTestName || 'unknown-test'
@@ -226,20 +211,17 @@ function getCurrentTestName(): string {
 
 ### Performance Categories & Metrics
 
-#### Valid Metric Combinations
+**Valid Metric Combinations**
 
 ```typescript
-// ✅ Render performance
-assertPerformanceWithContext(time, 'render', 'simple', testName) // Simple components
-assertPerformanceWithContext(time, 'render', 'complex', testName) // Complex components
+assertPerformanceWithContext(time, 'render', 'simple', testName)
+assertPerformanceWithContext(time, 'render', 'complex', testName)
 
-// ✅ Interaction performance
-assertPerformanceWithContext(time, 'interaction', 'click', testName) // Single interactions
-assertPerformanceWithContext(time, 'interaction', 'rapid', testName) // Multiple rapid interactions
+assertPerformanceWithContext(time, 'interaction', 'click', testName)
+assertPerformanceWithContext(time, 'interaction', 'rapid', testName)
 
-// ✅ Memory performance
-assertPerformanceWithContext(time, 'memory', 'basic', testName) // Basic operations
-assertPerformanceWithContext(time, 'memory', 'stress', testName) // Memory-intensive operations
+assertPerformanceWithContext(time, 'memory', 'basic', testName)
+assertPerformanceWithContext(time, 'memory', 'stress', testName)
 ```
 
 ## Test Utilities & Infrastructure
@@ -272,7 +254,6 @@ export class ComponentPropsBuilder {
     }
 }
 
-// Usage
 const props = new ComponentPropsBuilder()
     .withVariant('primary')
     .withSize('large')
@@ -285,7 +266,6 @@ const props = new ComponentPropsBuilder()
 Pre-configured scenarios for common test cases:
 
 ```typescript
-// Example: Using test factory
 const props = ComponentTestFactory.disabled()
 render(<Component {...props} />)
 ```
@@ -293,7 +273,6 @@ render(<Component {...props} />)
 ### Performance Utilities
 
 ```typescript
-// Environment-aware performance testing
 import { assertPerformanceWithContext, measureRenderTime } from '../../test-utils'
 
 it('renders within performance budget', async () => {
@@ -311,7 +290,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, assertPerformanceWithContext } from '../test-utils'
 import { ComponentPropsBuilder } from '../test-utils/builders'
 
-// Helper to get current test name for performance tracking
 function getCurrentTestName(): string {
     const testContext = expect.getState()
     return testContext.currentTestName || 'unknown-test'
@@ -334,7 +312,6 @@ describe('Component Name', () => {
     describe('Interactions', () => {
         it('handles user actions', async () => {
             const { user } = render(<Component {...defaultProps} />)
-            // User interactions and assertions
         })
     })
 
@@ -401,29 +378,23 @@ Priority order for element selection:
 ### 3. Async Testing
 
 ```typescript
-// Wait for elements
 await screen.findByRole('button')
 
-// Wait for removal
 await waitForElementToBeRemoved(() => screen.queryByText('Loading'))
 
-// User events are async
 await user.click(button)
 ```
 
 ### 4. Performance Testing Best Practices
 
 ```typescript
-// ✅ Use meaningful test names for regression tracking
 assertPerformanceWithContext(time, 'render', 'simple', 'Button-primary-large')
 
-// ✅ Choose appropriate categories
-assertPerformanceWithContext(time, 'render', 'simple', 'Button-basic') // Simple component
-assertPerformanceWithContext(time, 'render', 'complex', 'Button-with-icons') // Complex component
-assertPerformanceWithContext(time, 'interaction', 'click', 'Button-click') // User interaction
+assertPerformanceWithContext(time, 'render', 'simple', 'Button-basic')
+assertPerformanceWithContext(time, 'render', 'complex', 'Button-with-icons')
+assertPerformanceWithContext(time, 'interaction', 'click', 'Button-click')
 
-// ❌ Avoid generic test names
-assertPerformanceWithContext(time, 'render', 'simple', 'test1') // Hard to track
+assertPerformanceWithContext(time, 'render', 'simple', 'test1')
 ```
 
 ### 5. Environment Variables
@@ -431,16 +402,12 @@ assertPerformanceWithContext(time, 'render', 'simple', 'test1') // Hard to track
 Control behavior across environments:
 
 ```bash
-# Local development (default)
 npm test
 
-# CI environment (stricter)
 CI=true npm test
 
-# Production monitoring
 NODE_ENV=production npm test
 
-# Debug environment detection
 DEBUG_PERFORMANCE=true npm test
 ```
 
@@ -449,51 +416,38 @@ DEBUG_PERFORMANCE=true npm test
 ### Commands
 
 ```bash
-# Run all tests
 npm test
 
-# Run tests in watch mode
 npm test -- --watch
 
-# Run tests with coverage
 npm test -- --coverage
 
-# Run specific test file
 npm test Button.test.tsx
 
-# Run tests matching pattern
 npm test -- --grep "accessibility"
 
-# Run performance tests only
 npm test -- performance
 
-# Run specific component tests
 npm test __tests__/components/Button
 ```
 
 ### Environment-Specific Testing
 
 ```bash
-# Force CI environment (stricter thresholds)
 CI=true npm test
 
-# Production environment (optimized thresholds)
 NODE_ENV=production npm test
 
-# GitHub Actions (detected automatically)
 GITHUB_ACTIONS=true npm test
 ```
 
 ### Debugging
 
 ```bash
-# Run tests in UI mode
 npm test -- --ui
 
-# Run with node inspector
 npm test -- --inspect
 
-# Enable debug output
 DEBUG=true npm test
 ```
 
@@ -527,8 +481,8 @@ function getCurrentTestName(): string {
 ```typescript
 const baseThresholds = {
     render: {
-        simple: 25, // Consider increasing if tests fail
-        complex: 50, // Consider increasing if tests fail
+        simple: 25,
+        complex: 50,
     },
     // ...
 }
@@ -549,7 +503,6 @@ const baseThresholds = {
 ### Performance Test Debugging
 
 ```typescript
-// Check environment detection
 import { getPerformanceConfig } from '../../test-utils'
 
 it('debug environment detection', () => {
@@ -602,7 +555,6 @@ When adopting these testing practices:
 ### CI Configuration
 
 ```yaml
-# Example GitHub Actions
 test:
     runs-on: ubuntu-latest
     steps:
@@ -618,7 +570,6 @@ test:
 Tests fail if components exceed performance thresholds:
 
 ```typescript
-// Environment-aware performance budgets
 const renderTime = await measureRenderTime(Component)
 assertPerformanceWithContext(
     renderTime,

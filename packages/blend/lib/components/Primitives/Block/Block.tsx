@@ -119,6 +119,8 @@ type StyledBlockProps = StateStyles & {
     textAlign?: CSSObject['textAlign']
     textTransform?: CSSObject['textTransform']
     textOverflow?: CSSObject['textOverflow']
+
+    userSelect?: CSSObject['userSelect']
 }
 
 const blockedProps = [
@@ -205,6 +207,7 @@ const blockedProps = [
     'letterSpacing',
     'textAlign',
     'textTransform',
+    'userSelect',
 ]
 
 const shouldForwardProp = (prop: string) => !blockedProps.includes(prop)
@@ -350,7 +353,7 @@ const getStyles = (props: StyledBlockProps): CSSObject => {
         styles.textTransform = props.textTransform
     if (props.textOverflow !== undefined)
         styles.textOverflow = props.textOverflow
-
+    if (props.userSelect !== undefined) styles.userSelect = props.userSelect
     return styles
 }
 
@@ -411,9 +414,9 @@ export type BlockProps = StyledBlockProps &
  * - Add support for focus-visible outline
  */
 const Block = forwardRef<HTMLDivElement, BlockProps>(
-    ({ children, ...rest }, ref) => {
+    ({ children, as, ...rest }, ref) => {
         return (
-            <StyledBlock ref={ref} {...rest}>
+            <StyledBlock ref={ref} {...rest} as={as}>
                 {children}
             </StyledBlock>
         )

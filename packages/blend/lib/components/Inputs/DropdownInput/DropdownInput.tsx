@@ -161,6 +161,8 @@ const DropdownInput = ({
             flexDirection="column"
             gap={dropdownInputTokens.gap}
             width={'100%'}
+            data-dropdown-input={label || 'dropdown-input'}
+            data-status={disabled ? 'disabled' : 'enabled'}
         >
             {(!isSmallScreen || size !== TextInputSize.LARGE) && (
                 <InputLabels
@@ -237,7 +239,7 @@ const DropdownInput = ({
                             minMenuWidth={minMenuWidth}
                             maxMenuWidth={maxMenuWidth}
                             items={dropDownItems}
-                            enableSearch={false}
+                            enableSearch={true}
                             alignment={SelectMenuAlignment.END}
                             alignOffset={-(paddingX + 2)}
                             sideOffset={paddingX}
@@ -379,7 +381,7 @@ const DropdownInput = ({
                             minMenuWidth={minMenuWidth}
                             maxMenuWidth={maxMenuWidth}
                             items={dropDownItems}
-                            enableSearch={false}
+                            enableSearch={true}
                             alignment={SelectMenuAlignment.END}
                             alignOffset={-(paddingX + 2)}
                             sideOffset={paddingX}

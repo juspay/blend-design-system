@@ -611,6 +611,7 @@ const Charts: React.FC<ChartsProps> = ({
                 aria-labelledby={headerId}
                 aria-describedby={chartDescriptionId}
                 {...props}
+                data-chart={chartType || 'Chart'}
             >
                 {skeleton?.show ? (
                     <ChartsSkeleton

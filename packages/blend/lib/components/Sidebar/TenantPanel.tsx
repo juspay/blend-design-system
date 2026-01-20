@@ -42,6 +42,7 @@ const TenantPanel: React.FC<TenantPanelProps> = ({
 
     return (
         <Block
+            data-element="tenant-panel"
             width={tokens.leftPanel.width}
             height="100%"
             borderRight={tokens.leftPanel.borderRight}
@@ -133,6 +134,9 @@ const TenantItem: React.FC<{
             size={TooltipSize.SMALL}
         >
             <PrimitiveButton
+                data-element="sidebar-section"
+                data-id={tenant.label}
+                data-status={isSelected ? 'selected' : 'not selected'}
                 type="button"
                 onClick={onSelect}
                 backgroundColor={tokens.leftPanel.item.backgroundColor.default}

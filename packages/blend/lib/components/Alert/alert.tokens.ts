@@ -20,8 +20,12 @@ import { type BreakpointType } from '../../breakpoints/breakPoints'
  * - Background uses an additional style dimension; border/button are variant-only
  */
 export type AlertTokenType = {
+    // Pattern: width
+    width: CSSObject['width']
     // Pattern: maxWidth
     maxWidth: CSSObject['maxWidth']
+    // Pattern: minWidth
+    minWidth: CSSObject['minWidth']
     // Pattern: gap
     gap: CSSObject['gap']
     // Pattern: padding
@@ -89,8 +93,11 @@ export const getAlertTokens = (
 ): ResponsiveAlertTokens => {
     return {
         sm: {
+            // width
+            width: 'auto',
             // maxWidth
             maxWidth: '900px',
+            minWidth: '300px',
             gap: foundationToken.unit[8],
             // padding
             padding: foundationToken.unit[16],
@@ -237,8 +244,13 @@ export const getAlertTokens = (
             },
         },
         lg: {
+            // width
+            width: 'auto',
             // maxWidth
             maxWidth: '900px',
+            // minWidth
+            minWidth: '300px',
+            // width
             // gap
             gap: foundationToken.unit[8],
             // padding

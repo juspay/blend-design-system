@@ -801,6 +801,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MultiSelect.onOpenChange',
+                hintText:
+                    'Optional callback function invoked when the dropdown menu or mobile drawer opens or closes. Receives a boolean indicating the new open state. Useful for resetting internal state when the menu is dismissed without applying changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText:
+                    'Function called with boolean open state when menu visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'MultiSelectMenuGroupType.groupLabel',
                 hintText:
                     'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., "Frontend", "Backend", "Tools"). The label is styled distinctly from menu items.',

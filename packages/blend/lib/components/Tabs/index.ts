@@ -5,3 +5,4 @@ import TabsContent from './TabsContent'
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }
 export * from './types'
+export * from './tabs.token'
