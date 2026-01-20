@@ -15,6 +15,7 @@ import type { ResponsiveDropdownInputTokens } from '../components/Inputs/Dropdow
 import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
+import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
@@ -62,6 +63,7 @@ import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropd
 import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
 import { getTabsTokens } from '../components/Tabs/tabs.token'
 import { getButtonTokens } from '../components/Button/button.tokens'
+import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
@@ -141,12 +143,18 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    BUTTONV2?: ResponsiveButtonV2Tokens
+    TAGV2?: ResponsiveTagV2Tokens
 }
 
 import { Theme } from './theme.enum'
 import getChatInputTokens, {
     ResponsiveChatInputTokensType,
 } from '../components/ChatInput/chatInput.tokens'
+import {
+    getTagV2Tokens,
+    ResponsiveTagV2Tokens,
+} from '../components/TagV2/tagV2.tokens'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
@@ -200,6 +208,8 @@ const ThemeContext = createContext<ThemeContextType>({
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
+        BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
+        TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

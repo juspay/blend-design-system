@@ -16,7 +16,6 @@ import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
-import { getButtonTokens } from '../components/Button/button.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
@@ -44,6 +43,9 @@ import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/m
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
+import { getButtonTokens } from '../components/Button/button.tokens'
+import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
+import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -131,6 +133,10 @@ const initTokens = (
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        BUTTONV2:
+            componentTokens.BUTTONV2 ??
+            getButtonV2Tokens(foundationTokens, theme),
+        TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
     }
 }
 

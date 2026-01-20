@@ -14,6 +14,7 @@ import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.toke
 import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
 import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
 import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
@@ -42,6 +43,7 @@ import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.tok
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
+import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -61,7 +63,6 @@ export const useComponentToken = (
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
-    | ResponsiveButtonTokens
     | ResponsiveModalTokens
     | ResponsiveBreadcrumbTokens
     | ResponsivePopoverTokens
@@ -88,7 +89,11 @@ export const useComponentToken = (
     | ResponsiveCodeBlockTokens
     | ResponsiveMobileNavigationTokens
     | ResponsiveDirectoryTokens
-    | ResponsiveChatInputTokensType => {
+    | ResponsiveChatInputTokensType
+    | ResponsiveButtonTokens
+    | ResponsiveButtonV2Tokens
+    | ResponsiveChatInputTokensType
+    | ResponsiveTagV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -178,6 +183,10 @@ export const useComponentToken = (
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':
             return componentTokens.CHAT_INPUT
+        case 'BUTTONV2':
+            return componentTokens.BUTTONV2
+        case 'TAGV2':
+            return componentTokens.TAGV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

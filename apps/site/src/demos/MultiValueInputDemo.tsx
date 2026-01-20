@@ -4,6 +4,7 @@ import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
+import { Search, Mail, Hash } from 'lucide-react'
 
 const MultiValueInputDemo = () => {
     // State for different examples
@@ -16,6 +17,15 @@ const MultiValueInputDemo = () => {
         'JavaScript',
         'Python',
         'Go',
+        'Java',
+        'C#',
+        'C++',
+        'C',
+        'Ruby',
+        'PHP',
+        'Swift',
+        'Kotlin',
+        'Rust',
     ])
     const [categoryTags, setCategoryTags] = useState<string[]>([])
     const [errorTags, setErrorTags] = useState<string[]>(['invalid-email'])
@@ -351,6 +361,70 @@ const MultiValueInputDemo = () => {
                         autoComplete="off"
                         hintText="Each tag can be maximum 3 characters"
                     />
+                </Block>
+            </Block>
+
+            {/* Left and Right Slots */}
+            <Block>
+                <Block marginBottom="16px">
+                    <Text
+                        variant="heading.md"
+                        fontWeight={600}
+                        color={FOUNDATION_THEME.colors.gray[800]}
+                    >
+                        With Left and Right Slots
+                    </Text>
+                </Block>
+                <Block display="flex" flexDirection="column" gap="24px">
+                    <Block maxWidth="500px">
+                        <MultiValueInput
+                            label="Search Tags"
+                            sublabel="Add search tags with search icon"
+                            placeholder="Type and press Enter to add"
+                            tags={basicTags}
+                            onTagAdd={handleBasicTagAdd}
+                            onTagRemove={handleBasicTagRemove}
+                            leftSlot={<Search size={16} />}
+                            hintText="Left slot with search icon"
+                        />
+                    </Block>
+                    <Block maxWidth="500px">
+                        <MultiValueInput
+                            label="Email Tags"
+                            sublabel="Add email addresses with mail icon"
+                            placeholder="Enter email address"
+                            tags={emailTags}
+                            onTagAdd={handleEmailTagAdd}
+                            onTagRemove={handleEmailTagRemove}
+                            leftSlot={<Mail size={16} />}
+                            hintText="Left slot with mail icon"
+                        />
+                    </Block>
+                    <Block maxWidth="500px">
+                        <MultiValueInput
+                            label="Hashtags"
+                            sublabel="Add hashtags with hash icon on right"
+                            placeholder="Type hashtag"
+                            tags={categoryTags}
+                            onTagAdd={handleCategoryTagAdd}
+                            onTagRemove={handleCategoryTagRemove}
+                            rightSlot={<Hash size={16} />}
+                            hintText="Right slot with hash icon"
+                        />
+                    </Block>
+                    <Block maxWidth="500px">
+                        <MultiValueInput
+                            label="Tags with Both Slots"
+                            sublabel="Left and right slots together"
+                            placeholder="Add tags"
+                            tags={skillsTags}
+                            onTagAdd={handleSkillsTagAdd}
+                            onTagRemove={handleSkillsTagRemove}
+                            leftSlot={<Search size={16} />}
+                            rightSlot={<Hash size={16} />}
+                            hintText="Both left and right slots"
+                        />
+                    </Block>
                 </Block>
             </Block>
 

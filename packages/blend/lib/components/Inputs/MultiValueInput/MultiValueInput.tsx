@@ -22,6 +22,25 @@ const Wrapper = styled(Block)`
     ${errorShakeAnimation}
 `
 
+const ContentContainer = styled(Block)<{
+    hasLeftSlot: boolean
+    hasRightSlot: boolean
+    slotOffset: number
+}>`
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+
+    ${({ hasLeftSlot, slotOffset }) =>
+        hasLeftSlot && `padding-left: ${slotOffset}px;`}
+
+    ${({ hasRightSlot, slotOffset }) =>
+        hasRightSlot && `padding-right: ${slotOffset}px;`}
+`
+
 const MultiValueInput = ({
     value = '',
     label,
@@ -41,6 +60,8 @@ const MultiValueInput = ({
     onBlur,
     name,
     id: providedId,
+    leftSlot,
+    rightSlot,
     ...rest
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
@@ -94,9 +115,17 @@ const MultiValueInput = ({
 
     const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
     const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
+    const slotWidth = 16
+    const slotGap = 8
+    const wrappedRowPadding = slotWidth + slotGap
+
+    const slotTop =
+        tags.length > 0 ? FOUNDATION_THEME.unit[7] : FOUNDATION_THEME.unit[3]
+
     return (
         <Block
-            data-component-field-wrapper={`field-multi-value-input`}
+            data-multi-value-input={label || 'multi-value-input'}
+            data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
             gap={8}
@@ -113,9 +142,7 @@ const MultiValueInput = ({
             <Wrapper style={getErrorShakeStyle(shouldShake)}>
                 <Block
                     display="flex"
-                    flexWrap="wrap"
-                    flexDirection="row"
-                    gap={8}
+                    flexDirection="column"
                     borderRadius={8}
                     paddingX={paddingX}
                     paddingY={paddingY}
@@ -152,94 +179,132 @@ const MultiValueInput = ({
                         ],
                     }}
                 >
-                    {tags?.map((tag) => (
-                        <Tag
-                            key={tag}
-                            text={tag}
-                            size={TagSize.XS}
-                            shape={TagShape.ROUNDED}
-                            rightSlot={
-                                <PrimitiveButton
-                                    type="button"
-                                    aria-label={`Remove ${tag}`}
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        removeTag(tag)
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (
-                                            e.key === 'Enter' ||
-                                            e.key === ' '
-                                        ) {
-                                            e.preventDefault()
+                    <ContentContainer
+                        hasLeftSlot={!!leftSlot}
+                        hasRightSlot={!!rightSlot}
+                        slotOffset={wrappedRowPadding}
+                    >
+                        {leftSlot && (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                width={FOUNDATION_THEME.unit[16]}
+                                height={FOUNDATION_THEME.unit[16]}
+                                flexShrink={0}
+                                style={{ marginLeft: -wrappedRowPadding }}
+                            >
+                                {leftSlot}
+                            </Block>
+                        )}
+
+                        {tags?.map((tag) => (
+                            <Tag
+                                key={tag}
+                                text={tag}
+                                size={TagSize.XS}
+                                shape={TagShape.ROUNDED}
+                                rightSlot={
+                                    <PrimitiveButton
+                                        type="button"
+                                        aria-label={`Remove ${tag}`}
+                                        onClick={(e) => {
                                             e.stopPropagation()
                                             removeTag(tag)
-                                        }
-                                    }}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        padding: 0,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        minWidth: '24px',
-                                        minHeight: '24px',
-                                    }}
-                                    tabIndex={0}
-                                >
-                                    <X
-                                        size={12}
-                                        aria-hidden="true"
-                                        style={{ pointerEvents: 'none' }}
-                                    />
-                                </PrimitiveButton>
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                removeTag(tag)
+                                            }
+                                        }}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            padding: 0,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            minWidth: '24px',
+                                            minHeight: '24px',
+                                        }}
+                                        tabIndex={0}
+                                    >
+                                        <X
+                                            size={12}
+                                            aria-hidden="true"
+                                            style={{ pointerEvents: 'none' }}
+                                        />
+                                    </PrimitiveButton>
+                                }
+                            />
+                        ))}
+                        <PrimitiveInput
+                            id={inputId}
+                            name={name}
+                            flexGrow={1}
+                            minWidth="120px"
+                            placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                            fontSize={
+                                multiValueInputTokens.inputContainer.fontSize[
+                                    size
+                                ]
                             }
-                        />
-                    ))}
-                    <PrimitiveInput
-                        id={inputId}
-                        name={name}
-                        flexGrow={1}
-                        placeholderColor={FOUNDATION_THEME.colors.gray[400]}
-                        fontSize={
-                            multiValueInputTokens.inputContainer.fontSize[size]
-                        }
-                        fontWeight={
-                            multiValueInputTokens.inputContainer.fontWeight[
-                                size
-                            ]
-                        }
-                        ref={inputRef}
-                        paddingInlineStart={2}
-                        paddingInlineEnd={2}
-                        // paddingInlineEnd={paddingX}
-                        borderRadius={
-                            multiValueInputTokens.inputContainer.borderRadius
-                        }
-                        outline="none"
-                        border="none"
-                        value={value}
-                        required={required}
-                        aria-required={required ? 'true' : undefined}
-                        aria-invalid={error ? 'true' : 'false'}
-                        aria-describedby={ariaDescribedBy}
-                        disabled={disabled}
-                        placeholderStyles={{
-                            transition: 'opacity 150ms ease-out',
-                            opacity: isFocused ? 0 : 1,
-                        }}
-                        onChange={(e) => {
-                            const newValue = e.target.value
+                            fontWeight={
+                                multiValueInputTokens.inputContainer.fontWeight[
+                                    size
+                                ]
+                            }
+                            ref={inputRef}
+                            paddingInlineStart={2}
+                            paddingInlineEnd={2}
+                            borderRadius={
+                                multiValueInputTokens.inputContainer
+                                    .borderRadius
+                            }
+                            outline="none"
+                            border="none"
+                            value={value}
+                            required={required}
+                            aria-required={required ? 'true' : undefined}
+                            aria-invalid={error ? 'true' : 'false'}
+                            aria-describedby={ariaDescribedBy}
+                            disabled={disabled}
+                            placeholderStyles={{
+                                transition: 'opacity 150ms ease-out',
+                                opacity: isFocused ? 0 : 1,
+                            }}
+                            onChange={(e) => {
+                                const newValue = e.target.value
 
-                            onChange?.(newValue)
-                        }}
-                        onKeyDown={handleKeyDown}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                        {...rest}
-                    />
+                                onChange?.(newValue)
+                            }}
+                            onKeyDown={handleKeyDown}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                            {...rest}
+                        />
+                        {rightSlot && (
+                            <Block
+                                position="absolute"
+                                top={slotTop}
+                                right={FOUNDATION_THEME.unit[0]}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                width={FOUNDATION_THEME.unit[16]}
+                                height={FOUNDATION_THEME.unit[16]}
+                                pointerEvents="auto"
+                            >
+                                {rightSlot}
+                            </Block>
+                        )}
+                    </ContentContainer>
                 </Block>
             </Wrapper>
             <InputFooter

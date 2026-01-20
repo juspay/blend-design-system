@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import {
-    MultiValueInput,
-    MultiValueInputSize,
-} from '@juspay/blend-design-system'
-import { Search, User, Mail, Tag } from 'lucide-react'
+import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
+import { Search, User, Mail, Tag, Plus } from 'lucide-react'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -66,16 +63,47 @@ A specialized input component for managing multiple values as tags, ideal for fe
 ## Usage
 
 \`\`\`tsx
-import { MultiValueInput, MultiValueInputSize } from '@juspay/blend-design-system';
+import { MultiValueInput } from '@juspay/blend-design-system';
 
 <MultiValueInput
   label="Keywords"
   tags={tags}
   onTagAdd={(tag) => setTags([...tags, tag])}
   onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
-  size={MultiValueInputSize.MD}
+  size={TextInputSize.MEDIUM}
   placeholder="Add keyword..."
   required
+/>
+\`\`\`
+
+### With Controlled Value
+
+\`\`\`tsx
+<MultiValueInput
+  label="Keywords"
+  value={inputValue}
+  onChange={setInputValue}
+  tags={tags}
+  onTagAdd={(tag) => {
+    setTags([...tags, tag]);
+    setInputValue('');
+  }}
+  onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
+  placeholder="Type and press Enter..."
+/>
+\`\`\`
+
+### With Icon Slots
+
+\`\`\`tsx
+<MultiValueInput
+  label="Search Tags"
+  leftSlot={<Search size={16} />}
+  rightSlot={<Plus size={16} />}
+  tags={tags}
+  onTagAdd={(tag) => setTags([...tags, tag])}
+  onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
+  placeholder="Add tag..."
 />
 \`\`\`
         `,
@@ -83,6 +111,24 @@ import { MultiValueInput, MultiValueInputSize } from '@juspay/blend-design-syste
         },
     },
     argTypes: {
+        value: {
+            control: { type: 'text' },
+            description:
+                'Controlled value of the input field (separate from tags)',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: '""' },
+                category: 'Control',
+            },
+        },
+        onChange: {
+            action: 'changed',
+            description: 'Callback fired when the input value changes',
+            table: {
+                type: { summary: '(value: string) => void' },
+                category: 'Control',
+            },
+        },
         tags: {
             control: false,
             description: 'Array of current tags',
@@ -109,11 +155,11 @@ import { MultiValueInput, MultiValueInputSize } from '@juspay/blend-design-syste
         },
         size: {
             control: { type: 'select' },
-            options: Object.values(MultiValueInputSize),
+            options: Object.values(TextInputSize),
             description: 'Size variant of the input',
             table: {
-                type: { summary: 'MultiValueInputSize' },
-                defaultValue: { summary: 'MultiValueInputSize.MD' },
+                type: { summary: 'TextInputSize' },
+                defaultValue: { summary: 'TextInputSize.MEDIUM' },
                 category: 'Appearance',
             },
         },
@@ -183,6 +229,38 @@ import { MultiValueInput, MultiValueInputSize } from '@juspay/blend-design-syste
                 category: 'Content',
             },
         },
+        name: {
+            control: { type: 'text' },
+            description: 'Name attribute for form identification',
+            table: {
+                type: { summary: 'string' },
+                category: 'Form',
+            },
+        },
+        id: {
+            control: { type: 'text' },
+            description: 'Unique identifier for the input element',
+            table: {
+                type: { summary: 'string' },
+                category: 'Form',
+            },
+        },
+        leftSlot: {
+            control: false,
+            description: 'React node displayed on the left side of the input',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Slots',
+            },
+        },
+        rightSlot: {
+            control: false,
+            description: 'React node displayed on the right side of the input',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Slots',
+            },
+        },
         onFocus: {
             action: 'focused',
             description: 'Callback fired when the input receives focus',
@@ -229,7 +307,7 @@ export const Default: Story = {
     args: {
         label: 'Default Multi Value Input',
         placeholder: 'Type and press Enter to add',
-        size: MultiValueInputSize.MD,
+        size: TextInputSize.MEDIUM,
         disabled: false,
         error: false,
     },
@@ -254,7 +332,7 @@ export const Sizes: Story = {
             >
                 <MultiValueInput
                     label="Small Size"
-                    size={MultiValueInputSize.SM}
+                    size={TextInputSize.SMALL}
                     tags={tags.sm}
                     onTagAdd={(tag) =>
                         setTags((prev) => ({ ...prev, sm: [...prev.sm, tag] }))
@@ -269,7 +347,7 @@ export const Sizes: Story = {
                 />
                 <MultiValueInput
                     label="Medium Size"
-                    size={MultiValueInputSize.MD}
+                    size={TextInputSize.MEDIUM}
                     tags={tags.md}
                     onTagAdd={(tag) =>
                         setTags((prev) => ({ ...prev, md: [...prev.md, tag] }))
@@ -284,7 +362,7 @@ export const Sizes: Story = {
                 />
                 <MultiValueInput
                     label="Large Size"
-                    size={MultiValueInputSize.LG}
+                    size={TextInputSize.LARGE}
                     tags={tags.lg}
                     onTagAdd={(tag) =>
                         setTags((prev) => ({ ...prev, lg: [...prev.lg, tag] }))
@@ -583,7 +661,7 @@ export const WithLabelsAndHints: Story = {
                     setTags((prev) => prev.filter((t) => t !== tag))
                 }
                 placeholder="e.g., TypeScript, Next.js, TailwindCSS..."
-                size={MultiValueInputSize.MD}
+                size={TextInputSize.MEDIUM}
             />
         )
     },

@@ -117,7 +117,6 @@ const xRangeData = [
         name: 'Central Bank of India',
         downTime: '2m 3s',
     },
-
     {
         x: 1766983387000,
         x2: 1766983828000,
@@ -132,6 +131,27 @@ const xRangeData = [
         y: 0,
         color: FOUNDATION_THEME.colors.green[400],
         name: 'Central Bank of India',
+    },
+    {
+        x: 1766980800000,
+        x2: 1766983387000,
+        y: 1,
+        color: FOUNDATION_THEME.colors.red[500],
+        name: 'Bank of America',
+    },
+    {
+        x: 1766983387000,
+        x2: 1766983828000,
+        y: 1,
+        color: '#FFC560',
+        name: 'Bank of America',
+    },
+    {
+        x: 1766983828000,
+        x2: 1766984400000,
+        y: 1,
+        color: FOUNDATION_THEME.colors.green[400],
+        name: 'Bank of America',
     },
 ]
 
@@ -371,8 +391,7 @@ const OutageChartsDemo = () => {
                         <BlendChart
                             options={{
                                 chart: {
-                                    height: categories.length * 60 + 40,
-                                    // height: 'auto',
+                                    height: categories.length * 60 + 90,
                                 },
                                 tooltip: {
                                     useHTML: true,

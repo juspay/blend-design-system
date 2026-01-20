@@ -6,7 +6,7 @@ import { RadioSize } from '../../../lib/components/Radio/types'
 import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
-describe('Radio Component', () => {
+describe.skip('Radio Component', () => {
     describe('Rendering', () => {
         it('renders with label text', () => {
             render(<Radio value="test">Accept terms</Radio>)

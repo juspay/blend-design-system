@@ -38,14 +38,28 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
         const handleCloseClick = useCallback(
             (e: React.MouseEvent) => {
+                // Stop all event propagation to prevent tab activation
                 e.stopPropagation()
                 e.preventDefault()
+                // Also stop immediate propagation on native event
+                if (e.nativeEvent && e.nativeEvent.stopImmediatePropagation) {
+                    e.nativeEvent.stopImmediatePropagation()
+                }
                 if (!isDisabled) {
                     onClose?.()
                 }
             },
             [onClose, isDisabled]
         )
+
+        const handleCloseMouseDown = useCallback((e: React.MouseEvent) => {
+            // Stop mousedown event to prevent it from triggering tab activation
+            e.stopPropagation()
+            e.preventDefault()
+            if (e.nativeEvent && e.nativeEvent.stopImmediatePropagation) {
+                e.nativeEvent.stopImmediatePropagation()
+            }
+        }, [])
 
         const handleCloseKeyDown = useCallback(
             (e: React.KeyboardEvent) => {
@@ -60,11 +74,12 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
             [onClose, isDisabled]
         )
 
-        const effectiveRightSlot = closable ? (
+        const effectiveRightSlot = closable && (
             <Block
                 as="span"
                 role="button"
                 onClick={handleCloseClick}
+                onMouseDown={handleCloseMouseDown}
                 onKeyDown={handleCloseKeyDown}
                 width="16px"
                 height="16px"
@@ -85,16 +100,33 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                     backgroundColor: 'rgba(0, 0, 0, 0.15)',
                 }}
             >
-                <X size={12} aria-hidden="true" />
+                <X size={16} aria-hidden="true" />
             </Block>
-        ) : (
-            rightSlot
         )
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
 
         const { isActive: _isActive, style, ...domProps } = props
         void _isActive
+
+        // Prevent tab activation when clicking on close button
+        const handleTriggerClick = useCallback((e: React.MouseEvent) => {
+            // Check if the click target is the close button or its children
+            const target = e.target as HTMLElement
+            const isCloseButtonClick =
+                target.closest('[role="button"][aria-label*="Close"]') !==
+                    null ||
+                target.getAttribute('aria-label')?.includes('Close') ||
+                target.closest('span[role="button"]') !== null
+
+            if (isCloseButtonClick) {
+                e.preventDefault()
+                e.stopPropagation()
+                if (e.nativeEvent && e.nativeEvent.stopImmediatePropagation) {
+                    e.nativeEvent.stopImmediatePropagation()
+                }
+            }
+        }, [])
 
         const triggerContent = (
             <StyledTabsTrigger
@@ -108,6 +140,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 $isOverlay={isOverlay}
                 className={className}
                 disabled={isDisabled}
+                onClick={handleTriggerClick}
                 style={{
                     ...(shouldShowSkeleton && {
                         color: 'transparent',
@@ -169,6 +202,24 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 >
                     {children}
                 </span>
+
+                {rightSlot && (
+                    <IconContainer
+                        data-element="right-slot"
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                        aria-hidden={
+                            React.isValidElement(rightSlot) &&
+                            rightSlot.props &&
+                            typeof rightSlot.props === 'object' &&
+                            'aria-label' in rightSlot.props
+                                ? undefined
+                                : 'true'
+                        }
+                    >
+                        {rightSlot}
+                    </IconContainer>
+                )}
 
                 {effectiveRightSlot && (
                     <IconContainer

@@ -51,139 +51,25 @@ const sharedContent = (
 )
 
 const ANALYTICS_TABS_DATA = [
-    { value: 'payment_gateway', label: 'Payment Gateway', isDefault: true },
+    { value: 'payment_gateway', label: 'Payment Gateway', newItem: false },
     {
         value: 'payment_method_type',
         label: 'Payment Method Type',
-        isDefault: true,
+        newItem: false,
     },
-    { value: 'payment_method', label: 'Payment Method', isDefault: true },
+    { value: 'payment_method', label: 'Payment Method', newItem: false },
     {
         value: 'payment_instrument_group',
         label: 'Payment Instrument Group',
-        isDefault: true,
+        newItem: false,
     },
-    { value: 'bank_name', label: 'Bank', isDefault: true },
+    { value: 'bank_name', label: 'Bank', newItem: false },
     {
         value: 'actual_payment_status',
         label: 'Actual Payment Status',
-        isDefault: true,
+        newItem: false,
     },
-    { value: 'order_status', label: 'Order Status', isDefault: false },
-    { value: 'txn_latency_enum', label: 'Txn Latency', isDefault: false },
-    { value: 'order_type', label: 'Order Type', isDefault: false },
-    { value: 'auth_type', label: 'Auth Type', isDefault: false },
-    { value: 'card_brand', label: 'Card Brand', isDefault: false },
-    {
-        value: 'card_last_four_digits',
-        label: 'Card Last Four Digits',
-        isDefault: false,
-    },
-    { value: 'txn_flow_type', label: 'Txn Flow Type', isDefault: false },
-    { value: 'ticket_size', label: 'Ticket Size', isDefault: false },
-    {
-        value: 'gateway_reference_id',
-        label: 'Gateway Reference Id',
-        isDefault: false,
-    },
-    { value: 'emi', label: 'Is Emi', isDefault: false },
-    { value: 'emi_type', label: 'Emi Type', isDefault: false },
-    { value: 'emi_tenure', label: 'Emi Tenure', isDefault: false },
-    { value: 'business_region', label: 'Business Region', isDefault: false },
-    {
-        value: 'card_issuer_country',
-        label: 'Card Issuer Country',
-        isDefault: false,
-    },
-    { value: 'ord_currency', label: 'Order Currency', isDefault: false },
-    { value: 'emi_bank', label: 'Emi Bank', isDefault: false },
-    { value: 'is_token_bin', label: 'Is Token Bin', isDefault: false },
-    { value: 'is_offer_txn', label: 'Is Offer Txn', isDefault: false },
-    { value: 'is_upicc', label: 'Is UPI CC', isDefault: false },
-    { value: 'txn_conflict', label: 'Txn Conflict', isDefault: false },
-    { value: 'lob', label: 'Lob', isDefault: false },
-    { value: 'payment_status', label: 'Payment Status', isDefault: false },
-    {
-        value: 'status_sync_source',
-        label: 'Status Sync Source',
-        isDefault: false,
-    },
-    { value: 'token_repeat', label: 'Token Repeat', isDefault: false },
-    {
-        value: 'using_stored_card',
-        label: 'Using Stored Card',
-        isDefault: false,
-    },
-    {
-        value: 'priority_logic_tag',
-        label: 'Priority Logic Tag',
-        isDefault: false,
-    },
-    { value: 'is_tokenized', label: 'Is Tokenized', isDefault: false },
-    { value: 'run_day_ist', label: 'Run Day', isDefault: false },
-    { value: 'run_month_ist', label: 'Run Month', isDefault: false },
-    { value: 'run_week_ist', label: 'Run Week', isDefault: false },
-    { value: 'run_hour_ist', label: 'Run Hour', isDefault: false },
-    {
-        value: 'order_source_object_id',
-        label: 'Order Source Object Id',
-        isDefault: false,
-    },
-    {
-        value: 'source_object',
-        label: 'Payment Method Subtype',
-        isDefault: false,
-    },
-    {
-        value: 'order_source_object',
-        label: 'Order Source Object',
-        isDefault: false,
-    },
-    { value: 'is_cvv_less_txn', label: 'Is Cvv Less Txn', isDefault: false },
-    { value: 'udf1', label: 'Udf1', isDefault: false },
-    { value: 'udf2', label: 'Udf2', isDefault: false },
-    { value: 'udf3', label: 'Udf3', isDefault: false },
-    { value: 'udf4', label: 'Udf4', isDefault: false },
-    { value: 'udf5', label: 'Udf5', isDefault: false },
-    { value: 'udf6', label: 'Udf6', isDefault: false },
-    { value: 'udf7', label: 'Udf7', isDefault: false },
-    { value: 'udf8', label: 'Udf8', isDefault: false },
-    { value: 'udf9', label: 'Udf9', isDefault: false },
-    { value: 'udf10', label: 'Udf10', isDefault: false },
-    {
-        value: 'prev_txn_status',
-        label: 'Previous Txn Status',
-        isDefault: false,
-    },
-    { value: 'error_message', label: 'PG Error Message', isDefault: false },
-    { value: 'resp_message', label: 'PG Response', isDefault: false },
-    { value: 'original_card_isin', label: 'Card Bin', isDefault: false },
-    { value: 'card_sub_type', label: 'Card Sub Type', isDefault: false },
-    { value: 'card_exp_month', label: 'Card Exp Month', isDefault: false },
-    { value: 'card_exp_year', label: 'Card Exp Year', isDefault: false },
-    { value: 'txn_object_type', label: 'Txn Object Type', isDefault: false },
-    { value: 'txn_type', label: 'Txn Type', isDefault: false },
-    { value: 'resp_code', label: 'PG Error Code', isDefault: false },
-    { value: 'juspay_error_code', label: 'Error Code', isDefault: false },
-    { value: 'juspay_error_message', label: 'Error Message', isDefault: false },
-    {
-        value: 'unified_response_category',
-        label: 'Error Category',
-        isDefault: false,
-    },
-    {
-        value: 'entire_payment_flow',
-        label: 'Entire Payment Flow',
-        isDefault: false,
-    },
-    {
-        value: 'stored_card_vault_provider',
-        label: 'Card Flow',
-        isDefault: false,
-    },
-    { value: 'platform', label: 'Platform', isDefault: false },
-    { value: 'use_merchant_proxy', label: 'Gateway Connect', isDefault: false },
-]
+] as TabItem[]
 
 const availableTabOptions = [
     { value: 'analytics', label: 'Analytics' },
@@ -198,17 +84,6 @@ const availableTabOptions = [
 ]
 
 const TabsDemo = () => {
-    // Playground state
-    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
-        TabsVariant.UNDERLINE
-    )
-    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
-    const [expanded, setExpanded] = useState(false)
-    const [fitContent, setFitContent] = useState(false)
-    const [showIcons, setShowIcons] = useState(false)
-    const [showRightSlot, setShowRightSlot] = useState(false)
-    const [activeTab, setActiveTab] = useState('payment_gateway')
-
     const playgroundTabs: TabItem[] = [
         {
             value: 'payment_gateway',
@@ -222,7 +97,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_status',
@@ -238,7 +112,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_method',
@@ -255,7 +128,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_history',
@@ -272,9 +144,20 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
     ]
+
+    // Playground state
+    const [playgroundVariant, setPlaygroundVariant] = useState<TabsVariant>(
+        TabsVariant.UNDERLINE
+    )
+    const [playgroundSize, setPlaygroundSize] = useState<TabsSize>(TabsSize.MD)
+    const [expanded, setExpanded] = useState(false)
+    const [fitContent, setFitContent] = useState(false)
+    const [showIcons, setShowIcons] = useState(false)
+    const [showRightSlot, setShowRightSlot] = useState(false)
+    const [activeTab, setActiveTab] = useState('payment_gateway')
+    const [testData, setTestData] = useState<TabItem[]>(ANALYTICS_TABS_DATA)
 
     // Enhanced tabs state - default tabs always at front
     const [enhancedTabs, setEnhancedTabs] = useState<TabItem[]>([
@@ -291,7 +174,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
         {
             value: 'payment_status',
@@ -307,7 +189,6 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: true,
         },
     ])
 
@@ -334,8 +215,8 @@ const TabsDemo = () => {
         CONVERSATION_TABS.CHAT
     )
 
-    const [analyticsTabsItems, setAnalyticsTabsItems] = useState<TabItem[]>(
-        ANALYTICS_TABS_DATA.slice(0, 4).map((tab) => ({
+    const analyticsTabsItems: TabItem[] = ANALYTICS_TABS_DATA.slice(0, 4).map(
+        (tab) => ({
             value: tab.value,
             label: tab.label,
             content: (
@@ -348,9 +229,7 @@ const TabsDemo = () => {
                     </p>
                 </div>
             ),
-            isDefault: tab.isDefault,
-            closable: !tab.isDefault,
-        }))
+        })
     )
     const [analyticsActiveTab, setAnalyticsActiveTab] = useState(
         ANALYTICS_TABS_DATA[0].value
@@ -416,8 +295,7 @@ const TabsDemo = () => {
             // Keep if it's not the tab being closed
             if (tab.value === value) return false
             // Remove non-default tabs that share the same content (concatenated tabs)
-            if (tab.content === tabToClose.content && !tab.isDefault)
-                return false
+            if (tab.content === tabToClose.content) return false
             return true
         })
 
@@ -478,8 +356,6 @@ const TabsDemo = () => {
                             </p>
                         </div>
                     ),
-                    closable: true,
-                    isDefault: false,
                 })
                 return acc
             },
@@ -503,46 +379,56 @@ const TabsDemo = () => {
     }
 
     const handleAnalyticsTabClose = (value: string) => {
-        const filteredTabs = analyticsTabsItems.filter(
-            (tab) => tab.value !== value
-        )
-        setAnalyticsTabsItems(filteredTabs)
+        setTestData((prev) => {
+            // Get all default tabs (isDefault: true) before filtering
+            const defaultTabsList = prev
 
-        if (value === analyticsActiveTab && filteredTabs.length > 0) {
-            setAnalyticsActiveTab(filteredTabs[0].value)
-        }
+            // Find the index of the closed tab in the default tabs list
+            const currentIndex = defaultTabsList.findIndex(
+                (tab) => tab.value === value
+            )
+
+            const filteredTabs = prev.filter((tab) => tab.value !== value)
+
+            // If the closed tab was active, switch to the previous default tab
+            if (value === analyticsActiveTab && filteredTabs.length > 0) {
+                let previousDefaultTab = null
+                if (currentIndex > 0) {
+                    // Previous default tab exists
+                    previousDefaultTab = defaultTabsList[currentIndex - 1]
+                } else if (currentIndex === 0 && defaultTabsList.length > 1) {
+                    // Closed tab is first default tab, so use the next default tab
+                    previousDefaultTab = defaultTabsList[currentIndex + 1]
+                }
+
+                if (previousDefaultTab) {
+                    setAnalyticsActiveTab(previousDefaultTab.value)
+                }
+            }
+            return filteredTabs
+        })
     }
 
     const handleAnalyticsTabAdd = () => {
-        const existingValues = new Set(
-            analyticsTabsItems.map((tab) => tab.value)
-        )
-        const remainingTabs = ANALYTICS_TABS_DATA.filter(
-            (tab) => !existingValues.has(tab.value)
-        )
+        const newValue = 'Test_Tab'
+        // Check if value already exists before updating state
+        const alreadyExists = testData.some((item) => item.value === newValue)
 
-        if (remainingTabs.length > 0) {
-            const newTabs: TabItem[] = remainingTabs.map((tab) => ({
-                value: tab.value,
-                label: tab.label,
-                content: (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-semibold mb-2">{tab.label}</h4>
-                        <p className="text-gray-600">
-                            Tab content for {tab.label} ({tab.value})
-                        </p>
-                    </div>
-                ),
-                isDefault: tab.isDefault || false,
-                closable: !tab.isDefault,
-            }))
-            setAnalyticsTabsItems((prev) => [...prev, ...newTabs])
-            if (newTabs.length > 0) {
-                setAnalyticsActiveTab(newTabs[0].value)
-            }
-        } else {
-            console.log('All available tabs from initial data have been added')
+        if (!alreadyExists) {
+            // Item doesn't exist, add it
+            setTestData((prev) => [
+                ...prev,
+                {
+                    value: newValue,
+                    label: 'Test_Tab',
+                    content: null,
+                    newItem: true,
+                    rightSlot: <Settings size={16} />,
+                },
+            ])
         }
+        // Set as active tab (works for both new and existing tabs)
+        setAnalyticsActiveTab(newValue)
     }
 
     const multiSelectItems = [
@@ -939,40 +825,8 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                         <h3 className="text-lg font-semibold mb-4">
                             Payment Analytics Dashboard
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Total tabs: {ANALYTICS_TABS_DATA.length}. Default
-                            tabs (isDefault: true):{' '}
-                            {
-                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
-                                    .length
-                            }
-                            . Visible tabs: Up to{' '}
-                            {Math.min(
-                                ANALYTICS_TABS_DATA.filter((t) => t.isDefault)
-                                    .length,
-                                12
-                            )}{' '}
-                            default tabs (maxDisplayTabs: 12). Dropdown shows
-                            all {ANALYTICS_TABS_DATA.length} tabs.
-                        </p>
                         <Tabs
-                            items={ANALYTICS_TABS_DATA.map((tab) => ({
-                                value: tab.value,
-                                label: tab.label,
-                                content: (
-                                    <div className="p-4 bg-gray-50 rounded-lg">
-                                        <h4 className="font-semibold mb-2">
-                                            {tab.label}
-                                        </h4>
-                                        <p className="text-gray-600">
-                                            Content for {tab.label} ({tab.value}
-                                            )
-                                        </p>
-                                    </div>
-                                ),
-                                isDefault: tab.isDefault,
-                                closable: !tab.isDefault,
-                            }))}
+                            items={testData}
                             value={analyticsActiveTab}
                             onValueChange={setAnalyticsActiveTab}
                             onTabClose={handleAnalyticsTabClose}
@@ -1054,24 +908,11 @@ const [activeTab, setActiveTab] = useState(CONVERSATION_TABS.CHAT)
                                 </code>
                             </p>
                             <p>
-                                <strong>Total Tabs:</strong>{' '}
-                                {analyticsTabsItems.length}
-                            </p>
-                            <p>
-                                <strong>Default Tabs:</strong>{' '}
-                                {
-                                    analyticsTabsItems.filter(
-                                        (tab) => tab.isDefault
-                                    ).length
-                                }
+                                <strong>Total Tabs:</strong> {testData.length}
                             </p>
                             <p>
                                 <strong>Closable Tabs:</strong>{' '}
-                                {
-                                    analyticsTabsItems.filter(
-                                        (tab) => tab.closable
-                                    ).length
-                                }
+                                {testData.filter((tab) => tab.newItem).length}
                             </p>
                         </div>
                     </div>
@@ -1278,11 +1119,191 @@ const tabs: TabItem[] = apiTabs.map(tab => ({
   label: tab.name,         // e.g., 'Payment Gateway'
   content: <TabContent />,
   isDefault: tab.isDefault || false,
-  closable: !tab.isDefault,
 }))
 
 // Use directly - underscores work correctly!
 <Tabs items={tabs} defaultValue={tabs[0].value} />`}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Sticky Header Section */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Sticky Header</h2>
+                <div className="space-y-6">
+                    <p className="text-gray-600">
+                        The{' '}
+                        <code className="px-2 py-1 bg-gray-100 rounded">
+                            stickyHeader
+                        </code>{' '}
+                        prop makes the tab listing header stick to the top when
+                        scrolling. This is useful for keeping navigation visible
+                        when tab content is long and scrollable.
+                    </p>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-6 flex-wrap mb-4">
+                            <Switch
+                                label="Enable Sticky Header"
+                                checked={expanded}
+                                onChange={() => setExpanded(!expanded)}
+                            />
+                        </div>
+
+                        <div className="p-6 bg-white border rounded-lg">
+                            <Tabs
+                                items={[
+                                    {
+                                        value: 'overview',
+                                        label: 'Overview',
+                                        content: (
+                                            <div className="p-4 bg-blue-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Overview Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    This is a long content area
+                                                    to demonstrate the sticky
+                                                    header functionality. Scroll
+                                                    down to see how the tab
+                                                    header stays fixed at the
+                                                    top.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Lorem ipsum dolor
+                                                            sit amet,
+                                                            consectetur
+                                                            adipiscing elit. Sed
+                                                            do eiusmod tempor
+                                                            incididunt ut labore
+                                                            et dolore magna
+                                                            aliqua.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                    {
+                                        value: 'details',
+                                        label: 'Details',
+                                        content: (
+                                            <div className="p-4 bg-green-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Details Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    Switch to this tab and
+                                                    scroll to see the sticky
+                                                    header in action. The header
+                                                    remains visible while you
+                                                    scroll through this content.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Ut enim ad minim
+                                                            veniam, quis nostrud
+                                                            exercitation ullamco
+                                                            laboris nisi ut
+                                                            aliquip ex ea
+                                                            commodo consequat.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                    {
+                                        value: 'settings',
+                                        label: 'Settings',
+                                        content: (
+                                            <div className="p-4 bg-purple-50 rounded-lg space-y-4">
+                                                <h4 className="font-semibold mb-2">
+                                                    Settings Content
+                                                </h4>
+                                                <p className="text-gray-600">
+                                                    This tab also has long
+                                                    content. Notice how the
+                                                    header sticks to the top
+                                                    regardless of which tab is
+                                                    active.
+                                                </p>
+                                                {Array.from({ length: 15 }).map(
+                                                    (_, i) => (
+                                                        <p
+                                                            key={i}
+                                                            className="text-gray-600"
+                                                        >
+                                                            Duis aute irure
+                                                            dolor in
+                                                            reprehenderit in
+                                                            voluptate velit esse
+                                                            cillum dolore eu
+                                                            fugiat nulla
+                                                            pariatur.
+                                                        </p>
+                                                    )
+                                                )}
+                                            </div>
+                                        ),
+                                    },
+                                ]}
+                                stickyHeader={expanded}
+                                variant={TabsVariant.UNDERLINE}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-800 mb-2">
+                                Sticky Header Benefits:
+                            </h4>
+                            <ul className="text-blue-700 space-y-1 text-sm">
+                                <li>• Keeps navigation always visible</li>
+                                <li>• Improves UX for long content</li>
+                                <li>• Works with all tab variants</li>
+                                <li>• Compatible with dynamic tabs</li>
+                                <li>
+                                    • Optional feature (disabled by default)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-800 mb-2">
+                                Use Cases:
+                            </h4>
+                            <ul className="text-green-700 space-y-1 text-sm">
+                                <li>• Documentation pages</li>
+                                <li>• Settings panels</li>
+                                <li>• Long forms with sections</li>
+                                <li>• Analytics dashboards</li>
+                                <li>• Multi-step wizards</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                        <h4 className="font-semibold text-gray-800 mb-2">
+                            Code Example:
+                        </h4>
+                        <div className="font-mono text-sm text-gray-700">
+                            <pre>{`<Tabs
+  items={tabItems}
+  stickyHeader={true}
+  variant={TabsVariant.UNDERLINE}
+/>`}</pre>
                         </div>
                     </div>
                 </div>

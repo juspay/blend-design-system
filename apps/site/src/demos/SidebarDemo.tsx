@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ButtonDemo from './ButtonDemo'
+import ButtonV2Demo from './ButtonV2Demo'
 import {
     Tag as TagIcon,
     Menu as MenuIcon,
@@ -40,6 +41,7 @@ import {
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
+import ButtonGroupV2Demo from './ButtonGroupV2Demo'
 import TagDemo from './TagDemo'
 import AvatarDemo from './AvatarDemo'
 import BreadcrumbDemo from './BreadcrumbDemo'
@@ -108,13 +110,19 @@ import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 import OutageChartsDemo from './OutageChartsDemo'
 import ChartDemoV2 from './ChartDemoV2'
+import TextInputAutofillTest from './TextInputAutofillTest'
+import TagV2Demo from './TagV2Demo'
+import TagGroupV2Demo from './TagGroupV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
         | 'buttons'
+        | 'buttonV2'
         | 'accessibility'
         | 'tooltips'
         | 'tags'
+        | 'tagV2'
+        | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
@@ -129,6 +137,7 @@ const SidebarDemo = () => {
         | 'datePicker'
         | 'selectors'
         | 'buttonGroups'
+        | 'buttonGroupV2'
         | 'avatars'
         | 'menu'
         | 'dropdown'
@@ -170,7 +179,8 @@ const SidebarDemo = () => {
         | 'formElements'
         | 'outageCharts'
         | 'chartDemoV2'
-    >('formElements')
+        | 'textInputAutofillTest'
+    >('textInputAutofillTest')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -366,12 +376,20 @@ const SidebarDemo = () => {
         switch (activeComponent) {
             case 'buttons':
                 return <ButtonDemo />
+            case 'buttonV2':
+                return <ButtonV2Demo />
             case 'accessibility':
                 return <AccessibilityDashboard />
             case 'buttonGroups':
                 return <ButtonGroupDemo />
+            case 'buttonGroupV2':
+                return <ButtonGroupV2Demo />
             case 'tags':
                 return <TagDemo />
+            case 'tagV2':
+                return <TagV2Demo />
+            case 'tagGroupV2':
+                return <TagGroupV2Demo />
             case 'avatars':
                 return <AvatarDemo />
             case 'breadcrumb':
@@ -460,6 +478,8 @@ const SidebarDemo = () => {
                 return <FormElementsDemo />
             case 'chartDemoV2':
                 return <ChartDemoV2 />
+            case 'textInputAutofillTest':
+                return <TextInputAutofillTest />
             default:
                 return (
                     <div className="p-8">
@@ -621,6 +641,20 @@ const SidebarDemo = () => {
                     },
                     showOnMobile: true,
                 },
+                {
+                    label: 'Button V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonV2',
+                    onClick: () => {
+                        setActiveComponent('buttonV2')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
 
                 {
                     label: 'Button Group',
@@ -632,12 +666,39 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Button Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonGroupV2',
+                    onClick: () => setActiveComponent('buttonGroupV2'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Tag',
                     leftSlot: (
                         <TagIcon style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'tags',
                     onClick: () => setActiveComponent('tags'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag V2',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagV2',
+                    onClick: () => setActiveComponent('tagV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagGroupV2',
+                    onClick: () => setActiveComponent('tagGroupV2'),
                     showOnMobile: true,
                 },
                 {
@@ -695,6 +756,14 @@ const SidebarDemo = () => {
             label: 'Inputs',
             isCollapsible: false,
             items: [
+                {
+                    label: 'Text Input Autofill Test',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTest',
+                    onClick: () => setActiveComponent('textInputAutofillTest'),
+                },
                 {
                     label: 'Text Input777',
                     leftSlot: (
@@ -1273,19 +1342,19 @@ const SidebarDemo = () => {
                     }
                     rightActions={
                         <div className="flex items-center gap-1">
-                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
                                 <BellIcon
                                     color={FOUNDATION_THEME.colors.gray[600]}
                                     size={20}
                                 />
                             </button>
-                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
                                 <TrendingUp
                                     color={FOUNDATION_THEME.colors.green[600]}
                                     size={20}
                                 />
                             </button>
-                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
                                 <Settings
                                     color={FOUNDATION_THEME.colors.gray[600]}
                                     size={20}
@@ -1332,7 +1401,7 @@ const SidebarDemo = () => {
                                     onClick={() =>
                                         setPanelOnlyMode(!panelOnlyMode)
                                     }
-                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
                                     title={
                                         panelOnlyMode
                                             ? 'Show Full Sidebar'
@@ -1365,7 +1434,7 @@ const SidebarDemo = () => {
                                             setIsExpanded(false)
                                         }
                                     }}
-                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
                                     title={
                                         iconOnlyMode
                                             ? 'Disable Icon Only Mode'
@@ -1396,7 +1465,7 @@ const SidebarDemo = () => {
                                                 !hideOnIconOnlyToggle
                                             )
                                         }
-                                        className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                        className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
                                         title={
                                             hideOnIconOnlyToggle
                                                 ? 'Toggle: Expand Sidebar'
@@ -1430,7 +1499,7 @@ const SidebarDemo = () => {
                                                 : Theme.LIGHT
                                         )
                                     }
-                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-[40px] h-[40px] hover:bg-gray-100 active:bg-gray-200"
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
                                     title={
                                         colorTheme === Theme.DARK
                                             ? 'Switch to Light Mode'

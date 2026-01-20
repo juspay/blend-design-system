@@ -342,9 +342,10 @@ const NavItem = ({
             }
             aria-label={item.label}
             tabIndex={0}
-            data-sidebar-selected={isActive}
-            data-sidebar-sub-option={item.label}
             data-sidebar-expanded={hasChildren ? isExpanded : undefined}
+            data-element="sidebar-sub-section"
+            data-id={item.label}
+            data-status={isActive ? 'selected' : 'not selected'}
         >
             {renderContent()}
         </StyledElement>

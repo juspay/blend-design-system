@@ -412,6 +412,15 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
                 category: 'Behavior',
             },
         },
+        onOpenChange: {
+            action: 'open-change',
+            description:
+                'Callback function invoked when the dropdown menu or mobile drawer opens or closes. Receives a boolean indicating the new open state.',
+            table: {
+                type: { summary: '(open: boolean) => void' },
+                category: 'Behavior',
+            },
+        },
     },
     tags: ['autodocs'],
 }

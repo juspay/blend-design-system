@@ -581,6 +581,58 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'MenuItemType.enableSubMenuVirtualScrolling',
+                hintText:
+                    'When true, enables virtual scrolling for the submenu, significantly improving performance when the submenu contains many items (100+). Virtual scrolling only renders visible items plus an overscan buffer, reducing DOM nodes and improving opening speed. Useful for large nested datasets. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables virtual scrolling in submenu, false uses standard rendering',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.subMenuVirtualItemHeight',
+                hintText:
+                    'Optional fixed height in pixels for each submenu item when using virtual scrolling. This value is used to calculate the total height of the scrollable area and determine which items are visible. Should be set to accommodate the tallest item or use a consistent layout. Defaults to 40 pixels.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing fixed item height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.subMenuVirtualOverscan',
+                hintText:
+                    'Optional number of extra submenu items to render outside the visible area when using virtual scrolling. Higher values provide smoother scrolling but use more memory. Lower values are more memory-efficient but may cause slight delays during fast scrolling. Useful for balancing performance and memory. Defaults to 5 items.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing extra items to render outside viewport',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.subMenuVirtualScrollThreshold',
+                hintText:
+                    'Optional minimum number of submenu items required before virtual scrolling is automatically enabled. Below this threshold, standard rendering is used to avoid unnecessary complexity. Useful for optimizing performance only when needed. Set lower to activate virtual scrolling sooner. Defaults to 50 items.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing minimum items to trigger virtual scrolling',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

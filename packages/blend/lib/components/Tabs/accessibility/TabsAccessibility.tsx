@@ -604,7 +604,7 @@ const TabsAccessibility = forwardRef<HTMLDivElement, TabsAccessibilityProps>(
                                                     This tab can be closed
                                                 </div>
                                             ),
-                                            closable: true,
+                                            newItem: true,
                                         },
                                         {
                                             value: 'tab2',
@@ -614,7 +614,7 @@ const TabsAccessibility = forwardRef<HTMLDivElement, TabsAccessibilityProps>(
                                                     This tab can also be closed
                                                 </div>
                                             ),
-                                            closable: true,
+                                            newItem: true,
                                         },
                                     ]}
                                     onTabClose={(value) => {

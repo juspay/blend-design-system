@@ -434,12 +434,33 @@ const StyledInput = styled.input.withConfig({
         },
     }
 
+    const autofillStyles: CSSObject = {
+        '&:-webkit-autofill': {
+            WebkitBoxShadow: `0 0 0 1000px ${props.backgroundColor || 'transparent'} inset !important`,
+            WebkitTextFillColor: `${props.color || 'inherit'} !important`,
+            transition: 'background-color 5000s ease-in-out 0s',
+        },
+        '&:-webkit-autofill:hover': {
+            WebkitBoxShadow: `0 0 0 1000px ${props._hover?.backgroundColor || props.backgroundColor || 'transparent'} inset !important`,
+            WebkitTextFillColor: `${props._hover?.color || props.color || 'inherit'} !important`,
+        },
+        '&:-webkit-autofill:focus': {
+            WebkitBoxShadow: `0 0 0 1000px ${props._focus?.backgroundColor || props.backgroundColor || 'transparent'} inset !important`,
+            WebkitTextFillColor: `${props._focus?.color || props.color || 'inherit'} !important`,
+        },
+        '&:-webkit-autofill:active': {
+            WebkitBoxShadow: `0 0 0 1000px ${props._active?.backgroundColor || props.backgroundColor || 'transparent'} inset !important`,
+            WebkitTextFillColor: `${props._active?.color || props.color || 'inherit'} !important`,
+        },
+    }
+
     return css({
         ...base,
         ...placeholderStyle,
         ...stateStyles,
         ...outline,
         ...hideSpinButton,
+        ...autofillStyles,
     })
 })
 

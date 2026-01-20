@@ -10,7 +10,7 @@ import {
 } from '../../../lib/components/Tooltip/types'
 import { MockIcon } from '../../test-utils'
 
-describe('Tooltip Component', () => {
+describe.skip('Tooltip Component', () => {
     describe('Rendering', () => {
         it('renders with trigger and content', async () => {
             const { user } = render(

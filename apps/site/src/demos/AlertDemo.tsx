@@ -4,6 +4,7 @@ import {
     AlertVariant,
     AlertStyle,
     AlertActionPlacement,
+    AlertTokenType,
 } from '../../../../packages/blend/lib/components/Alert'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -15,10 +16,11 @@ import {
     AlertTriangle,
     HelpCircle,
 } from 'lucide-react'
+import { useResponsiveTokens } from '../../../../packages/blend/lib/hooks/useResponsiveTokens'
 
 const AlertDemo = () => {
     const [visibleAlerts, setVisibleAlerts] = useState<Set<string>>(new Set())
-
+    const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
     // Playground state
     const [playgroundHeading, setPlaygroundHeading] = useState('Alert Heading')
     const [playgroundDescription, setPlaygroundDescription] = useState(
@@ -238,6 +240,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.SUBTLE}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -246,6 +249,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.SUCCESS}
                         style={AlertStyle.SUBTLE}
                         icon={<CheckCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -254,6 +258,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.WARNING}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertTriangle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -262,6 +267,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ERROR}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -270,6 +276,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.PURPLE}
                         style={AlertStyle.SUBTLE}
                         icon={<HelpCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -278,6 +285,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ORANGE}
                         style={AlertStyle.SUBTLE}
                         icon={<AlertTriangle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -286,6 +294,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.NEUTRAL}
                         style={AlertStyle.SUBTLE}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -302,6 +311,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.NO_FILL}
                         icon={<Info size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -310,6 +320,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.SUCCESS}
                         style={AlertStyle.NO_FILL}
                         icon={<CheckCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -318,6 +329,7 @@ const AlertDemo = () => {
                         variant={AlertVariant.ERROR}
                         style={AlertStyle.NO_FILL}
                         icon={<AlertCircle size={16} />}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -343,6 +355,7 @@ const AlertDemo = () => {
                             onClick: handleSecondaryAction,
                         }}
                         actionPlacement={AlertActionPlacement.RIGHT}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -360,6 +373,7 @@ const AlertDemo = () => {
                             onClick: handleSecondaryAction,
                         }}
                         actionPlacement={AlertActionPlacement.BOTTOM}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -372,6 +386,7 @@ const AlertDemo = () => {
                             label: 'Learn More',
                             onClick: handlePrimaryAction,
                         }}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -390,6 +405,7 @@ const AlertDemo = () => {
                             style={AlertStyle.SUBTLE}
                             icon={<Info size={16} />}
                             onClose={() => handleClose('dismissible-1')}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -406,6 +422,7 @@ const AlertDemo = () => {
                             }}
                             onClose={() => handleClose('dismissible-2')}
                             actionPlacement={AlertActionPlacement.RIGHT}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -418,6 +435,7 @@ const AlertDemo = () => {
                             icon={<AlertTriangle size={16} />}
                             onClose={() => handleClose('dismissible-3')}
                             actionPlacement={AlertActionPlacement.BOTTOM}
+                            maxWidth={alertTokens.maxWidth as string}
                         />
                     )}
 
@@ -464,6 +482,7 @@ const AlertDemo = () => {
                         description="This alert doesn't have an icon, demonstrating the clean layout without visual indicators."
                         variant={AlertVariant.PRIMARY}
                         style={AlertStyle.SUBTLE}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
 
                     <Alert
@@ -471,6 +490,7 @@ const AlertDemo = () => {
                         description="A simple alert with just text content, no icon, no actions, and no close button."
                         variant={AlertVariant.NEUTRAL}
                         style={AlertStyle.NO_FILL}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>
@@ -510,6 +530,7 @@ const AlertDemo = () => {
                             alert('Alert closed!')
                         }}
                         actionPlacement={AlertActionPlacement.RIGHT}
+                        maxWidth={alertTokens.maxWidth as string}
                     />
                 </div>
             </div>

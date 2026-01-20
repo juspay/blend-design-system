@@ -67,7 +67,7 @@ export const StyledTabsList = styled(TabsPrimitive.List)<{
                 position: 'absolute',
                 left: 0,
                 right: 0,
-                bottom: '-1px',
+                bottom: '0px',
                 height: props.$tabsToken.trigger.activeIndicator.height,
                 backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
                 scale: 'var(--tabs-indicator-width, 0.125) 1',

@@ -67,7 +67,7 @@ const Menu = ({
     enableVirtualScrolling = false,
     virtualItemHeight = 40,
     virtualOverscan = 5,
-    virtualScrollThreshold = 50,
+    virtualScrollThreshold = 20,
     skeleton = {
         count: 3,
         show: false,
@@ -345,7 +345,6 @@ const Menu = ({
                                         : FOUNDATION_THEME.unit[6],
                                 }}
                             >
-                                s
                                 <VirtualList
                                     items={virtualListItems}
                                     height={
