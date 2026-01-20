@@ -34,6 +34,7 @@
 
 ## 🔧 Chores
 
+- **release**: v0.0.32 [STABLE] ([6ab29da](../../commit/6ab29da))
 - **release**: v0.0.32-beta [BETA] ([5df42c9](../../commit/5df42c9))
 - dev to staging (#931) ([d1659cb](../../commit/d1659cb))
 - Feat/mulit colored line chart (#927) ([3db0e5f](../../commit/3db0e5f))
@@ -50,9 +51,9 @@
 
 ---
 
-**Release Date**: 2026-01-05
+**Release Date**: 2026-01-20
 **Commit Range**: v0.0.31..HEAD
-**Total Changes**: 34 commits
+**Total Changes**: 35 commits
 
 ## Installation
 
