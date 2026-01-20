@@ -3,6 +3,7 @@ import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
 import {
     DateRangePickerProps,
     DateRangePreset,
+    DateRangeIntermediate,
     DateRange,
     DateRangePickerSize,
     PresetSelectionData,
@@ -43,12 +44,12 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type DateInputsSectionProps = {
     startDate: string
-    endDate: string
+    endDate?: string
     startTime: string
-    endTime: string
+    endTime?: string
     showDateTimePicker: boolean
     allowSingleDateSelection: boolean
-    selectedRange: DateRange
+    selectedRange: DateRangeIntermediate
     startDateValidation: DateValidationResult
     endDateValidation: DateValidationResult
     onStartDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -151,7 +152,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                 {(!allowSingleDateSelection ||
                     (allowSingleDateSelection &&
                         selectedRange.startDate.getTime() !==
-                            selectedRange.endDate.getTime())) && (
+                            selectedRange.endDate?.getTime())) && (
                     <Block
                         display="flex"
                         gap={calendarToken?.calendar?.header?.dateInput?.gap}
@@ -194,7 +195,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     id={endDateId}
                                     label=""
                                     placeholder="DD/MM/YYYY"
-                                    value={endDate}
+                                    value={endDate || ''}
                                     onChange={onEndDateChange}
                                     error={!endDateValidation.isValid}
                                     errorMessage={
@@ -210,7 +211,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             {showDateTimePicker && (
                                 <TimeSelector
                                     id={endTimeId}
-                                    value={endTime}
+                                    value={endTime || ''}
                                     onChange={onEndTimeChange}
                                     autoFocus={false}
                                     aria-label="End time"
@@ -225,7 +226,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
 }
 
 type CalendarSectionProps = {
-    selectedRange: DateRange
+    selectedRange: DateRangeIntermediate
     today: Date
     allowSingleDateSelection: boolean
     disableFutureDates: boolean
@@ -234,8 +235,9 @@ type CalendarSectionProps = {
     hidePastDates: boolean
     customDisableDates?: (date: Date) => boolean
     customRangeConfig?: import('./types').CustomRangeConfig
-    onDateSelect: (range: DateRange) => void
+    onDateSelect: (range: DateRangeIntermediate) => void
     showDateTimePicker: boolean
+    timezone?: string
 }
 
 const CalendarSection: React.FC<
@@ -253,6 +255,7 @@ const CalendarSection: React.FC<
     onDateSelect,
     showDateTimePicker,
     resetScrollPosition,
+    timezone,
 }) => (
     <Block>
         <CalendarGrid
@@ -268,6 +271,7 @@ const CalendarSection: React.FC<
             customRangeConfig={customRangeConfig}
             showDateTimePicker={showDateTimePicker}
             resetScrollPosition={resetScrollPosition}
+            timezone={timezone}
         />
     </Block>
 )
@@ -363,9 +367,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
 
-        const [selectedRange, setSelectedRange] = useState<DateRange>(
-            value || getPresetDateRange(DateRangePreset.TODAY, timezone)
-        )
+        const [selectedRange, setSelectedRange] =
+            useState<DateRangeIntermediate>(
+                value || getPresetDateRange(DateRangePreset.TODAY, timezone)
+            )
         const lastExternalValueRef = React.useRef<{
             start: number | null
             end: number | null
@@ -380,20 +385,25 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             formatDate(selectedRange.startDate, 'HH:mm', timezone)
         )
         const [endTime, setEndTime] = useState(
-            formatDate(selectedRange.endDate, 'HH:mm', timezone)
+            selectedRange.endDate &&
+                formatDate(selectedRange.endDate, 'HH:mm', timezone)
         )
 
         const [startDate, setStartDate] = useState(
             formatDate(selectedRange.startDate, dateFormat, timezone)
         )
         const [endDate, setEndDate] = useState(
-            formatDate(selectedRange.endDate, dateFormat, timezone)
+            selectedRange.endDate &&
+                formatDate(selectedRange.endDate, dateFormat, timezone)
         )
 
         const [startDateValidation, setStartDateValidation] =
             useState<DateValidationResult>({ isValid: true, error: 'none' })
         const [endDateValidation, setEndDateValidation] =
-            useState<DateValidationResult>({ isValid: true, error: 'none' })
+            useState<DateValidationResult>({
+                isValid: !!selectedRange.endDate,
+                error: selectedRange.endDate ? 'none' : 'invalid-date',
+            })
 
         const today = React.useMemo(() => {
             if (!timezone) {
@@ -443,7 +453,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             }
 
             // Validate the date/time range
-            const validation = validateDateTimeRange(selectedRange)
+            const validation = validateDateTimeRange(selectedRange as DateRange)
 
             return {
                 isDisabled: !validation.isValid,
@@ -486,22 +496,34 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
             setSelectedRange(value)
             setStartDate(formatDate(value.startDate, dateFormat, timezone))
-            setEndDate(formatDate(value.endDate, dateFormat, timezone))
+            setEndDate(
+                value.endDate && formatDate(value.endDate, dateFormat, timezone)
+            )
             setStartTime(formatDate(value.startDate, 'HH:mm', timezone))
-            setEndTime(formatDate(value.endDate, 'HH:mm', timezone))
+            setEndTime(
+                value.endDate && formatDate(value.endDate, 'HH:mm', timezone)
+            )
 
             const detectedPreset = detectPresetFromRange(value)
             setActivePreset(detectedPreset)
-        }, [value, dateFormat])
+        }, [value, dateFormat, timezone])
 
         const handleDateSelect = useCallback(
-            (range: DateRange) => {
+            (range: DateRangeIntermediate) => {
                 setSelectedRange(range)
+                setStartTime(formatDate(range.startDate, 'HH:mm', timezone))
+                setEndTime(
+                    range.endDate &&
+                        formatDate(range.endDate, 'HH:mm', timezone)
+                )
                 const detectedPreset = detectPresetFromRange(range)
                 setActivePreset(detectedPreset)
 
                 setStartDate(formatDate(range.startDate, dateFormat, timezone))
-                setEndDate(formatDate(range.endDate, dateFormat, timezone))
+                setEndDate(
+                    range.endDate &&
+                        formatDate(range.endDate, dateFormat, timezone)
+                )
             },
             [dateFormat, timezone]
         )
@@ -637,12 +659,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const handleStartTimeChange = useCallback(
             (time: string) => {
                 setStartTime(time)
-                const updatedRange = handleTimeChange(time, selectedRange, true)
+                const updatedRange = handleTimeChange(
+                    time,
+                    selectedRange,
+                    timezone,
+                    true
+                )
                 setSelectedRange(updatedRange)
                 const detectedPreset = detectPresetFromRange(updatedRange)
                 setActivePreset(detectedPreset)
             },
-            [selectedRange]
+            [selectedRange, timezone]
         )
 
         const handleEndTimeChange = useCallback(
@@ -651,6 +678,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 const updatedRange = handleTimeChange(
                     time,
                     selectedRange,
+                    timezone,
                     false
                 )
                 setSelectedRange(updatedRange)
@@ -658,13 +686,16 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 const detectedPreset = detectPresetFromRange(updatedRange)
                 setActivePreset(detectedPreset)
             },
-            [selectedRange]
+            [selectedRange, timezone]
         )
 
         const handleApply = useCallback(() => {
+            if (!endTime || !selectedRange.endDate) {
+                return
+            }
             // Apply time from time selectors to the selected range
             const result = handleCalendarDateSelect(
-                selectedRange,
+                selectedRange as DateRange,
                 startTime,
                 endTime,
                 dateFormat,
@@ -674,9 +705,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             // Update the input fields to match the applied range
             setStartDate(result.formattedStartDate)
             setEndDate(result.formattedEndDate)
-
             // Call onChange with the final range
-            onChange?.(result.updatedRange)
+            if (result.updatedRange.endDate) {
+                onChange?.(result.updatedRange as DateRange)
+            }
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
@@ -690,17 +722,27 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 value ? DateRangePreset.CUSTOM : DateRangePreset.TODAY
             )
             setStartDate(formatDate(resetRange.startDate, dateFormat, timezone))
-            setEndDate(formatDate(resetRange.endDate, dateFormat, timezone))
+            setEndDate(
+                resetRange.endDate &&
+                    formatDate(resetRange.endDate, dateFormat, timezone)
+            )
             setStartTime(formatDate(resetRange.startDate, 'HH:mm', timezone))
-            setEndTime(formatDate(resetRange.endDate, 'HH:mm', timezone))
+            setEndTime(
+                resetRange.endDate
+                    ? formatDate(resetRange.endDate, 'HH:mm', timezone)
+                    : '23:59'
+            )
 
             setStartDateValidation({ isValid: true, error: 'none' })
-            setEndDateValidation({ isValid: true, error: 'none' })
+            setEndDateValidation({
+                isValid: !!selectedRange.endDate,
+                error: selectedRange.endDate ? 'none' : 'invalid-date',
+            })
 
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [dateFormat, value, timezone])
+        }, [dateFormat, value, timezone, selectedRange.endDate])
 
         useEffect(() => {
             if (isDisabled) {
@@ -795,12 +837,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     'en-US',
                     formatOptions
                 )
-                const endStr = range.endDate.toLocaleDateString(
-                    'en-US',
-                    formatOptions
-                )
+                const endStr = range.endDate
+                    ? range.endDate.toLocaleDateString('en-US', formatOptions)
+                    : ''
 
-                if (range.startDate.getTime() === range.endDate.getTime()) {
+                if (
+                    !range.endDate ||
+                    range.startDate.getTime() === range.endDate.getTime()
+                ) {
                     return startStr
                 }
 
@@ -1104,6 +1148,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             onDateSelect={handleDateSelectCallback}
                             showDateTimePicker={showDateTimePicker}
                             resetScrollPosition={popoverKey}
+                            timezone={timezone}
                         />
 
                         <FooterControls

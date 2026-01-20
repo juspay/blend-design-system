@@ -81,6 +81,12 @@ export enum CalendarInteractionMode {
 // TYPES
 // =============================================================================
 
+export type DateRangeIntermediate = {
+    startDate: Date
+    endDate?: Date
+    showTimePicker?: boolean
+}
+
 export type DateRange = {
     startDate: Date
     endDate: Date
@@ -366,9 +372,9 @@ export type ScrollablePickerProps = {
 }
 
 export type DatePickerComponentProps = {
-    selectedRange: DateRange
+    selectedRange: DateRangeIntermediate
     startTime: string
-    endTime: string
+    endTime?: string
     dateFormat: string
     handleStartTimeChange: (time: string) => void
     handleEndTimeChange: (time: string) => void
@@ -387,9 +393,9 @@ export type MobileDrawerPresetsProps = {
     showPresets: boolean
     availablePresets: DateRangePreset[]
     activePreset: DateRangePreset
-    selectedRange: DateRange
+    selectedRange: DateRangeIntermediate
     startTime: string
-    endTime: string
+    endTime?: string
     dateFormat: string
     handlePresetSelect: (preset: DateRangePreset) => void
     handleStartTimeChange: (time: string) => void
