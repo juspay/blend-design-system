@@ -5,7 +5,7 @@ import { FoundationTokenType } from '../../tokens/theme.token'
 import { Theme } from '../../context/theme.enum'
 import { getTagV2DarkTokens } from './tagV2.dark.tokens'
 import { getTagV2LightTokens } from './tagV2.light.tokens'
-import { PaddingDirection } from '../ButtonV2'
+import { PaddingDirectionTypes } from '../../../global-types/GlobalTypes'
 
 //Tokens Pattern: component.[target].CSSProp.[size].[variant/type].[subVariant/subType].[state].value
 
@@ -29,7 +29,7 @@ export type TagV2TokensType = Readonly<{
         [key in TagV2Size]: CSSObject['height']
     }
     padding: {
-        [key in PaddingDirection]: {
+        [key in PaddingDirectionTypes]: {
             [key in TagV2Size]: CSSObject['padding']
         }
     }
