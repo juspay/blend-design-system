@@ -159,9 +159,21 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
             window.addEventListener('resize', updateIndicator)
 
+            // Observe container size changes (e.g., when sidebar expands/collapses)
+            const resizeObserver = new ResizeObserver(() => {
+                updateIndicator()
+            })
+
+            // Observe both the list element and its parent container
+            resizeObserver.observe(listElement)
+            if (listElement.parentElement) {
+                resizeObserver.observe(listElement.parentElement)
+            }
+
             return () => {
                 clearTimeout(timeout)
                 window.removeEventListener('resize', updateIndicator)
+                resizeObserver.disconnect()
             }
         }, [
             activeTab,
