@@ -549,12 +549,21 @@ const NumberInput = ({
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
                                     .backgroundColor.hover,
+                            borderTop:
+                                numberInputTokens.inputContainer.border
+                                    .disabled,
                         }}
                         _disabled={{
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
                                     .backgroundColor.disabled,
+                            borderTop:
+                                numberInputTokens.inputContainer.border
+                                    .disabled,
                         }}
+                        borderTop={
+                            numberInputTokens.inputContainer.border.disabled
+                        }
                         disabled={isDownButtonDisabled}
                     >
                         <Triangle
