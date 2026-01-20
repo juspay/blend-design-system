@@ -120,7 +120,15 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-        }, [activeTab, variant, tabRefsMap, hasAnySkeleton])
+        }, [
+            activeTab,
+            variant,
+            tabRefsMap,
+            hasAnySkeleton,
+            expanded,
+            fitContent,
+            originalItems,
+        ])
 
         useEffect(() => {
             if (
@@ -160,6 +168,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             variant,
             hasAnySkeleton,
             sourceItems.length,
+            expanded,
+            fitContent,
+            originalItems,
             updateIndicator,
         ])
 
