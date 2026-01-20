@@ -485,6 +485,7 @@ const NumberInput = ({
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
                                     .backgroundColor.disabled,
+                            cursor: 'not-allowed',
                         }}
                     >
                         {/* <TriangleSVG direction="up" /> */}
@@ -560,6 +561,7 @@ const NumberInput = ({
                             borderTop:
                                 numberInputTokens.inputContainer.border
                                     .disabled,
+                            cursor: 'not-allowed',
                         }}
                         borderTop={
                             numberInputTokens.inputContainer.border.disabled
