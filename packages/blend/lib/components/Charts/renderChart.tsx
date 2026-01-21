@@ -400,17 +400,24 @@ export const renderChart = ({
                                           React.isValidElement(dotElement)
                                       ) {
                                           const elementProps =
-                                              dotElement.props as any
+                                              dotElement.props as unknown as Record<
+                                                  string,
+                                                  unknown
+                                              >
+                                          const existingStyle =
+                                              elementProps?.style as
+                                                  | Record<string, unknown>
+                                                  | undefined
                                           return React.cloneElement(
                                               dotElement,
                                               {
                                                   ...elementProps,
                                                   opacity: dotOpacity,
                                                   style: {
-                                                      ...elementProps?.style,
+                                                      ...existingStyle,
                                                       opacity: dotOpacity,
                                                   },
-                                              }
+                                              } as React.Attributes
                                           )
                                       }
                                       return dotElement
