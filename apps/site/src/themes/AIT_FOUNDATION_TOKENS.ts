@@ -237,6 +237,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
         '15': '15px',
         '16': '16px',
         '18': '18px',
+        '18.5': '18.5px',
         '20': '20px',
         '22': '22px',
         '24': '24px',
