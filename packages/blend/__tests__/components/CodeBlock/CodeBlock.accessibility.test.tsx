@@ -1,6 +1,6 @@
 import React from 'react'
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { describe, it, expect, afterEach, vi } from 'vitest'
+import { render, screen, waitFor, cleanup } from '../../test-utils'
 import { axe } from 'jest-axe'
 import CodeBlock from '../../../lib/components/CodeBlock/CodeBlock'
 import {
@@ -10,6 +10,11 @@ import {
 } from '../../../lib/components/CodeBlock/types'
 
 describe('CodeBlock Accessibility', () => {
+    afterEach(() => {
+        cleanup()
+        // Clear any pending timeouts to prevent unhandled errors
+        vi.clearAllTimers()
+    })
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
         it('meets WCAG standards for default code block (axe-core validation)', async () => {
             const { container } = render(

@@ -587,11 +587,20 @@ export const createCopyToClipboard = (
     code: string,
     setIsCopied: (copied: boolean) => void
 ) => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+
     return () => {
         navigator.clipboard.writeText(code)
         setIsCopied(true)
-        setTimeout(() => {
+
+        // Clear any existing timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+        }
+
+        timeoutId = setTimeout(() => {
             setIsCopied(false)
+            timeoutId = null
         }, 2000)
     }
 }

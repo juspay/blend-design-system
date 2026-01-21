@@ -918,3 +918,12 @@ export const createFileReplacementHandler = (
         setInternalFailedFiles([])
     }
 }
+
+// /**
+//  * Converts bytes to MB
+//  * @param bytes - Size in bytes
+//  * @returns Size in MB (rounded)
+//  */
+export const getMbfromKb = (bytes: number) => {
+    return Math.round(bytes / (1024 * 1024))
+}

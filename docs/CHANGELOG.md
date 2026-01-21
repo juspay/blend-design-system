@@ -1,63 +1,63 @@
-# Changelog for v0.0.32
+# Changelog for v0.0.33
 
 > **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
 
-- Implement delta sorting feature in DataTable (#926) ([b1e754a](../../commit/b1e754a))
-- update input components background colors (#908) ([8a5a5a7](../../commit/8a5a5a7))
-- enhance MultiSelect, SingleSelect with disabled state (#901) ([d848bde](../../commit/d848bde))
-- enhance NumberInput with interactive min/max and validation (#899) ([5bd332d](../../commit/5bd332d))
-- add prop to show clear button in multiselect (#886) ([6de8c22](../../commit/6de8c22))
-- enhance SingleSelect with width adjustments and demo updates (#883) ([62b28ba](../../commit/62b28ba))
-- enhance TableCell with truncation logic and improve Menu (#881) ([742b76f](../../commit/742b76f))
-- improve SelectItem performance (#872) ([b31ed48](../../commit/b31ed48))
+- Introduce ButtonV2 (#972) ([8ce6816](../../commit/8ce6816))
+- Enhance MultiValueInput with left and right slot support (#966) ([c29affe](../../commit/c29affe))
+- Implement virtual scrolling for submenus to enhance performance (#967) ([bcb10c7](../../commit/bcb10c7))
+- Add centralized accessibility utilities and add rfc for refactoration (#950) ([f3ffaaa](../../commit/f3ffaaa))
+- add stickyHeader prop to Tabs (#953) ([0c0628f](../../commit/0c0628f))
+- Add showBorder prop to StatCard component for customizable border display (#942) ([3c761bd](../../commit/3c761bd))
 
 ## 🐛 Bug Fixes
 
-- data table: space in search box and initialColumns renderCell change sync (#919) ([d79e23e](../../commit/d79e23e))
-- accordion overflow hiiden visibility fix (#915) ([babb52f](../../commit/babb52f))
-- custom legend for chart (#923) ([4236d22](../../commit/4236d22))
-- button icon disable color added (#913) ([54564c2](../../commit/54564c2))
-- De-couple delta sign with graph color (resolved) (#900) ([153b2f2](../../commit/153b2f2))
-- fixed the border issue in statCard help icon (#898) ([899266f](../../commit/899266f))
-- change DataTable overflow property from 'visible' to 'auto' (#896) ([d20d595](../../commit/d20d595))
-- legends total type (#895) ([dbfefd0](../../commit/dbfefd0))
-- linechart overlap issue fixed (#890) ([adceecf](../../commit/adceecf))
-- Text spilling over tooltip box in Charts resolved (#888) ([433afaf](../../commit/433afaf))
-- No padding between 'No items available' in single select fixed (#884) ([08f19ae](../../commit/08f19ae))
-
-## ♻️ Code Refactoring
-
-- enhance MultiSelect, SingleSelect border styling (#917) ([2391a55](../../commit/2391a55))
-- optimize ColumnManager and MultiSelectMenu (#879) ([5f5006e](../../commit/5f5006e))
+- undefined restricted (#997) ([2b12d98](../../commit/2b12d98))
+- removed maxWidth from alert (#995) ([9261d66](../../commit/9261d66))
+- search added to dropdowninput (#994) ([f1f0e7b](../../commit/f1f0e7b))
+- add export in component index for tokens and accodion visibility fix (#990) ([ae71fe0](../../commit/ae71fe0))
+- mapped with key instead of index (#987) ([c515f89](../../commit/c515f89))
+- checkboc span data-id added (#982) ([06450fe](../../commit/06450fe))
+- ui overflow issue reolved in fileupload (#980) ([e95a6ec](../../commit/e95a6ec))
+- Option to hide delta value in Stat Card (#977) ([8ecc8f3](../../commit/8ecc8f3))
+- color should be map by keys instead of index in legend more (#975) ([4bf7bcf](../../commit/4bf7bcf))
+- single select diselect function removed (#981) ([a6d6889](../../commit/a6d6889))
+- tabs render issue on api call resolved (#974) ([ac04e74](../../commit/ac04e74))
+- auto change tab issue resolved & right slot applied (#973) ([bd1d332](../../commit/bd1d332))
+- tabs underline issue fixed (#959) ([9d6a257](../../commit/9d6a257))
+- data table column msnager selection removed on close (#951) ([5034312](../../commit/5034312))
+- tabs new flow added for add button (#928) ([bcf22f3](../../commit/bcf22f3))
+- fixed autofill overlapping issue in inputs (#945) ([f5e9e01](../../commit/f5e9e01))
 
 ## 🔧 Chores
 
-- **release**: v0.0.32-beta [BETA] ([5df42c9](../../commit/5df42c9))
-- dev to staging (#931) ([d1659cb](../../commit/d1659cb))
-- Feat/mulit colored line chart (#927) ([3db0e5f](../../commit/3db0e5f))
-- Add sidebar icon only state (#906) ([09b4035](../../commit/09b4035))
-- 920 datatable pagination control is not responsive goes out of container (#922) ([fcff2de](../../commit/fcff2de))
-- Remove tooltip exit animations for instant disappearance (#907) ([ff2726c](../../commit/ff2726c))
-- Feat/area chart (#902) ([9003242](../../commit/9003242))
-- Update ButtonBase sizing logic (#894) ([fa08a1e](../../commit/fa08a1e))
-- Feat/charts custom dot (#891) ([d613275](../../commit/d613275))
-- Add full screen support for drawer (#889) ([569456e](../../commit/569456e))
-- Fix/chatinput mweb(refactored) (#871) ([f7a16de](../../commit/f7a16de))
-- Remove overflow from card (#877) ([637d743](../../commit/637d743))
-- **release**: v0.0.31 [STABLE] ([d0f1630](../../commit/d0f1630))
+- **release**: v0.0.33-beta [BETA] (#1004) ([9439a07](../../commit/9439a07))
+- **release**: v0.0.33-beta [BETA] ([4ae4a79](../../commit/4ae4a79))
+- dev to staging (#1003) ([7a0d209](../../commit/7a0d209))
+- Feat/tagv2 (#1000) ([153cfc1](../../commit/153cfc1))
+- Fix/bar chart aux not visible (#993) ([c0489f3](../../commit/c0489f3))
+- Fix/tabs render issue (#988) ([f1dd61e](../../commit/f1dd61e))
+- Fix/button token change (#983) ([8562ab4](../../commit/8562ab4))
+- Multiselect new token added for disabled, removed border left from x button (#969) ([01a12ef](../../commit/01a12ef))
+- Fix/chart dot issue (#958) ([a25ccee](../../commit/a25ccee))
+- Fix/card data ids (#943) ([9edc645](../../commit/9edc645))
+- Fix/observer loop (#955) ([e045e2b](../../commit/e045e2b))
+- added demo for multiple labels (#957) ([3e7ce59](../../commit/3e7ce59))
+- Fix/chart legend more color (#954) ([e4029db](../../commit/e4029db))
+- Fix table filter popover opening (#947) ([8644370](../../commit/8644370))
+- Fix/color mismatch legend chart (#944) ([6ba765a](../../commit/6ba765a))
 
 ---
 
-**Release Date**: 2026-01-05
-**Commit Range**: v0.0.31..HEAD
-**Total Changes**: 34 commits
+**Release Date**: 2026-01-20
+**Commit Range**: v0.0.32..HEAD
+**Total Changes**: 37 commits
 
 ## Installation
 
 ```bash
 npm install @juspay/blend-design-system@latest
 # or specific version
-npm install @juspay/blend-design-system@0.0.32
+npm install @juspay/blend-design-system@0.0.33
 ```

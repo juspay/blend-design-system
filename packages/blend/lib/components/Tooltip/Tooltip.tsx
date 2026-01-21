@@ -94,6 +94,7 @@ export const Tooltip = ({
                                     slotDirection ===
                                         TooltipSlotDirection.LEFT && (
                                         <Block
+                                            data-element="leading-icon"
                                             contentCentered
                                             flexShrink={0}
                                             role="presentation"
