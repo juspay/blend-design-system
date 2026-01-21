@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 import { CSSObject } from 'styled-components'
 
@@ -36,11 +36,11 @@ export type TagV2Props = {
     subType?: TagV2SubType
     color?: TagV2Color
     leftSlot?: {
-        slot: ReactNode
+        slot: ReactElement
         maxHeight: CSSObject['maxHeight']
     }
     rightSlot?: {
-        slot: ReactNode
+        slot: ReactElement
         maxHeight: CSSObject['maxHeight']
     }
     skeleton?: {
