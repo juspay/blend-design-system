@@ -918,3 +918,7 @@ export const createFileReplacementHandler = (
         setInternalFailedFiles([])
     }
 }
+
+export const getMbfromKb = (kb: number) => {
+    return Math.round(kb / 1024)
+}

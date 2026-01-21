@@ -34,6 +34,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
             display="flex"
             flexDirection="column"
             gap={uploadTokens.container.content.slot.gap}
+            data-element="files-uploaded"
         >
             <Block
                 display="flex"

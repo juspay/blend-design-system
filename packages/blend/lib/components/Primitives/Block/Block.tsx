@@ -125,6 +125,7 @@ type StyledBlockProps = StateStyles & {
 
 const blockedProps = [
     // All base props
+    'color',
     'padding',
     'paddingTop',
     'paddingBottom',
