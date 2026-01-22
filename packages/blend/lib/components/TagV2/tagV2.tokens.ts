@@ -1,11 +1,16 @@
 import type { CSSObject } from 'styled-components'
-import { TagV2Color, TagV2Size, TagV2Type, TagV2SubType } from './TagV2.types'
+import {
+    TagV2Color,
+    TagV2Size,
+    TagV2Type,
+    TagV2SubType,
+    TagV2PaddingDirection,
+} from './TagV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { Theme } from '../../context/theme.enum'
 import { getTagV2DarkTokens } from './tagV2.dark.tokens'
 import { getTagV2LightTokens } from './tagV2.light.tokens'
-import { PaddingDirectionEnums } from '../../../global-types/GlobalTypes'
 
 //Tokens Pattern: component.[target].CSSProp.[size].[variant/type].[subVariant/subType].[state].value
 
@@ -29,7 +34,7 @@ export type TagV2TokensType = Readonly<{
         [key in TagV2Size]: CSSObject['height']
     }
     padding: {
-        [key in PaddingDirectionEnums]: {
+        [key in TagV2PaddingDirection]: {
             [key in TagV2Size]: CSSObject['padding']
         }
     }

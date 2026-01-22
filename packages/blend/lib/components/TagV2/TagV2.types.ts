@@ -2,6 +2,13 @@ import type { ReactElement } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 import { CSSObject } from 'styled-components'
 
+export enum TagV2PaddingDirection {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 export enum TagV2Type {
     NO_FILL = 'noFill',
     ATTENTIVE = 'attentive',

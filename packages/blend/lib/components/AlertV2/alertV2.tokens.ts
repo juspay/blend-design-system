@@ -3,10 +3,10 @@ import {
     AlertV2Type,
     AlertV2SubType,
     AlertV2ActionPosition,
+    AlertV2PaddingDirection,
 } from './alertV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { type BreakpointType } from '../../breakpoints/breakPoints'
-import { PaddingDirectionEnums } from '../../../global-types/GlobalTypes'
 import { Theme } from '../../context/theme.enum'
 import { getAlertV2DarkTokens } from './alertV2.dark.tokens'
 import { getAlertV2LightTokens } from './alertV2.light.tokens'
@@ -28,7 +28,7 @@ export type AlertV2TokensType = {
         }
     }
     padding: {
-        [key in PaddingDirectionEnums]: CSSObject['padding']
+        [key in AlertV2PaddingDirection]: CSSObject['padding']
     }
     gap: { [key in AlertV2ActionPosition]: CSSObject['gap'] }
     slot: {

@@ -1,5 +1,12 @@
 import { ReactElement } from 'react'
-import { DimensionTypes } from '../../../global-types/GlobalTypes'
+import { CSSObject } from 'styled-components'
+
+export enum AlertV2PaddingDirection {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
 
 export enum AlertV2Type {
     PRIMARY = 'primary',
@@ -32,6 +39,12 @@ export type AlertV2Actions = {
     secondaryAction?: AlertV2Action
 }
 
+export type AlertV2Dimensions = {
+    width?: CSSObject['width']
+    maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
+}
+
 export type AlertV2Props = {
     type?: AlertV2Type
     subType?: AlertV2SubType
@@ -44,4 +57,4 @@ export type AlertV2Props = {
         onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
     }
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'> &
-    DimensionTypes
+    AlertV2Dimensions
