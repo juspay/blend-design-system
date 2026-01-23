@@ -1,6 +1,6 @@
 import { useEffect, RefObject } from 'react'
 
-export const usePreventParentScroll = (
+const usePreventParentScroll = (
     isOpen: boolean,
     contentRef?: RefObject<HTMLElement | null>,
     selectors: string[] = []
@@ -33,3 +33,5 @@ export const usePreventParentScroll = (
         }
     }, [isOpen, contentRef, selectors])
 }
+
+export default usePreventParentScroll
