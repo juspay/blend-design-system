@@ -114,6 +114,7 @@ import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
 import AlertV2Demo from './AlertV2Demo'
+import SnackbarV2Demo from './SnackbarV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -182,7 +183,8 @@ const SidebarDemo = () => {
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
-    >('alertV2')
+        | 'snackbarV2'
+    >('snackbarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -414,6 +416,8 @@ const SidebarDemo = () => {
                 return <AlertDemo />
             case 'alertV2':
                 return <AlertV2Demo />
+            case 'snackbarV2':
+                return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
             case 'accordion':
@@ -997,6 +1001,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'snackbar',
                     onClick: () => setActiveComponent('snackbar'),
+                },
+                {
+                    label: 'Snackbar V2',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbarV2',
+                    onClick: () => setActiveComponent('snackbarV2'),
                 },
                 {
                     label: 'Tooltip',
