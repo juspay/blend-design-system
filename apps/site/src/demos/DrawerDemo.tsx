@@ -30,6 +30,7 @@ import {
     MultiSelectVariant,
     MultiSelectSelectionTagType,
     MultiSelectMenuSize,
+    MultiSelectMenuGroupType,
 } from '../../../../packages/blend/lib/components/MultiSelect'
 import { Tooltip } from '../../../../packages/blend/lib/components/Tooltip'
 import { Popover } from '../../../../packages/blend/lib/components/Popover'
@@ -38,7 +39,7 @@ import {
     SingleSelect,
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
-import { Search, User, X } from 'lucide-react'
+import { Code, Database, Search, Server, User, X } from 'lucide-react'
 import { SearchInput } from '../../../../packages/blend/lib/main'
 const simpleItems: SelectMenuGroupType[] = [
     {
@@ -48,11 +49,94 @@ const simpleItems: SelectMenuGroupType[] = [
             { label: 'Option 3', value: 'option3' },
             { label: 'Option 4', value: 'option4' },
             { label: 'Option 5', value: 'option5' },
+            { label: 'Option 6', value: 'option6' },
+            { label: 'Option 7', value: 'option7' },
+            { label: 'Option 8', value: 'option8' },
+            { label: 'Option 9', value: 'option9' },
+            { label: 'Option 10', value: 'option10' },
+            { label: 'Option 11', value: 'option11' },
+            { label: 'Option 12', value: 'option12' },
+            { label: 'Option 13', value: 'option13' },
+            { label: 'Option 14', value: 'option14' },
+            { label: 'Option 15', value: 'option15' },
+            { label: 'Option 16', value: 'option16' },
+            { label: 'Option 17', value: 'option17' },
+            { label: 'Option 18', value: 'option18' },
+            { label: 'Option 19', value: 'option19' },
+            { label: 'Option 20', value: 'option20' },
         ],
     },
 ]
+
+const skillItems: MultiSelectMenuGroupType[] = [
+    {
+        groupLabel: 'Frontend',
+        showSeparator: true,
+        items: [
+            { label: 'React', value: 'react', slot1: <Code size={16} /> },
+            { label: 'Vue.js', value: 'vue', slot1: <Code size={16} /> },
+            {
+                label: 'Angular',
+                value: 'angular',
+                slot1: <Code size={16} />,
+            },
+            { label: 'Svelte', value: 'svelte', slot1: <Code size={16} /> },
+            {
+                label: 'Next.js',
+                value: 'nextjs',
+                slot1: <Code size={16} />,
+            },
+        ],
+    },
+    {
+        groupLabel: 'Backend',
+        showSeparator: true,
+        items: [
+            {
+                label: 'Node.js',
+                value: 'nodejs',
+                slot1: <Server size={16} />,
+            },
+            {
+                label: 'Python',
+                value: 'python',
+                slot1: <Server size={16} />,
+            },
+            { label: 'Java', value: 'java', slot1: <Server size={16} /> },
+            { label: 'C#', value: 'csharp', slot1: <Server size={16} /> },
+            { label: 'Go', value: 'go', slot1: <Server size={16} /> },
+        ],
+    },
+    {
+        groupLabel: 'Database',
+        items: [
+            {
+                label: 'PostgreSQL',
+                value: 'postgresql',
+                slot1: <Database size={16} />,
+            },
+            {
+                label: 'MySQL',
+                value: 'mysql',
+                slot1: <Database size={16} />,
+            },
+            {
+                label: 'MongoDB',
+                value: 'mongodb',
+                slot1: <Database size={16} />,
+            },
+            {
+                label: 'Redis',
+                value: 'redis',
+                slot1: <Database size={16} />,
+            },
+        ],
+    },
+]
+
 export const BasicDrawerExample = () => {
     const [searchValue, setSearchValue] = useState('')
+
     return (
         <Drawer>
             <DrawerTrigger>
@@ -252,6 +336,26 @@ export const NestedDrawerExample = () => {
 
 export const SideDrawerExample = () => {
     const [basicIconSelected, setBasicIconSelected] = useState('')
+    const [basicSimpleSelected, setBasicSimpleSelected] = useState<string[]>([])
+
+    // Helper function to handle multi-select changes
+    const handleMultiSelectChange =
+        (
+            _: string[],
+            setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>
+        ) =>
+        (value: string) => {
+            if (value === '') {
+                setSelectedValues([])
+            } else {
+                setSelectedValues((prev) =>
+                    prev.includes(value)
+                        ? prev.filter((v) => v !== value)
+                        : [...prev, value]
+                )
+            }
+        }
+
     return (
         <Drawer direction="right">
             <DrawerTrigger>
@@ -278,14 +382,18 @@ export const SideDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="right" width="500px">
+                <DrawerContent
+                    direction="right"
+                    width="500px"
+                    style={{ overflow: 'visible' }}
+                >
                     <DrawerHeader>
                         <DrawerTitle>User Profile Settings</DrawerTitle>
                         <DrawerDescription>
                             Manage your account settings and preferences
                         </DrawerDescription>
                     </DrawerHeader>
-                    <DrawerBody>
+                    <DrawerBody overflowY="auto">
                         <div
                             style={{
                                 display: 'flex',
@@ -305,6 +413,21 @@ export const SideDrawerExample = () => {
                                 }}
                                 placeholder="Select user"
                                 slot={<User size={16} />}
+                            />
+                            <MultiSelect
+                                label="Technologies (Default Settings)"
+                                sublabel="Search and action buttons enabled by default"
+                                items={skillItems}
+                                selectedValues={basicSimpleSelected}
+                                onChange={handleMultiSelectChange(
+                                    basicSimpleSelected,
+                                    setBasicSimpleSelected
+                                )}
+                                placeholder="Start typing to search..."
+                                selectionTagType={
+                                    MultiSelectSelectionTagType.COUNT
+                                }
+                                useDrawerOnMobile={false}
                             />
                             <div>
                                 <h4
