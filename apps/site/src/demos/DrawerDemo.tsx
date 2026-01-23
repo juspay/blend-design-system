@@ -501,6 +501,144 @@ export const SideDrawerExample = () => {
                                             }}
                                         />
                                     </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Phone Number
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            defaultValue="+1 (555) 123-4567"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Address
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="123 Main Street"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            City
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="San Francisco"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            State
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="California"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            ZIP Code
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="94102"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            style={{
+                                                display: 'block',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                marginBottom: '4px',
+                                            }}
+                                        >
+                                            Country
+                                        </label>
+                                        <input
+                                            type="text"
+                                            defaultValue="United States"
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px 12px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
