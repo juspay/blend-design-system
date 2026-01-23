@@ -32,28 +32,25 @@ Create a scalable Tag component that can display:
 
 ```typescript
 type TagV2Props = {
-    text: string // Required text content
-    size?: TagV2Size // 'xs' | 'sm' | 'md' | 'lg'
-    type?: TagV2Type // 'noFill' | 'attentive' | 'subtle'
-    subType?: TagV2SubType // 'rounded' | 'squarical'
-    color?: TagV2Color // 'neutral' | 'primary' | 'success' | 'error' | 'warning' | 'purple'
+    text: string
+    size?: TagV2Size
+    type?: TagV2Type
+    subType?: TagV2SubType
+    color?: TagV2Color
     leftSlot?: {
-        // Optional left slot with maxHeight
         slot: ReactNode
         maxHeight: CSSObject['maxHeight']
     }
     rightSlot?: {
-        // Optional right slot with maxHeight
         slot: ReactNode
         maxHeight: CSSObject['maxHeight']
     }
     skeleton: {
-        // Skeleton configuration
         showSkeleton?: boolean
         skeletonVariant?: 'pulse' | 'wave' | 'shimmer'
     }
-    tagGroupPosition?: 'center' | 'left' | 'right' // For grouped tags (border radius adjustment)
-    onClick?: (event: MouseEvent) => void // Makes tag interactive (renders as button)
+    tagGroupPosition?: 'center' | 'left' | 'right'
+    onClick?: (event: MouseEvent) => void
 } & Omit<
     React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
     'size' | 'className' | 'style'

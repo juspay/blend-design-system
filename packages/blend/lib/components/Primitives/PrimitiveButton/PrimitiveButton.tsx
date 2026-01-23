@@ -89,6 +89,7 @@ type PrimitiveButtonProps = StateStyles & {
 
     // Text
     fontWeight?: CSSObject['fontWeight']
+    lineHeight?: CSSObject['lineHeight']
     fontSize?: CSSObject['fontSize']
     fontFamily?: CSSObject['fontFamily']
     textDecoration?: CSSObject['textDecoration']
@@ -163,6 +164,7 @@ const blockedProps = [
     'fontWeight',
     'fontSize',
     'fontFamily',
+    'lineHeight',
     'textDecoration',
     'textUnderlineOffset',
     'textTransform',
@@ -176,11 +178,14 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
         appearance: 'none',
         outline: 'none',
         border: 'none',
-        font: 'inherit',
+        fontFamily: 'inherit',
         cursor: props.disabled ? 'not-allowed' : (props.cursor ?? 'pointer'),
         opacity: props.disabled ? 0.6 : 1,
     }
-
+    // Text
+    if (props.lineHeight) styles.lineHeight = props.lineHeight
+    if (props.fontSize) styles.fontSize = props.fontSize
+    if (props.fontWeight) styles.fontWeight = props.fontWeight
     // Layout
     if (props.contentCentered) {
         styles.display = props.display ?? 'flex'

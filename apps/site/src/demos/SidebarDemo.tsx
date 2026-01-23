@@ -113,6 +113,7 @@ import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
+import AlertV2Demo from './AlertV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -180,7 +181,8 @@ const SidebarDemo = () => {
         | 'outageCharts'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
-    >('textInputAutofillTest')
+        | 'alertV2'
+    >('alertV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -410,6 +412,8 @@ const SidebarDemo = () => {
                 return <OTPInputDemo />
             case 'alerts':
                 return <AlertDemo />
+            case 'alertV2':
+                return <AlertV2Demo />
             case 'tabs':
                 return <TabsDemo />
             case 'accordion':
@@ -975,6 +979,16 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'alerts',
                     onClick: () => setActiveComponent('alerts'),
                     showOnMobile: true,
+                },
+                {
+                    label: 'Alert V2',
+                    leftSlot: (
+                        <AlertCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'alertV2',
+                    onClick: () => setActiveComponent('alertV2'),
                 },
                 {
                     label: 'Snackbar',
