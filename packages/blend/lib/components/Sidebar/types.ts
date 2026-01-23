@@ -45,6 +45,7 @@ export type SidebarMerchantInfo = {
 }
 
 export type SidebarProps = {
+    showLeftPanel?: boolean
     children: ReactNode
     data: DirectoryData[]
     leftPanel?: LeftPanelInfo

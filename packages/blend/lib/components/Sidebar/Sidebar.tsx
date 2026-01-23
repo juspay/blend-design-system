@@ -101,6 +101,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             activeItem,
             onActiveItemChange,
             defaultActiveItem,
+            showLeftPanel = true,
         },
         ref
     ) => {
@@ -296,16 +297,16 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         }, [isExpanded, iconOnlyMode, data])
 
         const handleMouseEnter = useCallback(() => {
-            if (!disableIntermediateState) {
+            if (!isExpanded) {
                 setIsHovering(true)
             }
-        }, [disableIntermediateState])
+        }, [isExpanded])
         const handleMouseLeave = useCallback(() => {
-            if (!disableIntermediateState) {
+            if (!isExpanded) {
                 setIsHovering(false)
             }
-        }, [disableIntermediateState])
-        const hasLeftPanel = Boolean(leftPanel?.items?.length)
+        }, [isExpanded])
+        const hasLeftPanel = Boolean(leftPanel?.items?.length) && showLeftPanel
         const isPanelOnlyMode = panelOnlyMode && hasLeftPanel
         const defaultMerchantInfo = getDefaultMerchantInfo()
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
@@ -460,7 +461,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         iconOnlyMode && !isExpanded
                             ? hasLeftPanel && leftPanel
                                 ? 'fit-content'
-                                : String(tokens.maxWidth.iconOnly)
+                                : isHovering
+                                  ? hasLeftPanel
+                                      ? String(tokens.maxWidth.withLeftPanel)
+                                      : String(tokens.maxWidth.withoutLeftPanel)
+                                  : String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'fit-content'
                               : getSidebarWidth(
@@ -475,7 +480,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         iconOnlyMode && !isExpanded
                             ? hasLeftPanel && leftPanel
                                 ? 'fit-content'
-                                : String(tokens.maxWidth.iconOnly)
+                                : isHovering
+                                  ? hasLeftPanel
+                                      ? String(tokens.maxWidth.withLeftPanel)
+                                      : String(tokens.maxWidth.withoutLeftPanel)
+                                  : String(tokens.maxWidth.iconOnly)
                             : isPanelOnlyMode
                               ? 'auto'
                               : '100%'
@@ -577,110 +586,175 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             }
                                         />
                                     )}
-                                    <Block
-                                        data-element="sub-sidebar"
-                                        width={String(tokens.maxWidth.iconOnly)}
-                                        height="100%"
-                                        display="flex"
-                                        flexDirection="column"
-                                        position="relative"
-                                        overflow="hidden"
-                                    >
+                                    {!isHovering && (
                                         <Block
-                                            width="100%"
+                                            data-element="sub-sidebar"
+                                            width={String(
+                                                tokens.maxWidth.iconOnly
+                                            )}
+                                            height="100%"
                                             display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            padding={`${FOUNDATION_THEME.unit[16]} 0`}
-                                            backgroundColor={
-                                                topbarToken.backgroundColor
-                                            }
-                                            style={{
-                                                backdropFilter:
-                                                    topbarToken.backdropFilter,
-                                            }}
+                                            flexDirection="column"
+                                            position="relative"
+                                            overflow="hidden"
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseLeave={handleMouseLeave}
                                         >
-                                            <Tooltip
-                                                content={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
-                                                side={TooltipSide.RIGHT}
+                                            <Block
+                                                width="100%"
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                padding={`${FOUNDATION_THEME.unit[16]} 0`}
+                                                backgroundColor={
+                                                    topbarToken.backgroundColor
+                                                }
+                                                style={{
+                                                    backdropFilter:
+                                                        topbarToken.backdropFilter,
+                                                }}
                                             >
-                                                <PrimitiveButton
-                                                    type="button"
-                                                    onClick={
-                                                        handleIconOnlyToggle
-                                                    }
-                                                    data-element="sidebar-hamburger"
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    border="none"
-                                                    backgroundColor={
-                                                        tokens.header
-                                                            .toggleButton
-                                                            .backgroundColor
-                                                            .default
-                                                    }
-                                                    borderRadius="10px"
-                                                    cursor="pointer"
-                                                    padding="9px"
-                                                    aria-label={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
-                                                    aria-expanded={false}
-                                                    style={{
-                                                        transition:
-                                                            'background-color 0.15s ease',
-                                                    }}
-                                                    _hover={{
-                                                        backgroundColor:
+                                                <Tooltip
+                                                    content={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                                                    side={TooltipSide.RIGHT}
+                                                >
+                                                    <PrimitiveButton
+                                                        type="button"
+                                                        onClick={
+                                                            handleIconOnlyToggle
+                                                        }
+                                                        data-element="sidebar-hamburger"
+                                                        display="flex"
+                                                        alignItems="center"
+                                                        justifyContent="center"
+                                                        border="none"
+                                                        backgroundColor={
                                                             tokens.header
                                                                 .toggleButton
                                                                 .backgroundColor
-                                                                .hover,
-                                                    }}
-                                                >
-                                                    <PanelsTopLeft
-                                                        color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[600]
+                                                                .default
                                                         }
-                                                        size={
-                                                            tokens.header
-                                                                .toggleButton
-                                                                .width
-                                                        }
-                                                        aria-hidden="true"
-                                                    />
-                                                </PrimitiveButton>
-                                            </Tooltip>
+                                                        borderRadius="10px"
+                                                        cursor="pointer"
+                                                        padding="9px"
+                                                        aria-label={`${hideOnIconOnlyToggle ? 'Hide' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                                                        aria-expanded={false}
+                                                        style={{
+                                                            transition:
+                                                                'background-color 0.15s ease',
+                                                        }}
+                                                        _hover={{
+                                                            backgroundColor:
+                                                                tokens.header
+                                                                    .toggleButton
+                                                                    .backgroundColor
+                                                                    .hover,
+                                                        }}
+                                                    >
+                                                        <PanelsTopLeft
+                                                            color={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .gray[600]
+                                                            }
+                                                            size={
+                                                                tokens.header
+                                                                    .toggleButton
+                                                                    .width
+                                                            }
+                                                            aria-hidden="true"
+                                                        />
+                                                    </PrimitiveButton>
+                                                </Tooltip>
+                                            </Block>
+                                            <DirectoryContainer
+                                                data-directory-container
+                                                id={sidebarNavId}
+                                                role="region"
+                                                aria-label="Navigation menu"
+                                                $showTopBlur={showTopBlur}
+                                                $showBottomBlur={showBottomBlur}
+                                                style={{
+                                                    width: '100%',
+                                                    maxWidth: String(
+                                                        tokens.maxWidth.iconOnly
+                                                    ),
+                                                }}
+                                            >
+                                                <Directory
+                                                    directoryData={data}
+                                                    idPrefix={`${baseId}-`}
+                                                    activeItem={activeItem}
+                                                    onActiveItemChange={
+                                                        onActiveItemChange
+                                                    }
+                                                    defaultActiveItem={
+                                                        defaultActiveItem
+                                                    }
+                                                    iconOnlyMode={!isExpanded}
+                                                />
+                                            </DirectoryContainer>
                                         </Block>
-                                        <DirectoryContainer
-                                            data-directory-container
-                                            id={sidebarNavId}
-                                            role="region"
-                                            aria-label="Navigation menu"
-                                            $showTopBlur={showTopBlur}
-                                            $showBottomBlur={showBottomBlur}
-                                            style={{
-                                                width: '100%',
-                                                maxWidth: String(
-                                                    tokens.maxWidth.iconOnly
-                                                ),
-                                            }}
+                                    )}
+                                    {isHovering && (
+                                        <Block
+                                            data-element="sub-sidebar"
+                                            width={
+                                                hasLeftPanel
+                                                    ? String(
+                                                          tokens.maxWidth
+                                                              .withLeftPanel
+                                                      )
+                                                    : String(
+                                                          tokens.maxWidth
+                                                              .withoutLeftPanel
+                                                      )
+                                            }
+                                            height="100%"
+                                            display="flex"
+                                            flexDirection="column"
+                                            position="relative"
+                                            onMouseLeave={handleMouseLeave}
                                         >
-                                            <Directory
-                                                directoryData={data}
-                                                idPrefix={`${baseId}-`}
-                                                activeItem={activeItem}
-                                                onActiveItemChange={
-                                                    onActiveItemChange
+                                            <SidebarHeader
+                                                sidebarTopSlot={sidebarTopSlot}
+                                                merchantInfo={merchantInfo}
+                                                isExpanded={
+                                                    isHovering || isExpanded
                                                 }
-                                                defaultActiveItem={
-                                                    defaultActiveItem
+                                                isScrolled={isScrolled}
+                                                sidebarCollapseKey={
+                                                    sidebarCollapseKey
                                                 }
-                                                iconOnlyMode={!isExpanded}
+                                                onToggle={handleToggle}
+                                                sidebarNavId={sidebarNavId}
+                                                hideToggleButton={false}
                                             />
-                                        </DirectoryContainer>
-                                    </Block>
+
+                                            <DirectoryContainer
+                                                data-directory-container
+                                                id={sidebarNavId}
+                                                role="region"
+                                                aria-label="Navigation menu"
+                                                $showTopBlur={showTopBlur}
+                                                $showBottomBlur={showBottomBlur}
+                                            >
+                                                <Directory
+                                                    directoryData={data}
+                                                    idPrefix={`${baseId}-`}
+                                                    activeItem={activeItem}
+                                                    onActiveItemChange={
+                                                        onActiveItemChange
+                                                    }
+                                                    defaultActiveItem={
+                                                        defaultActiveItem
+                                                    }
+                                                />
+                                            </DirectoryContainer>
+
+                                            <SidebarFooter footer={footer} />
+                                        </Block>
+                                    )}
                                 </>
                             )}
 

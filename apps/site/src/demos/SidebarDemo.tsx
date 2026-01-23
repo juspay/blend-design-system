@@ -1245,7 +1245,6 @@ const SidebarDemo = () => {
                     // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
-                    iconOnlyMode={iconOnlyMode}
                     hideOnIconOnlyToggle={hideOnIconOnlyToggle}
                     isExpanded={isExpanded}
                     onExpandedChange={setIsExpanded}
