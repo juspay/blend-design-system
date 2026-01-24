@@ -28,11 +28,13 @@ export type SnackbarV2ToastOptions = {
     actionButton?: SnackbarV2Action
     duration?: number
     position?: SnackbarV2Position
+    maxWidth?: string | number
 }
 
 export type SnackbarV2Props = {
     position?: SnackbarV2Position
     dismissOnClickAway?: boolean
+    maxWidth?: string | number
 }
 
 export type SnackbarV2ToastProps = {
@@ -42,6 +44,7 @@ export type SnackbarV2ToastProps = {
     onClose?: () => void
     actionButton?: SnackbarV2Action
     toastId?: string | number
+    maxWidth?: string | number
 }
 
 export type SnackbarV2IconProps = {

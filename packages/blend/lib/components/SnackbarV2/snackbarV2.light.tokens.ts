@@ -13,8 +13,6 @@ export const getSnackbarV2LightTokens = (
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
 
-            // Pattern: infoIcon.color.[variant]
-            // Example: infoIcon.color.success
             infoIcon: {
                 color: {
                     info: foundationToken.colors.primary[300],
@@ -25,7 +23,6 @@ export const getSnackbarV2LightTokens = (
                 height: foundationToken.unit[16],
             },
 
-            // Content area styling
             content: {
                 gap: foundationToken.unit[14],
 
@@ -86,8 +83,6 @@ export const getSnackbarV2LightTokens = (
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[8],
 
-            // Pattern: infoIcon.color.[variant]
-            // Example: infoIcon.color.warning
             infoIcon: {
                 color: {
                     info: foundationToken.colors.primary[300],
@@ -98,7 +93,6 @@ export const getSnackbarV2LightTokens = (
                 height: foundationToken.unit[16],
             },
 
-            // Content area styling
             content: {
                 gap: foundationToken.unit[18],
 

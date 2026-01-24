@@ -63,11 +63,13 @@ export type SnackbarV2ToastOptions = {
     actionButton?: SnackbarV2Action
     duration?: number
     position?: SnackbarV2Position
+    maxWidth?: string | number
 }
 
 export type SnackbarV2Props = {
     position?: SnackbarV2Position
     dismissOnClickAway?: boolean
+    maxWidth?: string | number
 }
 
 export type SnackbarV2ToastProps = {
@@ -77,6 +79,7 @@ export type SnackbarV2ToastProps = {
     onClose?: () => void
     actionButton?: SnackbarV2Action
     toastId?: string | number
+    maxWidth?: string | number
 }
 ```
 
@@ -200,7 +203,17 @@ const descriptionId = description ? `${idPrefix}-description` : undefined
 const snackbarTokens = useResponsiveTokens<SnackbarV2TokensType>('SNACKBARV2')
 ```
 
-### 5. Decorative Icons with Proper Accessibility
+### 5. Configurable MaxWidth with Token Default
+
+**Decision**: Allow `maxWidth` to be passed as a prop, defaulting to token values from foundation tokens when not provided.
+
+**Rationale**: Provides flexibility for different use cases while maintaining sensible defaults. Users can override the maxWidth for specific snackbars (e.g., wider snackbars for longer content), but the default comes from the design system tokens (350px for sm, 420px for lg breakpoints). This follows the pattern established by other V2 components like AlertV2.
+
+```tsx
+maxWidth={maxWidth || snackbarTokens.maxWidth}
+```
+
+### 6. Decorative Icons with Proper Accessibility
 
 **Decision**: Mark icons with `aria-hidden="true"` since they are decorative and the text content provides the accessible information.
 
@@ -212,7 +225,7 @@ const snackbarTokens = useResponsiveTokens<SnackbarV2TokensType>('SNACKBARV2')
 </Block>
 ```
 
-### 6. Action Button Auto-Dismiss Control
+### 7. Action Button Auto-Dismiss Control
 
 **Decision**: Allow action buttons to control whether the snackbar dismisses automatically when clicked via `autoDismiss` property (defaults to `true`).
 
@@ -227,7 +240,7 @@ onClick={() => {
 }}
 ```
 
-### 7. Ref Forwarding for Parent Component Control
+### 8. Ref Forwarding for Parent Component Control
 
 **Decision**: Use `forwardRef` to allow parent components to access the SnackbarV2 container element.
 
@@ -245,7 +258,7 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
 )
 ```
 
-### 8. Click-Away Dismissal with Event Delegation
+### 9. Click-Away Dismissal with Event Delegation
 
 **Decision**: Use event delegation on document to handle click-away dismissal, checking if the click target is within a snackbar element.
 
@@ -268,7 +281,7 @@ useEffect(() => {
 }, [dismissOnClickAway])
 ```
 
-### 9. Separation of Toast Creation and Container Component
+### 10. Separation of Toast Creation and Container Component
 
 **Decision**: Split functionality into `SnackbarV2` (container component) and `addSnackbarV2` (toast creation function).
 
@@ -281,10 +294,11 @@ addSnackbarV2({
     header: 'Success!',
     description: 'Your changes have been saved.',
     variant: SnackbarV2Variant.SUCCESS,
+    maxWidth: 500,
 })
 ```
 
-### 10. Data Attributes for Testing and Tracking
+### 11. Data Attributes for Testing and Tracking
 
 **Decision**: Use `data-element` and `data-id` attributes on key interactive elements for testing and analytics.
 

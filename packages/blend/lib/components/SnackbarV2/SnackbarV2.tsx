@@ -228,6 +228,7 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
     onClose,
     actionButton,
     toastId,
+    maxWidth,
     ...props
 }) => {
     const snackbarTokens =
@@ -258,7 +259,7 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
-            maxWidth={snackbarTokens.maxWidth}
+            maxWidth={maxWidth || snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
             {...props}
         >
@@ -319,8 +320,8 @@ export const addSnackbarV2 = ({
     actionButton,
     duration,
     position,
+    maxWidth,
 }: SnackbarV2ToastOptions) => {
-    // Determine if position includes "center" for proper alignment
     const isCenter = position?.includes('center')
 
     return sonnerToast.custom(
@@ -335,6 +336,7 @@ export const addSnackbarV2 = ({
                 }}
                 actionButton={actionButton}
                 toastId={t}
+                maxWidth={maxWidth}
             />
         ),
         {
@@ -366,7 +368,6 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
     ) => {
         const isCenter = position?.includes('center')
 
-        // Handle click away to dismiss all snackbars
         useEffect(() => {
             if (!dismissOnClickAway) {
                 return
