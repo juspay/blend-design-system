@@ -111,6 +111,10 @@ import {
     getAlertV2Tokens,
     ResponsiveAlertV2Tokens,
 } from '../components/AlertV2/alertV2.tokens'
+import {
+    getAccordionV2Tokens,
+    ResponsiveAccordionV2Tokens,
+} from '../components/AccordionV2/accordionV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -159,6 +163,7 @@ export type ComponentTokenType = {
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
+    ACCORDIONV2?: ResponsiveAccordionV2Tokens
 }
 
 type ThemeContextType = {
@@ -217,6 +222,7 @@ const ThemeContext = createContext<ThemeContextType>({
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         ALERTV2: getAlertV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        ACCORDIONV2: getAccordionV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
