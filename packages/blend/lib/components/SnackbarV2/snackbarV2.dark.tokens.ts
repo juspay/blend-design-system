@@ -9,7 +9,6 @@ export const getSnackbarV2DarkTokens = (
             backgroundColor: foundationToken.colors.gray[800],
             borderRadius: foundationToken.border.radius[12],
             padding: foundationToken.unit[16],
-            maxWidth: 350,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
 
@@ -79,7 +78,6 @@ export const getSnackbarV2DarkTokens = (
             backgroundColor: foundationToken.colors.gray[800],
             borderRadius: foundationToken.border.radius[8],
             padding: foundationToken.unit[16],
-            maxWidth: 420,
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[8],
 

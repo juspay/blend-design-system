@@ -259,7 +259,7 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
-            maxWidth={maxWidth || snackbarTokens.maxWidth}
+            maxWidth={maxWidth}
             boxShadow={snackbarTokens.boxShadow}
             {...props}
         >

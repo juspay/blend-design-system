@@ -10,7 +10,6 @@ export type SnackbarV2TokensType = {
     backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
-    maxWidth: CSSObject['maxWidth']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
 
