@@ -1,4 +1,11 @@
-import { forwardRef, useState, useId, useEffect } from 'react'
+import {
+    forwardRef,
+    useState,
+    useId,
+    useEffect,
+    useRef,
+    useCallback,
+} from 'react'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
@@ -12,7 +19,6 @@ import {
     getTokenColor,
     getDiffGutterStyle,
     shouldShowLineNumbers as shouldShowLineNumbersUtil,
-    createCopyToClipboard,
     processLines,
     formatCode,
     type SyntaxToken,
@@ -177,6 +183,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
         const codeBlockId = useId().replace(/:/g, '-')
         const codeContentId = `${codeBlockId}-code`
         const headerId = `${codeBlockId}-header`
+        const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
         // Format code if autoFormat is enabled
         const formattedCode = autoFormat ? formatCode(code, language) : code
@@ -192,10 +199,28 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             variant === CodeBlockVariant.DIFF && Boolean(diffLines)
         const lines = processLines(isDiffMode, diffLines, formattedCode)
 
-        const copyToClipboard = createCopyToClipboard(
-            formattedCode,
-            setIsCopied
-        )
+        const copyToClipboard = useCallback(() => {
+            navigator.clipboard.writeText(formattedCode)
+            setIsCopied(true)
+
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+
+            timeoutRef.current = setTimeout(() => {
+                setIsCopied(false)
+                timeoutRef.current = null
+            }, 2000)
+        }, [formattedCode])
+
+        useEffect(() => {
+            return () => {
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current)
+                    timeoutRef.current = null
+                }
+            }
+        }, [])
 
         // Screen reader announcement for copy status
         useEffect(() => {
