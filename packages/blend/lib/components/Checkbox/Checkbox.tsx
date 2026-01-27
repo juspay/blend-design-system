@@ -77,10 +77,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     name={name}
                     ref={ref}
                     checked={checked ?? defaultChecked ?? false}
-                    onCheckedChange={(checked) => {
-                        console.log('onCheckedChange', checked)
-                        onCheckedChange?.(checked)
-                    }}
+                    onCheckedChange={onCheckedChange}
                     disabled={disabled}
                     required={required}
                     size={size}
