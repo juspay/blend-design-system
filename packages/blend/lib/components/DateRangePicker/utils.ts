@@ -125,29 +125,20 @@ export const getTodayInTimezone = (timezone: string | undefined): Date => {
     const now = new Date()
 
     if (!timezone) {
-        return new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            0,
-            0,
-            0,
-            0
-        )
+        return now
     }
 
     // Get today's date in the target timezone
     const parts = getDatePartsInTimezone(now, timezone)
 
     // Create midnight for that date in that timezone
-    return createDateInTimezone(
-        timezone,
+    return new Date(
         parts.year,
         parts.month,
         parts.day,
-        0,
-        0,
-        0
+        parts.hours,
+        parts.minutes,
+        parts.seconds
     )
 }
 
@@ -336,7 +327,11 @@ export const getPresetDateRange = (
             if (!timezone) {
                 const yesterday = new Date(today)
                 yesterday.setDate(yesterday.getDate() - 1)
-                return createSingleDateRange(yesterday, timezone)
+                return createSingleDateRange(
+                    yesterday,
+
+                    timezone
+                )
             }
 
             // Get current date in target timezone and subtract 1 day
@@ -1004,18 +999,25 @@ export const isDateToday = (date: Date, today: Date): boolean => {
  */
 export const createSingleDateRange = (
     date: Date,
-    timezone?: string
+    timezone?: string,
+    disableFutureDates: boolean = false,
+    disablePastDates: boolean = false,
+    today?: Date
 ): DateRange => {
+    const startDateTimeCheck =
+        disablePastDates && today && isDateToday(date, today)
     // Start of day (00:00:00)
     const startDate = createDateInTimezone(
         timezone,
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
-        0,
-        0,
-        0
+        startDateTimeCheck ? today.getHours() : 0,
+        startDateTimeCheck ? today.getMinutes() : 0,
+        startDateTimeCheck ? today.getSeconds() : 0
     )
+    const endDateTimeCheck =
+        disableFutureDates && today && isDateToday(date, today)
 
     // End of day (23:59:59.999) - same date but end of day
     const endDate = createDateInTimezone(
@@ -1023,9 +1025,9 @@ export const createSingleDateRange = (
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
-        23,
-        59,
-        59
+        endDateTimeCheck ? today.getHours() : 23,
+        endDateTimeCheck ? today.getMinutes() : 59,
+        endDateTimeCheck ? today.getSeconds() : 59
     )
 
     return { startDate, endDate }
@@ -1034,30 +1036,44 @@ export const createSingleDateRange = (
 /**
  * Creates a date at start of day (00:00:00)
  */
-const createStartOfDay = (date: Date, timezone?: string): Date => {
+const createStartOfDay = (
+    date: Date,
+    disablePastDates: boolean = false,
+    today?: Date,
+    timezone?: string
+): Date => {
+    const startDateTimeCheck =
+        disablePastDates && today && isDateToday(date, today)
     return createDateInTimezone(
         timezone,
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
-        0,
-        0,
-        0
+        startDateTimeCheck ? today.getHours() : 0,
+        startDateTimeCheck ? today.getMinutes() : 0,
+        startDateTimeCheck ? today.getSeconds() : 0
     )
 }
 
 /**
  * Creates a date at end of day (23:59:59.999 same day)
  */
-const createEndOfDay = (date: Date, timezone?: string): Date => {
+const createEndOfDay = (
+    date: Date,
+    disableFutureDates: boolean = false,
+    today?: Date,
+    timezone?: string
+): Date => {
+    const endDateTimeCheck =
+        disableFutureDates && today && isDateToday(date, today)
     return createDateInTimezone(
         timezone,
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
-        23,
-        59,
-        59
+        endDateTimeCheck ? today.getHours() : 23,
+        endDateTimeCheck ? today.getMinutes() : 59,
+        endDateTimeCheck ? today.getSeconds() : 59
     )
 }
 
@@ -1110,7 +1126,13 @@ export const handleCalendarDateClick = (
 
     // Handle double click - always create single date range if allowed
     if (isDoubleClick && allowSingleDateSelection) {
-        return createSingleDateRange(clickedDateOnly, timezone)
+        return createSingleDateRange(
+            clickedDateOnly,
+            timezone,
+            disableFutureDates,
+            disablePastDates,
+            today
+        )
     }
 
     // Case 1: No selection - first click sets start date
@@ -1118,19 +1140,39 @@ export const handleCalendarDateClick = (
         !selectedRange.startDate ||
         (selectedRange.startDate && selectedRange.endDate)
     ) {
-        const startDate = createStartOfDay(clickedDateOnly, timezone)
+        const startDate = createStartOfDay(
+            clickedDateOnly,
+            disablePastDates,
+            today,
+            timezone
+        )
         return { startDate }
     }
 
-    const endDate = createEndOfDay(clickedDateOnly, timezone)
+    const endDate = createEndOfDay(
+        clickedDateOnly,
+        disableFutureDates,
+        today,
+        timezone
+    )
 
     if (endDate > selectedRange.startDate) {
         return {
             startDate: selectedRange.startDate,
-            endDate: createEndOfDay(clickedDateOnly, timezone),
+            endDate: createEndOfDay(
+                clickedDateOnly,
+                disableFutureDates,
+                today,
+                timezone
+            ),
         }
     } else {
-        const startDate = createStartOfDay(clickedDateOnly, timezone)
+        const startDate = createStartOfDay(
+            clickedDateOnly,
+            disablePastDates,
+            today,
+            timezone
+        )
         return { startDate }
     }
 }
@@ -3519,7 +3561,13 @@ export const handleCustomRangeCalendarDateClick = (
 
     // Handle double click - always create single date range if allowed
     if (isDoubleClick && allowSingleDateSelection) {
-        return createSingleDateRange(clickedDateOnly, timezone)
+        return createSingleDateRange(
+            clickedDateOnly,
+            timezone,
+            disableFutureDates,
+            disablePastDates,
+            today
+        )
     }
 
     // Calculate end date based on custom config
@@ -3576,7 +3624,12 @@ export const handleCustomRangeCalendarDateClick = (
     }
 
     // Set start date to beginning of clicked day
-    const startDate = createStartOfDay(clickedDateOnly, timezone)
+    const startDate = createStartOfDay(
+        clickedDateOnly,
+        disablePastDates,
+        today,
+        timezone
+    )
 
     // If manual end date selection is allowed and we already have a start date
     if (
@@ -3591,14 +3644,19 @@ export const handleCustomRangeCalendarDateClick = (
         if (clickedDateOnly > selectedRange.startDate) {
             return {
                 startDate: selectedRange.startDate,
-                endDate: createEndOfDay(clickedDateOnly, timezone),
+                endDate: createEndOfDay(
+                    clickedDateOnly,
+                    disableFutureDates,
+                    today,
+                    timezone
+                ),
             }
         }
     }
 
     // Ensure end date is at end of day
     if (isSameDay(startDate, endDate)) {
-        endDate = createEndOfDay(endDate, timezone)
+        endDate = createEndOfDay(endDate, disableFutureDates, today, timezone)
     }
 
     return { startDate, endDate }
@@ -3668,24 +3726,48 @@ export const isFullDayRange = (startDate: Date, endDate: Date): boolean => {
     return isLocalFullDay || isUtcFullDay
 }
 
+export const convertLocalDateToTimezoneDate = (
+    date: Date,
+    timezone?: string
+): Date => {
+    if (timezone) {
+        const parts = getDatePartsInTimezone(date, timezone)
+        return new Date(
+            parts.year,
+            parts.month,
+            parts.day,
+            parts.hours,
+            parts.minutes,
+            parts.seconds
+        )
+    } else {
+        return date
+    }
+}
+
 /**
  * Checks if a date range matches "Today" preset
  */
-export const matchesTodayPreset = (range: DateRange): boolean => {
+export const matchesTodayPreset = (
+    range: DateRange,
+    timezone?: string
+): boolean => {
     const now = new Date()
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    const startDate = convertLocalDateToTimezoneDate(range.startDate, timezone)
+    const endDate = convertLocalDateToTimezoneDate(range.endDate, timezone)
+    const today = convertLocalDateToTimezoneDate(now, timezone)
 
     // Check if start date is today at midnight
-    const startIsToday = isSameCalendarDay(range.startDate, today)
+    const startIsToday = isSameCalendarDay(startDate, today)
     const startIsStartOfDay =
-        range.startDate.getHours() === 0 &&
-        range.startDate.getMinutes() === 0 &&
-        range.startDate.getSeconds() === 0 &&
-        range.startDate.getMilliseconds() === 0
+        startDate.getHours() === 0 &&
+        startDate.getMinutes() === 0 &&
+        startDate.getSeconds() === 0 &&
+        startDate.getMilliseconds() === 0
 
     // End date should be sometime today (not necessarily current time)
-    const endIsToday =
-        !!range.endDate && isSameCalendarDay(range.endDate, today)
+    const endIsToday = isSameCalendarDay(endDate, today)
 
     return startIsToday && startIsStartOfDay && endIsToday
 }
@@ -3693,28 +3775,30 @@ export const matchesTodayPreset = (range: DateRange): boolean => {
 /**
  * Checks if a date range matches "Yesterday" preset
  */
-export const matchesYesterdayPreset = (range: DateRange): boolean => {
-    const now = new Date()
-    const yesterday = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1
-    )
+export const matchesYesterdayPreset = (
+    range: DateRange,
+    timezone?: string
+): boolean => {
+    const yesterday_ = new Date()
+    yesterday_.setDate(yesterday_.getDate() - 1)
+
+    const startDate = convertLocalDateToTimezoneDate(range.startDate, timezone)
+    const endDate = convertLocalDateToTimezoneDate(range.endDate, timezone)
+    const yesterday = convertLocalDateToTimezoneDate(yesterday_, timezone)
 
     // Check if it's a full day range for yesterday
-    const startIsYesterday = isSameCalendarDay(range.startDate, yesterday)
-    const endIsYesterday =
-        !!range.endDate && isSameCalendarDay(range.endDate, yesterday)
+    const startIsYesterday = isSameCalendarDay(startDate, yesterday)
+    const endIsYesterday = isSameCalendarDay(endDate, yesterday)
 
     // More flexible check for full day - allow for slight variations in milliseconds
     const isFullDayOrClose =
-        (!!range.endDate && isFullDayRange(range.startDate, range.endDate)) ||
+        isFullDayRange(startDate, endDate) ||
         (startIsYesterday &&
             endIsYesterday &&
-            range.startDate.getHours() === 0 &&
-            range.startDate.getMinutes() === 0 &&
-            range.endDate?.getHours() === 23 &&
-            range.endDate?.getMinutes() === 59)
+            startDate.getHours() === 0 &&
+            startDate.getMinutes() === 0 &&
+            endDate.getHours() === 23 &&
+            endDate.getMinutes() === 59)
 
     return startIsYesterday && endIsYesterday && isFullDayOrClose
 }
@@ -3732,10 +3816,8 @@ export const matchesTomorrowPreset = (range: DateRange): boolean => {
 
     // Check if it's a full day range for tomorrow
     const startIsTomorrow = isSameCalendarDay(range.startDate, tomorrow)
-    const endIsTomorrow =
-        !!range.endDate && isSameCalendarDay(range.endDate, tomorrow)
-    const isFullDay =
-        !!range.endDate && isFullDayRange(range.startDate, range.endDate)
+    const endIsTomorrow = isSameCalendarDay(range.endDate, tomorrow)
+    const isFullDay = isFullDayRange(range.startDate, range.endDate)
 
     return startIsTomorrow && endIsTomorrow && isFullDay
 }
@@ -3762,7 +3844,6 @@ export const matchesThisMonthPreset = (range: DateRange): boolean => {
         DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
 
     const endInCurrentMonth =
-        !!range.endDate &&
         range.endDate.getFullYear() === now.getFullYear() &&
         range.endDate.getMonth() === now.getMonth()
 
@@ -3803,12 +3884,8 @@ export const matchesLastMonthPreset = (range: DateRange): boolean => {
         DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
 
     const endMatches =
-        !!range.endDate &&
         Math.abs(range.endDate.getTime() - endOfLastMonth.getTime()) <=
-            DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS *
-                60 *
-                60 *
-                1000
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
 
     return startMatches && endMatches
 }
@@ -3817,7 +3894,8 @@ export const matchesLastMonthPreset = (range: DateRange): boolean => {
  * Robust preset detection that works with both UTC and local timezone dates
  */
 export const detectPresetFromRange = (
-    range: DateRangeIntermediate
+    range: DateRangeIntermediate,
+    timezone?: string
 ): DateRangePreset => {
     if (!range.startDate || !range.endDate) {
         return DateRangePreset.CUSTOM
@@ -3829,11 +3907,11 @@ export const detectPresetFromRange = (
     }
 
     // Check specific day presets first
-    if (matchesTodayPreset(matchRange)) {
+    if (matchesTodayPreset(matchRange, timezone)) {
         return DateRangePreset.TODAY
     }
 
-    if (matchesYesterdayPreset(matchRange)) {
+    if (matchesYesterdayPreset(matchRange, timezone)) {
         return DateRangePreset.YESTERDAY
     }
 

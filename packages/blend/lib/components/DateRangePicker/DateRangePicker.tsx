@@ -25,7 +25,7 @@ import {
     validateCustomRangeConfig,
     getPresetLabelWithCustom,
     getPresetLabel,
-    getDatePartsInTimezone,
+    getTodayInTimezone,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -405,14 +405,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 error: selectedRange.endDate ? 'none' : 'invalid-date',
             })
 
-        const today = React.useMemo(() => {
-            if (!timezone) {
-                return new Date()
-            }
-            const now = new Date()
-            const parts = getDatePartsInTimezone(now, timezone)
-            return new Date(parts.year, parts.month, parts.day)
-        }, [timezone])
+        const today = getTodayInTimezone(timezone)
 
         const presetConfigs = React.useMemo(() => {
             return processCustomPresets(customPresets)
@@ -496,15 +489,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
             setSelectedRange(value)
             setStartDate(formatDate(value.startDate, dateFormat, timezone))
-            setEndDate(
-                value.endDate && formatDate(value.endDate, dateFormat, timezone)
-            )
+            setEndDate(formatDate(value.endDate, dateFormat, timezone))
             setStartTime(formatDate(value.startDate, 'HH:mm', timezone))
-            setEndTime(
-                value.endDate && formatDate(value.endDate, 'HH:mm', timezone)
-            )
+            setEndTime(formatDate(value.endDate, 'HH:mm', timezone))
 
-            const detectedPreset = detectPresetFromRange(value)
+            const detectedPreset = detectPresetFromRange(value, timezone)
             setActivePreset(detectedPreset)
         }, [value, dateFormat, timezone])
 
@@ -516,7 +505,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     range.endDate &&
                         formatDate(range.endDate, 'HH:mm', timezone)
                 )
-                const detectedPreset = detectPresetFromRange(range)
+                const detectedPreset = detectPresetFromRange(range, timezone)
                 setActivePreset(detectedPreset)
 
                 setStartDate(formatDate(range.startDate, dateFormat, timezone))
@@ -607,7 +596,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
                     const detectedPreset = detectPresetFromRange(
-                        result.updatedRange
+                        result.updatedRange,
+                        timezone
                     )
                     setActivePreset(detectedPreset)
                 }
@@ -620,6 +610,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 disablePastDates,
                 hideFutureDates,
                 hidePastDates,
+                timezone,
             ]
         )
 
@@ -640,7 +631,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 if (result.updatedRange) {
                     setSelectedRange(result.updatedRange)
                     const detectedPreset = detectPresetFromRange(
-                        result.updatedRange
+                        result.updatedRange,
+                        timezone
                     )
                     setActivePreset(detectedPreset)
                 }
@@ -653,6 +645,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 disablePastDates,
                 hideFutureDates,
                 hidePastDates,
+                timezone,
             ]
         )
 
@@ -666,7 +659,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     true
                 )
                 setSelectedRange(updatedRange)
-                const detectedPreset = detectPresetFromRange(updatedRange)
+                const detectedPreset = detectPresetFromRange(
+                    updatedRange,
+                    timezone
+                )
                 setActivePreset(detectedPreset)
             },
             [selectedRange, timezone]
@@ -683,7 +679,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 )
                 setSelectedRange(updatedRange)
                 // Detect preset from time change
-                const detectedPreset = detectPresetFromRange(updatedRange)
+                const detectedPreset = detectPresetFromRange(
+                    updatedRange,
+                    timezone
+                )
                 setActivePreset(detectedPreset)
             },
             [selectedRange, timezone]
@@ -719,30 +718,25 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 value || getPresetDateRange(DateRangePreset.TODAY, timezone)
             setSelectedRange(resetRange)
             setActivePreset(
-                value ? DateRangePreset.CUSTOM : DateRangePreset.TODAY
+                value
+                    ? detectPresetFromRange(value, timezone)
+                    : DateRangePreset.TODAY
             )
             setStartDate(formatDate(resetRange.startDate, dateFormat, timezone))
-            setEndDate(
-                resetRange.endDate &&
-                    formatDate(resetRange.endDate, dateFormat, timezone)
-            )
+            setEndDate(formatDate(resetRange.endDate, dateFormat, timezone))
             setStartTime(formatDate(resetRange.startDate, 'HH:mm', timezone))
-            setEndTime(
-                resetRange.endDate
-                    ? formatDate(resetRange.endDate, 'HH:mm', timezone)
-                    : '23:59'
-            )
+            setEndTime(formatDate(resetRange.endDate, 'HH:mm', timezone))
 
             setStartDateValidation({ isValid: true, error: 'none' })
             setEndDateValidation({
-                isValid: !!selectedRange.endDate,
-                error: selectedRange.endDate ? 'none' : 'invalid-date',
+                isValid: true,
+                error: 'none',
             })
 
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [dateFormat, value, timezone, selectedRange.endDate])
+        }, [dateFormat, value, timezone])
 
         useEffect(() => {
             if (isDisabled) {
@@ -837,14 +831,12 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     'en-US',
                     formatOptions
                 )
-                const endStr = range.endDate
-                    ? range.endDate.toLocaleDateString('en-US', formatOptions)
-                    : ''
+                const endStr = range.endDate.toLocaleDateString(
+                    'en-US',
+                    formatOptions
+                )
 
-                if (
-                    !range.endDate ||
-                    range.startDate.getTime() === range.endDate.getTime()
-                ) {
+                if (range.startDate.getTime() === range.endDate.getTime()) {
                     return startStr
                 }
 
