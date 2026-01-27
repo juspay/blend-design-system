@@ -163,7 +163,7 @@ export const BasicDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent hasSnapPoints={true} margin="0px">
+                <DrawerContent hasSnapPoints={true}>
                     <DrawerHeader>
                         <DrawerTitle>Drawer for React.</DrawerTitle>
                         <DrawerDescription>
@@ -259,7 +259,7 @@ export const NestedDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>Nested Drawers.</DrawerTitle>
                         <DrawerDescription>
@@ -385,8 +385,7 @@ export const SideDrawerExample = () => {
                 <DrawerContent
                     direction="right"
                     width="500px"
-                    style={{ overflow: 'visible' }}
-                    margin="12px"
+                    // offSet="20px"
                 >
                     <DrawerHeader>
                         <DrawerTitle>User Profile Settings</DrawerTitle>
@@ -777,7 +776,7 @@ export const LeftSideDrawerExample = () => {
                     direction="left"
                     showHandle={false}
                     width="320px"
-                    margin="12px"
+                    offSet="12px"
                 >
                     {/* Custom content without using DrawerHeader/DrawerTitle */}
                     <div
@@ -994,7 +993,7 @@ export const TopDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="top" margin="12px">
+                <DrawerContent direction="top" offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>Top Drawer</DrawerTitle>
                     </DrawerHeader>
@@ -1137,7 +1136,7 @@ export const ControlledDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent margin="12px">
+                <DrawerContent offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>A controlled drawer.</DrawerTitle>
                         <DrawerDescription>
@@ -3698,6 +3697,7 @@ export const NarrowLeftDrawerExample = () => {
                     direction="left"
                     width="250px"
                     showHandle={false}
+                    offSet={'0px'}
                 >
                     {/* Narrow drawer for quick actions */}
                     <div
