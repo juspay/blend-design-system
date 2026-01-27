@@ -55,6 +55,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     contentDriven?: boolean
     customWidth?: string | number
     customMaxWidth?: string | number
+    customMargin?: string | number
     mobileOffset?: {
         top?: string
         bottom?: string
@@ -68,6 +69,19 @@ const StyledContent = styled(VaulDrawer.Content)<{
     outline: none;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    border-radius: ${({ tokens }) => tokens.borderRadius.topLeft}
+        ${({ tokens }) => tokens.borderRadius.topRight}
+        ${({ tokens }) => tokens.borderRadius.bottomRight}
+        ${({ tokens }) => tokens.borderRadius.bottomLeft};
+    ${({ customMargin }) =>
+        customMargin
+            ? `margin: ${
+                  typeof customMargin === 'number'
+                      ? `${customMargin}px`
+                      : customMargin
+              };`
+            : ''}
 
     ${({
         direction,
@@ -199,7 +213,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${hasOffset ? offset.top : '0'};
                 bottom: ${hasOffset ? offset.bottom : '0'};
                 left: ${hasOffset ? offset.left : '0'};
-                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `0 ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} 0`};
+                border-radius: ${`${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}`};
                 width: ${maxWidthValue};
 
                 @media (min-width: 1024px) {
@@ -228,7 +242,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${hasOffset ? offset.top : '0'};
                 bottom: ${hasOffset ? offset.bottom : '0'};
                 right: ${hasOffset ? offset.right : '0'};
-                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `${tokens.borderRadius.topLeft} 0 0 ${tokens.borderRadius.bottomLeft}`};
+                border-radius: ${`${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}`};
                 width: ${widthValue};
                 max-width: ${maxWidthValue};
                 user-select: text;
@@ -425,6 +439,7 @@ export const DrawerContent = forwardRef<
         contentDriven?: boolean
         width?: string | number
         maxWidth?: string | number
+        margin?: string | number
         mobileOffset?: {
             top?: string
             bottom?: string
@@ -445,6 +460,7 @@ export const DrawerContent = forwardRef<
             contentDriven = false,
             width,
             maxWidth,
+            margin,
             mobileOffset,
             fullScreen = false,
             'aria-label': ariaLabel,
@@ -476,6 +492,7 @@ export const DrawerContent = forwardRef<
                 contentDriven={contentDriven}
                 customWidth={width}
                 customMaxWidth={maxWidth}
+                customMargin={margin}
                 mobileOffset={mobileOffset}
                 fullScreen={fullScreen}
                 role="dialog"

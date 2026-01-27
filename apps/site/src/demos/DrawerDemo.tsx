@@ -163,7 +163,7 @@ export const BasicDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent hasSnapPoints={true}>
+                <DrawerContent hasSnapPoints={true} margin="0px">
                     <DrawerHeader>
                         <DrawerTitle>Drawer for React.</DrawerTitle>
                         <DrawerDescription>
@@ -386,6 +386,7 @@ export const SideDrawerExample = () => {
                     direction="right"
                     width="500px"
                     style={{ overflow: 'visible' }}
+                    margin="12px"
                 >
                     <DrawerHeader>
                         <DrawerTitle>User Profile Settings</DrawerTitle>
@@ -776,6 +777,7 @@ export const LeftSideDrawerExample = () => {
                     direction="left"
                     showHandle={false}
                     width="320px"
+                    margin="12px"
                 >
                     {/* Custom content without using DrawerHeader/DrawerTitle */}
                     <div
@@ -992,7 +994,7 @@ export const TopDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="top">
+                <DrawerContent direction="top" margin="12px">
                     <DrawerHeader>
                         <DrawerTitle>Top Drawer</DrawerTitle>
                     </DrawerHeader>
@@ -1135,7 +1137,7 @@ export const ControlledDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent margin="12px">
                     <DrawerHeader>
                         <DrawerTitle>A controlled drawer.</DrawerTitle>
                         <DrawerDescription>
