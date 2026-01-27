@@ -33,6 +33,7 @@ import {
     createComplexDropHandler,
     createFileRemovalHandler,
     createFileReplacementHandler,
+    getMbfromKb,
 } from './utils'
 import {
     UploadingState,
@@ -556,6 +557,7 @@ const Upload: React.FC<UploadProps> = ({
             <Block
                 data-upload={label ?? ''}
                 data-status={disabled ? 'disabled' : 'enabled'}
+                data-id={`maxFiles-${maxFiles} ${maxSize ? `& maxSize-${getMbfromKb(maxSize)}Mb` : ''}`}
                 display="flex"
                 flexDirection="column"
                 border={

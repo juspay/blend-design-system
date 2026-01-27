@@ -24,6 +24,7 @@ import {
 } from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { usePreventParentScroll } from '../../hooks'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
@@ -173,6 +174,15 @@ const MultiSelectMenu = ({
         () => checkExactMatch(searchText, items),
         [searchText, items]
     )
+
+    const selectors = [
+        '[data-dropdown="dropdown"]',
+        '[role="listbox"]',
+        '[role="menu"]',
+        '[data-radix-popper-content-wrapper]',
+        '[data-radix-dropdown-menu-content]',
+    ]
+    usePreventParentScroll(open, contentRef, selectors)
 
     const filteredItems = React.useMemo(() => {
         const baseFilteredItems = filterMenuGroups(items, searchText)
