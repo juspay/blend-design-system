@@ -17,24 +17,28 @@ import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { FOUNDATION_THEME } from '../../tokens'
 import Seperator from '../common/Seperator'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { CSSObject } from 'styled-components'
+import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
 
 const SlotContainer = ({
     slot,
     alertV2Tokens,
 }: {
-    slot?: ReactElement
+    slot?: {
+        slot: ReactElement
+        maxHeight?: CSSObject['maxHeight']
+    }
     alertV2Tokens: AlertV2TokensType
 }) => {
     if (!slot) return null
+    const slotMaxHeight = slot?.maxHeight || alertV2Tokens.slot.maxHeight
     return (
         <Block
-            data-element="icon"
-            height={alertV2Tokens.slot.height}
-            width={alertV2Tokens.slot.width}
+            data-element="left-slot"
             contentCentered
-            aria-hidden="true"
+            maxHeight={slotMaxHeight}
         >
-            {slot}
+            {addAccessibleAriaAttributes(slot.slot)}
         </Block>
     )
 }
