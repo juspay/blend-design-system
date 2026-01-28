@@ -1,4 +1,4 @@
-import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
+import { ArrowDown, RotateCcw, ArrowUp, User } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { DropdownMenu } from 'radix-ui'
@@ -13,6 +13,8 @@ import { getColorByKey } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { Menu } from '../Menu'
+import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 
 const StackedLegends: React.FC<{
     keys: string[]
@@ -200,7 +202,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 
     const displayLegends: Array<{ title: string; total?: number }> =
         legends || keys.map((key) => ({ title: key }))
-
+    console.log('displayLegends', displayLegends)
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
     const [cuttOffIndex, setCuttOffIndex] = useState<number>(keys.length)
@@ -439,6 +441,184 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                         </PrimitiveButton>
                     )
                 })}
+                {cuttOffIndex < displayLegends.length && (
+                    <Menu
+                        trigger={
+                            <Button
+                                text={`+ ${displayLegends.length - cuttOffIndex} more`}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.INLINE}
+                            />
+                        }
+                        items={[
+                            {
+                                items: displayLegends
+                                    .slice(cuttOffIndex)
+                                    .map((legend, index) => {
+                                        const dataKey = legend.title
+                                        // Try to find color by key first, fallback to index
+                                        const colorByKey = colors.find(
+                                            (c) =>
+                                                typeof c !== 'string' &&
+                                                c.key === dataKey
+                                        )
+                                        // Extract color string - prioritize key match, then fallback to index
+                                        let itemColor: string
+                                        if (colorByKey) {
+                                            itemColor = colorByKey.color
+                                        } else {
+                                            const fallbackColor =
+                                                colors[index % colors.length]
+                                            itemColor =
+                                                typeof fallbackColor ===
+                                                'string'
+                                                    ? fallbackColor
+                                                    : fallbackColor?.color ||
+                                                      '#000000'
+                                        }
+                                        const isHovered = hoveredKey === dataKey
+                                        const isSelected =
+                                            selectedKeys.includes(dataKey)
+                                        const itemOpacity = isHovered
+                                            ? 1
+                                            : getItemOpacity(dataKey)
+                                        return {
+                                            label: '',
+                                            slot1: (
+                                                <PrimitiveButton
+                                                    type="button"
+                                                    aria-label={`Toggle ${dataKey} series visibility`}
+                                                    aria-pressed={isSelected}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleLegendClick(
+                                                            dataKey
+                                                        )
+                                                    }}
+                                                    onMouseEnter={() =>
+                                                        handleLegendEnter(
+                                                            dataKey
+                                                        )
+                                                    }
+                                                    onMouseLeave={
+                                                        handleLegendLeave
+                                                    }
+                                                    _hover={{
+                                                        backgroundColor:
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[200],
+                                                        color:
+                                                            legendTokens.item
+                                                                .color.hover ||
+                                                            legendTokens.item
+                                                                .color.default,
+                                                    }}
+                                                    _focus={{
+                                                        backgroundColor:
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[200],
+                                                        color:
+                                                            legendTokens.item
+                                                                .color.hover ||
+                                                            legendTokens.item
+                                                                .color.default,
+                                                    }}
+                                                    onFocus={() =>
+                                                        handleLegendEnter(
+                                                            dataKey
+                                                        )
+                                                    }
+                                                    onBlur={handleLegendLeave}
+                                                    data-element="chart-legend-text"
+                                                    data-id={dataKey}
+                                                    style={{
+                                                        padding: `${FOUNDATION_THEME.unit[6]} ${FOUNDATION_THEME.unit[12]}`,
+                                                        fontSize:
+                                                            legendTokens.item
+                                                                .fontSize,
+                                                        color: String(
+                                                            legendTokens.item
+                                                                .color
+                                                                .default ||
+                                                                'inherit'
+                                                        ),
+                                                        cursor: 'pointer',
+                                                        opacity: itemOpacity,
+                                                        background: 'none',
+                                                        border: 'none',
+                                                        width: '100%',
+                                                        textAlign: 'left',
+                                                        fontFamily: 'inherit',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap:
+                                                            typeof legendTokens
+                                                                .item.gap ===
+                                                            'string'
+                                                                ? legendTokens
+                                                                      .item.gap
+                                                                : `${legendTokens.item.gap}px`,
+                                                        transition:
+                                                            'background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease',
+                                                    }}
+                                                    _focusVisible={{
+                                                        outline:
+                                                            '3px solid #BEDBFF',
+                                                        border: '1px solid #0561E2',
+                                                        cursor: 'pointer',
+                                                        outlineOffset: '2px',
+                                                    }}
+                                                >
+                                                    <Block
+                                                        width={
+                                                            FOUNDATION_THEME
+                                                                .unit[12]
+                                                        }
+                                                        height={
+                                                            FOUNDATION_THEME
+                                                                .unit[12]
+                                                        }
+                                                        borderRadius={
+                                                            FOUNDATION_THEME
+                                                                .border
+                                                                .radius[4]
+                                                        }
+                                                        flexShrink={0}
+                                                        backgroundColor={
+                                                            itemColor
+                                                        }
+                                                        data-element="chart-legend-color"
+                                                        data-id={itemColor}
+                                                    />
+                                                    {legend.total !==
+                                                    undefined ? (
+                                                        <>
+                                                            {dataKey}
+                                                            <span
+                                                                style={{
+                                                                    margin: '0 8px',
+                                                                }}
+                                                            >
+                                                                |
+                                                            </span>
+                                                            {legend.total}
+                                                        </>
+                                                    ) : (
+                                                        dataKey
+                                                    )}
+                                                </PrimitiveButton>
+                                            ),
+                                            onClick: () =>
+                                                handleLegendClick(dataKey),
+                                        }
+                                    }),
+                            },
+                        ]}
+                    />
+                )}
                 {cuttOffIndex < displayLegends.length && (
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>
