@@ -76,6 +76,7 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     id={uniqueId}
                     name={name}
                     ref={ref}
+                    checked={checked ?? defaultChecked ?? false}
                     onCheckedChange={onCheckedChange}
                     disabled={disabled}
                     required={required}
@@ -86,6 +87,14 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     style={getErrorShakeStyle(shouldShake)}
                     {...ariaAttributes}
                     {...restProps}
+                    data-element="checkbox"
+                    data-state={
+                        checked === 'indeterminate'
+                            ? 'indeterminate'
+                            : checked
+                              ? 'checked'
+                              : 'unchecked'
+                    }
                 >
                     <CheckboxIndicator
                         checked={checked ?? defaultChecked ?? false}
