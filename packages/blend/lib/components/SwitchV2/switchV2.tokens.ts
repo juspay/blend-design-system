@@ -34,6 +34,7 @@ export type SwitchV2TokensType = {
         }
     }
     content: {
+        gap: CSSObject['gap']
         label: {
             gap: CSSObject['gap']
             color: {

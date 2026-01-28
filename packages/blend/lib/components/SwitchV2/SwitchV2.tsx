@@ -36,11 +36,7 @@ const SwitchV2Content = ({
 }: SwitchV2ContentProps) => {
     const labelId = `${uniqueId}-label`
     return (
-        <Block
-            display="flex"
-            flexDirection="column"
-            gap={tokens.content.label.gap}
-        >
+        <Block display="flex" flexDirection="column" gap={tokens.content.gap}>
             <Block
                 display="flex"
                 alignItems="center"

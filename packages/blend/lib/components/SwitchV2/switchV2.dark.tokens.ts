@@ -46,6 +46,7 @@ export const getSwitchV2DarkTokens = (
                 },
             },
             content: {
+                gap: foundationToken.unit[6],
                 label: {
                     gap: foundationToken.unit[6],
                     color: {
@@ -143,6 +144,7 @@ export const getSwitchV2DarkTokens = (
             },
 
             content: {
+                gap: foundationToken.unit[6],
                 label: {
                     gap: foundationToken.unit[6],
                     color: {
