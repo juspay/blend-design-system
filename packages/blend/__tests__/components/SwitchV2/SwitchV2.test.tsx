@@ -41,7 +41,7 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Switch with slot"
                     checked={false}
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
             expect(screen.getByText('Switch with slot')).toBeInTheDocument()
@@ -64,7 +64,7 @@ describe('SwitchV2 Component', () => {
                     label="Complex Switch"
                     subLabel="With subtext"
                     checked={false}
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                     required
                 />
             )
@@ -352,7 +352,11 @@ describe('SwitchV2 Component', () => {
 
         it('has data-element="slot-icon" when slot is provided', () => {
             render(
-                <SwitchV2 label="Switch" checked={false} slot={<MockIcon />} />
+                <SwitchV2
+                    label="Switch"
+                    checked={false}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
+                />
             )
 
             expect(
@@ -456,7 +460,7 @@ describe('SwitchV2 Component', () => {
                     onChange={handleChange}
                     required
                     error
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                     maxLength={{ label: 20, subLabel: 30 }}
                 />
             )

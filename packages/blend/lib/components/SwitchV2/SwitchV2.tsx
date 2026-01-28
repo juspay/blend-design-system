@@ -55,7 +55,7 @@ const SwitchV2Content = ({
                 />
                 {slot && (
                     <Block
-                        data-element="left-slot"
+                        data-element="slot-icon"
                         contentCentered
                         maxHeight={
                             slot?.maxHeight ||
