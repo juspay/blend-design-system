@@ -45,6 +45,7 @@ import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tok
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
 import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
+import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -95,7 +96,8 @@ export const useComponentToken = (
     | ResponsiveButtonV2Tokens
     | ResponsiveChatInputTokensType
     | ResponsiveTagV2Tokens
-    | ResponsiveAlertV2Tokens => {
+    | ResponsiveAlertV2Tokens
+    | ResponsiveSwitchV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -191,6 +193,8 @@ export const useComponentToken = (
             return componentTokens.TAGV2
         case 'ALERTV2':
             return componentTokens.ALERTV2
+        case 'SWITCHV2':
+            return componentTokens.SWITCHV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
