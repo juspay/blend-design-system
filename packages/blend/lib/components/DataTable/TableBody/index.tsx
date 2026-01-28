@@ -541,6 +541,7 @@ const TableBody = forwardRef<
         },
         ref
     ) => {
+        console.log(focusedCell, 'focusedCell')
         const colSpan = useMemo(() => {
             let span = visibleColumns.length
             if (enableRowSelection) span += 1
@@ -617,6 +618,7 @@ const TableBody = forwardRef<
             >
                 {currentData.length > 0
                     ? currentData.map((row, index) => {
+                          //   console.log(index,'index')
                           const rowId = String(row[idField])
                           const isEditing = editingRows[rowId]
                           const isExpanded = expandedRows[rowId]
@@ -673,9 +675,9 @@ const TableBody = forwardRef<
                                       }
                                       aria-label={rowAriaLabel}
                                       data-focused-row={
-                                          focusedCell?.rowIndex === index
-                                              ? 'true'
-                                              : 'false'
+                                          enableRowSelection
+                                              ? isSelected
+                                              : undefined
                                       }
                                       data-row-id={rowId}
                                       data-row-index={index}
