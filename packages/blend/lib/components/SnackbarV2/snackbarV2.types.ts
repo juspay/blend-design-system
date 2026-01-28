@@ -1,3 +1,5 @@
+import { CSSObject } from 'styled-components'
+
 export enum SnackbarV2Variant {
     INFO = 'info',
     SUCCESS = 'success',
@@ -18,6 +20,10 @@ export type SnackbarV2Action = {
     label: string
     onClick: () => void
     autoDismiss?: boolean
+}
+
+export type SnackbarV2Dimensions = {
+    maxWidth?: CSSObject['maxWidth']
 }
 
 export type SnackbarV2ToastOptions = {

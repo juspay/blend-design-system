@@ -6,56 +6,72 @@ import { Theme } from '../../context/theme.enum'
 import { getSnackbarV2DarkTokens } from './snackbarV2.dark.tokens'
 import { getSnackbarV2LightTokens } from './snackbarV2.light.tokens'
 
+export enum SnackbarV2PaddingDirection {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 export type SnackbarV2TokensType = {
     backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
-
-    infoIcon: {
+    maxWidth: CSSObject['maxWidth']
+    slot: {
+        height: CSSObject['height']
+        width: CSSObject['width']
         color: {
             [key in SnackbarV2Variant]: CSSObject['color']
         }
-        height: CSSObject['height' | 'width']
-    }
-
-    content: {
-        gap: CSSObject['gap']
-
-        textContainer: {
-            gap: CSSObject['gap']
-
-            header: {
-                color: {
-                    [key in SnackbarV2Variant]: CSSObject['color']
-                }
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-            }
-
-            description: {
-                color: {
-                    [key in SnackbarV2Variant]: CSSObject['color']
-                }
-                fontSize: CSSObject['fontSize']
-                fontWeight: CSSObject['fontWeight']
-            }
+        padding: {
+            [key in SnackbarV2PaddingDirection]: CSSObject['padding']
         }
     }
-
-    actions: {
-        primaryAction: {
-            color: {
-                [key in SnackbarV2Variant]: CSSObject['color']
+    mainContainer: {
+        gap: CSSObject['gap']
+        content: {
+            gap: CSSObject['gap']
+            textContainer: {
+                gap: CSSObject['gap']
+                header: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                description: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
             }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+            actionContainer: {
+                primaryAction: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
+            }
         }
         closeButton: {
-            height: CSSObject['height' | 'width']
+            height: CSSObject['height']
+            iconSize: CSSObject['height']
             color: {
                 [key in SnackbarV2Variant]: CSSObject['color']
+            }
+            padding: {
+                [key in SnackbarV2PaddingDirection]: CSSObject['padding']
             }
         }
     }

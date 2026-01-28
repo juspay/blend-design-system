@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useId, useEffect, forwardRef } from 'react'
+import { useId, useEffect, forwardRef, ReactElement } from 'react'
 import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
@@ -21,13 +21,17 @@ import {
 } from './snackbarV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarV2TokensType } from './snackbarV2.tokens'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 const SnackbarV2Icon: React.FC<SnackbarV2IconProps> = ({ variant }) => {
     const snackbarTokens =
         useResponsiveTokens<SnackbarV2TokensType>('SNACKBARV2')
+    const iconColor = snackbarTokens.slot.color[variant]
+    const iconSize = snackbarTokens.slot.height
+
     const props = {
-        color: snackbarTokens.infoIcon.color[variant],
-        size: snackbarTokens.infoIcon.height,
+        color: iconColor,
+        size: iconSize,
         'aria-hidden': 'true' as const,
     }
     if (variant === SnackbarV2Variant.SUCCESS)
@@ -39,45 +43,154 @@ const SnackbarV2Icon: React.FC<SnackbarV2IconProps> = ({ variant }) => {
     return <Info {...props} />
 }
 
-const IconContainer = ({ variant }: { variant: SnackbarV2Variant }) => {
+const SlotContainer = ({
+    slot,
+    snackbarTokens,
+}: {
+    slot?: ReactElement
+    snackbarTokens: SnackbarV2TokensType
+}) => {
+    if (!slot) return null
     return (
         <Block
-            display="flex"
-            alignItems="flex-start"
-            flexShrink={0}
             data-element="icon"
+            height={snackbarTokens.slot.height}
+            width={snackbarTokens.slot.width}
+            paddingTop={snackbarTokens.slot.padding.top}
+            paddingBottom={snackbarTokens.slot.padding.bottom}
+            paddingLeft={snackbarTokens.slot.padding.left}
+            paddingRight={snackbarTokens.slot.padding.right}
+            contentCentered
             aria-hidden="true"
         >
-            <SnackbarV2Icon variant={variant} />
+            {slot}
         </Block>
     )
 }
 
-const HeaderContainer = ({
+const ActionButton = ({
+    action,
+    variant,
+    snackbarTokens,
+    toastId,
+}: {
+    action: {
+        label: string
+        onClick: () => void
+        autoDismiss?: boolean
+    }
+    variant: SnackbarV2Variant
+    snackbarTokens: SnackbarV2TokensType
+    toastId?: string | number
+}) => {
+    const actionTokens =
+        snackbarTokens.mainContainer.content.actionContainer.primaryAction
+    const color = actionTokens.color[variant]
+
+    return (
+        <PrimitiveButton
+            data-element="primary-action"
+            data-id={action.label}
+            onClick={() => {
+                action.onClick()
+                if (action.autoDismiss !== false && toastId) {
+                    sonnerToast.dismiss(toastId)
+                }
+            }}
+            tabIndex={0}
+            aria-label={`${action.label} action`}
+            border="none"
+            backgroundColor="transparent"
+            cursor="pointer"
+            color={color}
+            fontSize={actionTokens.fontSize}
+            fontWeight={actionTokens.fontWeight}
+            lineHeight={addPxToValue(actionTokens.lineHeight)}
+            width="fit-content"
+            whiteSpace="nowrap"
+        >
+            {action.label}
+        </PrimitiveButton>
+    )
+}
+
+const ActionsContainer = ({
+    actionButton,
+    variant,
+    snackbarTokens,
+    toastId,
+}: {
+    actionButton?: {
+        label: string
+        onClick: () => void
+        autoDismiss?: boolean
+    }
+    variant: SnackbarV2Variant
+    snackbarTokens: SnackbarV2TokensType
+    toastId?: string | number
+}) => {
+    if (!actionButton) return null
+
+    return (
+        <Block
+            display="flex"
+            height="100%"
+            alignItems="center"
+            justifyContent="center"
+        >
+            <ActionButton
+                action={actionButton}
+                variant={variant}
+                snackbarTokens={snackbarTokens}
+                toastId={toastId}
+            />
+        </Block>
+    )
+}
+
+const TextContainer = ({
     header,
+    description,
     variant,
     snackbarTokens,
     headerId,
+    descriptionId,
 }: {
     header: string
+    description?: string
     variant: SnackbarV2Variant
     snackbarTokens: SnackbarV2TokensType
     headerId: string
+    descriptionId?: string
 }) => {
     return (
-        <Block flexGrow={1} minWidth={0}>
+        <Block
+            display="flex"
+            flexGrow={1}
+            flexDirection="column"
+            gap={snackbarTokens.mainContainer.content.textContainer.gap}
+        >
             <Text
+                data-element="header"
+                data-id={header}
                 id={headerId}
                 as="p"
                 color={
-                    snackbarTokens.content.textContainer.header.color[variant]
+                    snackbarTokens.mainContainer.content.textContainer.header
+                        .color[variant]
                 }
-                fontSize={snackbarTokens.content.textContainer.header.fontSize}
                 fontWeight={
-                    snackbarTokens.content.textContainer.header.fontWeight
+                    snackbarTokens.mainContainer.content.textContainer.header
+                        .fontWeight
                 }
-                data-element="header"
-                data-id={header}
+                fontSize={
+                    snackbarTokens.mainContainer.content.textContainer.header
+                        .fontSize
+                }
+                lineHeight={addPxToValue(
+                    snackbarTokens.mainContainer.content.textContainer.header
+                        .lineHeight
+                )}
                 style={{
                     minWidth: 0,
                     overflow: 'hidden',
@@ -87,106 +200,32 @@ const HeaderContainer = ({
             >
                 {header}
             </Text>
-        </Block>
-    )
-}
-
-const DescriptionContainer = ({
-    description,
-    variant,
-    snackbarTokens,
-    descriptionId,
-    iconHeight,
-    gap,
-    closeButtonHeight,
-}: {
-    description: string
-    variant: SnackbarV2Variant
-    snackbarTokens: SnackbarV2TokensType
-    descriptionId: string
-    iconHeight: string | number | undefined
-    gap: string | number | undefined
-    closeButtonHeight: string | number | undefined
-}) => {
-    return (
-        <Block
-            marginTop={snackbarTokens.content.textContainer.gap}
-            marginLeft={`calc(${iconHeight ?? 0} + ${gap ?? 0})`}
-            marginRight={closeButtonHeight ?? 0}
-        >
-            <Text
-                id={descriptionId}
-                as="p"
-                color={
-                    snackbarTokens.content.textContainer.description.color[
-                        variant
-                    ]
-                }
-                fontSize={
-                    snackbarTokens.content.textContainer.description.fontSize
-                }
-                fontWeight={
-                    snackbarTokens.content.textContainer.description.fontWeight
-                }
-                data-element="description"
-                data-id={description}
-            >
-                {description}
-            </Text>
-        </Block>
-    )
-}
-
-const ActionButton = ({
-    actionButton,
-    variant,
-    snackbarTokens,
-    toastId,
-    iconHeight,
-    gap,
-    closeButtonHeight,
-}: {
-    actionButton: {
-        label: string
-        onClick: () => void
-        autoDismiss?: boolean
-    }
-    variant: SnackbarV2Variant
-    snackbarTokens: SnackbarV2TokensType
-    toastId?: string | number
-    iconHeight: string | number | undefined
-    gap: string | number | undefined
-    closeButtonHeight: string | number | undefined
-}) => {
-    const actionColor = snackbarTokens.actions.primaryAction.color[variant]
-
-    return (
-        <Block
-            marginTop={snackbarTokens.content.gap}
-            marginLeft={`calc(${iconHeight ?? 0} + ${gap ?? 0})`}
-            marginRight={closeButtonHeight ?? 0}
-        >
-            <PrimitiveButton
-                backgroundColor="transparent"
-                color={actionColor}
-                aria-label={actionButton.label}
-                onClick={() => {
-                    actionButton.onClick()
-                    if (actionButton.autoDismiss !== false && toastId) {
-                        sonnerToast.dismiss(toastId)
-                    }
-                }}
-                data-element="primary-action"
-                data-id={actionButton.label}
-            >
+            {description && (
                 <Text
-                    color={actionColor}
-                    fontSize={snackbarTokens.actions.primaryAction.fontSize}
-                    fontWeight={snackbarTokens.actions.primaryAction.fontWeight}
+                    data-id={description}
+                    data-element="description"
+                    id={descriptionId}
+                    as="p"
+                    fontWeight={
+                        snackbarTokens.mainContainer.content.textContainer
+                            .description.fontWeight
+                    }
+                    fontSize={
+                        snackbarTokens.mainContainer.content.textContainer
+                            .description.fontSize
+                    }
+                    lineHeight={addPxToValue(
+                        snackbarTokens.mainContainer.content.textContainer
+                            .description.lineHeight
+                    )}
+                    color={
+                        snackbarTokens.mainContainer.content.textContainer
+                            .description.color[variant]
+                    }
                 >
-                    {actionButton.label}
+                    {description}
                 </Text>
-            </PrimitiveButton>
+            )}
         </Block>
     )
 }
@@ -200,24 +239,39 @@ const CloseButton = ({
     variant: SnackbarV2Variant
     snackbarTokens: SnackbarV2TokensType
 }) => {
-    const closeButtonColor = snackbarTokens.actions.closeButton.color[variant]
+    const closeButtonColor =
+        snackbarTokens.mainContainer.closeButton.color[variant]
+    const closeButtonHeight = snackbarTokens.mainContainer.closeButton.height
+    const iconSize = snackbarTokens.mainContainer.closeButton.iconSize
 
     return (
-        <Block flexShrink={0}>
-            <PrimitiveButton
-                backgroundColor="transparent"
-                contentCentered
-                onClick={onClose}
-                aria-label="Close notification"
-                data-element="close-button"
-            >
-                <X
-                    size={snackbarTokens.actions.closeButton.height}
-                    color={closeButtonColor}
-                    aria-hidden="true"
-                />
-            </PrimitiveButton>
-        </Block>
+        <PrimitiveButton
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            height={closeButtonHeight}
+            width={closeButtonHeight}
+            data-element="close-button"
+            border="none"
+            backgroundColor="transparent"
+            color={closeButtonColor}
+            paddingTop={snackbarTokens.mainContainer.closeButton.padding.top}
+            paddingBottom={
+                snackbarTokens.mainContainer.closeButton.padding.bottom
+            }
+            paddingLeft={snackbarTokens.mainContainer.closeButton.padding.left}
+            paddingRight={
+                snackbarTokens.mainContainer.closeButton.padding.right
+            }
+            aria-label="Close"
+            _focusVisible={{
+                outline: `1px solid ${closeButtonColor}`,
+            }}
+            onClick={onClose}
+            type="button"
+        >
+            <X size={iconSize} color={closeButtonColor} aria-hidden="true" />
+        </PrimitiveButton>
     )
 }
 
@@ -243,9 +297,7 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
     const headerId = `${idPrefix}-header`
     const descriptionId = description ? `${idPrefix}-description` : undefined
 
-    const iconHeight = snackbarTokens.infoIcon.height
-    const gap = snackbarTokens.gap
-    const closeButtonHeight = snackbarTokens.actions.closeButton.height
+    const slot = <SnackbarV2Icon variant={variant} />
 
     return (
         <Block
@@ -255,59 +307,54 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
             data-snackbar={header ?? 'snackbar'}
             data-status={variant}
             display="flex"
-            flexDirection="column"
+            alignItems="center"
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
-            maxWidth={maxWidth}
+            maxWidth={maxWidth || snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
+            gap={snackbarTokens.gap}
             {...props}
         >
             <Block
                 display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                gap={gap}
+                flexGrow={1}
+                gap={snackbarTokens.mainContainer.gap}
             >
-                <IconContainer variant={variant} />
+                <SlotContainer slot={slot} snackbarTokens={snackbarTokens} />
+                <Block
+                    display="flex"
+                    flexGrow={1}
+                    flexDirection="column"
+                    gap={snackbarTokens.mainContainer.content.gap}
+                    justifyContent="space-between"
+                    alignItems="flex-start"
+                >
+                    <TextContainer
+                        header={header}
+                        description={description}
+                        variant={variant}
+                        snackbarTokens={snackbarTokens}
+                        headerId={headerId}
+                        descriptionId={descriptionId}
+                    />
 
-                <HeaderContainer
-                    header={header}
-                    variant={variant}
-                    snackbarTokens={snackbarTokens}
-                    headerId={headerId}
-                />
+                    <ActionsContainer
+                        actionButton={actionButton}
+                        variant={variant}
+                        snackbarTokens={snackbarTokens}
+                        toastId={toastId}
+                    />
+                </Block>
+            </Block>
 
+            <Block alignSelf="flex-start">
                 <CloseButton
                     onClose={onClose}
                     variant={variant}
                     snackbarTokens={snackbarTokens}
                 />
             </Block>
-
-            {description && (
-                <DescriptionContainer
-                    description={description}
-                    variant={variant}
-                    snackbarTokens={snackbarTokens}
-                    descriptionId={descriptionId!}
-                    iconHeight={iconHeight}
-                    gap={gap}
-                    closeButtonHeight={closeButtonHeight}
-                />
-            )}
-
-            {actionButton && (
-                <ActionButton
-                    actionButton={actionButton}
-                    variant={variant}
-                    snackbarTokens={snackbarTokens}
-                    toastId={toastId}
-                    iconHeight={iconHeight}
-                    gap={gap}
-                    closeButtonHeight={closeButtonHeight}
-                />
-            )}
         </Block>
     )
 }
@@ -347,7 +394,6 @@ export const addSnackbarV2 = ({
                 display: 'flex',
                 justifyContent: 'center',
                 width: isCenter ? '100%' : 'fit-content',
-                maxWidth: 'calc(100vw - 32px)',
                 margin: 0,
                 padding: 0,
                 background: 'transparent',
@@ -402,7 +448,6 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
                             display: 'flex',
                             justifyContent: 'center',
                             width: isCenter ? '100%' : 'fit-content',
-                            maxWidth: 'calc(100vw - 32px)',
                             margin: 0,
                             padding: 0,
                             background: 'transparent',
