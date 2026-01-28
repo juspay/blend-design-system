@@ -33,11 +33,7 @@ const SlotContainer = ({
     if (!slot) return null
     const slotMaxHeight = slot?.maxHeight || alertV2Tokens.slot.maxHeight
     return (
-        <Block
-            data-element="left-slot"
-            contentCentered
-            maxHeight={slotMaxHeight}
-        >
+        <Block data-element="slot" contentCentered maxHeight={slotMaxHeight}>
             {addAccessibleAriaAttributes(slot.slot)}
         </Block>
     )
