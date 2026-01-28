@@ -259,7 +259,7 @@ export const NestedDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>Nested Drawers.</DrawerTitle>
                         <DrawerDescription>
@@ -385,7 +385,7 @@ export const SideDrawerExample = () => {
                 <DrawerContent
                     direction="right"
                     width="500px"
-                    style={{ overflow: 'visible' }}
+                    // offSet="20px"
                 >
                     <DrawerHeader>
                         <DrawerTitle>User Profile Settings</DrawerTitle>
@@ -776,6 +776,7 @@ export const LeftSideDrawerExample = () => {
                     direction="left"
                     showHandle={false}
                     width="320px"
+                    offSet="12px"
                 >
                     {/* Custom content without using DrawerHeader/DrawerTitle */}
                     <div
@@ -992,7 +993,7 @@ export const TopDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent direction="top">
+                <DrawerContent direction="top" offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>Top Drawer</DrawerTitle>
                     </DrawerHeader>
@@ -1135,7 +1136,7 @@ export const ControlledDrawerExample = () => {
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent offSet="12px">
                     <DrawerHeader>
                         <DrawerTitle>A controlled drawer.</DrawerTitle>
                         <DrawerDescription>
@@ -3696,6 +3697,7 @@ export const NarrowLeftDrawerExample = () => {
                     direction="left"
                     width="250px"
                     showHandle={false}
+                    offSet={'0px'}
                 >
                     {/* Narrow drawer for quick actions */}
                     <div
