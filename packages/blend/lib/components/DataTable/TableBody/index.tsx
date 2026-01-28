@@ -673,9 +673,9 @@ const TableBody = forwardRef<
                                       }
                                       aria-label={rowAriaLabel}
                                       data-focused-row={
-                                          focusedCell?.rowIndex === index
-                                              ? 'true'
-                                              : 'false'
+                                          enableRowSelection
+                                              ? isSelected
+                                              : undefined
                                       }
                                       data-row-id={rowId}
                                       data-row-index={index}
