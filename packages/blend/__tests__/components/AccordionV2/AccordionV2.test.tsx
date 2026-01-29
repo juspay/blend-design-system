@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, cleanup, waitFor, within } from '../../test-utils'
+import { render, screen, cleanup, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
 import AccordionV2 from '../../../lib/components/AccordionV2/AccordionV2'
@@ -818,14 +818,7 @@ describe('AccordionV2Item', () => {
                     </AccordionV2Item>
                 </AccordionV2>
             )
-
-            // On small screen, subtext text should be hidden but subtextSlot should show
-            const subtextElement = container.querySelector(
-                '[data-element="accordion-item-subtext"]'
-            )
-            // SubtextSlot should still render
             expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
-            // Subtext text should not be visible on small screen
             expect(screen.queryByText('Test Subtext')).not.toBeInTheDocument()
 
             vi.restoreAllMocks()
@@ -843,7 +836,6 @@ describe('AccordionV2Item', () => {
                 </AccordionV2>
             )
 
-            // Chevron can be found by either data-element
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -868,7 +860,6 @@ describe('AccordionV2Item', () => {
                 </AccordionV2>
             )
 
-            // Chevron can be found by either data-element
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -877,7 +868,6 @@ describe('AccordionV2Item', () => {
             )
             expect(chevronIcon || chevronAnimation).toBeTruthy()
 
-            // Verify ChevronRight is used for left position
             const chevronRight = container.querySelector('svg')
             expect(chevronRight).toBeInTheDocument()
 
@@ -897,7 +887,6 @@ describe('AccordionV2Item', () => {
                 </AccordionV2>
             )
 
-            // Chevron can be found by either data-element
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -905,8 +894,6 @@ describe('AccordionV2Item', () => {
                 '[data-element="accordion-item-chevron"]'
             )
             expect(chevronIcon || chevronAnimation).toBeTruthy()
-
-            // Verify ChevronDown is used for right position
             const svgElements = container.querySelectorAll('svg')
             expect(svgElements.length).toBeGreaterThan(0)
 
@@ -928,7 +915,6 @@ describe('AccordionV2Item', () => {
             )
 
             const trigger = screen.getByRole('button', { name: 'Test Title' })
-            // Component uses data-element="chevron-icon" for the chevron container
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -957,7 +943,6 @@ describe('AccordionV2Item', () => {
             )
 
             const trigger = screen.getByRole('button', { name: 'Test Title' })
-            // Component uses data-element="chevron-icon" for the chevron container
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -1034,14 +1019,12 @@ describe('AccordionV2Item', () => {
                 name: 'Disabled Item',
             })
             expect(trigger).toBeDisabled()
-            // Radix uses data-disabled="true" when disabled prop is set
             expect(trigger).toHaveAttribute('data-disabled', 'true')
 
             const item = container.querySelector(
                 '[data-element="accordion-item"]'
             )
             expect(item).toHaveAttribute('data-status', 'disabled')
-            // Item also has data-disabled="true"
             expect(item).toHaveAttribute('data-disabled', 'true')
 
             expect(await axe(container)).toHaveNoViolations()
@@ -1153,16 +1136,13 @@ describe('AccordionV2Item', () => {
 
             const trigger = screen.getByRole('button', { name: 'Test Item' })
 
-            // Initially closed
             expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
-            // First expand
             await user.click(trigger)
             await waitFor(() => {
                 expect(trigger).toHaveAttribute('aria-expanded', 'true')
             })
 
-            // Then collapse
             await user.click(trigger)
             await waitFor(() => {
                 expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -1188,19 +1168,16 @@ describe('AccordionV2Item', () => {
             const trigger1 = screen.getByRole('button', { name: 'Item 1' })
             const trigger2 = screen.getByRole('button', { name: 'Item 2' })
 
-            // Open first item
             await user.click(trigger1)
             await waitFor(() => {
                 expect(screen.getByText('Content 1')).toBeVisible()
             })
 
-            // Open second item - first should close
             await user.click(trigger2)
             await waitFor(() => {
                 expect(screen.getByText('Content 2')).toBeVisible()
             })
 
-            // Verify first item is closed (content might still be in DOM but hidden)
             const content1 = screen.queryByText('Content 1')
             if (content1) {
                 await waitFor(() => {
@@ -1394,7 +1371,6 @@ describe('AccordionV2Item', () => {
                 </AccordionV2>
             )
 
-            // The chevron can be found by either data-element attribute
             const chevronIcon = container.querySelector(
                 '[data-element="chevron-icon"]'
             )
@@ -1402,7 +1378,6 @@ describe('AccordionV2Item', () => {
                 '[data-element="accordion-item-chevron"]'
             )
 
-            // At least one should exist
             expect(chevronIcon || chevronAnimation).toBeTruthy()
         })
 
@@ -1545,7 +1520,6 @@ describe('AccordionV2Item', () => {
                 </AccordionV2>
             )
 
-            // In multiple mode with string value, it should still work
             await waitFor(() => {
                 expect(screen.getByText('Content 1')).toBeVisible()
             })
