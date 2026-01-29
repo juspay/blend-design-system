@@ -355,9 +355,9 @@ export const getVisualUploadState = (
 }
 
 export const truncateFileList = (
-    files: { id: string; file: File; status: string }[]
+    files: UploadedFileWithStatus[]
 ): {
-    displayFiles: { id: string; file: File; status: string }[]
+    displayFiles: UploadedFileWithStatus[]
     truncatedCount: number
 } => {
     const displayLimit = 4

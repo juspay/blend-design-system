@@ -151,7 +151,11 @@ const AlertDemoV2 = () => {
                     <AlertV2
                         type={alertType}
                         subType={alertSubType}
-                        slot={showSlot ? <User size={16} /> : undefined}
+                        slot={
+                            showSlot
+                                ? { slot: <User size={16} />, maxHeight: 16 }
+                                : undefined
+                        }
                         heading={heading}
                         description={description}
                         actions={actions}

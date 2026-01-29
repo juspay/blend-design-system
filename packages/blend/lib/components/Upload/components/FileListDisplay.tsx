@@ -43,7 +43,14 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                 justifyContent="center"
             >
                 {displayFiles.map((file) => (
-                    <Tooltip key={file.id} content={file.file.name}>
+                    <Tooltip
+                        key={file.id}
+                        content={
+                            file.status === 'error' && file.error
+                                ? file.error
+                                : file.file.name
+                        }
+                    >
                         <Tag
                             key={file.id}
                             text={file.file.name}

@@ -115,6 +115,8 @@ import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
 import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
+import SnackbarV2Demo from './SnackbarV2Demo'
+import SwitchV2Demo from './SwitchV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -184,6 +186,8 @@ const SidebarDemo = () => {
         | 'textInputAutofillTest'
         | 'alertV2'
         | 'accordionV2'
+        | 'snackbarV2'
+        | 'switchV2'
     >('accordionV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -418,6 +422,8 @@ const SidebarDemo = () => {
                 return <AlertV2Demo />
             case 'accordionV2':
                 return <AccordionV2Demo />
+            case 'snackbarV2':
+                return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
             case 'accordion':
@@ -438,6 +444,8 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'switchV2':
+                return <SwitchV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -1011,6 +1019,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('snackbar'),
                 },
                 {
+                    label: 'Snackbar V2',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbarV2',
+                    onClick: () => setActiveComponent('snackbarV2'),
+                },
+                {
                     label: 'Tooltip',
                     leftSlot: (
                         <Info style={{ width: '16px', height: '16px' }} />
@@ -1184,6 +1200,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'switch',
                     onClick: () => setActiveComponent('switch'),
+                },
+                {
+                    label: 'Switch V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switchV2',
+                    onClick: () => setActiveComponent('switchV2'),
                 },
                 {
                     label: 'Selectors',

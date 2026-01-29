@@ -952,7 +952,12 @@ const DataTable = forwardRef(
         const selectedCount = getSelectedRowCount(selectedRows)
 
         const handleDeselectAll = () => {
-            setSelectedRows({})
+            const newSelectedRows = { ...selectedRows }
+            currentData.forEach((row) => {
+                const rowId = String(row[idField])
+                newSelectedRows[rowId] = false
+            })
+            setSelectedRows({ ...newSelectedRows })
             setSelectAll(false)
         }
 

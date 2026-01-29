@@ -115,6 +115,14 @@ import {
     getAccordionV2Tokens,
     ResponsiveAccordionV2Tokens,
 } from '../components/AccordionV2/accordionV2.tokens'
+import {
+    getSnackbarV2Tokens,
+    ResponsiveSnackbarV2Tokens,
+} from '../components/SnackbarV2/snackbarV2.tokens'
+import {
+    getSwitchV2Tokens,
+    ResponsiveSwitchV2Tokens,
+} from '../components/SwitchV2/switchV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -164,6 +172,8 @@ export type ComponentTokenType = {
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
     ACCORDIONV2?: ResponsiveAccordionV2Tokens
+    SNACKBARV2?: ResponsiveSnackbarV2Tokens
+    SWITCHV2?: ResponsiveSwitchV2Tokens
 }
 
 type ThemeContextType = {
@@ -223,6 +233,8 @@ const ThemeContext = createContext<ThemeContextType>({
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         ALERTV2: getAlertV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         ACCORDIONV2: getAccordionV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SNACKBARV2: getSnackbarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

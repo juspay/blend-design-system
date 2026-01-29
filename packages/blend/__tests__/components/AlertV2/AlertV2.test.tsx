@@ -45,7 +45,7 @@ describe('AlertV2 Component', () => {
                 <AlertV2
                     heading="Icon Alert"
                     description="Has an icon"
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
             expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
@@ -412,16 +412,18 @@ describe('AlertV2 Component', () => {
             expect(alert).toBeInTheDocument()
         })
 
-        it('has data-element="icon" on icon container', () => {
+        it('has data-element="slot" on icon container', () => {
             render(
                 <AlertV2
                     heading="Icon Test"
                     description="Testing icon"
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
-            const iconContainer = screen.getByTestId('mock-icon').parentElement
-            expect(iconContainer).toHaveAttribute('data-element', 'icon')
+            const iconContainer = document.querySelector(
+                '[data-element="slot"]'
+            )
+            expect(iconContainer).toBeInTheDocument()
         })
 
         it('has data-element="header" on heading', () => {
@@ -654,7 +656,7 @@ describe('AlertV2 Component', () => {
                     description="Has everything"
                     type={AlertV2Type.SUCCESS}
                     subType={AlertV2SubType.SUBTLE}
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                     actions={{
                         position: AlertV2ActionPosition.RIGHT,
                         primaryAction: {

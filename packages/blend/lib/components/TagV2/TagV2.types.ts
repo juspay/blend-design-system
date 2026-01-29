@@ -44,11 +44,11 @@ export type TagV2Props = {
     color?: TagV2Color
     leftSlot?: {
         slot: ReactElement
-        maxHeight: CSSObject['maxHeight']
+        maxHeight?: CSSObject['maxHeight']
     }
     rightSlot?: {
         slot: ReactElement
-        maxHeight: CSSObject['maxHeight']
+        maxHeight?: CSSObject['maxHeight']
     }
     skeleton?: {
         showSkeleton?: boolean
