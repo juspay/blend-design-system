@@ -6,12 +6,14 @@ export const getSnackbarV2DarkTokens = (
 ): ResponsiveSnackbarV2Tokens => {
     return {
         sm: {
+            width: '100%',
+            maxWidth: 'calc(100vw - 32px)',
+            minWidth: foundationToken.unit[300],
             backgroundColor: foundationToken.colors.gray[800],
             borderRadius: foundationToken.border.radius[12],
             padding: foundationToken.unit[16],
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[8],
-            maxWidth: 'calc(100vw - 32px)',
             slot: {
                 height: foundationToken.unit[16],
                 width: foundationToken.unit[16],
@@ -20,12 +22,6 @@ export const getSnackbarV2DarkTokens = (
                     success: foundationToken.colors.green[400],
                     warning: foundationToken.colors.yellow[400],
                     error: foundationToken.colors.red[400],
-                },
-                padding: {
-                    top: foundationToken.unit[4],
-                    bottom: foundationToken.unit[4],
-                    left: foundationToken.unit[0],
-                    right: foundationToken.unit[0],
                 },
             },
             mainContainer: {
@@ -44,7 +40,7 @@ export const getSnackbarV2DarkTokens = (
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
                             fontWeight: foundationToken.font.weight[500],
-                            lineHeight: foundationToken.font.lineHeight[24],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                         description: {
                             color: {
@@ -56,7 +52,7 @@ export const getSnackbarV2DarkTokens = (
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
                             fontWeight: foundationToken.font.weight[400],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                     },
                     actionContainer: {
@@ -75,30 +71,25 @@ export const getSnackbarV2DarkTokens = (
                     },
                 },
                 closeButton: {
-                    height: foundationToken.unit[22],
-                    iconSize: foundationToken.unit[12],
+                    height: foundationToken.unit[16],
                     color: {
                         info: foundationToken.colors.gray[100],
                         success: foundationToken.colors.gray[100],
                         warning: foundationToken.colors.gray[100],
                         error: foundationToken.colors.gray[100],
                     },
-                    padding: {
-                        top: foundationToken.unit[4],
-                        bottom: foundationToken.unit[4],
-                        left: foundationToken.unit[4],
-                        right: foundationToken.unit[4],
-                    },
                 },
             },
         },
         lg: {
+            width: '100%',
+            maxWidth: 'calc(100vw - 32px)',
+            minWidth: foundationToken.unit[300],
             backgroundColor: foundationToken.colors.gray[800],
             borderRadius: foundationToken.border.radius[8],
             padding: foundationToken.unit[16],
             boxShadow: foundationToken.shadows.lg,
             gap: foundationToken.unit[10],
-            maxWidth: 'calc(100vw - 32px)',
             slot: {
                 height: foundationToken.unit[16],
                 width: foundationToken.unit[16],
@@ -107,12 +98,6 @@ export const getSnackbarV2DarkTokens = (
                     success: foundationToken.colors.green[400],
                     warning: foundationToken.colors.yellow[400],
                     error: foundationToken.colors.red[400],
-                },
-                padding: {
-                    top: foundationToken.unit[4],
-                    bottom: foundationToken.unit[4],
-                    left: foundationToken.unit[0],
-                    right: foundationToken.unit[0],
                 },
             },
             mainContainer: {
@@ -131,7 +116,7 @@ export const getSnackbarV2DarkTokens = (
                             fontSize:
                                 foundationToken.font.size.body.lg.fontSize,
                             fontWeight: foundationToken.font.weight[600],
-                            lineHeight: foundationToken.font.lineHeight[24],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                         description: {
                             color: {
@@ -143,7 +128,7 @@ export const getSnackbarV2DarkTokens = (
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
                             fontWeight: foundationToken.font.weight[400],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                     },
                     actionContainer: {
@@ -162,19 +147,12 @@ export const getSnackbarV2DarkTokens = (
                     },
                 },
                 closeButton: {
-                    height: foundationToken.unit[22],
-                    iconSize: foundationToken.unit[12],
+                    height: foundationToken.unit[16],
                     color: {
                         info: foundationToken.colors.gray[100],
                         success: foundationToken.colors.gray[100],
                         warning: foundationToken.colors.gray[100],
                         error: foundationToken.colors.gray[100],
-                    },
-                    padding: {
-                        top: foundationToken.unit[4],
-                        bottom: foundationToken.unit[4],
-                        left: foundationToken.unit[4],
-                        right: foundationToken.unit[4],
                     },
                 },
             },

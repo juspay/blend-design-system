@@ -14,6 +14,7 @@ import {
     ButtonSize,
     ButtonType,
 } from '../../../../packages/blend/lib/components/Button'
+import { Star } from 'lucide-react'
 
 const SnackbarV2Demo = () => {
     const [snackbarVariant, setSnackbarVariant] = useState(
@@ -22,6 +23,7 @@ const SnackbarV2Demo = () => {
     const [header, setHeader] = useState('SnackbarV2 header')
     const [description, setDescription] = useState('SnackbarV2 description')
     const [showActionButton, setShowActionButton] = useState(true)
+    const [useCustomSlot, setUseCustomSlot] = useState(false)
     const [position, setPosition] = useState<SnackbarV2Position>(
         SnackbarV2Position.BOTTOM_RIGHT
     )
@@ -43,11 +45,16 @@ const SnackbarV2Demo = () => {
         { value: SnackbarV2Position.BOTTOM_CENTER, label: 'Bottom Center' },
     ]
 
+    const customSlot = useCustomSlot ? (
+        <Star size={16} color="#fbbf24" />
+    ) : undefined
+
     const showSnackbar = () => {
         addSnackbarV2({
             header,
             description: description || undefined,
             variant: snackbarVariant,
+            slot: customSlot,
             actionButton: showActionButton
                 ? {
                       label: 'Action',
@@ -61,7 +68,7 @@ const SnackbarV2Demo = () => {
 
     return (
         <div className="space-y-6 p-8">
-            <h2 className="text-2xl font-bold">🍞 SnackbarV2 Playground</h2>
+            <h2 className="text-2xl font-bold">SnackbarV2 Playground</h2>
             <div className="space-y-6">
                 <div className="space-y-4">
                     <TextInput
@@ -113,6 +120,11 @@ const SnackbarV2Demo = () => {
                             }
                         />
                         <Switch
+                            label="Use Custom Slot"
+                            checked={useCustomSlot}
+                            onChange={() => setUseCustomSlot(!useCustomSlot)}
+                        />
+                        <Switch
                             label="Dismiss on Click Away"
                             checked={dismissOnClickAway}
                             onChange={() =>
@@ -122,7 +134,6 @@ const SnackbarV2Demo = () => {
                     </div>
                 </div>
 
-                {/* StyledToast Preview */}
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Live Preview</h3>
                     <div className="min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
@@ -131,6 +142,7 @@ const SnackbarV2Demo = () => {
                                 header={header}
                                 description={description || undefined}
                                 variant={snackbarVariant}
+                                slot={customSlot}
                                 onClose={() => console.log('Close clicked')}
                                 actionButton={
                                     showActionButton
@@ -147,7 +159,6 @@ const SnackbarV2Demo = () => {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Actions</h3>
                     <div className="flex gap-4 flex-wrap">
@@ -157,197 +168,10 @@ const SnackbarV2Demo = () => {
                             onClick={showSnackbar}
                             text="Show Snackbar"
                         />
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.MEDIUM}
-                            onClick={() => {
-                                addSnackbarV2({
-                                    header: 'Info Snackbar',
-                                    description: 'This is an info notification',
-                                    variant: SnackbarV2Variant.INFO,
-                                    position,
-                                })
-                            }}
-                            text="Show Info"
-                        />
-                        <Button
-                            buttonType={ButtonType.SUCCESS}
-                            size={ButtonSize.MEDIUM}
-                            onClick={() => {
-                                addSnackbarV2({
-                                    header: 'Success Snackbar',
-                                    description:
-                                        'Your action was completed successfully!',
-                                    variant: SnackbarV2Variant.SUCCESS,
-                                    position,
-                                })
-                            }}
-                            text="Show Success"
-                        />
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.MEDIUM}
-                            onClick={() => {
-                                addSnackbarV2({
-                                    header: 'Warning Snackbar',
-                                    description:
-                                        'Please be careful with this action',
-                                    variant: SnackbarV2Variant.WARNING,
-                                    position,
-                                })
-                            }}
-                            text="Show Warning"
-                        />
-                        <Button
-                            buttonType={ButtonType.DANGER}
-                            size={ButtonSize.MEDIUM}
-                            onClick={() => {
-                                addSnackbarV2({
-                                    header: 'Error Snackbar',
-                                    description:
-                                        'Something went wrong. Please try again.',
-                                    variant: SnackbarV2Variant.ERROR,
-                                    position,
-                                })
-                            }}
-                            text="Show Error"
-                        />
                     </div>
-                </div>
-
-                {/* Variant Showcase */}
-                <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                        All Variants Showcase
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 border border-blue-200 bg-blue-50 rounded-lg">
-                            <h4 className="text-sm font-medium text-blue-800 mb-2">
-                                Info Variant
-                            </h4>
-                            <p className="text-sm text-blue-600 mb-3">
-                                Used for general information and neutral
-                                messages.
-                            </p>
-                            <StyledToast
-                                header="Data synced successfully"
-                                description="Your dashboard now shows the latest data"
-                                variant={SnackbarV2Variant.INFO}
-                                onClose={() => {}}
-                                actionButton={{
-                                    label: 'View Dashboard',
-                                    onClick: () =>
-                                        console.log('View Dashboard clicked'),
-                                }}
-                            />
-                        </div>
-
-                        <div className="p-4 border border-green-200 bg-green-50 rounded-lg">
-                            <h4 className="text-sm font-medium text-green-800 mb-2">
-                                Success Variant
-                            </h4>
-                            <p className="text-sm text-green-600 mb-3">
-                                Used for successful operations and positive
-                                feedback.
-                            </p>
-                            <StyledToast
-                                header="Payment processed successfully"
-                                description="Your payment of $150.00 has been processed"
-                                variant={SnackbarV2Variant.SUCCESS}
-                                onClose={() => {}}
-                                actionButton={{
-                                    label: 'View Receipt',
-                                    onClick: () =>
-                                        console.log('View Receipt clicked'),
-                                }}
-                            />
-                        </div>
-
-                        <div className="p-4 border border-yellow-200 bg-yellow-50 rounded-lg">
-                            <h4 className="text-sm font-medium text-yellow-800 mb-2">
-                                Warning Variant
-                            </h4>
-                            <p className="text-sm text-yellow-600 mb-3">
-                                Used for warnings and cautionary messages.
-                            </p>
-                            <StyledToast
-                                header="Storage space running low"
-                                description="You have used 95% of your storage"
-                                variant={SnackbarV2Variant.WARNING}
-                                onClose={() => {}}
-                                actionButton={{
-                                    label: 'Upgrade Plan',
-                                    onClick: () =>
-                                        console.log('Upgrade Plan clicked'),
-                                }}
-                            />
-                        </div>
-
-                        <div className="p-4 border border-red-200 bg-red-50 rounded-lg">
-                            <h4 className="text-sm font-medium text-red-800 mb-2">
-                                Error Variant
-                            </h4>
-                            <p className="text-sm text-red-600 mb-3">
-                                Used for errors and critical messages.
-                            </p>
-                            <StyledToast
-                                header="Connection failed"
-                                description="Unable to connect to the server"
-                                variant={SnackbarV2Variant.ERROR}
-                                onClose={() => {}}
-                                actionButton={{
-                                    label: 'Retry',
-                                    onClick: () => console.log('Retry clicked'),
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Multiple Snackbars Demo */}
-                <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">
-                        Multiple Snackbars
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                        Test how multiple snackbars stack and behave when shown
-                        in sequence.
-                    </p>
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.MEDIUM}
-                        onClick={() => {
-                            addSnackbarV2({
-                                header: 'First Notification',
-                                description: 'This is the first notification.',
-                                variant: SnackbarV2Variant.INFO,
-                                position,
-                            })
-                            setTimeout(() => {
-                                addSnackbarV2({
-                                    header: 'Second Notification',
-                                    description:
-                                        'This is the second notification.',
-                                    variant: SnackbarV2Variant.SUCCESS,
-                                    position,
-                                })
-                            }, 500)
-                            setTimeout(() => {
-                                addSnackbarV2({
-                                    header: 'Third Notification',
-                                    description:
-                                        'This is the third notification.',
-                                    variant: SnackbarV2Variant.WARNING,
-                                    position,
-                                })
-                            }, 1000)
-                        }}
-                        text="Show Multiple"
-                    />
                 </div>
             </div>
 
-            {/* Snackbar Component (required for the toasts to appear) */}
             <SnackbarV2
                 position={position}
                 dismissOnClickAway={dismissOnClickAway}

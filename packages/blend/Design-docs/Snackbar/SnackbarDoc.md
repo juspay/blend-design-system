@@ -6,9 +6,9 @@ Create a scalable toast notification component that can display:
 
 - **Header**: Required primary text content
 - **Description**: Optional secondary text content
-- **Slot**: Variant-specific icon (Info, Success, Warning, Error) with configurable dimensions and colors
+- **Slot**: Optional custom icon or ReactElement, with default variant-specific icons (Info, Success, Warning, Error)
 - **Action Button**: Optional primary action button with auto-dismiss control
-- **Close Button**: Dismissible close button positioned at top-right with configurable size and padding
+- **Close Button**: Dismissible close button positioned at top-right
 - **Multiple Variants**: Support for different semantic variants (info, success, warning, error)
 - **Multiple Positions**: Support for different screen positions (top-left, top-right, bottom-left, bottom-right, top-center, bottom-center)
 - **Responsive Design**: Support for different breakpoints (sm, lg)
@@ -25,15 +25,15 @@ Create a scalable toast notification component that can display:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **Container**: Main flex container with configurable background, border radius, padding, shadow, and max-width
-- **Slot**: Variant-specific icon container with fixed dimensions, variant-based colors, and top/bottom padding
+- **Container**: Main flex container with configurable width, maxWidth, minWidth, background, border radius, padding, and shadow
+- **Slot**: Optional icon container with fixed dimensions. Uses default variant-specific icon if custom slot not provided
 - **Main Container**: Flex container wrapping slot and content
 - **Content Container**: Flex container for text and actions with column direction
 - **Text Container**: Vertical flex container for header and description
 - **Header**: Required paragraph text with variant-based color and typography tokens
 - **Description**: Optional paragraph description with variant-based color and typography tokens
 - **Action Container**: Container for primary action button
-- **Close Button**: Dismissible button with X icon, positioned at top-right, 21x21px size with 4px padding on all sides
+- **Close Button**: Dismissible button with X icon, positioned at top-right
 
 ## Props & Types
 
@@ -61,55 +61,61 @@ type SnackbarV2Action = {
 }
 
 type SnackbarV2Dimensions = {
+    width?: CSSObject['width']
     maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
 }
 
 type SnackbarV2ToastOptions = {
     header: string
     description?: string
     variant?: SnackbarV2Variant
+    slot?: ReactElement
     onClose?: () => void
     actionButton?: SnackbarV2Action
     duration?: number
     position?: SnackbarV2Position
+    width?: string | number
     maxWidth?: string | number
+    minWidth?: string | number
 }
 
 type SnackbarV2Props = {
     position?: SnackbarV2Position
     dismissOnClickAway?: boolean
-    maxWidth?: string | number
 }
 
 type SnackbarV2ToastProps = {
     header: string
     description?: string
     variant: SnackbarV2Variant
+    slot?: ReactElement
     onClose?: () => void
     actionButton?: SnackbarV2Action
     toastId?: string | number
+    width?: string | number
     maxWidth?: string | number
-}
+    minWidth?: string | number
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'>
 ```
 
 ## Final Token Type
 
 ```typescript
 type SnackbarV2TokensType = {
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
     backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
-    maxWidth: CSSObject['maxWidth']
     slot: {
         height: CSSObject['height']
         width: CSSObject['width']
         color: {
             [key in SnackbarV2Variant]: CSSObject['color']
-        }
-        padding: {
-            [key in SnackbarV2PaddingDirection]: CSSObject['padding']
         }
     }
     mainContainer: {
@@ -151,9 +157,6 @@ type SnackbarV2TokensType = {
             color: {
                 [key in SnackbarV2Variant]: CSSObject['color']
             }
-            padding: {
-                [key in SnackbarV2PaddingDirection]: CSSObject['padding']
-            }
         }
     }
 }
@@ -171,7 +174,7 @@ type ResponsiveSnackbarV2Tokens = {
 
 **Decision**: Extract rendering logic into separate sub-components (`SlotContainer`, `ActionButton`, `ActionsContainer`, `TextContainer`, `CloseButton`).
 
-**Rationale**: Improves code organization, maintainability, and testability. Each sub-component has a single responsibility, making the code easier to understand and modify. This also enables better code reuse and separation of concerns.
+**Rationale**: Improves code organization, maintainability, and testability. Each sub-component has a single responsibility, making the code easier to understand and modify.
 
 ```tsx
 const SlotContainer = ({ slot, snackbarTokens }) => { ... }
@@ -185,7 +188,7 @@ const CloseButton = ({ onClose, variant, snackbarTokens }) => { ... }
 
 **Decision**: Use `role="alert"` for error and warning variants, `role="status"` for info and success variants.
 
-**Rationale**: Follows WCAG guidelines for live regions. Error and warning messages require immediate attention (assertive), while info and success messages are polite announcements. This ensures screen readers announce messages with appropriate urgency.
+**Rationale**: Follows WCAG guidelines for live regions. Error and warning messages require immediate attention (assertive), while info and success messages are polite announcements.
 
 ```tsx
 const role =
@@ -207,74 +210,49 @@ const headerId = `${idPrefix}-header`
 const descriptionId = description ? `${idPrefix}-description` : undefined
 ```
 
-### 4. Token-Driven Icon Colors
+### 4. Custom Slot with Default Icon Fallback
+
+**Decision**: Allow users to pass custom slot icon via `slot` prop, with default variant-specific icons used when not provided.
+
+**Rationale**: Provides flexibility for custom branding while maintaining sensible defaults. Default icons are automatically selected based on variant, reducing boilerplate for common cases.
+
+```tsx
+const defaultSlot = <SnackbarV2Icon variant={variant} />
+const iconSlot = slot ?? defaultSlot
+```
+
+### 5. Token-Driven Icon Colors
 
 **Decision**: Use variant-based color tokens from `slot.color[variant]` instead of hardcoded color values.
 
-**Rationale**: Ensures consistent theming across light and dark modes. Icon colors are defined in tokens and can be easily adjusted per theme and variant. Matches the pattern used in the original Snackbar component.
+**Rationale**: Ensures consistent theming across light and dark modes. Icon colors are defined in tokens and can be easily adjusted per theme and variant.
 
 ```tsx
 const iconColor = snackbarTokens.slot.color[variant]
 ```
 
-### 5. Close Button Top-Right Alignment
+### 6. Close Button Dimensions
 
-**Decision**: Position close button at top-right corner using `alignItems="flex-start"` and `justifyContent="flex-end"` with fixed 21x21px dimensions.
+**Decision**: Use token-defined height for close button (22px), with icon size matching button height.
 
-**Rationale**: Provides consistent visual hierarchy and matches common UI patterns. The top-right position is the standard location for close buttons in toast notifications, making it intuitive for users.
-
-```tsx
-<PrimitiveButton
-    alignItems="flex-start"
-    justifyContent="flex-end"
-    height={closeButtonSize}
-    width={closeButtonSize}
->
-```
-
-### 6. Close Button Padding Structure
-
-**Decision**: Use padding structure following ButtonV2 pattern with 4px padding on all sides, defined in tokens.
-
-**Rationale**: Provides consistent spacing and follows the established design system patterns. Padding is defined in tokens to support responsive adjustments and theme variations.
+**Rationale**: Provides consistent sizing across breakpoints and themes. Button dimensions are defined in tokens to support responsive adjustments.
 
 ```tsx
-padding: {
-    top: foundationToken.unit[4],
-    bottom: foundationToken.unit[4],
-    left: foundationToken.unit[4],
-    right: foundationToken.unit[4],
-}
+const closeButtonHeight = snackbarTokens.mainContainer.closeButton.height
+<X size={closeButtonHeight} />
 ```
 
-### 7. Slot Padding for Icon Alignment
+### 7. Line Height Tokens for Typography
 
-**Decision**: Apply 4px top and bottom padding to slot container, with 0px left and right padding.
+**Decision**: Use lineHeight tokens for header, description, and action button with `addPxToValue` utility.
 
-**Rationale**: Ensures proper vertical alignment of icons with text content. The top/bottom padding compensates for icon positioning while maintaining horizontal alignment with the text.
-
-```tsx
-slot: {
-    padding: {
-        top: foundationToken.unit[4],
-        bottom: foundationToken.unit[4],
-        left: foundationToken.unit[0],
-        right: foundationToken.unit[0],
-    }
-}
-```
-
-### 8. Line Height Tokens for Typography
-
-**Decision**: Use lineHeight tokens for header (24px), description (20px), and action button (20px) with `addPxToValue` utility.
-
-**Rationale**: Ensures consistent typography spacing across all text elements. Line heights are defined in tokens and converted to pixel values using the utility function to match the pattern used in AlertV2.
+**Rationale**: Ensures consistent typography spacing across all text elements. Line heights are defined in tokens and converted to pixel values using the utility function.
 
 ```tsx
 lineHeight={addPxToValue(snackbarTokens.mainContainer.content.textContainer.header.lineHeight)}
 ```
 
-### 9. Responsive Token System
+### 8. Responsive Token System
 
 **Decision**: Use `useResponsiveTokens` hook to fetch breakpoint-specific tokens.
 
@@ -284,17 +262,19 @@ lineHeight={addPxToValue(snackbarTokens.mainContainer.content.textContainer.head
 const snackbarTokens = useResponsiveTokens<SnackbarV2TokensType>('SNACKBARV2')
 ```
 
-### 10. Configurable MaxWidth with Token Default
+### 9. Configurable Dimensions with Token Defaults
 
-**Decision**: Allow `maxWidth` to be passed as a prop, defaulting to token value `calc(100vw - 32px)` when not provided.
+**Decision**: Allow `width`, `maxWidth`, and `minWidth` to be passed as props, defaulting to token values when not provided.
 
-**Rationale**: Provides flexibility for different use cases while maintaining sensible defaults. Users can override the maxWidth for specific snackbars, but the default ensures snackbars don't overflow on small screens.
+**Rationale**: Provides flexibility for different use cases while maintaining sensible defaults. Users can override dimensions for specific snackbars, but defaults ensure consistent sizing across the application.
 
 ```tsx
+width={width || snackbarTokens.width}
 maxWidth={maxWidth || snackbarTokens.maxWidth}
+minWidth={minWidth || snackbarTokens.minWidth}
 ```
 
-### 11. Slot Container with ARIA Hidden
+### 10. Slot Container with ARIA Hidden
 
 **Decision**: Mark the slot container with `aria-hidden="true"` to prevent screen readers from announcing decorative icons.
 
@@ -306,7 +286,7 @@ maxWidth={maxWidth || snackbarTokens.maxWidth}
 </Block>
 ```
 
-### 12. Action Button Auto-Dismiss Control
+### 11. Action Button Auto-Dismiss Control
 
 **Decision**: Allow action buttons to control whether the snackbar dismisses automatically when clicked via `autoDismiss` property (defaults to `true`).
 
@@ -319,6 +299,17 @@ onClick={() => {
         sonnerToast.dismiss(toastId)
     }
 }}
+```
+
+### 12. Filter Blocked Props Utility
+
+**Decision**: Use `filterBlockedProps` utility to prevent certain HTML attributes from being passed to the component.
+
+**Rationale**: Prevents conflicts between component-specific props and native HTML attributes. Ensures that only valid and safe props are spread onto the underlying DOM element.
+
+```tsx
+const filteredProps = filterBlockedProps(rest)
+{...filteredProps}
 ```
 
 ### 13. Forward Ref Support
@@ -376,7 +367,7 @@ useEffect(() => {
 
 **Decision**: Use `data-element` and `data-id` attributes on key interactive elements for testing and analytics.
 
-**Rationale**: Provides reliable selectors for automated testing without relying on implementation details. `data-element` identifies element types (icon, header, description, close-button, primary-action), while `data-id` provides content-based identification. This follows testing best practices and enables better tracking.
+**Rationale**: Provides reliable selectors for automated testing without relying on implementation details. `data-element` identifies element types (icon, header, description, close-button, primary-action), while `data-id` provides content-based identification.
 
 ```tsx
 <Text data-element="header" data-id={header}>...</Text>

@@ -22,6 +22,7 @@ import {
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SnackbarV2TokensType } from './snackbarV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { filterBlockedProps } from '../../utils/prop-helpers'
 
 const SnackbarV2Icon: React.FC<SnackbarV2IconProps> = ({ variant }) => {
     const snackbarTokens =
@@ -56,10 +57,6 @@ const SlotContainer = ({
             data-element="icon"
             height={snackbarTokens.slot.height}
             width={snackbarTokens.slot.width}
-            paddingTop={snackbarTokens.slot.padding.top}
-            paddingBottom={snackbarTokens.slot.padding.bottom}
-            paddingLeft={snackbarTokens.slot.padding.left}
-            paddingRight={snackbarTokens.slot.padding.right}
             contentCentered
             aria-hidden="true"
         >
@@ -98,7 +95,7 @@ const ActionButton = ({
                 }
             }}
             tabIndex={0}
-            aria-label={`${action.label} action`}
+            aria-label={action.label}
             border="none"
             backgroundColor="transparent"
             cursor="pointer"
@@ -242,7 +239,6 @@ const CloseButton = ({
     const closeButtonColor =
         snackbarTokens.mainContainer.closeButton.color[variant]
     const closeButtonHeight = snackbarTokens.mainContainer.closeButton.height
-    const iconSize = snackbarTokens.mainContainer.closeButton.iconSize
 
     return (
         <PrimitiveButton
@@ -255,22 +251,18 @@ const CloseButton = ({
             border="none"
             backgroundColor="transparent"
             color={closeButtonColor}
-            paddingTop={snackbarTokens.mainContainer.closeButton.padding.top}
-            paddingBottom={
-                snackbarTokens.mainContainer.closeButton.padding.bottom
-            }
-            paddingLeft={snackbarTokens.mainContainer.closeButton.padding.left}
-            paddingRight={
-                snackbarTokens.mainContainer.closeButton.padding.right
-            }
-            aria-label="Close"
+            aria-label="Close notification"
             _focusVisible={{
                 outline: `1px solid ${closeButtonColor}`,
             }}
             onClick={onClose}
             type="button"
         >
-            <X size={iconSize} color={closeButtonColor} aria-hidden="true" />
+            <X
+                size={closeButtonHeight}
+                color={closeButtonColor}
+                aria-hidden="true"
+            />
         </PrimitiveButton>
     )
 }
@@ -279,14 +271,18 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
     header,
     description,
     variant,
+    slot,
     onClose,
     actionButton,
     toastId,
+    width,
     maxWidth,
-    ...props
+    minWidth,
+    ...rest
 }) => {
     const snackbarTokens =
         useResponsiveTokens<SnackbarV2TokensType>('SNACKBARV2')
+    const filteredProps = filterBlockedProps(rest)
     const baseId = useId()
     const role =
         variant === SnackbarV2Variant.ERROR ||
@@ -297,7 +293,8 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
     const headerId = `${idPrefix}-header`
     const descriptionId = description ? `${idPrefix}-description` : undefined
 
-    const slot = <SnackbarV2Icon variant={variant} />
+    const defaultSlot = <SnackbarV2Icon variant={variant} />
+    const iconSlot = slot ?? defaultSlot
 
     return (
         <Block
@@ -308,20 +305,25 @@ export const StyledToast: React.FC<SnackbarV2ToastProps> = ({
             data-status={variant}
             display="flex"
             alignItems="center"
+            width={width || snackbarTokens.width}
+            maxWidth={maxWidth || snackbarTokens.maxWidth}
+            minWidth={minWidth || snackbarTokens.minWidth}
             backgroundColor={snackbarTokens.backgroundColor}
             borderRadius={snackbarTokens.borderRadius}
             padding={snackbarTokens.padding}
-            maxWidth={maxWidth || snackbarTokens.maxWidth}
             boxShadow={snackbarTokens.boxShadow}
             gap={snackbarTokens.gap}
-            {...props}
+            {...filteredProps}
         >
             <Block
                 display="flex"
                 flexGrow={1}
                 gap={snackbarTokens.mainContainer.gap}
             >
-                <SlotContainer slot={slot} snackbarTokens={snackbarTokens} />
+                <SlotContainer
+                    slot={iconSlot}
+                    snackbarTokens={snackbarTokens}
+                />
                 <Block
                     display="flex"
                     flexGrow={1}
@@ -363,11 +365,14 @@ export const addSnackbarV2 = ({
     header,
     description,
     variant = SnackbarV2Variant.INFO,
+    slot,
     onClose,
     actionButton,
     duration,
     position,
+    width,
     maxWidth,
+    minWidth,
 }: SnackbarV2ToastOptions) => {
     const isCenter = position?.includes('center')
 
@@ -377,13 +382,16 @@ export const addSnackbarV2 = ({
                 header={header}
                 description={description}
                 variant={variant}
+                slot={slot}
                 onClose={() => {
                     sonnerToast.dismiss(t)
                     onClose?.()
                 }}
                 actionButton={actionButton}
                 toastId={t}
+                width={width}
                 maxWidth={maxWidth}
+                minWidth={minWidth}
             />
         ),
         {

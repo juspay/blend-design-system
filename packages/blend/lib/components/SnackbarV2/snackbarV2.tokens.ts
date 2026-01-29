@@ -14,20 +14,19 @@ export enum SnackbarV2PaddingDirection {
 }
 
 export type SnackbarV2TokensType = {
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
     backgroundColor: CSSObject['backgroundColor']
     borderRadius: CSSObject['borderRadius']
     padding: CSSObject['padding']
     boxShadow: CSSObject['boxShadow']
     gap: CSSObject['gap']
-    maxWidth: CSSObject['maxWidth']
     slot: {
         height: CSSObject['height']
         width: CSSObject['width']
         color: {
             [key in SnackbarV2Variant]: CSSObject['color']
-        }
-        padding: {
-            [key in SnackbarV2PaddingDirection]: CSSObject['padding']
         }
     }
     mainContainer: {
@@ -66,12 +65,8 @@ export type SnackbarV2TokensType = {
         }
         closeButton: {
             height: CSSObject['height']
-            iconSize: CSSObject['height']
             color: {
                 [key in SnackbarV2Variant]: CSSObject['color']
-            }
-            padding: {
-                [key in SnackbarV2PaddingDirection]: CSSObject['padding']
             }
         }
     }

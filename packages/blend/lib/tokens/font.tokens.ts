@@ -90,6 +90,7 @@ type FontSizesType = Readonly<{
 }>
 type LineHeightType = Readonly<{
     14: CSSObject['lineHeight']
+    16: CSSObject['lineHeight']
     18: CSSObject['lineHeight']
     20: CSSObject['lineHeight']
     24: CSSObject['lineHeight']
@@ -276,6 +277,7 @@ const fontTokens: FontTokensType = {
     },
     lineHeight: {
         14: 14,
+        16: 16,
         18: 18,
         20: 20,
         24: 24,

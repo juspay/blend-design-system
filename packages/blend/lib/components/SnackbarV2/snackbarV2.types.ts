@@ -1,3 +1,4 @@
+import React, { ReactElement } from 'react'
 import { CSSObject } from 'styled-components'
 
 export enum SnackbarV2Variant {
@@ -23,18 +24,23 @@ export type SnackbarV2Action = {
 }
 
 export type SnackbarV2Dimensions = {
+    width?: CSSObject['width']
     maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
 }
 
 export type SnackbarV2ToastOptions = {
     header: string
     description?: string
     variant?: SnackbarV2Variant
+    slot?: ReactElement
     onClose?: () => void
     actionButton?: SnackbarV2Action
     duration?: number
     position?: SnackbarV2Position
     maxWidth?: string | number
+    width?: string | number
+    minWidth?: string | number
 }
 
 export type SnackbarV2Props = {
@@ -47,11 +53,14 @@ export type SnackbarV2ToastProps = {
     header: string
     description?: string
     variant: SnackbarV2Variant
+    slot?: ReactElement
     onClose?: () => void
     actionButton?: SnackbarV2Action
     toastId?: string | number
     maxWidth?: string | number
-}
+    width?: string | number
+    minWidth?: string | number
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'>
 
 export type SnackbarV2IconProps = {
     variant: SnackbarV2Variant
