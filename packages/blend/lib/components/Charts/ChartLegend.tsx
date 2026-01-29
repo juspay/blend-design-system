@@ -1,7 +1,6 @@
-import { ArrowDown, RotateCcw, ArrowUp, User } from 'lucide-react'
+import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { DropdownMenu } from 'radix-ui'
 import { useDebounce } from '../../hooks/useDebounce'
 import { ChartLegendsProps, StackedLegendsDataPoint } from './types'
 import Block from '../../components/Primitives/Block/Block'
