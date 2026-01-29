@@ -57,9 +57,6 @@ export type SnackbarV2ToastProps = {
     onClose?: () => void
     actionButton?: SnackbarV2Action
     toastId?: string | number
-    maxWidth?: string | number
-    width?: string | number
-    minWidth?: string | number
 } & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'> &
     SnackbarV2Dimensions
 
