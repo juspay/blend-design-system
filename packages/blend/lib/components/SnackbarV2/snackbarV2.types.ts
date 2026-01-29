@@ -60,7 +60,8 @@ export type SnackbarV2ToastProps = {
     maxWidth?: string | number
     width?: string | number
     minWidth?: string | number
-} & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'>
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'> &
+    SnackbarV2Dimensions
 
 export type SnackbarV2IconProps = {
     variant: SnackbarV2Variant
