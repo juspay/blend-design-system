@@ -124,16 +124,6 @@ const SwitchV2Button = ({
                 outlineOffset: FOUNDATION_THEME.unit[2],
                 boxShadow: `0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]}`,
             }}
-            _disabled={{
-                opacity: 0.7,
-            }}
-            _hover={
-                disabled
-                    ? undefined
-                    : {
-                          opacity: 0.9,
-                      }
-            }
             willChange="background-color, transform"
             transition="background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1)"
             transformOrigin="center"
