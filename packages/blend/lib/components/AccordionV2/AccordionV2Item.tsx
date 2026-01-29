@@ -1,12 +1,7 @@
-'use client'
-
-import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
-import { ChevronDown, ChevronRight } from 'lucide-react'
 import { forwardRef } from 'react'
-import { styled } from 'styled-components'
+import { styled, css } from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import {
     type AccordionV2ItemProps,
     AccordionV2Type,
@@ -16,13 +11,13 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { AccordionV2TokensType } from './accordionV2.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import {
-    ChevronAnimation,
-    ChevronAnimationDirection,
-    ChevronAnimationVariant,
-    ChevronAnimationSize,
-} from '../animations/ChevronAnimation'
 import { FOUNDATION_THEME } from '../../tokens'
+import { AccordionV2TriggerContent } from './AccordionV2TriggerContent'
+import {
+    accordionDown,
+    accordionUp,
+    ACCORDION_TRANSITION,
+} from './accordionV2.animations'
 
 const StyledAccordionItem = styled(RadixAccordion.Item)<{
     $accordionType: AccordionV2Type
@@ -47,13 +42,11 @@ const StyledAccordionItem = styled(RadixAccordion.Item)<{
                 borderBottomLeftRadius: 'unset',
                 borderBottomRightRadius: 'unset',
             },
-
             '&:last-child': {
                 borderTop: 'none',
                 borderTopLeftRadius: 'unset',
                 borderTopRightRadius: 'unset',
             },
-
             '&:not(:first-child):not(:last-child)': {
                 borderTop: 'none',
                 borderRadius: 'unset',
@@ -92,7 +85,7 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
     display: 'flex',
     width: '100%',
     textAlign: 'left',
-    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    transition: ACCORDION_TRANSITION,
     cursor: 'pointer',
     border: 'none',
     outline: 'none',
@@ -118,8 +111,6 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
                 borderBottomRightRadius: '0',
             }),
         },
-    }),
-    ...(!props.$isSmallScreen && {
         '&:hover:not(:disabled)': {
             backgroundColor:
                 props.$accordionToken.trigger.backgroundColor[
@@ -127,12 +118,10 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
                 ].hover,
         },
     }),
-
     '&:focus-visible': {
         outline: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
         outlineOffset: FOUNDATION_THEME.unit[2],
     },
-
     ...(props.$accordionType === AccordionV2Type.NO_BORDER &&
         props.$isSmallScreen &&
         props.$isDisabled && {
@@ -143,7 +132,6 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
                 borderTopRightRadius:
                     props.$accordionToken.borderRadius[props.$accordionType],
             }),
-
             ...(props.$isLast && {
                 borderRadius: 'unset',
                 borderBottomLeftRadius:
@@ -151,7 +139,6 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
                 borderBottomRightRadius:
                     props.$accordionToken.borderRadius[props.$accordionType],
             }),
-
             ...(props.$isIntermediate && {
                 borderRadius: 'unset',
             }),
@@ -161,49 +148,29 @@ const StyledAccordionTrigger = styled(RadixAccordion.Trigger)<{
 const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionType: AccordionV2Type
     $accordionToken: AccordionV2TokensType
-}>((props) => ({
-    overflow: 'visible',
-    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+}>`
+    overflow: visible;
+    transition: ${ACCORDION_TRANSITION};
 
-    '&[data-state="open"]': {
-        animation: 'accordion-down 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        ...(props.$accordionType === AccordionV2Type.BORDER && {
-            borderTopLeftRadius: '0',
-            borderTopRightRadius: '0',
-        }),
-    },
+    &[data-state='open'] {
+        animation: ${accordionDown} 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        ${(props) =>
+            props.$accordionType === AccordionV2Type.BORDER &&
+            css`
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            `}
+    }
 
-    '&[data-state="closed"]': {
-        animation: 'accordion-up 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    },
+    &[data-state='closed'] {
+        animation: ${accordionUp} 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
-    '@keyframes accordion-down': {
-        from: {
-            height: 0,
-            opacity: 0,
-        },
-        to: {
-            height: 'var(--radix-accordion-content-height)',
-            opacity: 1,
-        },
-    },
-
-    '@keyframes accordion-up': {
-        from: {
-            height: 'var(--radix-accordion-content-height)',
-            opacity: 1,
-        },
-        to: {
-            height: 0,
-            opacity: 0,
-        },
-    },
-
-    '@media (prefers-reduced-motion: reduce)': {
-        transition: 'none',
-        animation: 'none',
-    },
-}))
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        animation: none;
+    }
+`
 
 const StyledSeparator = styled.hr<{
     $accordionType: AccordionV2Type
@@ -256,49 +223,6 @@ const AccordionV2Item = forwardRef<
             ? currentValue.includes(value)
             : currentValue === value
 
-        const getChevronIcon = () => {
-            const iconColor = isDisabled
-                ? FOUNDATION_THEME.colors.gray[300]
-                : FOUNDATION_THEME.colors.gray[500]
-            const iconSize = FOUNDATION_THEME.unit[16]
-
-            return (
-                <ChevronAnimation
-                    data-element="accordion-item-chevron"
-                    isOpen={isExpanded}
-                    direction={
-                        chevronPosition === AccordionV2ChevronPosition.RIGHT
-                            ? ChevronAnimationDirection.DOWN
-                            : ChevronAnimationDirection.RIGHT
-                    }
-                    variant={
-                        chevronPosition === AccordionV2ChevronPosition.RIGHT
-                            ? ChevronAnimationVariant.ROTATE_180
-                            : ChevronAnimationVariant.ROTATE_90
-                    }
-                    size={ChevronAnimationSize.MEDIUM}
-                    disabled={isDisabled}
-                    color={iconColor}
-                >
-                    {chevronPosition === AccordionV2ChevronPosition.RIGHT ? (
-                        <ChevronDown
-                            style={{
-                                width: iconSize,
-                                height: iconSize,
-                            }}
-                        />
-                    ) : (
-                        <ChevronRight
-                            style={{
-                                width: iconSize,
-                                height: iconSize,
-                            }}
-                        />
-                    )}
-                </ChevronAnimation>
-            )
-        }
-
         return (
             <StyledAccordionItem
                 data-element="accordion-item"
@@ -327,182 +251,18 @@ const AccordionV2Item = forwardRef<
                         $isLast={isLast}
                         $isIntermediate={isIntermediate}
                     >
-                        <Block width="100%" position="relative">
-                            <Block
-                                display="flex"
-                                alignItems="flex-start"
-                                width="100%"
-                                position="relative"
-                                gap={FOUNDATION_THEME.unit[8]}
-                            >
-                                {chevronPosition ===
-                                    AccordionV2ChevronPosition.LEFT && (
-                                    <Block
-                                        data-element="chevron-icon"
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        flexShrink={0}
-                                        aria-hidden="true"
-                                    >
-                                        {getChevronIcon()}
-                                    </Block>
-                                )}
-
-                                {leftSlot &&
-                                    chevronPosition !==
-                                        AccordionV2ChevronPosition.LEFT && (
-                                        <Block
-                                            data-element="leading-icon"
-                                            flexShrink={0}
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            aria-hidden={
-                                                React.isValidElement(
-                                                    leftSlot
-                                                ) &&
-                                                (
-                                                    leftSlot.props as Record<
-                                                        string,
-                                                        unknown
-                                                    >
-                                                )?.['aria-label']
-                                                    ? undefined
-                                                    : 'true'
-                                            }
-                                        >
-                                            {leftSlot}
-                                        </Block>
-                                    )}
-
-                                <Block
-                                    flexGrow={
-                                        chevronPosition ===
-                                        AccordionV2ChevronPosition.LEFT
-                                            ? 1
-                                            : 0
-                                    }
-                                    display="flex"
-                                    flexDirection="column"
-                                >
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={FOUNDATION_THEME.unit[8]}
-                                    >
-                                        <PrimitiveText
-                                            fontSize={
-                                                accordionTokens.trigger.text
-                                                    .title.fontSize
-                                            }
-                                            fontWeight={
-                                                accordionTokens.trigger.text
-                                                    .title.fontWeight
-                                            }
-                                            color={
-                                                isDisabled
-                                                    ? accordionTokens.trigger
-                                                          .text.title.color
-                                                          .disabled
-                                                    : accordionTokens.trigger
-                                                          .text.title.color
-                                                          .default
-                                            }
-                                            data-element="accordion-item-header"
-                                            data-id={
-                                                title || 'accordion-item-header'
-                                            }
-                                        >
-                                            {title}
-                                        </PrimitiveText>
-
-                                        {rightSlot && (
-                                            <Block
-                                                data-element="trailing-icon"
-                                                flexShrink={0}
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="center"
-                                                aria-hidden={
-                                                    React.isValidElement(
-                                                        rightSlot
-                                                    ) &&
-                                                    (
-                                                        rightSlot.props as Record<
-                                                            string,
-                                                            unknown
-                                                        >
-                                                    )?.['aria-label']
-                                                        ? undefined
-                                                        : 'true'
-                                                }
-                                            >
-                                                {rightSlot}
-                                            </Block>
-                                        )}
-                                    </Block>
-
-                                    {(subtext || subtextSlot) && (
-                                        <Block
-                                            display="flex"
-                                            alignItems="center"
-                                            gap={
-                                                accordionTokens.trigger.text
-                                                    .subtext.gap
-                                            }
-                                        >
-                                            {subtext && !isSmallScreen && (
-                                                <PrimitiveText
-                                                    data-element="accordion-item-subtext"
-                                                    data-id={subtext}
-                                                    fontSize={
-                                                        accordionTokens.trigger
-                                                            .text.subtext
-                                                            .fontSize
-                                                    }
-                                                    color={
-                                                        isDisabled
-                                                            ? accordionTokens
-                                                                  .trigger.text
-                                                                  .subtext.color
-                                                                  .disabled
-                                                            : accordionTokens
-                                                                  .trigger.text
-                                                                  .subtext.color
-                                                                  .default
-                                                    }
-                                                >
-                                                    {subtext}
-                                                </PrimitiveText>
-                                            )}
-                                            {subtextSlot && (
-                                                <Block flexShrink={0}>
-                                                    {subtextSlot}
-                                                </Block>
-                                            )}
-                                        </Block>
-                                    )}
-                                </Block>
-
-                                {chevronPosition ===
-                                    AccordionV2ChevronPosition.RIGHT && (
-                                    <Block
-                                        data-element="chevron-icon"
-                                        position="absolute"
-                                        right={0}
-                                        top={0}
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        height="100%"
-                                        aria-hidden="true"
-                                    >
-                                        {getChevronIcon()}
-                                    </Block>
-                                )}
-                            </Block>
-                        </Block>
+                        <AccordionV2TriggerContent
+                            title={title}
+                            subtext={subtext}
+                            leftSlot={leftSlot}
+                            rightSlot={rightSlot}
+                            subtextSlot={subtextSlot}
+                            isDisabled={isDisabled}
+                            isExpanded={isExpanded}
+                            chevronPosition={chevronPosition}
+                            accordionTokens={accordionTokens}
+                            isSmallScreen={isSmallScreen}
+                        />
                     </StyledAccordionTrigger>
                 </StyledAccordionHeader>
 

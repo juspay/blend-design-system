@@ -23,6 +23,12 @@ export type AccordionV2ItemProps = {
     chevronPosition?: AccordionV2ChevronPosition
 }
 
+export type AccordionV2Dimensions = {
+    width?: CSSObject['width']
+    maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
+}
+
 export type AccordionV2Props = {
     children: ReactNode
     accordionType?: AccordionV2Type
@@ -30,5 +36,4 @@ export type AccordionV2Props = {
     value?: string | string[]
     isMultiple?: boolean
     onValueChange?: (value: string | string[]) => void
-    maxWidth?: CSSObject['maxWidth']
-}
+} & AccordionV2Dimensions

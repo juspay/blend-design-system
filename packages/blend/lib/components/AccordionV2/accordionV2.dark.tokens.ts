@@ -16,6 +16,9 @@ export const getAccordionV2DarkTokens = (
                 [AccordionV2Type.NO_BORDER]: foundationToken.border.radius[8],
             },
             trigger: {
+                content: {
+                    gap: foundationToken.unit[8],
+                },
                 backgroundColor: {
                     [AccordionV2Type.BORDER]: {
                         default: 'transparent',
@@ -85,7 +88,7 @@ export const getAccordionV2DarkTokens = (
                 },
             },
             chevron: {
-                size: foundationToken.unit[16],
+                height: foundationToken.unit[16],
                 color: {
                     default: foundationToken.colors.gray[400],
                     hover: foundationToken.colors.gray[300],
@@ -105,6 +108,9 @@ export const getAccordionV2DarkTokens = (
                 [AccordionV2Type.NO_BORDER]: foundationToken.border.radius[8],
             },
             trigger: {
+                content: {
+                    gap: foundationToken.unit[8],
+                },
                 backgroundColor: {
                     [AccordionV2Type.BORDER]: {
                         default: 'transparent',
@@ -174,7 +180,7 @@ export const getAccordionV2DarkTokens = (
                 },
             },
             chevron: {
-                size: foundationToken.unit[16],
+                height: foundationToken.unit[16],
                 color: {
                     default: foundationToken.colors.gray[400],
                     hover: foundationToken.colors.gray[300],

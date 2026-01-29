@@ -11,15 +11,20 @@ import { AccordionV2TokensType } from './accordionV2.tokens'
 const StyledAccordionRoot = styled(RadixAccordion.Root)<{
     $accordionType: AccordionV2Type
     $accordionToken: AccordionV2TokensType
+    $width?: string | number
     $maxWidth?: string | number
+    $minWidth?: string | number
 }>((props) => ({
-    width: '100%',
+    width: props.$width || '100%',
     display: 'flex',
     flexDirection: 'column',
     gap: props.$accordionToken.gap[props.$accordionType],
     borderRadius: props.$accordionToken.borderRadius[props.$accordionType],
     ...(props.$maxWidth && {
         maxWidth: props.$maxWidth,
+    }),
+    ...(props.$minWidth && {
+        minWidth: props.$minWidth,
     }),
 }))
 
@@ -32,7 +37,9 @@ const AccordionV2 = forwardRef<HTMLDivElement, AccordionV2Props>(
             value,
             isMultiple = false,
             onValueChange,
+            width,
             maxWidth,
+            minWidth,
         },
         ref
     ) => {
@@ -68,7 +75,9 @@ const AccordionV2 = forwardRef<HTMLDivElement, AccordionV2Props>(
             ref: ref,
             $accordionType: accordionType,
             $accordionToken: accordionTokens,
+            $width: width,
             $maxWidth: maxWidth,
+            $minWidth: minWidth,
         }
 
         return isMultiple ? (

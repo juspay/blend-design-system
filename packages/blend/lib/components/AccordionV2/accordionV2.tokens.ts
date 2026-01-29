@@ -20,6 +20,9 @@ export type AccordionV2TokensType = {
         [key in AccordionV2Type]: CSSObject['borderRadius']
     }
     trigger: {
+        content: {
+            gap: CSSObject['gap']
+        }
         backgroundColor: {
             [key in AccordionV2Type]: {
                 [key in AccordionV2State]: CSSObject['backgroundColor']
@@ -56,7 +59,7 @@ export type AccordionV2TokensType = {
         }
     }
     chevron: {
-        size: CSSObject['width']
+        height: CSSObject['height']
         color: {
             [key in AccordionV2State]: CSSObject['color']
         }
