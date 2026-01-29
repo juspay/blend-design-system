@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useCallback, useId } from 'react'
+import React, { forwardRef, useState, useCallback, useId, useMemo } from 'react'
 import type { RadioGroupProps } from './types'
 import { isRadioElement, isValidRadioValue, getRadioTextProps } from './utils'
 import Block from '../Primitives/Block/Block'
@@ -119,34 +119,43 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
             [disabled, handleGroupChange]
         )
 
-        const enhancedChildren = React.Children.map(children, (child) => {
-            if (!React.isValidElement(child) || !isRadioElement(child, Radio)) {
-                return null
-            }
+        // Memoize cloning so simple group-level disabled toggles don't require
+        // re-cloning every child. Group disabled is applied via a <fieldset>.
+        const enhancedChildren = useMemo(() => {
+            return React.Children.map(children, (child) => {
+                if (
+                    !React.isValidElement(child) ||
+                    !isRadioElement(child, Radio)
+                ) {
+                    return null
+                }
 
-            const childValue = child.props.value
-            if (!isValidRadioValue(childValue)) {
-                console.warn(
-                    'RadioGroup: Radio child must have a string value prop'
-                )
-                return null
-            }
+                const childValue = child.props.value
+                if (!isValidRadioValue(childValue)) {
+                    console.warn(
+                        'RadioGroup: Radio child must have a string value prop'
+                    )
+                    return null
+                }
 
-            const isChecked = currentValue === childValue
+                const isChecked = currentValue === childValue
 
-            return React.cloneElement(child, {
-                name,
-                checked: isChecked,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.checked) {
-                        handleGroupChange(childValue)
-                    }
-                },
-                disabled: disabled || child.props.disabled,
-                error: error || child.props.error,
-                required: required || child.props.required,
+                return React.cloneElement(child, {
+                    name,
+                    checked: isChecked,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                        if (e.target.checked) {
+                            handleGroupChange(childValue)
+                        }
+                    },
+                    // Note: do NOT derive from group `disabled` here; group-level
+                    // disabled is handled by the wrapping <fieldset>.
+                    disabled: child.props.disabled,
+                    error: error || child.props.error,
+                    required: required || child.props.required,
+                })
             })
-        })
+        }, [children, currentValue, error, handleGroupChange, name, required])
 
         return (
             <Block
@@ -176,13 +185,23 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
                         {label}
                     </GroupLabel>
                 )}
-                <Block
-                    display="flex"
-                    flexDirection="column"
-                    gap={radioTokens.group.gap}
+                <fieldset
+                    disabled={disabled}
+                    style={{
+                        margin: 0,
+                        padding: 0,
+                        border: 0,
+                        minInlineSize: 0,
+                    }}
                 >
-                    {enhancedChildren}
-                </Block>
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        gap={radioTokens.group.gap}
+                    >
+                        {enhancedChildren}
+                    </Block>
+                </fieldset>
             </Block>
         )
     }

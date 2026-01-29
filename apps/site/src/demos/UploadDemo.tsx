@@ -107,6 +107,7 @@ const UploadDemo = () => {
 
                     <div className="min-h-50 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Upload
+                            key={`upload-${resetKey}`}
                             label="Upload Files"
                             subLabel="Max 10MB"
                             helpIconHintText={
@@ -179,6 +180,7 @@ const UploadDemo = () => {
                             With Label & Required
                         </h3>
                         <Upload
+                            key={`upload-${resetKey}`}
                             label="Profile Picture"
                             required={true}
                             helpIconHintText="Upload your profile picture. Supported formats: JPG, PNG, GIF up to 5MB."
@@ -195,6 +197,7 @@ const UploadDemo = () => {
                             With Label & Sub Label
                         </h3>
                         <Upload
+                            key={`upload-label-sub-label-${resetKey}`}
                             label="Documents"
                             subLabel="Optional"
                             helpIconHintText="Upload your documents in PDF format. Maximum file size is 10MB."
@@ -250,6 +253,7 @@ const UploadDemo = () => {
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Idle State</h3>
                         <Upload
+                            key={`upload-idle-${resetKey}`}
                             label="Upload Document"
                             description="Choose a file or drag & drop it here"
                             state={UploadState.IDLE}
@@ -262,6 +266,7 @@ const UploadDemo = () => {
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Uploading State</h3>
                         <Upload
+                            key={`upload-uploading-${resetKey}`}
                             label="Upload Document"
                             description="Please wait while uploading"
                             state={UploadState.UPLOADING}
@@ -284,6 +289,7 @@ const UploadDemo = () => {
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Success State</h3>
                         <Upload
+                            key={`upload-success-${resetKey}`}
                             label="Upload Document"
                             state={UploadState.SUCCESS}
                             uploadedFiles={[
@@ -305,6 +311,7 @@ const UploadDemo = () => {
                     <div className="space-y-3">
                         <h3 className="text-sm font-medium">Error State</h3>
                         <Upload
+                            key={`upload-error-${resetKey}`}
                             label="Upload Document"
                             state={UploadState.ERROR}
                             failedFiles={[
@@ -394,6 +401,7 @@ const UploadDemo = () => {
                 <h2 className="text-2xl font-bold">Disabled State</h2>
                 <div className="max-w-md">
                     <Upload
+                        key={`upload-disabled-${resetKey}`}
                         label="Disabled Upload"
                         description="This upload is disabled"
                         disabled={true}

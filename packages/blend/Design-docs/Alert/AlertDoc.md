@@ -80,7 +80,10 @@ type AlertV2Dimensions = {
 type AlertV2Props = {
     type?: AlertV2Type
     subType?: AlertV2SubType
-    slot?: ReactElement
+    slot?: {
+        slot: ReactElement
+        maxHeight?: CSSObject['maxHeight']
+    }
     heading?: string
     description?: string
     actions?: AlertV2Actions
@@ -115,8 +118,7 @@ type AlertV2TokensType = {
     }
     gap: { [key in AlertV2ActionPosition]: CSSObject['gap'] }
     slot: {
-        height: CSSObject['height']
-        width: CSSObject['width']
+        maxHeight: CSSObject['maxHeight']
     }
     mainContainer: {
         gap: CSSObject['gap']

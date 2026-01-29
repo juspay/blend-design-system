@@ -68,7 +68,7 @@ describe('AlertV2 Accessibility', () => {
                 <AlertV2
                     heading="Alert with Icon"
                     description="This alert has an icon"
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
             const results = await axe(container)
@@ -176,16 +176,16 @@ describe('AlertV2 Accessibility', () => {
             expect(alert).not.toHaveAttribute('aria-describedby')
         })
 
-        it('has aria-hidden="true" on icon container', () => {
+        it('has aria-hidden="true" on decorative icon', () => {
             render(
                 <AlertV2
                     heading="Test"
                     description="Test"
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
-            const iconContainer = screen.getByTestId('mock-icon').parentElement
-            expect(iconContainer).toHaveAttribute('aria-hidden', 'true')
+            const icon = screen.getByTestId('mock-icon')
+            expect(icon).toHaveAttribute('aria-hidden', 'true')
         })
 
         it('has aria-label="Close" on close button', () => {
