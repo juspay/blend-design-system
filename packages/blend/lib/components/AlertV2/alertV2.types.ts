@@ -48,7 +48,10 @@ export type AlertV2Dimensions = {
 export type AlertV2Props = {
     type?: AlertV2Type
     subType?: AlertV2SubType
-    slot?: ReactElement
+    slot?: {
+        slot: ReactElement
+        maxHeight?: CSSObject['maxHeight']
+    }
     heading?: string
     description?: string
     actions?: AlertV2Actions

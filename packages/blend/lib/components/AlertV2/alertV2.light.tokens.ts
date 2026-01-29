@@ -81,8 +81,7 @@ export const getAlertV2LightTokens = (
                 bottom: foundationToken.unit[10],
             },
             slot: {
-                height: foundationToken.unit[16],
-                width: foundationToken.unit[16],
+                maxHeight: foundationToken.unit[16],
             },
             mainContainer: {
                 gap: foundationToken.unit[8],
@@ -105,7 +104,7 @@ export const getAlertV2LightTokens = (
                             },
                             fontWeight: foundationToken.font.weight[600],
                             fontSize: foundationToken.font.fontSize[14],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                         description: {
                             color: {
@@ -119,7 +118,7 @@ export const getAlertV2LightTokens = (
                             },
                             fontWeight: foundationToken.font.weight[400],
                             fontSize: foundationToken.font.fontSize[14],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                     },
                     actionContainer: {
@@ -245,8 +244,7 @@ export const getAlertV2LightTokens = (
                 bottom: foundationToken.unit[10],
             },
             slot: {
-                height: foundationToken.unit[16],
-                width: foundationToken.unit[16],
+                maxHeight: foundationToken.unit[16],
             },
             mainContainer: {
                 gap: foundationToken.unit[8],
@@ -269,7 +267,7 @@ export const getAlertV2LightTokens = (
                             },
                             fontWeight: foundationToken.font.weight[600],
                             fontSize: foundationToken.font.fontSize[14],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                         description: {
                             color: {
@@ -283,7 +281,7 @@ export const getAlertV2LightTokens = (
                             },
                             fontWeight: foundationToken.font.weight[400],
                             fontSize: foundationToken.font.fontSize[14],
-                            lineHeight: foundationToken.font.lineHeight[20],
+                            lineHeight: foundationToken.font.lineHeight[16],
                         },
                     },
                     actionContainer: {

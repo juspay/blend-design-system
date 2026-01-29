@@ -114,6 +114,7 @@ import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
 import AlertV2Demo from './AlertV2Demo'
+import SwitchV2Demo from './SwitchV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -182,7 +183,8 @@ const SidebarDemo = () => {
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
-    >('alertV2')
+        | 'switchV2'
+    >('switchV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -434,6 +436,8 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'switchV2':
+                return <SwitchV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -1172,6 +1176,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'switch',
                     onClick: () => setActiveComponent('switch'),
+                },
+                {
+                    label: 'Switch V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switchV2',
+                    onClick: () => setActiveComponent('switchV2'),
                 },
                 {
                     label: 'Selectors',

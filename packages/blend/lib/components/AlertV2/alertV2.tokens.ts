@@ -32,8 +32,7 @@ export type AlertV2TokensType = {
     }
     gap: { [key in AlertV2ActionPosition]: CSSObject['gap'] }
     slot: {
-        height: CSSObject['height']
-        width: CSSObject['width']
+        maxHeight: CSSObject['maxHeight']
     }
     mainContainer: {
         gap: CSSObject['gap']
