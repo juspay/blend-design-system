@@ -47,6 +47,7 @@ import { getButtonTokens } from '../components/Button/button.tokens'
 import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 import { getAlertV2Tokens } from '../components/AlertV2'
+import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 
 const initTokens = (
@@ -142,6 +143,9 @@ const initTokens = (
         ALERTV2:
             componentTokens.ALERTV2 ??
             getAlertV2Tokens(foundationTokens, theme),
+        SNACKBARV2:
+            componentTokens.SNACKBARV2 ??
+            getSnackbarV2Tokens(foundationTokens, theme),
         SWITCHV2:
             componentTokens.SWITCHV2 ??
             getSwitchV2Tokens(foundationTokens, theme),

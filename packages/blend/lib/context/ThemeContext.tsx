@@ -112,6 +112,10 @@ import {
     ResponsiveAlertV2Tokens,
 } from '../components/AlertV2/alertV2.tokens'
 import {
+    getSnackbarV2Tokens,
+    ResponsiveSnackbarV2Tokens,
+} from '../components/SnackbarV2/snackbarV2.tokens'
+import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
 } from '../components/SwitchV2/switchV2.tokens'
@@ -163,6 +167,7 @@ export type ComponentTokenType = {
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
+    SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
 }
 
@@ -222,6 +227,7 @@ const ThemeContext = createContext<ThemeContextType>({
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         ALERTV2: getAlertV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SNACKBARV2: getSnackbarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
