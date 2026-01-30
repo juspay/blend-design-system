@@ -7,6 +7,7 @@ import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
 import ButtonDemo from './ButtonDemo'
 import InputDemo from './TextInputDemo'
 import SingleSelectDemo from './SingleSelectDemo'
+import SingleSelectGroupDemo from './SingleSelectGroupDemo'
 import ModalDemo from './ModalDemo'
 import DataTableDemo from './dataTableDemo'
 import CardDemo from './CardDemo'
@@ -51,6 +52,12 @@ const AllComponentsDemo = () => {
                 {
                     name: 'Single Select',
                     component: <SingleSelectDemo />,
+                    description:
+                        'Dropdown molecule with trigger, menu, and option atoms',
+                },
+                {
+                    name: 'Single Select Group',
+                    component: <SingleSelectGroupDemo />,
                     description:
                         'Dropdown molecule with trigger, menu, and option atoms',
                 },

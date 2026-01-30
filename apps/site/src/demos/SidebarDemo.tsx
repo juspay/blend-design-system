@@ -72,6 +72,7 @@ import {
 } from '../../../../packages/blend/lib/components/Select'
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
+import SingleSelectGroupDemo from './SingleSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
@@ -163,6 +164,7 @@ const SidebarDemo = () => {
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
         | 'singleSelect'
+        | 'singleSelectGroup'
         | 'multiSelect'
         | 'dropdownInput'
         | 'dataRangePicker'
@@ -446,6 +448,8 @@ const SidebarDemo = () => {
                 return <MenuDemo />
             case 'singleSelect':
                 return <SingleSelectDemo />
+            case 'singleSelectGroup':
+                return <SingleSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
             case 'progressBar':
@@ -940,6 +944,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'singleSelect',
                     onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Single Select Group',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectGroup',
+                    onClick: () => setActiveComponent('singleSelectGroup'),
                 },
                 {
                     label: 'Multi Select',
