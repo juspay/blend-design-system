@@ -1,2 +1,4 @@
-export { default as SingleSelectGroup } from './SingleSelectGroup'
-export * from './SingleSelectGroup.types'
+import SingleSelectGroup from './SingleSelectGroup'
+
+export { SingleSelectGroup } // runtime component
+export type * from './SingleSelectGroupProps.types' // type-only exports

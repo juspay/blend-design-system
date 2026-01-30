@@ -1,10 +1,10 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Group } from '../Primitives/Group'
 import { GroupOrientation } from '../Primitives/Group/types'
-import type { SingleSelectGroup } from './SingleSelectGroup.types'
+import type { SingleSelectGroupProps } from './SingleSelectGroupProps.types'
 import { flattenChildren } from '../../global-utils/GlobalUtils'
 
-const SingleSelectGroup = forwardRef<HTMLDivElement, SingleSelectGroup>(
+const SingleSelectGroup = forwardRef<HTMLDivElement, SingleSelectGroupProps>(
     ({ stacked = false, gap, children, ...restProps }, ref) => {
         const flatChildren = flattenChildren(children)
         const totalChildren = flatChildren.length
