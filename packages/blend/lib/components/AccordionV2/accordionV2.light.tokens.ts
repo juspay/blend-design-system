@@ -56,9 +56,11 @@ export const getAccordionV2LightTokens = (
                     [AccordionV2Type.NO_BORDER]: `${foundationToken.unit[20]} ${foundationToken.unit[16]}`,
                 },
                 text: {
+                    gap: foundationToken.unit[4],
                     title: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[600],
+                        lineHeight: foundationToken.font.lineHeight[16],
                         color: {
                             default: foundationToken.colors.gray[800],
                             hover: foundationToken.colors.gray[800],
@@ -69,6 +71,8 @@ export const getAccordionV2LightTokens = (
                     },
                     subtext: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        lineHeight: foundationToken.font.lineHeight[16],
                         gap: foundationToken.unit[4],
                         color: {
                             default: foundationToken.colors.gray[600],
@@ -78,6 +82,9 @@ export const getAccordionV2LightTokens = (
                             open: foundationToken.colors.gray[600],
                         },
                     },
+                },
+                slot: {
+                    height: foundationToken.unit[16],
                 },
             },
             separator: {
@@ -148,9 +155,11 @@ export const getAccordionV2LightTokens = (
                     [AccordionV2Type.NO_BORDER]: `${foundationToken.unit[16]} ${foundationToken.unit[12]}`,
                 },
                 text: {
+                    gap: foundationToken.unit[4],
                     title: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[600],
+                        lineHeight: 16,
                         color: {
                             default: foundationToken.colors.gray[800],
                             hover: foundationToken.colors.gray[800],
@@ -161,6 +170,8 @@ export const getAccordionV2LightTokens = (
                     },
                     subtext: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontWeight: foundationToken.font.weight[400],
+                        lineHeight: foundationToken.font.lineHeight[16],
                         gap: foundationToken.unit[4],
                         color: {
                             default: foundationToken.colors.gray[600],
@@ -170,6 +181,9 @@ export const getAccordionV2LightTokens = (
                             open: foundationToken.colors.gray[600],
                         },
                     },
+                },
+                slot: {
+                    height: foundationToken.unit[16],
                 },
             },
             separator: {

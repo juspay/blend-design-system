@@ -4,6 +4,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { AccordionV2Chevron } from './AccordionV2Chevron'
 import { AccordionV2ChevronPosition } from './accordionV2.types'
 import { AccordionV2TokensType } from './accordionV2.tokens'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type AccordionV2TriggerContentProps = {
     title: string
@@ -73,7 +74,8 @@ const ChevronContainer: React.FC<{
 const SlotContainer: React.FC<{
     slot: React.ReactNode
     dataElement: string
-}> = ({ slot, dataElement }) => {
+    accordionTokens: AccordionV2TokensType
+}> = ({ slot, dataElement, accordionTokens }) => {
     if (!slot) return null
 
     return (
@@ -81,78 +83,11 @@ const SlotContainer: React.FC<{
             data-element={dataElement}
             flexShrink={0}
             display="flex"
-            alignItems="center"
-            justifyContent="center"
+            height={accordionTokens.trigger.slot.height}
+            width={accordionTokens.trigger.slot.height}
             aria-hidden={getAriaHidden(slot)}
         >
             {slot}
-        </Block>
-    )
-}
-
-const TitleRow: React.FC<{
-    title: string
-    rightSlot?: React.ReactNode
-    isDisabled: boolean
-    accordionTokens: AccordionV2TokensType
-}> = ({ title, rightSlot, isDisabled, accordionTokens }) => {
-    return (
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={accordionTokens.trigger.content.gap}
-        >
-            <PrimitiveText
-                fontSize={accordionTokens.trigger.text.title.fontSize}
-                fontWeight={accordionTokens.trigger.text.title.fontWeight}
-                color={
-                    isDisabled
-                        ? accordionTokens.trigger.text.title.color.disabled
-                        : accordionTokens.trigger.text.title.color.default
-                }
-                data-element="accordion-item-header"
-                data-id={title || 'accordion-item-header'}
-            >
-                {title}
-            </PrimitiveText>
-            {rightSlot && (
-                <SlotContainer slot={rightSlot} dataElement="trailing-icon" />
-            )}
-        </Block>
-    )
-}
-
-const SubtextRow: React.FC<{
-    subtext?: string
-    subtextSlot?: React.ReactNode
-    isDisabled: boolean
-    isSmallScreen: boolean
-    accordionTokens: AccordionV2TokensType
-}> = ({ subtext, subtextSlot, isDisabled, isSmallScreen, accordionTokens }) => {
-    if (!subtext && !subtextSlot) return null
-
-    return (
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={accordionTokens.trigger.text.subtext.gap}
-        >
-            {subtext && !isSmallScreen && (
-                <PrimitiveText
-                    data-element="accordion-item-subtext"
-                    data-id={subtext}
-                    fontSize={accordionTokens.trigger.text.subtext.fontSize}
-                    color={
-                        isDisabled
-                            ? accordionTokens.trigger.text.subtext.color
-                                  .disabled
-                            : accordionTokens.trigger.text.subtext.color.default
-                    }
-                >
-                    {subtext}
-                </PrimitiveText>
-            )}
-            {subtextSlot && <Block flexShrink={0}>{subtextSlot}</Block>}
         </Block>
     )
 }
@@ -190,28 +125,93 @@ export const AccordionV2TriggerContent: React.FC<
                     accordionTokens={accordionTokens}
                 />
 
-                {showLeftSlot && (
-                    <SlotContainer slot={leftSlot} dataElement="leading-icon" />
-                )}
-
                 <Block
                     flexGrow={isChevronLeft ? 1 : 0}
                     display="flex"
                     flexDirection="column"
+                    gap={accordionTokens.trigger.text.gap}
                 >
-                    <TitleRow
-                        title={title}
-                        rightSlot={rightSlot}
-                        isDisabled={isDisabled}
-                        accordionTokens={accordionTokens}
-                    />
-                    <SubtextRow
-                        subtext={subtext}
-                        subtextSlot={subtextSlot}
-                        isDisabled={isDisabled}
-                        isSmallScreen={isSmallScreen}
-                        accordionTokens={accordionTokens}
-                    />
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        gap={accordionTokens.trigger.content.gap}
+                    >
+                        {showLeftSlot && (
+                            <SlotContainer
+                                slot={leftSlot}
+                                dataElement="leading-icon"
+                                accordionTokens={accordionTokens}
+                            />
+                        )}
+
+                        <PrimitiveText
+                            fontSize={
+                                accordionTokens.trigger.text.title.fontSize
+                            }
+                            fontWeight={
+                                accordionTokens.trigger.text.title.fontWeight
+                            }
+                            lineHeight={addPxToValue(
+                                accordionTokens.trigger.text.title.lineHeight
+                            )}
+                            color={
+                                isDisabled
+                                    ? accordionTokens.trigger.text.title.color
+                                          .disabled
+                                    : accordionTokens.trigger.text.title.color
+                                          .default
+                            }
+                            data-element="accordion-item-header"
+                            data-id={title || 'accordion-item-header'}
+                        >
+                            {title}
+                        </PrimitiveText>
+
+                        {rightSlot && (
+                            <SlotContainer
+                                slot={rightSlot}
+                                dataElement="trailing-icon"
+                                accordionTokens={accordionTokens}
+                            />
+                        )}
+                    </Block>
+
+                    {(subtext || subtextSlot) && (
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={accordionTokens.trigger.text.subtext.gap}
+                        >
+                            {subtext && !isSmallScreen && (
+                                <PrimitiveText
+                                    data-element="accordion-item-subtext"
+                                    data-id={subtext}
+                                    fontSize={
+                                        accordionTokens.trigger.text.subtext
+                                            .fontSize
+                                    }
+                                    color={
+                                        isDisabled
+                                            ? accordionTokens.trigger.text
+                                                  .subtext.color.disabled
+                                            : accordionTokens.trigger.text
+                                                  .subtext.color.default
+                                    }
+                                >
+                                    {subtext}
+                                </PrimitiveText>
+                            )}
+                            {subtextSlot && (
+                                <Block
+                                    flexShrink={0}
+                                    height={accordionTokens.trigger.slot.height}
+                                    width={accordionTokens.trigger.slot.height}
+                                >
+                                    {subtextSlot}
+                                </Block>
+                            )}
+                        </Block>
+                    )}
                 </Block>
 
                 <ChevronContainer

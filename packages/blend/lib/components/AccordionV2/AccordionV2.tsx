@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
-import { forwardRef, useMemo } from 'react'
+import { forwardRef, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import { type AccordionV2Props, AccordionV2Type } from './accordionV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -46,6 +46,9 @@ const AccordionV2 = forwardRef<HTMLDivElement, AccordionV2Props>(
         const accordionTokens =
             useResponsiveTokens<AccordionV2TokensType>('ACCORDIONV2')
 
+        const isControlledRef = useRef(value !== undefined)
+        const isControlled = isControlledRef.current
+
         const enhancedChildren = useMemo(() => {
             return React.Children.map(children, (child, index) => {
                 if (!React.isValidElement(child)) return child
@@ -71,8 +74,9 @@ const AccordionV2 = forwardRef<HTMLDivElement, AccordionV2Props>(
             })
         }, [children, accordionType, value])
 
-        const commonProps = {
-            ref: ref,
+        const styledProps = {
+            ref,
+            'data-accordion': 'accordion-v2',
             $accordionType: accordionType,
             $accordionToken: accordionTokens,
             $width: width,
@@ -80,30 +84,38 @@ const AccordionV2 = forwardRef<HTMLDivElement, AccordionV2Props>(
             $minWidth: minWidth,
         }
 
-        return isMultiple ? (
+        if (isMultiple) {
+            const valueProps = isControlled
+                ? { value: (value as string[] | undefined) ?? [] }
+                : { defaultValue: defaultValue as string[] | undefined }
+
+            return (
+                <StyledAccordionRoot
+                    type="multiple"
+                    onValueChange={
+                        onValueChange as ((value: string[]) => void) | undefined
+                    }
+                    {...valueProps}
+                    {...styledProps}
+                >
+                    {enhancedChildren}
+                </StyledAccordionRoot>
+            )
+        }
+
+        const valueProps = isControlled
+            ? { value: (value as string | undefined) ?? '' }
+            : { defaultValue: defaultValue as string | undefined }
+
+        return (
             <StyledAccordionRoot
-                data-accordion="accordion-v2"
-                type="multiple"
-                value={value as string[] | undefined}
-                defaultValue={defaultValue as string[] | undefined}
-                onValueChange={
-                    onValueChange as ((value: string[]) => void) | undefined
-                }
-                {...commonProps}
-            >
-                {enhancedChildren}
-            </StyledAccordionRoot>
-        ) : (
-            <StyledAccordionRoot
-                data-accordion="accordion-v2"
                 type="single"
-                collapsible={true}
-                value={value as string | undefined}
-                defaultValue={defaultValue as string | undefined}
+                collapsible
                 onValueChange={
                     onValueChange as ((value: string) => void) | undefined
                 }
-                {...commonProps}
+                {...valueProps}
+                {...styledProps}
             >
                 {enhancedChildren}
             </StyledAccordionRoot>

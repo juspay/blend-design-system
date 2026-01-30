@@ -37,20 +37,27 @@ export type AccordionV2TokensType = {
             [key in AccordionV2Type]: CSSObject['padding']
         }
         text: {
+            gap: CSSObject['gap']
             title: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
                 color: {
                     [key in AccordionV2State]: CSSObject['color']
                 }
             }
             subtext: {
                 fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
                 gap: CSSObject['gap']
                 color: {
                     [key in AccordionV2State]: CSSObject['color']
                 }
             }
+        }
+        slot: {
+            height: CSSObject['height']
         }
     }
     separator: {
