@@ -31,7 +31,6 @@ export function getTagBorderRadius(
     tokens: TagV2TokensType
 ): string {
     const variantBorderRadius = String(tokens.borderRadius[size][subType])
-    // console.log(tagGroupPosition,'tagGroupPosition')
 
     if (tagGroupPosition === undefined) {
         return variantBorderRadius

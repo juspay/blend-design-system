@@ -2,10 +2,12 @@ import React, { forwardRef } from 'react'
 import { Group } from '../Primitives/Group'
 import { GroupOrientation } from '../Primitives/Group/types'
 import type { SingleSelectGroup } from './SingleSelectGroup.types'
+import { flattenChildren } from '../../global-utils/GlobalUtils'
 
 const SingleSelectGroup = forwardRef<HTMLDivElement, SingleSelectGroup>(
     ({ stacked = false, gap, children, ...restProps }, ref) => {
-        const totalChildren = React.Children.count(children)
+        const flatChildren = flattenChildren(children)
+        const totalChildren = flatChildren.length
 
         return (
             <Group
@@ -16,12 +18,12 @@ const SingleSelectGroup = forwardRef<HTMLDivElement, SingleSelectGroup>(
                 alignItems="stretch"
                 positionProp="singleSelectGroupPosition"
                 aria-label="SingleSelect group"
-                data-tag-group="true"
-                data-tag-group-stacked={String(stacked)}
-                data-tag-group-count={totalChildren}
+                data-single-select-group="true"
+                data-single-select-group-stacked={String(stacked)}
+                data-single-select-group-count={totalChildren}
                 {...restProps}
             >
-                {children}
+                {flatChildren}
             </Group>
         )
     }

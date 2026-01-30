@@ -66,3 +66,17 @@ export const addPxToValue = (value?: number | string): string => {
 
     return ''
 }
+
+export const flattenChildren = (
+    children: React.ReactNode
+): React.ReactElement<unknown>[] => {
+    return React.Children.toArray(children).flatMap((child) => {
+        if (React.isValidElement(child) && child.type === React.Fragment) {
+            const fragmentProps = child.props as { children?: React.ReactNode }
+            if (fragmentProps.children != null) {
+                return flattenChildren(fragmentProps.children)
+            }
+        }
+        return [child as React.ReactElement<unknown>]
+    })
+}

@@ -23,24 +23,22 @@ export type ExtractedAriaProps = {
 export function getBorderRadius(
     size: SelectMenuSize,
     varient: SelectMenuVariant,
-    singleSelectGroupPosition: 'start' | 'center' | 'end' | undefined,
+    singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: SingleSelectTokensType
 ): string {
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
-    // console.log(variantBorderRadius,'select')
-    console.log(singleSelectGroupPosition, 'singleSelectGroupPosition')
 
     if (singleSelectGroupPosition === undefined) {
         return variantBorderRadius
     }
 
-    if (singleSelectGroupPosition === 'start') {
+    if (singleSelectGroupPosition === 'left') {
         return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
     }
 
-    if (singleSelectGroupPosition === 'end') {
+    if (singleSelectGroupPosition === 'right') {
         return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
     }
 
