@@ -136,4 +136,5 @@ export type SingleSelectProps = {
 
     allowCustomValue?: boolean
     customValueLabel?: string
+    singleSelectGroupPosition?: 'center' | 'left' | 'right'
 }

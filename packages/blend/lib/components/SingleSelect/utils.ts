@@ -3,6 +3,9 @@
  * WCAG 4.1.2 (Name, Role, Value), 3.3.2 (Labels or Instructions), 4.1.3 (Status Messages)
  */
 
+import { SingleSelectTokensType } from './singleSelect.tokens'
+import { SelectMenuSize, SelectMenuVariant } from './types'
+
 export type AriaAttributes = {
     'aria-describedby'?: string
     'aria-label'?: string
@@ -16,6 +19,30 @@ export type ExtractedAriaProps = {
     'aria-label'?: string
     'aria-labelledby'?: string
     restProps: Record<string, unknown>
+}
+export function getBorderRadius(
+    size: SelectMenuSize,
+    varient: SelectMenuVariant,
+    singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: SingleSelectTokensType
+): string {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+
+    if (singleSelectGroupPosition === undefined) {
+        return variantBorderRadius
+    }
+
+    if (singleSelectGroupPosition === 'left') {
+        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+    }
+
+    if (singleSelectGroupPosition === 'right') {
+        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+    }
+
+    return '0px 0px 0px 0px'
 }
 
 export type AccessibilitySetupOptions = {

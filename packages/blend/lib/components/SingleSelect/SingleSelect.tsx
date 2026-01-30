@@ -25,7 +25,7 @@ import {
     errorShakeAnimation,
 } from '../common/error.animations'
 import styled from 'styled-components'
-import { setupAccessibility } from './utils'
+import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
 
 const Wrapper = styled(Block)`
@@ -102,6 +102,7 @@ const SingleSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    singleSelectGroupPosition,
     ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -136,7 +137,12 @@ const SingleSelect = ({
             needsMenuId: true,
         })
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const borderRadius = getBorderRadius(
+        size,
+        variant,
+        singleSelectGroupPosition,
+        singleSelectTokens
+    )
     const paddingX = toPixels(
         singleSelectTokens.trigger.padding[size][variant].x
     )
