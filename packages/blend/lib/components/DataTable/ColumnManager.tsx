@@ -32,6 +32,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
     const hasPrimaryAction = !!columnManagerPrimaryAction
     const triggerButtonRef = useRef<HTMLButtonElement | null>(null)
+    const skipStateResetRef = useRef(false)
 
     const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
         string[]
@@ -165,8 +166,15 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             )
             .filter(Boolean) as typeof columns
 
+        const newSelectedFields = newVisibleColumns.map((col) =>
+            String(col.field)
+        )
+
+        skipStateResetRef.current = true
+        setPendingSelectedColumns(newSelectedFields)
+
         onColumnChange(newVisibleColumns)
-        columnManagerPrimaryAction.onClick(pendingSelectedColumns)
+        columnManagerPrimaryAction.onClick(newSelectedFields)
         handleMenuClose()
     }
 
@@ -179,11 +187,22 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     }
 
     const handleOpenChange = (open: boolean) => {
-        if (!open && hasPrimaryAction) {
-            // Reset pending state to match actual visible columns when modal closes
+        if (!hasPrimaryAction) return
+
+        if (open) {
             setPendingSelectedColumns(
                 visibleColumns.map((col) => String(col.field))
             )
+            skipStateResetRef.current = false
+        } else {
+            if (!skipStateResetRef.current) {
+                setTimeout(() => {
+                    setPendingSelectedColumns(
+                        visibleColumns.map((col) => String(col.field))
+                    )
+                }, 0)
+            }
+            skipStateResetRef.current = false
         }
     }
 
