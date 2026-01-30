@@ -32,6 +32,7 @@ import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
+import { VirtualList, VirtualListItem } from '../../VirtualList'
 
 type FilterComponentsProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -355,6 +356,19 @@ export const SingleSelectItems: React.FC<{
     onPopoverClose,
 }) => {
     const menuItems = getSelectMenuItems(column, data)
+    const filterSearch = menuItems.map((group) =>
+        filterItemsBySearch(
+            group.items,
+            filterState.columnSearchValues[fieldKey] || ''
+        )
+    )
+    const items: VirtualListItem[] = filterSearch[0].map(
+        (item: { label: string; value: string }) => ({
+            id: item.value,
+            label: item.label,
+            value: item.value,
+        })
+    )
 
     return (
         <Block
@@ -365,11 +379,14 @@ export const SingleSelectItems: React.FC<{
             marginTop={FOUNDATION_THEME.unit[2]}
             padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]}`}
         >
-            {menuItems.map((group) =>
-                filterItemsBySearch(
-                    group.items,
-                    filterState.columnSearchValues[fieldKey] || ''
-                ).map((item) => {
+            <VirtualList
+                items={items}
+                height={400}
+                itemHeight={60}
+                overscan={5}
+                renderItem={({ item }) => {
+                    const value = item.value as string
+                    const label = item.label as React.ReactNode
                     const selectedValues =
                         filterState.columnSelectedValues[fieldKey]
                     const currentSelected = Array.isArray(selectedValues)
@@ -378,11 +395,11 @@ export const SingleSelectItems: React.FC<{
                           ? selectedValues
                           : ''
 
-                    const isSelected = currentSelected === item.value
+                    const isSelected = currentSelected === value
 
                     return (
                         <Block
-                            key={item.value}
+                            key={value}
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
@@ -410,7 +427,7 @@ export const SingleSelectItems: React.FC<{
                                 filterHandlers.handleSelectFilter(
                                     column,
                                     fieldKey,
-                                    item.value,
+                                    value,
                                     onColumnFilter
                                 )
                                 onPopoverClose?.()
@@ -422,7 +439,7 @@ export const SingleSelectItems: React.FC<{
                                     filterHandlers.handleSelectFilter(
                                         column,
                                         fieldKey,
-                                        item.value,
+                                        value,
                                         onColumnFilter
                                     )
                                     onPopoverClose?.()
@@ -450,7 +467,7 @@ export const SingleSelectItems: React.FC<{
                                     flexGrow: 1,
                                 }}
                             >
-                                {item.label}
+                                {label}
                             </PrimitiveText>
                             {isSelected && (
                                 <Check
@@ -460,8 +477,8 @@ export const SingleSelectItems: React.FC<{
                             )}
                         </Block>
                     )
-                })
-            )}
+                }}
+            />
         </Block>
     )
 }
@@ -484,6 +501,19 @@ export const MultiSelectItems: React.FC<{
     onColumnFilter,
 }) => {
     const menuItems = getMultiSelectMenuItems(column, data)
+    const filterSearch = menuItems.map((group) =>
+        filterItemsBySearch(
+            group.items,
+            filterState.columnSearchValues[fieldKey] || ''
+        )
+    )
+    const items: VirtualListItem[] = filterSearch[0].map(
+        (item: { label: string; value: string }) => ({
+            id: item.value,
+            label: item.label,
+            value: item.value,
+        })
+    )
 
     return (
         <Block
@@ -493,22 +523,25 @@ export const MultiSelectItems: React.FC<{
             overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
         >
-            {menuItems.map((group) =>
-                filterItemsBySearch(
-                    group.items,
-                    filterState.columnSearchValues[fieldKey] || ''
-                ).map((item) => {
+            <VirtualList
+                items={items}
+                height={400}
+                itemHeight={60}
+                overscan={5}
+                renderItem={({ item }) => {
+                    const value = item.value as string
+                    const label = item.label as React.ReactNode
                     const selectedValues =
                         filterState.columnSelectedValues[fieldKey]
                     const currentSelected = Array.isArray(selectedValues)
                         ? selectedValues
                         : []
 
-                    const isSelected = currentSelected.includes(item.value)
+                    const isSelected = currentSelected.includes(value)
 
                     return (
                         <Block
-                            key={item.value}
+                            key={value}
                             display="flex"
                             alignItems="center"
                             justifyContent="space-between"
@@ -536,7 +569,7 @@ export const MultiSelectItems: React.FC<{
                                 filterHandlers.handleMultiSelectFilter(
                                     column,
                                     fieldKey,
-                                    item.value,
+                                    value,
                                     onColumnFilter
                                 )
                             }}
@@ -547,7 +580,7 @@ export const MultiSelectItems: React.FC<{
                                     filterHandlers.handleMultiSelectFilter(
                                         column,
                                         fieldKey,
-                                        item.value,
+                                        value,
                                         onColumnFilter
                                     )
                                 }
@@ -574,7 +607,7 @@ export const MultiSelectItems: React.FC<{
                                     flexGrow: 1,
                                 }}
                             >
-                                {item.label}
+                                {label}
                             </PrimitiveText>
                             <Checkbox
                                 checked={isSelected}
@@ -582,8 +615,8 @@ export const MultiSelectItems: React.FC<{
                             />
                         </Block>
                     )
-                })
-            )}
+                }}
+            />
         </Block>
     )
 }
