@@ -44,6 +44,9 @@ import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarM
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
 import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
+import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
+import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -93,7 +96,10 @@ export const useComponentToken = (
     | ResponsiveButtonTokens
     | ResponsiveButtonV2Tokens
     | ResponsiveChatInputTokensType
-    | ResponsiveTagV2Tokens => {
+    | ResponsiveTagV2Tokens
+    | ResponsiveAlertV2Tokens
+    | ResponsiveSnackbarV2Tokens
+    | ResponsiveSwitchV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -187,6 +193,12 @@ export const useComponentToken = (
             return componentTokens.BUTTONV2
         case 'TAGV2':
             return componentTokens.TAGV2
+        case 'ALERTV2':
+            return componentTokens.ALERTV2
+        case 'SNACKBARV2':
+            return componentTokens.SNACKBARV2
+        case 'SWITCHV2':
+            return componentTokens.SWITCHV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

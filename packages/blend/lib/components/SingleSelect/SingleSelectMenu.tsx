@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import {
     SelectMenuAlignment,
@@ -13,6 +13,7 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { usePreventParentScroll } from '../../hooks'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import {
@@ -378,7 +379,16 @@ const SingleSelectMenu = ({
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
+    const contentRef = useRef<HTMLDivElement>(null)
     let itemCounter = 0
+    const selectors = [
+        '[data-dropdown="dropdown"]',
+        '[role="listbox"]',
+        '[role="menu"]',
+        '[data-radix-popper-content-wrapper]',
+        '[data-radix-dropdown-menu-content]',
+    ]
+    usePreventParentScroll(open, contentRef, selectors)
 
     const hasMatch = useMemo(
         () => checkExactMatch(searchText, items),
@@ -554,6 +564,7 @@ const SingleSelectMenu = ({
             )}
             <RadixMenu.Portal>
                 <Content
+                    ref={contentRef}
                     data-dropdown="dropdown"
                     align={alignment}
                     sideOffset={sideOffset}

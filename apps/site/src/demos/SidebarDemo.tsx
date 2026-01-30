@@ -113,6 +113,9 @@ import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
+import AlertV2Demo from './AlertV2Demo'
+import SnackbarV2Demo from './SnackbarV2Demo'
+import SwitchV2Demo from './SwitchV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -180,7 +183,10 @@ const SidebarDemo = () => {
         | 'outageCharts'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
-    >('buttons')
+        | 'alertV2'
+        | 'snackbarV2'
+        | 'switchV2'
+    >('snackbarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -410,6 +416,10 @@ const SidebarDemo = () => {
                 return <OTPInputDemo />
             case 'alerts':
                 return <AlertDemo />
+            case 'alertV2':
+                return <AlertV2Demo />
+            case 'snackbarV2':
+                return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
             case 'accordion':
@@ -430,6 +440,8 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'switchV2':
+                return <SwitchV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -977,12 +989,30 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Alert V2',
+                    leftSlot: (
+                        <AlertCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'alertV2',
+                    onClick: () => setActiveComponent('alertV2'),
+                },
+                {
                     label: 'Snackbar',
                     leftSlot: (
                         <BellIcon style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'snackbar',
                     onClick: () => setActiveComponent('snackbar'),
+                },
+                {
+                    label: 'Snackbar V2',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbarV2',
+                    onClick: () => setActiveComponent('snackbarV2'),
                 },
                 {
                     label: 'Tooltip',
@@ -1158,6 +1188,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'switch',
                     onClick: () => setActiveComponent('switch'),
+                },
+                {
+                    label: 'Switch V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switchV2',
+                    onClick: () => setActiveComponent('switchV2'),
                 },
                 {
                     label: 'Selectors',
