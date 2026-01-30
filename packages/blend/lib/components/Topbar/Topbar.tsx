@@ -345,6 +345,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 style={{
                     backdropFilter: topBarToken.backdropFilter,
                 }}
+                maxHeight={'68px'}
+                minHeight={'64px'}
             >
                 {!isExpanded && sidebarTopSlot}
                 <Block flexGrow={1}>{topbar || children}</Block>

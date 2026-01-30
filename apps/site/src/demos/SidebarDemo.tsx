@@ -1602,20 +1602,24 @@ const SidebarDemo = () => {
                         </div>
                     }
                     footer={
-                        <div className="flex items-center gap-2">
+                        <div
+                            className={`flex items-center  ${isExpanded ? 'gap-2 justify-between' : 'gap-0 justify-center'}`}
+                        >
                             <Avatar
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                                 alt="John Doe"
                                 size={AvatarSize.SM}
                                 shape={AvatarShape.ROUNDED}
                             />
-                            <Text
-                                variant="body.md"
-                                fontWeight={600}
-                                color={FOUNDATION_THEME.colors.gray[600]}
-                            >
-                                John Doe
-                            </Text>
+                            {isExpanded && (
+                                <Text
+                                    variant="body.md"
+                                    fontWeight={600}
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                >
+                                    John Doe
+                                </Text>
+                            )}
                         </div>
                     }
                     showPrimaryActionButton={true}

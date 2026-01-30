@@ -67,14 +67,15 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     return (
         <Block
             data-element="sidebar-content"
-            style={{
-                width: iconOnlyMode ? '58px' : '100%',
-                transition: 'width 5s ease-in-out',
-            }}
+            width={iconOnlyMode ? '58px' : '250px'}
             height="100%"
             display="flex"
             flexDirection="column"
             position="relative"
+            minWidth={0}
+            flexShrink={0}
+            overflow="hidden"
+            transition="width 0.3s ease-in-out"
         >
             <SidebarHeader
                 sidebarTopSlot={sidebarTopSlot}
@@ -106,7 +107,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 />
             </DirectoryContainer>
 
-            <SidebarFooter footer={footer} />
+            <SidebarFooter footer={footer} isExpanded={isExpanded} />
         </Block>
     )
 }

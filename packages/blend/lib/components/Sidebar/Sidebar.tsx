@@ -101,6 +101,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             if (!isControlled) {
                 setInternalExpanded(newValue)
             }
+            setIsHovering(false)
 
             onExpandedChange?.(newValue)
         }, [isExpanded, isControlled, onExpandedChange, setInternalExpanded])
@@ -287,8 +288,6 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             return () => window.removeEventListener('resize', updateWidth)
         }, [leftPanel])
 
-        console.log({ isHovering })
-
         return (
             <Block
                 ref={ref}
@@ -329,60 +328,44 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                 />
                             )}
 
-                            {/* Main Sidebar */}
-                            {isExpanded && (
-                                <SidebarContent
-                                    sidebarTopSlot={sidebarTopSlot}
-                                    merchantInfo={merchantInfo}
-                                    isExpanded={isExpanded}
-                                    isScrolled={isScrolled}
-                                    sidebarCollapseKey={sidebarCollapseKey}
-                                    onToggle={toggleSidebar}
-                                    sidebarNavId={sidebarNavId}
-                                    showTopBlur={showTopBlur}
-                                    showBottomBlur={showBottomBlur}
-                                    data={data}
-                                    idPrefix={`${baseId}-`}
-                                    activeItem={activeItem}
-                                    onActiveItemChange={onActiveItemChange}
-                                    defaultActiveItem={defaultActiveItem}
-                                    footer={footer}
-                                />
-                            )}
-
-                            {/* IconOnly Sidebar */}
-                            {!isExpanded && (
-                                <SidebarContent
-                                    sidebarTopSlot={sidebarTopSlot}
-                                    merchantInfo={merchantInfo}
-                                    isExpanded={isExpanded}
-                                    isScrolled={isScrolled}
-                                    sidebarCollapseKey={sidebarCollapseKey}
-                                    onToggle={toggleSidebar}
-                                    sidebarNavId={sidebarNavId}
-                                    showTopBlur={showTopBlur}
-                                    showBottomBlur={showBottomBlur}
-                                    data={data}
-                                    idPrefix={`${baseId}-`}
-                                    activeItem={activeItem}
-                                    onActiveItemChange={onActiveItemChange}
-                                    defaultActiveItem={defaultActiveItem}
-                                    iconOnlyMode={iconOnlyMode}
-                                    footer={footer}
-                                    setIsHovering={setIsHovering}
-                                />
-                            )}
+                            {/* Main Sidebar with Icon Only Mode */}
+                            <SidebarContent
+                                sidebarTopSlot={sidebarTopSlot}
+                                merchantInfo={merchantInfo}
+                                isExpanded={isExpanded}
+                                isScrolled={isScrolled}
+                                sidebarCollapseKey={sidebarCollapseKey}
+                                onToggle={toggleSidebar}
+                                sidebarNavId={sidebarNavId}
+                                showTopBlur={showTopBlur}
+                                showBottomBlur={showBottomBlur}
+                                data={data}
+                                idPrefix={`${baseId}-`}
+                                activeItem={activeItem}
+                                onActiveItemChange={onActiveItemChange}
+                                defaultActiveItem={defaultActiveItem}
+                                iconOnlyMode={iconOnlyMode}
+                                footer={footer}
+                                setIsHovering={setIsHovering}
+                            />
 
                             {/* Intermediate Sidebar */}
-                            {isHovering && (
+                            {!isExpanded && (
                                 <Block
                                     position="absolute"
                                     top={0}
                                     left={tenantPanelWidth}
+                                    width={isHovering ? '250px' : 0}
+                                    minWidth={0}
                                     height="100%"
+                                    overflow="hidden"
                                     zIndex={99}
                                     backgroundColor={tokens.backgroundColor}
-                                    borderRight={tokens.borderRight}
+                                    borderRight={
+                                        isHovering ? tokens.borderRight : 'none'
+                                    }
+                                    transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                    pointerEvents={isHovering ? 'auto' : 'none'}
                                     onMouseLeave={() => setIsHovering(false)}
                                 >
                                     <SidebarContent
