@@ -307,6 +307,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                         backdropFilter: topBarToken.backdropFilter,
                     }}
                     justifyContent="space-between"
+                    maxHeight={'48px'}
+                    minHeight={'48px'}
                 >
                     <Block
                         display="flex"
@@ -345,8 +347,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 style={{
                     backdropFilter: topBarToken.backdropFilter,
                 }}
-                maxHeight={'68px'}
-                minHeight={'64px'}
+                maxHeight={'48px'}
+                minHeight={'48px'}
             >
                 {!isExpanded && sidebarTopSlot}
                 <Block flexGrow={1}>{topbar || children}</Block>

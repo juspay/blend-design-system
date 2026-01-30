@@ -154,7 +154,6 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                                 ? sidebarNavId
                                 : undefined
                         }
-                        title={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                         style={{ transition: 'background-color 0.15s ease' }}
                         _hover={{
                             backgroundColor:

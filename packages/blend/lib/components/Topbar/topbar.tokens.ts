@@ -124,7 +124,7 @@ export const getTopbarTokens = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `12.5px ${foundationToken.unit[16]}`,
+            padding: `${foundationToken.unit[5]} ${foundationToken.unit[16]}`,
             gap: foundationToken.unit[12],
 
             // Toggle button (sidebar collapse/expand)
@@ -216,7 +216,7 @@ export const getTopbarTokens = (
             borderBottom: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
             backdropFilter: 'blur(10px)',
-            padding: `${foundationToken.unit[16]} ${foundationToken.unit[32]}`,
+            padding: `${foundationToken.unit[5]} ${foundationToken.unit[32]}`,
             gap: foundationToken.unit[16],
 
             // Toggle button (sidebar collapse/expand)

@@ -69,7 +69,7 @@ export const getSidebarBorder = (
 ): string => {
     return isExpanded || isHovering ? String(tokens.borderRight) : 'none'
 }
-const TOPBAR_AUTO_HIDE_HEIGHT = 68
+const TOPBAR_AUTO_HIDE_HEIGHT = 48
 
 export const getTopbarStyles = (
     enableAutoHide: boolean,

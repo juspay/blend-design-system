@@ -364,6 +364,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     borderRight={
                                         isHovering ? tokens.borderRight : 'none'
                                     }
+                                    boxShadow={
+                                        isHovering
+                                            ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
+                                            : 'none'
+                                    }
                                     transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
                                     pointerEvents={isHovering ? 'auto' : 'none'}
                                     onMouseLeave={() => setIsHovering(false)}
