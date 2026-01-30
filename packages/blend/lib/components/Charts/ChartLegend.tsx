@@ -455,11 +455,13 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     height={FOUNDATION_THEME.unit[28]}
                     whiteSpace="nowrap"
                     pointerEvents="none"
-                    aria-hidden="true"
-                    style={{ visibility: 'hidden' }}
+                    style={{ visibility: 'hidden', opacity: 0 }}
                 >
                     {displayLegends.map((legend) => (
                         <PrimitiveButton
+                            aria-hidden="true"
+                            tabIndex={-1}
+                            aria-label={`Legend measurement ${legend.title}`}
                             key={legend.title}
                             style={{
                                 display: 'flex',
@@ -490,6 +492,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     <Menu
                         trigger={
                             <Button
+                                aria-label={`Show ${displayLegends.length - cuttOffIndex} more legend items`}
                                 text={`+ ${displayLegends.length - cuttOffIndex} more`}
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
