@@ -1,6 +1,7 @@
+import { useLayoutEffect } from 'react'
 import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { useDebounce } from '../../hooks/useDebounce'
 import { ChartLegendsProps, StackedLegendsDataPoint } from './types'
 import Block from '../../components/Primitives/Block/Block'
@@ -198,12 +199,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const legendTokens = chartTokens.content.legend
+    const measureRef = useRef<HTMLDivElement>(null)
 
     const displayLegends: Array<{ title: string; total?: number }> =
         legends || keys.map((key) => ({ title: key }))
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
     const [cuttOffIndex, setCuttOffIndex] = useState<number>(keys.length)
+    const [isLayoutReady, setIsLayoutReady] = useState(false)
     const isExpanding = useRef<boolean>(false)
     // Have to revisit from optimizaion POV.
     const handleResize = useCallback(() => {
@@ -220,7 +223,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 ? parseFloat(legendTokens.gap)
                 : (legendTokens.gap as number) || 16
 
-        const legendItems = Array.from(container.children)
+        const legendItems = Array.from(measureRef.current?.children ?? [])
         const totalLegends = displayLegends.length
 
         if (isExpanding.current && legendItems.length < totalLegends) {
@@ -261,7 +264,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         }
 
         const newCutoff = Math.max(1, Math.min(optimalCutoff, totalLegends))
-        setCuttOffIndex(newCutoff)
+        setCuttOffIndex((prev) => {
+            if (prev !== newCutoff) {
+                setIsLayoutReady(true)
+                return newCutoff
+            }
+            setIsLayoutReady(true)
+            return prev
+        })
     }, [displayLegends.length, legendTokens.gap])
 
     const debouncedResize = useDebounce(handleResize, 150)
@@ -277,15 +287,11 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         }
     })
 
-    useEffect(() => {
-        setCuttOffIndex(displayLegends.length)
+    useLayoutEffect(() => {
+        setIsLayoutReady(false)
         isExpanding.current = false
 
-        const timeoutId = setTimeout(() => {
-            handleResize()
-        }, 150)
-
-        return () => clearTimeout(timeoutId)
+        handleResize()
     }, [displayLegends.length, handleResize])
 
     const getItemOpacity = (dataKey: string) => {
@@ -333,7 +339,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 overflowX="hidden"
                 overflowY="visible"
                 whiteSpace="nowrap"
-                style={{ flex: 1 }}
+                style={{
+                    flex: 1,
+                    visibility: isLayoutReady ? 'visible' : 'hidden',
+                }}
                 justifyContent={isSmallScreen ? 'center' : 'start'}
                 gap={legendTokens.gap}
             >
@@ -439,6 +448,44 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                         </PrimitiveButton>
                     )
                 })}
+                <Block
+                    ref={measureRef}
+                    display="flex"
+                    position="absolute"
+                    height={FOUNDATION_THEME.unit[28]}
+                    whiteSpace="nowrap"
+                    pointerEvents="none"
+                    aria-hidden="true"
+                    style={{ visibility: 'hidden' }}
+                >
+                    {displayLegends.map((legend) => (
+                        <PrimitiveButton
+                            key={legend.title}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap:
+                                    typeof legendTokens.item.gap === 'string'
+                                        ? legendTokens.item.gap
+                                        : `${legendTokens.item.gap}px`,
+                                height: FOUNDATION_THEME.unit[16],
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                            }}
+                        >
+                            <Block
+                                width={FOUNDATION_THEME.unit[12]}
+                                height={FOUNDATION_THEME.unit[12]}
+                                borderRadius={FOUNDATION_THEME.border.radius[4]}
+                            />
+                            <Text fontSize={legendTokens.item.fontSize}>
+                                {legend.title}
+                            </Text>
+                        </PrimitiveButton>
+                    ))}
+                </Block>
+
                 {cuttOffIndex < displayLegends.length && (
                     <Menu
                         trigger={
