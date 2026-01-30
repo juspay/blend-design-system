@@ -180,7 +180,7 @@ const SidebarDemo = () => {
         | 'outageCharts'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
-    >('textInputAutofillTest')
+    >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -1317,6 +1317,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
+                    // showLeftPanel={false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,

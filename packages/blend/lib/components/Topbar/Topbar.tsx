@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react'
-import { PanelsTopLeft, ArrowLeft, ChevronDown } from 'lucide-react'
+import { ArrowLeft, ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../Text/Text'
@@ -23,9 +23,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         {
             children,
             isExpanded,
-            onToggleExpansion,
-            showToggleButton,
-            panelOnlyMode = false,
             isVisible: controlledIsVisible,
             // @ts-expect-error - onVisibilityChange is part of the controlled API but not used internally
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,7 +36,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
             onBackClick,
             leftPanel,
             merchantInfo,
-            ariaControls,
         },
         ref
     ) => {
@@ -56,7 +52,6 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         if (!isVisible) {
             return null
         }
-
         if (isMobile) {
             const renderLeftSection = () => {
                 if (leftAction) {
@@ -351,52 +346,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                     backdropFilter: topBarToken.backdropFilter,
                 }}
             >
-                {!isExpanded && !panelOnlyMode && (
-                    <Block
-                        display="flex"
-                        alignItems="center"
-                        gap={topBarToken.sidebarSection.gap}
-                        width="fit-content"
-                        flexShrink={0}
-                    >
-                        {showToggleButton && (
-                            <PrimitiveButton
-                                type="button"
-                                onClick={onToggleExpansion}
-                                data-icon="sidebar-hamburger"
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                border="none"
-                                backgroundColor="transparent"
-                                borderRadius={
-                                    topBarToken.toggleButton.borderRadius
-                                }
-                                cursor="pointer"
-                                padding={topBarToken.toggleButton.padding}
-                                aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar`}
-                                aria-expanded={isExpanded}
-                                aria-controls={ariaControls || undefined}
-                                style={{
-                                    transition:
-                                        topBarToken.toggleButton.transition,
-                                }}
-                                _hover={{
-                                    backgroundColor:
-                                        topBarToken.toggleButton.backgroundColor
-                                            .hover,
-                                }}
-                            >
-                                <PanelsTopLeft
-                                    color={topBarToken.toggleButton.icon.color}
-                                    size={topBarToken.toggleButton.icon.size}
-                                    aria-hidden="true"
-                                />
-                            </PrimitiveButton>
-                        )}
-                        {sidebarTopSlot}
-                    </Block>
-                )}
+                {!isExpanded && sidebarTopSlot}
                 <Block flexGrow={1}>{topbar || children}</Block>
             </Block>
         )

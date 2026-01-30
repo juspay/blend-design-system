@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { MoreHorizontal } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -25,99 +25,98 @@ type TenantPanelProps = {
     tenantFooter?: React.ReactNode
 }
 
-const TenantPanel: React.FC<TenantPanelProps> = ({
-    items,
-    selected,
-    onSelect,
-    tenantSlot1,
-    tenantSlot2,
-    tenantFooter,
-}) => {
-    const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
+const TenantPanel = forwardRef<HTMLDivElement, TenantPanelProps>(
+    (
+        { items, selected, onSelect, tenantSlot1, tenantSlot2, tenantFooter },
+        ref
+    ) => {
+        const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
-    const { visibleTenants, hiddenTenants, hasMoreTenants } = arrangeTenants(
-        items,
-        selected
-    )
+        const { visibleTenants, hiddenTenants, hasMoreTenants } =
+            arrangeTenants(items, selected)
 
-    return (
-        <Block
-            data-element="tenant-panel"
-            width={tokens.leftPanel.width}
-            height="100%"
-            borderRight={tokens.leftPanel.borderRight}
-            backgroundColor={tokens.leftPanel.backgroundColor}
-            display="flex"
-            flexDirection="column"
-            gap={tokens.leftPanel.gap}
-            alignItems="center"
-            padding={`${tokens.leftPanel.padding.y} ${tokens.leftPanel.padding.x}`}
-        >
-            {visibleTenants.map((tenant, index) => (
-                <TenantItem
-                    key={index}
-                    tenant={tenant}
-                    isSelected={selected === tenant.label}
-                    onSelect={() => onSelect(tenant.label)}
-                />
-            ))}
+        return (
+            <Block
+                ref={ref}
+                data-element="tenant-panel"
+                width={tokens.leftPanel.width}
+                height="100%"
+                borderRight={tokens.leftPanel.borderRight}
+                backgroundColor={tokens.leftPanel.backgroundColor}
+                display="flex"
+                flexDirection="column"
+                gap={tokens.leftPanel.gap}
+                alignItems="center"
+                padding={`${tokens.leftPanel.padding.y} ${tokens.leftPanel.padding.x}`}
+            >
+                {visibleTenants.map((tenant, index) => (
+                    <TenantItem
+                        key={index}
+                        tenant={tenant}
+                        isSelected={selected === tenant.label}
+                        onSelect={() => onSelect(tenant.label)}
+                    />
+                ))}
 
-            {hasMoreTenants && (
-                <TenantOverflowMenu
-                    hiddenTenants={hiddenTenants}
-                    onSelect={onSelect}
-                />
-            )}
+                {hasMoreTenants && (
+                    <TenantOverflowMenu
+                        hiddenTenants={hiddenTenants}
+                        onSelect={onSelect}
+                    />
+                )}
 
-            {(tenantSlot1 || tenantSlot2) && (
-                <Block
-                    marginTop="auto"
-                    display="flex"
-                    flexDirection="column"
-                    gap={tokens.leftPanel.gap}
-                    alignItems="center"
-                >
-                    {tenantSlot1 && (
-                        <Block
-                            width={tokens.leftPanel.item.width}
-                            height={tokens.leftPanel.item.width}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {tenantSlot1}
-                        </Block>
-                    )}
+                {(tenantSlot1 || tenantSlot2) && (
+                    <Block
+                        marginTop="auto"
+                        display="flex"
+                        flexDirection="column"
+                        gap={tokens.leftPanel.gap}
+                        alignItems="center"
+                    >
+                        {tenantSlot1 && (
+                            <Block
+                                width={tokens.leftPanel.item.width}
+                                height={tokens.leftPanel.item.width}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                {tenantSlot1}
+                            </Block>
+                        )}
 
-                    {tenantSlot2 && (
-                        <Block
-                            width={tokens.leftPanel.item.width}
-                            height={tokens.leftPanel.item.width}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {tenantSlot2}
-                        </Block>
-                    )}
-                </Block>
-            )}
+                        {tenantSlot2 && (
+                            <Block
+                                width={tokens.leftPanel.item.width}
+                                height={tokens.leftPanel.item.width}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            >
+                                {tenantSlot2}
+                            </Block>
+                        )}
+                    </Block>
+                )}
 
-            {tenantFooter && (
-                <Block
-                    width={tokens.leftPanel.item.width}
-                    height={tokens.leftPanel.item.width}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    marginTop={tenantSlot1 || tenantSlot2 ? undefined : 'auto'}
-                >
-                    {tenantFooter}
-                </Block>
-            )}
-        </Block>
-    )
-}
+                {tenantFooter && (
+                    <Block
+                        width={tokens.leftPanel.item.width}
+                        height={tokens.leftPanel.item.width}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        marginTop={
+                            tenantSlot1 || tenantSlot2 ? undefined : 'auto'
+                        }
+                    >
+                        {tenantFooter}
+                    </Block>
+                )}
+            </Block>
+        )
+    }
+)
 
 const TenantItem: React.FC<{
     tenant: TenantItem

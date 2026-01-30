@@ -46,7 +46,7 @@ const Directory = ({
                 overflow="auto"
                 aria-label="Directory navigation"
                 gap={iconOnlyMode ? '8px' : tokens.gap}
-                paddingX={iconOnlyMode ? '0px' : tokens.paddingX}
+                paddingX={iconOnlyMode ? '12px' : tokens.paddingX}
                 paddingY={tokens.paddingY}
             >
                 {directoryData.map((section, sectionIndex) => (

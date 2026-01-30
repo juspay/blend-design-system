@@ -20,6 +20,7 @@ type SidebarHeaderProps = {
     onToggle: () => void
     sidebarNavId?: string
     hideToggleButton?: boolean
+    iconOnlyMode?: boolean
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -31,6 +32,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     onToggle,
     sidebarNavId,
     hideToggleButton = false,
+    iconOnlyMode = false,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
@@ -83,28 +85,29 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            {sidebarTopSlot ? (
-                sidebarTopSlot
-            ) : (
-                <SingleSelect
-                    helpIconText=""
-                    required={false}
-                    placeholder="Select Merchant"
-                    variant={SelectMenuVariant.NO_CONTAINER}
-                    size={SelectMenuSize.SMALL}
-                    items={merchantData.items.map((item) => ({
-                        items: [
-                            {
-                                label: item.label,
-                                value: item.value,
-                                slot1: item.icon,
-                            },
-                        ],
-                    }))}
-                    selected={merchantData.selected}
-                    onSelect={merchantData.onSelect}
-                />
-            )}
+            {!iconOnlyMode &&
+                (sidebarTopSlot ? (
+                    sidebarTopSlot
+                ) : (
+                    <SingleSelect
+                        helpIconText=""
+                        required={false}
+                        placeholder="Select Merchant"
+                        variant={SelectMenuVariant.NO_CONTAINER}
+                        size={SelectMenuSize.SMALL}
+                        items={merchantData.items.map((item) => ({
+                            items: [
+                                {
+                                    label: item.label,
+                                    value: item.value,
+                                    slot1: item.icon,
+                                },
+                            ],
+                        }))}
+                        selected={merchantData.selected}
+                        onSelect={merchantData.onSelect}
+                    />
+                ))}
 
             {!hideToggleButton && (
                 <Tooltip
