@@ -42,6 +42,9 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
     disconnect: vi.fn(),
 }))
 
+// jsdom does not implement window.scrollTo; required by useScrollLock (e.g. Modal)
+window.scrollTo = vi.fn()
+
 // Mock CSS.supports for Highcharts compatibility
 // Highcharts uses CSS.supports which is not available in jsdom
 const mockCSSSupports = vi.fn().mockImplementation(() => true)

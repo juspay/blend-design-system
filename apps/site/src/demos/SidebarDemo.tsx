@@ -37,6 +37,7 @@ import {
     Sun,
     HelpCircle,
     Lightbulb,
+    SearchIcon,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -95,7 +96,6 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button/types'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
-import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
@@ -191,7 +191,6 @@ const SidebarDemo = () => {
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
         useState<string>('design-system')
-    const [search, setSearch] = useState<string>('')
 
     // Topbar visibility control states
     const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
@@ -1377,6 +1376,7 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
+                        // <div>aryan</div>
                     }
                     rightActions={
                         <div className="flex items-center gap-1">
@@ -1403,37 +1403,27 @@ const SidebarDemo = () => {
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
-                            <Block width="350px">
-                                <TextInput
-                                    placeholder="Search"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    cursor="pointer"
-                                    leftSlot={
-                                        <Search
-                                            style={{
-                                                width: '16px',
-                                                height: '16px',
-                                            }}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        />
-                                    }
-                                    rightSlot={
-                                        <span
-                                            style={{
-                                                fontSize: 14,
-                                                color: FOUNDATION_THEME.colors
-                                                    .gray[300],
-                                            }}
-                                        >
-                                            ⌘ + K
-                                        </span>
-                                    }
-                                />
-                            </Block>
+                            <div className=" flex items-center gap-3 ">
+                                {' '}
+                                <div className="text-sm text-gray-400 flex items-center gap-1">
+                                    <SearchIcon
+                                        size={16}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                    />{' '}
+                                    Search
+                                </div>{' '}
+                                <span
+                                    style={{
+                                        fontSize: 14,
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[400],
+                                    }}
+                                >
+                                    {`(⌘K)`}
+                                </span>
+                            </div>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() =>

@@ -10,6 +10,8 @@ import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import Seperator from '../common/Seperator'
+import { FOUNDATION_THEME } from '../../tokens'
 
 /**
  * Helper to check if Topbar is in controlled mode
@@ -351,6 +353,12 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                 minHeight={'48px'}
             >
                 {!isExpanded && sidebarTopSlot}
+                {!isExpanded && (
+                    <Seperator
+                        width="1.5px"
+                        color={FOUNDATION_THEME.colors.gray[200]}
+                    />
+                )}
                 <Block flexGrow={1}>{topbar || children}</Block>
             </Block>
         )

@@ -44,6 +44,35 @@ const MainContentContainer = styled(Block)`
 
 const COLLAPSED_MOBILE_PADDING = `calc(${MOBILE_NAVIGATION_COLLAPSED_HEIGHT} + ${MOBILE_NAVIGATION_SAFE_AREA})`
 
+const SkipLinks = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    & a {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        padding: 0.5rem 1rem;
+        background: inherit;
+    }
+    & a:focus {
+        position: absolute;
+        left: 0.5rem;
+        top: 0.5rem;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip: auto;
+        z-index: 1001;
+    }
+`
+
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
     (
         {
@@ -299,6 +328,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 zIndex={99}
                 id={sidebarId}
             >
+                <SkipLinks aria-hidden="true">
+                    <a href={`#${skipToNavId}`}>Skip to navigation</a>
+                    <a href={`#${skipToContentId}`}>Skip to main content</a>
+                </SkipLinks>
                 <Block
                     as="nav"
                     id={skipToNavId}
