@@ -53,9 +53,9 @@ export type SidebarProps = {
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
     defaultIsExpanded?: boolean
-    iconOnlyMode?: boolean
     panelOnlyMode?: boolean
     disableIntermediateState?: boolean
+    iconOnlyMode?: boolean
     hideOnIconOnlyToggle?: boolean
     showPrimaryActionButton?: boolean
     primaryActionButtonProps?: Omit<
