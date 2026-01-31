@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { PanelsTopLeft, UserIcon } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -20,6 +20,7 @@ type SidebarHeaderProps = {
     onToggle: () => void
     sidebarNavId?: string
     hideToggleButton?: boolean
+    iconOnlyMode?: boolean
 }
 
 const SidebarHeader: React.FC<SidebarHeaderProps> = ({
@@ -31,6 +32,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     onToggle,
     sidebarNavId,
     hideToggleButton = false,
+    iconOnlyMode = false,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
@@ -50,12 +52,43 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             },
         ],
         selected: 'juspay',
-        onSelect: (value: string) => {
-            console.log('Selected merchant:', value)
-        },
+        onSelect: () => {},
     }
 
     const merchantData = merchantInfo || defaultMerchantInfo
+
+    const [selectVisible, setSelectVisible] = useState(!iconOnlyMode)
+    useEffect(() => {
+        if (iconOnlyMode) {
+            setSelectVisible(false)
+        } else {
+            const t = setTimeout(() => setSelectVisible(true), 180)
+            return () => clearTimeout(t)
+        }
+    }, [iconOnlyMode])
+
+    const headerSlot = sidebarTopSlot ? (
+        sidebarTopSlot
+    ) : (
+        <SingleSelect
+            helpIconText=""
+            required={false}
+            placeholder="Select Merchant"
+            variant={SelectMenuVariant.NO_CONTAINER}
+            size={SelectMenuSize.SMALL}
+            items={merchantData.items.map((item) => ({
+                items: [
+                    {
+                        label: item.label,
+                        value: item.value,
+                        slot1: item.icon,
+                    },
+                ],
+            }))}
+            selected={merchantData.selected}
+            onSelect={merchantData.onSelect}
+        />
+    )
 
     return (
         <Block
@@ -64,7 +97,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
             backgroundColor={tokens.header.backgroundColor}
             display="flex"
             alignItems="center"
-            justifyContent="space-between"
+            justifyContent={iconOnlyMode ? 'center' : 'space-between'}
             gap={tokens.header.gap}
             padding={`${tokens.header.padding.y} ${tokens.header.padding.x}`}
             position="relative"
@@ -83,28 +116,18 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            {sidebarTopSlot ? (
-                sidebarTopSlot
-            ) : (
-                <SingleSelect
-                    helpIconText=""
-                    required={false}
-                    placeholder="Select Merchant"
-                    variant={SelectMenuVariant.NO_CONTAINER}
-                    size={SelectMenuSize.SMALL}
-                    items={merchantData.items.map((item) => ({
-                        items: [
-                            {
-                                label: item.label,
-                                value: item.value,
-                                slot1: item.icon,
-                            },
-                        ],
-                    }))}
-                    selected={merchantData.selected}
-                    onSelect={merchantData.onSelect}
-                />
-            )}
+            <Block
+                flexGrow={iconOnlyMode ? 0 : 1}
+                width={iconOnlyMode ? 0 : undefined}
+                minWidth={0}
+                overflow="hidden"
+                opacity={iconOnlyMode ? 0 : selectVisible ? 1 : 0}
+                pointerEvents={iconOnlyMode ? 'none' : 'auto'}
+                transition="opacity 0.15s ease-out, flex-grow 0.2s ease-out, width 0.2s ease-out"
+                display={iconOnlyMode ? 'none' : 'block'}
+            >
+                {headerSlot}
+            </Block>
 
             {!hideToggleButton && (
                 <Tooltip
@@ -131,7 +154,6 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                                 ? sidebarNavId
                                 : undefined
                         }
-                        title={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
                         style={{ transition: 'background-color 0.15s ease' }}
                         _hover={{
                             backgroundColor:

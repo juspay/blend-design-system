@@ -274,10 +274,10 @@ describe('TagV2 Accessibility', () => {
     })
 
     describe('Edge Cases - Accessibility', () => {
-        it('handles empty text gracefully for accessibility', () => {
+        it('handles empty text gracefully for accessibility', async () => {
             const { container } = render(<TagV2 text="" />)
             const results = axe(container)
-            expect(results).resolves.toHaveNoViolations()
+            await expect(results).resolves.toHaveNoViolations()
         })
 
         it('maintains accessibility when skeleton is shown', async () => {

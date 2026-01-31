@@ -203,7 +203,7 @@ const SingleSelect = ({
         <Block
             data-single-select={label || 'single-select'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width="100%"
+            width={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
