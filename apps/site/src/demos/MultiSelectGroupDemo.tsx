@@ -8,15 +8,19 @@ import {
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
 import { MultiSelect } from '../../../../packages/blend/lib/main'
+import {
+    MultiSelectMenuSize,
+    MultiSelectVariant,
+} from '../../../../packages/blend/lib/components/MultiSelect'
 
 const MultiSelectGroupDemo = () => {
     const [stacked, setStacked] = useState(false)
     const [gap, setGap] = useState('8')
-    const [selectSize, setSelectSize] = useState<SelectMenuSize>(
-        SelectMenuSize.MEDIUM
+    const [selectSize, setSelectSize] = useState<MultiSelectMenuSize>(
+        MultiSelectMenuSize.MEDIUM
     )
-    const [selectVariant, setSelectVariant] = useState<SelectMenuVariant>(
-        SelectMenuVariant.CONTAINER
+    const [selectVariant, setSelectVariant] = useState<MultiSelectVariant>(
+        MultiSelectVariant.CONTAINER
     )
     const [count, setCount] = useState('3')
 
@@ -73,6 +77,8 @@ const MultiSelectGroupDemo = () => {
         for (let i = 0; i < Number(count); i++) {
             singleSelects.push(
                 <MultiSelect
+                    size={selectSize}
+                    variant={selectVariant}
                     label="Options"
                     items={sizeOptions}
                     selectedValues={['Option1']}
@@ -104,7 +110,7 @@ const MultiSelectGroupDemo = () => {
                         items={sizeOptions}
                         selected={selectSize}
                         onSelect={(value) =>
-                            setSelectSize(value as SelectMenuSize)
+                            setSelectSize(value as MultiSelectMenuSize)
                         }
                         placeholder="Select size"
                     />
@@ -113,7 +119,7 @@ const MultiSelectGroupDemo = () => {
                         items={variantOptions}
                         selected={selectVariant}
                         onSelect={(value) =>
-                            setSelectVariant(value as SelectMenuVariant)
+                            setSelectVariant(value as MultiSelectVariant)
                         }
                         placeholder="Select Variant"
                     />

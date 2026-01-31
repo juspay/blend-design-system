@@ -42,7 +42,9 @@ export function getMultiSelectBorderRadius(
     }
 
     if (multiSelectGroupPosition === 'right') {
-        return `0 0 0 0`
+        return varient === 'no-container'
+            ? `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+            : `0 0 0 0`
     }
 
     return '0px 0px 0px 0px'
