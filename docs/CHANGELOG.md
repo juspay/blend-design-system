@@ -1,9 +1,10 @@
-# Changelog for v0.0.33
+# Changelog for v0.0.34-beta (Beta)
 
-> **Stable Release** - This version is production-ready and recommended for general use.
+> **Beta Release** - This is a pre-release version from the staging branch for testing purposes.
 
 ## 🚀 Features
 
+- add SnackbarV2 and demo (#1024) ([bd2a9f5](../../commit/bd2a9f5))
 - Introduce ButtonV2 (#972) ([8ce6816](../../commit/8ce6816))
 - Enhance MultiValueInput with left and right slot support (#966) ([c29affe](../../commit/c29affe))
 - Implement virtual scrolling for submenus to enhance performance (#967) ([bcb10c7](../../commit/bcb10c7))
@@ -13,6 +14,16 @@
 
 ## 🐛 Bug Fixes
 
+- improve column state management in DataTable (#1047) ([fbc6f73](../../commit/fbc6f73))
+- added virtual list to data table filter (#1042) ([e1f62fb](../../commit/e1f62fb))
+- focus id added for data table (#1036) ([5e3a28d](../../commit/5e3a28d))
+- Table Checkbox issue fixed (#1031) ([e847d8a](../../commit/e847d8a))
+- added error msg to error tag in multi file upload (#1025) ([1d6097f](../../commit/1d6097f))
+- added prevent default hook to multiselect and singleselect (#1022) ([5faefb0](../../commit/5faefb0))
+- charts outage not getting grey issue fixed (#1016) ([411bb3d](../../commit/411bb3d))
+- data id added for upload, tag, tooltip (#1015) ([68055fd](../../commit/68055fd))
+- added divider line between up and down arrow (#1002) ([4e58e54](../../commit/4e58e54))
+- ui render issue fixed for tabs UNDERLINE varient (#1001) ([7197fa6](../../commit/7197fa6))
 - undefined restricted (#997) ([2b12d98](../../commit/2b12d98))
 - removed maxWidth from alert (#995) ([9261d66](../../commit/9261d66))
 - search added to dropdowninput (#994) ([f1f0e7b](../../commit/f1f0e7b))
@@ -32,9 +43,15 @@
 
 ## 🔧 Chores
 
+- Fix/sidebar intermediate state removed (#1048) ([ffbc300](../../commit/ffbc300))
+- Feat/multi select group (#1051) ([f805cd8](../../commit/f805cd8))
+- Feat/single select group (#1049) ([f4e401e](../../commit/f4e401e))
+- Fix/chart legend menu (#1038) ([2e2185a](../../commit/2e2185a))
+- Fix/offsets support in the web drawer (#1030) ([eff0e20](../../commit/eff0e20))
+- Feat/alert v2 (#1019) ([1efade1](../../commit/1efade1))
+- **release**: v0.0.33 [STABLE] ([bfc777c](../../commit/bfc777c))
 - **release**: v0.0.33-beta [BETA] (#1004) ([9439a07](../../commit/9439a07))
 - **release**: v0.0.33-beta [BETA] ([4ae4a79](../../commit/4ae4a79))
-- dev to staging (#1003) ([7a0d209](../../commit/7a0d209))
 - Feat/tagv2 (#1000) ([153cfc1](../../commit/153cfc1))
 - Fix/bar chart aux not visible (#993) ([c0489f3](../../commit/c0489f3))
 - Fix/tabs render issue (#988) ([f1dd61e](../../commit/f1dd61e))
@@ -50,14 +67,16 @@
 
 ---
 
-**Release Date**: 2026-01-20
-**Commit Range**: v0.0.32..HEAD
-**Total Changes**: 37 commits
+**Release Date**: 2026-01-31
+**Commit Range**: v0.0.33-beta..HEAD
+**Total Changes**: 54 commits
 
-## Installation
+## Beta Installation
 
 ```bash
-npm install @juspay/blend-design-system@latest
-# or specific version
-npm install @juspay/blend-design-system@0.0.33
+npm install @juspay/blend-design-system@beta
+# or specific beta version
+npm install @juspay/blend-design-system@0.0.34-beta
 ```
+
+> **Note**: Beta versions are for testing only. Use stable versions in production.
