@@ -20,7 +20,7 @@ export const getSelectAllState = (
     return { allSelected, someSelected }
 }
 
-export function getBorderRadius(
+export function getMultiSelectBorderRadius(
     size: MultiSelectMenuSize,
     varient: MultiSelectVariant,
     multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
@@ -29,23 +29,40 @@ export function getBorderRadius(
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
-    console.log(multiSelectGroupPosition, 'multiSelectGroupPosition')
-    console.log(variantBorderRadius, 'variantBorderRadius')
 
     if (multiSelectGroupPosition === undefined) {
-        return variantBorderRadius
+        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
     }
 
     if (multiSelectGroupPosition === 'left') {
-        console.log('left', `${variantBorderRadius} 0 0 ${variantBorderRadius}`)
         return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
     }
 
     if (multiSelectGroupPosition === 'right') {
-        console.log(
-            'right',
-            `0 ${variantBorderRadius} ${variantBorderRadius} 0`
-        )
+        return `0 0 0 0`
+    }
+
+    return '0px 0px 0px 0px'
+}
+export function getMultiSelectCrossBorderRadius(
+    size: MultiSelectMenuSize,
+    varient: MultiSelectVariant,
+    multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: MultiSelectTokensType
+): string {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+
+    if (multiSelectGroupPosition === undefined) {
+        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+    }
+
+    if (multiSelectGroupPosition === 'left') {
+        return `0 0 0 0`
+    }
+
+    if (multiSelectGroupPosition === 'right') {
         return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
     }
 

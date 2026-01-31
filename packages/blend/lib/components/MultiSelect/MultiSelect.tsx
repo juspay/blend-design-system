@@ -17,7 +17,12 @@ import {
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import { getBorderRadius, handleSelectAll, map } from './utils'
+import {
+    getMultiSelectBorderRadius,
+    getMultiSelectCrossBorderRadius,
+    handleSelectAll,
+    map,
+} from './utils'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -356,7 +361,12 @@ const MultiSelect = ({
                                         overflow="hidden"
                                         justifyContent="space-between"
                                         gap={8}
-                                        borderRadius={appliedBorderRadius}
+                                        borderRadius={getMultiSelectBorderRadius(
+                                            size,
+                                            variant,
+                                            multiSelectGroupPosition,
+                                            multiSelectTokens
+                                        )}
                                         style={getErrorShakeStyle(shouldShake)}
                                         {...ariaAttributes}
                                         border={
@@ -711,7 +721,12 @@ const MultiSelect = ({
                             disabled={disabled}
                             data-element="clear-button"
                             type="button"
-                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                            borderRadius={getMultiSelectCrossBorderRadius(
+                                size,
+                                variant,
+                                multiSelectGroupPosition,
+                                multiSelectTokens
+                            )}
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered
                             height={'100%'}

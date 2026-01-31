@@ -56,12 +56,6 @@ const AllComponentsDemo = () => {
                     description:
                         'Dropdown molecule with trigger, menu, and option atoms',
                 },
-                // {
-                //     name: 'Single Select Group',
-                //     component: <SingleSelectGroupDemo />,
-                //     description:
-                //         'Dropdown molecule with trigger, menu, and option atoms',
-                // },
                 {
                     name: 'Multi Select Group',
                     component: <MultiSelectGroupDemo />,
