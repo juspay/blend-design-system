@@ -142,7 +142,7 @@ const SingleSelect = ({
         variant,
         singleSelectGroupPosition,
         singleSelectTokens
-    )
+    ).borderRadius
     const paddingX = toPixels(
         singleSelectTokens.trigger.padding[size][variant].x
     )
@@ -309,6 +309,14 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
+                                    borderRight={
+                                        getBorderRadius(
+                                            size,
+                                            variant,
+                                            singleSelectGroupPosition,
+                                            singleSelectTokens
+                                        ).borderRight
+                                    }
                                     {...ariaAttributes}
                                     {...((!inline || isContainer) && {
                                         paddingX: paddingX,
@@ -342,6 +350,12 @@ const SingleSelect = ({
                                                             ? 'error'
                                                             : 'hover'
                                                     ],
+                                                borderRight: getBorderRadius(
+                                                    size,
+                                                    variant,
+                                                    singleSelectGroupPosition,
+                                                    singleSelectTokens
+                                                ).borderRight,
                                             },
                                         }),
                                         _focus: {
@@ -354,6 +368,12 @@ const SingleSelect = ({
                                                     .backgroundColor.container[
                                                     error ? 'error' : 'focus'
                                                 ],
+                                            borderRight: getBorderRadius(
+                                                size,
+                                                variant,
+                                                singleSelectGroupPosition,
+                                                singleSelectTokens
+                                            ).borderRight,
                                         },
                                         _disabled: {
                                             cursor: 'not-allowed',

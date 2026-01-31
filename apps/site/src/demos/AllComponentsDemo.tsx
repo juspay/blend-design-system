@@ -8,6 +8,7 @@ import ButtonDemo from './ButtonDemo'
 import InputDemo from './TextInputDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import ModalDemo from './ModalDemo'
 import DataTableDemo from './dataTableDemo'
 import CardDemo from './CardDemo'
@@ -52,6 +53,12 @@ const AllComponentsDemo = () => {
                 {
                     name: 'Single Select',
                     component: <SingleSelectDemo />,
+                    description:
+                        'Dropdown molecule with trigger, menu, and option atoms',
+                },
+                {
+                    name: 'Multi Select Group',
+                    component: <MultiSelectGroupDemo />,
                     description:
                         'Dropdown molecule with trigger, menu, and option atoms',
                 },

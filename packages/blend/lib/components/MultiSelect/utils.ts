@@ -1,4 +1,7 @@
+import { MultiSelectTokensType } from './multiSelect.tokens'
 import {
+    MultiSelectMenuSize,
+    MultiSelectVariant,
     type MultiSelectMenuGroupType,
     type MultiSelectMenuItemType,
 } from './types'
@@ -15,6 +18,77 @@ export const getSelectAllState = (
     )
 
     return { allSelected, someSelected }
+}
+
+export function getMultiSelectBorderRadius(
+    size: MultiSelectMenuSize,
+    varient: MultiSelectVariant,
+    multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: MultiSelectTokensType,
+    shouldShowClearButton: boolean
+): string {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+
+    if (multiSelectGroupPosition === undefined) {
+        return shouldShowClearButton
+            ? `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+            : variantBorderRadius
+    }
+
+    if (multiSelectGroupPosition === 'left') {
+        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+    }
+
+    if (multiSelectGroupPosition === 'right') {
+        return varient === 'no-container'
+            ? `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+            : `0 0 0 0`
+    }
+
+    return '0px 0px 0px 0px'
+}
+export function getMultiSelectCrossBorderRadius(
+    size: MultiSelectMenuSize,
+    varient: MultiSelectVariant,
+    multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: MultiSelectTokensType
+): { borderRadius: string; borderRight?: string } {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+
+    const styles = {
+        borderRadius: '',
+        borderRight: '',
+    }
+
+    if (multiSelectGroupPosition === undefined) {
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
+    }
+
+    if (multiSelectGroupPosition === 'left') {
+        return {
+            ...styles,
+            borderRadius: `0 0 0 0`,
+            borderRight: '0px !important',
+        }
+    }
+
+    if (multiSelectGroupPosition === 'right') {
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
+    }
+
+    return { ...styles, borderRadius: `0 0 0 0`, borderRight: '0px !important' }
 }
 
 export const map = function getValueLabelMap(
