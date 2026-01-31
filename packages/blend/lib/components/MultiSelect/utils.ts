@@ -24,14 +24,17 @@ export function getMultiSelectBorderRadius(
     size: MultiSelectMenuSize,
     varient: MultiSelectVariant,
     multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
-    tokens: MultiSelectTokensType
+    tokens: MultiSelectTokensType,
+    shouldShowClearButton: boolean
 ): string {
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
 
     if (multiSelectGroupPosition === undefined) {
-        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+        return shouldShowClearButton
+            ? `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+            : variantBorderRadius
     }
 
     if (multiSelectGroupPosition === 'left') {

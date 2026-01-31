@@ -365,7 +365,8 @@ const MultiSelect = ({
                                             size,
                                             variant,
                                             multiSelectGroupPosition,
-                                            multiSelectTokens
+                                            multiSelectTokens,
+                                            shouldShowClearButton
                                         )}
                                         style={getErrorShakeStyle(shouldShake)}
                                         {...ariaAttributes}

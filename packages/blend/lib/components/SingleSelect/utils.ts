@@ -25,24 +25,39 @@ export function getBorderRadius(
     varient: SelectMenuVariant,
     singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: SingleSelectTokensType
-): string {
+): { borderRadius: string; borderRight?: string } {
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
-
+    let styles = {
+        borderRadius: '',
+        borderRight: '',
+    }
     if (singleSelectGroupPosition === undefined) {
-        return variantBorderRadius
+        return { ...styles, borderRadius: variantBorderRadius, borderRight: '' }
     }
 
     if (singleSelectGroupPosition === 'left') {
-        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+        return {
+            ...styles,
+            borderRadius: `${variantBorderRadius} 0 0 ${variantBorderRadius}`,
+            borderRight: '0px !important',
+        }
     }
 
     if (singleSelectGroupPosition === 'right') {
-        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
     }
 
-    return '0px 0px 0px 0px'
+    return {
+        ...styles,
+        borderRadius: '0px 0px 0px 0px',
+        borderRight: '0px !important',
+    }
 }
 
 export type AccessibilitySetupOptions = {
