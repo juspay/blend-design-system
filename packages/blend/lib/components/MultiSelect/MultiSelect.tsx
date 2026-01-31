@@ -139,11 +139,6 @@ const MultiSelect = ({
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === MultiSelectMenuSize.LARGE
 
-    const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
-    const appliedBorderRadius = shouldShowClearButton
-        ? `${borderRadius} 0px 0px ${borderRadius}`
-        : borderRadius
-
     const paddingX = toPixels(
         multiSelectTokens.trigger.padding[size][variant].x
     )

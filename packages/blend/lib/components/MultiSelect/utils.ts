@@ -57,7 +57,7 @@ export function getMultiSelectCrossBorderRadius(
         tokens.trigger.borderRadius[size][varient]
     )
 
-    let styles = {
+    const styles = {
         borderRadius: '',
         borderRight: '',
     }

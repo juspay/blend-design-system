@@ -29,7 +29,7 @@ export function getBorderRadius(
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
-    let styles = {
+    const styles = {
         borderRadius: '',
         borderRight: '',
     }
