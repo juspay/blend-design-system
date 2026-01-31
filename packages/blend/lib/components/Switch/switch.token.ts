@@ -40,7 +40,6 @@ export type SwitchTokensType = {
         }
 
         thumb: {
-            marginTop: CSSObject['marginTop']
             // Pattern: switchContainer.thumb.backgroundColor
             backgroundColor: CSSObject['backgroundColor']
             // Pattern: switchContainer.thumb.border
@@ -144,7 +143,6 @@ export const getSwitchTokens = (
                 },
 
                 thumb: {
-                    marginTop: foundationToken.unit[4], // 3px margin-top to fix alignment
                     backgroundColor: foundationToken.colors.gray[0],
                     border: {
                         color: foundationToken.colors.gray[200],
@@ -267,7 +265,6 @@ export const getSwitchTokens = (
                 },
 
                 thumb: {
-                    marginTop: foundationToken.unit[4],
                     backgroundColor: foundationToken.colors.gray[0],
                     border: {
                         color: foundationToken.colors.gray[200],

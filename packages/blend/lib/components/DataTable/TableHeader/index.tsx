@@ -275,6 +275,16 @@ const TableHeader = forwardRef<
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
+        const subheaderLineHeight =
+            typeof FOUNDATION_THEME.font.lineHeight[14] === 'number'
+                ? FOUNDATION_THEME.font.lineHeight[14]
+                : 14
+        const subheaderMarginTop = FOUNDATION_THEME.unit[2]
+        const subheaderMarginTopValue = parseInt(
+            String(subheaderMarginTop).replace('px', '') || '2',
+            10
+        )
+        const subheaderAreaHeight = `${subheaderLineHeight + subheaderMarginTopValue}px`
 
         const sortHandlers = createSortHandlers(
             sortState,
@@ -672,7 +682,7 @@ const TableHeader = forwardRef<
                         }) => (
                             <Block
                                 display="flex"
-                                alignItems="center"
+                                alignItems="flex-start"
                                 justifyContent="space-between"
                                 gap="4px"
                                 width="100%"
@@ -684,7 +694,7 @@ const TableHeader = forwardRef<
                             >
                                 <Block
                                     display="flex"
-                                    alignItems="center"
+                                    alignItems="flex-start"
                                     minWidth={0}
                                     flexGrow={1}
                                     overflow="hidden"
@@ -721,7 +731,7 @@ const TableHeader = forwardRef<
                                     ) : (
                                         <Block
                                             display="flex"
-                                            alignItems="center"
+                                            alignItems="flex-start"
                                             minWidth={0}
                                             flexGrow={1}
                                             gap="8px"
@@ -733,7 +743,7 @@ const TableHeader = forwardRef<
                                                 display="flex"
                                                 flexDirection="column"
                                                 alignItems="flex-start"
-                                                justifyContent="center"
+                                                justifyContent="flex-start"
                                                 minWidth={0}
                                                 flexGrow={1}
                                                 flexShrink={1}
@@ -748,79 +758,24 @@ const TableHeader = forwardRef<
                                                     ? dragHandleProps.listeners
                                                     : {})}
                                             >
-                                                {isDisabled ? (
-                                                    <Skeleton
-                                                        variant="pulse"
-                                                        loading
-                                                        width="80%"
-                                                        height="16px"
-                                                        borderRadius="4px"
-                                                    />
-                                                ) : (
-                                                    <TruncatedTextWithTooltip
-                                                        content={column.header}
-                                                        tooltipProps={{
-                                                            side: TooltipSide.TOP,
-                                                            align: TooltipAlign.START,
-                                                            size: TooltipSize.SMALL,
-                                                            delayDuration: 500,
-                                                        }}
-                                                    >
-                                                        <PrimitiveText
-                                                            style={{
-                                                                overflow:
-                                                                    'hidden',
-                                                                textOverflow:
-                                                                    'ellipsis',
-                                                                whiteSpace:
-                                                                    'nowrap',
-                                                                minWidth: 0,
-                                                                width: '100%',
-                                                                maxWidth:
-                                                                    '100%',
-                                                                display:
-                                                                    'block',
-                                                                cursor: isDraggable
-                                                                    ? 'grab'
-                                                                    : 'default',
-                                                                fontSize:
-                                                                    tableToken
-                                                                        .dataTable
-                                                                        .table
-                                                                        .header
-                                                                        .cell
-                                                                        .fontSize,
-                                                                fontWeight:
-                                                                    tableToken
-                                                                        .dataTable
-                                                                        .table
-                                                                        .header
-                                                                        .cell
-                                                                        .fontWeight,
-                                                                lineHeight: 1.2,
-                                                            }}
-                                                        >
-                                                            {column.header}
-                                                        </PrimitiveText>
-                                                    </TruncatedTextWithTooltip>
-                                                )}
-                                                {column.headerSubtext &&
-                                                    (isDisabled ? (
+                                                <Block
+                                                    style={{
+                                                        width: '100%',
+                                                        minHeight: 0,
+                                                    }}
+                                                >
+                                                    {isDisabled ? (
                                                         <Skeleton
                                                             variant="pulse"
                                                             loading
-                                                            width="60%"
-                                                            height="12px"
+                                                            width="80%"
+                                                            height="16px"
                                                             borderRadius="4px"
-                                                            style={{
-                                                                marginTop:
-                                                                    '2px',
-                                                            }}
                                                         />
                                                     ) : (
                                                         <TruncatedTextWithTooltip
                                                             content={
-                                                                column.headerSubtext
+                                                                column.header
                                                             }
                                                             tooltipProps={{
                                                                 side: TooltipSide.TOP,
@@ -830,10 +785,6 @@ const TableHeader = forwardRef<
                                                             }}
                                                         >
                                                             <PrimitiveText
-                                                                data-element="table-header-sub-title"
-                                                                data-id={
-                                                                    column.headerSubtext
-                                                                }
                                                                 style={{
                                                                     overflow:
                                                                         'hidden',
@@ -855,25 +806,98 @@ const TableHeader = forwardRef<
                                                                             .dataTable
                                                                             .table
                                                                             .header
-                                                                            .filter
-                                                                            .groupLabelFontSize,
-                                                                    color: tableToken
-                                                                        .dataTable
-                                                                        .table
-                                                                        .header
-                                                                        .filter
-                                                                        .groupLabelColor,
+                                                                            .cell
+                                                                            .fontSize,
+                                                                    fontWeight:
+                                                                        tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .header
+                                                                            .cell
+                                                                            .fontWeight,
                                                                     lineHeight: 1.2,
-                                                                    marginTop:
-                                                                        '2px',
                                                                 }}
                                                             >
-                                                                {
-                                                                    column.headerSubtext
-                                                                }
+                                                                {column.header}
                                                             </PrimitiveText>
                                                         </TruncatedTextWithTooltip>
-                                                    ))}
+                                                    )}
+                                                </Block>
+                                                <Block
+                                                    style={{
+                                                        width: '100%',
+                                                        minHeight:
+                                                            subheaderAreaHeight,
+                                                        marginTop:
+                                                            subheaderMarginTop,
+                                                    }}
+                                                >
+                                                    {column.headerSubtext ? (
+                                                        isDisabled ? (
+                                                            <Skeleton
+                                                                variant="pulse"
+                                                                loading
+                                                                width="60%"
+                                                                height="12px"
+                                                                borderRadius="4px"
+                                                            />
+                                                        ) : (
+                                                            <TruncatedTextWithTooltip
+                                                                content={
+                                                                    column.headerSubtext
+                                                                }
+                                                                tooltipProps={{
+                                                                    side: TooltipSide.TOP,
+                                                                    align: TooltipAlign.START,
+                                                                    size: TooltipSize.SMALL,
+                                                                    delayDuration: 500,
+                                                                }}
+                                                            >
+                                                                <PrimitiveText
+                                                                    data-element="table-header-sub-title"
+                                                                    data-id={
+                                                                        column.headerSubtext
+                                                                    }
+                                                                    style={{
+                                                                        overflow:
+                                                                            'hidden',
+                                                                        textOverflow:
+                                                                            'ellipsis',
+                                                                        whiteSpace:
+                                                                            'nowrap',
+                                                                        minWidth: 0,
+                                                                        width: '100%',
+                                                                        maxWidth:
+                                                                            '100%',
+                                                                        display:
+                                                                            'block',
+                                                                        cursor: isDraggable
+                                                                            ? 'grab'
+                                                                            : 'default',
+                                                                        fontSize:
+                                                                            tableToken
+                                                                                .dataTable
+                                                                                .table
+                                                                                .header
+                                                                                .filter
+                                                                                .groupLabelFontSize,
+                                                                        color: tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .header
+                                                                            .filter
+                                                                            .groupLabelColor,
+                                                                        lineHeight: 1.2,
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        column.headerSubtext
+                                                                    }
+                                                                </PrimitiveText>
+                                                            </TruncatedTextWithTooltip>
+                                                        )
+                                                    ) : null}
+                                                </Block>
                                             </Block>
                                             {enableInlineEdit && (
                                                 <Block
@@ -1499,22 +1523,63 @@ const TableHeader = forwardRef<
                             >
                                 <Block
                                     display="flex"
-                                    alignItems="center"
-                                    justifyContent="flex-start"
+                                    alignItems="flex-start"
+                                    justifyContent="space-between"
+                                    gap="4px"
+                                    width="100%"
+                                    minWidth={0}
                                 >
-                                    <PrimitiveText
-                                        as="span"
-                                        style={{
-                                            fontSize:
-                                                tableToken.dataTable.table
-                                                    .header.cell.fontSize,
-                                            fontWeight:
-                                                tableToken.dataTable.table
-                                                    .header.cell.fontWeight,
-                                        }}
+                                    <Block
+                                        display="flex"
+                                        alignItems="flex-start"
+                                        minWidth={0}
+                                        flexGrow={1}
+                                        overflow="hidden"
                                     >
-                                        Actions
-                                    </PrimitiveText>
+                                        <Block
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems="flex-start"
+                                            justifyContent="flex-start"
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            flexShrink={1}
+                                        >
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight: 0,
+                                                }}
+                                            >
+                                                <PrimitiveText
+                                                    as="span"
+                                                    style={{
+                                                        fontSize:
+                                                            tableToken.dataTable
+                                                                .table.header
+                                                                .cell.fontSize,
+                                                        fontWeight:
+                                                            tableToken.dataTable
+                                                                .table.header
+                                                                .cell
+                                                                .fontWeight,
+                                                        lineHeight: 1.2,
+                                                    }}
+                                                >
+                                                    Actions
+                                                </PrimitiveText>
+                                            </Block>
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight:
+                                                        subheaderAreaHeight,
+                                                    marginTop:
+                                                        subheaderMarginTop,
+                                                }}
+                                            />
+                                        </Block>
+                                    </Block>
                                 </Block>
                             </th>
                         )}
@@ -1577,28 +1642,76 @@ const TableHeader = forwardRef<
                                         tableToken.dataTable.borderRadius,
                                 }}
                             >
-                                <Block position="relative">
-                                    <ColumnManager
-                                        columns={initialColumns}
-                                        visibleColumns={
-                                            allVisibleColumns || visibleColumns
-                                        }
-                                        onColumnChange={onColumnChange}
-                                        maxSelections={
-                                            columnManagerMaxSelections
-                                        }
-                                        alwaysSelectedColumns={
-                                            columnManagerAlwaysSelected
-                                        }
-                                        columnManagerPrimaryAction={
-                                            columnManagerPrimaryAction
-                                        }
-                                        columnManagerSecondaryAction={
-                                            columnManagerSecondaryAction
-                                        }
-                                        multiSelectWidth={columnManagerWidth}
-                                        disabled={isDisabled}
-                                    />
+                                <Block
+                                    display="flex"
+                                    alignItems="flex-start"
+                                    justifyContent="space-between"
+                                    gap="4px"
+                                    width="100%"
+                                    minWidth={0}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="flex-start"
+                                        minWidth={0}
+                                        flexGrow={1}
+                                        overflow="hidden"
+                                    >
+                                        <Block
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems="flex-start"
+                                            justifyContent="flex-start"
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            flexShrink={1}
+                                        >
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight: 0,
+                                                }}
+                                            >
+                                                <Block position="relative">
+                                                    <ColumnManager
+                                                        columns={initialColumns}
+                                                        visibleColumns={
+                                                            allVisibleColumns ||
+                                                            visibleColumns
+                                                        }
+                                                        onColumnChange={
+                                                            onColumnChange
+                                                        }
+                                                        maxSelections={
+                                                            columnManagerMaxSelections
+                                                        }
+                                                        alwaysSelectedColumns={
+                                                            columnManagerAlwaysSelected
+                                                        }
+                                                        columnManagerPrimaryAction={
+                                                            columnManagerPrimaryAction
+                                                        }
+                                                        columnManagerSecondaryAction={
+                                                            columnManagerSecondaryAction
+                                                        }
+                                                        multiSelectWidth={
+                                                            columnManagerWidth
+                                                        }
+                                                        disabled={isDisabled}
+                                                    />
+                                                </Block>
+                                            </Block>
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight:
+                                                        subheaderAreaHeight,
+                                                    marginTop:
+                                                        subheaderMarginTop,
+                                                }}
+                                            />
+                                        </Block>
+                                    </Block>
                                 </Block>
                             </th>
                         )}

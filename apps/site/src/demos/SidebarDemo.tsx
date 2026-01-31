@@ -37,6 +37,7 @@ import {
     Sun,
     HelpCircle,
     Lightbulb,
+    SearchIcon,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
@@ -72,6 +73,8 @@ import {
 } from '../../../../packages/blend/lib/components/Select'
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
+import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
@@ -95,7 +98,6 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button/types'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
-import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
@@ -113,6 +115,9 @@ import ChartDemoV2 from './ChartDemoV2'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
+import AlertV2Demo from './AlertV2Demo'
+import SnackbarV2Demo from './SnackbarV2Demo'
+import SwitchV2Demo from './SwitchV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -160,6 +165,8 @@ const SidebarDemo = () => {
         | 'salesKpiDashboard'
         | 'transactionAnalyticsDashboard'
         | 'singleSelect'
+        | 'singleSelectGroup'
+        | 'multiSelectGroup'
         | 'multiSelect'
         | 'dropdownInput'
         | 'dataRangePicker'
@@ -180,12 +187,14 @@ const SidebarDemo = () => {
         | 'outageCharts'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
-    >('textInputAutofillTest')
+        | 'alertV2'
+        | 'snackbarV2'
+        | 'switchV2'
+    >('snackbarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
         useState<string>('design-system')
-    const [search, setSearch] = useState<string>('')
 
     // Topbar visibility control states
     const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
@@ -410,6 +419,10 @@ const SidebarDemo = () => {
                 return <OTPInputDemo />
             case 'alerts':
                 return <AlertDemo />
+            case 'alertV2':
+                return <AlertV2Demo />
+            case 'snackbarV2':
+                return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
             case 'accordion':
@@ -430,10 +443,16 @@ const SidebarDemo = () => {
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
+            case 'switchV2':
+                return <SwitchV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
                 return <SingleSelectDemo />
+            case 'singleSelectGroup':
+                return <SingleSelectGroupDemo />
+            case 'multiSelectGroup':
+                return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
             case 'progressBar':
@@ -930,12 +949,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelect'),
                 },
                 {
+                    label: 'Single Select Group',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectGroup',
+                    onClick: () => setActiveComponent('singleSelectGroup'),
+                },
+                {
                     label: 'Multi Select',
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select Group',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectGroup',
+                    onClick: () => setActiveComponent('multiSelectGroup'),
                 },
                 {
                     label: 'Tabs',
@@ -977,12 +1012,30 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Alert V2',
+                    leftSlot: (
+                        <AlertCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'alertV2',
+                    onClick: () => setActiveComponent('alertV2'),
+                },
+                {
                     label: 'Snackbar',
                     leftSlot: (
                         <BellIcon style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'snackbar',
                     onClick: () => setActiveComponent('snackbar'),
+                },
+                {
+                    label: 'Snackbar V2',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbarV2',
+                    onClick: () => setActiveComponent('snackbarV2'),
                 },
                 {
                     label: 'Tooltip',
@@ -1160,6 +1213,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('switch'),
                 },
                 {
+                    label: 'Switch V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switchV2',
+                    onClick: () => setActiveComponent('switchV2'),
+                },
+                {
                     label: 'Selectors',
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
@@ -1245,7 +1306,6 @@ const SidebarDemo = () => {
                     // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
-                    iconOnlyMode={iconOnlyMode}
                     hideOnIconOnlyToggle={hideOnIconOnlyToggle}
                     isExpanded={isExpanded}
                     onExpandedChange={setIsExpanded}
@@ -1318,6 +1378,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
+                    // showLeftPanel={false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
@@ -1339,6 +1400,7 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
+                        // <div>aryan</div>
                     }
                     rightActions={
                         <div className="flex items-center gap-1">
@@ -1365,37 +1427,27 @@ const SidebarDemo = () => {
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
-                            <Block width="350px">
-                                <TextInput
-                                    placeholder="Search"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    cursor="pointer"
-                                    leftSlot={
-                                        <Search
-                                            style={{
-                                                width: '16px',
-                                                height: '16px',
-                                            }}
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                        />
-                                    }
-                                    rightSlot={
-                                        <span
-                                            style={{
-                                                fontSize: 14,
-                                                color: FOUNDATION_THEME.colors
-                                                    .gray[300],
-                                            }}
-                                        >
-                                            ⌘ + K
-                                        </span>
-                                    }
-                                />
-                            </Block>
+                            <div className=" flex items-center gap-3 ">
+                                {' '}
+                                <div className="text-sm text-gray-400 flex items-center gap-1">
+                                    <SearchIcon
+                                        size={16}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                    />{' '}
+                                    Search
+                                </div>{' '}
+                                <span
+                                    style={{
+                                        fontSize: 14,
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[400],
+                                    }}
+                                >
+                                    {`(⌘K)`}
+                                </span>
+                            </div>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() =>
@@ -1564,20 +1616,24 @@ const SidebarDemo = () => {
                         </div>
                     }
                     footer={
-                        <div className="flex items-center gap-2">
+                        <div
+                            className={`flex items-center  ${isExpanded ? 'gap-2 justify-between' : 'gap-0 justify-center'}`}
+                        >
                             <Avatar
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
                                 alt="John Doe"
                                 size={AvatarSize.SM}
                                 shape={AvatarShape.ROUNDED}
                             />
-                            <Text
-                                variant="body.md"
-                                fontWeight={600}
-                                color={FOUNDATION_THEME.colors.gray[600]}
-                            >
-                                John Doe
-                            </Text>
+                            {isExpanded && (
+                                <Text
+                                    variant="body.md"
+                                    fontWeight={600}
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                >
+                                    John Doe
+                                </Text>
+                            )}
                         </div>
                     }
                     showPrimaryActionButton={true}

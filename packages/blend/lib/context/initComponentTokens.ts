@@ -1,3 +1,6 @@
+import { type ThemeType } from '../tokens'
+import { type ComponentTokenType } from './ThemeContext'
+import { Theme } from './theme.enum'
 import { getAlertTokens } from '../components/Alert/alert.tokens'
 import { getNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
 import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
@@ -7,10 +10,7 @@ import { getTagTokens } from '../components/Tags/tag.tokens'
 import { getRadioTokens } from '../components/Radio/radio.token'
 import { getSwitchTokens } from '../components/Switch/switch.token'
 import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
-import { getTabsTokens } from '../components/Tabs/tabs.token' // Added TABS
-import { type ThemeType } from '../tokens'
-import { type ComponentTokenType } from './ThemeContext'
-import { Theme } from './theme.enum'
+import { getTabsTokens } from '../components/Tabs/tabs.token'
 import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
 import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
 import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
@@ -46,6 +46,9 @@ import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
 import { getButtonTokens } from '../components/Button/button.tokens'
 import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
 import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import { getAlertV2Tokens } from '../components/AlertV2'
+import { getSnackbarV2Tokens } from '../components/SnackbarV2'
+import { getSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -137,6 +140,15 @@ const initTokens = (
             componentTokens.BUTTONV2 ??
             getButtonV2Tokens(foundationTokens, theme),
         TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
+        ALERTV2:
+            componentTokens.ALERTV2 ??
+            getAlertV2Tokens(foundationTokens, theme),
+        SNACKBARV2:
+            componentTokens.SNACKBARV2 ??
+            getSnackbarV2Tokens(foundationTokens, theme),
+        SWITCHV2:
+            componentTokens.SWITCHV2 ??
+            getSwitchV2Tokens(foundationTokens, theme),
     }
 }
 

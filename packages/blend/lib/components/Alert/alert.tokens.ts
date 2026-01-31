@@ -93,17 +93,12 @@ export const getAlertTokens = (
 ): ResponsiveAlertTokens => {
     return {
         sm: {
-            // width
             width: 'auto',
-            // maxWidth
             maxWidth: '900px',
             minWidth: '300px',
             gap: foundationToken.unit[8],
-            // padding
             padding: foundationToken.unit[16],
-            // borderRadius
             borderRadius: foundationToken.border.radius[8],
-            // background.[variant].[style]
             background: {
                 primary: {
                     subtle: foundationToken.colors.primary[50],
@@ -134,7 +129,6 @@ export const getAlertTokens = (
                     noFill: foundationToken.colors.gray[0],
                 },
             },
-            // border.[variant]
             border: {
                 primary: {
                     subtle: `1px solid ${foundationToken.colors.primary[500]}`,
@@ -165,7 +159,6 @@ export const getAlertTokens = (
                     noFill: `1px solid ${foundationToken.colors.orange[500]}`,
                 },
             },
-            // text.[variant]
             text: {
                 heading: {
                     color: {
@@ -196,7 +189,6 @@ export const getAlertTokens = (
                     lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
                 },
             },
-            // button.[variant]
             button: {
                 gap: foundationToken.unit[20],
                 primaryAction: {
@@ -244,20 +236,12 @@ export const getAlertTokens = (
             },
         },
         lg: {
-            // width
             width: 'auto',
-            // maxWidth
             maxWidth: '900px',
-            // minWidth
             minWidth: '300px',
-            // width
-            // gap
             gap: foundationToken.unit[8],
-            // padding
             padding: foundationToken.unit[16],
-            // borderRadius
             borderRadius: foundationToken.border.radius[8],
-            // background.[variant].[style]
             background: {
                 primary: {
                     subtle: foundationToken.colors.primary[50],
@@ -288,7 +272,6 @@ export const getAlertTokens = (
                     noFill: foundationToken.colors.gray[0],
                 },
             },
-            // border.[variant]
             border: {
                 primary: {
                     subtle: `1px solid ${foundationToken.colors.primary[500]}`,

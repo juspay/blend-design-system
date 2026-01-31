@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     Bar,
     BarChart,
@@ -21,6 +22,7 @@ import {
     TickProps,
     AxisType,
     SankeyData,
+    DotItemDotProps,
 } from './types'
 import SankeyChartWrapper from './SankeyChartWrapper'
 import {
@@ -382,47 +384,95 @@ export const renderChart = ({
                             if (b === hoveredKey) return -1
                             return 0
                         })
-                        .map((key) => (
-                            <Line
-                                key={key}
-                                type="linear"
-                                dataKey={key}
-                                stroke={getColor(key, chartType)}
-                                strokeWidth={2}
-                                activeDot={(props: {
-                                    cx?: number
-                                    cy?: number
-                                    payload?: Record<string, unknown>
-                                }) => {
-                                    const dataPoint = originalData.find(
-                                        (d) => d.name === props.payload?.name
-                                    )
-                                    const hasError =
-                                        !!dataPoint?.data?.[key]?.error
+                        .map((key) => {
+                            // Determine opacity for dots based on hover state
+                            const hasOtherHovered =
+                                hoveredKey !== null && hoveredKey !== key
+                            const dotOpacity = hasOtherHovered ? 0.3 : 1
 
-                                    return (
-                                        <circle
-                                            cx={props.cx}
-                                            cy={props.cy}
-                                            r={hoveredKey === key ? 4 : 0}
-                                            stroke={
-                                                hasError
-                                                    ? 'none'
-                                                    : getColor(key, chartType)
-                                            }
-                                            fill={
-                                                hasError
-                                                    ? 'none'
-                                                    : getColor(key, chartType)
-                                            }
-                                        />
-                                    )
-                                }}
-                                animationDuration={350}
-                                onMouseOver={() => setHoveredKey(key)}
-                                dot={CustomizedDot || false}
-                            />
-                        ))}
+                            // Wrap CustomizedDot to pass hover context and apply opacity
+                            const dotRenderer = CustomizedDot
+                                ? (props: DotItemDotProps) => {
+                                      const dotElement = CustomizedDot(props)
+                                      // Apply opacity if it's a React element
+                                      if (
+                                          dotElement &&
+                                          React.isValidElement(dotElement)
+                                      ) {
+                                          const elementProps =
+                                              dotElement.props as unknown as Record<
+                                                  string,
+                                                  unknown
+                                              >
+                                          const existingStyle =
+                                              elementProps?.style as
+                                                  | Record<string, unknown>
+                                                  | undefined
+                                          return React.cloneElement(
+                                              dotElement,
+                                              {
+                                                  ...elementProps,
+                                                  opacity: dotOpacity,
+                                                  style: {
+                                                      ...existingStyle,
+                                                      opacity: dotOpacity,
+                                                  },
+                                              } as React.Attributes
+                                          )
+                                      }
+                                      return dotElement
+                                  }
+                                : false
+
+                            return (
+                                <Line
+                                    key={key}
+                                    type="linear"
+                                    dataKey={key}
+                                    stroke={getColor(key, chartType)}
+                                    strokeWidth={2}
+                                    activeDot={(props: {
+                                        cx?: number
+                                        cy?: number
+                                        payload?: Record<string, unknown>
+                                    }) => {
+                                        const dataPoint = originalData.find(
+                                            (d) =>
+                                                d.name === props.payload?.name
+                                        )
+                                        const hasError =
+                                            !!dataPoint?.data?.[key]?.error
+
+                                        return (
+                                            <circle
+                                                cx={props.cx}
+                                                cy={props.cy}
+                                                r={hoveredKey === key ? 4 : 0}
+                                                stroke={
+                                                    hasError
+                                                        ? 'none'
+                                                        : getColor(
+                                                              key,
+                                                              chartType
+                                                          )
+                                                }
+                                                fill={
+                                                    hasError
+                                                        ? 'none'
+                                                        : getColor(
+                                                              key,
+                                                              chartType
+                                                          )
+                                                }
+                                            />
+                                        )
+                                    }}
+                                    animationDuration={350}
+                                    onMouseOver={() => setHoveredKey(key)}
+                                    dot={dotRenderer}
+                                />
+                            )
+                        })}
                 </LineChart>
             )
         }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { render, screen, waitFor, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import DateRangePicker from '../../../lib/components/DateRangePicker/DateRangePicker'
 import {
@@ -267,17 +267,22 @@ describe('DateRangePicker Accessibility', () => {
             })
 
             const startInput = getStartDateInput()
-            await user.clear(startInput)
-            await user.type(startInput, 'invalid-date')
+            // Use a value that passes formatDateInput (digits/slashes) but fails validation (year out of 2001-2100)
+            fireEvent.change(startInput, {
+                target: { value: '99/99/9999' },
+            })
+            fireEvent.blur(startInput)
 
-            await waitFor(() => {
-                const errorMessage = screen.queryByRole('alert')
-                if (errorMessage) {
+            await waitFor(
+                () => {
+                    const errorMessage = screen.queryByRole('alert')
+                    expect(errorMessage).toBeInTheDocument()
                     expect(startInput).toHaveAttribute('aria-describedby')
                     expect(startInput).toHaveAttribute('aria-invalid', 'true')
-                }
-            })
-        })
+                },
+                { timeout: 3000 }
+            )
+        }, 10000)
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {

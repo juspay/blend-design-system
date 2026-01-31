@@ -1,7 +1,6 @@
 import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { DropdownMenu } from 'radix-ui'
 import { useDebounce } from '../../hooks/useDebounce'
 import { ChartLegendsProps, StackedLegendsDataPoint } from './types'
 import Block from '../../components/Primitives/Block/Block'
@@ -13,6 +12,8 @@ import { getColorByKey } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { Menu } from '../Menu'
+import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 
 const StackedLegends: React.FC<{
     keys: string[]
@@ -200,7 +201,6 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 
     const displayLegends: Array<{ title: string; total?: number }> =
         legends || keys.map((key) => ({ title: key }))
-
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
     const [cuttOffIndex, setCuttOffIndex] = useState<number>(keys.length)
@@ -440,42 +440,18 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     )
                 })}
                 {cuttOffIndex < displayLegends.length && (
-                    <DropdownMenu.Root>
-                        <DropdownMenu.Trigger asChild>
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                cursor="pointer"
-                                gap={8}
-                                style={{
-                                    fontSize: legendTokens.item.fontSize,
-                                    fontWeight: legendTokens.item.fontWeight,
-                                }}
-                                height="100%"
-                                color={legendTokens.item.color.default}
-                                _hover={{
-                                    color: legendTokens.item.color.hover,
-                                }}
-                            >
-                                + {displayLegends.length - cuttOffIndex} more
-                            </Block>
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content asChild>
-                            <Block
-                                backgroundColor={
-                                    FOUNDATION_THEME.colors.gray[0]
-                                }
-                                zIndex={50}
-                                borderRadius={FOUNDATION_THEME.border.radius[4]}
-                                boxShadow={FOUNDATION_THEME.shadows.lg}
-                                border={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
-                                minWidth={180}
-                                style={{
-                                    maxHeight: legendTokens.dropdown.maxHeight,
-                                    overflowY: 'auto',
-                                }}
-                            >
-                                {displayLegends
+                    <Menu
+                        trigger={
+                            <Button
+                                text={`+ ${displayLegends.length - cuttOffIndex} more`}
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.INLINE}
+                            />
+                        }
+                        items={[
+                            {
+                                items: displayLegends
                                     .slice(cuttOffIndex)
                                     .map((legend, index) => {
                                         const dataKey = legend.title
@@ -505,15 +481,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                         const itemOpacity = isHovered
                                             ? 1
                                             : getItemOpacity(dataKey)
-
-                                        return (
-                                            <DropdownMenu.Item
-                                                key={dataKey}
-                                                onSelect={(e) => {
-                                                    e.preventDefault()
-                                                }}
-                                                asChild
-                                            >
+                                        return {
+                                            label: '',
+                                            slot1: (
                                                 <PrimitiveButton
                                                     type="button"
                                                     aria-label={`Toggle ${dataKey} series visibility`}
@@ -638,12 +608,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                         dataKey
                                                     )}
                                                 </PrimitiveButton>
-                                            </DropdownMenu.Item>
-                                        )
-                                    })}
-                            </Block>
-                        </DropdownMenu.Content>
-                    </DropdownMenu.Root>
+                                            ),
+                                            onClick: () =>
+                                                handleLegendClick(dataKey),
+                                        }
+                                    }),
+                            },
+                        ]}
+                    />
                 )}
             </Block>
             {selectedKeys &&
