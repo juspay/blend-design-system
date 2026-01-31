@@ -73,6 +73,7 @@ import {
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
@@ -165,6 +166,7 @@ const SidebarDemo = () => {
         | 'transactionAnalyticsDashboard'
         | 'singleSelect'
         | 'singleSelectGroup'
+        | 'multiSelectGroup'
         | 'multiSelect'
         | 'dropdownInput'
         | 'dataRangePicker'
@@ -450,6 +452,8 @@ const SidebarDemo = () => {
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
                 return <SingleSelectGroupDemo />
+            case 'multiSelectGroup':
+                return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
             case 'progressBar':
@@ -960,6 +964,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select Group',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectGroup',
+                    onClick: () => setActiveComponent('multiSelectGroup'),
                 },
                 {
                     label: 'Tabs',

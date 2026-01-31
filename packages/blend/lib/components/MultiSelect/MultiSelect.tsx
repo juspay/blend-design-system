@@ -17,7 +17,7 @@ import {
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import { handleSelectAll, map } from './utils'
+import { getBorderRadius, handleSelectAll, map } from './utils'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -95,6 +95,7 @@ const MultiSelect = ({
     showClearButton,
     onClearAllClick,
     onOpenChange,
+    multiSelectGroupPosition,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'

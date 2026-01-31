@@ -1,4 +1,7 @@
+import { MultiSelectTokensType } from './multiSelect.tokens'
 import {
+    MultiSelectMenuSize,
+    MultiSelectVariant,
     type MultiSelectMenuGroupType,
     type MultiSelectMenuItemType,
 } from './types'
@@ -15,6 +18,38 @@ export const getSelectAllState = (
     )
 
     return { allSelected, someSelected }
+}
+
+export function getBorderRadius(
+    size: MultiSelectMenuSize,
+    varient: MultiSelectVariant,
+    multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: MultiSelectTokensType
+): string {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+    console.log(multiSelectGroupPosition, 'multiSelectGroupPosition')
+    console.log(variantBorderRadius, 'variantBorderRadius')
+
+    if (multiSelectGroupPosition === undefined) {
+        return variantBorderRadius
+    }
+
+    if (multiSelectGroupPosition === 'left') {
+        console.log('left', `${variantBorderRadius} 0 0 ${variantBorderRadius}`)
+        return `${variantBorderRadius} 0 0 ${variantBorderRadius}`
+    }
+
+    if (multiSelectGroupPosition === 'right') {
+        console.log(
+            'right',
+            `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+        )
+        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+    }
+
+    return '0px 0px 0px 0px'
 }
 
 export const map = function getValueLabelMap(
