@@ -721,12 +721,14 @@ const MultiSelect = ({
                             disabled={disabled}
                             data-element="clear-button"
                             type="button"
-                            borderRadius={getMultiSelectCrossBorderRadius(
-                                size,
-                                variant,
-                                multiSelectGroupPosition,
-                                multiSelectTokens
-                            )}
+                            borderRadius={
+                                getMultiSelectCrossBorderRadius(
+                                    size,
+                                    variant,
+                                    multiSelectGroupPosition,
+                                    multiSelectTokens
+                                ).borderRadius
+                            }
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered
                             height={'100%'}
@@ -751,6 +753,14 @@ const MultiSelect = ({
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
                                 ]
+                            }
+                            borderRight={
+                                getMultiSelectCrossBorderRadius(
+                                    size,
+                                    variant,
+                                    multiSelectGroupPosition,
+                                    multiSelectTokens
+                                ).borderRight
                             }
                             borderLeft={'0px solid !important'}
                             _hover={{

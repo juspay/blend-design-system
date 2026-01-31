@@ -89,10 +89,10 @@ const MultiSelectGroupDemo = () => {
         <div className="space-y-6 p-8">
             <div className="space-y-3">
                 <h1 className="text-3xl font-bold">
-                    Single Select Group Component
+                    Multi Select Group Component
                 </h1>
                 <p className="text-gray-600">
-                    Interactive playground to test Single Select Group with
+                    Interactive playground to test Multi Select Group with
                     stacked and non-stacked modes.
                 </p>
             </div>
@@ -125,7 +125,7 @@ const MultiSelectGroupDemo = () => {
                         placeholder="Select Gap"
                     />
                     <SingleSelect
-                        label="Single Select Count"
+                        label="Multi Select Count"
                         items={[{ items: countOptions }]}
                         selected={count}
                         onSelect={(value) => setCount(value)}

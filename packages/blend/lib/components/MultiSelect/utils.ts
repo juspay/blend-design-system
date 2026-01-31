@@ -49,24 +49,41 @@ export function getMultiSelectCrossBorderRadius(
     varient: MultiSelectVariant,
     multiSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: MultiSelectTokensType
-): string {
+): { borderRadius: string; borderRight?: string } {
     const variantBorderRadius = String(
         tokens.trigger.borderRadius[size][varient]
     )
 
+    let styles = {
+        borderRadius: '',
+        borderRight: '',
+    }
+
     if (multiSelectGroupPosition === undefined) {
-        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
     }
 
     if (multiSelectGroupPosition === 'left') {
-        return `0 0 0 0`
+        return {
+            ...styles,
+            borderRadius: `0 0 0 0`,
+            borderRight: '0px !important',
+        }
     }
 
     if (multiSelectGroupPosition === 'right') {
-        return `0 ${variantBorderRadius} ${variantBorderRadius} 0`
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
     }
 
-    return '0px 0px 0px 0px'
+    return { ...styles, borderRadius: `0 0 0 0`, borderRight: '0px !important' }
 }
 
 export const map = function getValueLabelMap(
