@@ -75,7 +75,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
             minWidth={0}
             flexShrink={0}
             overflow="hidden"
-            transition="width 0.3s ease-in-out"
+            transition="width 0.25s ease-in-out"
         >
             <SidebarHeader
                 sidebarTopSlot={sidebarTopSlot}
