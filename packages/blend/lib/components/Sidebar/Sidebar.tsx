@@ -393,6 +393,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     height="100%"
                                     overflow="hidden"
                                     zIndex={99}
+                                    aria-hidden="true"
                                     backgroundColor={tokens.backgroundColor}
                                     borderRight={
                                         isHovering ? tokens.borderRight : 'none'

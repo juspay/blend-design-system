@@ -38,7 +38,7 @@ describe('RadioGroup Performance', () => {
             assertPerformanceWithContext(
                 renderTime,
                 'render',
-                'simple',
+                'complex',
                 getCurrentTestName()
             )
         })
@@ -63,7 +63,7 @@ describe('RadioGroup Performance', () => {
                 assertPerformanceWithContext(
                     renderTime,
                     'render',
-                    'simple',
+                    'complex',
                     getCurrentTestName()
                 )
             }
