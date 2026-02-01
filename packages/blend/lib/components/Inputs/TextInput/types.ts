@@ -28,6 +28,7 @@ export type TextInputProps = {
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     cursor?: 'text' | 'pointer' | 'default' | 'not-allowed'
     passwordToggle?: boolean
+    textInputGroupPosition?: 'center' | 'left' | 'right'
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onBlur' | 'onFocus'

@@ -46,6 +46,7 @@ const TextInput = ({
     id: providedId,
     passwordToggle = false,
     type: providedType,
+    textInputGroupPosition,
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
@@ -115,6 +116,49 @@ const TextInput = ({
         if (disabled) return textInputTokens.inputContainer.color.disabled
         if (error) return textInputTokens.inputContainer.color.error
         return textInputTokens.inputContainer.color.default
+    }
+
+    function getTextInputBorderRadius(
+        size: TextInputSize,
+        textInputGroupPosition: 'center' | 'left' | 'right' | undefined,
+        tokens: TextInputTokensType
+    ): { borderRadius: string; borderRight?: string } {
+        const variantBorderRadius = String(
+            tokens.inputContainer.borderRadius[size]
+        )
+        const styles = {
+            borderRadius: '',
+            borderRight: '',
+        }
+        if (textInputGroupPosition === undefined) {
+            return {
+                ...styles,
+                borderRadius: variantBorderRadius,
+                borderRight: '',
+            }
+        }
+
+        if (textInputGroupPosition === 'left') {
+            return {
+                ...styles,
+                borderRadius: `${variantBorderRadius} 0 0 ${variantBorderRadius}`,
+                borderRight: '0px !important',
+            }
+        }
+
+        if (textInputGroupPosition === 'right') {
+            return {
+                ...styles,
+                borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+                borderRight: '',
+            }
+        }
+
+        return {
+            ...styles,
+            borderRadius: '0px 0px 0px 0px',
+            borderRight: '0px !important',
+        }
     }
 
     const passwordToggleButton = passwordToggle ? (
@@ -326,7 +370,18 @@ const TextInput = ({
                             : paddingY
                     }
                     borderRadius={
-                        textInputTokens.inputContainer.borderRadius[size]
+                        getTextInputBorderRadius(
+                            size,
+                            textInputGroupPosition,
+                            textInputTokens
+                        ).borderRadius
+                    }
+                    borderRight={
+                        getTextInputBorderRadius(
+                            size,
+                            textInputGroupPosition,
+                            textInputTokens
+                        ).borderRight
                     }
                     border={
                         textInputTokens.inputContainer.border[
