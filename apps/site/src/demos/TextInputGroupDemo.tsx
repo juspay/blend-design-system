@@ -2,41 +2,31 @@ import { useState } from 'react'
 import TextInputGroup from '../../../../packages/blend/lib/components/TextInputGroup/TextInputGroup'
 import {
     SelectMenuGroupType,
-    SelectMenuSize,
     SingleSelect,
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
-import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import {
+    TextInput,
+    TextInputSize,
+} from '../../../../packages/blend/lib/components/Inputs/TextInput'
 
 const TextInputGroupDemo = () => {
     const [stacked, setStacked] = useState(false)
     const [gap, setGap] = useState('8')
-    const [selectSize, setSelectSize] = useState<SelectMenuSize>(
-        SelectMenuSize.MEDIUM
-    )
-    const [selectVariant, setSelectVariant] = useState<SelectMenuVariant>(
-        SelectMenuVariant.CONTAINER
+    const [selectSize, setSelectSize] = useState<TextInputSize>(
+        TextInputSize.MEDIUM
     )
     const [count, setCount] = useState('3')
+    const [value, setValue] = useState('')
+    const [error, setError] = useState(false)
 
     const sizeOptions: SelectMenuGroupType[] = [
         {
             items: [
-                { label: 'Small', value: SelectMenuSize.SMALL },
-                { label: 'Medium', value: SelectMenuSize.MEDIUM },
-                { label: 'Large', value: SelectMenuSize.LARGE },
-            ],
-        },
-    ]
-    const variantOptions: SelectMenuGroupType[] = [
-        {
-            items: [
-                { label: 'Container', value: SelectMenuVariant.CONTAINER },
-                {
-                    label: 'No Container',
-                    value: SelectMenuVariant.NO_CONTAINER,
-                },
+                { label: 'Small', value: TextInputSize.SMALL },
+                { label: 'Medium', value: TextInputSize.MEDIUM },
+                { label: 'Large', value: TextInputSize.LARGE },
             ],
         },
     ]
@@ -61,23 +51,17 @@ const TextInputGroupDemo = () => {
 
     const renderTextInputGroup = () => {
         const textInputs = []
-        const [value, setValue] = useState('')
-        const [isFocused, setIsFocused] = useState(false)
-        const [error, setError] = useState(false)
-        const [errorMessage, setErrorMessage] = useState('')
+
         for (let i = 0; i < Number(count); i++) {
             textInputs.push(
                 <TextInput
+                    size={selectSize}
                     label="Default"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     placeholder="Enter text..."
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
                     error={error}
-                    errorMessage={
-                        errorMessage ? 'This field has an error' : undefined
-                    }
+                    errorMessage={'This field has an error'}
                 />
             )
         }
@@ -89,11 +73,11 @@ const TextInputGroupDemo = () => {
         <div className="space-y-6 p-8">
             <div className="space-y-3">
                 <h1 className="text-3xl font-bold">
-                    Single Select Group Component
+                    Text Input Group Component
                 </h1>
                 <p className="text-gray-600">
-                    Interactive playground to test Single Select Group with
-                    stacked and non-stacked modes.
+                    Interactive playground to test Text Input Group with stacked
+                    and non-stacked modes.
                 </p>
             </div>
             <section className="space-y-4">
@@ -104,18 +88,9 @@ const TextInputGroupDemo = () => {
                         items={sizeOptions}
                         selected={selectSize}
                         onSelect={(value) =>
-                            setSelectSize(value as SelectMenuSize)
+                            setSelectSize(value as TextInputSize)
                         }
                         placeholder="Select size"
-                    />
-                    <SingleSelect
-                        label="Variant"
-                        items={variantOptions}
-                        selected={selectVariant}
-                        onSelect={(value) =>
-                            setSelectVariant(value as SelectMenuVariant)
-                        }
-                        placeholder="Select Variant"
                     />
                     <SingleSelect
                         label="Gap (px)"
@@ -125,7 +100,7 @@ const TextInputGroupDemo = () => {
                         placeholder="Select Gap"
                     />
                     <SingleSelect
-                        label="Single Select Count"
+                        label="Text Input Count"
                         items={[{ items: countOptions }]}
                         selected={count}
                         onSelect={(value) => setCount(value)}
@@ -135,6 +110,11 @@ const TextInputGroupDemo = () => {
                         label="stacked"
                         checked={stacked}
                         onChange={() => setStacked(!stacked)}
+                    />
+                    <Switch
+                        label="error"
+                        checked={error}
+                        onChange={() => setError(!error)}
                     />
                 </div>
                 <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
