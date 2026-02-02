@@ -398,9 +398,11 @@ const TextInput = ({
                     }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
-                        border: textInputTokens.inputContainer.border[
-                            error ? 'error' : 'hover'
-                        ],
+                        border: `${
+                            textInputTokens.inputContainer.border[
+                                error ? 'error' : 'hover'
+                            ]
+                        } !important`,
                         backgroundColor:
                             textInputTokens.inputContainer.backgroundColor[
                                 error ? 'error' : 'hover'
@@ -412,9 +414,11 @@ const TextInput = ({
                         ]
                     }
                     _focus={{
-                        border: textInputTokens.inputContainer.border[
-                            error ? 'error' : 'focus'
-                        ],
+                        border: `${
+                            textInputTokens.inputContainer.border[
+                                error ? 'error' : 'focus'
+                            ]
+                        } !important`,
                         boxShadow: '0 0 0 3px #EFF6FF',
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
