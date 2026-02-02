@@ -4,7 +4,11 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { useRef, useState, useEffect, useId, useCallback } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import { TextInputSize, type TextInputProps } from './types'
+import {
+    TextInputSize,
+    TextInputGroupPosition,
+    type TextInputProps,
+} from './types'
 import type { TextInputTokensType } from './textInput.tokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -61,6 +65,7 @@ const TextInput = ({
     const toggleButtonId = `${inputId}-password-toggle`
 
     const [isFocused, setIsFocused] = useState(false)
+    const [isHovered, setIsHovered] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -120,7 +125,7 @@ const TextInput = ({
 
     function getTextInputBorderRadius(
         size: TextInputSize,
-        textInputGroupPosition: 'center' | 'left' | 'right' | undefined,
+        textInputGroupPosition: TextInputGroupPosition | undefined,
         tokens: TextInputTokensType
     ): { borderRadius: string; borderRight?: string } {
         const variantBorderRadius = String(
@@ -138,7 +143,7 @@ const TextInput = ({
             }
         }
 
-        if (textInputGroupPosition === 'left') {
+        if (textInputGroupPosition === TextInputGroupPosition.LEFT) {
             return {
                 ...styles,
                 borderRadius: `${variantBorderRadius} 0 0 ${variantBorderRadius}`,
@@ -146,7 +151,7 @@ const TextInput = ({
             }
         }
 
-        if (textInputGroupPosition === 'right') {
+        if (textInputGroupPosition === TextInputGroupPosition.RIGHT) {
             return {
                 ...styles,
                 borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
@@ -377,11 +382,13 @@ const TextInput = ({
                         ).borderRadius
                     }
                     borderRight={
-                        getTextInputBorderRadius(
-                            size,
-                            textInputGroupPosition,
-                            textInputTokens
-                        ).borderRight
+                        isFocused || isHovered
+                            ? 'none'
+                            : getTextInputBorderRadius(
+                                  size,
+                                  textInputGroupPosition,
+                                  textInputTokens
+                              ).borderRight
                     }
                     border={
                         textInputTokens.inputContainer.border[
@@ -398,11 +405,9 @@ const TextInput = ({
                     }
                     transition="border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out"
                     _hover={{
-                        border: `${
-                            textInputTokens.inputContainer.border[
-                                error ? 'error' : 'hover'
-                            ]
-                        } !important`,
+                        border: textInputTokens.inputContainer.border[
+                            error ? 'error' : 'hover'
+                        ],
                         backgroundColor:
                             textInputTokens.inputContainer.backgroundColor[
                                 error ? 'error' : 'hover'
@@ -414,11 +419,9 @@ const TextInput = ({
                         ]
                     }
                     _focus={{
-                        border: `${
-                            textInputTokens.inputContainer.border[
-                                error ? 'error' : 'focus'
-                            ]
-                        } !important`,
+                        border: textInputTokens.inputContainer.border[
+                            error ? 'error' : 'focus'
+                        ],
                         boxShadow: '0 0 0 3px #EFF6FF',
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
@@ -436,6 +439,12 @@ const TextInput = ({
                     onFocus={(e) => {
                         setIsFocused(true)
                         onFocus?.(e)
+                    }}
+                    onMouseEnter={() => {
+                        setIsHovered(true)
+                    }}
+                    onMouseLeave={() => {
+                        setIsHovered(false)
                     }}
                     onBlur={(e) => {
                         setIsFocused(false)

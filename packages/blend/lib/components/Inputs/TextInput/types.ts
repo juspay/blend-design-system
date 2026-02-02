@@ -12,6 +12,12 @@ export enum TextInputState {
     DISABLED = 'disabled',
 }
 
+export enum TextInputGroupPosition {
+    CENTER = 'center',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 export type TextInputProps = {
     label?: string
     sublabel?: string
@@ -28,7 +34,7 @@ export type TextInputProps = {
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     cursor?: 'text' | 'pointer' | 'default' | 'not-allowed'
     passwordToggle?: boolean
-    textInputGroupPosition?: 'center' | 'left' | 'right'
+    textInputGroupPosition?: TextInputGroupPosition
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'onBlur' | 'onFocus'
