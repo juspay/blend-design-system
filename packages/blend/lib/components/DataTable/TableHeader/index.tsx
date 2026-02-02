@@ -1612,109 +1612,104 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableColumnManager &&
-                        data &&
-                        data.length > 0 &&
-                        visibleColumns.length > 0 && (
-                            <th
-                                role="columnheader"
-                                scope="col"
-                                aria-label="Column manager"
-                                tabIndex={-1}
-                                style={{
-                                    ...tableToken.dataTable.table.header.cell,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    boxSizing: 'border-box',
-                                    position: 'sticky',
-                                    right: 0,
-                                    backgroundColor:
-                                        tableToken.dataTable.table.header
-                                            .backgroundColor,
-                                    width: FOUNDATION_THEME.unit[48],
-                                    minWidth: FOUNDATION_THEME.unit[48],
-                                    maxWidth: FOUNDATION_THEME.unit[48],
-                                    borderBottom:
-                                        tableToken.dataTable.table.header
-                                            .borderBottom,
-                                    borderTopRightRadius:
-                                        tableToken.dataTable.borderRadius,
-                                }}
+                    {enableColumnManager && visibleColumns.length > 0 && (
+                        <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Column manager"
+                            tabIndex={-1}
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                                position: 'sticky',
+                                right: 0,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header
+                                        .backgroundColor,
+                                width: FOUNDATION_THEME.unit[48],
+                                minWidth: FOUNDATION_THEME.unit[48],
+                                maxWidth: FOUNDATION_THEME.unit[48],
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems="flex-start"
+                                justifyContent="space-between"
+                                gap="4px"
+                                width="100%"
+                                minWidth={0}
                             >
                                 <Block
                                     display="flex"
                                     alignItems="flex-start"
-                                    justifyContent="space-between"
-                                    gap="4px"
-                                    width="100%"
                                     minWidth={0}
+                                    flexGrow={1}
+                                    overflow="hidden"
                                 >
                                     <Block
                                         display="flex"
+                                        flexDirection="column"
                                         alignItems="flex-start"
+                                        justifyContent="flex-start"
                                         minWidth={0}
                                         flexGrow={1}
-                                        overflow="hidden"
+                                        flexShrink={1}
                                     >
                                         <Block
-                                            display="flex"
-                                            flexDirection="column"
-                                            alignItems="flex-start"
-                                            justifyContent="flex-start"
-                                            minWidth={0}
-                                            flexGrow={1}
-                                            flexShrink={1}
+                                            style={{
+                                                width: '100%',
+                                                minHeight: 0,
+                                            }}
                                         >
-                                            <Block
-                                                style={{
-                                                    width: '100%',
-                                                    minHeight: 0,
-                                                }}
-                                            >
-                                                <Block position="relative">
-                                                    <ColumnManager
-                                                        columns={initialColumns}
-                                                        visibleColumns={
-                                                            allVisibleColumns ||
-                                                            visibleColumns
-                                                        }
-                                                        onColumnChange={
-                                                            onColumnChange
-                                                        }
-                                                        maxSelections={
-                                                            columnManagerMaxSelections
-                                                        }
-                                                        alwaysSelectedColumns={
-                                                            columnManagerAlwaysSelected
-                                                        }
-                                                        columnManagerPrimaryAction={
-                                                            columnManagerPrimaryAction
-                                                        }
-                                                        columnManagerSecondaryAction={
-                                                            columnManagerSecondaryAction
-                                                        }
-                                                        multiSelectWidth={
-                                                            columnManagerWidth
-                                                        }
-                                                        disabled={isDisabled}
-                                                    />
-                                                </Block>
+                                            <Block position="relative">
+                                                <ColumnManager
+                                                    columns={initialColumns}
+                                                    visibleColumns={
+                                                        allVisibleColumns ||
+                                                        visibleColumns
+                                                    }
+                                                    onColumnChange={
+                                                        onColumnChange
+                                                    }
+                                                    maxSelections={
+                                                        columnManagerMaxSelections
+                                                    }
+                                                    alwaysSelectedColumns={
+                                                        columnManagerAlwaysSelected
+                                                    }
+                                                    columnManagerPrimaryAction={
+                                                        columnManagerPrimaryAction
+                                                    }
+                                                    columnManagerSecondaryAction={
+                                                        columnManagerSecondaryAction
+                                                    }
+                                                    multiSelectWidth={
+                                                        columnManagerWidth
+                                                    }
+                                                    disabled={isDisabled}
+                                                />
                                             </Block>
-                                            <Block
-                                                style={{
-                                                    width: '100%',
-                                                    minHeight:
-                                                        subheaderAreaHeight,
-                                                    marginTop:
-                                                        subheaderMarginTop,
-                                                }}
-                                            />
                                         </Block>
+                                        <Block
+                                            style={{
+                                                width: '100%',
+                                                minHeight: subheaderAreaHeight,
+                                                marginTop: subheaderMarginTop,
+                                            }}
+                                        />
                                     </Block>
                                 </Block>
-                            </th>
-                        )}
+                            </Block>
+                        </th>
+                    )}
                 </tr>
             </thead>
         )
