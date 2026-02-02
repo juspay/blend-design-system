@@ -13,6 +13,7 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useErrorShake } from '../../common/useErrorShake'
+
 import {
     getErrorShakeStyle,
     errorShakeAnimation,
