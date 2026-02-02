@@ -4,11 +4,7 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { useRef, useState, useEffect, useId, useCallback } from 'react'
 import InputLabels from '../utils/InputLabels/InputLabels'
 import InputFooter from '../utils/InputFooter/InputFooter'
-import {
-    TextInputSize,
-    TextInputGroupPosition,
-    type TextInputProps,
-} from './types'
+import { TextInputSize, type TextInputProps } from './types'
 import type { TextInputTokensType } from './textInput.tokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -23,6 +19,7 @@ import {
 } from '../../common/error.animations'
 import styled from 'styled-components'
 import { Eye, EyeOff } from 'lucide-react'
+import { getTextInputBorderRadius } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -65,7 +62,6 @@ const TextInput = ({
     const toggleButtonId = `${inputId}-password-toggle`
 
     const [isFocused, setIsFocused] = useState(false)
-    const [isHovered, setIsHovered] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const shouldShake = useErrorShake(error)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -121,49 +117,6 @@ const TextInput = ({
         if (disabled) return textInputTokens.inputContainer.color.disabled
         if (error) return textInputTokens.inputContainer.color.error
         return textInputTokens.inputContainer.color.default
-    }
-
-    function getTextInputBorderRadius(
-        size: TextInputSize,
-        textInputGroupPosition: TextInputGroupPosition | undefined,
-        tokens: TextInputTokensType
-    ): { borderRadius: string; borderRight?: string } {
-        const variantBorderRadius = String(
-            tokens.inputContainer.borderRadius[size]
-        )
-        const styles = {
-            borderRadius: '',
-            borderRight: '',
-        }
-        if (textInputGroupPosition === undefined) {
-            return {
-                ...styles,
-                borderRadius: variantBorderRadius,
-                borderRight: '',
-            }
-        }
-
-        if (textInputGroupPosition === TextInputGroupPosition.LEFT) {
-            return {
-                ...styles,
-                borderRadius: `${variantBorderRadius} 0 0 ${variantBorderRadius}`,
-                borderRight: '0px !important',
-            }
-        }
-
-        if (textInputGroupPosition === TextInputGroupPosition.RIGHT) {
-            return {
-                ...styles,
-                borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
-                borderRight: '',
-            }
-        }
-
-        return {
-            ...styles,
-            borderRadius: '0px 0px 0px 0px',
-            borderRight: '0px !important',
-        }
     }
 
     const passwordToggleButton = passwordToggle ? (
@@ -382,13 +335,11 @@ const TextInput = ({
                         ).borderRadius
                     }
                     borderRight={
-                        isFocused || isHovered
-                            ? 'none'
-                            : getTextInputBorderRadius(
-                                  size,
-                                  textInputGroupPosition,
-                                  textInputTokens
-                              ).borderRight
+                        getTextInputBorderRadius(
+                            size,
+                            textInputGroupPosition,
+                            textInputTokens
+                        ).borderRight
                     }
                     border={
                         textInputTokens.inputContainer.border[
@@ -439,12 +390,6 @@ const TextInput = ({
                     onFocus={(e) => {
                         setIsFocused(true)
                         onFocus?.(e)
-                    }}
-                    onMouseEnter={() => {
-                        setIsHovered(true)
-                    }}
-                    onMouseLeave={() => {
-                        setIsHovered(false)
                     }}
                     onBlur={(e) => {
                         setIsFocused(false)
