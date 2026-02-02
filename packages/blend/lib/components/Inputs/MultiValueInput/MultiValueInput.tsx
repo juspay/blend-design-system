@@ -186,6 +186,7 @@ const MultiValueInput = ({
                     >
                         {leftSlot && (
                             <Block
+                                data-element="left-slot"
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
@@ -291,6 +292,7 @@ const MultiValueInput = ({
                         />
                         {rightSlot && (
                             <Block
+                                data-element="right-slot"
                                 position="absolute"
                                 top={slotTop}
                                 right={FOUNDATION_THEME.unit[0]}
