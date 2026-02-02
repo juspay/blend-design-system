@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import {
     SelectMenuAlignment,
@@ -378,8 +378,10 @@ const SingleSelectMenu = ({
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
 
     const [searchText, setSearchText] = useState('')
+    const [isMenuPositionedAtTop, setIsMenuPositionedAtTop] = useState(false)
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+    const triggerRef = useRef<HTMLElement | null>(null)
     let itemCounter = 0
     const selectors = [
         '[data-dropdown="dropdown"]',
@@ -389,6 +391,60 @@ const SingleSelectMenu = ({
         '[data-radix-dropdown-menu-content]',
     ]
     usePreventParentScroll(open, contentRef, selectors)
+
+    useEffect(() => {
+        if (!open || !contentRef.current) {
+            setIsMenuPositionedAtTop(false)
+            return
+        }
+
+        const checkPosition = () => {
+            const menuElement = contentRef.current
+            if (!menuElement) {
+                setIsMenuPositionedAtTop(side === SelectMenuSide.TOP)
+                return
+            }
+            let triggerElement: HTMLElement | null = triggerRef.current
+
+            if (!triggerElement) {
+                triggerElement = document.querySelector(
+                    '[data-radix-dropdown-menu-trigger]'
+                ) as HTMLElement
+
+                if (!triggerElement) {
+                    const portalWrapper = menuElement.closest(
+                        '[data-radix-popper-content-wrapper]'
+                    )
+                    if (portalWrapper) {
+                        const rootElement = portalWrapper.parentElement
+                        if (rootElement) {
+                            triggerElement = rootElement.querySelector(
+                                'button[data-radix-dropdown-menu-trigger], button[aria-haspopup="menu"]'
+                            ) as HTMLElement
+                        }
+                    }
+                }
+            }
+
+            if (!triggerElement) {
+                setIsMenuPositionedAtTop(side === SelectMenuSide.TOP)
+                return
+            }
+
+            const menuRect = menuElement.getBoundingClientRect()
+            const triggerRect = triggerElement.getBoundingClientRect()
+
+            const isAtTop = menuRect.bottom + 10 < triggerRect.top
+            setIsMenuPositionedAtTop(isAtTop || side === SelectMenuSide.TOP)
+        }
+
+        const rafId = requestAnimationFrame(() => {
+            setTimeout(checkPosition, 10)
+        })
+        return () => {
+            cancelAnimationFrame(rafId)
+        }
+    }, [open, side])
 
     const hasMatch = useMemo(
         () => checkExactMatch(searchText, items),
@@ -400,7 +456,7 @@ const SingleSelectMenu = ({
             ? filterMenuGroups(items, searchText)
             : items
 
-        return getFilteredItemsWithCustomValue(
+        const processedItems = getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
@@ -408,6 +464,14 @@ const SingleSelectMenu = ({
             enableSearch || false,
             customValueLabel
         )
+        if (isMenuPositionedAtTop) {
+            return processedItems.map((group) => ({
+                ...group,
+                items: [...group.items].reverse(),
+            }))
+        }
+
+        return processedItems
     }, [
         items,
         searchText,
@@ -415,6 +479,7 @@ const SingleSelectMenu = ({
         hasMatch,
         enableSearch,
         customValueLabel,
+        isMenuPositionedAtTop,
     ])
 
     const flattenedItems = useMemo(
@@ -543,7 +608,15 @@ const SingleSelectMenu = ({
                     trigger as React.ReactElement<Record<string, unknown>>,
                     {
                         children: (
-                            <RadixMenu.Trigger asChild disabled={disabled}>
+                            <RadixMenu.Trigger
+                                asChild
+                                disabled={disabled}
+                                ref={(node) => {
+                                    if (node) {
+                                        triggerRef.current = node as HTMLElement
+                                    }
+                                }}
+                            >
                                 {
                                     (
                                         trigger as React.ReactElement<
@@ -558,7 +631,15 @@ const SingleSelectMenu = ({
                     }
                 )
             ) : (
-                <RadixMenu.Trigger asChild disabled={disabled}>
+                <RadixMenu.Trigger
+                    asChild
+                    disabled={disabled}
+                    ref={(node) => {
+                        if (node) {
+                            triggerRef.current = node as HTMLElement
+                        }
+                    }}
+                >
                     {trigger}
                 </RadixMenu.Trigger>
             )}
