@@ -1,4 +1,4 @@
-import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
+import { ArrowDown, RotateCcw, ArrowUp, Loader } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -14,6 +14,23 @@ import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { Menu } from '../Menu'
 import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
+import styled, { keyframes } from 'styled-components'
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const StyledSpinner = styled.div`
+    animation: ${rotate} 2s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
 
 const StackedLegends: React.FC<{
     keys: string[]
@@ -204,10 +221,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     const lastWidth = useRef<number>(0)
     const legendItemsContainerRef = useRef<HTMLDivElement>(null!)
     const [cuttOffIndex, setCuttOffIndex] = useState<number>(keys.length)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const isExpanding = useRef<boolean>(false)
     // Have to revisit from optimizaion POV.
     const handleResize = useCallback(() => {
-        if (!legendItemsContainerRef.current) return
+        if (!legendItemsContainerRef.current) {
+            setIsLoading(false)
+            return
+        }
 
         const container = legendItemsContainerRef.current
         const containerRect = container.getBoundingClientRect()
@@ -262,12 +283,14 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
 
         const newCutoff = Math.max(1, Math.min(optimalCutoff, totalLegends))
         setCuttOffIndex(newCutoff)
+        setIsLoading(false)
     }, [displayLegends.length, legendTokens.gap])
 
     const debouncedResize = useDebounce(handleResize, 150)
 
     useResizeObserver(chartContainerRef, ({ width }) => {
         if (width && Math.abs(width - lastWidth.current) > 10) {
+            setIsLoading(true)
             if (width > lastWidth.current + 20) {
                 isExpanding.current = true
             }
@@ -278,6 +301,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     })
 
     useEffect(() => {
+        setIsLoading(true)
         setCuttOffIndex(displayLegends.length)
         isExpanding.current = false
 
@@ -324,7 +348,26 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             alignItems="center"
             gap={legendTokens.gap}
             justifyContent="space-between"
+            position="relative"
         >
+            {isLoading && (
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    height={FOUNDATION_THEME.unit[28]}
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    style={{ zIndex: 1 }}
+                >
+                    <StyledSpinner>
+                        <Loader size={16} />
+                    </StyledSpinner>
+                </Block>
+            )}
             <Block
                 ref={legendItemsContainerRef}
                 display="flex"
@@ -333,7 +376,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 overflowX="hidden"
                 overflowY="visible"
                 whiteSpace="nowrap"
-                style={{ flex: 1 }}
+                style={{ flex: 1, opacity: isLoading ? 0 : 1 }}
                 justifyContent={isSmallScreen ? 'center' : 'start'}
                 gap={legendTokens.gap}
             >
