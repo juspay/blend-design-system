@@ -1,4 +1,4 @@
-import { ArrowDown, RotateCcw, ArrowUp, Loader } from 'lucide-react'
+import { ArrowDown, RotateCcw, ArrowUp } from 'lucide-react'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -14,23 +14,7 @@ import { Tag, TagColor, TagVariant } from '../Tags'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { Menu } from '../Menu'
 import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
-import styled, { keyframes } from 'styled-components'
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
-const StyledSpinner = styled.div`
-    animation: ${rotate} 2s linear infinite;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
+import { Skeleton } from '../Skeleton'
 
 const StackedLegends: React.FC<{
     keys: string[]
@@ -344,6 +328,19 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         )
     }
 
+    const ChartLegendSkeleton = ({ count = 5 }: { count?: number }) => {
+        return (
+            <Block display="flex" alignItems="center" gap={16}>
+                {Array.from({ length: count }).map((_, i) => (
+                    <Block key={i} display="flex" alignItems="center" gap={8}>
+                        <Skeleton width={12} height={12} borderRadius={4} />
+                        <Skeleton width={40} height={12} borderRadius={2} />
+                    </Block>
+                ))}
+            </Block>
+        )
+    }
+
     return (
         <Block
             display="flex"
@@ -356,7 +353,6 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 <Block
                     display="flex"
                     alignItems="center"
-                    justifyContent="center"
                     height={FOUNDATION_THEME.unit[28]}
                     position="absolute"
                     top={0}
@@ -365,9 +361,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     bottom={0}
                     style={{ zIndex: 1 }}
                 >
-                    <StyledSpinner>
-                        <Loader size={16} />
-                    </StyledSpinner>
+                    <ChartLegendSkeleton />
                 </Block>
             )}
             <Block
