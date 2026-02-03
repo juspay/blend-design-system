@@ -51,6 +51,9 @@ export type CheckboxTokensType = {
             strokeWidth: { [key in CheckboxSize]: CSSObject['strokeWidth'] }
         }
     }
+    text: {
+        lineHeight: { [key in CheckboxSize]: CSSObject['lineHeight'] }
+    }
 
     content: {
         gap: CSSObject['gap']
@@ -215,6 +218,12 @@ export const getCheckboxTokens = (
             required: {
                 color: foundationToken.colors.red[600],
             },
+            text: {
+                lineHeight: {
+                    sm: foundationToken.font.lineHeight[16],
+                    md: foundationToken.font.lineHeight[16],
+                },
+            },
         },
         lg: {
             gap: foundationToken.unit[8],
@@ -306,7 +315,12 @@ export const getCheckboxTokens = (
                     },
                 },
             },
-
+            text: {
+                lineHeight: {
+                    sm: foundationToken.font.lineHeight[16],
+                    md: foundationToken.font.lineHeight[16],
+                },
+            },
             content: {
                 gap: foundationToken.unit[0],
                 label: {
