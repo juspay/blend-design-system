@@ -13,7 +13,7 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll } from '../../hooks'
+import { usePreventParentScroll, useScrollLock } from '../../hooks'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import {
@@ -389,6 +389,7 @@ const SingleSelectMenu = ({
         '[data-radix-dropdown-menu-content]',
     ]
     usePreventParentScroll(open, contentRef, selectors)
+    useScrollLock(open)
 
     const hasMatch = useMemo(
         () => checkExactMatch(searchText, items),
