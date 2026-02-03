@@ -239,10 +239,43 @@ const TableHeader = forwardRef<
             currentSortType: sortConfig?.sortType,
         })
 
-        const [filterState, setFilterState] = useState<FilterState>({
+        const extractFilterValues = (
+            filters: typeof columnFilters
+        ): Record<string, string[] | { min: number; max: number }> => {
+            const values: Record<
+                string,
+                string[] | { min: number; max: number }
+            > = {}
+
+            filters.forEach((filter) => {
+                if (!filter.value || filter.value === '') return
+                if (
+                    typeof filter.value === 'object' &&
+                    !Array.isArray(filter.value) &&
+                    'min' in filter.value &&
+                    'max' in filter.value
+                ) {
+                    values[filter.field] = filter.value as {
+                        min: number
+                        max: number
+                    }
+                } else if (
+                    Array.isArray(filter.value) &&
+                    filter.value.length > 0
+                ) {
+                    values[filter.field] = filter.value
+                } else if (typeof filter.value === 'string') {
+                    values[filter.field] = [filter.value]
+                }
+            })
+
+            return values
+        }
+
+        const [filterState, setFilterState] = useState<FilterState>(() => ({
             columnSearchValues: {},
-            columnSelectedValues: {},
-        })
+            columnSelectedValues: extractFilterValues(columnFilters),
+        }))
 
         const [openPopovers, setOpenPopovers] = useState<
             Record<string, boolean>
@@ -290,6 +323,8 @@ const TableHeader = forwardRef<
             (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
         )
         const headerAlignment = hasAnySubtext ? 'flex-start' : 'center'
+        const headerHeight = hasAnySubtext ? '56px' : '46px'
+        const cellPadding = `0 ${FOUNDATION_THEME.unit[16]}`
 
         const sortHandlers = createSortHandlers(
             sortState,
@@ -309,6 +344,36 @@ const TableHeader = forwardRef<
                 currentSortType: sortConfig?.sortType,
             })
         }, [sortConfig])
+
+        useEffect(() => {
+            const newColumnSelectedValues = extractFilterValues(columnFilters)
+
+            setFilterState((prev) => {
+                const currentFields = Object.keys(newColumnSelectedValues)
+                const prevFields = Object.keys(prev.columnSelectedValues)
+
+                const hasChanges =
+                    currentFields.length !== prevFields.length ||
+                    currentFields.some((field) => {
+                        const newValue = newColumnSelectedValues[field]
+                        const oldValue = prev.columnSelectedValues[field]
+                        return (
+                            JSON.stringify(newValue) !==
+                            JSON.stringify(oldValue)
+                        )
+                    }) ||
+                    prevFields.some((field) => !currentFields.includes(field))
+
+                if (hasChanges) {
+                    return {
+                        ...prev,
+                        columnSelectedValues: newColumnSelectedValues,
+                    }
+                }
+
+                return prev
+            })
+        }, [columnFilters])
 
         useEffect(() => {
             openPopoversRef.current = openPopovers
@@ -475,13 +540,13 @@ const TableHeader = forwardRef<
                         tableToken.dataTable.table.header.backgroundColor,
                     borderBottom:
                         tableToken.dataTable.table.header.borderBottom,
-                    height: tableToken.dataTable.table.header.height,
+                    height: headerHeight,
                 }}
             >
                 <tr
                     role="row"
                     style={{
-                        ...tableToken.dataTable.table.header.row,
+                        height: headerHeight,
                     }}
                 >
                     {enableRowExpansion && (
@@ -492,6 +557,7 @@ const TableHeader = forwardRef<
                             tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
                                 width: '50px',
                                 minWidth: '50px',
                                 maxWidth: '50px',
@@ -499,6 +565,7 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                height: '100%',
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
@@ -542,6 +609,7 @@ const TableHeader = forwardRef<
                                 }}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '60px',
                                     minWidth: '60px',
                                     maxWidth: '60px',
@@ -549,6 +617,7 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -670,9 +739,12 @@ const TableHeader = forwardRef<
                                 tableToken.dataTable.table.header.sortable),
                             ...columnStyles,
                             ...frozenStyles,
+                            padding: cellPadding,
                             // Ensure border bottom is always present
                             borderBottom:
                                 tableToken.dataTable.table.header.borderBottom,
+                            height: '100%',
+                            boxSizing: 'border-box',
                             ...(isLastColumn && {
                                 borderTopRightRadius:
                                     tableToken.dataTable.borderRadius,
@@ -1517,12 +1589,14 @@ const TableHeader = forwardRef<
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '200px',
                                     maxWidth: '200px',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -1620,6 +1694,7 @@ const TableHeader = forwardRef<
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '40px',
                                     minWidth: '40px',
                                     maxWidth: '40px',
@@ -1627,6 +1702,7 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -1646,10 +1722,12 @@ const TableHeader = forwardRef<
                             tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                height: '100%',
                                 position: 'sticky',
                                 right: 0,
                                 backgroundColor:
