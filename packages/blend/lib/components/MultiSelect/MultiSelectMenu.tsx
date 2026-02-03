@@ -24,7 +24,7 @@ import {
 } from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll } from '../../hooks'
+import { usePreventParentScroll, useScrollLock } from '../../hooks'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
@@ -184,6 +184,7 @@ const MultiSelectMenu = ({
         '[data-radix-dropdown-menu-content]',
     ]
     usePreventParentScroll(open, contentRef, selectors)
+    useScrollLock(open)
 
     const filteredItems = React.useMemo(() => {
         const baseFilteredItems = filterMenuGroups(items, searchText)
