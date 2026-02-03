@@ -196,29 +196,43 @@ const DataTable = forwardRef(
 
             return allVisibleColumns
         })
-
         useEffect(() => {
             const updatedVisibleColumns: ColumnDefinition<T>[] = []
 
             visibleColumns.forEach((col) => {
-                const matchingCustomColumn = initialColumns.find(
-                    (item): item is typeof col =>
-                        item.field === col.field &&
-                        item.header === col.header &&
-                        col.type === ColumnType.CUSTOM
+                const matchingColumn = initialColumns.find(
+                    (item) => item.field === col.field
                 )
-                if (matchingCustomColumn) {
-                    const newVal = {
+
+                if (matchingColumn) {
+                    const updatedColumn = {
                         ...col,
-                        renderCell: matchingCustomColumn.renderCell,
+                        ...matchingColumn,
                     } as ColumnDefinition<T>
-                    updatedVisibleColumns.push(newVal)
+                    updatedVisibleColumns.push(updatedColumn)
                 } else {
                     updatedVisibleColumns.push(col)
                 }
             })
 
-            setVisibleColumns(updatedVisibleColumns)
+            const hasChanges = updatedVisibleColumns.some(
+                (updatedCol, index) => {
+                    const originalCol = visibleColumns[index]
+                    if (!originalCol) return true
+
+                    return (
+                        updatedCol.headerSubtext !==
+                            originalCol.headerSubtext ||
+                        updatedCol.header !== originalCol.header ||
+                        (updatedCol.type === ColumnType.CUSTOM &&
+                            updatedCol.renderCell !== originalCol.renderCell)
+                    )
+                }
+            )
+
+            if (hasChanges) {
+                setVisibleColumns(updatedVisibleColumns)
+            }
         }, [initialColumns])
 
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(

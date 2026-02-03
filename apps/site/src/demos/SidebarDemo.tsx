@@ -192,7 +192,7 @@ const SidebarDemo = () => {
         | 'accordionV2'
         | 'snackbarV2'
         | 'switchV2'
-    >('accordionV2')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
