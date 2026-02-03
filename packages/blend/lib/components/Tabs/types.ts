@@ -42,6 +42,7 @@ export type TabsProps = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     stickyHeader?: boolean
+    offsetTop?: number
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<
@@ -65,6 +66,7 @@ export type TabsListProps = ComponentPropsWithoutRef<
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     stickyHeader?: boolean
+    offsetTop?: number
 }
 
 export type TabsTriggerProps = ComponentPropsWithoutRef<
