@@ -50,6 +50,7 @@ type SingleSelectMenuProps = {
     side?: SelectMenuSide
     sideOffset?: number
     alignOffset?: number
+    collisionBoundary?: Element | null | Array<Element | null>
 
     // open
     open: boolean
@@ -352,10 +353,11 @@ const SingleSelectMenu = ({
     enableSearch,
     searchPlaceholder = 'Search options...',
     disabled,
-    alignment = SelectMenuAlignment.CENTER,
+    alignment = SelectMenuAlignment.START,
     side = SelectMenuSide.BOTTOM,
     sideOffset = 8,
     alignOffset = 0,
+    collisionBoundary,
     open,
     onOpenChange,
     size = SelectMenuSize.MEDIUM,
@@ -570,6 +572,8 @@ const SingleSelectMenu = ({
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
                     side={side}
+                    avoidCollisions
+                    collisionBoundary={collisionBoundary}
                     style={{
                         maxHeight: maxMenuHeight,
                         minWidth: minMenuWidth || '250px',

@@ -222,4 +222,5 @@ export type MultiSelectMenuProps = {
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
+    collisionBoundary?: Element | null | Array<Element | null>
 }

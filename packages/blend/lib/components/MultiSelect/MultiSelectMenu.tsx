@@ -136,10 +136,11 @@ const MultiSelectMenu = ({
     selectAllText = 'Select All',
     maxSelections,
     onSelectAll,
-    alignment = MultiSelectMenuAlignment.CENTER,
+    alignment = MultiSelectMenuAlignment.START,
     side = MultiSelectMenuSide.BOTTOM,
     sideOffset = 8,
     alignOffset = 0,
+    collisionBoundary,
     open,
     onOpenChange,
     showActionButtons = true,
@@ -369,6 +370,7 @@ const MultiSelectMenu = ({
                     alignOffset={alignOffset}
                     side={side}
                     avoidCollisions
+                    collisionBoundary={collisionBoundary}
                     onKeyDown={handleKeyDown}
                     onInteractOutside={handleOutsideInteraction}
                     onPointerDownOutside={handleOutsideInteraction}
