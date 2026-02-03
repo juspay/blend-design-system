@@ -5,9 +5,13 @@ import type { SidebarTokenType } from './sidebar.tokens'
 
 type SidebarFooterProps = {
     footer?: React.ReactNode
+    isExpanded: boolean
 }
 
-const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
+const SidebarFooter: React.FC<SidebarFooterProps> = ({
+    footer,
+    isExpanded,
+}) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
     // Don't render footer if no content provided
@@ -26,7 +30,7 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({ footer }) => {
             zIndex="10"
             display="flex"
             alignItems="center"
-            justifyContent="space-between"
+            justifyContent={isExpanded ? 'space-between' : 'center'}
             gap="12px"
             padding={`${tokens.footer.padding.y} ${tokens.footer.padding.x}`}
             borderTop={tokens.footer.borderTop}

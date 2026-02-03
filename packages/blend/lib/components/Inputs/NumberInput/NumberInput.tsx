@@ -119,16 +119,14 @@ const NumberInput = ({
     }
 
     const isUpButtonDisabled =
-        disabled ||
-        (numericMax !== undefined &&
-            (currentNumericValue === null
-                ? (numericMin ?? 0) + stepValue > numericMax
-                : currentNumericValue >= numericMax ||
-                  currentNumericValue + stepValue > numericMax))
+        numericMax !== undefined &&
+        (currentNumericValue === null
+            ? (numericMin ?? 0) + stepValue > numericMax
+            : currentNumericValue >= numericMax ||
+              currentNumericValue + stepValue > numericMax)
 
     const isDownButtonDisabled =
-        disabled ||
-        (currentNumericValue === null
+        currentNumericValue === null
             ? preventNegative ||
               (numericMin !== undefined &&
                   (numericMin ?? 0) - stepValue < numericMin)
@@ -137,7 +135,7 @@ const NumberInput = ({
                       currentNumericValue - stepValue < numericMin)) ||
               (preventNegative &&
                   (currentNumericValue <= 0 ||
-                      currentNumericValue - stepValue < 0)))
+                      currentNumericValue - stepValue < 0))
 
     const displayValue = isFocused
         ? internalValue
@@ -470,7 +468,7 @@ const NumberInput = ({
                         }
                         contentCentered
                         borderRadius={`0 ${numberInputTokens.inputContainer.borderRadius[size]} 0 0`}
-                        disabled={isUpButtonDisabled}
+                        disabled={disabled || isUpButtonDisabled}
                         _focus={{
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
@@ -482,13 +480,23 @@ const NumberInput = ({
                                     .backgroundColor.hover,
                         }}
                         _disabled={{
-                            backgroundColor:
-                                numberInputTokens.inputContainer.stepperButton
-                                    .backgroundColor.disabled,
+                            backgroundColor: disabled
+                                ? numberInputTokens.inputContainer.stepperButton
+                                      .backgroundColor.disabled
+                                : numberInputTokens.inputContainer.stepperButton
+                                      .backgroundColor.default,
+                            cursor: 'not-allowed',
                         }}
                     >
                         {/* <TriangleSVG direction="up" /> */}
                         <Triangle
+                            style={{
+                                opacity: disabled
+                                    ? 1
+                                    : isUpButtonDisabled
+                                      ? 0.3
+                                      : 1,
+                            }}
                             direction="up"
                             color={
                                 disabled
@@ -549,17 +557,34 @@ const NumberInput = ({
                             backgroundColor:
                                 numberInputTokens.inputContainer.stepperButton
                                     .backgroundColor.hover,
+                            borderTop:
+                                numberInputTokens.inputContainer.border
+                                    .disabled,
                         }}
                         _disabled={{
-                            backgroundColor:
-                                numberInputTokens.inputContainer.stepperButton
-                                    .backgroundColor.disabled,
+                            backgroundColor: disabled
+                                ? numberInputTokens.inputContainer.stepperButton
+                                      .backgroundColor.disabled
+                                : numberInputTokens.inputContainer.stepperButton
+                                      .backgroundColor.default,
+                            borderTop:
+                                numberInputTokens.inputContainer.border
+                                    .disabled,
+                            cursor: 'not-allowed',
                         }}
-                        disabled={isDownButtonDisabled}
+                        borderTop={
+                            numberInputTokens.inputContainer.border.disabled
+                        }
+                        disabled={disabled || isDownButtonDisabled}
                     >
                         <Triangle
                             style={{
                                 transform: 'rotate(180deg)',
+                                opacity: disabled
+                                    ? 1
+                                    : isDownButtonDisabled
+                                      ? 0.3
+                                      : 1,
                             }}
                             color={
                                 disabled

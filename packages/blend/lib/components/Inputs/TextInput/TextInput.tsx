@@ -13,12 +13,14 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useErrorShake } from '../../common/useErrorShake'
+
 import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
 import { Eye, EyeOff } from 'lucide-react'
+import { getTextInputBorderRadius } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -46,6 +48,7 @@ const TextInput = ({
     id: providedId,
     passwordToggle = false,
     type: providedType,
+    textInputGroupPosition,
     ...rest
 }: TextInputProps) => {
     const textInputTokens =
@@ -326,7 +329,18 @@ const TextInput = ({
                             : paddingY
                     }
                     borderRadius={
-                        textInputTokens.inputContainer.borderRadius[size]
+                        getTextInputBorderRadius(
+                            size,
+                            textInputGroupPosition,
+                            textInputTokens
+                        ).borderRadius
+                    }
+                    borderRight={
+                        getTextInputBorderRadius(
+                            size,
+                            textInputGroupPosition,
+                            textInputTokens
+                        ).borderRight
                     }
                     border={
                         textInputTokens.inputContainer.border[

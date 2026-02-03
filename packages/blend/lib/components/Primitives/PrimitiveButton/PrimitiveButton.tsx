@@ -42,6 +42,9 @@ type PrimitiveButtonProps = StateStyles & {
     minHeight?: CSSObject['minHeight']
     maxHeight?: CSSObject['maxHeight']
 
+    //opacity
+    opacity?: CSSObject['opacity']
+
     // Flex
     flexGrow?: CSSObject['flexGrow']
     flexShrink?: CSSObject['flexShrink']
@@ -80,23 +83,28 @@ type PrimitiveButtonProps = StateStyles & {
     outlineWidth?: CSSObject['outlineWidth']
     outlineColor?: CSSObject['outlineColor']
 
-    // Transform & Transition
-    transform?: CSSObject['transform']
-    transition?: CSSObject['transition']
-
     // State
     disabled?: boolean
 
     // Text
     fontWeight?: CSSObject['fontWeight']
+    lineHeight?: CSSObject['lineHeight']
     fontSize?: CSSObject['fontSize']
     fontFamily?: CSSObject['fontFamily']
     textDecoration?: CSSObject['textDecoration']
     textUnderlineOffset?: CSSObject['textUnderlineOffset']
     textTransform?: CSSObject['textTransform']
+    willChange?: CSSObject['willChange']
+    transformOrigin?: CSSObject['transformOrigin']
+    backfaceVisibility?: CSSObject['backfaceVisibility']
+    transform?: CSSObject['transform']
+    transition?: CSSObject['transition']
+    transitionDuration?: CSSObject['transitionDuration']
+    transitionTimingFunction?: CSSObject['transitionTimingFunction']
+    transitionDelay?: CSSObject['transitionDelay']
 }
 
-// Prevent these props from reaching the DOM
+// Prevent these styling props from reaching the DOM (keep real button attrs like `disabled`)
 const blockedProps = [
     'padding',
     'paddingX',
@@ -139,6 +147,7 @@ const blockedProps = [
     'borderLeft',
     'borderRadius',
     'boxShadow',
+    'opacity',
     'textAlign',
     'whiteSpace',
     'overflow',
@@ -163,9 +172,18 @@ const blockedProps = [
     'fontWeight',
     'fontSize',
     'fontFamily',
+    'lineHeight',
     'textDecoration',
     'textUnderlineOffset',
     'textTransform',
+    'willChange',
+    'transformOrigin',
+    'backfaceVisibility',
+    'transform',
+    'transition',
+    'transitionDuration',
+    'transitionTimingFunction',
+    'transitionDelay',
 ]
 
 const shouldForwardProp = (prop: string) => !blockedProps.includes(prop)
@@ -176,11 +194,14 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
         appearance: 'none',
         outline: 'none',
         border: 'none',
-        font: 'inherit',
-        cursor: props.disabled ? 'not-allowed' : (props.cursor ?? 'pointer'),
+        fontFamily: 'inherit',
         opacity: props.disabled ? 0.6 : 1,
+        cursor: props.cursor,
     }
-
+    // Text
+    if (props.lineHeight) styles.lineHeight = props.lineHeight
+    if (props.fontSize) styles.fontSize = props.fontSize
+    if (props.fontWeight) styles.fontWeight = props.fontWeight
     // Layout
     if (props.contentCentered) {
         styles.display = props.display ?? 'flex'
@@ -240,6 +261,9 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
     if (props.minHeight) styles.minHeight = props.minHeight
     if (props.maxHeight) styles.maxHeight = props.maxHeight
 
+    // opacity
+    if (props.opacity) styles.opacity = props.opacity
+
     // Flex
     if (props.flexGrow) styles.flexGrow = props.flexGrow
     if (props.flexShrink) styles.flexShrink = props.flexShrink
@@ -281,6 +305,17 @@ const getStyles = (props: PrimitiveButtonProps): CSSObject => {
     if (props.transform) styles.transform = props.transform
     if (props.transition) styles.transition = props.transition
 
+    if (props.willChange) styles.willChange = props.willChange
+    if (props.transformOrigin) styles.transformOrigin = props.transformOrigin
+    if (props.backfaceVisibility)
+        styles.backfaceVisibility = props.backfaceVisibility
+    if (props.transition) styles.transition = props.transition
+    if (props.transitionDuration)
+        styles.transitionDuration = props.transitionDuration
+    if (props.transitionTimingFunction)
+        styles.transitionTimingFunction = props.transitionTimingFunction
+    if (props.transitionDelay) styles.transitionDelay = props.transitionDelay
+
     return styles
 }
 
@@ -300,6 +335,7 @@ const StyledButton = styled.button.withConfig({
     shouldForwardProp,
 })<PrimitiveButtonProps>((props) => {
     const base = getStyles(props)
+
     const stateStyles = Object.entries(stateToSelector).reduce(
         (acc, [key, selector]) => {
             const stateProps = props[key as keyof StateStyles]
@@ -323,9 +359,9 @@ const PrimitiveButton = forwardRef<HTMLButtonElement, ButtonProps>(
     ({ children, disabled, cursor, type = 'button', ...rest }, ref) => {
         return (
             <StyledButton
+                disabled={disabled}
                 cursor={cursor}
                 ref={ref}
-                disabled={disabled}
                 type={type}
                 {...rest}
             >

@@ -49,6 +49,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showSkeleton = false,
             skeletonVariant = 'pulse',
             stickyHeader = false,
+            offsetTop = 0,
             children,
         },
         ref
@@ -120,7 +121,15 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-        }, [activeTab, variant, tabRefsMap, hasAnySkeleton])
+        }, [
+            activeTab,
+            variant,
+            tabRefsMap,
+            hasAnySkeleton,
+            expanded,
+            fitContent,
+            originalItems,
+        ])
 
         useEffect(() => {
             if (
@@ -151,15 +160,30 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
             window.addEventListener('resize', updateIndicator)
 
+            // Observe container size changes (e.g., when sidebar expands/collapses)
+            const resizeObserver = new ResizeObserver(() => {
+                updateIndicator()
+            })
+
+            // Observe both the list element and its parent container
+            resizeObserver.observe(listElement)
+            if (listElement.parentElement) {
+                resizeObserver.observe(listElement.parentElement)
+            }
+
             return () => {
                 clearTimeout(timeout)
                 window.removeEventListener('resize', updateIndicator)
+                resizeObserver.disconnect()
             }
         }, [
             activeTab,
             variant,
             hasAnySkeleton,
             sourceItems.length,
+            expanded,
+            fitContent,
+            originalItems,
             updateIndicator,
         ])
 
@@ -303,7 +327,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         width: '100%',
                         overflow: 'hidden',
                         position: stickyHeader ? 'sticky' : 'relative',
-                        top: stickyHeader ? 0 : 'auto',
+                        top: stickyHeader ? offsetTop : 'auto',
                         zIndex: stickyHeader ? 50 : 'auto',
                         backgroundColor: stickyHeader
                             ? FOUNDATION_THEME.colors.gray[0]

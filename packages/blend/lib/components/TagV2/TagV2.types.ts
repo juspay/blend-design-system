@@ -1,6 +1,13 @@
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 import { CSSObject } from 'styled-components'
+
+export enum TagV2PaddingDirection {
+    TOP = 'top',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
 
 export enum TagV2Type {
     NO_FILL = 'noFill',
@@ -36,12 +43,12 @@ export type TagV2Props = {
     subType?: TagV2SubType
     color?: TagV2Color
     leftSlot?: {
-        slot: ReactNode
-        maxHeight: CSSObject['maxHeight']
+        slot: ReactElement
+        maxHeight?: CSSObject['maxHeight']
     }
     rightSlot?: {
-        slot: ReactNode
-        maxHeight: CSSObject['maxHeight']
+        slot: ReactElement
+        maxHeight?: CSSObject['maxHeight']
     }
     skeleton?: {
         showSkeleton?: boolean

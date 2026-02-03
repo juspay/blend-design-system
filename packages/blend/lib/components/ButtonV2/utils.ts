@@ -156,6 +156,22 @@ export function getButtonBorderStyles(
     }
 }
 
+/** Return type for getButtonStyles (explicit to avoid csstype reference in .d.ts) */
+export type ButtonStylesReturn = {
+    background?: string
+    color?: string
+    border?: string
+    borderTop?: string
+    borderBottom?: string
+    borderLeft?: string
+    borderRight?: string
+    cursor?: string
+    _active?: Record<string, string | number | undefined>
+    _hover?: Record<string, string | number | undefined>
+    _focusVisible?: Record<string, string | number | undefined>
+    _disabled?: Record<string, string | number | undefined>
+}
+
 /**
  * Get all button styles in one call for better performance
  */
@@ -166,7 +182,7 @@ export function getButtonStyles(
     subType: ButtonV2SubType,
     tokens: ButtonV2TokensType,
     buttonGroupPosition?: 'center' | 'left' | 'right'
-) {
+): ButtonStylesReturn {
     const tokenState = isSkeleton
         ? 'transparent'
         : tokens.backgroundColor[buttonType][subType].default
@@ -262,7 +278,7 @@ export function getButtonStyles(
                   }),
                   cursor: 'not-allowed',
               },
-    }
+    } as ButtonStylesReturn
 }
 
 export function getIconColor(

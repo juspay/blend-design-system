@@ -74,8 +74,6 @@ const OTPInput = ({
             .join(' ') || undefined
 
     useEffect(() => {
-        if (!disabled) return
-
         const val = value || ''
         const otpArray = val.split('').slice(0, length)
         const paddedOtp = [

@@ -17,7 +17,12 @@ import {
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import { handleSelectAll, map } from './utils'
+import {
+    getMultiSelectBorderRadius,
+    getMultiSelectCrossBorderRadius,
+    handleSelectAll,
+    map,
+} from './utils'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -95,6 +100,7 @@ const MultiSelect = ({
     showClearButton,
     onClearAllClick,
     onOpenChange,
+    multiSelectGroupPosition,
 }: MultiSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -132,11 +138,6 @@ const MultiSelect = ({
     const isItemSelected = selectedValues.length > 0
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === MultiSelectMenuSize.LARGE
-
-    const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
-    const appliedBorderRadius = shouldShowClearButton
-        ? `${borderRadius} 0px 0px ${borderRadius}`
-        : borderRadius
 
     const paddingX = toPixels(
         multiSelectTokens.trigger.padding[size][variant].x
@@ -355,7 +356,13 @@ const MultiSelect = ({
                                         overflow="hidden"
                                         justifyContent="space-between"
                                         gap={8}
-                                        borderRadius={appliedBorderRadius}
+                                        borderRadius={getMultiSelectBorderRadius(
+                                            size,
+                                            variant,
+                                            multiSelectGroupPosition,
+                                            multiSelectTokens,
+                                            shouldShowClearButton
+                                        )}
                                         style={getErrorShakeStyle(shouldShake)}
                                         {...ariaAttributes}
                                         border={
@@ -710,7 +717,14 @@ const MultiSelect = ({
                             disabled={disabled}
                             data-element="clear-button"
                             type="button"
-                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                            borderRadius={
+                                getMultiSelectCrossBorderRadius(
+                                    size,
+                                    variant,
+                                    multiSelectGroupPosition,
+                                    multiSelectTokens
+                                ).borderRadius
+                            }
                             backgroundColor={FOUNDATION_THEME.colors.gray[0]}
                             contentCentered
                             height={'100%'}
@@ -735,6 +749,14 @@ const MultiSelect = ({
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
                                 ]
+                            }
+                            borderRight={
+                                getMultiSelectCrossBorderRadius(
+                                    size,
+                                    variant,
+                                    multiSelectGroupPosition,
+                                    multiSelectTokens
+                                ).borderRight
                             }
                             borderLeft={'0px solid !important'}
                             _hover={{

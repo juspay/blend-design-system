@@ -27,6 +27,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             showSkeleton = false,
             skeletonVariant = 'pulse',
             stickyHeader = false,
+            offsetTop = 0,
             children,
             ...props
         },
@@ -214,6 +215,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                         onTabChange={handleTabChange}
                         activeTab={activeTab}
                         stickyHeader={stickyHeader}
+                        offsetTop={offsetTop}
                     />
 
                     {items.map((item) => (

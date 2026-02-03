@@ -88,7 +88,9 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
             100: 100,
         },
         lineHeight: {
+            12: 12,
             14: 14,
+            16: 16,
             18: 18,
             20: 20,
             24: 24,
@@ -237,6 +239,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
         '15': '15px',
         '16': '16px',
         '18': '18px',
+        '18.5': '18.5px',
         '20': '20px',
         '22': '22px',
         '24': '24px',

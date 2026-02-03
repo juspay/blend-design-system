@@ -1,4 +1,6 @@
 import { createContext, useContext } from 'react'
+import { Theme } from './theme.enum'
+import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import type { ResponsiveSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
 import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
 import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
@@ -46,7 +48,6 @@ import type { ResponsiveDirectoryTokens } from '../components/Directory/director
 import type { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import type { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
-import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import { getTagTokens } from '../components/Tags/tag.tokens'
 import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
 import { getTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
@@ -99,6 +100,30 @@ import {
 } from '../components/Stepper/stepper.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 
+import getChatInputTokens, {
+    ResponsiveChatInputTokensType,
+} from '../components/ChatInput/chatInput.tokens'
+import {
+    getTagV2Tokens,
+    ResponsiveTagV2Tokens,
+} from '../components/TagV2/tagV2.tokens'
+import {
+    getAlertV2Tokens,
+    ResponsiveAlertV2Tokens,
+} from '../components/AlertV2/alertV2.tokens'
+import {
+    getAccordionV2Tokens,
+    ResponsiveAccordionV2Tokens,
+} from '../components/AccordionV2/accordionV2.tokens'
+import {
+    getSnackbarV2Tokens,
+    ResponsiveSnackbarV2Tokens,
+} from '../components/SnackbarV2/snackbarV2.tokens'
+import {
+    getSwitchV2Tokens,
+    ResponsiveSwitchV2Tokens,
+} from '../components/SwitchV2/switchV2.tokens'
+
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -145,16 +170,12 @@ export type ComponentTokenType = {
     CHAT_INPUT?: ResponsiveChatInputTokensType
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
+    ALERTV2?: ResponsiveAlertV2Tokens
+    ACCORDIONV2?: ResponsiveAccordionV2Tokens
+    SNACKBARV2?: ResponsiveSnackbarV2Tokens
+    SWITCHV2?: ResponsiveSwitchV2Tokens
 }
 
-import { Theme } from './theme.enum'
-import getChatInputTokens, {
-    ResponsiveChatInputTokensType,
-} from '../components/ChatInput/chatInput.tokens'
-import {
-    getTagV2Tokens,
-    ResponsiveTagV2Tokens,
-} from '../components/TagV2/tagV2.tokens'
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>
@@ -210,6 +231,10 @@ const ThemeContext = createContext<ThemeContextType>({
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        ALERTV2: getAlertV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        ACCORDIONV2: getAccordionV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SNACKBARV2: getSnackbarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

@@ -355,9 +355,9 @@ export const getVisualUploadState = (
 }
 
 export const truncateFileList = (
-    files: { id: string; file: File; status: string }[]
+    files: UploadedFileWithStatus[]
 ): {
-    displayFiles: { id: string; file: File; status: string }[]
+    displayFiles: UploadedFileWithStatus[]
     truncatedCount: number
 } => {
     const displayLimit = 4
@@ -917,4 +917,13 @@ export const createFileReplacementHandler = (
         setInternalUploadedFiles([])
         setInternalFailedFiles([])
     }
+}
+
+// /**
+//  * Converts bytes to MB
+//  * @param bytes - Size in bytes
+//  * @returns Size in MB (rounded)
+//  */
+export const getMbfromKb = (bytes: number) => {
+    return Math.round(bytes / (1024 * 1024))
 }

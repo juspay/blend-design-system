@@ -3,6 +3,9 @@
  * WCAG 4.1.2 (Name, Role, Value), 3.3.2 (Labels or Instructions), 4.1.3 (Status Messages)
  */
 
+import { SingleSelectTokensType } from './singleSelect.tokens'
+import { SelectMenuSize, SelectMenuVariant } from './types'
+
 export type AriaAttributes = {
     'aria-describedby'?: string
     'aria-label'?: string
@@ -16,6 +19,45 @@ export type ExtractedAriaProps = {
     'aria-label'?: string
     'aria-labelledby'?: string
     restProps: Record<string, unknown>
+}
+export function getBorderRadius(
+    size: SelectMenuSize,
+    varient: SelectMenuVariant,
+    singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
+    tokens: SingleSelectTokensType
+): { borderRadius: string; borderRight?: string } {
+    const variantBorderRadius = String(
+        tokens.trigger.borderRadius[size][varient]
+    )
+    const styles = {
+        borderRadius: '',
+        borderRight: '',
+    }
+    if (singleSelectGroupPosition === undefined) {
+        return { ...styles, borderRadius: variantBorderRadius, borderRight: '' }
+    }
+
+    if (singleSelectGroupPosition === 'left') {
+        return {
+            ...styles,
+            borderRadius: `${variantBorderRadius} 0 0 ${variantBorderRadius}`,
+            borderRight: '0px !important',
+        }
+    }
+
+    if (singleSelectGroupPosition === 'right') {
+        return {
+            ...styles,
+            borderRadius: `0 ${variantBorderRadius} ${variantBorderRadius} 0`,
+            borderRight: '',
+        }
+    }
+
+    return {
+        ...styles,
+        borderRadius: '0px 0px 0px 0px',
+        borderRight: '0px !important',
+    }
 }
 
 export type AccessibilitySetupOptions = {

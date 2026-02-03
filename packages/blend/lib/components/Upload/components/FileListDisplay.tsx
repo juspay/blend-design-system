@@ -34,6 +34,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
             display="flex"
             flexDirection="column"
             gap={uploadTokens.container.content.slot.gap}
+            data-element="files-uploaded"
         >
             <Block
                 display="flex"
@@ -42,7 +43,14 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                 justifyContent="center"
             >
                 {displayFiles.map((file) => (
-                    <Tooltip key={file.id} content={file.file.name}>
+                    <Tooltip
+                        key={file.id}
+                        content={
+                            file.status === 'error' && file.error
+                                ? file.error
+                                : file.file.name
+                        }
+                    >
                         <Tag
                             key={file.id}
                             text={file.file.name}
