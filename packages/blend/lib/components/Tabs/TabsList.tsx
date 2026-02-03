@@ -49,6 +49,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             showSkeleton = false,
             skeletonVariant = 'pulse',
             stickyHeader = false,
+            offsetTop = 0,
             children,
         },
         ref
@@ -326,7 +327,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                         width: '100%',
                         overflow: 'hidden',
                         position: stickyHeader ? 'sticky' : 'relative',
-                        top: stickyHeader ? 0 : 'auto',
+                        top: stickyHeader ? offsetTop : 'auto',
                         zIndex: stickyHeader ? 50 : 'auto',
                         backgroundColor: stickyHeader
                             ? FOUNDATION_THEME.colors.gray[0]

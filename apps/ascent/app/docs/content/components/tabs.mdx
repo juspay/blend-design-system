@@ -224,6 +224,15 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Tabs.offsetTop',
+                hintText:
+                    'Optional number value that sets the top offset in pixels for the sticky header. This is useful when there are other sticky elements on the page (like a navbar) and the tabs header needs to stick below them. Only applies when stickyHeader is true. Defaults to 0.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            {
                 content: 'TabsList.variant',
                 hintText:
                     'Optional TabsVariant enum value that determines the visual style variant of the tabs list. UNDERLINE creates tabs with an underline indicator, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
