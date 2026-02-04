@@ -119,6 +119,10 @@ import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
 } from '../components/SwitchV2/switchV2.tokens'
+import {
+    getTextInputV2Tokens,
+    ResponsiveTextInputV2Tokens,
+} from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -169,6 +173,7 @@ export type ComponentTokenType = {
     ALERTV2?: ResponsiveAlertV2Tokens
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
+    TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
 }
 
 type ThemeContextType = {
@@ -229,6 +234,7 @@ const ThemeContext = createContext<ThemeContextType>({
         ALERTV2: getAlertV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SNACKBARV2: getSnackbarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
