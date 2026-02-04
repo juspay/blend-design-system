@@ -97,8 +97,8 @@ export const getLayoutStyles = (
         flexDirection: isVertical ? 'row' : 'column',
         justifyContent: isVertical ? 'flex-start' : 'space-between',
         gap: isVertical
-            ? keyValuePairTokens.gap.horizontal
-            : keyValuePairTokens.gap.vertical,
+            ? keyValuePairTokens.gap.vertical
+            : keyValuePairTokens.gap.horizontal,
     }
 }
 
