@@ -55,6 +55,7 @@ const StyledContent = styled(VaulDrawer.Content)<{
     contentDriven?: boolean
     customWidth?: string | number
     customMaxWidth?: string | number
+    customMargin?: string | number
     mobileOffset?: {
         top?: string
         bottom?: string
@@ -68,6 +69,16 @@ const StyledContent = styled(VaulDrawer.Content)<{
     outline: none;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    ${({ customMargin, tokens }) =>
+        customMargin !== '0px' && customMargin
+            ? `margin: ${
+                  typeof customMargin === 'number'
+                      ? `${customMargin}px`
+                      : customMargin
+              };
+              border-radius: ${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft};`
+            : ''}
 
     ${({
         direction,
@@ -199,7 +210,6 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${hasOffset ? offset.top : '0'};
                 bottom: ${hasOffset ? offset.bottom : '0'};
                 left: ${hasOffset ? offset.left : '0'};
-                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `0 ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} 0`};
                 width: ${maxWidthValue};
 
                 @media (min-width: 1024px) {
@@ -228,7 +238,6 @@ const StyledContent = styled(VaulDrawer.Content)<{
                 top: ${hasOffset ? offset.top : '0'};
                 bottom: ${hasOffset ? offset.bottom : '0'};
                 right: ${hasOffset ? offset.right : '0'};
-                border-radius: ${hasOffset ? `${tokens.borderRadius.topLeft} ${tokens.borderRadius.topRight} ${tokens.borderRadius.bottomRight} ${tokens.borderRadius.bottomLeft}` : `${tokens.borderRadius.topLeft} 0 0 ${tokens.borderRadius.bottomLeft}`};
                 width: ${widthValue};
                 max-width: ${maxWidthValue};
                 user-select: text;
@@ -425,6 +434,7 @@ export const DrawerContent = forwardRef<
         contentDriven?: boolean
         width?: string | number
         maxWidth?: string | number
+        offSet?: string | number
         mobileOffset?: {
             top?: string
             bottom?: string
@@ -445,6 +455,7 @@ export const DrawerContent = forwardRef<
             contentDriven = false,
             width,
             maxWidth,
+            offSet,
             mobileOffset,
             fullScreen = false,
             'aria-label': ariaLabel,
@@ -476,6 +487,7 @@ export const DrawerContent = forwardRef<
                 contentDriven={contentDriven}
                 customWidth={width}
                 customMaxWidth={maxWidth}
+                customMargin={offSet}
                 mobileOffset={mobileOffset}
                 fullScreen={fullScreen}
                 role="dialog"

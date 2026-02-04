@@ -7,6 +7,9 @@ import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
 import ButtonDemo from './ButtonDemo'
 import InputDemo from './TextInputDemo'
 import SingleSelectDemo from './SingleSelectDemo'
+import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import MultiSelectGroupDemo from './MultiSelectGroupDemo'
+import TextInputGroupDemo from './TextInputGroupDemo'
 import ModalDemo from './ModalDemo'
 import DataTableDemo from './dataTableDemo'
 import CardDemo from './CardDemo'
@@ -53,6 +56,24 @@ const AllComponentsDemo = () => {
                     component: <SingleSelectDemo />,
                     description:
                         'Dropdown molecule with trigger, menu, and option atoms',
+                },
+                {
+                    name: 'Multi Select Group',
+                    component: <MultiSelectGroupDemo />,
+                    description:
+                        'Dropdown molecule with trigger, menu, and option atoms',
+                },
+                {
+                    name: 'Single Select Group',
+                    component: <SingleSelectGroupDemo />,
+                    description:
+                        'Dropdown molecule with trigger, menu, and option atoms',
+                },
+                {
+                    name: 'Text Input Group',
+                    component: <TextInputGroupDemo />,
+                    description:
+                        'Text Input molecule with trigger, menu, and option atoms',
                 },
                 {
                     name: 'Cards',

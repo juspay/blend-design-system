@@ -157,6 +157,7 @@ export type MultiSelectProps = {
     customValueLabel?: string
     showClearButton?: boolean
     onClearAllClick?: () => void
+    multiSelectGroupPosition?: 'center' | 'left' | 'right'
 }
 
 // Multi Select Menu Dropdpown
@@ -221,4 +222,5 @@ export type MultiSelectMenuProps = {
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
+    collisionBoundary?: Element | null | Array<Element | null>
 }

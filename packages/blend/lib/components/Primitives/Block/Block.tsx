@@ -102,9 +102,6 @@ type StyledBlockProps = StateStyles & {
     overflowY?: CSSObject['overflowY']
     whiteSpace?: CSSObject['whiteSpace']
 
-    // Transitions
-    transition?: CSSObject['transition']
-
     // Shortcuts
     contentCentered?: boolean
 
@@ -121,6 +118,16 @@ type StyledBlockProps = StateStyles & {
     textOverflow?: CSSObject['textOverflow']
 
     userSelect?: CSSObject['userSelect']
+
+    // Transform
+    transform?: CSSObject['transform']
+    willChange?: CSSObject['willChange']
+    transformOrigin?: CSSObject['transformOrigin']
+    backfaceVisibility?: CSSObject['backfaceVisibility']
+    transition?: CSSObject['transition']
+    transitionDuration?: CSSObject['transitionDuration']
+    transitionTimingFunction?: CSSObject['transitionTimingFunction']
+    transitionDelay?: CSSObject['transitionDelay']
 }
 
 const blockedProps = [
@@ -209,6 +216,15 @@ const blockedProps = [
     'textAlign',
     'textTransform',
     'userSelect',
+
+    'transform',
+    'willChange',
+    'transformOrigin',
+    'backfaceVisibility',
+    'transition',
+    'transitionDuration',
+    'transitionTimingFunction',
+    'transitionDelay',
 ]
 
 const shouldForwardProp = (prop: string) => !blockedProps.includes(prop)
@@ -355,6 +371,19 @@ const getStyles = (props: StyledBlockProps): CSSObject => {
     if (props.textOverflow !== undefined)
         styles.textOverflow = props.textOverflow
     if (props.userSelect !== undefined) styles.userSelect = props.userSelect
+    if (props.transform !== undefined) styles.transform = props.transform
+    if (props.willChange !== undefined) styles.willChange = props.willChange
+    if (props.transformOrigin !== undefined)
+        styles.transformOrigin = props.transformOrigin
+    if (props.backfaceVisibility !== undefined)
+        styles.backfaceVisibility = props.backfaceVisibility
+    if (props.transition !== undefined) styles.transition = props.transition
+    if (props.transitionDuration !== undefined)
+        styles.transitionDuration = props.transitionDuration
+    if (props.transitionTimingFunction !== undefined)
+        styles.transitionTimingFunction = props.transitionTimingFunction
+    if (props.transitionDelay !== undefined)
+        styles.transitionDelay = props.transitionDelay
     return styles
 }
 
@@ -397,6 +426,7 @@ type SemanticTagType = keyof Pick<
     | 'span'
     | 'nav'
     | 'hr'
+    | 'label'
 >
 
 export type BlockProps = StyledBlockProps &

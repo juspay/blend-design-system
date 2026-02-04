@@ -22,7 +22,6 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
         {
             id,
             checked,
-            defaultChecked = false,
             onChange,
             disabled = false,
             required = false,
@@ -82,14 +81,12 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(
                         role="switch"
                         id={uniqueId}
                         disabled={disabled}
-                        defaultChecked={defaultChecked}
                         onClick={() => onChange?.(!checked)}
                         aria-checked={checked}
                         data-state={getSwitchDataState(checked || false)}
                         size={size}
                         $isDisabled={disabled}
                         $isChecked={checked || false}
-                        $error={error}
                         $tokens={tokens}
                         value={value}
                         name={name}

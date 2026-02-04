@@ -25,7 +25,7 @@ import {
     errorShakeAnimation,
 } from '../common/error.animations'
 import styled from 'styled-components'
-import { setupAccessibility } from './utils'
+import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
 
 const Wrapper = styled(Block)`
@@ -102,6 +102,7 @@ const SingleSelect = ({
     minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
+    singleSelectGroupPosition,
     ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -136,7 +137,12 @@ const SingleSelect = ({
             needsMenuId: true,
         })
 
-    const borderRadius = singleSelectTokens.trigger.borderRadius[size][variant]
+    const borderRadius = getBorderRadius(
+        size,
+        variant,
+        singleSelectGroupPosition,
+        singleSelectTokens
+    ).borderRadius
     const paddingX = toPixels(
         singleSelectTokens.trigger.padding[size][variant].x
     )
@@ -197,7 +203,7 @@ const SingleSelect = ({
         <Block
             data-single-select={label || 'single-select'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width="100%"
+            width={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
@@ -303,6 +309,14 @@ const SingleSelect = ({
                                                   : 'closed'
                                         ]
                                     }
+                                    borderRight={
+                                        getBorderRadius(
+                                            size,
+                                            variant,
+                                            singleSelectGroupPosition,
+                                            singleSelectTokens
+                                        ).borderRight
+                                    }
                                     {...ariaAttributes}
                                     {...((!inline || isContainer) && {
                                         paddingX: paddingX,
@@ -336,6 +350,12 @@ const SingleSelect = ({
                                                             ? 'error'
                                                             : 'hover'
                                                     ],
+                                                borderRight: getBorderRadius(
+                                                    size,
+                                                    variant,
+                                                    singleSelectGroupPosition,
+                                                    singleSelectTokens
+                                                ).borderRight,
                                             },
                                         }),
                                         _focus: {
@@ -348,6 +368,12 @@ const SingleSelect = ({
                                                     .backgroundColor.container[
                                                     error ? 'error' : 'focus'
                                                 ],
+                                            borderRight: getBorderRadius(
+                                                size,
+                                                variant,
+                                                singleSelectGroupPosition,
+                                                singleSelectTokens
+                                            ).borderRight,
                                         },
                                         _disabled: {
                                             cursor: 'not-allowed',

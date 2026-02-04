@@ -5,7 +5,7 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import type { TextAreaProps } from './types'
 import type { TextAreaTokensType } from './textarea.token'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { useState, useId } from 'react'
+import { useState, useId, useRef, useEffect } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
@@ -50,6 +50,8 @@ const TextArea = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
 
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
     // Generate unique IDs for accessibility
     const generatedId = useId()
     const textareaId = providedId || generatedId
@@ -69,6 +71,12 @@ const TextArea = ({
 
     const paddingX = toPixels(textAreaTokens.inputContainer.padding.x)
     const paddingY = toPixels(textAreaTokens.inputContainer.padding.y)
+
+    useEffect(() => {
+        if (autoFocus && textAreaRef.current) {
+            textAreaRef.current.focus()
+        }
+    }, [autoFocus])
 
     return (
         <Block
@@ -121,6 +129,7 @@ const TextArea = ({
                     </Block>
                 )}
                 <PrimitiveTextarea
+                    ref={textAreaRef}
                     id={textareaId}
                     name={name}
                     width={'100%'}

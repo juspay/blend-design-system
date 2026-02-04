@@ -1,7 +1,9 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
+import type { ResponsiveTagTokens } from './tag.tokens'
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getTagLightTokens = (foundationToken: FoundationTokenType) => {
+export const getTagLightTokens = (
+    foundationToken: FoundationTokenType
+): ResponsiveTagTokens => {
     return {
         sm: {
             gap: foundationToken.unit[6],

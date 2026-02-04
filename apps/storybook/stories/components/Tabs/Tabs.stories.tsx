@@ -218,6 +218,11 @@ const [tabs, setTabs] = useState<TabItem[]>([
             description:
                 'When true, makes the tab listing header stick to the top of its container when scrolling. This keeps the tab navigation visible while scrolling through long tab content. The header will have position: sticky, top: 0, and a z-index to stay above other content.',
         },
+        offsetTop: {
+            control: 'number',
+            description:
+                'Optional number value that sets the top offset in pixels for the sticky header. Only applies when stickyHeader is true. Defaults to 0.',
+        },
     },
     tags: ['autodocs'],
 }
