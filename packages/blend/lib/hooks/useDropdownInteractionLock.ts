@@ -13,6 +13,16 @@ type DropdownSelectors = {
     trigger?: string[]
 }
 
+type DropdownLockHandlers = {
+    wheel: (e: WheelEvent) => void
+    touchmove: (e: TouchEvent) => void
+    keydown: (e: KeyboardEvent) => void
+}
+
+type HTMLElementWithHandlers = HTMLElement & {
+    __dropdownLockHandlers?: DropdownLockHandlers
+}
+
 const DEFAULT_SELECTORS: DropdownSelectors = {
     content: [
         '[data-radix-popper-content-wrapper]',
@@ -155,7 +165,7 @@ function applyLock(selectors: DropdownSelectors) {
     document.addEventListener('keydown', handleKeyDown, { passive: false })
 
     // Store handlers for cleanup
-    ;(document.body as any).__dropdownLockHandlers = {
+    ;(document.body as HTMLElementWithHandlers).__dropdownLockHandlers = {
         wheel: handleWheel,
         touchmove: handleTouchMove,
         keydown: handleKeyDown,
@@ -181,12 +191,13 @@ function removeLock() {
     window.scrollTo(scrollX, scrollY)
 
     // Remove event listeners
-    const handlers = (document.body as any).__dropdownLockHandlers
+    const bodyWithHandlers = document.body as HTMLElementWithHandlers
+    const handlers = bodyWithHandlers.__dropdownLockHandlers
     if (handlers) {
         document.removeEventListener('wheel', handlers.wheel)
         document.removeEventListener('touchmove', handlers.touchmove)
         document.removeEventListener('keydown', handlers.keydown)
-        delete (document.body as any).__dropdownLockHandlers
+        delete bodyWithHandlers.__dropdownLockHandlers
     }
 }
 
