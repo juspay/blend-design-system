@@ -10,6 +10,8 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Hash, X, Plus, Download, Edit } from 'lucide-react'
 import { useState } from 'react'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const ButtonGroupV2Demo = () => {
     const [stacked, setStacked] = useState(false)
@@ -21,6 +23,7 @@ const ButtonGroupV2Demo = () => {
         ButtonV2SubType.DEFAULT
     )
     const [count, setCount] = useState('3')
+    const { theme } = useTheme()
 
     const typeOptions = [
         { value: ButtonV2Type.PRIMARY, label: 'Primary' },
@@ -137,7 +140,13 @@ const ButtonGroupV2Demo = () => {
                     </div>
                 </div>
 
-                <div className="min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                <div
+                    className={`min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed ${
+                        theme === Theme.DARK
+                            ? 'border-gray-700 bg-gray-900'
+                            : 'border-gray-200 bg-gray-50'
+                    }`}
+                >
                     <ButtonGroupV2 stacked={stacked}>
                         {renderButtons()}
                     </ButtonGroupV2>

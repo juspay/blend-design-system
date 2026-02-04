@@ -3,6 +3,8 @@ import { Hash } from 'lucide-react'
 import { SingleSelect, TextInput } from '../../../../packages/blend/lib/main'
 import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
 import { SwitchV2Size } from '../../../../packages/blend/lib/components/SwitchV2/switchV2.types'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const SwitchV2Demo = () => {
     const [checked, setChecked] = useState(false)
@@ -17,6 +19,7 @@ const SwitchV2Demo = () => {
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<
         number | undefined
     >()
+    const { theme } = useTheme()
 
     return (
         <div className="space-y-6 p-8">
@@ -120,7 +123,13 @@ const SwitchV2Demo = () => {
                     onSelect={(value) => setSize(value as SwitchV2Size)}
                 />
 
-                <div className="min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
+                <div
+                    className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
+                        theme === Theme.DARK
+                            ? 'border-gray-700 bg-gray-900'
+                            : 'border-gray-300 bg-gray-50'
+                    }`}
+                >
                     <SwitchV2
                         label={label}
                         subLabel={subLabel}
