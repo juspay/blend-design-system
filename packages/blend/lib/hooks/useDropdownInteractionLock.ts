@@ -33,8 +33,10 @@ const DEFAULT_SELECTORS: DropdownSelectors = {
 function injectStyle(selectors: DropdownSelectors) {
     if (styleInjected || typeof document === 'undefined') return
 
-    const contentSelectors = selectors.content || DEFAULT_SELECTORS.content || []
-    const triggerSelectors = selectors.trigger || DEFAULT_SELECTORS.trigger || []
+    const contentSelectors =
+        selectors.content || DEFAULT_SELECTORS.content || []
+    const triggerSelectors =
+        selectors.trigger || DEFAULT_SELECTORS.trigger || []
 
     const contentSelectorString = contentSelectors
         .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
@@ -87,10 +89,7 @@ function isTrigger(
     return triggerSelectors.some((selector) => target.matches(selector))
 }
 
-function preventScroll(
-    e: WheelEvent | TouchEvent,
-    contentSelectors: string[]
-) {
+function preventScroll(e: WheelEvent | TouchEvent, contentSelectors: string[]) {
     const target = e.target as HTMLElement | null
 
     if (isInsideDropdown(target, contentSelectors)) return
@@ -145,8 +144,7 @@ function applyLock(selectors: DropdownSelectors) {
     document.body.style.overflow = 'hidden'
 
     // Prevent scroll events
-    const handleWheel = (e: WheelEvent) =>
-        preventScroll(e, contentSelectors)
+    const handleWheel = (e: WheelEvent) => preventScroll(e, contentSelectors)
     const handleTouchMove = (e: TouchEvent) =>
         preventScroll(e, contentSelectors)
     const handleKeyDown = (e: KeyboardEvent) =>
@@ -225,4 +223,3 @@ export default function useDropdownInteractionLock(
         }
     }, [isOpen])
 }
-

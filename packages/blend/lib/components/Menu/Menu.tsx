@@ -83,7 +83,7 @@ const Menu = ({
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
-    
+
     const menuIsOpen = open ?? isOpen
     useDropdownInteractionLock(menuIsOpen)
 

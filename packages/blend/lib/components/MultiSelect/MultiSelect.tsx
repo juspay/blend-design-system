@@ -170,7 +170,7 @@ const MultiSelect = ({
         needsMenuId: true,
     })
     useDropdownInteractionLock(!isMobile && open)
-    
+
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobileMultiSelect
