@@ -94,11 +94,11 @@ export const getLayoutStyles = (
 
     return {
         display: 'flex',
-        flexDirection: isVertical ? 'column' : 'row',
+        flexDirection: isVertical ? 'row' : 'column',
         justifyContent: isVertical ? 'flex-start' : 'space-between',
         gap: isVertical
-            ? keyValuePairTokens.gap.vertical
-            : keyValuePairTokens.gap.horizontal,
+            ? keyValuePairTokens.gap.horizontal
+            : keyValuePairTokens.gap.vertical,
     }
 }
 
