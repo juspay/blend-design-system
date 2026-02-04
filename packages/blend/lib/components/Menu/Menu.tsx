@@ -19,6 +19,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
+import { useDropdownInteractionLock } from '../../hooks'
 import useScrollLock from '../../hooks/useScrollLock'
 
 export const contentBaseStyle: CSSObject = {
@@ -82,6 +83,9 @@ const Menu = ({
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+    
+    const menuIsOpen = open ?? isOpen
+    useDropdownInteractionLock(menuIsOpen)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
@@ -166,8 +170,7 @@ const Menu = ({
     const shouldUseVirtualScrolling =
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
-    const isMenuOpen = open ?? isOpen
-    useScrollLock(isMenuOpen)
+    useScrollLock(menuIsOpen)
 
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {

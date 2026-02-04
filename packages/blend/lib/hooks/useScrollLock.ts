@@ -1,208 +1,163 @@
 import { useEffect } from 'react'
 
-let lockCount = 0
-let styleInjected = false
-let scrollX = 0
-let scrollY = 0
-
-const CLASS_NAME = 'dropdown-open-no-hover'
-const STYLE_ID = 'dropdown-hover-prevention'
-
-function injectStyle() {
-    if (styleInjected || typeof document === 'undefined') return
-
-    const style = document.createElement('style')
-    style.id = STYLE_ID
-
-    style.textContent = `
-      /* Disable pointer events on all elements except dropdowns and triggers */
-      body.${CLASS_NAME} * {
-        pointer-events: none !important;
-      }
-
-      /* Re-enable pointer events for dropdowns and their content */
-      body.${CLASS_NAME} [data-radix-popper-content-wrapper],
-      body.${CLASS_NAME} [data-radix-popper-content-wrapper] *,
-      body.${CLASS_NAME} [data-radix-dropdown-menu-content],
-      body.${CLASS_NAME} [data-radix-dropdown-menu-content] *,
-      body.${CLASS_NAME} [role="menu"],
-      body.${CLASS_NAME} [role="menu"] *,
-      body.${CLASS_NAME} [role="listbox"],
-      body.${CLASS_NAME} [role="listbox"] *,
-      body.${CLASS_NAME} [data-dropdown="dropdown"],
-      body.${CLASS_NAME} [data-dropdown="dropdown"] * {
-        pointer-events: auto !important;
-      }
-
-      /* Re-enable pointer events for trigger buttons */
-      body.${CLASS_NAME} [data-radix-dropdown-menu-trigger],
-      body.${CLASS_NAME} button[aria-expanded],
-      body.${CLASS_NAME} button[aria-haspopup],
-      body.${CLASS_NAME} [data-element="single-select-button"],
-      body.${CLASS_NAME} [data-element="multi-select-button"] {
-        pointer-events: auto !important;
-      }
-    `
-
-    document.head.appendChild(style)
-    styleInjected = true
-}
-
-function hasOpenDropdown() {
-    return Boolean(
-        document.querySelector(
-            '[data-radix-popper-content-wrapper], [data-radix-dropdown-menu-content]'
-        )
-    )
-}
-
-function isInsideDropdown(target: HTMLElement | null) {
-    if (!target) return false
-
-    return Boolean(
-        target.closest(
-            `
-        [data-radix-popper-content-wrapper],
-        [data-radix-dropdown-menu-content],
-        [role="menu"],
-        [role="listbox"]
-      `
-        )
-    )
-}
-
-function isInsideModal(target: HTMLElement | null) {
-    if (!target) return false
-
-    return Boolean(
-        target.closest(
-            `
-        [role="dialog"],
-        [data-modal],
-        [data-element="body"]
-      `
-        )
-    )
-}
-
-function preventScroll(e: WheelEvent | TouchEvent) {
-    const target = e.target as HTMLElement | null
-
-    if (isInsideDropdown(target)) return
-
-    const dropdownOpen = hasOpenDropdown()
-
-    if (dropdownOpen && isInsideModal(target)) {
-        e.preventDefault()
-        return
-    }
-
-    if (isInsideModal(target) && !dropdownOpen) return
-
-    e.preventDefault()
-}
-
-function preventKeyboardScroll(e: KeyboardEvent) {
-    const keys = [
-        'ArrowUp',
-        'ArrowDown',
-        'ArrowLeft',
-        'ArrowRight',
-        'PageUp',
-        'PageDown',
-        'Home',
-        'End',
-        ' ',
-    ]
-
-    if (!keys.includes(e.key)) return
-
-    const target = e.target as HTMLElement | null
-
-    if (isInsideDropdown(target)) return
-
-    if (target?.closest('input, textarea')) return
-
-    const dropdownOpen = hasOpenDropdown()
-
-    if (dropdownOpen && isInsideModal(target)) {
-        e.preventDefault()
-        return
-    }
-
-    if (isInsideModal(target) && !dropdownOpen) return
-
-    e.preventDefault()
-}
-
-function applyLock() {
-    injectStyle()
-
-    scrollX = window.scrollX
-    scrollY = window.scrollY
-
-    document.body.classList.add(CLASS_NAME)
-
-    document.documentElement.style.overflow = 'hidden'
-    document.documentElement.style.overscrollBehavior = 'none'
-    document.documentElement.style.touchAction = 'none'
-
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.left = `-${scrollX}px`
-    document.body.style.width = '100%'
-    document.body.style.height = '100%'
-    document.body.style.overflow = 'hidden'
-
-    document.addEventListener('wheel', preventScroll, { passive: false })
-    document.addEventListener('touchmove', preventScroll, { passive: false })
-    document.addEventListener('keydown', preventKeyboardScroll, {
-        passive: false,
-    })
-}
-
-function removeLock() {
-    document.body.classList.remove(CLASS_NAME)
-
-    document.documentElement.style.overflow = ''
-    document.documentElement.style.overscrollBehavior = ''
-    document.documentElement.style.touchAction = ''
-
-    document.body.style.position = ''
-    document.body.style.top = ''
-    document.body.style.left = ''
-    document.body.style.width = ''
-    document.body.style.height = ''
-    document.body.style.overflow = ''
-
-    window.scrollTo(scrollX, scrollY)
-
-    document.removeEventListener('wheel', preventScroll)
-    document.removeEventListener('touchmove', preventScroll)
-    document.removeEventListener('keydown', preventKeyboardScroll)
-}
-
-export default function useScrollLock(shouldLock?: boolean) {
+const useScrollLock = (shouldLock?: boolean) => {
     useEffect(() => {
-        if (typeof window === 'undefined') return
+        if (!shouldLock) return
 
-        if (shouldLock) {
-            lockCount++
+        // Prevent scrolling on wheel events (mouse wheel, trackpad)
+        const preventScroll = (e: WheelEvent | TouchEvent) => {
+            const target = e.target as HTMLElement
 
-            if (lockCount === 1) {
-                applyLock()
+            // Priority 1: Allow scrolling within dropdown menus (highest priority)
+            const isInsideDropdown =
+                target.closest('[data-radix-popper-content-wrapper]') ||
+                target.closest('[data-radix-dropdown-menu-content]') ||
+                target.closest('[role="menu"]')
+
+            if (isInsideDropdown) {
+                return // Allow scroll in dropdown
+            }
+
+            // Priority 2: Check if dropdown is open
+            const hasOpenDropdown = document.querySelector(
+                '[data-radix-popper-content-wrapper]'
+            )
+
+            // Priority 3: If dropdown is open, block ALL modal scrolling
+            if (hasOpenDropdown) {
+                const isInsideModalBody =
+                    target.closest('[data-element="body"]') ||
+                    target.closest('[role="dialog"]')
+
+                if (isInsideModalBody) {
+                    e.preventDefault() // Block modal scroll when dropdown is open
+                    return
+                }
+            }
+
+            // Priority 4: Allow scrolling in modal body when no dropdown is open
+            const isInsideModal =
+                target.closest('[role="dialog"]') ||
+                target.closest('[data-modal]') ||
+                target.closest('[data-element="body"]')
+
+            if (isInsideModal && !hasOpenDropdown) {
+                return // Allow scroll in modal when no dropdown
+            }
+
+            // Block all other scrolling
+            e.preventDefault()
+        }
+
+        // Prevent keyboard scrolling (arrow keys, space, page up/down)
+        const preventKeyboardScroll = (e: KeyboardEvent) => {
+            const scrollKeys = [
+                'ArrowUp',
+                'ArrowDown',
+                'ArrowLeft',
+                'ArrowRight',
+                'PageUp',
+                'PageDown',
+                'Home',
+                'End',
+                ' ', // spacebar
+            ]
+
+            const target = e.target as HTMLElement
+
+            // Priority 1: Allow keyboard navigation in dropdowns
+            const isInsideDropdown =
+                target.closest('[data-radix-popper-content-wrapper]') ||
+                target.closest('[data-radix-dropdown-menu-content]') ||
+                target.closest('[role="menu"]')
+
+            if (isInsideDropdown) {
+                return // Allow keyboard navigation in dropdown
+            }
+
+            // Priority 2: Allow in inputs/textareas always
+            if (target.closest('input') || target.closest('textarea')) {
+                return
+            }
+
+            // Priority 3: Check if dropdown is open
+            const hasOpenDropdown = document.querySelector(
+                '[data-radix-dropdown-menu-content]'
+            )
+
+            // Priority 4: If dropdown is open, block modal keyboard scrolling
+            if (hasOpenDropdown && scrollKeys.includes(e.key)) {
+                const isInsideModalBody =
+                    target.closest('[data-element="body"]') ||
+                    target.closest('[role="dialog"]')
+
+                if (isInsideModalBody) {
+                    e.preventDefault() // Block modal keyboard scroll when dropdown is open
+                    return
+                }
+            }
+
+            // Priority 5: Allow keyboard navigation in modal when no dropdown
+            const isInsideModal =
+                target.closest('[role="dialog"]') ||
+                target.closest('[data-modal]') ||
+                target.closest('[data-element="body"]')
+
+            if (isInsideModal && !hasOpenDropdown) {
+                return
+            }
+
+            // Block all other keyboard scrolling
+            if (scrollKeys.includes(e.key)) {
+                e.preventDefault()
             }
         }
 
+        // Save current scroll position
+        const scrollY = window.scrollY
+        const scrollX = window.scrollX
+
+        // Apply styles to prevent scrolling
+        document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.touchAction = 'none'
+        document.documentElement.style.overscrollBehavior = 'none'
+        document.body.style.overflow = 'hidden'
+        document.body.style.position = 'fixed'
+        document.body.style.top = `-${scrollY}px`
+        document.body.style.left = `-${scrollX}px`
+        document.body.style.width = '100%'
+        document.body.style.height = '100%'
+
+        // Add event listeners to prevent scroll attempts
+        document.addEventListener('wheel', preventScroll, { passive: false })
+        document.addEventListener('touchmove', preventScroll, {
+            passive: false,
+        })
+        document.addEventListener('keydown', preventKeyboardScroll, {
+            passive: false,
+        })
+
         return () => {
-            if (!shouldLock) return
+            // Remove event listeners
+            document.removeEventListener('wheel', preventScroll)
+            document.removeEventListener('touchmove', preventScroll)
+            document.removeEventListener('keydown', preventKeyboardScroll)
 
-            lockCount--
+            // Restore styles
+            document.documentElement.style.overflow = ''
+            document.documentElement.style.touchAction = ''
+            document.documentElement.style.overscrollBehavior = ''
+            document.body.style.overflow = ''
+            document.body.style.position = ''
+            document.body.style.top = ''
+            document.body.style.left = ''
+            document.body.style.width = ''
+            document.body.style.height = ''
 
-            if (lockCount <= 0) {
-                lockCount = 0
-                removeLock()
-            }
+            // Restore scroll position
+            window.scrollTo(scrollX, scrollY)
         }
     }, [shouldLock])
 }
+
+export default useScrollLock
