@@ -27,6 +27,7 @@ import {
 import styled from 'styled-components'
 import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
+import useScrollLock from '../../hooks/useScrollLock'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -157,6 +158,8 @@ const SingleSelect = ({
         [onSelect, selected]
     )
     const shouldShake = useErrorShake(error)
+
+    useScrollLock(!isMobile && open)
 
     if (isMobile && useDrawerOnMobile) {
         return (
