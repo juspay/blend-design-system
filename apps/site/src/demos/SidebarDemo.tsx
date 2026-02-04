@@ -118,6 +118,8 @@ import TagGroupV2Demo from './TagGroupV2Demo'
 import AlertV2Demo from './AlertV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import TextInputV2Demo from './TextInputV2Demo'
+import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -190,7 +192,9 @@ const SidebarDemo = () => {
         | 'alertV2'
         | 'snackbarV2'
         | 'switchV2'
-    >('snackbarV2')
+        | 'textInputV2'
+        | 'textInputAutofillTestV2'
+    >('textInputAutofillTestV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -499,6 +503,10 @@ const SidebarDemo = () => {
                 return <ChartDemoV2 />
             case 'textInputAutofillTest':
                 return <TextInputAutofillTest />
+            case 'textInputV2':
+                return <TextInputV2Demo />
+            case 'textInputAutofillTestV2':
+                return <TextInputAutofillTestV2 />
             default:
                 return (
                     <div className="p-8">
@@ -784,12 +792,29 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('textInputAutofillTest'),
                 },
                 {
+                    label: 'Text Input Autofill Test V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTestV2',
+                    onClick: () =>
+                        setActiveComponent('textInputAutofillTestV2'),
+                },
+                {
                     label: 'Text Input777',
                     leftSlot: (
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'input',
                     onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'Text Input V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputV2',
+                    onClick: () => setActiveComponent('textInputV2'),
                 },
                 {
                     label: 'Search Input',
