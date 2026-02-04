@@ -212,15 +212,29 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
         const validCurrentMin = Math.max(min, Math.min(max, currentMin))
         const validCurrentMax = Math.max(min, Math.min(max, currentMax))
 
-        const [localValue, setLocalValue] = useState<[number, number]>([
-            validCurrentMin,
-            validCurrentMax,
-        ])
+        const targetValues = React.useMemo<[number, number]>(
+            () => [validCurrentMin, validCurrentMax],
+            [validCurrentMin, validCurrentMax]
+        )
+
+        const [localValue, setLocalValue] =
+            useState<[number, number]>(targetValues)
         const debounceRef = useRef<NodeJS.Timeout | null>(null)
+        const lastSyncedValuesRef = useRef<[number, number]>(targetValues)
+        const userHasChangedRef = useRef<boolean>(false)
 
         useEffect(() => {
-            setLocalValue([validCurrentMin, validCurrentMax])
-        }, [validCurrentMin, validCurrentMax])
+            const hasFilterStateChanged =
+                lastSyncedValuesRef.current[0] !== targetValues[0] ||
+                lastSyncedValuesRef.current[1] !== targetValues[1]
+
+            if (hasFilterStateChanged && !userHasChangedRef.current) {
+                setLocalValue(targetValues)
+                lastSyncedValuesRef.current = targetValues
+            } else if (hasFilterStateChanged) {
+                lastSyncedValuesRef.current = targetValues
+            }
+        }, [targetValues])
 
         useEffect(() => {
             return () => {
@@ -249,6 +263,8 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             const [newMin, newMax] = values
             const newValue: [number, number] = [newMin, newMax]
             setLocalValue(newValue)
+            userHasChangedRef.current = true
+            lastSyncedValuesRef.current = newValue
 
             if (debounceRef.current) {
                 clearTimeout(debounceRef.current)
@@ -264,6 +280,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         'range'
                     )
                 }
+                userHasChangedRef.current = false
             }, 300)
         }
 

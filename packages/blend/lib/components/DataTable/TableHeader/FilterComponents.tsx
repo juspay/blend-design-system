@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { ArrowUp, ArrowDown, Search, ChevronRight, Check } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -679,15 +679,28 @@ export const SliderFilter: React.FC<{
     const validCurrentMin = Math.max(min, Math.min(max, currentMin))
     const validCurrentMax = Math.max(min, Math.min(max, currentMax))
 
-    const [localValue, setLocalValue] = useState<[number, number]>([
-        validCurrentMin,
-        validCurrentMax,
-    ])
+    const targetValues = useMemo<[number, number]>(
+        () => [validCurrentMin, validCurrentMax],
+        [validCurrentMin, validCurrentMax]
+    )
+
+    const [localValue, setLocalValue] = useState<[number, number]>(targetValues)
     const debounceRef = useRef<NodeJS.Timeout | null>(null)
+    const lastSyncedValuesRef = useRef<[number, number]>(targetValues)
+    const userHasChangedRef = useRef<boolean>(false)
 
     useEffect(() => {
-        setLocalValue([validCurrentMin, validCurrentMax])
-    }, [validCurrentMin, validCurrentMax])
+        const hasFilterStateChanged =
+            lastSyncedValuesRef.current[0] !== targetValues[0] ||
+            lastSyncedValuesRef.current[1] !== targetValues[1]
+
+        if (hasFilterStateChanged && !userHasChangedRef.current) {
+            setLocalValue(targetValues)
+            lastSyncedValuesRef.current = targetValues
+        } else if (hasFilterStateChanged) {
+            lastSyncedValuesRef.current = targetValues
+        }
+    }, [targetValues])
 
     useEffect(() => {
         return () => {
@@ -712,6 +725,7 @@ export const SliderFilter: React.FC<{
                     'range'
                 )
             }
+            userHasChangedRef.current = false
         }, 300)
     }
 
@@ -743,6 +757,8 @@ export const SliderFilter: React.FC<{
         const newValue: [number, number] = [newMin, newMax]
 
         setLocalValue(newValue)
+        userHasChangedRef.current = true
+        lastSyncedValuesRef.current = newValue
 
         debouncedFilterUpdate(newValue)
     }
