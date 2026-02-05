@@ -1,0 +1,259 @@
+# Contributing to Blend Design System
+
+We welcome contributions from the community! Whether you're fixing bugs, adding new components, improving documentation, or proposing new features, your contributions help make Blend better for everyone.
+
+## Before You Start
+
+### Getting Help
+
+- **GitHub Discussions**: Ask questions and share ideas
+- **Issues**: Report bugs and request features
+
+## Development Setup
+
+### Prerequisites
+
+- **Node.js** 18+
+- **pnpm** (recommended package manager)
+- **Git** for version control
+
+### Fork and Clone
+
+```bash
+# Fork the repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/blend-design-system.git
+cd blend-design-system
+
+# Add upstream remote
+git remote add upstream https://github.com/juspay/blend-design-system.git
+```
+
+### Install Dependencies
+
+```bash
+# Install all dependencies
+pnpm install
+
+# Build the design system
+pnpm build
+
+# Start development mode
+pnpm dev
+```
+
+### Development Workflow
+
+```bash
+# Create a new branch for your feature
+git checkout -b feature/your-feature-name
+
+# Make your changes
+# ...
+
+# Build to ensure everything works
+pnpm build
+```
+
+## Project Structure
+
+Understanding the monorepo structure:
+
+```
+blend-design-system/
+├── packages/
+│   └── blend/                 # Main design system package
+│       ├── lib/
+│       │   ├── components/    # React components
+│       │   ├── tokens/        # Design tokens
+│       │   ├── hooks/         # Custom hooks
+│       │   └── context/       # Theme context and providers
+├── apps/
+│   ├── ascent/               # Documentation site
+│   └── storybook/            # Component playground
+```
+
+## Types of Contributions
+
+### Bug Fixes
+
+1. **Check existing issues** before creating new ones
+2. **Include reproduction steps** and expected vs actual behavior
+3. **Update documentation** if needed
+
+**Example Bug Fix Process:**
+
+```bash
+# Create branch
+git checkout -b fix/button-disabled-state
+
+# Make your fix
+# Update docs if needed
+
+# Commit and push
+git commit -m "fix: button disabled state styling"
+git push origin fix/button-disabled-state
+```
+
+### Documentation
+
+Documentation improvements are always welcome:
+
+- Improve existing component documentation
+- Add usage examples and best practices
+- Update getting started guides
+- Fix typos and improve clarity
+
+### Design Tokens
+
+When proposing design token changes:
+
+1. **Create an issue first** to discuss the change
+2. **Ensure backward compatibility** where possible
+3. **Update all affected components**
+4. **Include design rationale** and use cases
+
+## Documentation Standards
+
+### Component Documentation
+
+Each component should include:
+
+- **API Reference**: Complete prop documentation
+- **Usage Examples**: Common use cases
+- **Accessibility**: ARIA labels, keyboard navigation
+- **Do's and Don'ts**: Best practices and anti-patterns
+
+### Code Comments
+
+- Document complex logic and business rules
+- Explain design decisions and trade-offs
+- Include links to relevant design specifications
+
+## Submission Guidelines
+
+### Before Submitting
+
+1. **Build successfully**: `pnpm build`
+2. **Update documentation** if needed
+
+### Pull Request Guidelines
+
+#### PR Title Format
+
+```
+type(scope): brief description
+
+Examples:
+feat(button): add loading state
+fix(modal): resolve focus trap issue
+docs(getting-started): update installation guide
+```
+
+#### PR Description Template
+
+```markdown
+## Description
+
+Brief description of changes
+
+## Type of Change
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+
+- [ ] Manually tested the changes
+- [ ] Verified in Storybook (if applicable)
+
+## Screenshots (if applicable)
+
+[Add screenshots for visual changes]
+
+## Breaking Changes
+
+[Describe any breaking changes]
+
+## Related Issues
+
+Closes #[issue number]
+```
+
+### Review Process
+
+1. **Automated checks** must pass
+2. **Design team review** for UI changes
+3. **Code review** by maintainers
+4. **Documentation review** if applicable
+5. **Final approval** and merge
+
+## Release Process
+
+### Semantic Versioning
+
+We follow [Semantic Versioning](https://semver.org/):
+
+- **Patch** (1.0.1): Bug fixes
+- **Minor** (1.1.0): New features, backward compatible
+- **Major** (2.0.0): Breaking changes
+
+### Release Notes
+
+Contributors are recognized in release notes:
+
+- Bug fixes and improvements
+- New features and components
+- Breaking changes
+- Special thanks to contributors
+
+## Troubleshooting
+
+### Common Development Issues
+
+**Build failures:**
+
+```bash
+# Clear everything and reinstall
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+**TypeScript errors:**
+
+- Check component exports in `index.ts`
+- Verify type definitions are complete
+- Ensure all imports are properly typed
+
+### Getting Unstuck
+
+If you're stuck:
+
+1. Check existing documentation and issues
+2. Ask in GitHub Discussions
+3. Reach out to maintainers
+
+## Resources
+
+### Development Tools
+
+- **Storybook**: Component development and testing
+- **TypeScript**: Type safety and IntelliSense
+- **ESLint**: Code linting
+
+### Design Resources
+
+- **Figma**: Design files and specifications
+- **Design Tokens**: Token definitions and usage
+
+### Learning Materials
+
+- **React**: Component development
+- **TypeScript**: Type system
+
+## Thank You
+
+Thank you for contributing to Blend Design System! Your efforts help create better experiences for developers and users worldwide. Every contribution, no matter how small, makes a difference.
+
+Welcome to the community! 🎉
