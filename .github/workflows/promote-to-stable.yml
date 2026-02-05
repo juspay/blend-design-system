@@ -1,0 +1,301 @@
+name: Promote Beta to Stable
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_promote:
+                description: 'Type "PROMOTE" to confirm promoting beta to stable'
+                required: true
+                type: string
+
+concurrency:
+    group: promote-to-stable-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    promote-to-stable:
+        name: Promote Beta to Stable Release
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/staging' && github.event.inputs.confirm_promote == 'PROMOTE'
+        outputs:
+            stable_version: ${{ steps.promote.outputs.stable_version }}
+            beta_version: ${{ steps.verify_beta.outputs.version }}
+            tag: ${{ steps.promote.outputs.tag }}
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify Current Beta Version
+              id: verify_beta
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+                  # Check for new format: X.Y.Z-beta.N
+                  if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    BETA_NUMBER="${BASH_REMATCH[2]}"
+                    echo "Current beta version: $CURRENT_VERSION (base: $BASE_VERSION, beta #$BETA_NUMBER)"
+                    echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                    echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                    echo "beta_number=$BETA_NUMBER" >> $GITHUB_OUTPUT
+                  # Check for old format: X.Y.Z-beta
+                  elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    echo "Current beta version (old format): $CURRENT_VERSION"
+                    echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                    echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                    echo "beta_number=0" >> $GITHUB_OUTPUT
+                  else
+                    echo "ERROR: Current version ($CURRENT_VERSION) is not a beta version!"
+                    echo "Expected format: X.Y.Z-beta.N (e.g., 1.0.0-beta.0) or X.Y.Z-beta"
+                    echo "Cannot promote a non-beta version to stable."
+                    exit 1
+                  fi
+
+            - name: Check Beta Published on NPM
+              id: check_beta_npm
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  BETA_VERSION="${{ steps.verify_beta.outputs.version }}"
+
+                  echo "Checking if beta version $BETA_VERSION is published on NPM..."
+
+                  if npm view "$PACKAGE_NAME@$BETA_VERSION" version 2>/dev/null; then
+                    echo "Beta version $BETA_VERSION is published on NPM"
+                    echo "beta_published=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "WARNING: Beta version $BETA_VERSION is NOT published on NPM"
+                    echo "Consider publishing the beta first for testing before promoting to stable."
+                    echo "beta_published=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Promote to Stable Version
+              id: promote
+              run: |
+                  cd packages/blend
+                  BETA_VERSION="${{ steps.verify_beta.outputs.version }}"
+                  STABLE_VERSION="${{ steps.verify_beta.outputs.base_version }}"
+
+                  echo "Promoting $BETA_VERSION → $STABLE_VERSION"
+
+                  # Update package.json to stable version
+                  npm pkg set version="$STABLE_VERSION"
+
+                  # Verify the version was set correctly
+                  UPDATED_VERSION=$(node -p "require('./package.json').version")
+                  if [[ "$UPDATED_VERSION" != "$STABLE_VERSION" ]]; then
+                    echo "ERROR: Failed to update package.json version. Expected '$STABLE_VERSION', got '$UPDATED_VERSION'"
+                    exit 1
+                  fi
+
+                  echo "Version successfully promoted to $STABLE_VERSION"
+                  echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
+                  echo "tag=v$STABLE_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Clean Existing Tags and Releases
+              run: |
+                  VERSION=${{ steps.promote.outputs.stable_version }}
+                  TAG="v$VERSION"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  echo "Cleaning up any existing tags and releases for $TAG"
+
+                  # Clean up any existing local tags
+                  git tag -l | xargs -r git tag -d 2>/dev/null || true
+                  git fetch --tags
+
+                  # Force delete remote tag if it exists
+                  if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+                    echo "Deleting existing remote tag $TAG"
+                    git push origin ":refs/tags/$TAG" 2>/dev/null || true
+                    sleep 2
+                  fi
+
+                  # Delete existing GitHub release if it exists
+                  if gh release view "$TAG" >/dev/null 2>&1; then
+                    echo "Deleting existing GitHub release $TAG"
+                    gh release delete "$TAG" --yes 2>/dev/null || true
+                    sleep 2
+                  fi
+
+                  git fetch --tags --prune --prune-tags
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Generate Stable Changelog
+              run: |
+                  VERSION=${{ steps.promote.outputs.stable_version }}
+                  BETA_VERSION=${{ steps.verify_beta.outputs.version }}
+                  BETA_NUMBER=${{ steps.verify_beta.outputs.beta_number }}
+
+                  # Make the changelog generator executable
+                  chmod +x scripts/generate-changelog.js
+
+                  # Generate changelog using the script
+                  node scripts/generate-changelog.js "$VERSION" stable
+
+                  # Append beta iteration info
+                  echo "" >> docs/CHANGELOG.md
+                  echo "---" >> docs/CHANGELOG.md
+                  echo "" >> docs/CHANGELOG.md
+                  echo "**Promoted from:** \`$BETA_VERSION\` (beta iteration #$BETA_NUMBER)" >> docs/CHANGELOG.md
+
+                  echo "Changelog generated successfully"
+
+            - name: Format Generated Files
+              run: pnpm format
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Create Release Tag
+              run: |
+                  VERSION=${{ steps.promote.outputs.stable_version }}
+                  TAG="v$VERSION"
+
+                  echo "Creating new tag $TAG"
+                  git tag "$TAG" -m "Stable Release $TAG"
+
+                  echo "Pushing tag $TAG to origin"
+                  git push origin "$TAG"
+
+                  echo "Successfully created and pushed tag $TAG"
+
+            - name: Create GitHub Stable Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.promote.outputs.tag }}
+                  name: Release ${{ steps.promote.outputs.tag }}
+                  body: |
+                      ## Stable Release ${{ steps.promote.outputs.tag }}
+
+                      **Version:** `${{ steps.promote.outputs.stable_version }}`
+                      **Promoted from:** `${{ steps.verify_beta.outputs.version }}` (beta #${{ steps.verify_beta.outputs.beta_number }})
+
+                      ### This is a stable production-ready release
+
+                      Install this version:
+                      ```bash
+                      npm install @juspay/blend-design-system@${{ steps.promote.outputs.stable_version }}
+                      # or
+                      npm install @juspay/blend-design-system@latest
+                      ```
+
+                      ### Changes
+                      See the [CHANGELOG](docs/CHANGELOG.md) for detailed changes.
+
+                      ### Beta Testing Summary
+                      - Went through **${{ steps.verify_beta.outputs.beta_number }}** beta iteration(s)
+                      - Final beta: `${{ steps.verify_beta.outputs.version }}`
+                      - All issues resolved and tested
+                  draft: false
+                  prerelease: false
+
+            - name: Create PR to Main Branch
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  base: main
+                  branch: release/promote-to-stable-${{ steps.promote.outputs.stable_version }}
+                  title: 'chore(release): ${{ steps.promote.outputs.tag }} [STABLE]'
+                  body: |
+                      ## 🎉 Stable Release ${{ steps.promote.outputs.tag }}
+
+                      **Stable Version:** ${{ steps.promote.outputs.stable_version }}
+                      **Promoted from Beta:** ${{ steps.verify_beta.outputs.version }}
+                      **Beta Iterations:** #${{ steps.verify_beta.outputs.beta_number }}
+
+                      ### Changes
+                      - Promoted beta version to stable
+                      - Updated package.json version to ${{ steps.promote.outputs.stable_version }}
+                      - Updated changelog
+
+                      This PR was automatically created by the promote-to-stable workflow.
+
+                      ### Next Steps (Follow in Order)
+                      1. **Review and merge this PR to \`main\` branch** (auto-created from \`staging\`)
+                      2. **Run 'Publish Stable to NPM' workflow** from \`main\` branch
+                         - Type "PUBLISH" to confirm
+                         - This publishes with \`latest\` tag on NPM
+
+                      ### Beta to Stable Promotion Summary
+                      - **Beta version**: \`${{ steps.verify_beta.outputs.version }}\` (tested on \`staging\`)
+                      - **Stable version**: \`${{ steps.promote.outputs.stable_version }}\` (promoted to \`main\`)
+                      - **Total beta iterations**: ${{ steps.verify_beta.outputs.beta_number }} (beta.0 through beta.${{ steps.verify_beta.outputs.beta_number }})
+                      - **Branch flow**: \`staging\` → \`main\` (via this PR)
+
+                      ### Release Strategy
+                      - Beta versions are created and tested on \`staging\` branch
+                      - Stable versions are promoted from \`staging\` → \`main\`
+                      - This ensures only thoroughly tested versions reach production
+                  labels: |
+                      automated
+                      release
+                      stable
+                  assignees: ${{ github.actor }}
+                  commit-message: |
+                      chore(release): ${{ steps.promote.outputs.tag }} [STABLE]
+
+                      - Promote ${{ steps.verify_beta.outputs.version }} to ${{ steps.promote.outputs.stable_version }}
+                      - Update changelog
+                      - Create stable release
+
+                      [skip ci]
+                  add-paths: |
+                      packages/blend/package.json
+                      docs/CHANGELOG.md
+                      .
+
+            - name: Create Summary
+              run: |
+                  echo "## Beta Promoted to Stable Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+                  echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Stable Version** | \`${{ steps.promote.outputs.stable_version }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Promoted From** | \`${{ steps.verify_beta.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Beta Iterations** | #${{ steps.verify_beta.outputs.beta_number }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Tag** | \`${{ steps.promote.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Next Steps (Follow in Order)" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "1. **Merge the auto-created PR to \`main\` branch**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - PR: \`staging\` → \`main\` (auto-created)" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Review changelog and version changes" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "2. **Run 'Publish Stable to NPM' workflow** from \`main\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Type \"PUBLISH\" to confirm" >> $GITHUB_STEP_SUMMARY
+                  echo "   - This publishes with \`latest\` tag" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Beta Testing Journey" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "This stable version went through **${{ steps.verify_beta.outputs.beta_number }}** beta iteration(s):" >> $GITHUB_STEP_SUMMARY
+                  if [[ "${{ steps.verify_beta.outputs.beta_number }}" == "0" ]]; then
+                    echo "- \`${{ steps.verify_beta.outputs.base_version }}-beta.0\` → tested → promoted to stable" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "- \`${{ steps.verify_beta.outputs.base_version }}-beta.0\` through \`${{ steps.verify_beta.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                    echo "- All issues resolved and tested before promotion" >> $GITHUB_STEP_SUMMARY
+                  fi
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Branch Strategy" >> $GITHUB_STEP_SUMMARY
+                  echo "- Beta versions: Created and tested on \`staging\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "- Stable versions: Promoted from \`staging\` → \`main\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "- This ensures only thoroughly tested versions reach production" >> $GITHUB_STEP_SUMMARY
