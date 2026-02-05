@@ -194,7 +194,7 @@ export const getCheckboxTokens = (
                         md: foundationToken.font.weight[500],
                     },
                     lineHeight: {
-                        sm: foundationToken.font.lineHeight[16],
+                        sm: foundationToken.font.lineHeight[14],
                         md: foundationToken.font.lineHeight[16],
                     },
                 },
@@ -330,7 +330,7 @@ export const getCheckboxTokens = (
                         md: foundationToken.font.weight[500],
                     },
                     lineHeight: {
-                        sm: foundationToken.font.lineHeight[16],
+                        sm: foundationToken.font.lineHeight[14],
                         md: foundationToken.font.lineHeight[16],
                     },
                 },
