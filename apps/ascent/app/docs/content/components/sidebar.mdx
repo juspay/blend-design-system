@@ -548,6 +548,20 @@ function MyComponent() {
             },
             { content: 'false' },
         ],
+        [
+            {
+                content: 'Sidebar.onSidebarStateChange',
+                hintText:
+                    'Optional callback function invoked whenever the sidebar layout state changes. Receives the current sidebar layout state, which can be "collapsed", "expanded", or "intermediate". Useful for tracking sidebar behavior, syncing layout changes with parent components, analytics, or adjusting surrounding content based on sidebar state.',
+            },
+            {
+                content:
+                    '(state: "collapsed" | "expanded" | "intermediate") => void',
+                hintText:
+                    'Function called with the current sidebar layout state',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -619,6 +633,5 @@ export type SidebarTokenType = {
 export type ResponsiveSidebarTokens = {
     [key in keyof BreakpointType]: SidebarTokenType
 }
-
-export type SidebarState = 'default' | 'hover' | 'active'
+export type SidebarState = 'collapsed' | 'expanded' | 'intermediate'
 ```
