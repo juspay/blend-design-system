@@ -8,6 +8,10 @@ on:
                 required: true
                 type: string
 
+permissions:
+    contents: write
+    pull-requests: write
+
 concurrency:
     group: promote-to-stable-${{ github.ref }}
     cancel-in-progress: true
