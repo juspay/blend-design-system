@@ -19,7 +19,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useErrorShake } from '../common/useErrorShake'
 import { getErrorShakeStyle } from '../common/error.animations'
-import { getTruncatedText } from '../../global-utils/GlobalUtils'
+import { addPxToValue, getTruncatedText } from '../../global-utils/GlobalUtils'
 
 export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
     (
@@ -240,6 +240,11 @@ const CheckboxContent: React.FC<{
                 fontSize={textProps.fontSize}
                 fontWeight={textProps.fontWeight}
                 color={textProps.color}
+                style={{
+                    lineHeight: addPxToValue(
+                        tokens.content.label.lineHeight[size]
+                    ),
+                }}
             >
                 {truncation?.isTruncated ? truncation.truncatedValue : children}
                 {required && (
