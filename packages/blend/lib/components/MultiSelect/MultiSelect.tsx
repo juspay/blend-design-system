@@ -34,6 +34,7 @@ import {
 } from '../common/error.animations'
 import styled from 'styled-components'
 import { setupAccessibility } from '../SingleSelect/utils'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -168,6 +169,7 @@ const MultiSelect = ({
         prefix: 'multiselect',
         needsMenuId: true,
     })
+    useDropdownInteractionLock(!isMobile && open)
 
     if (isMobile && useDrawerOnMobile) {
         return (
