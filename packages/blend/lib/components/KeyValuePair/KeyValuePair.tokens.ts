@@ -52,8 +52,8 @@ export const getKeyValuePairTokens = (
     return {
         sm: {
             gap: {
-                vertical: foundationToken.unit[4], // 4px
-                horizontal: foundationToken.unit[0], // 0px
+                vertical: foundationToken.unit[0],
+                horizontal: foundationToken.unit[4],
             },
             // Pattern: key.color (size-independent)
             key: {
@@ -80,8 +80,8 @@ export const getKeyValuePairTokens = (
         },
         lg: {
             gap: {
-                vertical: foundationToken.unit[4], // 4px
-                horizontal: foundationToken.unit[0], // 0px
+                vertical: foundationToken.unit[0],
+                horizontal: foundationToken.unit[4],
             },
             // Pattern: key.color (size-independent)
             key: {
