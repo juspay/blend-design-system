@@ -241,7 +241,9 @@ const CheckboxContent: React.FC<{
                 fontWeight={textProps.fontWeight}
                 color={textProps.color}
                 style={{
-                    lineHeight: addPxToValue(tokens.text.lineHeight[size]),
+                    lineHeight: addPxToValue(
+                        tokens.content.label.lineHeight[size]
+                    ),
                 }}
             >
                 {truncation?.isTruncated ? truncation.truncatedValue : children}

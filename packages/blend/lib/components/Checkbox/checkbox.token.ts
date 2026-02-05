@@ -51,9 +51,6 @@ export type CheckboxTokensType = {
             strokeWidth: { [key in CheckboxSize]: CSSObject['strokeWidth'] }
         }
     }
-    text: {
-        lineHeight: { [key in CheckboxSize]: CSSObject['lineHeight'] }
-    }
 
     content: {
         gap: CSSObject['gap']
@@ -63,6 +60,7 @@ export type CheckboxTokensType = {
             }
             fontSize: { [key in CheckboxSize]: CSSObject['fontSize'] }
             fontWeight: { [key in CheckboxSize]: CSSObject['fontWeight'] }
+            lineHeight: { [key in CheckboxSize]: CSSObject['lineHeight'] }
         }
         subtext: {
             color: {
@@ -195,6 +193,10 @@ export const getCheckboxTokens = (
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
                     },
+                    lineHeight: {
+                        sm: foundationToken.font.lineHeight[16],
+                        md: foundationToken.font.lineHeight[16],
+                    },
                 },
                 subtext: {
                     color: {
@@ -217,12 +219,6 @@ export const getCheckboxTokens = (
 
             required: {
                 color: foundationToken.colors.red[600],
-            },
-            text: {
-                lineHeight: {
-                    sm: foundationToken.font.lineHeight[16],
-                    md: foundationToken.font.lineHeight[16],
-                },
             },
         },
         lg: {
@@ -315,12 +311,6 @@ export const getCheckboxTokens = (
                     },
                 },
             },
-            text: {
-                lineHeight: {
-                    sm: foundationToken.font.lineHeight[16],
-                    md: foundationToken.font.lineHeight[16],
-                },
-            },
             content: {
                 gap: foundationToken.unit[0],
                 label: {
@@ -338,6 +328,10 @@ export const getCheckboxTokens = (
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
+                    },
+                    lineHeight: {
+                        sm: foundationToken.font.lineHeight[16],
+                        md: foundationToken.font.lineHeight[16],
                     },
                 },
                 subtext: {
