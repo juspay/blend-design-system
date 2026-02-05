@@ -6,6 +6,12 @@ A production-ready React design system that powers Juspay's financial technology
 
 **[Blend Design System Landing Page](https://blend.juspay.design)** • **[Library Storybook](https://blend.juspay.design/storybook)** • **[Component Documentation](https://blend.juspay.design/docs)** • **[Changelogs](https://github.com/juspay/blend-design-system/releases)** • **[Blend Blogs](https://blend.juspay.design/blog)**
 
+
+
+
+https://github.com/user-attachments/assets/10aeddb5-6211-4a48-b2ed-afff33f28185
+
+
 ---
 
 ## 🎯 The Blend Design System
