@@ -289,6 +289,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'SingleSelect.collisionBoundary',
+                hintText:
+                    'Optional reference to DOM element(s) that define collision boundaries for the dropdown positioning. The dropdown will automatically reposition itself to stay within these boundaries. Can be a single Element, null, or an array of Elements. Useful for keeping dropdowns within specific containers or avoiding overlap with sidebars and other UI elements. When not provided, the viewport is used as the default boundary.',
+            },
+            {
+                content: 'Element | null | Array<Element | null>',
+                hintText:
+                    'Single element, array of elements, or null for collision boundaries',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'SingleSelect.minMenuWidth',
                 hintText: 'Minimum width of the dropdown menu in pixels',
             },

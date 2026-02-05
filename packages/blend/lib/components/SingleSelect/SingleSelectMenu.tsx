@@ -13,7 +13,7 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll } from '../../hooks'
+import { usePreventParentScroll, useScrollLock } from '../../hooks'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import {
@@ -50,6 +50,7 @@ type SingleSelectMenuProps = {
     side?: SelectMenuSide
     sideOffset?: number
     alignOffset?: number
+    collisionBoundary?: Element | null | Array<Element | null>
 
     // open
     open: boolean
@@ -352,10 +353,11 @@ const SingleSelectMenu = ({
     enableSearch,
     searchPlaceholder = 'Search options...',
     disabled,
-    alignment = SelectMenuAlignment.CENTER,
+    alignment = SelectMenuAlignment.START,
     side = SelectMenuSide.BOTTOM,
     sideOffset = 8,
     alignOffset = 0,
+    collisionBoundary,
     open,
     onOpenChange,
     size = SelectMenuSize.MEDIUM,
@@ -389,6 +391,7 @@ const SingleSelectMenu = ({
         '[data-radix-dropdown-menu-content]',
     ]
     usePreventParentScroll(open, contentRef, selectors)
+    useScrollLock(open)
 
     const hasMatch = useMemo(
         () => checkExactMatch(searchText, items),
@@ -570,6 +573,8 @@ const SingleSelectMenu = ({
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
                     side={side}
+                    avoidCollisions
+                    collisionBoundary={collisionBoundary}
                     style={{
                         maxHeight: maxMenuHeight,
                         minWidth: minMenuWidth || '250px',

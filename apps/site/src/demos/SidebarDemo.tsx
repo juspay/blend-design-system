@@ -74,6 +74,7 @@ import {
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import TextInputGroupDemo from './TextInputGroupDemo'
 import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
@@ -116,6 +117,7 @@ import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
 import AlertV2Demo from './AlertV2Demo'
+import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -190,11 +192,13 @@ const SidebarDemo = () => {
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
+        | 'accordionV2'
         | 'snackbarV2'
         | 'switchV2'
         | 'textInputV2'
         | 'textInputAutofillTestV2'
-    >('textInputAutofillTestV2')
+        | 'textInputGroup'
+    >('textInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -425,6 +429,8 @@ const SidebarDemo = () => {
                 return <AlertDemo />
             case 'alertV2':
                 return <AlertV2Demo />
+            case 'accordionV2':
+                return <AccordionV2Demo />
             case 'snackbarV2':
                 return <SnackbarV2Demo />
             case 'tabs':
@@ -455,6 +461,8 @@ const SidebarDemo = () => {
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
                 return <SingleSelectGroupDemo />
+            case 'textInputGroup':
+                return <TextInputGroupDemo />
             case 'multiSelectGroup':
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
@@ -817,6 +825,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('textInputV2'),
                 },
                 {
+                    label: 'Text Input Group',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputGroup',
+                    onClick: () => setActiveComponent('textInputGroup'),
+                },
+                {
                     label: 'Search Input',
                     leftSlot: (
                         <Search style={{ width: '16px', height: '16px' }} />
@@ -1012,6 +1028,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'accordion',
                     onClick: () => setActiveComponent('accordion'),
+                },
+                {
+                    label: 'Accordion V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accordionV2',
+                    onClick: () => setActiveComponent('accordionV2'),
                 },
                 {
                     label: 'Stepper',

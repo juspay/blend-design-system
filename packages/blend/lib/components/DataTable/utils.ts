@@ -661,6 +661,12 @@ const extractSortableValue = (
             return isNaN(numValue) ? 0 : numValue
         }
 
+        case ColumnType.SLIDER: {
+            if (typeof value === 'number') return value
+            const numValue = parseFloat(String(value))
+            return isNaN(numValue) ? 0 : numValue
+        }
+
         case ColumnType.TEXT:
         default:
             return String(value).toLowerCase()
