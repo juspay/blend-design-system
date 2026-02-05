@@ -4,7 +4,7 @@
 
 A production-ready React design system that powers Juspay's financial technology products. Built with performance, accessibility, and developer experience at its core, Blend provides a comprehensive suite of components and design tokens for building modern web applications.
 
-**[Blend Design System Landing Page](https://blend.juspay.design)** • **[Library Storybook](https://blend.juspay.design/storybook)** • **[Component Documentation](https://blend.juspay.design/docs)** • **[Changelogs](https://blend.juspay.design/changelog)** • **[Blend Blogs](https://blend.juspay.design/blog)**
+**[Blend Design System Landing Page](https://blend.juspay.design)** • **[Library Storybook](https://blend.juspay.design/storybook)** • **[Component Documentation](https://blend.juspay.design/docs)** • **[Changelogs](https://github.com/juspay/blend-design-system/releases)** • **[Blend Blogs](https://blend.juspay.design/blog)**
 
 ---
 
