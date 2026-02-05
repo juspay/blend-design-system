@@ -209,6 +209,7 @@ const StatCard = ({
                       <Block
                           display="flex"
                           alignItems="center"
+                          gap={3}
                           color={
                               effectiveChange.valueType === ChangeType.INCREASE
                                   ? statCardToken.textContainer.stats.title
