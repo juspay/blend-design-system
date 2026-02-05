@@ -43,14 +43,29 @@ jobs:
                   cd packages/blend
                   CURRENT_VERSION=$(node -p "require('./package.json').version")
 
-                  if [[ "$CURRENT_VERSION" != *"-beta" ]]; then
+                  # Check for new format: X.Y.Z-beta.N
+                  if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    BETA_NUMBER="${BASH_REMATCH[2]}"
+                    echo "Verified beta version: $CURRENT_VERSION (base: $BASE_VERSION, beta #$BETA_NUMBER)"
+                    echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                    echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                    echo "beta_number=$BETA_NUMBER" >> $GITHUB_OUTPUT
+                    echo "version_format=new" >> $GITHUB_OUTPUT
+                  # Check for old format: X.Y.Z-beta
+                  elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    echo "Verified beta version (old format): $CURRENT_VERSION"
+                    echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                    echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                    echo "beta_number=0" >> $GITHUB_OUTPUT
+                    echo "version_format=old" >> $GITHUB_OUTPUT
+                  else
                     echo "ERROR: Current version ($CURRENT_VERSION) is not a beta version!"
+                    echo "Expected format: X.Y.Z-beta.N (e.g., 1.0.0-beta.0) or X.Y.Z-beta"
                     echo "This workflow should only be used to publish beta versions."
                     exit 1
                   fi
-
-                  echo "Verified beta version: $CURRENT_VERSION"
-                  echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
             - name: Build Package
               run: pnpm --filter @juspay/blend-design-system build
@@ -103,8 +118,7 @@ jobs:
               if: steps.check_published.outputs.already_published != 'true'
               id: stable_version
               run: |
-                  BETA_VERSION="${{ steps.verify_version.outputs.version }}"
-                  STABLE_VERSION="${BETA_VERSION%-beta}"
+                  STABLE_VERSION="${{ steps.verify_version.outputs.base_version }}"
                   echo "stable_version=$STABLE_VERSION" >> $GITHUB_OUTPUT
                   echo "Stable version will be: $STABLE_VERSION"
 
@@ -115,18 +129,29 @@ jobs:
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "**Package**: \`@juspay/blend-design-system\`" >> $GITHUB_STEP_SUMMARY
                   echo "**Version**: \`${{ steps.verify_version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Beta Number**: \`#${{ steps.verify_version.outputs.beta_number }}\`" >> $GITHUB_STEP_SUMMARY
                   echo "**NPM Tag**: \`beta\`" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "### Installation" >> $GITHUB_STEP_SUMMARY
                   echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "# Install latest beta" >> $GITHUB_STEP_SUMMARY
                   echo "npm install @juspay/blend-design-system@beta" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "# Install specific beta version" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@${{ steps.verify_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
                   echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🔄 Beta Iteration Workflow" >> $GITHUB_STEP_SUMMARY
+                  echo "| Current | If Issues Found | When Stable |" >> $GITHUB_STEP_SUMMARY
+                  echo "|---------|-----------------|-------------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| \`${{ steps.verify_version.outputs.version }}\` | Run 'Create Beta Release' with increment | Promote to \`${{ steps.stable_version.outputs.stable_version }}\` |" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
                   echo "- ✅ Beta version is now live on NPM" >> $GITHUB_STEP_SUMMARY
                   echo "- ✅ GitHub beta release is available" >> $GITHUB_STEP_SUMMARY
-                  echo "- 🔄 Test the beta version thoroughly" >> $GITHUB_STEP_SUMMARY
-                  echo "- 🔄 When ready, promote to stable using 'Create Stable Release' workflow" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🧪 Test the beta version thoroughly" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔁 If issues found: Run 'Create Beta Release' workflow with 'Increment existing beta version' = true" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ When ready: Run 'Promote Beta to Stable' workflow to create stable release" >> $GITHUB_STEP_SUMMARY
 
             - name: Verify NPM Package After Publish
               if: steps.check_published.outputs.already_published != 'true'
@@ -156,8 +181,26 @@ jobs:
                     cat /tmp/package-info.json | jq -r '.name, .version, .description' 2>/dev/null || echo "Basic package info verified"
                   fi
 
+            - name: List All Beta Versions
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  BASE_VERSION="${{ steps.verify_version.outputs.base_version }}"
+
+                  echo "📋 All beta versions for $BASE_VERSION:"
+                  npm view "$PACKAGE_NAME" versions --json 2>/dev/null | jq -r '.[]' | grep "$BASE_VERSION-beta" || echo "No previous betas found"
+
             - name: Skip Publishing (Already Published)
               if: steps.check_published.outputs.already_published == 'true'
               run: |
                   echo "Version ${{ steps.verify_version.outputs.version }} is already published on NPM"
                   echo "Skipping publish step"
+
+                  echo "## ⚠️ Version Already Published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Version \`${{ steps.verify_version.outputs.version }}\` is already on NPM." >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "To publish a new beta version:" >> $GITHUB_STEP_SUMMARY
+                  echo "1. Run 'Create Beta Release' workflow with 'Increment existing beta version' = true" >> $GITHUB_STEP_SUMMARY
+                  echo "2. Then run this workflow again" >> $GITHUB_STEP_SUMMARY
