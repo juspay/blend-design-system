@@ -31,11 +31,69 @@ jobs:
               with:
                   node-version: 22
                   registry-url: 'https://registry.npmjs.org'
+                  scope: '@juspay'
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Enable corepack & install deps
               run: |
                   corepack enable
                   pnpm install --frozen-lockfile
+
+            - name: Verify NPM Token and Authentication
+              run: |
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "❌ ERROR: NPM_TOKEN secret is not set!"
+                    echo ""
+                    echo "Please configure NPM_TOKEN secret:"
+                    echo "1. Go to GitHub repository → Settings → Secrets and variables → Actions"
+                    echo "2. Go to Environments → npm → Secrets"
+                    echo "3. Add or update NPM_TOKEN secret"
+                    exit 1
+                  else
+                    echo "✅ NPM_TOKEN secret is configured"
+                  fi
+
+                  echo "🔐 Testing NPM authentication..."
+
+                  # Test authentication
+                  if npm whoami; then
+                    NPM_USER=$(npm whoami)
+                    echo "✅ Successfully authenticated as: $NPM_USER"
+                    
+                    # Check if user has access to @juspay scope
+                    echo "🔍 Checking @juspay scope access..."
+                    if npm access ls packages @juspay/blend-design-system 2>/dev/null; then
+                      echo "✅ Has access to @juspay scope"
+                    else
+                      echo "⚠️  Warning: Cannot verify @juspay scope access"
+                      echo "   This might be normal if you're not an org member"
+                      echo "   The publish will fail if you don't have permissions"
+                    fi
+                  else
+                    echo "❌ ERROR: NPM authentication failed!"
+                    echo ""
+                    echo "Possible issues:"
+                    echo "  1. NPM_TOKEN is expired or invalid"
+                    echo "  2. Token doesn't have publish permissions"
+                    echo "  3. Token is not configured correctly in GitHub secrets"
+                    echo ""
+                    echo "To fix:"
+                    echo "  1. Generate a new NPM access token:"
+                    echo "     https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
+                    echo "  2. Ensure token type is 'Automation' (not 'Read-only')"
+                    echo "  3. Ensure you're a member of @juspay organization on NPM"
+                    echo "  4. Update NPM_TOKEN secret in GitHub:"
+                    echo "     Settings → Secrets → Actions → Environments → npm"
+                    echo ""
+                    echo "Token requirements:"
+                    echo "  - Type: Automation (for CI/CD)"
+                    echo "  - Permissions: Read and publish packages"
+                    echo "  - Scope: Must have access to @juspay organization"
+                    exit 1
+                  fi
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Verify Beta Version
               id: verify_version
@@ -70,36 +128,42 @@ jobs:
             - name: Build Package
               run: pnpm --filter @juspay/blend-design-system build
 
-            - name: Verify NPM Token
-              run: |
-                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-                    echo "NPM_TOKEN secret is not set!"
-                    exit 1
-                  else
-                    echo "NPM_TOKEN secret is configured"
-                  fi
-
-                  echo "Testing NPM authentication..."
-                  npm whoami || echo "NPM authentication test failed, but continuing..."
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-            - name: Check if Version Already Published
+            - name: Check Package Existence and Version
               id: check_published
               run: |
                   cd packages/blend
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   VERSION="${{ steps.verify_version.outputs.version }}"
 
-                  echo "Checking if $PACKAGE_NAME@$VERSION is already published..."
+                  echo "📦 Checking package: $PACKAGE_NAME"
+                  echo "📌 Checking version: $VERSION"
 
-                  if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null; then
+                  # Check if package exists at all
+                  if npm view "$PACKAGE_NAME" name 2>/dev/null >/dev/null; then
+                    echo "✅ Package $PACKAGE_NAME exists in NPM registry"
+                    PACKAGE_EXISTS=true
+                  else
+                    echo "⚠️  Package $PACKAGE_NAME does not exist in NPM registry yet"
+                    echo "   This will be the first publish of this package"
+                    PACKAGE_EXISTS=false
+                  fi
+
+                  # Check if specific version exists
+                  if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null >/dev/null; then
                     echo "already_published=true" >> $GITHUB_OUTPUT
-                    echo "Version $VERSION already exists on NPM"
+                    echo "package_exists=true" >> $GITHUB_OUTPUT
+                    echo "⚠️  Version $VERSION already exists on NPM"
                   else
                     echo "already_published=false" >> $GITHUB_OUTPUT
-                    echo "Version $VERSION is not yet published"
+                    if [[ "$PACKAGE_EXISTS" == "true" ]]; then
+                      echo "package_exists=true" >> $GITHUB_OUTPUT
+                    else
+                      echo "package_exists=false" >> $GITHUB_OUTPUT
+                    fi
+                    echo "✅ Version $VERSION is not yet published - ready to publish"
                   fi
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish Beta to NPM
               if: steps.check_published.outputs.already_published != 'true'
@@ -107,10 +171,85 @@ jobs:
                   cd packages/blend
                   PACKAGE_NAME=$(node -p "require('./package.json').name")
                   VERSION="${{ steps.verify_version.outputs.version }}"
+                  PACKAGE_EXISTS="${{ steps.check_published.outputs.package_exists }}"
 
-                  echo "Publishing $PACKAGE_NAME@$VERSION to NPM with beta tag"
-                  npm publish --access public --tag beta
-                  echo "Successfully published $PACKAGE_NAME@$VERSION to NPM with beta tag"
+                  echo "🚀 Publishing $PACKAGE_NAME@$VERSION to NPM with beta tag"
+
+                  if [[ "$PACKAGE_EXISTS" == "false" ]]; then
+                    echo "📦 This is the first publish of this package"
+                    echo "   Creating new package: $PACKAGE_NAME"
+                  fi
+
+                  # Ensure we're authenticated
+                  echo "🔐 Verifying authentication before publish..."
+                  if ! npm whoami; then
+                    echo "❌ ERROR: Not authenticated to NPM"
+                    echo "NPM token may have expired. Please update NPM_TOKEN secret."
+                    exit 1
+                  fi
+
+                  # Verify package.json configuration
+                  echo "📋 Verifying package.json configuration..."
+                  PACKAGE_JSON_VERSION=$(node -p "require('./package.json').version")
+                  PACKAGE_JSON_NAME=$(node -p "require('./package.json').name")
+
+                  if [[ "$PACKAGE_JSON_VERSION" != "$VERSION" ]]; then
+                    echo "❌ ERROR: Version mismatch!"
+                    echo "Expected: $VERSION"
+                    echo "Found in package.json: $PACKAGE_JSON_VERSION"
+                    exit 1
+                  fi
+
+                  if [[ "$PACKAGE_JSON_NAME" != "$PACKAGE_NAME" ]]; then
+                    echo "❌ ERROR: Package name mismatch!"
+                    echo "Expected: $PACKAGE_NAME"
+                    echo "Found in package.json: $PACKAGE_JSON_NAME"
+                    exit 1
+                  fi
+
+                  echo "✅ Package.json configuration verified"
+
+                  # Publish with explicit access and tag
+                  echo "📤 Publishing $PACKAGE_NAME@$VERSION to NPM with beta tag..."
+
+                  # Try publishing
+                  PUBLISH_OUTPUT=$(npm publish --access public --tag beta 2>&1)
+                  PUBLISH_EXIT_CODE=$?
+
+                  if [[ $PUBLISH_EXIT_CODE -eq 0 ]]; then
+                    echo "✅ Successfully published $PACKAGE_NAME@$VERSION to NPM with beta tag"
+                  else
+                    echo "❌ ERROR: Failed to publish package"
+                    echo ""
+                    echo "Publish output:"
+                    echo "$PUBLISH_OUTPUT"
+                    echo ""
+                    echo "Common issues and solutions:"
+                    echo ""
+                    echo "1. NPM Token Issues:"
+                    echo "   - Token expired: Generate new token at https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
+                    echo "   - Token type: Must be 'Automation' (not 'Read-only')"
+                    echo "   - Update NPM_TOKEN in GitHub: Settings → Secrets → Actions → Environments → npm"
+                    echo ""
+                    echo "2. Permission Issues:"
+                    echo "   - Must be member of @juspay organization on NPM"
+                    echo "   - Check org membership: https://www.npmjs.com/org/juspay"
+                    echo "   - Token must have publish permissions for @juspay scope"
+                    echo ""
+                    echo "3. Version Already Exists:"
+                    echo "   - Check if version exists: npm view $PACKAGE_NAME@$VERSION"
+                    echo "   - If exists, increment beta version using 'Create Beta Release' workflow"
+                    echo ""
+                    echo "4. Package Configuration:"
+                    echo "   - name: $PACKAGE_NAME"
+                    echo "   - version: $VERSION"
+                    echo "   - publishConfig.access: public (should be in package.json)"
+                    echo ""
+                    echo "5. Network/Registry Issues:"
+                    echo "   - Check NPM registry: npm config get registry"
+                    echo "   - Should be: https://registry.npmjs.org"
+                    exit 1
+                  fi
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -204,3 +343,64 @@ jobs:
                   echo "To publish a new beta version:" >> $GITHUB_STEP_SUMMARY
                   echo "1. Run 'Create Beta Release' workflow with 'Increment existing beta version' = true" >> $GITHUB_STEP_SUMMARY
                   echo "2. Then run this workflow again" >> $GITHUB_STEP_SUMMARY
+
+            - name: Troubleshooting Guide (On Failure)
+              if: failure()
+              run: |
+                  echo "## ❌ Publishing Failed - Troubleshooting Guide" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🔴 Most Common Issue: NPM Token Expired or Invalid" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Error**: \`Access token expired or revoked\` or \`404 Not Found\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Solution Steps:**" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "1. **Generate New NPM Token:**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Go to: https://www.npmjs.com/settings/YOUR_USERNAME/tokens" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Click 'Generate New Token'" >> $GITHUB_STEP_SUMMARY
+                  echo "   - **Token Type**: Select 'Automation' (NOT 'Read-only')" >> $GITHUB_STEP_SUMMARY
+                  echo "   - **Expiration**: Set appropriate expiration (or 'Never expire' for CI/CD)" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Copy the token immediately (you won't see it again)" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "2. **Update GitHub Secret:**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Go to: Repository → Settings → Secrets and variables → Actions" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Click on 'Environments' tab" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Click on 'npm' environment" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Update or add 'NPM_TOKEN' secret with the new token" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Click 'Update secret'" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "3. **Verify Organization Membership:**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Ensure you're a member of @juspay organization on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Check: https://www.npmjs.com/org/juspay" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Token creator must have publish permissions for @juspay scope" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Other Common Issues:" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "#### 404 Not Found Error" >> $GITHUB_STEP_SUMMARY
+                  echo "- Usually caused by expired/invalid token" >> $GITHUB_STEP_SUMMARY
+                  echo "- If token is valid, check organization membership" >> $GITHUB_STEP_SUMMARY
+                  echo "- Verify token has 'Automation' type (not 'Read-only')" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "#### Permission Denied" >> $GITHUB_STEP_SUMMARY
+                  echo "- Token doesn't have publish permissions" >> $GITHUB_STEP_SUMMARY
+                  echo "- User is not a member of @juspay organization" >> $GITHUB_STEP_SUMMARY
+                  echo "- Organization settings restrict publishing" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "#### Version Already Exists" >> $GITHUB_STEP_SUMMARY
+                  echo "- Check if version exists: \`npm view @juspay/blend-design-system@VERSION\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- If exists, increment beta version using 'Create Beta Release' workflow" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Quick Verification:" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "After updating the token, verify locally:" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "# Set token temporarily" >> $GITHUB_STEP_SUMMARY
+                  echo "export NPM_TOKEN='your-token-here'" >> $GITHUB_STEP_SUMMARY
+                  echo "npm config set //registry.npmjs.org/:_authToken \$NPM_TOKEN" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "# Test authentication" >> $GITHUB_STEP_SUMMARY
+                  echo "npm whoami" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "# Check package access" >> $GITHUB_STEP_SUMMARY
+                  echo "npm view @juspay/blend-design-system" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
