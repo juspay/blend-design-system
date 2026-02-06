@@ -9,7 +9,7 @@ import {
 } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import type { SidebarProps, SidebarState } from './types'
+import type { SidebarProps, SidebarStateChangeType } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { Topbar } from '../Topbar'
 import TenantPanel from './TenantPanel'
@@ -142,7 +142,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         )
 
         useEffect(() => {
-            const state: SidebarState = isExpanded
+            const state: SidebarStateChangeType = isExpanded
                 ? 'expanded'
                 : isHovering
                   ? 'intermediate'
