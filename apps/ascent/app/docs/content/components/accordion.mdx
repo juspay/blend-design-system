@@ -249,6 +249,19 @@ function MyComponent() {
             { content: 'AccordionChevronPosition', hintText: 'enum' },
             { content: 'LEFT, RIGHT' },
         ],
+        [
+            {
+                content: 'triggerSlot',
+                hintText:
+                    'Optional React element to replace the default chevron icon. When provided, this custom element will be displayed instead of the default chevron. The slot will have fixed width and height of 24px as defined by tokens. If not provided, the default chevron icon will be used.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'Any React element to display as the trigger indicator (icon, text, or custom component)',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -309,6 +322,10 @@ export type AccordionTokenType = {
         color: {
             [key in AccordionType]: CSSObject['color']
         }
+    }
+    chevron: {
+        width: CSSObject['width']
+        height: CSSObject['height']
     }
 }
 ```

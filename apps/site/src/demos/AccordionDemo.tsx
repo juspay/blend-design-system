@@ -790,6 +790,159 @@ const AccordionDemo = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Trigger Slot Examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Trigger Slot Examples</h2>
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Custom Trigger Slot with Icons
+                        </h3>
+                        <p className="text-gray-600">
+                            Replace the default chevron with custom icons or
+                            elements. The slot has a fixed size of 24px.
+                        </p>
+                        <Accordion defaultValue="custom1">
+                            <AccordionItem
+                                value="custom1"
+                                title="Custom Plus Icon"
+                                subtext="Using a plus icon as trigger slot"
+                                triggerSlot={<Info size={24} />}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Custom Trigger Slot
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This accordion item uses a custom Info
+                                        icon instead of the default chevron. The
+                                        slot maintains a fixed 24px size.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="custom2"
+                                title="Custom Star Icon"
+                                subtext="Using a star icon as trigger slot"
+                                triggerSlot={<Star size={24} />}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Star Trigger Slot
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This example shows a Star icon as the
+                                        trigger slot. You can use any React
+                                        element here.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="custom3"
+                                title="Custom Text Badge"
+                                subtext="Using text as trigger slot"
+                                triggerSlot={
+                                    <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                                        NEW
+                                    </span>
+                                }
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Text Badge Trigger Slot
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        You can use any React element as the
+                                        trigger slot, including text badges,
+                                        custom components, or complex layouts.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="custom4"
+                                title="Default Chevron"
+                                subtext="No triggerSlot provided - uses default"
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Default Behavior
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        When no triggerSlot is provided, the
+                                        component uses the default animated
+                                        chevron icon.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Trigger Slot with Left Position
+                        </h3>
+                        <p className="text-gray-600">
+                            Trigger slot works with both LEFT and RIGHT chevron
+                            positions.
+                        </p>
+                        <Accordion defaultValue="left1">
+                            <AccordionItem
+                                value="left1"
+                                title="Left Position with Custom Icon"
+                                chevronPosition={AccordionChevronPosition.LEFT}
+                                triggerSlot={<Settings size={24} />}
+                                leftSlot={<Home size={16} />}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Left Position Trigger Slot
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        The trigger slot appears on the left
+                                        side when chevronPosition is set to
+                                        LEFT.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="left2"
+                                title="Right Position with Custom Icon"
+                                chevronPosition={AccordionChevronPosition.RIGHT}
+                                triggerSlot={<Heart size={24} />}
+                                leftSlot={<User size={16} />}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg  `}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Right Position Trigger Slot
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        The trigger slot appears on the right
+                                        side when chevronPosition is set to
+                                        RIGHT (default).
+                                    </p>
+                                </div>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

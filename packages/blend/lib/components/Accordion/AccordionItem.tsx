@@ -231,6 +231,7 @@ const AccordionItem = forwardRef<
             leftSlot,
             rightSlot,
             subtextSlot,
+            triggerSlot,
             isDisabled = false,
             chevronPosition = AccordionChevronPosition.RIGHT,
             accordionType = AccordionType.NO_BORDER,
@@ -257,7 +258,9 @@ const AccordionItem = forwardRef<
             const iconColor = isDisabled
                 ? FOUNDATION_THEME.colors.gray[300]
                 : FOUNDATION_THEME.colors.gray[500]
-            const iconSize = FOUNDATION_THEME.unit[16]
+            const iconSize =
+                accordionToken.trigger.slot?.maxWidth ||
+                FOUNDATION_THEME.unit[24]
 
             return (
                 <ChevronAnimation
@@ -293,6 +296,31 @@ const AccordionItem = forwardRef<
                         />
                     )}
                 </ChevronAnimation>
+            )
+        }
+
+        const renderChevronSlot = () => {
+            const chevronWidth =
+                accordionToken.trigger.slot?.maxWidth ||
+                FOUNDATION_THEME.unit[24]
+
+            return (
+                <Block
+                    data-element="chevron-icon"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexShrink={0}
+                    aria-hidden="true"
+                    width={chevronWidth}
+                    maxHeight={chevronWidth}
+                    maxWidth={chevronWidth}
+                    style={{
+                        overflow: 'hidden',
+                    }}
+                >
+                    {triggerSlot ?? getChevronIcon()}
+                </Block>
             )
         }
 
@@ -333,18 +361,8 @@ const AccordionItem = forwardRef<
                                 gap={FOUNDATION_THEME.unit[8]}
                             >
                                 {chevronPosition ===
-                                    AccordionChevronPosition.LEFT && (
-                                    <Block
-                                        data-element="chevron-icon"
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        flexShrink={0}
-                                        aria-hidden="true"
-                                    >
-                                        {getChevronIcon()}
-                                    </Block>
-                                )}
+                                    AccordionChevronPosition.LEFT &&
+                                    renderChevronSlot()}
 
                                 {leftSlot &&
                                     chevronPosition !==
@@ -485,17 +503,15 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.RIGHT && (
                                     <Block
-                                        data-element="chevron-icon"
                                         position="absolute"
                                         right={0}
                                         top={0}
+                                        height="100%"
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="center"
-                                        height="100%"
-                                        aria-hidden="true"
                                     >
-                                        {getChevronIcon()}
+                                        {renderChevronSlot()}
                                     </Block>
                                 )}
                             </Block>
