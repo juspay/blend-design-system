@@ -119,6 +119,7 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import AvatarV2Demo from './AvatarV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -145,6 +146,7 @@ const SidebarDemo = () => {
         | 'buttonGroups'
         | 'buttonGroupV2'
         | 'avatars'
+        | 'avatarV2'
         | 'menu'
         | 'dropdown'
         | 'accordion'
@@ -192,7 +194,7 @@ const SidebarDemo = () => {
         | 'accordionV2'
         | 'snackbarV2'
         | 'switchV2'
-    >('accordionV2')
+    >('avatarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -403,6 +405,8 @@ const SidebarDemo = () => {
                 return <TagGroupV2Demo />
             case 'avatars':
                 return <AvatarDemo />
+            case 'avatarV2':
+                return <AvatarV2Demo />
             case 'breadcrumb':
                 return <BreadcrumbDemo />
             case 'input':
@@ -731,6 +735,20 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'avatars',
                     onClick: () => setActiveComponent('avatars'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Avatar V2',
+                    leftSlot: (
+                        <UserIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'avatarV2',
+                    onClick: () => {
+                        setActiveComponent('avatarV2')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
                     showOnMobile: true,
                 },
                 {
