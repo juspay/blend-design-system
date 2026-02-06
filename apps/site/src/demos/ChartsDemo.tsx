@@ -285,7 +285,7 @@ const LineBarDemo = () => {
             <Charts
                 data={lineBarData}
                 chartType={ChartType.LINE_BAR}
-                lineSeriesKeys={['Success Rate']}
+                lineSeriesKeys={['Success Rate', 'Pending']}
                 colors={[
                     { key: 'Success', color: '#94B9FD' },
                     { key: 'Retry-Success', color: '#6B9DFC' },

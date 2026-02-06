@@ -733,7 +733,10 @@ export const renderChart = ({
                             const isLine = lineSeriesKeys
                                 ? lineSeriesKeys.includes(key)
                                 : index === lineKeys.length - 1
-                            const color = getColor(key, chartType)
+                            const color = getColor(
+                                key,
+                                isLine ? ChartType.LINE : ChartType.BAR
+                            )
 
                             if (isLine) {
                                 const hasOtherHovered =
