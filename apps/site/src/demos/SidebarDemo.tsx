@@ -120,6 +120,7 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import SingleSelectDemoV2 from './SingleSelectDemoV2'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -194,6 +195,7 @@ const SidebarDemo = () => {
         | 'snackbarV2'
         | 'switchV2'
         | 'textInputGroup'
+        | 'singleSelectV2'
     >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -451,6 +453,8 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'switchV2':
                 return <SwitchV2Demo />
+            case 'singleSelectV2':
+                return <SingleSelectDemoV2 />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -963,6 +967,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'singleSelect',
                     onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Single Select V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectV2',
+                    onClick: () => setActiveComponent('singleSelectV2'),
                 },
                 {
                     label: 'Single Select Group',

@@ -48,6 +48,7 @@ import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
 import { ResponsiveAccordionV2Tokens } from '../components/AccordionV2'
 import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
+import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -101,7 +102,8 @@ export const useComponentToken = (
     | ResponsiveAlertV2Tokens
     | ResponsiveAccordionV2Tokens
     | ResponsiveSnackbarV2Tokens
-    | ResponsiveSwitchV2Tokens => {
+    | ResponsiveSwitchV2Tokens
+    | ResponsiveSingleSelectV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -203,6 +205,8 @@ export const useComponentToken = (
             return componentTokens.SNACKBARV2
         case 'SWITCHV2':
             return componentTokens.SWITCHV2
+        case 'SINGLE_SELECT_V2':
+            return componentTokens.SINGLE_SELECT_V2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

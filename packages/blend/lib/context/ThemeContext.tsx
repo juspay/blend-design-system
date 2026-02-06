@@ -123,6 +123,7 @@ import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
 } from '../components/SwitchV2/switchV2.tokens'
+import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -174,6 +175,7 @@ export type ComponentTokenType = {
     ACCORDIONV2?: ResponsiveAccordionV2Tokens
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
+    SINGLE_SELECT_V2?: ResponsiveSingleSelectV2Tokens
 }
 
 type ThemeContextType = {

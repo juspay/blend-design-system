@@ -50,6 +50,7 @@ import { getAlertV2Tokens } from '../components/AlertV2'
 import { getAccordionV2Tokens } from '../components/AccordionV2'
 import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
+import { getSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -153,6 +154,9 @@ const initTokens = (
         SWITCHV2:
             componentTokens.SWITCHV2 ??
             getSwitchV2Tokens(foundationTokens, theme),
+        SINGLE_SELECT_V2:
+            componentTokens.SINGLE_SELECT_V2 ??
+            getSingleSelectV2Tokens(foundationTokens, theme),
     }
 }
 
