@@ -1736,7 +1736,7 @@ const DataTableDemo = () => {
                     size: 'sm' as const,
                 } as TagColumnProps,
                 email: [
-                    'jesse@example.com',
+                    'jesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.comjesse@example.com',
                     'jane@example.com',
                     'robert@example.com',
                     'lisa@example.com',
