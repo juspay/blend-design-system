@@ -639,7 +639,8 @@ export const renderChart = ({
                         left: 20,
                         bottom: 5,
                     }}
-                    data={flattenedData}
+                    data={processedData}
+                    onMouseLeave={() => setHoveredKey(null)}
                 >
                     <CartesianGrid
                         vertical={false}
@@ -723,13 +724,12 @@ export const renderChart = ({
                             })
                         }
                     />
-                    {[...lineKeys]
-                        .sort((a, b) => {
-                            if (a === hoveredKey) return 1
-                            if (b === hoveredKey) return -1
-                            return 0
-                        })
-                        .map((key, index) => {
+                    {(() => {
+                        const barSeries = lineKeys.filter(
+                            (k) =>
+                                !lineSeriesKeys || !lineSeriesKeys.includes(k)
+                        )
+                        return lineKeys.map((key, index) => {
                             const isLine = lineSeriesKeys
                                 ? lineSeriesKeys.includes(key)
                                 : index === lineKeys.length - 1
@@ -837,22 +837,66 @@ export const renderChart = ({
                                 )
                             }
 
+                            const barIndex = barSeries.indexOf(key)
+                            const isTopBar =
+                                barIndex !== -1 &&
+                                barIndex === barSeries.length - 1
+                            const radius: [number, number, number, number] =
+                                isTopBar ? [4, 4, 0, 0] : [0, 0, 0, 0]
+
                             return (
                                 <Bar
                                     key={key}
                                     dataKey={key}
                                     fill={color}
                                     maxBarSize={barsize}
-                                    radius={[4, 4, 0, 0]}
+                                    stackId={'a'}
+                                    radius={radius}
                                     hide={
                                         selectedKeys.length > 0 &&
                                         !selectedKeys.includes(key)
                                     }
                                     onMouseOver={() => setHoveredKey(key)}
                                     onClick={() => onKeyClick?.(key)}
-                                />
+                                >
+                                    {processedData.map((d, i) => {
+                                        // find top non-zero bar series at this index (scan from last to first)
+                                        let topSeries: string | null = null
+                                        for (
+                                            let j = barSeries.length - 1;
+                                            j >= 0;
+                                            j--
+                                        ) {
+                                            const seriesKey = barSeries[j]
+                                            const val = (d as any)[seriesKey]
+                                            if (
+                                                typeof val === 'number'
+                                                    ? val !== 0
+                                                    : Boolean(val)
+                                            ) {
+                                                topSeries = seriesKey
+                                                break
+                                            }
+                                        }
+
+                                        const cellRadius =
+                                            topSeries === key
+                                                ? [4, 4, 0, 0]
+                                                : [0, 0, 0, 0]
+
+                                        return (
+                                            <Cell
+                                                key={i}
+                                                {...({
+                                                    radius: cellRadius,
+                                                } as any)}
+                                            />
+                                        )
+                                    })}
+                                </Bar>
                             )
-                        })}
+                        })
+                    })()}
                 </ComposedChart>
             )
         }

@@ -286,17 +286,17 @@ const LineBarDemo = () => {
                 data={lineBarData}
                 chartType={ChartType.LINE_BAR}
                 lineSeriesKeys={['Success Rate', 'Pending']}
-                colors={[
-                    { key: 'Success', color: '#94B9FD' },
-                    { key: 'Retry-Success', color: '#6B9DFC' },
-                    { key: 'Pending', color: '#FADBB4' },
-                    { key: 'Revoked Post-Notification', color: '#FD9B9B' },
-                    { key: 'Business Failure', color: '#F9CECF' },
-                    { key: 'Insufficient Balance', color: '#E09A9B' },
-                    { key: 'Technical Failure', color: '#FEC3D4' },
-                    { key: 'Failure', color: '#F8B2B3' },
-                    { key: 'Success Rate', color: '#499DFF' },
-                ]}
+                // colors={[
+                //     { key: 'Success', color: '#94B9FD' },
+                //     { key: 'Retry-Success', color: '#6B9DFC' },
+                //     { key: 'Pending', color: '#FADBB4' },
+                //     { key: 'Revoked Post-Notification', color: '#FD9B9B' },
+                //     { key: 'Business Failure', color: '#F9CECF' },
+                //     { key: 'Insufficient Balance', color: '#E09A9B' },
+                //     { key: 'Technical Failure', color: '#FEC3D4' },
+                //     { key: 'Failure', color: '#F8B2B3' },
+                //     { key: 'Success Rate', color: '#499DFF' },
+                // ]}
                 xAxis={{
                     label: 'Workflow Stages',
                     type: AxisType.NUMBER, // Using categorization by name string
