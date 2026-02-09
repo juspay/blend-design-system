@@ -301,15 +301,13 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 >
                     <AnimatedBackdrop
                         onClick={handleBackdropClick}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        position="fixed"
+                        position="absolute"
                         inset={0}
                         backgroundColor={FOUNDATION_THEME.colors.gray[700]}
                         pointerEvents="auto"
                         role="presentation"
                         aria-hidden="true"
+                        zIndex={0}
                         $isAnimatingIn={isAnimatingIn}
                     />
 
@@ -331,6 +329,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         aria-labelledby={titleId}
                         aria-label={title || 'Modal dialog'}
                         aria-describedby={ariaDescribedBy}
+                        zIndex={1}
+                        pointerEvents="auto"
                         $isAnimatingIn={isAnimatingIn}
                     >
                         <ModalHeader
