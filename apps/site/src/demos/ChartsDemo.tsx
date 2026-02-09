@@ -6202,8 +6202,6 @@ const ChartDemo = () => {
                 Charts Playground - All Variations
             </h5>
 
-            <LineBarDemo />
-
             <div className="flex items-center gap-6">
                 <Switch
                     label="Show Skeleton"
@@ -6313,7 +6311,7 @@ const ChartDemo = () => {
                     </div>
                 }
             />
-
+            <LineBarDemo />
             <Charts
                 chartType={ChartType.AREA}
                 data={[
