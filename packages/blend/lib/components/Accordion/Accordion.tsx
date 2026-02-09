@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
-import { forwardRef } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { styled } from 'styled-components'
 import { type AccordionProps, AccordionType } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
@@ -31,6 +31,36 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     ) => {
         const accordionToken =
             useResponsiveTokens<AccordionTokenType>('ACCORDION')
+
+        const handleToggle = useCallback(
+            (itemValue: string) => {
+                if (!onValueChange) return
+
+                if (isMultiple) {
+                    const currentArray = (value as string[] | undefined) || []
+                    const isCurrentlyOpen = currentArray.includes(itemValue)
+
+                    if (isCurrentlyOpen) {
+                        onValueChange(
+                            currentArray.filter((v) => v !== itemValue)
+                        )
+                    } else {
+                        onValueChange([...currentArray, itemValue])
+                    }
+                } else {
+                    const currentValue = value as string | undefined
+                    const isCurrentlyOpen = currentValue === itemValue
+
+                    if (isCurrentlyOpen) {
+                        onValueChange('')
+                    } else {
+                        onValueChange(itemValue)
+                    }
+                }
+            },
+            [value, isMultiple, onValueChange]
+        )
+
         const renderChildren = () => {
             return React.Children.map(children, (child, index) => {
                 if (!React.isValidElement(child)) return child
@@ -50,6 +80,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                     isLast,
                     isIntermediate,
                     currentValue: value,
+                    onToggle: handleToggle,
                 }
 
                 return React.cloneElement(child, childProps)

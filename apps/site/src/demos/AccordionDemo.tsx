@@ -21,7 +21,10 @@ import {
     AccordionType,
     AccordionChevronPosition,
 } from '../../../../packages/blend/lib/components/Accordion'
-import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import {
+    Switch,
+    SwitchSize,
+} from '../../../../packages/blend/lib/components/Switch'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { useBreakpoints } from '../../../../packages/blend/lib/hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../../packages/blend/lib/breakpoints/breakPoints'
@@ -941,6 +944,344 @@ const AccordionDemo = () => {
                             </AccordionItem>
                         </Accordion>
                     </div>
+                </div>
+            </div>
+
+            {/* External Control Sync */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    External Control Sync (New!)
+                </h2>
+                <p className="text-gray-600">
+                    Use interactive elements like Switch in the{' '}
+                    <code>triggerSlot</code> to replace the default chevron and
+                    control accordion expansion. The slot receives render props
+                    with <code>isExpanded</code> state and <code>toggle</code>{' '}
+                    function for two-way synchronization.
+                </p>
+
+                <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Switch as Trigger Toggle
+                        </h3>
+                        <p className="text-gray-600">
+                            Replace the default chevron with a Switch. The
+                            Switch becomes the primary control for toggling the
+                            accordion and stays perfectly synced with the
+                            expansion state.
+                        </p>
+                        <Accordion defaultValue="trigger1">
+                            <AccordionItem
+                                value="trigger1"
+                                title="Features Overview"
+                                subtext="Toggle this accordion using the switch"
+                                leftSlot={<BarChart3 size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Features Overview
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This accordion item uses a Switch in the
+                                        triggerSlot, replacing the default
+                                        chevron. The Switch state is synced with
+                                        the accordion's open/collapse state.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="trigger2"
+                                title="User Preferences"
+                                subtext="Another switch-controlled accordion"
+                                leftSlot={<User size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        User Preferences
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Each accordion item can have its own
+                                        independent Switch. Users can click
+                                        anywhere on the trigger OR the Switch to
+                                        toggle the accordion.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="trigger3"
+                                title="System Settings"
+                                subtext="Switch provides clear on/off indication"
+                                leftSlot={<Settings size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        System Settings
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Perfect for settings panels and feature
+                                        toggles. The Switch provides a clear
+                                        visual indicator of the accordion's
+                                        expansion state.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Multiple Selection with Switch Triggers
+                        </h3>
+                        <p className="text-gray-600">
+                            Works seamlessly with multiple selection mode. Each
+                            accordion item has an independent Switch that can be
+                            toggled independently.
+                        </p>
+                        <Accordion
+                            isMultiple
+                            defaultValue={['multi1', 'multi3']}
+                        >
+                            <AccordionItem
+                                value="multi1"
+                                title="Feature A"
+                                subtext="First feature panel"
+                                leftSlot={<CheckCircle size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Feature A Details
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        Multiple panels can be open
+                                        simultaneously in multiple selection
+                                        mode. Each panel has its own independent
+                                        Switch control.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="multi2"
+                                title="Feature B"
+                                subtext="Second feature panel"
+                                leftSlot={<Star size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Feature B Details
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This panel starts collapsed. Toggle its
+                                        Switch to expand while keeping other
+                                        panels open.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                value="multi3"
+                                title="Feature C"
+                                subtext="Third feature panel"
+                                leftSlot={<Heart size={16} />}
+                                triggerSlot={({ isExpanded, toggle }) => (
+                                    <Switch
+                                        checked={isExpanded}
+                                        onChange={() => toggle()}
+                                        size={SwitchSize.SMALL}
+                                        label=""
+                                    />
+                                )}
+                            >
+                                <div
+                                    className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Feature C Details
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This panel starts expanded by default.
+                                        The Switch correctly reflects the open
+                                        state.
+                                    </p>
+                                </div>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Fully Controlled Accordion with External State
+                        </h3>
+                        <p className="text-gray-600">
+                            Maintain the accordion state externally and sync it
+                            with other components. Demonstrates the controlled
+                            component pattern.
+                        </p>
+                        <form>
+                            <FullyControlledAccordionDemo
+                                isSmallScreen={isSmallScreen}
+                            />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// Demo component for fully controlled accordion
+const FullyControlledAccordionDemo = ({
+    isSmallScreen,
+}: {
+    isSmallScreen: boolean
+}) => {
+    const [expandedItems, setExpandedItems] = useState<string[]>(['external1'])
+
+    const toggleItem = (itemValue: string) => {
+        setExpandedItems((prev) =>
+            prev.includes(itemValue)
+                ? prev.filter((v) => v !== itemValue)
+                : [...prev, itemValue]
+        )
+    }
+
+    return (
+        <div className="space-y-6">
+            <Accordion
+                isMultiple
+                value={expandedItems}
+                onValueChange={(val) =>
+                    setExpandedItems(Array.isArray(val) ? val : [val])
+                }
+            >
+                <AccordionItem
+                    value="external1"
+                    title="Externally Controlled 1"
+                    subtext="State is managed in parent component"
+                    leftSlot={<Info size={16} />}
+                    triggerSlot={({ isExpanded, toggle }) => (
+                        <Switch
+                            checked={isExpanded}
+                            onChange={() => toggle()}
+                            size={SwitchSize.SMALL}
+                            label=""
+                        />
+                    )}
+                    triggerSlotWidth={60}
+                >
+                    <div
+                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                    >
+                        <h4 className="font-semibold mb-2">
+                            External State Management
+                        </h4>
+                        <p className="text-gray-600">
+                            This accordion's expansion state is managed in a
+                            parent component using useState. The state is shared
+                            with the external controls below.
+                        </p>
+                    </div>
+                </AccordionItem>
+
+                <AccordionItem
+                    value="external2"
+                    title="Externally Controlled 2"
+                    subtext="Syncs with controls below"
+                    leftSlot={<Settings size={16} />}
+                    triggerSlot={({ isExpanded, toggle }) => (
+                        <Switch
+                            checked={isExpanded}
+                            onChange={() => toggle()}
+                            size={SwitchSize.SMALL}
+                            label=""
+                        />
+                    )}
+                    triggerSlotWidth={60}
+                >
+                    <div
+                        className={`p-4 ${isSmallScreen ? '' : 'bg-gray-50'} rounded-lg`}
+                    >
+                        <h4 className="font-semibold mb-2">Synced Controls</h4>
+                        <p className="text-gray-600">
+                            This accordion syncs with the external controls
+                            shown below. Changes in one place reflect
+                            everywhere.
+                        </p>
+                    </div>
+                </AccordionItem>
+            </Accordion>
+
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                <h4 className="font-semibold text-sm uppercase tracking-wide text-gray-600">
+                    External Controls (Synced)
+                </h4>
+                <div className="space-y-2">
+                    <Switch
+                        checked={expandedItems.includes('external1')}
+                        onChange={() => toggleItem('external1')}
+                        label="Toggle Accordion 1"
+                    />
+                    <Switch
+                        checked={expandedItems.includes('external2')}
+                        onChange={() => toggleItem('external2')}
+                        label="Toggle Accordion 2"
+                    />
+                </div>
+                <div className="text-xs text-gray-500 mt-2">
+                    Active items: {expandedItems.join(', ') || 'None'}
                 </div>
             </div>
         </div>

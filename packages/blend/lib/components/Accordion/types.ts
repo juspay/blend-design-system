@@ -10,6 +10,15 @@ export enum AccordionChevronPosition {
     RIGHT = 'right',
 }
 
+export type SlotRenderProps = {
+    isExpanded: boolean
+    toggle: () => void
+    value: string
+    isDisabled: boolean
+}
+
+export type SlotType = ReactNode | ((props: SlotRenderProps) => ReactNode)
+
 export type AccordionItemProps = {
     value: string
     title: string
@@ -17,7 +26,8 @@ export type AccordionItemProps = {
     leftSlot?: ReactNode
     rightSlot?: ReactNode
     subtextSlot?: ReactNode
-    triggerSlot?: ReactNode
+    triggerSlot?: SlotType
+    triggerSlotWidth?: string | number
     children: ReactNode
     isDisabled?: boolean
     chevronPosition?: AccordionChevronPosition
