@@ -1,5 +1,7 @@
 import {
     forwardRef,
+    useCallback,
+    useRef,
     type CSSProperties,
     type MouseEvent,
     type KeyboardEvent,
@@ -8,10 +10,11 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { TagTokensType } from './tag.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import useTruncationDetection from '../../hooks/useTruncationDetection'
 import type { TagProps } from './types'
 import { TagColor, TagShape, TagSize, TagVariant } from './types'
 import { useRipple, RippleContainer } from '../animations/Ripple'
-import { FOUNDATION_THEME } from '../../tokens'
+import Tooltip from '../Tooltip/Tooltip'
 
 export type TagBaseProps = TagProps & {
     isSkeleton?: boolean
@@ -20,7 +23,7 @@ export type TagBaseProps = TagProps & {
 
 const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
     const {
-        text,
+        text = '',
         variant = TagVariant.SUBTLE,
         color = TagColor.PRIMARY,
         size = TagSize.SM,
@@ -30,10 +33,12 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
         splitTagPosition,
         isSkeleton = false,
         tokens,
+        maxWidth,
+        width,
         ...rawBlockProps
     } = props
 
-    const { width, onClick, style, className, pointerEvents, ...blockProps } =
+    const { onClick, style, className, pointerEvents, ...blockProps } =
         rawBlockProps as typeof rawBlockProps & {
             style?: CSSProperties
             className?: string
@@ -42,6 +47,16 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
     const defaultTagTokens = useResponsiveTokens<TagTokensType>('TAGS')
     const tagTokens = tokens ?? defaultTagTokens
     const { ripples, createRipple } = useRipple()
+
+    const containerRef = useRef<HTMLDivElement | null>(null)
+    const isTextTruncated = useTruncationDetection(
+        containerRef as React.RefObject<HTMLElement>,
+        '[data-element="tag-text"]',
+        {
+            disabled: isSkeleton,
+            deps: [text],
+        }
+    )
 
     const isSplitTag = splitTagPosition !== undefined
     let borderRadius = tagTokens.borderRadius[size][shape]
@@ -105,10 +120,25 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
               }
             : undefined
 
-    return (
+    const mergedRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            containerRef.current = node
+
+            if (typeof ref === 'function') {
+                ref(node)
+            } else if (ref && 'current' in ref) {
+                ;(
+                    ref as React.MutableRefObject<HTMLDivElement | null>
+                ).current = node
+            }
+        },
+        [ref]
+    )
+
+    const tagContent = (
         <Block
             {...blockProps}
-            ref={ref}
+            ref={mergedRef}
             onClick={showRipple ? handleClick : effectiveOnClick}
             onKeyDown={isInteractive ? handleKeyDown : undefined}
             role={isInteractive ? 'button' : undefined}
@@ -117,8 +147,8 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             display="inline-flex"
             alignItems="center"
             justifyContent="center"
-            width={width ?? 'fit-content'}
-            maxWidth={FOUNDATION_THEME.unit[200]}
+            width={width ?? tagTokens.width}
+            maxWidth={maxWidth ?? tagTokens.maxWidth}
             height="fit-content"
             flexShrink={0}
             gap={tagTokens.gap}
@@ -157,6 +187,8 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             )}
             <Text
                 data-id={text}
+                data-element="tag-text"
+                as="span"
                 fontSize={tagTokens.text.fontSize[size]}
                 fontWeight={tagTokens.text.fontWeight[size]}
                 style={{
@@ -182,6 +214,12 @@ const TagBase = forwardRef<HTMLDivElement, TagBaseProps>((props, ref) => {
             {showRipple && <RippleContainer ripples={ripples} />}
         </Block>
     )
+
+    if (!isSkeleton && isTextTruncated && text) {
+        return <Tooltip content={text}>{tagContent}</Tooltip>
+    }
+
+    return tagContent
 })
 
 TagBase.displayName = 'TagBase'
