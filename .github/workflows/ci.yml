@@ -20,6 +20,9 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
@@ -46,6 +49,9 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
@@ -88,6 +94,9 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup pnpm
               uses: pnpm/action-setup@v4
