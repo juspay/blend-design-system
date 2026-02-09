@@ -24,6 +24,7 @@ import {
     AxisType,
     SankeyData,
     DotItemDotProps,
+    FlattenedDataPoint,
 } from './types'
 import SankeyChartWrapper from './SankeyChartWrapper'
 import {
@@ -868,7 +869,9 @@ export const renderChart = ({
                                             j--
                                         ) {
                                             const seriesKey = barSeries[j]
-                                            const val = (d as any)[seriesKey]
+                                            const val = (
+                                                d as FlattenedDataPoint
+                                            )[seriesKey]
                                             if (
                                                 typeof val === 'number'
                                                     ? val !== 0
@@ -889,7 +892,9 @@ export const renderChart = ({
                                                 key={i}
                                                 {...({
                                                     radius: cellRadius,
-                                                } as any)}
+                                                } as unknown as React.ComponentProps<
+                                                    typeof Cell
+                                                >)}
                                             />
                                         )
                                     })}
