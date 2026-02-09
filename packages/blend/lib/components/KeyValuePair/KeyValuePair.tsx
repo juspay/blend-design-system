@@ -146,13 +146,13 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
         const keyContainerStyles = {
             display: 'flex',
             gap: keyValuePairTokens.key.gap,
-            alignItems: 'center',
+            alignItems: textOverflow !== 'truncate' ? 'self-start' : 'center',
         }
 
         const valueContainerStyles = {
             display: 'flex',
             gap: keyValuePairTokens.value.gap,
-            alignItems: 'center',
+            alignItems: textOverflow !== 'truncate' ? 'self-start' : 'center',
         }
 
         const baseId = useId()
