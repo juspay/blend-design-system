@@ -8,64 +8,59 @@ import { getAvatarV2LightTokens } from './avatarV2.light.tokens'
 
 export type AvatarV2TokensType = {
     container: {
-        size: {
-            [key in AvatarV2Size]: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-            }
+        width: {
+            [key in AvatarV2Size]: CSSObject['width']
+        }
+        height: {
+            [key in AvatarV2Size]: CSSObject['height']
         }
         borderRadius: {
             [key in AvatarV2Shape]: CSSObject['borderRadius']
         }
-    }
-
-    border: {
-        image: CSSObject['border']
-        fallback: CSSObject['border']
+        border: {
+            image: CSSObject['border']
+            fallback: CSSObject['border']
+        }
+        backgroundColor: {
+            fallback: CSSObject['backgroundColor']
+        }
+        gap: CSSObject['gap']
     }
 
     fallback: {
         backgroundColor: CSSObject['backgroundColor']
-        color: CSSObject['color']
-    }
-
-    typography: {
         fontSize: {
             [key in AvatarV2Size]: CSSObject['fontSize']
         }
         fontWeight: {
             [key in AvatarV2Size]: CSSObject['fontWeight']
         }
-    }
-
-    status: {
-        indicator: {
-            size: {
-                [key in AvatarV2Size]: {
-                    width: CSSObject['width']
-                    height: CSSObject['height']
-                }
-            }
-            border: {
-                [key in AvatarV2Size]: {
-                    width: CSSObject['borderWidth']
-                    color: CSSObject['borderColor']
-                }
-            }
+        lineHeight: {
+            [key in AvatarV2Size]: CSSObject['lineHeight']
         }
-        backgroundColor: {
-            [key in AvatarV2Status]: CSSObject['backgroundColor']
-        }
-        shadow: CSSObject['boxShadow']
-    }
-
-    slot: {
-        gap: CSSObject['gap']
         color: CSSObject['color']
     }
 
-    image: {
-        backgroundColor: CSSObject['backgroundColor']
+    status: {
+        width: {
+            [key in AvatarV2Size]: CSSObject['width']
+        }
+        height: {
+            [key in AvatarV2Size]: CSSObject['height']
+        }
+        border: {
+            [key in AvatarV2Size]: CSSObject['border']
+        }
+        borderRadius: CSSObject['borderRadius']
+        backgroundColor: {
+            [key in AvatarV2Status]: CSSObject['backgroundColor']
+        }
+        boxShadow: CSSObject['boxShadow']
+    }
+
+    slot: {
+        height: CSSObject['height']
+        width: CSSObject['width']
     }
 }
 

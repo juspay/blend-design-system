@@ -18,6 +18,7 @@
 export * from './aria-helpers'
 export * from './keyboard-helpers'
 export * from './focus-helpers'
+export * from './visually-hidden'
 
 // Re-export types for convenience
 export type { AriaAttributes } from './aria-helpers'

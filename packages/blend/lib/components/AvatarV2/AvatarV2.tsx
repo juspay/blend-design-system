@@ -15,6 +15,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Skeleton } from '../Skeleton'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { VisuallyHidden } from '../../utils/accessibility'
 
 import {
     getColorFromText,
@@ -44,6 +45,7 @@ const AvatarImage = ({
             onError={onError}
             onLoad={onLoad}
             data-avatar-image="true"
+            role="img"
             style={{
                 width: '100%',
                 height: '100%',
@@ -66,6 +68,7 @@ const AvatarFallback = ({
     return (
         <Block
             data-avatar-fallback="true"
+            aria-hidden="true"
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -109,8 +112,6 @@ const StatusIndicator = ({
         shape,
         breakpoint
     )
-    const indicatorSize = tokens.status.indicator.size[size]
-    const indicatorBorder = tokens.status.indicator.border[size]
 
     return (
         <Block
@@ -120,12 +121,12 @@ const StatusIndicator = ({
             position="absolute"
             {...positionStyles}
             display="block"
-            width={indicatorSize.width}
-            height={indicatorSize.height}
+            width={tokens.status.width[size]}
+            height={tokens.status.height[size]}
             backgroundColor={tokens.status.backgroundColor[status]}
-            borderRadius="50%"
-            border={`${indicatorBorder.width} solid ${indicatorBorder.color}`}
-            boxShadow={tokens.status.shadow}
+            borderRadius={tokens.status.borderRadius}
+            border={tokens.status.border[size]}
+            boxShadow={tokens.status.boxShadow}
             zIndex="1"
         />
     )
@@ -133,12 +134,12 @@ const StatusIndicator = ({
 
 const SlotContainer = ({
     slot,
-    spacing,
     position,
+    tokens,
 }: {
     slot?: ReactElement
-    spacing: string
     position: 'leading' | 'trailing'
+    tokens: AvatarV2TokensType
 }) => {
     if (!slot) return null
 
@@ -147,8 +148,8 @@ const SlotContainer = ({
             data-element={`${position}-slot`}
             display="flex"
             alignItems="center"
-            {...(position === 'leading' && { marginRight: spacing })}
-            {...(position === 'trailing' && { marginLeft: spacing })}
+            width={tokens.slot.width}
+            height={tokens.slot.height}
         >
             {slot}
         </Block>
@@ -220,8 +221,8 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             ? AvatarV2Variant.IMAGE
             : AvatarV2Variant.TEXT
 
-        const containerWidth = width || tokens.container.size[size].width
-        const containerHeight = height || tokens.container.size[size].height
+        const containerWidth = width || tokens.container.width[size]
+        const containerHeight = height || tokens.container.height[size]
 
         const renderAvatarContent = () => {
             return (
@@ -233,7 +234,13 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     role="img"
                     aria-label={accessibleLabel}
                     aria-live={ariaLiveValue}
-                    tabIndex={isInteractiveMode ? 0 : undefined}
+                    tabIndex={
+                        isInteractiveMode && !disabled
+                            ? 0
+                            : disabled
+                              ? -1
+                              : undefined
+                    }
                     position="relative"
                     display="inline-flex"
                     alignItems="center"
@@ -242,17 +249,19 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     height={containerHeight}
                     borderRadius={tokens.container.borderRadius[shape]}
                     border={
-                        hasImage ? tokens.border.image : tokens.border.fallback
+                        hasImage
+                            ? tokens.container.border.image
+                            : tokens.container.border.fallback
                     }
                     backgroundColor={
                         shouldShowSkeleton
                             ? 'transparent'
                             : hasImage
-                              ? tokens.image.backgroundColor
+                              ? 'transparent'
                               : fallbackColor
                     }
-                    fontSize={tokens.typography.fontSize[size]}
-                    fontWeight={tokens.typography.fontWeight[size]}
+                    fontSize={tokens.fallback.fontSize[size]}
+                    fontWeight={tokens.fallback.fontWeight[size]}
                     cursor={
                         isInteractiveMode
                             ? disabled
@@ -265,7 +274,11 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     onClick={!disabled ? rest.onClick : undefined}
                     onKeyDown={!disabled ? keyboardHandler : undefined}
                     {...filteredProps}
-                    data-status={statusType}
+                    data-status={
+                        statusType === AvatarV2Status.NONE
+                            ? 'offline'
+                            : statusType
+                    }
                 >
                     {!shouldShowSkeleton && (
                         <StatusIndicator
@@ -295,15 +308,19 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     ) : (
                         <AvatarFallback
                             backgroundColor={backgroundColor || fallbackColor}
-                            textColor="#FFFFFF"
+                            textColor={tokens.fallback.color}
                         >
                             {typeof fallbackContent === 'string' ? (
                                 <Text
                                     as="span"
                                     color="currentColor"
-                                    fontSize="inherit"
-                                    fontWeight="inherit"
-                                    lineHeight="1"
+                                    fontSize={tokens.fallback.fontSize[size]}
+                                    fontWeight={
+                                        tokens.fallback.fontWeight[size]
+                                    }
+                                    lineHeight={
+                                        tokens.fallback.lineHeight[size]
+                                    }
                                 >
                                     {fallbackContent}
                                 </Text>
@@ -313,51 +330,35 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                         </AvatarFallback>
                     )}
 
-                    <Block
-                        as="span"
-                        position="absolute"
-                        width="1px"
-                        height="1px"
-                        padding={0}
-                        margin="-1px"
-                        overflow="hidden"
-                        style={{
-                            clip: 'rect(0, 0, 0, 0)',
-                            clipPath: 'inset(50%)',
-                            borderWidth: 0,
-                        }}
-                        whiteSpace="nowrap"
-                        aria-hidden="true"
-                    >
-                        {accessibleLabel}
-                    </Block>
+                    <VisuallyHidden>{accessibleLabel}</VisuallyHidden>
                 </Block>
             )
         }
 
         if (leadingSlot || trailingSlot) {
-            const slotSpacing =
-                typeof tokens.slot.gap === 'string'
-                    ? tokens.slot.gap
-                    : `${tokens.slot.gap}px`
             return (
                 <Block
                     data-avatar-wrapper="true"
                     position="relative"
                     display="inline-flex"
                     alignItems="center"
-                    data-status={statusType}
+                    data-status={
+                        statusType === AvatarV2Status.NONE
+                            ? 'offline'
+                            : statusType
+                    }
+                    gap={tokens.container.gap}
                 >
                     <SlotContainer
                         slot={leadingSlot}
-                        spacing={slotSpacing}
                         position="leading"
+                        tokens={tokens}
                     />
                     {renderAvatarContent()}
                     <SlotContainer
                         slot={trailingSlot}
-                        spacing={slotSpacing}
                         position="trailing"
+                        tokens={tokens}
                     />
                 </Block>
             )
