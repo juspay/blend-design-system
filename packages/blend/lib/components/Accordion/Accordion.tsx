@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
-import { forwardRef, useCallback } from 'react'
+import { forwardRef, useCallback, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { type AccordionProps, AccordionType } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
@@ -23,7 +23,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             children,
             accordionType = AccordionType.NO_BORDER,
             defaultValue,
-            value,
+            value: controlledValue,
             isMultiple = false,
             onValueChange,
         },
@@ -32,33 +32,47 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
         const accordionToken =
             useResponsiveTokens<AccordionTokenType>('ACCORDION')
 
+        const [uncontrolledValue, setUncontrolledValue] = useState<
+            string | string[] | undefined
+        >(defaultValue)
+
+        const isControlled = controlledValue !== undefined
+        const currentValue = isControlled ? controlledValue : uncontrolledValue
+        const valueRef = useRef(currentValue)
+        valueRef.current = currentValue
+
+        const handleValueChange = useCallback(
+            (newValue: string | string[]) => {
+                if (!isControlled) {
+                    setUncontrolledValue(newValue)
+                }
+                onValueChange?.(newValue)
+            },
+            [isControlled, onValueChange]
+        )
         const handleToggle = useCallback(
             (itemValue: string) => {
-                if (!onValueChange) return
+                const val = valueRef.current
 
                 if (isMultiple) {
-                    const currentArray = (value as string[] | undefined) || []
-                    const isCurrentlyOpen = currentArray.includes(itemValue)
-
-                    if (isCurrentlyOpen) {
-                        onValueChange(
+                    const currentArray = (val as string[] | undefined) || []
+                    if (currentArray.includes(itemValue)) {
+                        handleValueChange(
                             currentArray.filter((v) => v !== itemValue)
                         )
                     } else {
-                        onValueChange([...currentArray, itemValue])
+                        handleValueChange([...currentArray, itemValue])
                     }
                 } else {
-                    const currentValue = value as string | undefined
-                    const isCurrentlyOpen = currentValue === itemValue
-
-                    if (isCurrentlyOpen) {
-                        onValueChange('')
+                    const currentVal = val as string | undefined
+                    if (currentVal === itemValue) {
+                        handleValueChange('')
                     } else {
-                        onValueChange(itemValue)
+                        handleValueChange(itemValue)
                     }
                 }
             },
-            [value, isMultiple, onValueChange]
+            [isMultiple, handleValueChange]
         )
 
         const renderChildren = () => {
@@ -79,7 +93,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                     isFirst,
                     isLast,
                     isIntermediate,
-                    currentValue: value,
+                    currentValue: currentValue,
                     onToggle: handleToggle,
                 }
 
@@ -96,11 +110,8 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             <StyledAccordionRoot
                 data-accordion="accordion"
                 type="multiple"
-                value={value as string[] | undefined}
-                defaultValue={defaultValue as string[] | undefined}
-                onValueChange={
-                    onValueChange as ((value: string[]) => void) | undefined
-                }
+                value={(currentValue ?? []) as string[]}
+                onValueChange={handleValueChange as (value: string[]) => void}
                 $AccordionToken={accordionToken}
                 {...commonProps}
             >
@@ -111,11 +122,8 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
                 data-accordion="accordion"
                 type="single"
                 collapsible={true}
-                value={value as string | undefined}
-                defaultValue={defaultValue as string | undefined}
-                onValueChange={
-                    onValueChange as ((value: string) => void) | undefined
-                }
+                value={(currentValue ?? '') as string}
+                onValueChange={handleValueChange as (value: string) => void}
                 $AccordionToken={accordionToken}
                 {...commonProps}
             >

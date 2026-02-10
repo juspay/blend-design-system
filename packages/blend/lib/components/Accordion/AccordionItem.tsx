@@ -3,7 +3,7 @@ import * as RadixAccordion from '@radix-ui/react-accordion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { forwardRef, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import type { AccordionItemProps, SlotRenderProps } from './types'
+import type { AccordionItemProps } from './types'
 import { AccordionType, AccordionChevronPosition } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
 import Block from '../Primitives/Block/Block'
@@ -253,23 +253,12 @@ const AccordionItem = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
-        // Determine if this item is expanded
-        const isExpanded = Array.isArray(currentValue)
-            ? currentValue.includes(value)
-            : currentValue === value
-
-        const normalizedTriggerSlotWidth = useMemo(() => {
-            if (triggerSlotWidth !== undefined) {
-                if (typeof triggerSlotWidth === 'number') {
-                    return `${triggerSlotWidth}px`
-                }
-                return triggerSlotWidth
-            }
-            return (
-                accordionToken.trigger.slot?.maxWidth ||
-                FOUNDATION_THEME.unit[24]
-            )
-        }, [triggerSlotWidth, accordionToken.trigger.slot?.maxWidth])
+        const isExpanded = useMemo(() => {
+            if (currentValue === undefined) return false
+            return Array.isArray(currentValue)
+                ? currentValue.includes(value)
+                : currentValue === value
+        }, [currentValue, value])
 
         const toggle = useCallback(() => {
             if (!isDisabled && onToggle) {
@@ -277,21 +266,30 @@ const AccordionItem = forwardRef<
             }
         }, [isDisabled, onToggle, value])
 
-        const slotRenderProps: SlotRenderProps = useMemo(
-            () => ({
-                isExpanded,
-                toggle,
-                value,
-                isDisabled,
-            }),
-            [isExpanded, toggle, value, isDisabled]
-        )
+        const slotWidth = useMemo(() => {
+            if (triggerSlotWidth !== undefined) {
+                return typeof triggerSlotWidth === 'number'
+                    ? `${triggerSlotWidth}px`
+                    : triggerSlotWidth
+            }
+            return (
+                accordionToken.trigger.slot?.maxWidth ||
+                FOUNDATION_THEME.unit[24]
+            )
+        }, [triggerSlotWidth, accordionToken.trigger.slot?.maxWidth])
+
+        const isInteractiveSlot = useMemo(() => {
+            if (!triggerSlot || typeof triggerSlot === 'function') return false
+            if (!React.isValidElement(triggerSlot)) return false
+            const props = triggerSlot.props as Record<string, unknown>
+            return 'onChange' in props || 'onCheckedChange' in props
+        }, [triggerSlot])
 
         const enhancedTriggerSlot = useMemo(() => {
             if (!triggerSlot) return null
 
             if (typeof triggerSlot === 'function') {
-                return triggerSlot(slotRenderProps)
+                return triggerSlot({ isExpanded, toggle, value, isDisabled })
             }
 
             if (React.isValidElement(triggerSlot)) {
@@ -299,93 +297,69 @@ const AccordionItem = forwardRef<
                     string,
                     unknown
                 >
-
                 const hasOnChange = 'onChange' in elementProps
                 const hasOnCheckedChange = 'onCheckedChange' in elementProps
 
-                if (hasOnChange || hasOnCheckedChange) {
+                // Non-interactive element — return as-is
+                if (!hasOnChange && !hasOnCheckedChange) return triggerSlot
+
+                // Interactive element — sync checked state with accordion
+                const enhancedProps: Record<string, unknown> = {
+                    ...elementProps,
+                    checked:
+                        elementProps.checked !== undefined
+                            ? elementProps.checked
+                            : isExpanded,
+                    disabled:
+                        elementProps.disabled !== undefined
+                            ? elementProps.disabled
+                            : isDisabled,
+                    onClick: (e: React.MouseEvent) => {
+                        e.stopPropagation()
+                        ;(
+                            elementProps.onClick as
+                                | ((e: React.MouseEvent) => void)
+                                | undefined
+                        )?.(e)
+                    },
+                }
+
+                if (hasOnChange) {
                     const originalOnChange = elementProps.onChange as
                         | ((checked: boolean) => void)
                         | undefined
+                    enhancedProps.onChange = (newChecked: boolean) => {
+                        originalOnChange?.(newChecked)
+                        if (newChecked !== isExpanded) toggle()
+                    }
+                }
+
+                if (hasOnCheckedChange) {
                     const originalOnCheckedChange =
                         elementProps.onCheckedChange as
                             | ((checked: boolean | 'indeterminate') => void)
                             | undefined
-
-                    const currentChecked =
-                        elementProps.checked !== undefined
-                            ? elementProps.checked
-                            : isExpanded
-
-                    const enhancedProps: Record<string, unknown> = {
-                        ...elementProps,
-                        checked: currentChecked,
-                        disabled:
-                            elementProps.disabled !== undefined
-                                ? elementProps.disabled
-                                : isDisabled,
+                    enhancedProps.onCheckedChange = (
+                        newChecked: boolean | 'indeterminate'
+                    ) => {
+                        originalOnCheckedChange?.(newChecked)
+                        if ((newChecked === true) !== isExpanded) toggle()
                     }
-
-                    if (hasOnChange) {
-                        enhancedProps.onChange = (newChecked: boolean) => {
-                            if (typeof originalOnChange === 'function') {
-                                originalOnChange(newChecked)
-                            }
-                            if (newChecked !== isExpanded) {
-                                toggle()
-                            }
-                        }
-                        const originalOnClick = elementProps.onClick as
-                            | ((e: React.MouseEvent) => void)
-                            | undefined
-                        enhancedProps.onClick = (e: React.MouseEvent) => {
-                            e.stopPropagation()
-                            if (typeof originalOnClick === 'function') {
-                                originalOnClick(e)
-                            }
-                        }
-                    }
-
-                    if (hasOnCheckedChange) {
-                        enhancedProps.onCheckedChange = (
-                            newChecked: boolean | 'indeterminate'
-                        ) => {
-                            if (typeof originalOnCheckedChange === 'function') {
-                                originalOnCheckedChange(newChecked)
-                            }
-                            const isChecked = newChecked === true
-                            if (isChecked !== isExpanded) {
-                                toggle()
-                            }
-                        }
-                        const originalOnClick = elementProps.onClick as
-                            | ((e: React.MouseEvent) => void)
-                            | undefined
-                        enhancedProps.onClick = (e: React.MouseEvent) => {
-                            e.stopPropagation()
-                            if (typeof originalOnClick === 'function') {
-                                originalOnClick(e)
-                            }
-                        }
-                    }
-
-                    return React.cloneElement(
-                        triggerSlot as React.ReactElement,
-                        enhancedProps
-                    )
                 }
 
-                return triggerSlot
+                return React.cloneElement(
+                    triggerSlot as React.ReactElement,
+                    enhancedProps
+                )
             }
 
             return triggerSlot
-        }, [triggerSlot, isExpanded, isDisabled, slotRenderProps, toggle])
+        }, [triggerSlot, isExpanded, isDisabled, toggle, value])
 
         const getChevronIcon = () => {
             const iconColor = isDisabled
                 ? FOUNDATION_THEME.colors.gray[300]
                 : FOUNDATION_THEME.colors.gray[500]
-            const iconSize = normalizedTriggerSlotWidth
 
             return (
                 <ChevronAnimation
@@ -408,15 +382,15 @@ const AccordionItem = forwardRef<
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
                             style={{
-                                width: iconSize,
-                                height: iconSize,
+                                width: slotWidth,
+                                height: slotWidth,
                             }}
                         />
                     ) : (
                         <ChevronRight
                             style={{
-                                width: iconSize,
-                                height: iconSize,
+                                width: slotWidth,
+                                height: slotWidth,
                             }}
                         />
                     )}
@@ -424,65 +398,31 @@ const AccordionItem = forwardRef<
             )
         }
 
-        const renderChevronSlot = () => {
-            const chevronWidth = normalizedTriggerSlotWidth
-
-            const isInteractiveElement =
-                triggerSlot &&
-                React.isValidElement(triggerSlot) &&
-                ('onChange' in (triggerSlot.props as Record<string, unknown>) ||
-                    'onCheckedChange' in
-                        (triggerSlot.props as Record<string, unknown>))
-
-            if (isInteractiveElement && enhancedTriggerSlot) {
-                return (
-                    <Block
-                        data-element="chevron-icon"
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            width: chevronWidth,
-                            maxHeight: chevronWidth,
-                            maxWidth: chevronWidth,
-                            overflow: 'hidden',
-                        }}
-                        onClick={(e) => {
-                            e.stopPropagation()
-                        }}
-                        onMouseDown={(e) => {
-                            e.stopPropagation()
-                        }}
-                        onPointerDown={(e) => {
-                            e.stopPropagation()
-                        }}
-                        aria-hidden="true"
-                    >
-                        {enhancedTriggerSlot}
-                    </Block>
-                )
-            }
-
-            return (
-                <Block
-                    data-element="chevron-icon"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    flexShrink={0}
-                    aria-hidden="true"
-                    width={chevronWidth}
-                    maxHeight={chevronWidth}
-                    maxWidth={chevronWidth}
-                    style={{
-                        overflow: 'hidden',
-                    }}
-                >
-                    {enhancedTriggerSlot ?? getChevronIcon()}
-                </Block>
-            )
-        }
+        // Unified slot renderer — isolates click events only for
+        // interactive elements (Switch, Checkbox) to prevent
+        // double-toggling via Radix's trigger.
+        const renderChevronSlot = () => (
+            <Block
+                data-element="chevron-icon"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexShrink={0}
+                aria-hidden="true"
+                width={slotWidth}
+                maxHeight={slotWidth}
+                maxWidth={slotWidth}
+                style={{ overflow: 'hidden' }}
+                {...(isInteractiveSlot && {
+                    onClick: (e: React.MouseEvent) => e.stopPropagation(),
+                    onMouseDown: (e: React.MouseEvent) => e.stopPropagation(),
+                    onPointerDown: (e: React.PointerEvent) =>
+                        e.stopPropagation(),
+                })}
+            >
+                {enhancedTriggerSlot ?? getChevronIcon()}
+            </Block>
+        )
 
         return (
             <StyledAccordionItem
