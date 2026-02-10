@@ -104,6 +104,7 @@ const SingleSelect = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
+    allowDeselect = false,
     ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -154,8 +155,11 @@ const SingleSelect = ({
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const handleOnSelect = useCallback(
-        (val: string) => onSelect(val),
-        [onSelect, selected]
+        (val: string) =>
+            allowDeselect
+                ? onSelect(val === selected ? '' : val)
+                : onSelect(val),
+        [onSelect, selected, allowDeselect]
     )
     const shouldShake = useErrorShake(error)
 
