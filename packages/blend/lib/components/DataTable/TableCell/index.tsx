@@ -136,11 +136,15 @@ const TruncatedTextWithTooltip = ({
     )
 
     if (isTruncated && text) {
+        const isVeryLongString = text.length > 50 && !text.includes(' ')
+        const tooltipMaxWidth = isVeryLongString ? '600px' : undefined
+
         return (
             <Tooltip
                 content={text}
                 size={TooltipSize.SMALL}
                 delayDuration={500}
+                maxWidth={tooltipMaxWidth}
             >
                 {truncatedContent}
             </Tooltip>
