@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
-import { forwardRef, useCallback, useRef, useState } from 'react'
+import { forwardRef, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
 import { type AccordionProps, AccordionType } from './types'
 import type { AccordionTokenType } from './accordion.tokens'
@@ -32,87 +32,55 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
         const accordionToken =
             useResponsiveTokens<AccordionTokenType>('ACCORDION')
 
-        const [uncontrolledValue, setUncontrolledValue] = useState<
+        const isControlled = controlledValue !== undefined
+        const [internalValue, setInternalValue] = useState<
             string | string[] | undefined
         >(defaultValue)
 
-        const isControlled = controlledValue !== undefined
-        const currentValue = isControlled ? controlledValue : uncontrolledValue
-        const valueRef = useRef(currentValue)
-        valueRef.current = currentValue
+        const currentValue = isControlled ? controlledValue : internalValue
 
         const handleValueChange = useCallback(
             (newValue: string | string[]) => {
-                if (!isControlled) {
-                    setUncontrolledValue(newValue)
-                }
+                if (!isControlled) setInternalValue(newValue)
                 onValueChange?.(newValue)
             },
             [isControlled, onValueChange]
         )
-        const handleToggle = useCallback(
-            (itemValue: string) => {
-                const val = valueRef.current
 
-                if (isMultiple) {
-                    const currentArray = (val as string[] | undefined) || []
-                    if (currentArray.includes(itemValue)) {
-                        handleValueChange(
-                            currentArray.filter((v) => v !== itemValue)
-                        )
-                    } else {
-                        handleValueChange([...currentArray, itemValue])
-                    }
-                } else {
-                    const currentVal = val as string | undefined
-                    if (currentVal === itemValue) {
-                        handleValueChange('')
-                    } else {
-                        handleValueChange(itemValue)
-                    }
-                }
-            },
-            [isMultiple, handleValueChange]
-        )
-
-        const renderChildren = () => {
-            return React.Children.map(children, (child, index) => {
+        const renderChildren = () =>
+            React.Children.map(children, (child, index) => {
                 if (!React.isValidElement(child)) return child
 
-                const childrenArray = React.Children.toArray(children).filter(
+                const total = React.Children.toArray(children).filter(
                     React.isValidElement
-                )
-                const totalItems = childrenArray.length
-                const isFirst = index === 0
-                const isLast = index === totalItems - 1
-                const isIntermediate = !isFirst && !isLast
+                ).length
 
                 const childProps = {
                     ...(child.props as object),
-                    accordionType: accordionType,
-                    isFirst,
-                    isLast,
-                    isIntermediate,
-                    currentValue: currentValue,
-                    onToggle: handleToggle,
+                    accordionType,
+                    isFirst: index === 0,
+                    isLast: index === total - 1,
+                    isIntermediate: index > 0 && index < total - 1,
+                    currentValue,
                 }
 
                 return React.cloneElement(child, childProps)
             })
-        }
 
         const commonProps = {
-            ref: ref,
+            ref,
             $accordionType: accordionType,
+            $AccordionToken: accordionToken,
         }
 
         return isMultiple ? (
             <StyledAccordionRoot
                 data-accordion="accordion"
                 type="multiple"
-                value={(currentValue ?? []) as string[]}
+                {...(isControlled
+                    ? { value: (controlledValue ?? []) as string[] }
+                    : { defaultValue: defaultValue as string[] | undefined })}
                 onValueChange={handleValueChange as (value: string[]) => void}
-                $AccordionToken={accordionToken}
                 {...commonProps}
             >
                 {renderChildren()}
@@ -121,10 +89,13 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             <StyledAccordionRoot
                 data-accordion="accordion"
                 type="single"
-                collapsible={true}
-                value={(currentValue ?? '') as string}
+                collapsible
+                {...(isControlled
+                    ? { value: (controlledValue ?? '') as string }
+                    : {
+                          defaultValue: defaultValue as string | undefined,
+                      })}
                 onValueChange={handleValueChange as (value: string) => void}
-                $AccordionToken={accordionToken}
                 {...commonProps}
             >
                 {renderChildren()}
