@@ -93,6 +93,7 @@ const TruncatedTextWithTooltip: React.FC<{
         align?: TooltipAlign
         size?: TooltipSize
         delayDuration?: number
+        maxWidth?: string
     }
 }> = ({ content, children, tooltipProps }) => {
     const wrapperRef = useRef<HTMLDivElement>(null)
@@ -170,6 +171,10 @@ const TruncatedTextWithTooltip: React.FC<{
     )
 
     if (isTruncated && content) {
+        const isVeryLongString = content.length > 50 && !content.includes(' ')
+        const tooltipMaxWidth =
+            tooltipProps?.maxWidth || (isVeryLongString ? '600px' : undefined)
+
         return (
             <Tooltip
                 content={content}
@@ -177,6 +182,7 @@ const TruncatedTextWithTooltip: React.FC<{
                 align={tooltipProps?.align || TooltipAlign.START}
                 size={tooltipProps?.size || TooltipSize.SMALL}
                 delayDuration={tooltipProps?.delayDuration || 500}
+                maxWidth={tooltipMaxWidth}
                 fullWidth={true}
             >
                 {textContent}
