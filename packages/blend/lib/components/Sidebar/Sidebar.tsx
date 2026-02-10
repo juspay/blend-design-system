@@ -142,13 +142,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         )
 
         useEffect(() => {
-            const state: SidebarStateChangeType = isExpanded
-                ? 'expanded'
-                : isHovering
-                  ? 'intermediate'
+            const state: SidebarStateChangeType = isHovering
+                ? 'intermediate'
+                : isExpanded
+                  ? 'expanded'
                   : 'collapsed'
             onSidebarStateChange?.(state)
-        }, [isExpanded, isHovering, onSidebarStateChange])
+        }, [isExpanded, isHovering])
 
         // Keyboard shortcut handler with screen reader announcement
         useEffect(() => {
@@ -347,10 +347,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     id={skipToNavId}
                     data-sidebar="sidebar"
                     data-status={
-                        isExpanded
-                            ? 'expanded'
-                            : isHovering
-                              ? 'intermediate'
+                        isHovering
+                            ? 'intermediate'
+                            : isExpanded
+                              ? 'expanded'
                               : 'collapsed'
                     }
                     role="navigation"
