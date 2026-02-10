@@ -1,20 +1,17 @@
 import { forwardRef, useId } from 'react'
 import { Check, Minus } from 'lucide-react'
-import { CheckboxV2Props, CheckboxSize } from './checkboxV2.types'
+import { CheckboxV2Props, CheckboxV2Size } from './checkboxV2.types'
 import Block from '../Primitives/Block/Block'
-import {
-    StyledCheckboxRoot,
-    StyledCheckboxIndicator,
-} from '../Checkbox/StyledCheckbox'
+import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckboxV2'
 import { getErrorShakeStyle } from '../common/error.animations'
 import { useErrorShake } from '../common/useErrorShake'
 import {
     getSubtextId,
     mergeAriaDescribedBy,
     getCheckboxIconColor,
-} from '../Checkbox/checkboxUtils'
+} from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import type { CheckboxTokensType } from '../Checkbox/checkbox.token'
+import type { CheckboxV2TokensType } from './checkboxV2.tokens'
 
 const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
     (
@@ -28,7 +25,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
             disabled = false,
             required = false,
             error = false,
-            size = CheckboxSize.MEDIUM,
+            size = CheckboxV2Size.MEDIUM,
             children,
             subtext,
             slot,
@@ -53,7 +50,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
             ),
         }
 
-        const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
+        const tokens = useResponsiveTokens<CheckboxV2TokensType>('CHECKBOXV2')
 
         return (
             <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
@@ -104,14 +101,14 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
                             >
                                 {checked === 'indeterminate' ? (
                                     <Minus
-                                        size={tokens.indicator.icon.width[size]}
+                                        size={tokens.checkbox.icon.width[size]}
                                         color={getCheckboxIconColor(
                                             tokens,
                                             checked,
                                             disabled
                                         )}
                                         strokeWidth={
-                                            tokens.indicator.icon.strokeWidth[
+                                            tokens.checkbox.icon.strokeWidth[
                                                 size
                                             ]
                                         }
@@ -120,14 +117,14 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
                                     />
                                 ) : (
                                     <Check
-                                        size={tokens.indicator.icon.width[size]}
+                                        size={tokens.checkbox.icon.width[size]}
                                         color={getCheckboxIconColor(
                                             tokens,
                                             checked,
                                             disabled
                                         )}
                                         strokeWidth={
-                                            tokens.indicator.icon.strokeWidth[
+                                            tokens.checkbox.icon.strokeWidth[
                                                 size
                                             ]
                                         }

@@ -1,17 +1,17 @@
 import { ReactNode } from 'react'
 
-export enum CheckboxSize {
+export enum CheckboxV2Size {
     SMALL = 'sm',
     MEDIUM = 'md',
 }
 
-export enum CheckboxCheckedState {
+export enum CheckboxV2CheckedState {
     CHECKED = 'checked',
     UNCHECKED = 'unchecked',
     INDETERMINATE = 'indeterminate',
 }
 
-export enum CheckboxInteractionState {
+export enum CheckboxV2InteractionState {
     DEFAULT = 'default',
     HOVER = 'hover',
     DISABLED = 'disabled',
@@ -27,7 +27,7 @@ export type CheckboxV2Props = {
     disabled?: boolean
     required?: boolean
     error?: boolean
-    size?: CheckboxSize
+    size?: CheckboxV2Size
     children?: ReactNode
     subtext?: string
     slot?: ReactNode

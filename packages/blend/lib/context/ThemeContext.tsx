@@ -139,6 +139,9 @@ import {
     getTimelineTokens,
     ResponsiveTimelineTokens,
 } from '../components/Timeline/timeline.token'
+  import {  getCheckboxV2Tokens,
+    ResponsiveCheckboxV2Tokens,
+} from '../components/CheckboxV2/checkboxV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -155,6 +158,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT?: ResponsiveMultiValueInputTokens
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
+    CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ResponsiveModalTokens
@@ -220,6 +224,7 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_VALUE_INPUT: getMultiValueInputTokens(FOUNDATION_THEME),
         DROPDOWN_INPUT: getDropdownInputTokens(FOUNDATION_THEME),
         CHECKBOX: getCheckboxTokens(FOUNDATION_THEME),
+        CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME),
         TABS: getTabsTokens(FOUNDATION_THEME),
         BUTTON: getButtonTokens(FOUNDATION_THEME),
         MODAL: getModalComponentTokens(FOUNDATION_THEME),

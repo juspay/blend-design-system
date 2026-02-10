@@ -52,6 +52,7 @@ import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
+import { ResponsiveCheckboxV2Tokens } from '../components/CheckboxV2/checkboxV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -68,6 +69,7 @@ export const useComponentToken = (
     | ResponsiveMultiValueInputTokens
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
+    | ResponsiveCheckboxV2Tokens
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
@@ -135,6 +137,8 @@ export const useComponentToken = (
             return componentTokens.SWITCH
         case 'CHECKBOX':
             return componentTokens.CHECKBOX
+        case 'CHECKBOXV2':
+            return componentTokens.CHECKBOXV2
         case 'TABS':
             return componentTokens.TABS
         case 'DROPDOWN_INPUT':

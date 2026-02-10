@@ -54,6 +54,7 @@ import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
+import { getCheckboxV2Tokens } from '../components/CheckboxV2/checkboxV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -88,6 +89,8 @@ const initTokens = (
             getDropdownInputTokens(foundationTokens),
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
+        CHECKBOXV2:
+            componentTokens.CHECKBOXV2 ?? getCheckboxV2Tokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
         BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
         KEYVALUEPAIR:
