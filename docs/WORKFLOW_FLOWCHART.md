@@ -1,209 +1,474 @@
-# 🔄 Release Workflow Flowchart
+# 🔄 Complete Workflow Flowchart
 
-## 📊 Complete Workflow Overview
+This document provides a clear visual flowchart and explanation of all GitHub Actions workflows for the Blend Design System release process.
 
-```mermaid
-graph TD
-    A[💻 Development Work] --> B[📝 Feature/Fix Branch]
-    B --> C[🔀 Merge to dev branch]
-    C --> D[🚀 Ready for Beta?]
+## 🎯 Branch Strategy Overview
 
-    D -->|Yes| E[📋 Merge dev → staging]
-    D -->|No| A
+**Branch Purposes:**
 
-    E --> F[🎯 Create Beta Release]
-    F --> G[📝 Generate Enhanced Changelog]
-    G --> H[🏷️ Create Beta Tag & GitHub Release]
-    H --> I[📤 Auto-create PR to dev]
-    I --> J[👀 Review & Merge PR]
-    J --> K[📦 Publish Beta to NPM]
+- **`dev`**: Development branch - All feature PRs merge here first. This is where active development happens.
+- **`staging`**: Beta releases branch - Beta versions are **created and published from here**. This is the testing ground before production.
+- **`main`**: Stable releases branch - Only thoroughly tested, production-ready versions reach here.
 
-    K --> L[✅ Beta Testing]
-    L --> M[🧪 Testing Complete?]
-    M -->|Issues Found| A
-    M -->|Ready for Stable| N[📋 Merge staging → main]
+**Why staging → dev → staging flow for beta releases?**
 
-    N --> O[🎯 Create Stable Release]
-    O --> P[📝 Generate Enhanced Changelog]
-    P --> Q[🏷️ Create Stable Tag & GitHub Release]
-    Q --> R[📤 Auto-create PR to dev]
-    R --> S[👀 Review & Merge PR]
-    S --> T[📦 Publish Stable to NPM]
+1. **Beta is created on `staging`**: The "Create Beta Release" workflow runs on `staging` branch and updates the version (e.g., `1.0.0-beta.0`)
 
-    T --> U[🔄 Backmerge main → dev]
-    U --> V[🎉 Release Complete!]
-    V --> A
+2. **Sync version to `dev`**: Auto-creates PR `staging` → `dev` to sync version info to dev branch
+    - **Reason**: `dev` needs to know the latest version for development context
+    - **Merge this PR to `dev`**
 
-    style A fill:#e1f5fe
-    style F fill:#fff3e0
-    style K fill:#fff3e0
-    style O fill:#e8f5e8
-    style T fill:#e8f5e8
-    style V fill:#f3e5f5
-```
+3. **Sync version back to `staging`**: Manually create PR `dev` → `staging` to sync version back
+    - **Reason**: Ensures `staging` has the updated version after dev merge
+    - **Required before publishing to NPM**
 
-## 🌊 Detailed Process Flow
+4. **Publish from `staging`**: Beta versions are always published from `staging` branch
 
-### 🔵 Development Phase
+**Key Principle**: Beta versions are **created and published from `staging`**. The `dev` → `staging` → `dev` → `staging` flow is just for **version synchronization**, not for code flow.
+
+## Overall Flow
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Development   │───▶│   dev Branch    │───▶│ Ready for Beta? │
-│      Work       │    │   Integration   │    │   (staging)     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     BLEND DESIGN SYSTEM                          │
+│                         RELEASE FLOW                             │
+└─────────────────────────────────────────────────────────────────┘
+
+    ┌─────────┐
+    │   dev   │  ← Development & Features
+    │         │  (All feature PRs merge here first)
+    └────┬────┘
+         │
+         │  PR: dev → staging (code changes)
+         ▼
+    ┌─────────┐
+    │ staging │  ← Beta Releases & Testing
+    │         │  (Beta versions created and published from here)
+    │ ┌─────┐ │
+    │ │Beta │ │
+    │ │Cycle│ │
+    │ └──┬──┘ │
+    └────┼────┘
+         │
+         │  PR: staging → main (stable promotion)
+         ▼
+    ┌─────────┐
+    │  main   │  ← Stable Releases
+    │         │  (Production-ready versions)
+    └─────────┘
 ```
 
-### 🟡 Beta Release Phase
+**Key Points:**
+
+- **`dev`**: Development branch - all feature PRs merge here first
+- **`staging`**: Beta releases branch - beta versions are created and published from here
+- **`main`**: Stable releases branch - only thoroughly tested versions reach here
+
+## 🗺️ Detailed Workflow Flow
+
+### Beta Release Flow (staging branch)
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Create Beta     │───▶│ Enhanced        │───▶│ GitHub Beta     │
-│ Release (GitHub)│    │ Changelog Gen   │    │ Release Created │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-          │                                             │
-          ▼                                             ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Version Bump    │───▶│ Auto-create PR  │───▶│ Review & Merge  │
-│ (X.Y.Z-beta)    │    │ to dev branch   │    │ PR to dev       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                                        │
-                                                        ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Beta Testing    │◀───│ Publish Beta    │◀───│ NPM Publish     │
-│ & Validation    │    │ to NPM (manual) │    │ Confirmation    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    BETA RELEASE FLOW                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  staging branch                                                 │
+│       │                                                         │
+│       │  1. CREATE BETA RELEASE                                 │
+│       │     Run: "Create Beta Release" workflow                 │
+│       │     Input:                                              │
+│       │       - version_type: patch/minor/major                 │
+│       │       - increment_beta: false (first beta)              │
+│       │     Result: X.Y.Z-beta.0 (version updated on staging)  │
+│       │     Auto-creates PR: staging → dev                      │
+│       ▼                                                         │
+│       │                                                         │
+│  dev branch                                                     │
+│       │                                                         │
+│       │  2. MERGE PR TO DEV (STEP 1 of 2)                      │
+│       │     Auto-created PR: staging → dev                      │
+│       │     ⚠️ IMPORTANT: Merge this PR to dev first            │
+│       │     Purpose: Sync version info to dev branch             │
+│       │     (dev is development branch - needs latest version)  │
+│       ▼                                                         │
+│       │                                                         │
+│       │  3. MANUALLY CREATE PR: dev → staging (STEP 2 of 2)    │
+│       │     ⚠️ IMPORTANT: Manually create this PR               │
+│       │     Purpose: Sync version back to staging                │
+│       │     This ensures staging has the updated version         │
+│       │     REQUIRED before publishing to NPM                    │
+│       ▼                                                         │
+│       │                                                         │
+│  staging branch                                                 │
+│       │                                                         │
+│       │  4. MERGE PR: dev → staging                             │
+│       │     Now staging has the updated version                 │
+│       ▼                                                         │
+│       │                                                         │
+│       │  5. PUBLISH BETA TO NPM                                 │
+│       │     Run: "Publish Beta to NPM" workflow                 │
+│       │     Input: "PUBLISH"                                    │
+│       │     Must run from staging branch                        │
+│       ▼                                                         │
+│       │                                                         │
+│       │  6. TEST BETA                                           │
+│       │     npm install @juspay/blend-design-system@beta        │
+│       ▼                                                         │
+│       │                                                         │
+│       ╔═══════════════╗                                         │
+│       │  ISSUES FOUND? │                                        │
+│       ╚═══╦───────╦═══╝                                         │
+│           │       │                                             │
+│      YES  │       │ NO                                         │
+│           │       ▼                                             │
+│           │    GO TO STABLE RELEASE                             │
+│           │                                                     │
+│           ▼                                                     │
+│       ┌────────────────────────────────────────────────────────┐│
+│       │  6B. FIX ISSUES                                        ││
+│       │                                                        ││
+│       │  1. Fix issues in dev branch                           ││
+│       │  2. Create PR: dev → staging and merge                 ││
+│       │  3. Run "Create Beta Release" again from staging       ││
+│       │     Input: increment_beta: true (important!)           ││
+│       │     Result: X.Y.Z-beta.1 (was beta.0)                  ││
+│       │  4. Merge auto PR: staging → dev                       ││
+│       │  5. Manually create PR: dev → staging and merge        ││
+│       │  6. Repeat from step 5 (publish)                       ││
+│       │                                                        ││
+│       └────────────────────────────────────────────────────────┘│
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### 🟢 Stable Release Phase
+### Stable Release Flow (staging → main)
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Testing Pass?   │───▶│ Create Stable   │───▶│ Enhanced        │
-│ staging → main  │    │ Release (GitHub)│    │ Changelog Gen   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-          │                      │                      │
-          ▼                      ▼                      ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Convert Beta    │───▶│ GitHub Stable   │───▶│ Auto-create PR  │
-│ to Stable Ver   │    │ Release Created │    │ to dev branch   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                                        │
-                                                        ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Backmerge       │◀───│ Publish Stable  │◀───│ Review & Merge  │
-│ main → dev      │    │ to NPM (manual) │    │ PR to dev       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                   STABLE RELEASE FLOW                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  staging branch                                                  │
+│       │                                                          │
+│       │  1. PROMOTE BETA TO STABLE                              │
+│       │     Run: "Promote Beta to Stable" workflow               │
+│       │     Input: "PROMOTE"                                    │
+│       │     Result: X.Y.Z-beta.N → X.Y.Z                         │
+│       │     Creates PR: staging → main                           │
+│       ▼                                                          │
+│       │                                                          │
+│  main branch                                                    │
+│       │                                                          │
+│       │  2. MERGE PR TO MAIN                                    │
+│       │     Review and merge auto-created PR                    │
+│       ▼                                                          │
+│       │                                                          │
+│       │  3. PUBLISH STABLE TO NPM                               │
+│       │     Run: "Publish Stable to NPM" workflow                │
+│       │     Input: "PUBLISH"                                    │
+│       │     Result: @juspay/blend-design-system@latest          │
+│       ▼                                                          │
+│       │                                                          │
+│       ▼                                                          │
+│    DONE                                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Workflow Decision Points
-
-### ❓ Key Decision Gates
-
-| Stage              | Question          | Yes →             | No →                 |
-| ------------------ | ----------------- | ----------------- | -------------------- |
-| **Development**    | Ready for Beta?   | Merge to staging  | Continue development |
-| **Beta Testing**   | Testing Complete? | Proceed to stable | Fix issues & retry   |
-| **Stable Release** | All checks pass?  | Publish to NPM    | Debug & retry        |
-
-## 🏃‍♂️ Manual Action Points
-
-### 👤 Developer Actions Required
-
-1. **🎯 Trigger Workflows**
-    - Create Beta Release (from staging)
-    - Publish Beta to NPM (type "PUBLISH")
-    - Create Stable Release (from main, type "STABLE")
-    - Publish Stable to NPM (type "PUBLISH")
-
-2. **👀 Review & Merge**
-    - Review auto-generated PRs
-    - Merge PRs to dev branch
-    - Verify changelog accuracy
-
-3. **🧪 Testing**
-    - Test beta versions thoroughly
-    - Validate functionality before stable release
-
-## 🛡️ Safety Checkpoints
-
-### ✅ Automated Validations
+## Complete End-to-End Flow
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Branch Check    │───▶│ Version Format  │───▶│ NPM Auth Test   │
-│ (staging/main)  │    │ Validation      │    │ & Token Check   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-          │                      │                      │
-          ▼                      ▼                      ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Existing Ver    │───▶│ Build Success   │───▶│ Publish Success │
-│ Check on NPM    │    │ Validation      │    │ Verification    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│              COMPLETE RELEASE FLOW (BETA → STABLE)               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────┐                                                      │
+│  │   dev   │                                                      │
+│  └────┬────┘                                                      │
+│       │                                                          │
+│       │  1. Development complete                                 │
+│       │  2. PR: dev → staging                                   │
+│       ▼                                                          │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  STAGING - BETA RELEASE CYCLE                          │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│       │                                                          │
+│       ├──► Create Beta Release (increment_beta=false)          │
+│       │     Workflow runs on: staging                           │
+│       │     Result: 1.0.0-beta.0 (version on staging)          │
+│       │     Auto-creates PR: staging → dev                      │
+│       │                                                          │
+│       ├──► STEP 1: Merge auto PR to dev                        │
+│       │     (staging → dev) - syncs version to dev              │
+│       │                                                          │
+│       ├──► STEP 2: Manually create PR: dev → staging             │
+│       │     Merge PR to staging - syncs version back             │
+│       │     Now staging has updated version ready for publish    │
+│       │                                                          │
+│       ├──► Publish Beta to NPM                                  │
+│       │     npm install @juspay/blend-design-system@beta      │
+│       │                                                          │
+│       ├──► Test Beta                                            │
+│       │     ├─── Issues? ──► YES ──► Fix in dev                 │
+│       │     │         └────┘                                   │
+│       │     │                └────► Fix in dev                │
+│       │     │                       └────► PR: dev → staging   │
+│       │     │                              └────► Merge PR      │
+│       │     │                              └────► Create Beta   │
+│       │     │                              Release from staging │
+│       │     │                              (increment_beta=    │
+│       │     │                              TRUE)                │
+│       │     │                              Result: 1.0.0-beta.1│
+│       │     │                              └────► Merge auto   │
+│       │     │                              PR: staging → dev   │
+│       │     │                              └────► Manually PR: │
+│       │     │                              dev → staging       │
+│       │     │                                                   │
+│       │     └─── NO ──► Ready for stable                        │
+│       │                                                          │
+│       ▼                                                          │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  STAGING → MAIN - STABLE RELEASE                        │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│       │                                                          │
+│       ├──► Promote Beta to Stable                              │
+│       │     Result: 1.0.0-beta.2 → 1.0.0                       │
+│       │     PR: staging → main                                 │
+│       │                                                          │
+│  ┌─────────┐                                                      │
+│  │  main   │ ◄─────── Merge PR                                  │
+│  └────┬────┘                                                      │
+│       │                                                          │
+│       └──► Publish Stable to NPM                                 │
+│            Result: @juspay/blend-design-system@latest           │
+│                                                                 │
+│       ▼                                                          │
+│    DONE                                                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 📋 Branch Strategy Visual
+## 📋 Beta Iteration Example
 
 ```
-main branch (stable releases)
-    ↑
-    │ (manual merge after testing)
-    │
-staging branch (beta releases)
-    ↑
-    │ (manual merge when ready)
-    │
-dev branch (active development)
-    ↑
-    │ (feature branches merge here)
-    │
-feature branches
+┌─────────────────────────────────────────────────────────────────┐
+│                    BETA ITERATION EXAMPLE                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Initial State: Version 1.0.0 (stable)                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  BETA ITERATION 1                                       │    │
+│  │  ───────────────────                                   │    │
+│  │  • Create Beta Release (increment_beta=false)          │    │
+│  │  • Result: 1.1.0-beta.0                                │    │
+│  │  • Publish to NPM                                      │    │
+│  │  • Test: Found button bug                                │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  BETA ITERATION 2                                       │    │
+│  │  ───────────────────                                   │    │
+│  │  • Fix bug in dev                                      │    │
+│  │  • Create Beta Release (increment_beta=true)           │    │
+│  │  • Result: 1.1.0-beta.1                                │    │
+│  │  • Publish to NPM                                      │    │
+│  │  • Test: Found accessibility issue                     │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  BETA ITERATION 3                                       │    │
+│  │  ───────────────────                                   │    │
+│  │  • Fix issue in dev                                    │    │
+│  │  • Create Beta Release (increment_beta=true)           │    │
+│  │  • Result: 1.1.0-beta.2                                │    │
+│  │  • Publish to NPM                                      │    │
+│  │  • Test: All good! ✓                                    │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              │                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  STABLE RELEASE                                        │    │
+│  │  ──────────────                                       │    │
+│  │  • Promote Beta to Stable                             │    │
+│  │  • Result: 1.1.0                                       │    │
+│  │  • Publish to NPM (latest tag)                        │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 📦 Release Artifacts Generated
+## 📋 Workflow File Reference
 
-### 🏷️ For Each Release
+### Active Workflows
 
-| Artifact           | Beta Release       | Stable Release     |
-| ------------------ | ------------------ | ------------------ |
-| **GitHub Release** | ✅ Prerelease flag | ✅ Stable release  |
-| **NPM Package**    | ✅ `@beta` tag     | ✅ `@latest` tag   |
-| **Changelog**      | ✅ Enhanced format | ✅ Enhanced format |
-| **Git Tag**        | ✅ `vX.Y.Z-beta`   | ✅ `vX.Y.Z`        |
-| **Auto PR**        | ✅ To dev branch   | ✅ To dev branch   |
+| Workflow Name              | File                      | Branch    | Purpose                                           |
+| -------------------------- | ------------------------- | --------- | ------------------------------------------------- |
+| **CI**                     | `ci.yml`                  | main, dev | Continuous integration: lint, build, test         |
+| **Create Beta Release**    | `create-beta-release.yml` | staging   | Creates beta releases with incremental versioning |
+| **Publish Beta to NPM**    | `publish-beta-npm.yml`    | staging   | Publishes beta versions to NPM                    |
+| **Promote Beta to Stable** | `promote-to-stable.yml`   | staging   | Promotes tested beta to stable                    |
+| **Publish Stable to NPM**  | `publish-stable-npm.yml`  | main      | Publishes stable versions to NPM                  |
 
-## 🔄 Continuous Cycle
+### Deprecated Workflows
+
+| Workflow Name             | File                        | Status                      | Replacement                                     |
+| ------------------------- | --------------------------- | --------------------------- | ----------------------------------------------- |
+| **Legacy Release**        | `release.yml`               | Deprecated (emergency only) | create-beta-release.yml + promote-to-stable.yml |
+| **Create Stable Release** | `create-stable-release.yml` | Deprecated                  | promote-to-stable.yml                           |
+
+## 🔄 Decision Tree
 
 ```
-    Development → Beta → Testing → Stable → Backmerge
-         ↑                                      │
-         └──────────────────────────────────────┘
-              Next development cycle
+                        START
+                          │
+                ┌─────────┴─────────┐
+                │  Ready to Release?│
+                └─────────┬─────────┘
+                          │
+            ┌─────────────┴─────────────┐
+            │ First Beta OR           │
+            │ Increment Existing?     │
+            └───────┬─────────┬───────┘
+                    │         │
+               First │     Increment
+               Beta  │     Existing
+                    │         │
+                    ▼         ▼
+        ┌───────────────┐ ┌──────────────┐
+        │Create Beta    │ │Create Beta   │
+        │increment_beta │ │increment_beta│
+        │   = false     │ │   = true    │
+        └───────┬───────┘ └──────┬───────┘
+                │                │
+                └────────┬───────┘
+                         │
+                Merge PR → dev → staging
+                         │
+                Publish Beta to NPM
+                         │
+                     Test Beta
+                         │
+              ┌──────────┴──────────┐
+              │    Issues Found?    │
+              └──────┬────────┬─────┘
+                     │        │
+                   YES        NO
+                     │        │
+           ┌─────────┴┐   ┌────┴────────┐
+           │ Fix in  │   │ Promote to  │
+           │  dev    │   │  Stable     │
+           └────┬────┘   └────┬────────┘
+                │             │
+                │    Merge PR → main
+                │             │
+                │    Publish Stable
+                │    to NPM
+                │
+                └──────► DONE
 ```
 
-## 🚀 Quick Commands Reference
+## 🎯 Quick Reference Checklist
 
-### Beta Release
+### Beta Release Checklist
+
+**Branch Strategy:**
+
+- `dev` = Development branch (all feature PRs merge here first)
+- `staging` = Beta releases branch (beta versions created and published from here)
+- `main` = Stable releases branch
+
+**First Beta Release:**
+
+- [ ] Features merged to `dev`
+- [ ] PR: dev → staging merged (initial code sync)
+- [ ] Run "Create Beta Release" workflow from `staging` branch
+    - [ ] Input: increment_beta=false (for first beta)
+    - [ ] Result: Creates X.Y.Z-beta.0 on staging
+    - [ ] Auto-creates PR: staging → dev
+- [ ] **STEP 1: Merge auto-created PR to `dev`** (staging → dev)
+    - [ ] Purpose: Sync version info to dev branch
+- [ ] **STEP 2: Manually create PR: `dev` → `staging`**
+    - [ ] Purpose: Sync version back to staging
+    - [ ] Merge this PR to staging
+- [ ] Run "Publish Beta to NPM" from `staging` branch
+- [ ] Install and test: `npm install @juspay/blend-design-system@beta`
+
+**Subsequent Beta Releases (if issues found):**
+
+- [ ] Fix issues in `dev` branch
+- [ ] Create and merge PR: `dev` → `staging` (code fixes)
+- [ ] Run "Create Beta Release" from `staging` (increment_beta=true)
+    - [ ] Auto-creates PR: staging → dev
+- [ ] **Merge auto PR to `dev`** (staging → dev)
+- [ ] **Manually create and merge PR: `dev` → `staging`** (version sync)
+- [ ] Run "Publish Beta to NPM" from `staging` and test again
+- [ ] Repeat until no issues
+
+### Stable Release Checklist
+
+- [ ] Beta testing complete (no issues found)
+- [ ] Last beta published to NPM (e.g., `1.0.0-beta.2`)
+- [ ] Run "Promote Beta to Stable" workflow from `staging` branch
+- [ ] **Merge auto-created PR to `main`** (staging → main)
+- [ ] Run "Publish Stable to NPM" workflow from `main` branch
+- [ ] Verify: `npm install @juspay/blend-design-system@latest`
+
+## 🔍 Troubleshooting Flow
+
+```
+                      ISSUE
+                         │
+           ┌─────────────┴─────────────┐
+           │                           │
+      Version Issue               Publish Issue
+           │                           │
+           ▼                           ▼
+   ┌───────────────┐           ┌───────────────┐
+   │ Check version │           │ Check NPM     │
+   │ in package   │           │ token         │
+   │   .json      │           │ in secrets    │
+   └───────┬───────┘           └───────┬───────┘
+           │                           │
+     ┌─────┴─────┐                   │
+     │           │                   │
+  Wrong      Beta on           Invalid
+ Format      main?             token
+     │           │                   │
+     ▼           ▼                   ▼
+ Create       Run promote       Update NPM_
+ Beta with    to-stable         TOKEN
+ correct
+ parameters
+     │           │
+     └───────────┴───────────────────┘
+                 │
+                 ▼
+           Try Again
+```
+
+## 📦 Installation Commands
+
+### Install Beta
 
 ```bash
-# 1. Ensure code is in staging
-git checkout staging && git pull
+# Latest beta
+npm install @juspay/blend-design-system@beta
 
-# 2. GitHub Actions: "Create Beta Release"
-# 3. Review PR → Merge to dev
-# 4. GitHub Actions: "Publish Beta to NPM" → Type "PUBLISH"
+# Specific beta version
+npm install @juspay/blend-design-system@1.0.0-beta.2
 ```
 
-### Stable Release
+### Install Stable
 
 ```bash
-# 1. Ensure code is in main
-git checkout main && git pull
+# Latest stable
+npm install @juspay/blend-design-system@latest
 
-# 2. GitHub Actions: "Create Stable Release" → Type "STABLE"
-# 3. Review PR → Merge to dev
-# 4. GitHub Actions: "Publish Stable to NPM" → Type "PUBLISH"
+# Specific version
+npm install @juspay/blend-design-system@1.0.0
 ```
 
 ---
 
-This flowchart provides a complete visual overview of the enhanced release workflow, showing all decision points, manual actions, and automated processes! 🎉
+This flowchart provides a clear, simple view of the release process without unnecessary complexity.

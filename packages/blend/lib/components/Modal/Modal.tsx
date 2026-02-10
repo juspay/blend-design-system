@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import useScrollLock from '../../hooks/useScrollLock'
 import type { ModalProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { ModalTokensType } from './modal.tokens'
@@ -256,8 +255,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
         const ariaDescribedBy = subtitleId || undefined
 
-        useScrollLock(isOpen)
-
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
                 onClose()
@@ -298,7 +295,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    overflow="auto"
                     padding={FOUNDATION_THEME.unit[16]}
                     boxShadow={modalTokens.boxShadow}
                     {...props}

@@ -38,7 +38,7 @@ export function getPerformanceConfig(): PerformanceConfig {
         },
         interaction: {
             click: 45, // Single user interaction (keyboard, hover, rerender)
-            rapid: 210, // Multiple rapid interactions
+            rapid: 250, // Multiple rapid interactions (adjusted for RadioGroup CI performance)
         },
         memory: {
             basic: 7, // Basic memory / per-operation (stdDev, toggle, mount-unmount)

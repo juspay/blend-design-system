@@ -80,15 +80,20 @@ export const Tooltip = ({
                             <Block
                                 display="flex"
                                 alignItems="center"
-                                overflow="hidden"
                                 backgroundColor={tooltipTokens.background}
                                 padding={tooltipTokens.padding[size]}
                                 borderRadius={tooltipTokens.borderRadius[size]}
                                 maxWidth={
                                     maxWidth || tooltipTokens.maxWidth[size]
                                 }
-                                width="fit-content"
                                 gap={tooltipTokens.gap[size]}
+                                style={{
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'anywhere',
+                                    hyphens: 'auto',
+                                    minWidth: 0,
+                                    boxSizing: 'border-box',
+                                }}
                             >
                                 {slot &&
                                     slotDirection ===
@@ -103,7 +108,13 @@ export const Tooltip = ({
                                             {slot}
                                         </Block>
                                     )}
-                                <Block flexGrow={1} overflow="hidden">
+                                <Block
+                                    flexGrow={1}
+                                    minWidth={0}
+                                    style={{
+                                        maxWidth: '100%',
+                                    }}
+                                >
                                     <PrimitiveText
                                         data-element="tooltip-text"
                                         data-id={content || 'tooltip-text'}
@@ -117,6 +128,11 @@ export const Tooltip = ({
                                         lineHeight={
                                             tooltipTokens.text.lineHeight[size]
                                         }
+                                        style={{
+                                            wordBreak: 'break-word',
+                                            overflowWrap: 'anywhere',
+                                            whiteSpace: 'normal',
+                                        }}
                                     >
                                         {formatTextWithLineBreaks(content)}
                                     </PrimitiveText>

@@ -1,10 +1,27 @@
-name: Create Stable Release
+name: Create Stable Release (DEPRECATED)
+
+# This workflow is DEPRECATED. Please use the new workflow:
+# - promote-to-stable.yml: Promote tested beta to stable from staging branch
+#
+# The new workflow follows the improved beta versioning system:
+# - Supports incremental beta versions: X.Y.Z-beta.0, beta.1, beta.2, etc.
+# - Promotes tested beta to stable via promote-to-stable.yml
+# - Cleaner branch strategy with proper staging → main flow
+#
+# New Workflow:
+# 1. create-beta-release.yml: Create beta from staging
+# 2. publish-beta-npm.yml: Publish beta to NPM
+# 3. promote-to-stable.yml: Promote beta to stable (creates PR to main)
+# 4. publish-stable-npm.yml: Publish stable from main to NPM
+#
+# See docs/RELEASE_WORKFLOW.md for complete documentation.
 
 on:
+    # Disabled automatic triggers - only manual for emergency use
     workflow_dispatch:
         inputs:
             confirm_stable:
-                description: 'Type "STABLE" to confirm creating stable release'
+                description: 'Type "DEPRECATED_USE_PROMOTE_TO_STABLE" to confirm using deprecated workflow'
                 required: true
                 type: string
 
@@ -13,10 +30,32 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    create-stable-release:
-        name: Create Stable Release (No Publish)
+    deprecation-warning:
+        name: Deprecation Warning
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main' && github.event.inputs.confirm_stable == 'STABLE'
+        if: github.event.inputs.confirm_stable != 'DEPRECATED_USE_PROMOTE_TO_STABLE'
+
+        steps:
+            - name: Show Deprecation Notice
+              run: |
+                  echo "⚠️  DEPRECATION WARNING ⚠️"
+                  echo ""
+                  echo "This workflow is DEPRECATED!"
+                  echo ""
+                  echo "Please use the new workflow: 'Promote Beta to Stable'"
+                  echo ""
+                  echo "New Workflow Flow:"
+                  echo "  1. Create Beta Release (from staging)"
+                  echo "  2. Publish Beta to NPM"
+                  echo "  3. Promote Beta to Stable (from staging → main PR)"
+                  echo "  4. Publish Stable to NPM (from main)"
+                  echo ""
+                  echo "See docs/RELEASE_WORKFLOW.md for complete documentation."
+
+    create-stable-release:
+        name: Create Stable Release (Deprecated)
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main' && github.event.inputs.confirm_stable == 'DEPRECATED_USE_PROMOTE_TO_STABLE'
         outputs:
             version: ${{ steps.convert_version.outputs.stable_version }}
             tag: ${{ steps.convert_version.outputs.tag }}
@@ -39,6 +78,12 @@ jobs:
                   corepack enable
                   pnpm install --frozen-lockfile
 
+            - name: Deprecation Notice
+              run: |
+                  echo "⚠️  WARNING: This workflow is deprecated!"
+                  echo "Please use 'Promote Beta to Stable' workflow instead."
+                  echo "Proceeding with deprecated workflow..."
+
             - name: Convert Beta to Stable Version
               id: convert_version
               run: |
@@ -48,17 +93,22 @@ jobs:
                   echo "Current version: $CURRENT_VERSION"
 
                   # Validate current version format
-                  if [[ ! "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-beta)?$ ]]; then
-                    echo "ERROR: Invalid version format '$CURRENT_VERSION'. Expected format: X.Y.Z or X.Y.Z-beta"
+                  if [[ ! "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-beta(\.[0-9]+)?)?$ ]]; then
+                    echo "ERROR: Invalid version format '$CURRENT_VERSION'. Expected format: X.Y.Z or X.Y.Z-beta.N"
                     exit 1
                   fi
 
-                  if [[ "$CURRENT_VERSION" == *"-beta" ]]; then
-                    # Remove -beta suffix to get stable version
-                    STABLE_VERSION="${CURRENT_VERSION%-beta}"
+                  # Check for new format: X.Y.Z-beta.N
+                  if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+                    STABLE_VERSION="${BASH_REMATCH[1]}"
+                    BETA_NUMBER="${BASH_REMATCH[2]}"
+                    echo "Converting beta to stable: $CURRENT_VERSION (beta #$BETA_NUMBER) → $STABLE_VERSION"
+                  # Check for old format: X.Y.Z-beta
+                  elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta$ ]]; then
+                    STABLE_VERSION="${BASH_REMATCH[1]}"
                     echo "Converting beta to stable: $CURRENT_VERSION → $STABLE_VERSION"
+                  # Already stable
                   else
-                    # Already stable, keep as is
                     STABLE_VERSION="$CURRENT_VERSION"
                     echo "Already stable version: $STABLE_VERSION"
                   fi
@@ -93,26 +143,21 @@ jobs:
 
                   echo "Cleaning up any existing tags and releases for $TAG"
 
-                  # Clean up any existing local tags
                   git tag -l | xargs -r git tag -d 2>/dev/null || true
                   git fetch --tags
 
-                  # Force delete remote tag if it exists
                   if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
                     echo "Deleting existing remote tag $TAG"
                     git push origin ":refs/tags/$TAG" 2>/dev/null || true
-                    sleep 2  # Wait for tag deletion to propagate
+                    sleep 2
                   fi
 
-                  # Delete existing GitHub release if it exists
-                  echo "Checking for existing GitHub release $TAG"
                   if gh release view "$TAG" >/dev/null 2>&1; then
                     echo "Deleting existing GitHub release $TAG"
                     gh release delete "$TAG" --yes 2>/dev/null || true
-                    sleep 2  # Wait for release deletion to propagate
+                    sleep 2
                   fi
 
-                  # Clean up local tags again after remote cleanup
                   git fetch --tags --prune --prune-tags
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,17 +166,10 @@ jobs:
               run: |
                   VERSION=${{ steps.convert_version.outputs.stable_version }}
 
-                  # Make the changelog generator executable
                   chmod +x scripts/generate-changelog.js
-
-                  # Generate stable changelog using the new script
                   node scripts/generate-changelog.js "$VERSION" stable
 
                   echo "✅ Stable changelog generated successfully"
-
-                  # Show preview
-                  echo "📋 Stable changelog preview:"
-                  head -20 docs/CHANGELOG.md
 
             - name: Format Generated Files
               run: |
@@ -162,127 +200,38 @@ jobs:
                   draft: false
                   prerelease: false
 
-            - name: Create Version Update PR to Dev First
+            - name: Create Version Update PR to Dev
               uses: peter-evans/create-pull-request@v6
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   base: dev
                   branch: release/update-stable-version-${{ steps.convert_version.outputs.stable_version }}
-                  title: 'chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE]'
+                  title: 'chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE - DEPRECATED WORKFLOW]'
                   body: |
-                      Stable Release ${{ steps.convert_version.outputs.tag }}
+                      ⚠️ **DEPRECATED WORKFLOW USED** ⚠️
 
-                      - Convert beta to stable version: ${{ steps.convert_version.outputs.stable_version }}
-                      - Update changelog for stable release
-                      - **This is a STABLE release - ready for NPM publishing**
+                      This PR was created using the deprecated 'Create Stable Release' workflow.
 
-                      This PR was automatically created by the stable release workflow.
+                      **Recommended Approach:**
+                      Please use the new workflow 'Promote Beta to Stable' for future releases.
 
-                      **Next Steps:**
-                      1. Review and merge this PR to dev branch first
-                      2. Manually create PR from dev → release and merge
-                      3. Manually create PR from release → main and merge
-                      4. Trigger "Publish Stable to NPM" workflow to publish to npm with latest tag
+                      See `docs/RELEASE_WORKFLOW.md` for the updated release process.
 
                       **Changes included:**
                       - Updated package.json version to stable (removed -beta)
                       - Generated stable changelog
                       - Created GitHub release (not prerelease)
-
-                      **Staging Branch Strategy:**
-                      - All automatic PRs go to `dev` first, then manually merged to `staging` and `main`
-                      - This ensures consistent flow and prevents conflicts
                   labels: |
                       automated
                       release
                       stable
+                      deprecated
                   assignees: ${{ github.actor }}
                   commit-message: |
-                      chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE]
+                      chore(release): ${{ steps.convert_version.outputs.tag }} [STABLE - DEPRECATED]
 
                       - Convert to stable version ${{ steps.convert_version.outputs.stable_version }}
                       - Update changelog
-                      - Create stable release
-
-                      [skip ci]
-                  add-paths: |
-                      packages/blend/package.json
-                      docs/CHANGELOG.md
-                      .
-
-    create-backmerge-pr:
-        name: Create Backmerge PR (Main → Dev)
-        needs: create-stable-release
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-                  token: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Setup Node.js and pnpm
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-
-            - name: Enable corepack & install deps
-              run: |
-                  corepack enable
-                  pnpm install --frozen-lockfile
-
-            - name: Create Beta Version for Dev Branch
-              id: create_beta_version
-              run: |
-                  cd packages/blend
-                  STABLE_VERSION="${{ needs.create-stable-release.outputs.version }}"
-                  NEXT_BETA_VERSION="${STABLE_VERSION}-beta"
-
-                  echo "Creating next beta version: $NEXT_BETA_VERSION"
-                  npm pkg set version="$NEXT_BETA_VERSION"
-
-                  echo "next_beta_version=$NEXT_BETA_VERSION" >> $GITHUB_OUTPUT
-
-            - name: Create Main to Dev Backmerge PR
-              uses: peter-evans/create-pull-request@v6
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  head: main
-                  base: dev
-                  branch: backmerge/main-to-dev-${{ needs.create-stable-release.outputs.version }}
-                  title: 'chore: backmerge stable ${{ needs.create-stable-release.outputs.version }} to dev'
-                  body: |
-                      **Backmerge Stable Release to Dev**
-
-                      Backmerging stable release `${{ needs.create-stable-release.outputs.version }}` from `main` into `dev` branch.
-
-                      **Changes:**
-                      - Stable version: `${{ needs.create-stable-release.outputs.version }}`
-                      - Updated changelog
-                      - Prepare dev for next development cycle with beta version: `${{ steps.create_beta_version.outputs.next_beta_version }}`
-
-                      **Status:**
-                      - ✅ Stable release created on main
-                      - ✅ GitHub stable release published
-                      - 🔄 Ready for NPM stable publish
-                      - 🔄 Dev branch ready for next development cycle
-
-                      **New Staging Branch Strategy:**
-                      - After merging this PR, create a new `staging` branch from `dev` for the next beta cycle
-                      - Future beta releases will be created from the `staging` branch
-                      - This prevents issues with ongoing development in `dev` branch
-
-                      ---
-                      *This PR was automatically created after stable release creation*
-                  labels: |
-                      automated
-                      release
-                      backmerge
-                  assignees: ${{ github.actor }}
-                  commit-message: |
-                      chore: backmerge stable ${{ needs.create-stable-release.outputs.version }} to dev
-
-                      Sync stable release from main to dev and prepare for next dev cycle
 
                       [skip ci]
                   add-paths: |

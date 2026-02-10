@@ -93,6 +93,7 @@ const TruncatedTextWithTooltip: React.FC<{
         align?: TooltipAlign
         size?: TooltipSize
         delayDuration?: number
+        maxWidth?: string
     }
 }> = ({ content, children, tooltipProps }) => {
     const wrapperRef = useRef<HTMLDivElement>(null)
@@ -170,6 +171,10 @@ const TruncatedTextWithTooltip: React.FC<{
     )
 
     if (isTruncated && content) {
+        const isVeryLongString = content.length > 50 && !content.includes(' ')
+        const tooltipMaxWidth =
+            tooltipProps?.maxWidth || (isVeryLongString ? '600px' : undefined)
+
         return (
             <Tooltip
                 content={content}
@@ -177,6 +182,7 @@ const TruncatedTextWithTooltip: React.FC<{
                 align={tooltipProps?.align || TooltipAlign.START}
                 size={tooltipProps?.size || TooltipSize.SMALL}
                 delayDuration={tooltipProps?.delayDuration || 500}
+                maxWidth={tooltipMaxWidth}
                 fullWidth={true}
             >
                 {textContent}
@@ -239,10 +245,43 @@ const TableHeader = forwardRef<
             currentSortType: sortConfig?.sortType,
         })
 
-        const [filterState, setFilterState] = useState<FilterState>({
+        const extractFilterValues = (
+            filters: typeof columnFilters
+        ): Record<string, string[] | { min: number; max: number }> => {
+            const values: Record<
+                string,
+                string[] | { min: number; max: number }
+            > = {}
+
+            filters.forEach((filter) => {
+                if (!filter.value || filter.value === '') return
+                if (
+                    typeof filter.value === 'object' &&
+                    !Array.isArray(filter.value) &&
+                    'min' in filter.value &&
+                    'max' in filter.value
+                ) {
+                    values[filter.field] = filter.value as {
+                        min: number
+                        max: number
+                    }
+                } else if (
+                    Array.isArray(filter.value) &&
+                    filter.value.length > 0
+                ) {
+                    values[filter.field] = filter.value
+                } else if (typeof filter.value === 'string') {
+                    values[filter.field] = [filter.value]
+                }
+            })
+
+            return values
+        }
+
+        const [filterState, setFilterState] = useState<FilterState>(() => ({
             columnSearchValues: {},
-            columnSelectedValues: {},
-        })
+            columnSelectedValues: extractFilterValues(columnFilters),
+        }))
 
         const [openPopovers, setOpenPopovers] = useState<
             Record<string, boolean>
@@ -286,6 +325,13 @@ const TableHeader = forwardRef<
         )
         const subheaderAreaHeight = `${subheaderLineHeight + subheaderMarginTopValue}px`
 
+        const hasAnySubtext = visibleColumns.some(
+            (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
+        )
+        const headerAlignment = hasAnySubtext ? 'flex-start' : 'center'
+        const headerHeight = hasAnySubtext ? '56px' : '46px'
+        const cellPadding = `0 ${FOUNDATION_THEME.unit[16]}`
+
         const sortHandlers = createSortHandlers(
             sortState,
             isDisabled ? () => {} : onSort,
@@ -304,6 +350,36 @@ const TableHeader = forwardRef<
                 currentSortType: sortConfig?.sortType,
             })
         }, [sortConfig])
+
+        useEffect(() => {
+            const newColumnSelectedValues = extractFilterValues(columnFilters)
+
+            setFilterState((prev) => {
+                const currentFields = Object.keys(newColumnSelectedValues)
+                const prevFields = Object.keys(prev.columnSelectedValues)
+
+                const hasChanges =
+                    currentFields.length !== prevFields.length ||
+                    currentFields.some((field) => {
+                        const newValue = newColumnSelectedValues[field]
+                        const oldValue = prev.columnSelectedValues[field]
+                        return (
+                            JSON.stringify(newValue) !==
+                            JSON.stringify(oldValue)
+                        )
+                    }) ||
+                    prevFields.some((field) => !currentFields.includes(field))
+
+                if (hasChanges) {
+                    return {
+                        ...prev,
+                        columnSelectedValues: newColumnSelectedValues,
+                    }
+                }
+
+                return prev
+            })
+        }, [columnFilters])
 
         useEffect(() => {
             openPopoversRef.current = openPopovers
@@ -470,13 +546,13 @@ const TableHeader = forwardRef<
                         tableToken.dataTable.table.header.backgroundColor,
                     borderBottom:
                         tableToken.dataTable.table.header.borderBottom,
-                    height: tableToken.dataTable.table.header.height,
+                    height: headerHeight,
                 }}
             >
                 <tr
                     role="row"
                     style={{
-                        ...tableToken.dataTable.table.header.row,
+                        height: headerHeight,
                     }}
                 >
                     {enableRowExpansion && (
@@ -487,6 +563,7 @@ const TableHeader = forwardRef<
                             tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
                                 width: '50px',
                                 minWidth: '50px',
                                 maxWidth: '50px',
@@ -494,6 +571,7 @@ const TableHeader = forwardRef<
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
                                 boxSizing: 'border-box',
+                                height: '100%',
                                 borderBottom:
                                     tableToken.dataTable.table.header
                                         .borderBottom,
@@ -537,6 +615,7 @@ const TableHeader = forwardRef<
                                 }}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '60px',
                                     minWidth: '60px',
                                     maxWidth: '60px',
@@ -544,6 +623,7 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -665,9 +745,12 @@ const TableHeader = forwardRef<
                                 tableToken.dataTable.table.header.sortable),
                             ...columnStyles,
                             ...frozenStyles,
+                            padding: cellPadding,
                             // Ensure border bottom is always present
                             borderBottom:
                                 tableToken.dataTable.table.header.borderBottom,
+                            height: '100%',
+                            boxSizing: 'border-box',
                             ...(isLastColumn && {
                                 borderTopRightRadius:
                                     tableToken.dataTable.borderRadius,
@@ -682,7 +765,7 @@ const TableHeader = forwardRef<
                         }) => (
                             <Block
                                 display="flex"
-                                alignItems="flex-start"
+                                alignItems={headerAlignment}
                                 justifyContent="space-between"
                                 gap="4px"
                                 width="100%"
@@ -694,7 +777,7 @@ const TableHeader = forwardRef<
                             >
                                 <Block
                                     display="flex"
-                                    alignItems="flex-start"
+                                    alignItems={headerAlignment}
                                     minWidth={0}
                                     flexGrow={1}
                                     overflow="hidden"
@@ -731,7 +814,7 @@ const TableHeader = forwardRef<
                                     ) : (
                                         <Block
                                             display="flex"
-                                            alignItems="flex-start"
+                                            alignItems={headerAlignment}
                                             minWidth={0}
                                             flexGrow={1}
                                             gap="8px"
@@ -742,8 +825,16 @@ const TableHeader = forwardRef<
                                             <Block
                                                 display="flex"
                                                 flexDirection="column"
-                                                alignItems="flex-start"
-                                                justifyContent="flex-start"
+                                                alignItems={
+                                                    headerAlignment === 'center'
+                                                        ? 'center'
+                                                        : 'flex-start'
+                                                }
+                                                justifyContent={
+                                                    headerAlignment === 'center'
+                                                        ? 'center'
+                                                        : 'flex-start'
+                                                }
                                                 minWidth={0}
                                                 flexGrow={1}
                                                 flexShrink={1}
@@ -823,81 +914,84 @@ const TableHeader = forwardRef<
                                                         </TruncatedTextWithTooltip>
                                                     )}
                                                 </Block>
-                                                <Block
-                                                    style={{
-                                                        width: '100%',
-                                                        minHeight:
-                                                            subheaderAreaHeight,
-                                                        marginTop:
-                                                            subheaderMarginTop,
-                                                    }}
-                                                >
-                                                    {column.headerSubtext ? (
-                                                        isDisabled ? (
-                                                            <Skeleton
-                                                                variant="pulse"
-                                                                loading
-                                                                width="60%"
-                                                                height="12px"
-                                                                borderRadius="4px"
-                                                            />
-                                                        ) : (
-                                                            <TruncatedTextWithTooltip
-                                                                content={
-                                                                    column.headerSubtext
-                                                                }
-                                                                tooltipProps={{
-                                                                    side: TooltipSide.TOP,
-                                                                    align: TooltipAlign.START,
-                                                                    size: TooltipSize.SMALL,
-                                                                    delayDuration: 500,
-                                                                }}
-                                                            >
-                                                                <PrimitiveText
-                                                                    data-element="table-header-sub-title"
-                                                                    data-id={
+                                                {(hasAnySubtext ||
+                                                    column.headerSubtext) && (
+                                                    <Block
+                                                        style={{
+                                                            width: '100%',
+                                                            minHeight:
+                                                                subheaderAreaHeight,
+                                                            marginTop:
+                                                                subheaderMarginTop,
+                                                        }}
+                                                    >
+                                                        {column.headerSubtext ? (
+                                                            isDisabled ? (
+                                                                <Skeleton
+                                                                    variant="pulse"
+                                                                    loading
+                                                                    width="60%"
+                                                                    height="12px"
+                                                                    borderRadius="4px"
+                                                                />
+                                                            ) : (
+                                                                <TruncatedTextWithTooltip
+                                                                    content={
                                                                         column.headerSubtext
                                                                     }
-                                                                    style={{
-                                                                        overflow:
-                                                                            'hidden',
-                                                                        textOverflow:
-                                                                            'ellipsis',
-                                                                        whiteSpace:
-                                                                            'nowrap',
-                                                                        minWidth: 0,
-                                                                        width: '100%',
-                                                                        maxWidth:
-                                                                            '100%',
-                                                                        display:
-                                                                            'block',
-                                                                        cursor: isDraggable
-                                                                            ? 'grab'
-                                                                            : 'default',
-                                                                        fontSize:
-                                                                            tableToken
+                                                                    tooltipProps={{
+                                                                        side: TooltipSide.TOP,
+                                                                        align: TooltipAlign.START,
+                                                                        size: TooltipSize.SMALL,
+                                                                        delayDuration: 500,
+                                                                    }}
+                                                                >
+                                                                    <PrimitiveText
+                                                                        data-element="table-header-sub-title"
+                                                                        data-id={
+                                                                            column.headerSubtext
+                                                                        }
+                                                                        style={{
+                                                                            overflow:
+                                                                                'hidden',
+                                                                            textOverflow:
+                                                                                'ellipsis',
+                                                                            whiteSpace:
+                                                                                'nowrap',
+                                                                            minWidth: 0,
+                                                                            width: '100%',
+                                                                            maxWidth:
+                                                                                '100%',
+                                                                            display:
+                                                                                'block',
+                                                                            cursor: isDraggable
+                                                                                ? 'grab'
+                                                                                : 'default',
+                                                                            fontSize:
+                                                                                tableToken
+                                                                                    .dataTable
+                                                                                    .table
+                                                                                    .header
+                                                                                    .filter
+                                                                                    .groupLabelFontSize,
+                                                                            color: tableToken
                                                                                 .dataTable
                                                                                 .table
                                                                                 .header
                                                                                 .filter
-                                                                                .groupLabelFontSize,
-                                                                        color: tableToken
-                                                                            .dataTable
-                                                                            .table
-                                                                            .header
-                                                                            .filter
-                                                                            .groupLabelColor,
-                                                                        lineHeight: 1.2,
-                                                                    }}
-                                                                >
-                                                                    {
-                                                                        column.headerSubtext
-                                                                    }
-                                                                </PrimitiveText>
-                                                            </TruncatedTextWithTooltip>
-                                                        )
-                                                    ) : null}
-                                                </Block>
+                                                                                .groupLabelColor,
+                                                                            lineHeight: 1.2,
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            column.headerSubtext
+                                                                        }
+                                                                    </PrimitiveText>
+                                                                </TruncatedTextWithTooltip>
+                                                            )
+                                                        ) : null}
+                                                    </Block>
+                                                )}
                                             </Block>
                                             {enableInlineEdit && (
                                                 <Block
@@ -1501,12 +1595,14 @@ const TableHeader = forwardRef<
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '200px',
                                     maxWidth: '200px',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -1523,7 +1619,7 @@ const TableHeader = forwardRef<
                             >
                                 <Block
                                     display="flex"
-                                    alignItems="flex-start"
+                                    alignItems={headerAlignment}
                                     justifyContent="space-between"
                                     gap="4px"
                                     width="100%"
@@ -1531,7 +1627,7 @@ const TableHeader = forwardRef<
                                 >
                                     <Block
                                         display="flex"
-                                        alignItems="flex-start"
+                                        alignItems={headerAlignment}
                                         minWidth={0}
                                         flexGrow={1}
                                         overflow="hidden"
@@ -1539,8 +1635,16 @@ const TableHeader = forwardRef<
                                         <Block
                                             display="flex"
                                             flexDirection="column"
-                                            alignItems="flex-start"
-                                            justifyContent="flex-start"
+                                            alignItems={
+                                                headerAlignment === 'center'
+                                                    ? 'center'
+                                                    : 'flex-start'
+                                            }
+                                            justifyContent={
+                                                headerAlignment === 'center'
+                                                    ? 'center'
+                                                    : 'flex-start'
+                                            }
                                             minWidth={0}
                                             flexGrow={1}
                                             flexShrink={1}
@@ -1569,15 +1673,17 @@ const TableHeader = forwardRef<
                                                     Actions
                                                 </PrimitiveText>
                                             </Block>
-                                            <Block
-                                                style={{
-                                                    width: '100%',
-                                                    minHeight:
-                                                        subheaderAreaHeight,
-                                                    marginTop:
-                                                        subheaderMarginTop,
-                                                }}
-                                            />
+                                            {hasAnySubtext && (
+                                                <Block
+                                                    style={{
+                                                        width: '100%',
+                                                        minHeight:
+                                                            subheaderAreaHeight,
+                                                        marginTop:
+                                                            subheaderMarginTop,
+                                                    }}
+                                                />
+                                            )}
                                         </Block>
                                     </Block>
                                 </Block>
@@ -1594,6 +1700,7 @@ const TableHeader = forwardRef<
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
                                     width: '40px',
                                     minWidth: '40px',
                                     maxWidth: '40px',
@@ -1601,6 +1708,7 @@ const TableHeader = forwardRef<
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     boxSizing: 'border-box',
+                                    height: '100%',
                                     borderBottom:
                                         tableToken.dataTable.table.header
                                             .borderBottom,
@@ -1612,95 +1720,103 @@ const TableHeader = forwardRef<
                             ></th>
                         )}
 
-                    {enableColumnManager &&
-                        data &&
-                        data.length > 0 &&
-                        visibleColumns.length > 0 && (
-                            <th
-                                role="columnheader"
-                                scope="col"
-                                aria-label="Column manager"
-                                tabIndex={-1}
-                                style={{
-                                    ...tableToken.dataTable.table.header.cell,
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    boxSizing: 'border-box',
-                                    position: 'sticky',
-                                    right: 0,
-                                    backgroundColor:
-                                        tableToken.dataTable.table.header
-                                            .backgroundColor,
-                                    width: FOUNDATION_THEME.unit[48],
-                                    minWidth: FOUNDATION_THEME.unit[48],
-                                    maxWidth: FOUNDATION_THEME.unit[48],
-                                    borderBottom:
-                                        tableToken.dataTable.table.header
-                                            .borderBottom,
-                                    borderTopRightRadius:
-                                        tableToken.dataTable.borderRadius,
-                                }}
+                    {enableColumnManager && visibleColumns.length > 0 && (
+                        <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Column manager"
+                            tabIndex={-1}
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                                height: '100%',
+                                position: 'sticky',
+                                right: 0,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header
+                                        .backgroundColor,
+                                width: FOUNDATION_THEME.unit[48],
+                                minWidth: FOUNDATION_THEME.unit[48],
+                                maxWidth: FOUNDATION_THEME.unit[48],
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems={headerAlignment}
+                                justifyContent="space-between"
+                                gap="4px"
+                                width="100%"
+                                minWidth={0}
                             >
                                 <Block
                                     display="flex"
-                                    alignItems="flex-start"
-                                    justifyContent="space-between"
-                                    gap="4px"
-                                    width="100%"
+                                    alignItems={headerAlignment}
                                     minWidth={0}
+                                    flexGrow={1}
+                                    overflow="hidden"
                                 >
                                     <Block
                                         display="flex"
-                                        alignItems="flex-start"
+                                        flexDirection="column"
+                                        alignItems={
+                                            headerAlignment === 'center'
+                                                ? 'center'
+                                                : 'flex-start'
+                                        }
+                                        justifyContent={
+                                            headerAlignment === 'center'
+                                                ? 'center'
+                                                : 'flex-start'
+                                        }
                                         minWidth={0}
                                         flexGrow={1}
-                                        overflow="hidden"
+                                        flexShrink={1}
                                     >
                                         <Block
-                                            display="flex"
-                                            flexDirection="column"
-                                            alignItems="flex-start"
-                                            justifyContent="flex-start"
-                                            minWidth={0}
-                                            flexGrow={1}
-                                            flexShrink={1}
+                                            style={{
+                                                width: '100%',
+                                                minHeight: 0,
+                                            }}
                                         >
-                                            <Block
-                                                style={{
-                                                    width: '100%',
-                                                    minHeight: 0,
-                                                }}
-                                            >
-                                                <Block position="relative">
-                                                    <ColumnManager
-                                                        columns={initialColumns}
-                                                        visibleColumns={
-                                                            allVisibleColumns ||
-                                                            visibleColumns
-                                                        }
-                                                        onColumnChange={
-                                                            onColumnChange
-                                                        }
-                                                        maxSelections={
-                                                            columnManagerMaxSelections
-                                                        }
-                                                        alwaysSelectedColumns={
-                                                            columnManagerAlwaysSelected
-                                                        }
-                                                        columnManagerPrimaryAction={
-                                                            columnManagerPrimaryAction
-                                                        }
-                                                        columnManagerSecondaryAction={
-                                                            columnManagerSecondaryAction
-                                                        }
-                                                        multiSelectWidth={
-                                                            columnManagerWidth
-                                                        }
-                                                        disabled={isDisabled}
-                                                    />
-                                                </Block>
+                                            <Block position="relative">
+                                                <ColumnManager
+                                                    columns={initialColumns}
+                                                    visibleColumns={
+                                                        allVisibleColumns ||
+                                                        visibleColumns
+                                                    }
+                                                    onColumnChange={
+                                                        onColumnChange
+                                                    }
+                                                    maxSelections={
+                                                        columnManagerMaxSelections
+                                                    }
+                                                    alwaysSelectedColumns={
+                                                        columnManagerAlwaysSelected
+                                                    }
+                                                    columnManagerPrimaryAction={
+                                                        columnManagerPrimaryAction
+                                                    }
+                                                    columnManagerSecondaryAction={
+                                                        columnManagerSecondaryAction
+                                                    }
+                                                    multiSelectWidth={
+                                                        columnManagerWidth
+                                                    }
+                                                    disabled={isDisabled}
+                                                />
                                             </Block>
+                                        </Block>
+                                        {hasAnySubtext && (
                                             <Block
                                                 style={{
                                                     width: '100%',
@@ -1710,11 +1826,12 @@ const TableHeader = forwardRef<
                                                         subheaderMarginTop,
                                                 }}
                                             />
-                                        </Block>
+                                        )}
                                     </Block>
                                 </Block>
-                            </th>
-                        )}
+                            </Block>
+                        </th>
+                    )}
                 </tr>
             </thead>
         )

@@ -74,6 +74,7 @@ import {
 import MenuDemo from './MenuDemo'
 import SingleSelectDemo from './SingleSelectDemo'
 import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import TextInputGroupDemo from './TextInputGroupDemo'
 import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
@@ -194,6 +195,7 @@ const SidebarDemo = () => {
         | 'accordionV2'
         | 'snackbarV2'
         | 'switchV2'
+        | 'textInputGroup'
     >('avatarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -459,6 +461,8 @@ const SidebarDemo = () => {
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
                 return <SingleSelectGroupDemo />
+            case 'textInputGroup':
+                return <TextInputGroupDemo />
             case 'multiSelectGroup':
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
@@ -812,6 +816,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'input',
                     onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'Text Input Group',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputGroup',
+                    onClick: () => setActiveComponent('textInputGroup'),
                 },
                 {
                     label: 'Search Input',
