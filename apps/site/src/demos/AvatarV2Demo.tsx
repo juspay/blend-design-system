@@ -330,7 +330,7 @@ const AvatarV2Demo = () => {
                                         className="w-4 h-4"
                                     />
                                     <label htmlFor="show-leading-slot">
-                                        Leading slot
+                                        left slot
                                     </label>
                                 </label>
                                 <label className="flex items-center gap-2 text-sm">
@@ -346,7 +346,7 @@ const AvatarV2Demo = () => {
                                         className="w-4 h-4"
                                     />
                                     <label htmlFor="show-trailing-slot">
-                                        Trailing slot
+                                        right slot
                                     </label>
                                 </label>
                             </div>
@@ -386,12 +386,12 @@ const AvatarV2Demo = () => {
                                             ? { show: true }
                                             : undefined
                                     }
-                                    leadingSlot={
+                                    leftSlot={
                                         showLeadingSlot ? (
                                             <Mail size={16} />
                                         ) : undefined
                                     }
-                                    trailingSlot={
+                                    rightSlot={
                                         showTrailingSlot ? (
                                             <Phone size={16} />
                                         ) : undefined

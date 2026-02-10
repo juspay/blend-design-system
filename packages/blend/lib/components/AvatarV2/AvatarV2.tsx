@@ -121,12 +121,12 @@ const StatusIndicator = ({
             position="absolute"
             {...positionStyles}
             display="block"
-            width={tokens.status.width[size]}
-            height={tokens.status.height[size]}
-            backgroundColor={tokens.status.backgroundColor[status]}
-            borderRadius={tokens.status.borderRadius}
-            border={tokens.status.border[size]}
-            boxShadow={tokens.status.boxShadow}
+            width={tokens.container.status.width[size]}
+            height={tokens.container.status.height[size]}
+            backgroundColor={tokens.container.status.backgroundColor[status]}
+            borderRadius={tokens.container.status.borderRadius}
+            border={tokens.container.status.border[size]}
+            boxShadow={tokens.container.status.boxShadow}
             zIndex="1"
         />
     )
@@ -165,8 +165,8 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             size = AvatarV2Size.MD,
             shape = AvatarV2Shape.CIRCLE,
             status = { type: AvatarV2Status.NONE },
-            leadingSlot,
-            trailingSlot,
+            leftSlot,
+            rightSlot,
             skeleton,
             backgroundColor,
             disabled,
@@ -260,8 +260,8 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                               ? 'transparent'
                               : fallbackColor
                     }
-                    fontSize={tokens.fallback.fontSize[size]}
-                    fontWeight={tokens.fallback.fontWeight[size]}
+                    fontSize={tokens.container.fallback.fontSize[size]}
+                    fontWeight={tokens.container.fallback.fontWeight[size]}
                     cursor={
                         isInteractiveMode
                             ? disabled
@@ -308,18 +308,24 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     ) : (
                         <AvatarFallback
                             backgroundColor={backgroundColor || fallbackColor}
-                            textColor={tokens.fallback.color}
+                            textColor={tokens.container.fallback.color}
                         >
                             {typeof fallbackContent === 'string' ? (
                                 <Text
                                     as="span"
                                     color="currentColor"
-                                    fontSize={tokens.fallback.fontSize[size]}
+                                    fontSize={
+                                        tokens.container.fallback.fontSize[size]
+                                    }
                                     fontWeight={
-                                        tokens.fallback.fontWeight[size]
+                                        tokens.container.fallback.fontWeight[
+                                            size
+                                        ]
                                     }
                                     lineHeight={
-                                        tokens.fallback.lineHeight[size]
+                                        tokens.container.fallback.lineHeight[
+                                            size
+                                        ]
                                     }
                                 >
                                     {fallbackContent}
@@ -335,7 +341,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             )
         }
 
-        if (leadingSlot || trailingSlot) {
+        if (leftSlot || rightSlot) {
             return (
                 <Block
                     data-avatar-wrapper="true"
@@ -347,16 +353,16 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                             ? 'offline'
                             : statusType
                     }
-                    gap={tokens.container.gap}
+                    gap={tokens.gap}
                 >
                     <SlotContainer
-                        slot={leadingSlot}
+                        slot={leftSlot}
                         position="leading"
                         tokens={tokens}
                     />
                     {renderAvatarContent()}
                     <SlotContainer
-                        slot={trailingSlot}
+                        slot={rightSlot}
                         position="trailing"
                         tokens={tokens}
                     />

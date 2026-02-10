@@ -65,8 +65,8 @@ export type AvatarV2Props = {
     size?: AvatarV2Size
     shape?: AvatarV2Shape
     status?: AvatarV2StatusConfig
-    leadingSlot?: ReactElement
-    trailingSlot?: ReactElement
+    leftSlot?: ReactElement
+    rightSlot?: ReactElement
     skeleton?: AvatarV2SkeletonConfig
     backgroundColor?: string
     disabled?: boolean
