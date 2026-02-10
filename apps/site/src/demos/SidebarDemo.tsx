@@ -1327,6 +1327,9 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
+                    onSidebarStateChange={(state) =>
+                        console.log(state, 'state')
+                    }
                     // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}

@@ -34,6 +34,7 @@ export type SidebarMerchantInfo = {
     selected: string
     onSelect: (value: string) => void
 }
+export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
 
 export type SidebarProps = {
     showLeftPanel?: boolean
@@ -52,6 +53,7 @@ export type SidebarProps = {
     defaultIsTopbarVisible?: boolean
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
+    onSidebarStateChange?: (state: SidebarStateChangeType) => void
     defaultIsExpanded?: boolean
     panelOnlyMode?: boolean
     disableIntermediateState?: boolean

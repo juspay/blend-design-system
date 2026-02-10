@@ -300,10 +300,8 @@ const AccordionItem = forwardRef<
                 const hasOnChange = 'onChange' in elementProps
                 const hasOnCheckedChange = 'onCheckedChange' in elementProps
 
-                // Non-interactive element — return as-is
                 if (!hasOnChange && !hasOnCheckedChange) return triggerSlot
 
-                // Interactive element — sync checked state with accordion
                 const enhancedProps: Record<string, unknown> = {
                     ...elementProps,
                     checked:
@@ -397,10 +395,6 @@ const AccordionItem = forwardRef<
                 </ChevronAnimation>
             )
         }
-
-        // Unified slot renderer — isolates click events only for
-        // interactive elements (Switch, Checkbox) to prevent
-        // double-toggling via Radix's trigger.
         const renderChevronSlot = () => (
             <Block
                 data-element="chevron-icon"
